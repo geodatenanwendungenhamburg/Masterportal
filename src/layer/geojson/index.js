@@ -1,7 +1,10 @@
 import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
 import GeoJSON from "ol/format/GeoJSON.js";
+import {bbox} from "ol/loadingstrategy.js";
 import style, {setCustomStyles} from "./style";
+
+
+import {createVectorSource, createClusterVectorSource} from "../vector";
 
 // forward import to export
 export {setCustomStyles};
@@ -14,35 +17,61 @@ export {setCustomStyles};
  * @returns {undefined}
  * @ignore
  */
-function onAddFeature ({feature}) {
+/* function onAddFeature ({feature}) {
     if (typeof feature.getId() === "undefined") {
         feature.setId(feature.ol_uid);
     }
-}
+} */
 
 /**
  * Creates the VectorSource for a GeoJSON layer. It will ensure each feature has the field id set to use with the other exported geojson functions.
  * @param {object} rawLayer - rawLayer as specified in services.json
  * @param {string} [rawLayer.url] - url to fetch geojson from; if no rawLayer.features given, this is required
  * @param {object} [rawLayer.features] - if features are transmitted via rawLayer, they will be used instead of requesting an URL
- * @param {ol.Map} [map] - map the geojson is to be projected on; if rawLayer.features given, this is used to infer the target projection
+ * @param {object} options - options of the geojson layer
  * @returns {ol.source.Vector} created VectorSource
  */
-export function createLayerSource ({features, url}, map) {
-    const parser = new GeoJSON(),
+export function createLayerSource ({url, clusterDistance}, options) {
+    if (!options.loadingStrategy) {
+        options.loadingStrategy = bbox;
+    }
+    const format = new GeoJSON();
+    let source = null;
+
+    /* function loader (extent, resolution, projection, success, failure) {
+        if (options.beforeLoading) {
+            options.beforeLoading();
+        }
+        else {
+            const bboxParam = options.loadingStrategy;
+        }
+    } */
+
+    source = createVectorSource(url, options.loadingStrategy, format);
+
+    if (clusterDistance) {
+        return createClusterVectorSource(source, clusterDistance, options.clusterGeometryFunction);
+    }
+    return source;
+
+
+    // old -> shows geojson entities
+
+
+/*  const parser = new GeoJSON(),
         source = new VectorSource(features ? {} : {format: parser, url});
 
     source.on("addfeature", onAddFeature);
 
     // if features given directly, add them here _after_ source has eventListener for "addfeature"
     if (features) {
-        const options = map ? {featureProjection: map.getView().getProjection()} : {},
+        const options = options.map ? {featureProjection: options.map.getView().getProjection()} : {},
             parsedFeatures = parser.readFeatures(features, options);
-
+            console.log(source)
         source.addFeatures(parsedFeatures);
     }
-
-    return source;
+    console.log(source)
+    return source; */
 }
 
 /**
@@ -57,7 +86,7 @@ export function createLayerSource ({features, url}, map) {
 export function createLayer (rawLayer, layerParams = {}, options = {}) {
     return new VectorLayer(Object.assign({
         id: rawLayer.id,
-        source: createLayerSource(rawLayer, options.map),
+        source: createLayerSource(rawLayer, options),
         style: options.layerStyle || style
     }, layerParams));
 }
