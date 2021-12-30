@@ -9,8 +9,8 @@ import Cluster from "ol/source/Cluster.js";
  * @returns {(module:ol.source.VectorSource|module:ol.source.Cluster)} the VectorSource
  */
 export function createVectorSource (urlOrLoader, strategy, format) {
-    let loader = null,
-        url = null;
+    let loader,
+        url;
 
     if (typeof urlOrLoader === "string") {
         url = urlOrLoader;
