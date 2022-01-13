@@ -1,27 +1,13 @@
 import VectorLayer from "ol/layer/Vector";
 import GeoJSON from "ol/format/GeoJSON.js";
 import {bbox} from "ol/loadingstrategy.js";
-import style, {setCustomStyles} from "./style";
+import {setCustomStyles} from "./style";
 
 
 import {createVectorSource, createClusterVectorSource} from "../vector";
 
 // forward import to export
 export {setCustomStyles};
-
-/**
- * onAddFeature function for source that ensures a feature has an id.
- * If feature has no id, the ol_uid is set to feature.id.
- * @param {object} param - parameter object
- * @param {ol.Feature} param.feature - openlayers feature added to source
- * @returns {undefined}
- * @ignore
- */
-/* function onAddFeature ({feature}) {
-    if (typeof feature.getId() === "undefined") {
-        feature.setId(feature.ol_uid);
-    }
-} */
 
 /**
  * Creates the VectorSource for a GeoJSON layer. It will ensure each feature has the field id set to use with the other exported geojson functions.
@@ -38,40 +24,12 @@ export function createLayerSource ({url, clusterDistance}, options) {
     const format = new GeoJSON();
     let source = null;
 
-    /* function loader (extent, resolution, projection, success, failure) {
-        if (options.beforeLoading) {
-            options.beforeLoading();
-        }
-        else {
-            const bboxParam = options.loadingStrategy;
-        }
-    } */
-
     source = createVectorSource(url, options.loadingStrategy, format);
 
     if (clusterDistance) {
         return createClusterVectorSource(source, clusterDistance, options.clusterGeometryFunction);
     }
     return source;
-
-
-    // old -> shows geojson entities
-
-
-/*  const parser = new GeoJSON(),
-        source = new VectorSource(features ? {} : {format: parser, url});
-
-    source.on("addfeature", onAddFeature);
-
-    // if features given directly, add them here _after_ source has eventListener for "addfeature"
-    if (features) {
-        const options = options.map ? {featureProjection: options.map.getView().getProjection()} : {},
-            parsedFeatures = parser.readFeatures(features, options);
-            console.log(source)
-        source.addFeatures(parsedFeatures);
-    }
-    console.log(source)
-    return source; */
 }
 
 /**
@@ -83,12 +41,19 @@ export function createLayerSource ({url, clusterDistance}, options) {
  * @param {ol.Style} [options.layerStyle] - optional style; if not given, default styling (modifiable by setCustomStyles) is used
  * @returns {ol.layer.Vector} Layer with id and source specified in rawLayer
  */
-export function createLayer (rawLayer, layerParams = {}, options = {}) {
-    return new VectorLayer(Object.assign({
+export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {}) {
+    const layer = new VectorLayer(Object.assign({
         id: rawLayer.id,
-        source: createLayerSource(rawLayer, options),
-        style: options.layerStyle || style
+        source: createLayerSource(rawLayer, options)
     }, layerParams));
+
+    if (options.style) {
+        layer.setStyle(options.style);
+    }
+    else if (rawLayer.style) {
+        layer.setStyle(rawLayer.style);
+    }
+    return layer;
 }
 
 /**
