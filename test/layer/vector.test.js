@@ -18,7 +18,7 @@ describe("vector.js", function () {
             expect(source.loader_).toEqual(loader);
             expect(source.strategy_).toEqual(loadingStrategy);
         });
-        it("creates a VectorSource without using a loader", function () {
+        it("creates a VectorSource with an url", function () {
             const url = "https://url.de",
                 loadingStrategy = bbox,
                 format = new WFS(),
@@ -27,7 +27,6 @@ describe("vector.js", function () {
             expect(source).toBeInstanceOf(VectorSource);
             expect(source.getFormat()).toBeInstanceOf(WFS);
             expect(source.getUrl()).toEqual(url);
-            expect(source.loader_).toEqual(null);
             expect(source.strategy_).toEqual(loadingStrategy);
         });
         it("creates a VectorSource without an url", function () {
@@ -38,7 +37,7 @@ describe("vector.js", function () {
 
             expect(source).toBeInstanceOf(VectorSource);
             expect(source.getFormat()).toBeInstanceOf(WFS);
-            expect(source.getUrl()).toEqual(null);
+            expect(source.getUrl()).toEqual(undefined);
             expect(source.loader_).toEqual(loader);
             expect(source.strategy_).toEqual(loadingStrategy);
         });
