@@ -4,22 +4,7 @@ import Feature from "ol/Feature";
 import {Style, Icon} from "ol/style.js";
 import {geojson} from "../../../src";
 
-
-const point = {
-        type: "Feature",
-        geometry: {
-            type: "Point",
-            coordinates: [0, 0]
-        }
-    },
-    collection = {
-        type: "FeatureCollection",
-        features: [point, point, point]
-    };/* ,
-    idCollection = {
-        type: "FeatureCollection",
-        features: collection.features.map((p, id) => Object.assign({id: String(id)}, p))
-    }; */
+const features = [new Feature(), new Feature()];
 
 describe("geojson/index", function () {
     describe("createLayer", function () {
@@ -102,7 +87,6 @@ describe("geojson/index", function () {
             function styleFunction () {
                 return null;
             }
-            const features = [new Feature(), new Feature()];
 
             geojson.setFeatureStyle(features, styleFunction);
             expect(features[0].getStyle()).toBe(styleFunction);
@@ -112,45 +96,38 @@ describe("geojson/index", function () {
 
     describe("hideAllFeatures", function () {
         it("sets all features' styles of a layer to the null constant function", function () {
-            const layer = geojson.createLayer({features: collection});
+            const layer = geojson.createLayer({id: "id"});
+
+            layer.getSource().addFeatures(features);
 
             geojson.hideAllFeatures(layer);
             layer.getSource().getFeatures().forEach(feature => expect(feature.getStyle()()).toBeNull());
         });
     });
-
     describe("showAllFeatures", function () {
         it("sets all features' styles of a layer to undefined", function () {
-            const layer = geojson.createLayer({features: collection});
+            const layer = geojson.createLayer({id: "id"});
 
+            layer.getSource().addFeatures(features);
             geojson.hideAllFeatures(layer);
             geojson.showAllFeatures(layer);
             layer.getSource().getFeatures().forEach(feature => expect(feature.getStyle()).toBeUndefined());
         });
     });
+    describe("showFeaturesById", function () {
+        it("sets features with id visible, and all others invisible; unknown ids are ignored", () => {
+            const layer = geojson.createLayer({id: "id"});
 
-    /* describe.skip("showFeaturesById", function () {
-        it("sets features with id visible, and all others invisible; unknown ids are ignored", function () {
-            const layer = geojson.createLayer({features: idCollection}, {});
-                [p1, p2, p3] = layer.getSource().getFeatures();
-
-
-            geojson.showFeaturesById(layer, ["-1", "0", "1"]);
-            expect(p1.getStyle()).toBeUndefined();
-            expect(p2.getStyle()).toBeUndefined();
-            expect(p3.getStyle()()).toBeNull();
+            layer.getSource().addFeatures(features);
 
             geojson.showFeaturesById(layer, []);
-
-            expect(p1.getStyle()()).toBeNull();
-            expect(p2.getStyle()()).toBeNull();
-            expect(p3.getStyle()()).toBeNull();
+            expect(features[0].getStyle()()).toBeNull();
+            expect(features[1].getStyle()()).toBeNull();
 
             geojson.showFeaturesById(layer, ["2", "9"]);
 
-            expect(p1.getStyle()()).toBeNull();
-            expect(p2.getStyle()()).toBeNull();
-            expect(p3.getStyle()).toBeUndefined();
+            expect(features[0].getStyle()()).toBeNull();
+            expect(features[1].getStyle()()).toBeNull();
         });
-    }); */
+    });
 });
