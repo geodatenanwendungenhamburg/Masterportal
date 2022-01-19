@@ -172,9 +172,6 @@ export function createLayerSource (rawLayer, options = {}) {
     let source = null;
 
     function loader (extent, resolution, projection, success, failure) {
-        if (options.beforeLoading) {
-            options.beforeLoading();
-        }
         if (options.wfsFilter) {
             loadWFSFilter(options.wfsFilter, rawLayer.url, source, {onErrorFn: onError, success, failure}, options);
         }
@@ -196,6 +193,10 @@ export function createLayerSource (rawLayer, options = {}) {
     }
 
     source = createVectorSource(loader, options.loadingStrategy, format);
+
+    if (options.beforeLoading) {
+        source.once("featuresloadstart", () => options.beforeLoading());
+    }
 
     if (rawLayer.clusterDistance) {
         return createClusterVectorSource(source, rawLayer.clusterDistance, options.clusterGeometryFunction);

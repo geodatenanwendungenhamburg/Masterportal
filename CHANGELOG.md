@@ -7,24 +7,26 @@
 ### Added
 
 ### Changed
+- The options.beforeLoading function is now only executed once in wfs before loading the features.
 
 ### Removed
 
 ### Fixed
 
 ---
+
 ## 1.8.0 - 2022-01-14
 ### Added
 - An alias is added to the coordinate system. This is required by GeoServer services.
 - Added possibility to add any rawLayer attribute to wms layer request.
 - Added VectorBaseLayer to layers
-- The follow package were added 
+- The follow package were added
     - @parcel/transformer-sass version 2.2.0
     - parcel version 2.2.0
     - regenerator-runtime 0.13.9
 
 ### Changed
-- The follow package were updated 
+- The follow package were updated
     - ol: from 6.9.0 to version 6.11.0
     - @babel/core: from 7.15.0 to version 7.16.7
     - @babel/plugin-transform-modules-commonjs: from 7.15.0 to version 7.16.8
@@ -32,10 +34,8 @@
 - babel.config.js was replaced by babel.config.json. Now it can be watched for changes, and Babel transformations can be cached.
 - The overall script tag needs the attribute type="module" to enable module usage. Look at the index.html in example-folder.
 
-### Deprecated
-
 ### Removed
-- The follow package were removed 
+- The follow package were removed
     - @babel/preset-env: because Parcel includes transpilation by default
     - babel-jest
     - babel-polyfill
@@ -46,12 +46,6 @@
 ---
 
 ## 1.7.1 - 2022-01-11
-### Added
-
-### Changed
-
-### Removed
-
 ### Fixed
 - WFS-Layer: the WFS version is taken into account when generating the WFS format.
 
