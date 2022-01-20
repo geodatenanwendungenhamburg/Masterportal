@@ -26,7 +26,7 @@
     - regenerator-runtime 0.13.9
 
 ### Changed
-- The follow package were updated
+- The following packages have been updated
     - ol: from 6.9.0 to version 6.11.0
     - @babel/core: from 7.15.0 to version 7.16.7
     - @babel/plugin-transform-modules-commonjs: from 7.15.0 to version 7.16.8
