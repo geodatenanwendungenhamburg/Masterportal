@@ -1,6 +1,5 @@
 import VectorLayer from "ol/layer/Vector";
 import GeoJSON from "ol/format/GeoJSON.js";
-import {bbox} from "ol/loadingstrategy.js";
 import {setCustomStyles} from "./style";
 
 
@@ -18,9 +17,6 @@ export {setCustomStyles};
  * @returns {ol.source.Vector} created VectorSource
  */
 export function createLayerSource ({url, clusterDistance}, options) {
-    if (!options.loadingStrategy) {
-        options.loadingStrategy = bbox;
-    }
     const format = new GeoJSON();
     let source = null;
 
