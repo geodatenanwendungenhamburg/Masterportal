@@ -4,6 +4,7 @@ import {Style, Stroke, Fill, Icon} from "ol/style.js";
 
 import * as mpapi from "../src";
 import abstractAPI from "../abstraction/api.js";
+import {getLayerWhere} from "../src/rawLayerList";
 
 import services from "./config/services.json";
 import portalConfig from "./config/portal.json";
@@ -33,13 +34,19 @@ document.getElementById("enable").addEventListener("click", function () {
         const lib = portalConfig.cesiumLib ? portalConfig.cesiumLib : "https://geoportal-hamburg.de/mastercode/cesium/1_88/Cesium.js";
 
         load3DScript(lib, function Loaded3DCallback () {
+            let terrainLayer = null;
             const settings3D = {
                     "map2D": window.mpapi.map2D
                 },
-                map3D = abstractAPI.map.createMap(settings3D, "3D");
+                map3D = abstractAPI.map.createMap(settings3D, "3D"),
+                rawLayer = getLayerWhere({id: "12883"});
 
             window.mpapi.map = map3D;
             window.mpapi.map.setEnabled(true);
+
+            terrainLayer = mpapi.terrain.createLayer(rawLayer, map3D);           
+            terrainLayer.setVisible(true, rawLayer, window.mpapi.map);
+
         });
     }
 });
@@ -94,6 +101,7 @@ services.find(({id}) => id === "3001").style = styleWfs;
 window.mpapi.map = map2D;
 
 ["2001", "2002", "1002", "3001"].forEach(id => window.mpapi.map.addLayer(id));
+
 
 
 // */
