@@ -46,9 +46,27 @@ export function setVisible (value, rawLayer, map) {
  * @returns {Object} layer
  */
 export function createLayer (rawLayer, map) {
+    this.values = {
+        name: rawLayer.name,
+        id: rawLayer.id,
+        typ: rawLayer.typ
+    };
+    terrainProvider = null;
+
     if (rawLayer.isSelected && map && typeof map.getCesiumScene === "function") {
         setVisible(true, rawLayer, map);
     }
     return this;
+}
+/**
+ * Returns the value for the given key of the rawlayer.
+ * @param {String} key to get the value for
+ * @returns {*} the value to the key
+ */
+export function get (key) {
+    if (!this.values) {
+        return undefined;
+    }
+    return this.values[key];
 }
 
