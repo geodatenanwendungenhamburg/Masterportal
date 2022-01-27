@@ -24,6 +24,7 @@
     - @parcel/transformer-sass version 2.2.0
     - parcel version 2.2.0
     - regenerator-runtime 0.13.9
+- Added 3D Terrain-Layer to layers and adapted example.
 
 ### Changed
 - The following packages have been updated
