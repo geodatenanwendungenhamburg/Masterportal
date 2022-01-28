@@ -49,24 +49,8 @@
   "name" : "Gelaende",
   "url" : "https://geoportal-hamburg.de/gdi3d/datasource-data/Gelaende",
   "typ" : "Terrain3D",
-  "layerAttribution" : "nicht vorhanden",
-  "legendURL" : "ignore",
   "cesiumTerrainProviderOptions" : {
      "requestVertexNormals" : true
-  },
-  "datasets" : [
-     {
-        "md_id" : "5C3F3C13-C8A5-4B47-8639-53F8265B3697",
-        "csw_url" : "http://hmdk.fhhnet.stadt.hamburg.de/csw",
-        "show_doc_url" : "http://hmdk.fhhnet.stadt.hamburg.de/trefferanzeige?docuuid=",
-        "rs_id" : "https://registry.gdi-de.org/id/de.hh/5dbb3ad6-dff3-4e91-a20b-55619a343f36",
-        "md_name" : "Digitales Höhenmodell Hamburg DGM 5H",
-        "bbox" : "461468.968928975,5916367.22980651,587010.909598947,5980347.75579767",
-        "kategorie_opendata" : [ "Geographie, Geologie und Geobasisdaten" ],
-        "kategorie_inspire" : [ "Höhe" ],
-        "kategorie_organisation" : "Landesbetrieb Geoinformation und Vermessung"
-     }
-  ],
-  "urlIsVisible" : false
+  }
   }
 ]
