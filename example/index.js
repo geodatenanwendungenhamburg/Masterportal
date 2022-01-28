@@ -29,18 +29,40 @@ document.getElementById("enable").addEventListener("click", function () {
     if (window.mpapi.map.mapMode === "3D") {
         window.mpapi.map.setEnabled(false);
         window.mpapi.map = window.mpapi.map2D;
+        document.getElementById("layer-visibility").style.display = "none";
+        ["1001", "2001", "2002", "1002", "3001"].forEach(id => window.mpapi.map.addLayer(id));
     }
     else {
         const lib = portalConfig.cesiumLib ? portalConfig.cesiumLib : "https://geoportal-hamburg.de/mastercode/cesium/1_88/Cesium.js";
 
+        document.getElementById("layer-visibility").style.display = "block";
+
         load3DScript(lib, function Loaded3DCallback () {
             let terrainLayer = null;
+            const toRemove = ["2001", "2002", "1002", "3001"];
+
+            layers2D.forEach(layer => {
+                const layerId = layer?.id || layer?.values_?.id;
+                if(toRemove.find(id => id === layerId)){
+                    map2D.removeLayer(layer);
+                }               
+            });
+
             const settings3D = {
                     "map2D": window.mpapi.map2D
                 },
                 map3D = abstractAPI.map.createMap(settings3D, "3D"),
-                rawLayer = getLayerWhere({id: "12883"});
+                rawLayer = getLayerWhere({id: "4001"}),
+                scene = map3D.getCesiumScene();
 
+            //set some options to Cesium scene
+            scene.globe.enableLighting = true;
+            scene.globe.tileCacheSize = 20;
+            scene.globe.maximumScreenSpaceError =2;
+            scene.fxaa = true;
+            scene.highDynamicRange = false;
+            scene.pickTranslucentDepth = true;
+            
             window.mpapi.map = map3D;
             window.mpapi.map.setEnabled(true);
 
@@ -51,6 +73,12 @@ document.getElementById("enable").addEventListener("click", function () {
     }
 });
 
+// add a click-listener to button, that hides background layer in 3d
+document.getElementById("layer-visibility").addEventListener("click", function () {
+    map2D.getLayers().forEach(layer => {
+        map2D.removeLayer(layer);
+    });
+});
 //* Fake service that holds client-side prepared geojson; also nice to test automatic transformation since data is in WGS 84
 // eslint-disable-next-line no-unused-vars
 const hamburgServicesUrl = "http://geoportal-hamburg.de/lgv-config/services-internet.json",
@@ -63,7 +91,8 @@ const hamburgServicesUrl = "http://geoportal-hamburg.de/lgv-config/services-inte
         ...portalConfig,
         layerConf: services
     },
-    map2D = abstractAPI.map.createMap(config, "2D");
+    map2D = abstractAPI.map.createMap(config, "2D"),
+    layers2D = [];
 
 services.push(localService);
 // */
@@ -102,7 +131,9 @@ window.mpapi.map = map2D;
 
 ["2001", "2002", "1002", "3001"].forEach(id => window.mpapi.map.addLayer(id));
 
-
+map2D.getLayers().forEach(layer => {
+    layers2D.push(layer);       
+});
 
 // */
 
