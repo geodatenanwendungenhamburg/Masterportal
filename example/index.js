@@ -10,6 +10,7 @@ import services from "./config/services.json";
 import portalConfig from "./config/portal.json";
 import localGeoJSON from "./config/localGeoJSON.js";
 import {load3DScript} from "../src/lib/load3DScript";
+import {getLayerWhere} from "../src/rawLayerList";
 
 //* Add elements to window to play with API in console
 window.mpapi = {
@@ -38,8 +39,8 @@ document.getElementById("enable").addEventListener("click", function () {
         document.getElementById("layer-visibility").style.display = "block";
 
         load3DScript(lib, function Loaded3DCallback () {
-            let terrainLayer = null;
-            const toRemove = ["2001", "2002", "1002", "3001"];
+            let terrainLayer = null, tilesetLayer, rawLayerTileset;
+            const toRemove = ["2001", "2002", "1002", "3001"];         
 
             layers2D.forEach(layer => {
                 const layerId = layer?.id || layer?.values_?.id;
@@ -52,22 +53,26 @@ document.getElementById("enable").addEventListener("click", function () {
                     "map2D": window.mpapi.map2D
                 },
                 map3D = abstractAPI.map.createMap(settings3D, "3D"),
-                rawLayer = getLayerWhere({id: "4001"}),
+                rawLayerTerrain = getLayerWhere({id: "4001"}),
+                rawLayerTileset = getLayerWhere({id: "4002"}),
                 scene = map3D.getCesiumScene();
-
-            //set some options to Cesium scene
-            scene.globe.enableLighting = true;
-            scene.globe.tileCacheSize = 20;
-            scene.globe.maximumScreenSpaceError =2;
-            scene.fxaa = true;
-            scene.highDynamicRange = false;
-            scene.pickTranslucentDepth = true;
             
+             //set some options to Cesium scene
+             scene.globe.enableLighting = true;
+             scene.globe.tileCacheSize = 20;
+             scene.globe.maximumScreenSpaceError =2;
+             scene.fxaa = true;
+             scene.highDynamicRange = false;
+             scene.pickTranslucentDepth = true;
+
             window.mpapi.map = map3D;
+            tilesetLayer = new mpapi.Tileset(rawLayerTileset, window.mpapi.map);
+            tilesetLayer.setVisible(true, rawLayerTileset,  window.mpapi.map);
+
             window.mpapi.map.setEnabled(true);
 
-            terrainLayer = mpapi.terrain.createLayer(rawLayer, map3D);           
-            terrainLayer.setVisible(true, rawLayer, window.mpapi.map);
+            terrainLayer = mpapi.terrain.createLayer(rawLayerTerrain, window.mpapi.map);           
+            terrainLayer.setVisible(true, rawLayerTerrain, window.mpapi.map);
 
         });
     }
@@ -79,6 +84,7 @@ document.getElementById("layer-visibility").addEventListener("click", function (
         map2D.removeLayer(layer);
     });
 });
+
 //* Fake service that holds client-side prepared geojson; also nice to test automatic transformation since data is in WGS 84
 // eslint-disable-next-line no-unused-vars
 const hamburgServicesUrl = "http://geoportal-hamburg.de/lgv-config/services-internet.json",
@@ -130,6 +136,9 @@ services.find(({id}) => id === "3001").style = styleWfs;
 window.mpapi.map = map2D;
 
 ["2001", "2002", "1002", "3001"].forEach(id => window.mpapi.map.addLayer(id));
+map2D.getLayers().forEach(layer => {
+    layers2D.push(layer);       
+});
 
 map2D.getLayers().forEach(layer => {
     layers2D.push(layer);       

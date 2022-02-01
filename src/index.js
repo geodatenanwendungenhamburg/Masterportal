@@ -6,6 +6,7 @@ import * as wfs from "./layer/wfs";
 import * as geojson from "./layer/geojson";
 import * as vectorBase from "./layer/vectorBase";
 import * as terrain from "./layer/terrain";
+import Tileset from "./layer/tileset";
 import * as layerLib from "./layer/lib";
 import {search, setGazetteerUrl} from "./searchAddress";
 import setBackgroundImage from "./lib/setBackgroundImage";
@@ -18,6 +19,7 @@ export {
     layerLib,
     vectorBase,
     terrain,
+    Tileset,
     setBackgroundImage,
     setGazetteerUrl,
     rawLayerList,
