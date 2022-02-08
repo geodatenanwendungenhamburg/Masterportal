@@ -41,7 +41,7 @@ describe("tileset.js", function () {
         expect(layer.get("name")).toEqual(attrs.name);
         expect(layer.get("typ")).toEqual(attrs.typ);
         expect(layer.get("id")).toEqual(attrs.id);
-        expect(layer.tileset.olLayerId).toEqual(attrs.id);
+        expect(layer.tileset.layerReferenceId).toEqual(attrs.id);
     }
 
     describe("createLayer", function () {
