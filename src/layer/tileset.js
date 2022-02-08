@@ -17,7 +17,7 @@ function createTileSet (rawLayer) {
     return new Cesium.Cesium3DTileset(options);
 }
 /**
- * Creates an terrain layer to use in ol-Cesium map. Sets the id of the rawlayer to tileset.olLayerId.
+ * Creates an terrain layer to use in ol-Cesium map. Sets the id of the rawlayer to tileset.layerReferenceId.
  * @param {Object} rawLayer - layer specification as in services.json
  * @param {string} [rawLayer.id] - optional id of the layer, passed to help identification in services.json
  * @param {string} [rawLayer.url] - the URL of the Cesium terrain server
@@ -37,7 +37,7 @@ export default function Tileset (rawLayer, map) {
             typ: rawLayer.typ
         };
         this.tileset = createTileSet(rawLayer);
-        this.tileset.olLayerId = rawLayer.id;
+        this.tileset.layerReferenceId = rawLayer.id;
 
         if (rawLayer.isSelected && map && typeof map.getCesiumScene === "function") {
             this.setVisible(true, rawLayer, map);
