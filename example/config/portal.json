@@ -7,80 +7,22 @@
     ["EPSG:8395", "+title=ETRS89/Gauß-Krüger 3 +proj=tmerc +lat_0=0 +lon_0=9 +k=1 +x_0=3500000 +y_0=0 +ellps=GRS80 +datum=GRS80 +units=m +no_defs"],
     ["EPSG:4326", "+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"]
   ],
-  "extent": [
-    455000,
-    5809000,
-    730000,
-    6075800
-  ],
+  "extent": [510000.0, 5850000.0, 625000.4, 6000000.0],
   "options": [
-    {
-      "resolution": 661.4583333333333,
-      "scale": 2500000,
-      "zoomLevel": 0
-    },
-    {
-      "resolution": 264.58319045841052,
-      "scale": 1000000,
-      "zoomLevel": 1
-    },
-    {
-      "resolution": 132.29159522920526,
-      "scale": 500000,
-      "zoomLevel": 2
-    },
-    {
-      "resolution": 66.14579761460263,
-      "scale": 250000,
-      "zoomLevel": 3
-    },
-    {
-      "resolution": 26.458319045841044,
-      "scale": 100000,
-      "zoomLevel": 4
-    },
-    {
-      "resolution": 15.874991427504629,
-      "scale": 60000,
-      "zoomLevel": 5
-    },
-    {
-      "resolution": 10.583327618336419,
-      "scale": 40000,
-      "zoomLevel": 6
-    },
-    {
-      "resolution": 5.2916638091682096,
-      "scale": 20000,
-      "zoomLevel": 7
-    },
-    {
-      "resolution": 2.6458319045841048,
-      "scale": 10000,
-      "zoomLevel": 8
-    },
-    {
-      "resolution": 1.3229159522920524,
-      "scale": 5000,
-      "zoomLevel": 9
-    },
-    {
-      "resolution": 0.6614579761460262,
-      "scale": 2500,
-      "zoomLevel": 10
-    },
-    {
-      "resolution": 0.2645831904584105,
-      "scale": 1000,
-      "zoomLevel": 11
-    },
-    {
-      "resolution": 0.13229159522920521,
-      "scale": 500,
-      "zoomLevel": 12
-    }
+    { "resolution": 264.583190458, "scale": 1000000, "zoomLevel": 0 },
+    { "resolution": 132.291595229, "scale": 500000, "zoomLevel": 1 },
+    { "resolution": 66.14579761460263, "scale": 250000, "zoomLevel": 2 },
+    { "resolution": 26.458319045841044, "scale": 100000, "zoomLevel": 3 },
+    { "resolution": 15.874991427504629, "scale": 60000, "zoomLevel": 4 },
+    { "resolution": 10.583327618336419, "scale": 40000, "zoomLevel": 5 },
+    { "resolution": 5.2916638091682096, "scale": 20000, "zoomLevel": 6 },
+    { "resolution": 2.6458319045841048, "scale": 10000, "zoomLevel": 7 },
+    { "resolution": 1.3229159522920524, "scale": 5000, "zoomLevel": 8 },
+    { "resolution": 0.6614579761460262, "scale": 2500, "zoomLevel": 9 },
+    { "resolution": 0.2645831904584105, "scale": 1000, "zoomLevel": 10 },
+    { "resolution": 0.13229159522920521, "scale": 500, "zoomLevel": 11 }
   ],
-  "startResolution": 5.2916638091682096,
+  "startResolution": 132.291595229,
   "startCenter": [565874, 5934140],
   "units": "m",
   "layerConf": "",
