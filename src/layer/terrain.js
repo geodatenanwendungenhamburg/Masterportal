@@ -1,5 +1,5 @@
 /**
- * Creates a terrrain provider with the cesiumTerrainProviderOptions, if not exists.
+ * Creates a terrain provider with the cesiumTerrainProviderOptions, if not exists.
  * @param {Object} rawLayer  attributes of the layer
  * @param {string} [rawLayer.url] - the URL of the Cesium terrain server
  * @param {string} [rawLayer.cesiumTerrainProviderOptions] - see https://cesiumjs.org/Cesium/Build/Documentation/CesiumTerrainProvider.html
