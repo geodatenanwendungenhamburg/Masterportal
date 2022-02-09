@@ -1,5 +1,3 @@
-let terrainProvider;
-
 /**
  * Creates a terrrain provider with the cesiumTerrainProviderOptions, if not exists.
  * @param {Object} rawLayer  attributes of the layer
@@ -8,16 +6,14 @@ let terrainProvider;
  * @returns {void}
  */
 function createTerrainProvider (rawLayer) {
-    if (!terrainProvider) {
-        const options = {};
+    const options = {};
 
-        if (rawLayer.cesiumTerrainProviderOptions) {
-            Object.assign(options, rawLayer.cesiumTerrainProviderOptions);
-        }
-        options.url = rawLayer.url;
-        /* eslint-disable no-undef */
-        terrainProvider = new Cesium.CesiumTerrainProvider(options);
+    if (rawLayer.cesiumTerrainProviderOptions) {
+        Object.assign(options, rawLayer.cesiumTerrainProviderOptions);
     }
+    options.url = rawLayer.url;
+    /* eslint-disable no-undef */
+    return new Cesium.CesiumTerrainProvider(options);
 }
 
 /**
@@ -32,8 +28,7 @@ function createTerrainProvider (rawLayer) {
 export function setVisible (value, rawLayer, map) {
     if (map && typeof map.getCesiumScene === "function") {
         if (value) {
-            createTerrainProvider(rawLayer);
-            map.getCesiumScene().terrainProvider = terrainProvider;
+            map.getCesiumScene().terrainProvider = createTerrainProvider(rawLayer);
         }
         else {
             /* eslint-disable no-undef */
@@ -58,8 +53,6 @@ export function createLayer (rawLayer, map) {
         id: rawLayer.id,
         typ: rawLayer.typ
     };
-    terrainProvider = null;
-
     if (rawLayer.isSelected && map && typeof map.getCesiumScene === "function") {
         setVisible(true, rawLayer, map);
     }
