@@ -67,7 +67,7 @@ document.getElementById("enable").addEventListener("click", function () {
 
             window.mpapi.map = map3D;
             tilesetLayer = new mpapi.Tileset(rawLayerTileset, window.mpapi.map);
-            tilesetLayer.setVisible(true, rawLayerTileset,  window.mpapi.map);
+            tilesetLayer.setVisible(true, window.mpapi.map);
 
             window.mpapi.map.setEnabled(true);
 

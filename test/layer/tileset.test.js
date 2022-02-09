@@ -80,15 +80,6 @@ describe("tileset.js", function () {
             const layer = new Tileset(attr, map);
 
             expect(layer.tileset.show).toEqual(undefined);
-            layer.setVisible(true, attr);
-
-            checkAttributes(layer, attr);
-            expect(layer.tileset.show).toEqual(undefined);
-            expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
-        });
-        it("calls setVisible without map and attributes shall not fail", function () {
-            const layer = new Tileset(attr, map);
-
             layer.setVisible(true);
 
             checkAttributes(layer, attr);
@@ -98,7 +89,7 @@ describe("tileset.js", function () {
         it("sets the tileset layer visible", function () {
             const layer = new Tileset(attr, map);
 
-            layer.setVisible(true, attr, map);
+            layer.setVisible(true, map);
             checkAttributes(layer, attr);
             expect(layer.tileset.show).toEqual(true);
             expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
@@ -106,7 +97,7 @@ describe("tileset.js", function () {
         it("sets the tileset layer not visible", function () {
             const layer = new Tileset(attr, map);
 
-            layer.setVisible(false, attr, map);
+            layer.setVisible(false, map);
             checkAttributes(layer, attr);
             expect(layer.tileset.show).toEqual(false);
             expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);

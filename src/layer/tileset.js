@@ -27,37 +27,26 @@ function createTileSet (rawLayer) {
  * @returns {void}
  */
 export default function Tileset (rawLayer, map) {
-    if (!rawLayer || rawLayer.id === undefined) {
-        console.warn("A raw layer with id must be provided to use Tileset!");
-    }
-    else {
-        this.values = {
-            name: rawLayer.name,
-            id: rawLayer.id,
-            typ: rawLayer.typ
-        };
-        this.tileset = createTileSet(rawLayer);
-        this.tileset.layerReferenceId = rawLayer.id;
+    this.values = {
+        name: rawLayer.name,
+        id: rawLayer.id,
+        typ: rawLayer.typ
+    };
+    this.tileset = createTileSet(rawLayer);
+    this.tileset.layerReferenceId = rawLayer.id;
 
-        if (rawLayer.isSelected && map && typeof map.getCesiumScene === "function") {
-            this.setVisible(true, rawLayer, map);
-        }
+    if (rawLayer.isSelected && map && typeof map.getCesiumScene === "function") {
+        this.setVisible(true, map);
     }
 }
 /**
  *
  * @param {boolean} value  if true, terrainProvider is set to map and terrain will be visible
- * @param {Object} rawLayer  attributes of the layer
- * @param {string} [rawLayer.url] - the URL of the Cesium terrain server
- * @param {string} [rawLayer.cesiumTerrainProviderOptions] - see https://cesiumjs.org/Cesium/Build/Documentation/CesiumTerrainProvider.html
  * @param {OLCesium} map ol cesium map
  * @returns {void}
  */
-Tileset.prototype.setVisible = function (value, rawLayer, map) {
-    if (!rawLayer || rawLayer.id === undefined) {
-        console.warn("A raw layer with id must be provided to use tileset!", rawLayer);
-    }
-    else if (map && typeof map.getCesiumScene === "function") {
+Tileset.prototype.setVisible = function (value, map) {
+    if (map && typeof map.getCesiumScene === "function") {
         if (value) {
             if (!map.getCesiumScene().primitives.contains(this.tileset)) {
                 map.getCesiumScene().primitives.add(this.tileset);
