@@ -5,8 +5,19 @@
 
 ## Unreleased
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+---
+
+## 1.9.0 - 2022-02-10
+### Added
 - Added 3D tileset-Layer to layers and adapted example.
-- Added 3D Terrain-Layer to layers and adapted example.
+- Added 3D terrain-Layer to layers and adapted example.
 
 ### Changed
 - The options.beforeLoading function is now only executed once in wfs before loading the features.
