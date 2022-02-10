@@ -166,7 +166,6 @@ export function createLayerSource (rawLayer, options = {}) {
     const version = options.version || "1.1.0",
         format = new WFS({
             featureNS: rawLayer.featureNS,
-            featureType: rawLayer.featureType,
             version: version
         });
     let source = null;
@@ -183,7 +182,7 @@ export function createLayerSource (rawLayer, options = {}) {
                 for (const key in options.loadingParams) {
                     const option = Array.isArray(options.loadingParams[key]) ? options.loadingParams[key].join(",") : options.loadingParams[key];
 
-                    if (option !== undefined) {
+                    if (option !== undefined && option !== null && option !== "") {
                         url += `&${key}=${option}`;
                     }
                 }
@@ -191,7 +190,7 @@ export function createLayerSource (rawLayer, options = {}) {
             loadWFS(url, {}, source, {onErrorFn: onError, success, failure}, options);
         }
     }
-
+    format.featureType = rawLayer.featureType;
     source = createVectorSource(loader, options.loadingStrategy, format);
 
     if (options.beforeLoading) {
