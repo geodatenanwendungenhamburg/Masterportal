@@ -10,7 +10,6 @@ import services from "./config/services.json";
 import portalConfig from "./config/portal.json";
 import localGeoJSON from "./config/localGeoJSON.js";
 import {load3DScript} from "../src/lib/load3DScript";
-import {getLayerWhere} from "../src/rawLayerList";
 
 //* Add elements to window to play with API in console
 window.mpapi = {
@@ -39,7 +38,7 @@ document.getElementById("enable").addEventListener("click", function () {
         document.getElementById("layer-visibility").style.display = "block";
 
         load3DScript(lib, function Loaded3DCallback () {
-            let terrainLayer = null, tilesetLayer, rawLayerTileset;
+            let terrainLayer = null, tilesetLayer = null;
             const toRemove = ["2001", "2002", "1002", "3001"];         
 
             layers2D.forEach(layer => {

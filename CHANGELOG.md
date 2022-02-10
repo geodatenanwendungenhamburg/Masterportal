@@ -6,10 +6,10 @@
 ## Unreleased
 ### Added
 - Added 3D tileset-Layer to layers and adapted example.
+- Added 3D Terrain-Layer to layers and adapted example.
 
 ### Changed
 - The options.beforeLoading function is now only executed once in wfs before loading the features.
-- Added 3D Terrain-Layer to layers and adapted example.
 
 ### Removed
 
