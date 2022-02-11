@@ -7,7 +7,7 @@
 ### Added
 
 ### Changed
-- Folder abstracion renamed to maps and moved into src.
+- Folder abstraction renamed to maps and moved into src.
 ### Removed
 
 ### Fixed
