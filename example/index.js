@@ -139,10 +139,6 @@ map2D.getLayers().forEach(layer => {
     layers2D.push(layer);       
 });
 
-map2D.getLayers().forEach(layer => {
-    layers2D.push(layer);       
-});
-
 // */
 
 /* ASYNCHRONOUS EXAMPLE 1: work with layerConf callback
