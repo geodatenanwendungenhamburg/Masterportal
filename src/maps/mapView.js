@@ -1,5 +1,5 @@
 import {View} from "ol";
-import defaults from "./defaults";
+import defaults from "../defaults";
 
 /**
  * Sets the startResolution or the startZoomlevel, depending on the configuration.

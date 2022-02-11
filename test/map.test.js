@@ -1,11 +1,11 @@
 import {PluggableMap, Map} from "ol";
 import TileLayer from "ol/layer/Tile";
-import map from "../abstraction/map.js";
-import {createMap as create3DMap} from "../abstraction/olcs/olcsMap.js";
+import map from "../src/maps/map.js";
+import {createMap as create3DMap} from "../src/maps/olcs/olcsMap.js";
 import {initializeLayerList} from "../src/rawLayerList.js";
 import {registerProjections} from "../src/crs.js";
 import setBackgroundImage from "../src/lib/setBackgroundImage.js";
-import {createMapView} from "../src/mapView";
+import {createMapView} from "../src/maps/mapView";
 import defaults from "../src/defaults";
 import {load3DScript} from "../src/lib/load3DScript";
 
@@ -30,7 +30,7 @@ jest.mock("../src/rawLayerList.js", () => {
 });
 jest.mock("../src/crs.js");
 jest.mock("../src/lib/setBackgroundImage.js");
-jest.mock("../src/mapView.js");
+jest.mock("../src/maps/mapView.js");
 
 describe("map.js", function () {
     describe("createMap", function () {

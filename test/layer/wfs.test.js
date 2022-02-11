@@ -2,7 +2,7 @@ import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 import Cluster from "ol/source/Cluster.js";
 import {Style, Icon} from "ol/style.js";
-import map from "../../abstraction/map.js";
+import map from "../../src/maps/map.js";
 import defaults from "../../src/defaults";
 import {WFS} from "ol/format.js";
 import * as wfs from "../../src/layer/wfs";
