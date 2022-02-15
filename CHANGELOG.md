@@ -8,6 +8,7 @@
 
 ### Changed
 - Folder abstraction renamed to maps and moved into src.
+- WFS layer can now be loaded in the versions allowed by `ol`: 1.0.0, 1.1.0 and 2.0.0.
 ### Removed
 
 ### Fixed
