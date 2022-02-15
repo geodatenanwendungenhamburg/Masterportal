@@ -54,7 +54,7 @@ describe("vectorTile.js", function () {
             const layerParams = {
                 name: "VT Test",
                 id: "VT_01"
-            },
+            };
             const layer = vectorTile.createLayer(layerParams);
 
             expect(layer).toBeInstanceOf(OpenLayersVectorTileLayer);
