@@ -1,5 +1,5 @@
 import * as olMap from "./ol/olMap.js";
-import olcsMap from "./olcs/olcsMap.js";
+import * as olcsMap from "./olcs/olcsMap.js";
 
 export default {
     /**
