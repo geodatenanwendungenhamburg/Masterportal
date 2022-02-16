@@ -6,7 +6,7 @@
 ## Unreleased
 
 ### Added
-
+- Functions are added to olcsMap.js.
 ### Changed
 
 ### Removed
