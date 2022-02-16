@@ -30,7 +30,7 @@ describe("vectorTile.js", function () {
             expect(tileGrid).toBeInstanceOf(OpenLayersTileGrid);
             expect(tileGrid.getExtent()).toEqual(tileGridParams.extent);
             expect(tileGrid.getResolutions()).toEqual(defaults.options.map(x => x.resolution));
-            expect(tileGrid.getTileSize()).toBe(tileGridParams.tileSize);
+            expect(tileGrid.getTileSize()).toEqual(new Array(2).fill(tileGridParams.tileSize));
             expect(tileGrid.getMinZoom()).toBe(tileGrid.minZoom);
             expect(tileGrid.getOrigin()).toEqual([tileGridParams.extent[0], tileGridParams.extent[3]]);
         })
