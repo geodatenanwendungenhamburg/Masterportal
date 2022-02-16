@@ -3,7 +3,7 @@ import OpenLayersVectorTileSource from "ol/source/VectorTile";
 import OpenLayersTileGrid from "ol/tilegrid/TileGrid";
 
 import * as vectorTile from "../../src/layer/vectorTile";
-import { defaults } from "../../src/defaults";
+import defaults from "../../src/defaults";
 
 jest.mock("../../src/rawLayerList.js", () => {
     const original = jest.requireActual("../../src/rawLayerList.js");
