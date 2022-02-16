@@ -3,6 +3,7 @@ import OpenLayersVectorTileSource from "ol/source/VectorTile";
 import OpenLayersTileGrid from "ol/tilegrid/TileGrid";
 
 import * as vectorTile from "../../src/layer/vectorTile";
+import { registerProjections } from "../../src/crs";
 import defaults from "../../src/defaults";
 
 jest.mock("../../src/rawLayerList.js", () => {
@@ -13,6 +14,8 @@ jest.mock("../../src/rawLayerList.js", () => {
 });
 
 describe("vectorTile.js", function () {
+
+    beforeAll(() => registerProjections());
 
     const tileGridParams = {
         extent: [0, 0, 1, 1],
