@@ -58,6 +58,7 @@ describe("vectorTile.js", function () {
             const layer = vectorTile.createLayer(layerParams);
 
             expect(layer).toBeInstanceOf(OpenLayersVectorTileLayer);
+            expect(layer.getSource()).toBeInstanceOf(OpenLayersVectorTileSource);
             expect(layer.get("name")).toEqual("VT Test");
             expect(layer.get("id")).toEqual("VT_01");
         });
