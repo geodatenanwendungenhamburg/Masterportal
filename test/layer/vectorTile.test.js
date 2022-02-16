@@ -36,7 +36,7 @@ describe("vectorTile.js", function () {
     describe("createLayerSource", function () {
         it("creates a layerSource", function () {
             const tileGrid = vectorTile.createTileGrid(tileGridParams)
-            const sourceParanms = {
+            const sourceParams = {
                 tileGrid: tileGrid,
                 tileSize: tileGrid.getTileSize(),
                 zDirection: 1,
