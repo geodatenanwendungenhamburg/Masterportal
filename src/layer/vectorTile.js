@@ -3,9 +3,9 @@ import VectorTileLayer from "ol/layer/VectorTile";
 import VectorTileSource from "ol/source/VectorTile";
 import OpenLayersTileGrid from "ol/tilegrid/TileGrid";
 import { extentFromProjection } from "ol/tilegrid";
+import stylefunction from "ol-mapbox-style/dist/stylefunction";
 
 import defaults from "../defaults";
-
 
 /**
  * Layer specification as in services.json.
@@ -26,7 +26,7 @@ import defaults from "../defaults";
  * @property {number[]}    resolutions => no
  * @property {number}      tileSize => no
  * @property {number}      transparency => no
- * @property {Object}      vtStyles => no
+ * @property {VTStyle[]}   vtStyles => no
  * @property {number}      zDirection => no
  * required mp
  * @property {string} typ => yes
@@ -38,6 +38,15 @@ import defaults from "../defaults";
  * @property {Object|boolean} datasets => no
  * @property {boolean} visibility => no
  * @property {boolean} useProxy => no
+ */
+
+/**
+ * @typedef {Object} VTStyle
+ * @param {string} id 
+ * @param {string} name
+ * @param {string} url
+ * @param {boolean} defaultStyle 
+ * @returns 
  */
 
 /**
@@ -105,4 +114,8 @@ export function createTileGrid({epsg=defaults.epsg, extent=extentFromProjection(
   }
 
   return new OpenLayersTileGrid(tileGridParams);
+}
+
+export function setStyle(layer, glStyle, sourceId) {
+  stylefunction(layer, glStyle, sourceId, layer.getSource().getTileGrid().getResolutions());
 }

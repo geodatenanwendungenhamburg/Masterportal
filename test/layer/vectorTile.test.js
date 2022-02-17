@@ -2,6 +2,9 @@ import OpenLayersVectorTileLayer from "ol/layer/VectorTile";
 import OpenLayersVectorTileSource from "ol/source/VectorTile";
 import OpenLayersTileGrid from "ol/tilegrid/TileGrid";
 
+import { Feature } from "ol";
+import Polygon from 'ol/geom/Polygon';
+
 import * as vectorTile from "../../src/layer/vectorTile";
 import { registerProjections } from "../../src/crs";
 import defaults from "../../src/defaults";
@@ -22,6 +25,28 @@ describe("vectorTile.js", function () {
         tileSize: 512,
         minZoom: 0
     }
+
+    const vtStyle = {
+        "version": 8,
+        "sources": {
+            "test": {
+                "type": "vector"
+            }
+        },
+        "layers": [
+            {
+                "type": "fill",
+                "source": "test",
+                "source-layer": "Background",
+                "paint": {"fill-color": "rgb(255,253,238)", "fill-opacity": 1}
+            }
+        ]
+    }
+
+    const feature = new Feature({
+        geometry: new Polygon([[0, 0], [0, 1], [1, 1], [0, 0]]), 
+        layer: "Background"
+    })
 
     describe("createTileGrid", function( ){
         it("creates a ol/tilegrid/TileGrid with default values for not required parameters", function() {
@@ -66,4 +91,21 @@ describe("vectorTile.js", function () {
             expect(layer.get("id")).toEqual("VT_01");
         });
     });
+
+    describe("setStyle", function() {
+        it("should apply a given style", function() {
+            const layerParams = {
+                name: "VT Test",
+                id: "VT_01"
+            };
+
+            const layer = vectorTile.createLayer(layerParams);
+            vectorTile.setStyle(layer, vtStyle, Object.keys(vtStyle.sources)[0])
+
+            expect(typeof(layer.getStyle())).toBe("function");
+
+            const featureStyle = layer.getStyle()(feature, 1.3229159522920524);
+            expect(featureStyle[0].getFill().getColor()).toBe('rgba(255,253,238,1)');
+        })
+    })
 });
