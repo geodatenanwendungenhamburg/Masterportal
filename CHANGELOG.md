@@ -3,17 +3,11 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased
-### Added
-
+## 1.10.0 - 2022-02-17
 ### Changed
 - Folder abstraction renamed to maps and moved into src.
 - WFS layer can now be loaded in the versions allowed by `ol`: 1.0.0, 1.1.0 and 2.0.0.
-### Removed
 
-### Fixed
-
----
 ## 1.9.0 - 2022-02-10
 ### Added
 - Added 3D tileset-Layer to layers and adapted example.
