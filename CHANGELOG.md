@@ -3,6 +3,17 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased
+
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+---
 ## 1.10.0 - 2022-02-17
 ### Changed
 - Folder abstraction renamed to maps and moved into src.
