@@ -116,6 +116,6 @@ export function createTileGrid({epsg=defaults.epsg, extent=extentFromProjection(
   return new OpenLayersTileGrid(tileGridParams);
 }
 
-export function setStyle(layer, glStyle, sourceId) {
+export function setStyle(layer, glStyle, {sourceId=Object.keys(glStyle.sources)[0], spriteData, spriteImageUrl, addMpFonts}={}) {
   stylefunction(layer, glStyle, sourceId, layer.getSource().getTileGrid().getResolutions());
 }

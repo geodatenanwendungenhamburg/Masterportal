@@ -100,7 +100,7 @@ describe("vectorTile.js", function () {
             };
 
             const layer = vectorTile.createLayer(layerParams);
-            vectorTile.setStyle(layer, vtStyle, Object.keys(vtStyle.sources)[0])
+            vectorTile.setStyle(layer, vtStyle)
 
             expect(typeof(layer.getStyle())).toBe("function");
 
