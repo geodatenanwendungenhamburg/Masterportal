@@ -30,5 +30,6 @@ export default {
             map = createMapFunctions[mapMode](config, settings);
 
         return map;
-    }
+    },
+    olcsMap
 };
