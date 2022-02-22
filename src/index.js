@@ -5,6 +5,7 @@ import * as wms from "./layer/wms";
 import * as wfs from "./layer/wfs";
 import * as geojson from "./layer/geojson";
 import * as vectorBase from "./layer/vectorBase";
+import * as vectorTile from "./layer/vectorTile";
 import * as terrain from "./layer/terrain";
 import Tileset from "./layer/tileset";
 import * as layerLib from "./layer/lib";
@@ -18,6 +19,7 @@ export {
     geojson,
     layerLib,
     vectorBase,
+    vectorTile,
     terrain,
     Tileset,
     setBackgroundImage,
