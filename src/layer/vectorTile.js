@@ -81,19 +81,31 @@ export function createLayerSource(url, {epsg=defaults.epsg, tileSize=512, zDirec
     maxZoom: maxZoom
   }
 
-  if(epsg !== "EPSG:3857") {
-    sourceParams.tileGrid = createTileGrid({
-      epsg: epsg, 
-      extent: extent, 
-      resolutions: resolutions, 
-      tileSize: tileSize, 
-      minZoom: minZoom,
-      origin: origin,
-      origins: origins
-    })
+  const gridParams = {
+    epsg: epsg, 
+    extent: extent, 
+    resolutions: resolutions, 
+    tileSize: tileSize, 
+    minZoom: minZoom,
+    origin: origin,
+    origins: origins
+  }
+
+  if(mustCreateTileGrid(gridParams)) {
+    sourceParams.tileGrid = createTileGrid(gridParams)
   }
 
   return new VectorTileSource(sourceParams);
+}
+
+function mustCreateTileGrid({epsg, extent, tileSize, resolutions, origin, origins, minZoom}) {
+  if(![extent, tileSize, resolutions, origin, origins, minZoom].every((x) => typeof x === "undefined")) {
+    return true;
+  }
+  if(epsg !== "EPSG:3857") {
+    return true;
+  }
+  return false;
 }
 
 export function createTileGrid({epsg=defaults.epsg, extent=extentFromProjection(epsg), 
