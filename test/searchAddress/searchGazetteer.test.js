@@ -26,18 +26,33 @@ describe("searchAddress", function () {
     });
 
     describe("searchGazetteer", function () {
-        it("constructs an URL and requests it", function () {
-            const mockXHR = {
-                    open: jest.fn(),
-                    send: jest.fn()
-                },
-                originalXMLHttpRequest = window.XMLHttpRequest;
+        const consoleError = console.error;
 
-            window.XMLHttpRequest = jest.fn(() => mockXHR);
-            searchGazetteer("district", "district name");
-            window.XMLHttpRequest = originalXMLHttpRequest;
+        beforeEach(() => {
+            if (global.fetch) {
+                fetch.mockClear();
+            }
+        });
 
-            expect(mockXHR.open).toHaveBeenCalledWith("GET", `${defaults.gazetteerUrl}?service=WFS&request=GetFeature&version=2.0.0&StoredQuery_ID=findeStadtteil&stadtteilname=district%20name`);
+        // to reset show error on load in console
+        afterEach(() => {
+            console.error = consoleError;
+        });
+
+        it("constructs an URL and requests it", async function () {
+            global.fetch = jest.fn().mockImplementationOnce(() => {
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        text: () => "Gazetteer Response"
+                    });
+                });
+            });
+
+            await searchGazetteer("district", "district name");
+
+            expect(fetch).toHaveBeenCalledWith(`${defaults.gazetteerUrl}?service=WFS&request=GetFeature&version=2.0.0&StoredQuery_ID=findeStadtteil&stadtteilname=district%20name`, {"signal": undefined, "timeout": 6000});
         });
     });
 });

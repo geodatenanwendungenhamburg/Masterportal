@@ -24,6 +24,7 @@
 ### Added
 - Added 3D tileset-Layer to layers and adapted example.
 - Added 3D terrain-Layer to layers and adapted example.
+- Previous gazetteer searches can now be aborted by means of an `AbortController`.
 
 ### Changed
 - The options.beforeLoading function is now only executed once in wfs before loading the features.
