@@ -28,6 +28,9 @@
 
 ### Changed
 - The options.beforeLoading function is now only executed once in wfs before loading the features.
+- Gazetteer search:
+  - The search now always returns points as coordinates, since the extent is used for polygons, which is not desired in the rule.
+  - For `STREETS`, the point coordinate of the `STREET-AXIS` is now returned.
 
 ### Removed
 

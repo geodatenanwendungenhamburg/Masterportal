@@ -11,24 +11,16 @@ describe("searchAddress", function () {
                     expect(x[0].name).toBe("Barmbek-Nord");
                     expect(x[0].type).toBe(searchTypes.DISTRICT);
                     expect(x[0].properties.bundeslandname).toBe("Hamburg");
-                    expect(x[0].geometry.type).toBe("Polygon");
+                    expect(x[0].geometry.type).toBe("Point");
                     expect(x[0].geometry.coordinates).toEqual([
-                        "568356.869", "5937678.721",
-                        "570782.596", "5937678.721",
-                        "570782.596", "5940414.428",
-                        "568356.869", "5940414.428",
-                        "568356.869", "5937678.721"
+                        "569569.732", "5939046.574"
                     ]);
 
                     expect(x[1].name).toBe("Barmbek-Süd");
                     expect(x[1].type).toBe(searchTypes.DISTRICT);
                     expect(x[1].properties.bundeslandname).toBe("Hamburg");
                     expect(x[1].geometry.coordinates).toEqual([
-                        "567482.682", "5936181.467",
-                        "569976.333", "5936181.467",
-                        "569976.333", "5937853.832",
-                        "567482.682", "5937853.832",
-                        "567482.682", "5936181.467"
+                        "568729.508", "5937017.649"
                     ]);
                     done();
                 });
@@ -40,13 +32,9 @@ describe("searchAddress", function () {
                     expect(x[0].name).toBe("Alte Marsch");
                     expect(x[0].type).toBe(searchTypes.STREET_KEY);
                     expect(x[0].properties.postOrtsteil).toBe("Neugraben-Fischbek");
-                    expect(x[0].geometry.type).toBe("Polygon");
+                    expect(x[0].geometry.type).toBe("Point");
                     expect(x[0].geometry.coordinates).toEqual([
-                        "555024.929", "5925215.300",
-                        "555158.132", "5925215.300",
-                        "555158.132", "5925409.413",
-                        "555024.929", "5925409.413",
-                        "555024.929", "5925215.300"
+                        "555108.287", "5925298.269"
                     ]);
                     done();
                 });
@@ -58,13 +46,9 @@ describe("searchAddress", function () {
                     expect(x[0].name).toBe("Bargkoppelweg");
                     expect(x[0].type).toBe(searchTypes.STREET);
                     expect(x[0].properties.postOrtsteil).toBe("Rahlstedt");
-                    expect(x[0].geometry.type).toBe("Polygon");
+                    expect(x[0].geometry.type).toBe("Point");
                     expect(x[0].geometry.coordinates).toEqual([
-                        "576020.921", "5941871.589",
-                        "576777.652", "5941871.589",
-                        "576777.652", "5942463.286",
-                        "576020.921", "5942463.286",
-                        "576020.921", "5941871.589"
+                        "576096.393", "5941919.653"
                     ]);
                     done();
                 });

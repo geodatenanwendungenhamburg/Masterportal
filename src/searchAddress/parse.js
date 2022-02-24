@@ -64,11 +64,10 @@ function getAllPropertiesFlat (entry) {
  */
 function parseEntry (entry, type) {
     const searchResult = {
-            type,
-            properties: getAllPropertiesFlat(entry)
-        },
-        pos = findKey(searchResult.properties, "pos")[0],
-        posList = findKey(searchResult.properties, "posList")[0];
+        type,
+        properties: getAllPropertiesFlat(entry)
+    };
+    let pos = findKey(searchResult.properties, "pos")[0];
 
     // setting name
     switch (type) {
@@ -77,6 +76,7 @@ function parseEntry (entry, type) {
             break;
         case searchTypes.STREET_KEY:
         case searchTypes.STREET:
+            pos = findKey(searchResult.properties?.position_strassenachse, "pos")[0];
             searchResult.name = searchResult.properties.strassenname;
             break;
         case searchTypes.PARCEL:
@@ -110,12 +110,6 @@ function parseEntry (entry, type) {
         case searchTypes.DISTRICT:
         case searchTypes.STREET_KEY:
         case searchTypes.STREET:
-            // favour polygon where it's available
-            searchResult.geometry = {
-                type: posList ? "Polygon" : "Point",
-                coordinates: (posList || pos).split(" ")
-            };
-            break;
         case searchTypes.PARCEL:
         case searchTypes.HOUSE_NUMBERS_FOR_STREET:
         case searchTypes.ADDRESS_AFFIXED:
