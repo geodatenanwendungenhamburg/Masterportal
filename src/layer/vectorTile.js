@@ -63,7 +63,8 @@ import defaults from "../defaults";
                               {layerParams = {}, options = {}} = {}) {
   const source = createLayerSource(url, {epsg, tileSize, zDirection, minZoom, maxZoom, extent, resolutions, origin, origins});
   const layer = new VectorTileLayer({id: id, name: name, transparency: transparency/100, 
-                                     minZoom: minZoom, maxZoom: maxZoom, source: source, });
+                                     minZoom: minZoom, maxZoom: maxZoom, source: source,
+                                     declutter: true});
   return layer;
 }
 
