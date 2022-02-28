@@ -59,11 +59,10 @@ import defaults from "../defaults";
  export function createLayer ({id, name, url, extent, maxZoom, minZoom, 
                                           origin, origins, resolutions, tileSize, vtStyles, 
                                           epsg=defaults.epsg, layerAttribution="nicht vorhanden", 
-                                          transparency=0, zDirection=1}, 
+                                          zDirection=1}, 
                               {layerParams = {}, options = {}} = {}) {
   const source = createLayerSource(url, {epsg, tileSize, zDirection, minZoom, maxZoom, extent, resolutions, origin, origins});
-  const layer = new VectorTileLayer({id: id, name: name, transparency: transparency/100, 
-                                     minZoom: minZoom, maxZoom: maxZoom, source: source,
+  const layer = new VectorTileLayer({id: id, name: name, minZoom: minZoom, maxZoom: maxZoom, source: source,
                                      declutter: true});
   return layer;
 }
