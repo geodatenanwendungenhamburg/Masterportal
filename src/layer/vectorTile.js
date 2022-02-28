@@ -3,7 +3,9 @@ import VectorTileLayer from "ol/layer/VectorTile";
 import VectorTileSource from "ol/source/VectorTile";
 import OpenLayersTileGrid from "ol/tilegrid/TileGrid";
 import { extentFromProjection } from "ol/tilegrid";
+
 import stylefunction from "ol-mapbox-style/dist/stylefunction";
+import {defaultResolutions} from "ol-mapbox-style/dist/util";
 
 import defaults from "../defaults";
 
@@ -124,12 +126,11 @@ export function createTileGrid({epsg=defaults.epsg, extent=extentFromProjection(
   } else {
     tileGridParams.origin = origin;
   }
-
   return new OpenLayersTileGrid(tileGridParams);
 }
 
 export function setStyle(layer, glStyle, {sourceId=Object.keys(glStyle.sources)[0], 
-                                          resolutions=layer.getSource().getTileGrid().getResolutions(), 
+                                          resolutions=defaultResolutions, 
                                           spriteData, spriteImageUrl, getFonts}={}) {
   stylefunction(layer, glStyle, sourceId, resolutions, spriteData, spriteImageUrl, getFonts);
 }
