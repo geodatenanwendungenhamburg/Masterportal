@@ -16,11 +16,11 @@ export {setCustomStyles};
  * @param {object} options - options of the geojson layer
  * @returns {ol.source.Vector} created VectorSource
  */
-export function createLayerSource ({url, clusterDistance}, options) {
+export function createLayerSource ({url, features, clusterDistance}, options) {
     const format = new GeoJSON();
     let source = null;
 
-    source = createVectorSource(url, options.loadingStrategy, format);
+    source = createVectorSource(url || features, options.loadingStrategy, format);
 
     if (clusterDistance) {
         return createClusterVectorSource(source, clusterDistance, options.clusterGeometryFunction);
