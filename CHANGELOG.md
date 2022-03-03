@@ -12,6 +12,7 @@
 ### Removed
 
 ### Fixed
+- The createVectorSource function now allows passing features as an argument.
 
 ---
 ## 1.10.0 - 2022-02-17
