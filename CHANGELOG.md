@@ -7,7 +7,13 @@
 
 ### Added
 - 3D functions are added to olcsMap.js.
+- Previous gazetteer searches can now be aborted by means of an `AbortController`.
+
 ### Changed
+- Gazetteer search:
+  - The search now always returns points as coordinates, since the extent is used for polygons, which is not desired in the rule.
+  - For `STREETS`, the point coordinate of the `STREET-AXIS` is now returned.
+  - In the `"gazetteerUrl"` attribute the `service`, `request` and `version` URL parameters must now be specified. The default value has been changed from `"https://geodienste.hamburg.de/HH_WFS_GAGES"` to `"https://geodienste.hamburg.de/HH_WFS_GAGES?service=WFS&request=GetFeature&version=2.0.0"`.
 
 ### Removed
 
@@ -15,26 +21,21 @@
 - The createVectorSource function now allows passing features as an argument.
 
 ---
+
 ## 1.10.0 - 2022-02-17
 ### Changed
 - Folder abstraction renamed to maps and moved into src.
 - WFS layer can now be loaded in the versions allowed by `ol`: 1.0.0, 1.1.0 and 2.0.0.
 
+---
+
 ## 1.9.0 - 2022-02-10
 ### Added
 - Added 3D tileset-Layer to layers and adapted example.
 - Added 3D terrain-Layer to layers and adapted example.
-- Previous gazetteer searches can now be aborted by means of an `AbortController`.
 
 ### Changed
 - The options.beforeLoading function is now only executed once in wfs before loading the features.
-- Gazetteer search:
-  - The search now always returns points as coordinates, since the extent is used for polygons, which is not desired in the rule.
-  - For `STREETS`, the point coordinate of the `STREET-AXIS` is now returned.
-
-### Removed
-
-### Fixed
 
 ---
 
@@ -63,8 +64,6 @@
     - babel-jest
     - babel-polyfill
     - parcel-bundler: replaced by parcel
-
-### Fixed
 
 ---
 

@@ -52,7 +52,7 @@ describe("searchAddress", function () {
 
             await searchGazetteer("district", "district name");
 
-            expect(fetch).toHaveBeenCalledWith(`${defaults.gazetteerUrl}?service=WFS&request=GetFeature&version=2.0.0&StoredQuery_ID=findeStadtteil&stadtteilname=district%20name`, {"signal": undefined, "timeout": 6000});
+            expect(fetch).toHaveBeenCalledWith(`${defaults.gazetteerUrl}&StoredQuery_ID=findeStadtteil&stadtteilname=district%20name`, {"signal": undefined, "timeout": 6000});
         });
     });
 });

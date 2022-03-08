@@ -33,5 +33,5 @@ export default {
             "visibility": true
         }
     ],
-    gazetteerUrl: "https://geodienste.hamburg.de/HH_WFS_GAGES"
+    gazetteerUrl: "https://geodienste.hamburg.de/HH_WFS_GAGES?service=WFS&request=GetFeature&version=2.0.0"
 };

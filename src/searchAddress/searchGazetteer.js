@@ -1,9 +1,6 @@
 import {getGazetteerUrl} from "./gazetteerUrl";
 import {searchTypes} from "./types";
 
-// query-string snippet
-const featureQuery = "?service=WFS&request=GetFeature&version=2.0.0";
-
 /**
  * Encodes given string(s) to be usable as URI component.
  * @param {(string[]|string)} v value(s) to encode
@@ -43,7 +40,7 @@ export function getIdQuery (key, v) {
  */
 export function searchGazetteer (key, value, abortController) {
     return new Promise((resolve, reject) => {
-        const url = getGazetteerUrl() + featureQuery + getIdQuery(key, value);
+        const url = getGazetteerUrl() + getIdQuery(key, value);
 
         fetch(url, {
             signal: abortController?.signal,
