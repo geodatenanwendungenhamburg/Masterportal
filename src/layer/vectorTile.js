@@ -63,6 +63,10 @@ import defaults from "../defaults";
                                           epsg=defaults.epsg, layerAttribution="nicht vorhanden", 
                                           zDirection=1}, 
                               {layerParams = {}, options = {}} = {}) {
+  if([id, name, url].some((x) => typeof x === "undefined")) {
+    console.error(`Cancelled creation of layer "${id}"(${name}) because of missing required parameters`);
+    return;
+  }
   const source = createLayerSource(url, {epsg, tileSize, zDirection, minZoom, maxZoom, extent, resolutions, origin, origins});
   const layer = new VectorTileLayer({id: id, name: name, minZoom: minZoom, maxZoom: maxZoom, source: source,
                                      declutter: true});

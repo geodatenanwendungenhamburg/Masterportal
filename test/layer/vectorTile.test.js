@@ -81,7 +81,8 @@ describe("vectorTile.js", function () {
         it("creates a vector Tile Layer", function () {
             const layerParams = {
                 name: "VT Test",
-                id: "VT_01"
+                id: "VT_01",
+                url: "https://example.org"
             };
             const layer = vectorTile.createLayer(layerParams);
 
@@ -90,13 +91,28 @@ describe("vectorTile.js", function () {
             expect(layer.get("name")).toEqual("VT Test");
             expect(layer.get("id")).toEqual("VT_01");
         });
+
+        it("should log an error when required param is missing", function() {
+            let spyConsole = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+            const layerParams = {
+                name: "VT Test",
+                id: "VT_01"
+            };
+            const layer = vectorTile.createLayer(layerParams);
+
+            expect(console.error).toHaveBeenCalled();
+            expect(spyConsole.mock.calls[0][0]).toContain('Cancelled creation of layer "VT_01"(VT Test) because of missing required parameters');
+            spyConsole.mockRestore();
+        })
     });
 
     describe("setStyle", function() {
         it("should apply a given style", function() {
             const layerParams = {
                 name: "VT Test",
-                id: "VT_01"
+                id: "VT_01",
+                url: "https://example.org"
             };
 
             const layer = vectorTile.createLayer(layerParams);
