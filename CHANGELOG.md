@@ -6,7 +6,7 @@
 ## Unreleased
 
 ### Added
-
+- 3D functions are added to olcsMap.js.
 ### Changed
 
 ### Removed

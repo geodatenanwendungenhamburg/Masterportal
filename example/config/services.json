@@ -47,7 +47,7 @@
  {
   "id" : "4001",
   "name" : "Gelaende",
-  "url" : "https://geoportal-hamburg.de/gdi3d/datasource-data/Gelaende",
+  "url" : "https://daten-hamburg.de/gdi3d/datasource-data/Gelaende ",
   "typ" : "Terrain3D",
   "cesiumTerrainProviderOptions" : {
      "requestVertexNormals" : true
@@ -56,7 +56,7 @@
   {
   "id" : "4002",
   "name" : "Gebäude LoD2",
-  "url" : "https://geoportal-hamburg.de/gdi3d/datasource-data/LoD2",
+  "url" : "https://daten-hamburg.de/gdi3d/datasource-data/LoD2",
   "typ" : "TileSet3D",
   "cesium3DTilesetOptions" : {
      "maximumScreenSpaceError" : 6

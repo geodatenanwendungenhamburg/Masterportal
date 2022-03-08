@@ -1,6 +1,6 @@
 import VectorLayer from "ol/layer/Vector";
 import GeoJSON from "ol/format/GeoJSON.js";
-import {setCustomStyles} from "./style";
+import style, {setCustomStyles} from "./style";
 
 
 import {createVectorSource, createClusterVectorSource} from "../vector";
@@ -48,6 +48,9 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
     }
     else if (rawLayer.style) {
         layer.setStyle(rawLayer.style);
+    }
+    else {
+        layer.setStyle(style);
     }
     return layer;
 }
