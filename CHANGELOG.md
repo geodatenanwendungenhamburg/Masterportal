@@ -7,7 +7,9 @@
 
 ### Added
 - 3D functions are added to olcsMap.js.
-- Previous gazetteer searches can now be aborted by means of an `AbortController`.
+- Gazetteer search:
+    - Previous gazetteer searches can now be aborted by means of an `AbortController`.
+    - Added the possibility to use the `geographicIdentifier` to display the search result.
 
 ### Changed
 - Gazetteer search:
@@ -19,6 +21,7 @@
 
 ### Fixed
 - The createVectorSource function now allows passing features as an argument.
+- `strassenname`, `hausnummer` and `hausnummernzusatz ` are now also processed if they are returned by the gazetteer as strings.
 
 ---
 
