@@ -3,7 +3,7 @@ import "ol/ol.css";
 import {Style, Stroke, Fill, Icon} from "ol/style.js";
 
 import * as mpapi from "../src";
-import abstractAPI from "../abstraction/api.js";
+import mapsAPI from "../src/maps/api.js";
 import {getLayerWhere} from "../src/rawLayerList";
 
 import services from "./config/services.json";
@@ -39,23 +39,23 @@ document.getElementById("enable").addEventListener("click", function () {
 
         load3DScript(lib, function Loaded3DCallback () {
             let terrainLayer = null, tilesetLayer = null;
-            const toRemove = ["2001", "2002", "1002", "3001"];         
+            const toRemove = ["2001", "2002", "1002", "3001"];
 
             layers2D.forEach(layer => {
                 const layerId = layer?.id || layer?.values_?.id;
                 if(toRemove.find(id => id === layerId)){
                     map2D.removeLayer(layer);
-                }               
+                }
             });
 
             const settings3D = {
                     "map2D": window.mpapi.map2D
                 },
-                map3D = abstractAPI.map.createMap(settings3D, "3D"),
+                map3D = mapsAPI.map.createMap(settings3D, "3D"),
                 rawLayerTerrain = getLayerWhere({id: "4001"}),
                 rawLayerTileset = getLayerWhere({id: "4002"}),
                 scene = map3D.getCesiumScene();
-            
+
              //set some options to Cesium scene
              scene.globe.enableLighting = true;
              scene.globe.tileCacheSize = 20;
@@ -70,7 +70,7 @@ document.getElementById("enable").addEventListener("click", function () {
 
             window.mpapi.map.setEnabled(true);
 
-            terrainLayer = mpapi.terrain.createLayer(rawLayerTerrain, window.mpapi.map);           
+            terrainLayer = mpapi.terrain.createLayer(rawLayerTerrain, window.mpapi.map);
             terrainLayer.setVisible(true, rawLayerTerrain, window.mpapi.map);
 
         });
@@ -96,7 +96,7 @@ const hamburgServicesUrl = "http://geoportal-hamburg.de/lgv-config/services-inte
         ...portalConfig,
         layerConf: services
     },
-    map2D = abstractAPI.map.createMap(config, "2D"),
+    map2D = mapsAPI.map.createMap(config, "2D"),
     layers2D = [];
 
 services.push(localService);
@@ -136,11 +136,7 @@ window.mpapi.map = map2D;
 
 ["2001", "2002", "1002", "3001"].forEach(id => window.mpapi.map.addLayer(id));
 map2D.getLayers().forEach(layer => {
-    layers2D.push(layer);       
-});
-
-map2D.getLayers().forEach(layer => {
-    layers2D.push(layer);       
+    layers2D.push(layer);
 });
 
 // */
@@ -150,7 +146,7 @@ document.getElementById("enable").style.display = "none";
 mpapi.rawLayerList.initializeLayerList(
     hamburgServicesUrl,
     conf => {
-        window.mpapi.map = abstractAPI.map.createMap({
+        window.mpapi.map = mapsAPI.map.createMap({
             ...portalConfig,
             layerConf: conf,
             layers: null
@@ -164,7 +160,7 @@ mpapi.rawLayerList.initializeLayerList(
 
 /* ASYNCHRONOUS EXAMPLE 2: work with createMap callback
 document.getElementById("enable").style.display = "none";
-window.mpapi.map = abstractAPI.map.createMap(
+window.mpapi.map = mapsAPI.map.createMap(
     {...portalConfig, layerConf: hamburgServicesUrl, layers: [
         { id: "6357" },
         { id: "453", transparency: 50 }

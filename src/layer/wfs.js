@@ -151,6 +151,50 @@ function onError (error, options = {}, failure) {
     failure(error);
     throw Error(error);
 }
+
+/**
+ * Checks the version of the wfs against allowed versions and returns the version.
+ * If the version is not allowed, 1.1.0 is returned.
+ * @param {rawLayer} rawLayer layer specification as in services.json
+ * @param {options} [options] additional options
+ * @returns {String} The allowed version.
+ */
+function getVersion (rawLayer, options) {
+    const allowedVersions = ["1.0.0", "1.1.0", "2.0.0"];
+    let version = options.version || rawLayer.version;
+
+    if (!allowedVersions.includes(version)) {
+        version = allowedVersions[1];
+        console.warn(`The WFS layer with the id: "${rawLayer.id}" is configured in version: ${version}.`
+        + ` OpenLayers accepts WFS only in the versions: ${allowedVersions},`
+        + ` It tries to load the layer with the id: "${rawLayer.id}" in version ${allowedVersions[1]}!`);
+    }
+
+    return version;
+}
+
+/**
+ * Creates the url for request wfs.
+ * A distinction is made between the wfs versions.
+ * @param {rawLayer} rawLayer layer specification as in services.json
+ * @param {String} version version of wfs
+ * @param {String} projection projection of wfs
+ * @param {String} bboxParam bbox loading strategy
+ * @returns {string} the url
+ */
+function createUrl (rawLayer, version, projection, bboxParam) {
+    let url = `${rawLayer.url}?service=WFS&version=${version}&request=GetFeature&srsName=${projection.getCode()}${bboxParam}`;
+
+    if (version === "1.0.0" || version === "1.1.0") {
+        url = `${url}&typeName=${rawLayer.featureType}`;
+    }
+    else if (version === "2.0.0") {
+        url = `${url}&typeNames=${rawLayer.featureType}`;
+    }
+
+    return url;
+}
+
 /**
  * Creates an ol/source element for the rawLayer by using a loader.
  * The 'featuresloadend' and 'featuresloaderror' events will be fired by using success and failure callbacks of the loader.
@@ -163,10 +207,10 @@ export function createLayerSource (rawLayer, options = {}) {
     if (!options.loadingStrategy) {
         options.loadingStrategy = bbox;
     }
-    const version = options.version || "1.1.0",
+
+    const version = getVersion(rawLayer, options),
         format = new WFS({
             featureNS: rawLayer.featureNS,
-            featureType: rawLayer.featureType,
             version: version
         });
     let source = null;
@@ -177,13 +221,13 @@ export function createLayerSource (rawLayer, options = {}) {
         }
         else {
             const bboxParam = options.loadingStrategy === bbox ? `&bbox=${extent.join(",")},${projection.getCode()}` : "";
-            let url = `${rawLayer.url}?service=WFS&version=${version}&request=GetFeature&typeName=${rawLayer.featureType}&srsName=${projection.getCode()}${bboxParam}`;
+            let url = createUrl(rawLayer, version, projection, bboxParam);
 
             if (options.loadingParams) {
                 for (const key in options.loadingParams) {
                     const option = Array.isArray(options.loadingParams[key]) ? options.loadingParams[key].join(",") : options.loadingParams[key];
 
-                    if (option !== undefined) {
+                    if (option !== undefined && option !== null && option !== "") {
                         url += `&${key}=${option}`;
                     }
                 }
@@ -191,7 +235,7 @@ export function createLayerSource (rawLayer, options = {}) {
             loadWFS(url, {}, source, {onErrorFn: onError, success, failure}, options);
         }
     }
-
+    format.featureType = rawLayer.featureType;
     source = createVectorSource(loader, options.loadingStrategy, format);
 
     if (options.beforeLoading) {
