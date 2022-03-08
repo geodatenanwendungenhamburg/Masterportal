@@ -1,6 +1,6 @@
 import {View} from "ol";
 import defaults from "../src/defaults";
-import {createMapView, chooseZoomOrResolution} from "../src/mapView";
+import {createMapView, chooseZoomOrResolution} from "../src/maps/mapView";
 
 jest.mock("ol");
 

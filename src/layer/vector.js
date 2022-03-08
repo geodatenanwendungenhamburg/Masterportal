@@ -10,7 +10,8 @@ import Cluster from "ol/source/Cluster.js";
  */
 export function createVectorSource (urlOrLoader, strategy, format) {
     let loader,
-        url;
+        url,
+        features;
 
     if (typeof urlOrLoader === "string") {
         url = urlOrLoader;
@@ -18,8 +19,15 @@ export function createVectorSource (urlOrLoader, strategy, format) {
     else if (typeof urlOrLoader === "function") {
         loader = urlOrLoader;
     }
+    else if (typeof urlOrLoader === "object") {
+        features = format.readFeatures(urlOrLoader, {
+            dataProjection: "EPSG:4326",
+            featureProjection: "EPSG:25832"
+        });
+    }
     return new VectorSource({
         loader,
+        features,
         url,
         strategy,
         format

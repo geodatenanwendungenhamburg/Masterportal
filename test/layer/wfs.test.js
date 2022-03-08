@@ -2,7 +2,7 @@ import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 import Cluster from "ol/source/Cluster.js";
 import {Style, Icon} from "ol/style.js";
-import map from "../../abstraction/map.js";
+import map from "../../src/maps/map.js";
 import defaults from "../../src/defaults";
 import {WFS} from "ol/format.js";
 import * as wfs from "../../src/layer/wfs";
@@ -20,13 +20,23 @@ jest.mock("../../src/rawLayerList.js", () => {
 describe("wfs.js", function () {
     describe("createLayer", function () {
         it("creates a VectorLayer without id", function () {
-            const layer = wfs.createLayer();
+            const layer = wfs.createLayer({version: "1.1.0"});
 
             expect(layer).toBeInstanceOf(VectorLayer);
             expect(layer.getSource()).toBeInstanceOf(VectorSource);
         });
+        it("creates a VectorLayer without id and version", function () {
+            const warn = jest.spyOn(console, "warn").mockImplementation(() => ""),
+                layer = wfs.createLayer();
+
+            expect(layer).toBeInstanceOf(VectorLayer);
+            expect(layer.getSource()).toBeInstanceOf(VectorSource);
+            expect(warn).toHaveBeenCalled();
+
+            warn.mockReset();
+        });
         it("creates a VectorLayer with source", function () {
-            const layer = wfs.createLayer({id: "id"});
+            const layer = wfs.createLayer({id: "id", version: "1.1.0"});
 
             expect(layer).toBeInstanceOf(VectorLayer);
             expect(layer.get("id")).toEqual("id");
@@ -44,7 +54,7 @@ describe("wfs.js", function () {
 
                 return [icon];
             }
-            const layer = wfs.createLayer({id: "id", style: styleFunction});
+            const layer = wfs.createLayer({id: "id", style: styleFunction, version: "1.1.0"});
 
             expect(layer).toBeInstanceOf(VectorLayer);
             expect(layer.get("id")).toEqual("id");
@@ -60,7 +70,7 @@ describe("wfs.js", function () {
                     name: "name",
                     layers: "layer1, layer2"
                 },
-                layer = wfs.createLayer({id: "id"}, {layerParams});
+                layer = wfs.createLayer({id: "id", version: "1.1.0"}, {layerParams});
 
             expect(layer).toBeInstanceOf(VectorLayer);
             expect(layer.get("id")).toEqual("id");
@@ -87,7 +97,7 @@ describe("wfs.js", function () {
                     name: "name",
                     layers: "layer1, layer2"
                 },
-                layer = wfs.createLayer({id: "id"}, {layerParams, options});
+                layer = wfs.createLayer({id: "id", version: "2.0.0"}, {layerParams, options});
 
             expect(layer).toBeInstanceOf(VectorLayer);
             expect(layer.get("id")).toEqual("id");
@@ -129,7 +139,8 @@ describe("wfs.js", function () {
                     id: "id",
                     url: url,
                     featureNS: "http://www.deegree.org/app",
-                    featureType: "krankenhaeuser_hh"
+                    featureType: "krankenhaeuser_hh",
+                    version: "2.0.0"
                 },
                 beforeLoadingMock = jest.fn(),
                 afterLoadingMock = jest.fn(),
@@ -191,7 +202,8 @@ describe("wfs.js", function () {
                     id: "id",
                     url: url,
                     featureNS: "http://www.deegree.org/app",
-                    featureType: "krankenhaeuser_hh"
+                    featureType: "krankenhaeuser_hh",
+                    version: "1.0.0"
                 },
                 beforeLoadingMock = jest.fn(),
                 afterLoadingMock = jest.fn(),
@@ -243,7 +255,8 @@ describe("wfs.js", function () {
                     id: "id",
                     url: url,
                     featureNS: "http://www.deegree.org/app",
-                    featureType: "krankenhaeuser_hh"
+                    featureType: "krankenhaeuser_hh",
+                    version: "2.0.0"
                 },
                 onLoadingErrorMock = jest.fn(),
                 options = {
@@ -285,7 +298,8 @@ describe("wfs.js", function () {
                     url: url,
                     featureNS: "http://www.deegree.org/app",
                     featureType: "krankenhaeuser_hh",
-                    clusterDistance: 60
+                    clusterDistance: 60,
+                    version: "1.1.0"
                 },
                 beforeLoadingMock = jest.fn(),
                 afterLoadingMock = jest.fn(),

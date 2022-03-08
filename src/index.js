@@ -1,4 +1,4 @@
-import {createMapView} from "./mapView";
+import {createMapView} from "./maps/mapView";
 import * as crs from "./crs";
 import * as rawLayerList from "./rawLayerList";
 import * as wms from "./layer/wms";
