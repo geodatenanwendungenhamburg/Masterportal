@@ -10,6 +10,7 @@
 - Gazetteer search:
     - Previous gazetteer searches can now be aborted by means of an `AbortController`.
     - Added the possibility to use the `geographicIdentifier` to display the search result.
+- A new layer typ OAF (OGC API features) is implemented and integrated into MaterportalAPI
 
 ### Changed
 - Gazetteer search:

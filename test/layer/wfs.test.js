@@ -236,8 +236,8 @@ describe("wfs.js", function () {
         });
         it("creates a VectorSource and onLoadingError is called", function () {
             global.fetch = jest.fn().mockImplementationOnce(() => {
-                return new Promise((_g, reject) => {
-                    reject({
+                return new Promise((resolve) => {
+                    resolve({
                         ok: false,
                         status: 404,
                         text: () => {
@@ -249,8 +249,7 @@ describe("wfs.js", function () {
             // to reset show error on load in console when testing 'onLoadingError'
             console.error = jest.fn();
 
-            const map2D = map.createMap(defaults),
-                url = "https://url.de",
+            const url = "https://url.de",
                 rawLayer = {
                     id: "id",
                     url: url,
@@ -263,10 +262,6 @@ describe("wfs.js", function () {
                     onLoadingError: onLoadingErrorMock
                 },
                 layer = wfs.createLayer(rawLayer, {options});
-
-            layer.getSource().loadFeatures([-10000, -10000, 10000, 10000],
-                1,
-                map2D.getView().getProjection());
 
             expect(layer).toBeInstanceOf(VectorLayer);
             expect(layer.get("id")).toEqual("id");
