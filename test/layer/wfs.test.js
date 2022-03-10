@@ -7,7 +7,7 @@ import defaults from "../../src/defaults";
 import {WFS} from "ol/format.js";
 import * as wfs from "../../src/layer/wfs";
 import {featureCollection} from "./resources/wfsFeatures";
-import {wfsFilterQuery} from "./resources/wfsFeatures";
+import {wfsFilterQuery} from "./resources/wfsFilter";
 
 jest.mock("../../src/rawLayerList.js", () => {
     const original = jest.requireActual("../../src/rawLayerList.js");
@@ -236,8 +236,9 @@ describe("wfs.js", function () {
         });
         it("creates a VectorSource and onLoadingError is called", function () {
             global.fetch = jest.fn().mockImplementationOnce(() => {
-                return new Promise((_g, reject) => {
-                    reject({
+                // NOTE: fetch only rejects if a network error occurs, which do not apply to 4xx or 5xx http codes.
+                return new Promise((resolve) => {
+                    resolve({
                         ok: false,
                         status: 404,
                         text: () => {

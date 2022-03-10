@@ -31,16 +31,15 @@ import {createVectorSource, createClusterVectorSource} from "./vector";
  */
 
 /**
-  * Returns the 'onError' function if response is not ok
   * @param {object} response of the request
   * @param {function} onErrorFn Calls options.onLoadingError and 'featuresloaderror' event will be fired by using failure callback.
   * @param {options} [options] additional options
   * @param {function} failure failure callback to ol.VectorLayer, fires 'featuresloaderror' event
-  * @returns {void}
+  * @returns {function | object} Returns the 'onError' function if response is not ok, otherwise the response object.
   */
 function handleErrors (response, onErrorFn, options, failure) {
     if (!response.ok) {
-        return onErrorFn(`Request to wfs-filter failed. Response status is ${response.statusText}`, options, failure);
+        return onErrorFn(`Request to wfs-filter failed. Response status is ${response.status}`, options, failure);
     }
     return response;
 }
@@ -91,6 +90,8 @@ function getFilterRequestParams (payload) {
  * Loads the WFS.
  * Filters the features after load, if options.featuresFilter is given.
  * Adds the features to the source.
+ * Errors are thrown through onErrorFn or if a network issue occurs.
+ *
  * @param {string} url url to load features from
  * @param {object} params extra loading parameters
  * @param {ol.source.VectorSource} source the vector source
@@ -108,13 +109,15 @@ function loadWFS (url, params, source, {onErrorFn, success, failure}, options) {
         .then(responseString => source.getFormat().readFeatures(responseString))
         .then(features => onLoad(source, features, onErrorFn, success, failure, options))
         .catch((error) => {
-            onErrorFn(error, options, failure);
+            console.error(error);
         });
 }
 /**
  * Loads the WFS filter. The content of the filter file will be sent to the wfs server as POST request.
  * Filters the features after load, if options.featuresFilter is given.
  * Adds the features to the source.
+ * Errors are thrown through onErrorFn or if a network issue occurs.
+ *
  * @param {string} filter xml resource as wfs filter
  * @param {string} url url to load features from
  * @param {ol.source.VectorSource} source the vector source
@@ -131,7 +134,7 @@ function loadWFSFilter (filter, url, source, {onErrorFn, success, failure}, opti
         .then((response) => response.text())
         .then((payload) => loadWFS(url, getFilterRequestParams(payload), source, {onErrorFn, success, failure}, options))
         .catch((error) => {
-            onErrorFn(error, options, failure);
+            console.error(error);
         });
 }
 /**
@@ -144,7 +147,6 @@ function loadWFSFilter (filter, url, source, {onErrorFn, success, failure}, opti
  * @returns {void}
  */
 function onError (error, options = {}, failure) {
-    console.error(error);
     if (options.onLoadingError) {
         options.onLoadingError(error);
     }
