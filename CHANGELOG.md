@@ -7,7 +7,9 @@
 
 ### Added
 - 3D functions are added to olcsMap.js.
+
 ### Changed
+- Change required node version to `^16.13.2`.
 
 ### Removed
 
