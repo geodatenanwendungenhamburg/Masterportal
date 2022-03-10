@@ -21,7 +21,7 @@
 
 ### Fixed
 - The createVectorSource function now allows passing features as an argument.
-- `strassenname`, `hausnummer` and `hausnummernzusatz ` are now also processed if they are returned by the gazetteer as strings.
+- Gazetteer search: `strassenname`, `hausnummer` and `hausnummernzusatz ` are now also processed if they are returned by the gazetteer as strings.
 
 ---
 
