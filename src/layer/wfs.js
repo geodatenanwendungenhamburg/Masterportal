@@ -69,6 +69,7 @@ function onLoad (source, features, onErrorFn, success, failure, options = {}) {
         success(filteredFeatures);
     }
     catch (error) {
+        console.error(error);
         onErrorFn(error, options, failure);
     }
 }
