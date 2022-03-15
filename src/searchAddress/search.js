@@ -4,6 +4,8 @@ import {parse} from "./parse";
 import {searchTypes} from "./types";
 import {searchGazetteer} from "./searchGazetteer";
 
+let abortController = null;
+
 /**
  * Chains gazetteer request and response parser.
  * @param {string} type from searchTypes
@@ -13,7 +15,7 @@ import {searchGazetteer} from "./searchGazetteer";
  */
 function searchAndParse (type, values) {
     return new Promise((resolve, reject) => {
-        searchGazetteer(type, values)
+        searchGazetteer(type, values, abortController)
             .then(results => {
                 const parsed = parse(type, results);
 
@@ -33,7 +35,7 @@ function searchAndParse (type, values) {
  */
 function searchAndParseStreetAndHouseNumber (searchstring, searchHouseNumbers) {
     return new Promise((resolve, reject) => {
-        searchGazetteer(searchTypes.STREET, searchstring)
+        searchGazetteer(searchTypes.STREET, searchstring, abortController)
             .then(streetResults => parse(searchTypes.STREET, streetResults))
             .then(parsedStreetResults => {
                 const allSearches = [];
@@ -69,9 +71,15 @@ function searchAndParseStreetAndHouseNumber (searchstring, searchHouseNumbers) {
  * @param {boolean} [params.searchParcels = false] set true to search for parcels
  * @param {boolean} [params.searchStreetKey = false] set true to search for street keys
  * @param {boolean} [params.minCharacters = 3] minimum length of searchstring
+ * @param {boolean} [abortPreviousSearch = false] if true the previous search is aborted
  * @returns {Promise<SearchResult[]>} resolves array of search results; rejects without value if search was canceled internally
  */
-export function search (searchstring, params) {
+export function search (searchstring, params, abortPreviousSearch = false) {
+    if (abortPreviousSearch && abortController !== null) {
+        abortController.abort();
+    }
+    abortController = new AbortController();
+
     return new Promise((resolve, reject) => {
         const {
                 map,

@@ -62,29 +62,30 @@ describe("searchAddress", function () {
             jest.clearAllMocks(); // reset mock calls
 
             const searches = [
-                search("Address 7", {searchAddress: true}),
-                search("Address 7b", {searchAddress: true}),
-                search("Streetname", {searchStreets: true}),
-                search("StreetnameAndHnrs", {searchStreets: true, searchHouseNumbers: true}),
-                search("Districtname", {searchDistricts: true}),
-                search("1234/1234", {searchParcels: true}),
-                search("12345678", {searchParcels: true}),
-                search("A12345", {searchStreetKey: true})
-            ];
+                    search("Address 7", {searchAddress: true}),
+                    search("Address 7b", {searchAddress: true}),
+                    search("Streetname", {searchStreets: true}),
+                    search("StreetnameAndHnrs", {searchStreets: true, searchHouseNumbers: true}),
+                    search("Districtname", {searchDistricts: true}),
+                    search("1234/1234", {searchParcels: true}),
+                    search("12345678", {searchParcels: true}),
+                    search("A12345", {searchStreetKey: true})
+                ],
+                abortController = new AbortController();
 
             Promise.all(searches)
                 .then(results => {
                     // order of calls may vary, hence using expect.arrayContaining
                     const expected = [
-                        [types.ADDRESS_UNAFFIXED, ["Address", "7"]],
-                        [types.ADDRESS_AFFIXED, ["Address", "7", "b"]],
-                        [types.STREET, "Streetname"],
-                        [types.STREET, "StreetnameAndHnrs"],
-                        [types.HOUSE_NUMBERS_FOR_STREET, "Bargkoppelweg"],
-                        [types.DISTRICT, "Districtname"],
-                        [types.PARCEL, ["1234", "1234"]],
-                        [types.PARCEL, ["1234", "5678"]],
-                        [types.STREET_KEY, "A12345"]
+                        [types.ADDRESS_UNAFFIXED, ["Address", "7"], abortController],
+                        [types.ADDRESS_AFFIXED, ["Address", "7", "b"], abortController],
+                        [types.STREET, "Streetname", abortController],
+                        [types.STREET, "StreetnameAndHnrs", abortController],
+                        [types.HOUSE_NUMBERS_FOR_STREET, "Bargkoppelweg", abortController],
+                        [types.DISTRICT, "Districtname", abortController],
+                        [types.PARCEL, ["1234", "1234"], abortController],
+                        [types.PARCEL, ["1234", "5678"], abortController],
+                        [types.STREET_KEY, "A12345", abortController]
                     ];
 
                     expect(results[0]).toHaveLength(1);
