@@ -18,7 +18,8 @@
     - In the `"gazetteerUrl"` attribute the `service`, `request` and `version` URL parameters must now be specified. The default value has been changed from `"https://geodienste.hamburg.de/HH_WFS_GAGES"` to `"https://geodienste.hamburg.de/HH_WFS_GAGES?service=WFS&request=GetFeature&version=2.0.0"`.
 - The following packages have been updated
     - ol: from 6.11.0 to version 6.13.0
-- Change required node version to `^16.13.2`.
+- Changed required node version to `^16.13.2`.
+- Changed required npm version to `^8.1.2`.
 
 ### Removed
 
