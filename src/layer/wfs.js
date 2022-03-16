@@ -169,7 +169,10 @@ export function createLayerSource (rawLayer, options = {}) {
                 for (const key in options.loadingParams) {
                     const option = Array.isArray(options.loadingParams[key]) ? options.loadingParams[key].join(",") : options.loadingParams[key];
 
-                    if (option !== undefined && option !== null && option !== "") {
+                    if (option !== undefined && key === "bbox") {
+                        url += `&${key}=${option},${projection.getCode()}`;
+                    }
+                    else if (option !== undefined) {
                         url += `&${key}=${option}`;
                     }
                 }
