@@ -26,6 +26,7 @@ import {getVersion, onError, onLoad} from "../lib/wfsUtil";
  * @property {function} afterLoading - function called after loading, gets parameter features
  * @property {function} featuresFilter - function called after loading to filter features, gets parameter features
  * @property {function} wfsFilter -  xml resource as wfs filter, the content of the filter file will be sent to the wfs server as POST request
+ * @property {function} doNotLoadInitially - default false, if set to true the layer will be initialized without network call, an empty array of features is promoted - this is useful to add features later on (e.g. by filtering) to a full functional but initially empty layer
  * @property {function} clusterGeometryFunction -  used in cluster source. Returns the geometry of the cluster, gets parameter feature
  * @property {function} style - style function to style the layer
  * @property {object} loadingParams - added as params to url
@@ -154,7 +155,10 @@ export function createLayerSource (rawLayer, options = {}) {
     let source = null;
 
     function loader (extent, resolution, projection, success, failure) {
-        if (options.wfsFilter) {
+        if (options.doNotLoadInitially) {
+            onLoad(source, [], onError, success, failure, options);
+        }
+        else if (options.wfsFilter) {
             loadWFSFilter(options.wfsFilter, rawLayer.url, source, {onErrorFn: onError, success, failure}, options);
         }
         else {

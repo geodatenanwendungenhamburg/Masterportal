@@ -1,4 +1,4 @@
-import {getOutputFormat, getParsedResponse} from "../../src/lib/oafUtil";
+import {getOutputFormat, getParsedResponse, getParamsUrl} from "../../src/lib/oafUtil";
 
 describe("oafUtil.js", function () {
     describe("getOutputFormat", function () {
@@ -31,6 +31,27 @@ describe("oafUtil.js", function () {
             expect(parsedString).toContain("gml:");
             expect(parsedString).toEqual(expect.not.stringContaining("sf:"));
             expect(parsedString).toEqual(expect.not.stringContaining("http://www.opengis.net/gml/3.2"));
+        });
+    });
+
+    describe("getParamsUrl", function () {
+        const params = {
+            "anzahl_schueler": ">1000",
+            "bezirk": "Bergedorf"
+        };
+
+        it("should return the parsed paramsUrl", function () {
+            expect(getParamsUrl(params)).toEqual("&anzahl_schueler=>1000&bezirk=Bergedorf");
+        });
+
+        it("should return an empty string", function () {
+            expect(getParamsUrl("string")).toEqual("");
+            expect(getParamsUrl(0)).toEqual("");
+            expect(getParamsUrl(null)).toEqual("");
+            expect(getParamsUrl(undefined)).toEqual("");
+            expect(getParamsUrl(true)).toEqual("");
+            expect(getParamsUrl([])).toEqual("");
+            expect(getParamsUrl({})).toEqual("");
         });
     });
 });

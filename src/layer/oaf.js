@@ -5,7 +5,7 @@ import GeoJSON from "ol/format/GeoJSON.js";
 
 import {createVectorSource, createClusterVectorSource} from "./vector";
 import {getVersion, onError, onLoad} from "../lib/wfsUtil";
-import {getParsedResponse, getOutputFormat} from "../lib/oafUtil";
+import {getParsedResponse, getOutputFormat, getParamsUrl} from "../lib/oafUtil";
 
 /**
  * Layer specification as in services.json.
@@ -139,6 +139,7 @@ function createUrl (rawLayer) {
     url += "crs=" + encodeURIComponent(typeof rawLayer.crs === "string" && rawLayer.crs !== "" ? rawLayer.crs : crsDefault) + "&";
     url += typeof rawLayer.datetime === "string" && rawLayer.datetime !== "" ? "datetime=" + rawLayer.datetime + "&" : "";
     url += typeof rawLayer.outputFormat === "string" ? "f=" + rawLayer.outputFormat : "f=" + jsonDefault;
+    url += getParamsUrl(rawLayer.params);
 
     return url;
 }

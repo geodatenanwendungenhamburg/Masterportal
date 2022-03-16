@@ -77,6 +77,10 @@
         "bbox": "",
         "bboxCrs": "",
         "datetime": "",
-        "crs": "EPSG:25832"
+        "crs": "EPSG:25832",
+        "params": {
+            "anzahl_schueler": ">1000",
+            "bezirk": "Bergedorf"
+        }
     }
 ]
