@@ -1,4 +1,4 @@
-# masterportalAPI
+# masterportalapi
 
 The masterportalAPI is an API to include and show map-content on your webpage. It's based on OpenLayers and extended with functions to easily use configuration and infrastructure files from the masterportal, a feature-rich mapping app developed by geowerkstatt hamburg. It also provides the creation of a 3d map by using olcs and cesium. Check masterportal.org for further information.
 

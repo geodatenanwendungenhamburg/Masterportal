@@ -3,7 +3,7 @@
   "author": "Implementierungspartnerschaft Masterportal <info@masterportal.org> (https://www.masterportal.org)",
   "version": "2.0.0",
   "license": "MIT",
-  "description": "Basic functions of the Masterportal as API",
+  "description": "Basic functions of the Masterportal as api",
   "repository": {
     "type": "git",
     "url": "git+https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git"
