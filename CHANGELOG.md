@@ -3,8 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased
-
+## 2.0.0 - 2022-03-18
 ### Added
 - 3D functions are added to olcsMap.js.
 - Gazetteer search:
@@ -23,8 +22,6 @@
     - ol: from 6.11.0 to version 6.13.0
 - Changed required node version to `^16.13.2`.
 - Changed required npm version to `^8.1.2`.
-
-### Removed
 
 ### Fixed
 - The createVectorSource function now allows passing features as an argument.

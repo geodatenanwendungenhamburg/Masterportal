@@ -1,7 +1,7 @@
 {
   "name": "masterportalapi",
   "author": "Implementierungspartnerschaft Masterportal <info@masterportal.org> (https://www.masterportal.org)",
-  "version": "1.10.0",
+  "version": "2.0.0",
   "license": "MIT",
   "description": "Basic functions of the Masterportal as API",
   "repository": {
