@@ -4,7 +4,7 @@ The masterportalAPI is an API to include and show map-content on your webpage. I
 
 ## Usage
 
-Install the masterportalAPI in your project with ``npm install git+https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git``. The project does not have a default export, but various named exports. Generate and check the documentation as described below for details.
+Install the masterportalAPI in your project with ``npm install masterportalapi``. The project does not have a default export, but various named exports. Generate and check the documentation as described below for details.
 
 If you want to create a 3d map, you have to provide the peer dependency cesium.
 

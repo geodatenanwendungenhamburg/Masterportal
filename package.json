@@ -55,5 +55,8 @@
   "directories": {
     "example": "example",
     "test": "test"
+  },
+  "bugs": {
+    "url": "https://bitbucket.org/geowerkstatt-hamburg/masterportalapi/issues"
   }
 }
