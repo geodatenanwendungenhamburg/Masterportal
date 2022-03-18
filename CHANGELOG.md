@@ -3,6 +3,18 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+### Fixed
+
+---
+
 ## 2.0.0 - 2022-03-18
 ### Added
 - 3D functions are added to olcsMap.js.
