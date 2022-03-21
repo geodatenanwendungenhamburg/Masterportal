@@ -7,7 +7,7 @@ import defaults from "../../src/defaults";
 import {WFS} from "ol/format.js";
 import * as wfs from "../../src/layer/wfs";
 import {featureCollection} from "./resources/wfsFeatures";
-import {wfsFilterQuery} from "./resources/wfsFeatures";
+import {wfsFilterQuery} from "./resources/wfsFilter";
 
 jest.mock("../../src/rawLayerList.js", () => {
     const original = jest.requireActual("../../src/rawLayerList.js");
@@ -170,6 +170,57 @@ describe("wfs.js", function () {
                 expect(afterLoadingMock.mock.calls.length).toBe(1);
             });
         });
+        it("creates a VectorSource with doNotLoadInitially", function () {
+            global.fetch = jest.fn().mockImplementationOnce(() => {
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        text: () => {
+                            return featureCollection;
+                        }
+                    });
+                });
+            });
+
+            const map2D = map.createMap(defaults),
+                url = "https://url.de",
+                rawLayer = {
+                    id: "id",
+                    url: url,
+                    featureNS: "http://www.deegree.org/app",
+                    featureType: "krankenhaeuser_hh",
+                    version: "2.0.0"
+                },
+                beforeLoadingMock = jest.fn(),
+                afterLoadingMock = jest.fn(),
+                featuresFilterMock = jest.fn((features) => features),
+                // jest.fn().mockReturnValueOnce(10),
+                options = {
+                    doNotLoadInitially: true,
+                    beforeLoading: beforeLoadingMock,
+                    afterLoading: afterLoadingMock,
+                    featuresFilter: featuresFilterMock
+                },
+                layer = wfs.createLayer(rawLayer, {options});
+
+            layer.getSource().loadFeatures([-10000, -10000, 10000, 10000],
+                1,
+                map2D.getView().getProjection());
+
+            expect(layer).toBeInstanceOf(VectorLayer);
+            expect(layer.get("id")).toEqual("id");
+            expect(layer.getSource()).toBeInstanceOf(VectorSource);
+            expect(layer.getSource().getFormat()).toBeInstanceOf(WFS);
+            // eslint-disable-next-line no-underscore-dangle
+            expect(typeof layer.getSource().loader_).toEqual("function");
+            expect(beforeLoadingMock.mock.calls.length).toBe(1);
+
+            layer.getSource().on("featuresloadend", function () {
+                expect(featuresFilterMock.mock.calls.length).toBe(1);
+                expect(afterLoadingMock.mock.calls.length).toBe(1);
+            });
+        });
         it("creates a VectorSource with wfsFilter", function () {
             let secondFetchCalled = false;
 
@@ -236,8 +287,9 @@ describe("wfs.js", function () {
         });
         it("creates a VectorSource and onLoadingError is called", function () {
             global.fetch = jest.fn().mockImplementationOnce(() => {
-                return new Promise((_g, reject) => {
-                    reject({
+                // NOTE: fetch only rejects if a network error occurs, which do not apply to 4xx or 5xx http codes.
+                return new Promise((resolve) => {
+                    resolve({
                         ok: false,
                         status: 404,
                         text: () => {

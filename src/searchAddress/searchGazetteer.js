@@ -1,9 +1,6 @@
 import {getGazetteerUrl} from "./gazetteerUrl";
 import {searchTypes} from "./types";
 
-// query-string snippet
-const featureQuery = "?service=WFS&request=GetFeature&version=2.0.0";
-
 /**
  * Encodes given string(s) to be usable as URI component.
  * @param {(string[]|string)} v value(s) to encode
@@ -37,18 +34,19 @@ export function getIdQuery (key, v) {
  * Retrieves xml text for a gazetteer search.
  * @param {string} key internal name for query froms searchTypes
  * @param {(string[]|string)} value value to search for
+ * @param {AbortController} abortController the controller to abort the search
  * @returns {Promise<string>} xhr response text
  * @ignore
  */
-export function searchGazetteer (key, value) {
+export function searchGazetteer (key, value, abortController) {
     return new Promise((resolve, reject) => {
-        const url = getGazetteerUrl() + featureQuery + getIdQuery(key, value),
-            xhr = new XMLHttpRequest();
+        const url = getGazetteerUrl() + getIdQuery(key, value);
 
-        xhr.timeout = 6000;
-        xhr.onload = () => resolve(xhr.responseText);
-        xhr.onerror = (e) => reject(e);
-        xhr.open("GET", url);
-        xhr.send();
+        fetch(url, {
+            signal: abortController?.signal,
+            timeout: 6000
+        })
+            .then(response => resolve(response.text()))
+            .catch(error => reject(error));
     });
 }

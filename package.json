@@ -1,16 +1,12 @@
 {
-  "name": "masterportalAPI",
-  "author": {
-    "name": "Implementierungspartnerschaft Masterportal",
-    "email": "info@masterportal.org",
-    "url": "https://www.masterportal.org"
-  },
-  "version": "1.10.0",
+  "name": "masterportalapi",
+  "author": "Implementierungspartnerschaft Masterportal <info@masterportal.org> (https://www.masterportal.org)",
+  "version": "2.0.0",
   "license": "MIT",
-  "description": "Grundfunktionen des Masterportals als API",
+  "description": "Basic functions of the Masterportal as api",
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git"
+    "url": "git+https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git"
   },
   "main": "src/index.js",
   "scripts": {
@@ -24,7 +20,7 @@
   },
   "dependencies": {
     "core-js": "^3.16.1",
-    "ol": "6.11.0",
+    "ol": "6.13.0",
     "olcs": "^2.13.0",
     "proj4": "^2.7.5",
     "xml2js": "^0.4.23"
@@ -33,21 +29,34 @@
     "@babel/core": "^7.16.7",
     "@babel/plugin-transform-modules-commonjs": "^7.16.8",
     "@parcel/transformer-sass": "^2.2.0",
+    "buffer": "^6.0.3",
     "canvas": "^2.8.0",
     "eslint": "^7.32.0",
+    "events": "^3.3.0",
+    "husky": "^7.0.1",
     "jest": "^27.4.0",
     "jest-canvas-mock": "^2.3.1",
     "jsdoc": "^3.6.7",
     "parcel": "^2.2.0",
+    "process": "^0.11.10",
     "regenerator-runtime": "0.13.9",
     "sass": "^1.37.5",
-    "husky": "^7.0.1"
+    "stream-browserify": "^3.0.0",
+    "timers-browserify": "^2.0.12"
   },
   "peerDependencies": {
     "cesium": "^1.88.0"
   },
   "engines": {
-    "node": ">= 10.18.0",
-    "npm": ">= 6.13.4"
+    "node": "^16.13.2",
+    "npm": "^8.1.2"
+  },
+  "homepage": "https://bitbucket.org/geowerkstatt-hamburg/masterportalapi#readme",
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "bugs": {
+    "url": "https://bitbucket.org/geowerkstatt-hamburg/masterportalapi/issues"
   }
 }

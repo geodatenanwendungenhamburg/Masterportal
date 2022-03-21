@@ -47,7 +47,7 @@
  {
   "id" : "4001",
   "name" : "Gelaende",
-  "url" : "https://geoportal-hamburg.de/gdi3d/datasource-data/Gelaende",
+  "url" : "https://daten-hamburg.de/gdi3d/datasource-data/Gelaende ",
   "typ" : "Terrain3D",
   "cesiumTerrainProviderOptions" : {
      "requestVertexNormals" : true
@@ -56,10 +56,31 @@
   {
   "id" : "4002",
   "name" : "Gebäude LoD2",
-  "url" : "https://geoportal-hamburg.de/gdi3d/datasource-data/LoD2",
+  "url" : "https://daten-hamburg.de/gdi3d/datasource-data/LoD2",
   "typ" : "TileSet3D",
   "cesium3DTilesetOptions" : {
      "maximumScreenSpaceError" : 6
     }
-  }
+  },
+    {
+        "id": "5001",
+        "name": "Schulen",
+        "url": "https://api.hamburg.de/datasets/v1/schulen",
+        "featureNS" : "http://www.deegree.org/app",
+        "featureType" : "staatliche_schulen",
+        "version" : "1.1.0",
+        "typ": "OAF",
+        "outputFormat" : "xml",
+        "limit": 10,
+        "offset": 0,
+        "bulk": false,
+        "bbox": "",
+        "bboxCrs": "",
+        "datetime": "",
+        "crs": "EPSG:25832",
+        "params": {
+            "anzahl_schueler": ">1000",
+            "bezirk": "Bergedorf"
+        }
+    }
 ]
