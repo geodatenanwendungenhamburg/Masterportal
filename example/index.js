@@ -30,7 +30,7 @@ document.getElementById("enable").addEventListener("click", function () {
         window.mpapi.map.setEnabled(false);
         window.mpapi.map = window.mpapi.map2D;
         document.getElementById("layer-visibility").style.display = "none";
-        ["1001", "2001", "2002", "1002", "3001"].forEach(id => window.mpapi.map.addLayer(id));
+        ["1001", "2001", "2002", "1002", "3001", "5001"].forEach(id => window.mpapi.map.addLayer(id));
     }
     else {
         const lib = portalConfig.cesiumLib ? portalConfig.cesiumLib : "https://geoportal-hamburg.de/mastercode/cesium/1_88/Cesium.js";
@@ -39,7 +39,7 @@ document.getElementById("enable").addEventListener("click", function () {
 
         load3DScript(lib, function Loaded3DCallback () {
             let terrainLayer = null, tilesetLayer = null;
-            const toRemove = ["2001", "2002", "1002", "3001"];
+            const toRemove = ["2001", "2002", "1002", "3001", "5001"];
 
             layers2D.forEach(layer => {
                 const layerId = layer?.id || layer?.values_?.id;
@@ -131,10 +131,26 @@ const styleWfs = function (feature, resolution) {
 services.find(({id}) => id === "3001").style = styleWfs;
 // */
 
+
+// eslint-disable-next-line
+const styleOaf = function (feature, resolution) {
+    const icon = new Style({
+        image: new Icon({
+            src: "https://geodienste.hamburg.de/lgv-config/img/gymnasien.svg",
+            scale: 0.5,
+            opacity: 1
+        })
+    });
+
+    return [icon];
+};
+
+services.find(({id}) => id === "5001").style = styleOaf;
+
 //* SYNCHRONOUS EXAMPLE: layerConf is known
 window.mpapi.map = map2D;
 
-["2001", "2002", "1002", "3001"].forEach(id => window.mpapi.map.addLayer(id));
+["2001", "2002", "1002", "3001", "5001"].forEach(id => window.mpapi.map.addLayer(id));
 map2D.getLayers().forEach(layer => {
     layers2D.push(layer);
 });

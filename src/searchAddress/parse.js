@@ -1,6 +1,7 @@
 import xml2js from "xml2js";
 
 import {searchTypes} from "./types";
+import {getShowGeographicIdentifier} from "./showGeographicIdentifier";
 
 /**
  * Flattens xml2js result a little to avoid unnecessary one-element arrays.
@@ -56,6 +57,21 @@ function getAllPropertiesFlat (entry) {
 }
 
 /**
+ * Parses coordinates from wkt string.
+ * @param {string} wkt position as wkt
+ * @returns {string} position as coordinates
+ */
+function parseCoordinatesFromWkt (wkt) {
+    let pos = [];
+
+    if (wkt.startsWith("POINT")) {
+        pos = wkt.split(")")[0]?.split("(")[1];
+    }
+
+    return pos;
+}
+
+/**
  * Parses result entries; uses type-specific rules to determine name/geometry.
  * @param {object} entry xml2js-parsed result entry
  * @param {string} type type string
@@ -64,40 +80,57 @@ function getAllPropertiesFlat (entry) {
  */
 function parseEntry (entry, type) {
     const searchResult = {
-            type,
-            properties: getAllPropertiesFlat(entry)
-        },
-        pos = findKey(searchResult.properties, "pos")[0],
-        posList = findKey(searchResult.properties, "posList")[0];
+        type,
+        properties: getAllPropertiesFlat(entry)
+    };
+    let pos = searchResult.properties?.pos ? parseCoordinatesFromWkt(searchResult.properties.pos) : findKey(searchResult.properties, "pos")[0],
+        hausnummer = "",
+        hausnummernzusatz = "",
+        strassenname = "";
 
     // setting name
     switch (type) {
         case searchTypes.DISTRICT:
-            searchResult.name = searchResult.properties.geographicIdentifier._;
+            searchResult.name = searchResult.properties.geographicIdentifier?._ ? searchResult.properties.geographicIdentifier._ : searchResult.properties.geographicIdentifier;
             break;
         case searchTypes.STREET_KEY:
         case searchTypes.STREET:
-            searchResult.name = searchResult.properties.strassenname;
+            if (searchResult.properties?.position_strassenachse) {
+                pos = findKey(searchResult.properties?.position_strassenachse, "pos")[0];
+            }
+            searchResult.name = getShowGeographicIdentifier() ? searchResult.properties.geographicIdentifier._ : searchResult.properties.strassenname;
             break;
         case searchTypes.PARCEL:
             searchResult.name = `${searchResult.properties.gemarkung}/${searchResult.properties.flurstuecksnummer}`;
             break;
         case searchTypes.HOUSE_NUMBERS_FOR_STREET:
             // house number like "11a" as name is not very telling - use "Streetname 11a" and save "11a" separately in properties
-            searchResult.properties.hausnummerkomplett = `${searchResult.properties.hausnummer._}${searchResult.properties.hausnummernzusatz
-                ? searchResult.properties.hausnummernzusatz._
-                : ""}`;
+            hausnummer = searchResult.properties.hausnummer?._ ? searchResult.properties.hausnummer._ : searchResult.properties.hausnummer;
+
+            if (searchResult.properties.hausnummernzusatz) {
+                hausnummernzusatz = searchResult.properties.hausnummernzusatz?._ ? searchResult.properties.hausnummernzusatz._ : searchResult.properties.hausnummernzusatz;
+            }
+
+            searchResult.properties.hausnummerkomplett = `${hausnummer}${hausnummernzusatz}`;
             searchResult.name =
-                searchResult.properties.geographicIdentifier._.split(searchResult.properties.hausnummerkomplett)[0] +
+            getShowGeographicIdentifier() ? searchResult.properties.geographicIdentifier._ :
+                (searchResult.properties?.geographicIdentifier ? searchResult.properties.geographicIdentifier._.split(searchResult.properties.hausnummerkomplett)[0] : searchResult.properties.strassenname + " ") +
                 searchResult.properties.hausnummerkomplett;
             break;
         case searchTypes.ADDRESS_AFFIXED:
-            searchResult.name = `${searchResult.properties.strassenname._} ${searchResult.properties.hausnummer._}${searchResult.properties.hausnummernzusatz
-                ? searchResult.properties.hausnummernzusatz._
-                : ""}`;
+            strassenname = searchResult.properties.strassenname?._ ? searchResult.properties.strassenname._ : searchResult.properties.strassenname;
+            hausnummer = searchResult.properties.hausnummer?._ ? searchResult.properties.hausnummer._ : searchResult.properties.hausnummer;
+            hausnummernzusatz = searchResult.properties.hausnummernzusatz?._ ? searchResult.properties.hausnummernzusatz._ : searchResult.properties.hausnummernzusatz;
+
+            searchResult.name = getShowGeographicIdentifier() ? searchResult.properties.geographicIdentifier._ : `${strassenname} ${hausnummer}${hausnummernzusatz}`;
             break;
         case searchTypes.ADDRESS_UNAFFIXED:
-            searchResult.name = `${searchResult.properties.strassenname._} ${searchResult.properties.hausnummer._}`;
+            strassenname = searchResult.properties.strassenname?._ ? searchResult.properties.strassenname._ : searchResult.properties.strassenname;
+            hausnummer = searchResult.properties.hausnummer?._ ? searchResult.properties.hausnummer._ : searchResult.properties.hausnummer;
+
+            searchResult.name =
+            getShowGeographicIdentifier() ? searchResult.properties.geographicIdentifier._ :
+                (searchResult.properties?.geographicIdentifier ? searchResult.properties.geographicIdentifier._.split(hausnummer)[0] : strassenname + " ") + hausnummer;
             break;
         default:
             searchResult.name = null;
@@ -110,12 +143,6 @@ function parseEntry (entry, type) {
         case searchTypes.DISTRICT:
         case searchTypes.STREET_KEY:
         case searchTypes.STREET:
-            // favour polygon where it's available
-            searchResult.geometry = {
-                type: posList ? "Polygon" : "Point",
-                coordinates: (posList || pos).split(" ")
-            };
-            break;
         case searchTypes.PARCEL:
         case searchTypes.HOUSE_NUMBERS_FOR_STREET:
         case searchTypes.ADDRESS_AFFIXED:
@@ -153,7 +180,7 @@ export function parse (key, xmlString) {
                 }
 
                 try {
-                    const searchResults = source.FeatureCollection.member
+                    const searchResults = source.FeatureCollection?.member
                         ? source.FeatureCollection.member
                             .map(entry => parseEntry(entry, key))
                             .sort((a, b) => a.name.localeCompare(b.name))

@@ -3,6 +3,7 @@ import {bbox} from "ol/loadingstrategy.js";
 import {WFS} from "ol/format.js";
 
 import {createVectorSource, createClusterVectorSource} from "./vector";
+import {getVersion, onError, onLoad} from "../lib/wfsUtil";
 
 /**
  * Layer specification as in services.json.
@@ -25,54 +26,26 @@ import {createVectorSource, createClusterVectorSource} from "./vector";
  * @property {function} afterLoading - function called after loading, gets parameter features
  * @property {function} featuresFilter - function called after loading to filter features, gets parameter features
  * @property {function} wfsFilter -  xml resource as wfs filter, the content of the filter file will be sent to the wfs server as POST request
+ * @property {function} doNotLoadInitially - default false, if set to true the layer will be initialized without network call, an empty array of features is promoted - this is useful to add features later on (e.g. by filtering) to a full functional but initially empty layer
  * @property {function} clusterGeometryFunction -  used in cluster source. Returns the geometry of the cluster, gets parameter feature
  * @property {function} style - style function to style the layer
  * @property {object} loadingParams - added as params to url
  */
 
 /**
-  * Returns the 'onError' function if response is not ok
   * @param {object} response of the request
   * @param {function} onErrorFn Calls options.onLoadingError and 'featuresloaderror' event will be fired by using failure callback.
   * @param {options} [options] additional options
   * @param {function} failure failure callback to ol.VectorLayer, fires 'featuresloaderror' event
-  * @returns {void}
+  * @returns {function | object} Returns the 'onError' function if response is not ok, otherwise the response object.
   */
 function handleErrors (response, onErrorFn, options, failure) {
     if (!response.ok) {
-        return onErrorFn(`Request to wfs-filter failed. Response status is ${response.statusText}`, options, failure);
+        return onErrorFn(`Request to wfs-filter failed. Response status is ${response.status}`, options, failure);
     }
     return response;
 }
-/**
- * Called after features are loaded. Calls options.featuresFilter, success-callback and options.afterLoading.
- * Features are added to source.
- * @param {ol.source.VectorSource} source the vector source
- * @param {Array.<module:ol/Feature~Feature>} features loaded features
- * @param {function} onErrorFn  Calls options.onLoadingError and 'featuresloaderror' event will be fired by using failure callback.
- * @param {function} success  callback: 'featuresloadend' event will be fired
- * @param {function} failure failure callback to ol.VectorLayer, fires 'featuresloaderror' event
- * @param {options} [options] additional options
- * @returns {void}
- */
-function onLoad (source, features, onErrorFn, success, failure, options = {}) {
-    let filteredFeatures = features;
 
-    try {
-        if (options.featuresFilter) {
-            filteredFeatures = options.featuresFilter(features);
-        }
-        source.addFeatures(filteredFeatures);
-        if (options.afterLoading) {
-            options.afterLoading(filteredFeatures);
-        }
-        // success: see https://openlayers.org/en/latest/apidoc/module-ol_source_Vector-VectorSource.html
-        success(filteredFeatures);
-    }
-    catch (error) {
-        onErrorFn(error, options, failure);
-    }
-}
 /**
  * Returns the parameters for the wfs filter request.
  * @param {object} payload to set as body
@@ -91,6 +64,8 @@ function getFilterRequestParams (payload) {
  * Loads the WFS.
  * Filters the features after load, if options.featuresFilter is given.
  * Adds the features to the source.
+ * Errors are thrown through onErrorFn or if a network issue occurs.
+ *
  * @param {string} url url to load features from
  * @param {object} params extra loading parameters
  * @param {ol.source.VectorSource} source the vector source
@@ -108,13 +83,15 @@ function loadWFS (url, params, source, {onErrorFn, success, failure}, options) {
         .then(responseString => source.getFormat().readFeatures(responseString))
         .then(features => onLoad(source, features, onErrorFn, success, failure, options))
         .catch((error) => {
-            onErrorFn(error, options, failure);
+            console.error(error);
         });
 }
 /**
  * Loads the WFS filter. The content of the filter file will be sent to the wfs server as POST request.
  * Filters the features after load, if options.featuresFilter is given.
  * Adds the features to the source.
+ * Errors are thrown through onErrorFn or if a network issue occurs.
+ *
  * @param {string} filter xml resource as wfs filter
  * @param {string} url url to load features from
  * @param {ol.source.VectorSource} source the vector source
@@ -131,46 +108,8 @@ function loadWFSFilter (filter, url, source, {onErrorFn, success, failure}, opti
         .then((response) => response.text())
         .then((payload) => loadWFS(url, getFilterRequestParams(payload), source, {onErrorFn, success, failure}, options))
         .catch((error) => {
-            onErrorFn(error, options, failure);
+            console.error(error);
         });
-}
-/**
- * Logs and throws an Error.
- * @param {string} error error message
- * @param {object} [options] additional options
- * @param {function} [options.onLoadingError] additional option, called with param error
- * @param {function} failure failure callback to ol.VectorLayer, fires 'featuresloaderror' event
- * {@link https://openlayers.org/en/latest/apidoc/module-ol_source_Vector-VectorSource.html failure: see}
- * @returns {void}
- */
-function onError (error, options = {}, failure) {
-    console.error(error);
-    if (options.onLoadingError) {
-        options.onLoadingError(error);
-    }
-    failure(error);
-    throw Error(error);
-}
-
-/**
- * Checks the version of the wfs against allowed versions and returns the version.
- * If the version is not allowed, 1.1.0 is returned.
- * @param {rawLayer} rawLayer layer specification as in services.json
- * @param {options} [options] additional options
- * @returns {String} The allowed version.
- */
-function getVersion (rawLayer, options) {
-    const allowedVersions = ["1.0.0", "1.1.0", "2.0.0"];
-    let version = options.version || rawLayer.version;
-
-    if (!allowedVersions.includes(version)) {
-        version = allowedVersions[1];
-        console.warn(`The WFS layer with the id: "${rawLayer.id}" is configured in version: ${version}.`
-        + ` OpenLayers accepts WFS only in the versions: ${allowedVersions},`
-        + ` It tries to load the layer with the id: "${rawLayer.id}" in version ${allowedVersions[1]}!`);
-    }
-
-    return version;
 }
 
 /**
@@ -216,7 +155,10 @@ export function createLayerSource (rawLayer, options = {}) {
     let source = null;
 
     function loader (extent, resolution, projection, success, failure) {
-        if (options.wfsFilter) {
+        if (options.doNotLoadInitially) {
+            onLoad(source, [], onError, success, failure, options);
+        }
+        else if (options.wfsFilter) {
             loadWFSFilter(options.wfsFilter, rawLayer.url, source, {onErrorFn: onError, success, failure}, options);
         }
         else {
@@ -227,7 +169,10 @@ export function createLayerSource (rawLayer, options = {}) {
                 for (const key in options.loadingParams) {
                     const option = Array.isArray(options.loadingParams[key]) ? options.loadingParams[key].join(",") : options.loadingParams[key];
 
-                    if (option !== undefined && option !== null && option !== "") {
+                    if (option !== undefined && key === "bbox") {
+                        url += `&${key}=${option},${projection.getCode()}`;
+                    }
+                    else if (option !== undefined) {
                         url += `&${key}=${option}`;
                     }
                 }

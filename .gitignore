@@ -2,5 +2,5 @@
 /dist
 /docs
 /coverage
-package-lock.json
 /.parcel-cache
+.idea
