@@ -131,7 +131,7 @@ export function createLayerSource (url, {epsg = defaults.epsg, tileSize = 512, z
  * @returns {ol.layer.VectorTile} Layer with id and source specified in rawLayer
  */
 export function createLayer ({id, name, url, extent, maxZoom, minZoom,
-    origin, origins, resolutions, tileSize, vtStyles, olAttribution,
+    origin, origins, resolutions, tileSize, olAttribution,
     epsg = defaults.epsg, zDirection = 1},
 {layerParams = {}, options = {}} = {}) {
     if ([id, name, url].some((x) => typeof x === "undefined")) {
@@ -142,6 +142,9 @@ export function createLayer ({id, name, url, extent, maxZoom, minZoom,
         layer = new VectorTileLayer(Object.assign({id: id, name: name, attribution: olAttribution, minZoom: minZoom, maxZoom: maxZoom, source: source,
             declutter: true}, layerParams));
 
+    if (options.style) {
+        layer.setStyle(options.style);
+    }
 
     return layer;
 }
