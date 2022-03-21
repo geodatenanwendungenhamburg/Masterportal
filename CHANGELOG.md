@@ -15,6 +15,10 @@
 
 ---
 
+## 2.1.0 - 2022-03-21
+### Added
+- Vector tile layer
+
 ## 2.0.0 - 2022-03-18
 ### Added
 - 3D functions are added to olcsMap.js.
