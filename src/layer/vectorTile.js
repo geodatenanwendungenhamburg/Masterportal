@@ -18,9 +18,9 @@ import defaults from "../defaults";
  * @property {string} url - source url
  * @property {string} [epsg=defaults.epsg] - vector tiles crs
  * @property {number[]} [extent] - extent
- * @property {string} [layerAttribution="nicht vorhanden"] - attribution text
  * @property {number} [maxZoom=22] - min zoom level
  * @property {number} [minZoom] - max zoom level
+ * @property {function} [olAttribution] - optional function that takes a module:ol/PluggableMap~FrameState and returns a string or an array of strings representing source attributions
  * @property {number[]} [origin] - The tile grid origin, i.e. where the x and y axes meet ([z, 0, 0]). Tile coordinates increase left to right and downwards
  * @property {number[][]} [origins] - Tile grid origins, i.e. where the x and y axes meet ([z, 0, 0]), for each zoom level. If given, the array length should match the length of the resolutions array, i.e. each resolution can have a different origin. Tile coordinates increase left to right and downwards. If not specified, extent or origin must be provided.
  * @property {number[]} [resolutions] - Resolutions. The array index of each resolution needs to match the zoom level. This means that even if a minZoom is configured, the resolutions array will have a length of maxZoom + 1.
@@ -126,23 +126,24 @@ export function createLayerSource (url, {epsg = defaults.epsg, tileSize = 512, z
  * Creates a Vector Tiles layer.
  *
  * @param {rawLayer} rawLayer - rawLayer as specified in services.json
- * @param {object} [layerParams={}] - extra params of the layer. Not used atm.
+ * @param {object} [layerParams={}] - extra params of the layer. Can overwrite or extend all ol layer parameters.
  * @param {object} [options={}] - parameter object. Not used atm.
  * @returns {ol.layer.VectorTile} Layer with id and source specified in rawLayer
  */
 export function createLayer ({id, name, url, extent, maxZoom, minZoom,
-    origin, origins, resolutions, tileSize, vtStyles,
-    epsg = defaults.epsg, layerAttribution = "nicht vorhanden",
-    zDirection = 1},
+    origin, origins, resolutions, tileSize, vtStyles, olAttribution,
+    epsg = defaults.epsg, zDirection = 1},
 {layerParams = {}, options = {}} = {}) {
     if ([id, name, url].some((x) => typeof x === "undefined")) {
         console.error(`Cancelled creation of layer "${id}"(${name}) because of missing required parameters`);
         return undefined;
     }
-    const source = createLayerSource(url, {epsg, tileSize, zDirection, minZoom, maxZoom, extent, resolutions, origin, origins});
+    const source = createLayerSource(url, {epsg, tileSize, zDirection, minZoom, maxZoom, extent, resolutions, origin, origins}),
+        layer = new VectorTileLayer(Object.assign({id: id, name: name, attribution: olAttribution, minZoom: minZoom, maxZoom: maxZoom, source: source,
+            declutter: true}, layerParams));
 
-    return new VectorTileLayer({id: id, name: name, minZoom: minZoom, maxZoom: maxZoom, source: source,
-        declutter: true});
+
+    return layer;
 }
 
 /**
