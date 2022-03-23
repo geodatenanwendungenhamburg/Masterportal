@@ -7,6 +7,7 @@
 ### Added
 
 ### Changed
+- The WMS layer respects crs code at rawlayer. The WMS request now contains the attribute CRS. If not available, projection of the map is used.
 
 ### Deprecated
 
