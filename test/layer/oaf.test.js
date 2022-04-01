@@ -4,10 +4,9 @@ import Cluster from "ol/source/Cluster.js";
 import {Style, Icon} from "ol/style.js";
 import map from "../../src/maps/map.js";
 import defaults from "../../src/defaults";
-import {WFS} from "ol/format.js";
 import GeoJSON from "ol/format/GeoJSON.js";
 import * as oaf from "../../src/layer/oaf";
-import {featureCollection} from "./resources/wfsFeatures";
+import {featureCollection} from "./resources/oafFeatures";
 
 jest.mock("../../src/rawLayerList.js", () => {
     const original = jest.requireActual("../../src/rawLayerList.js");
@@ -19,29 +18,19 @@ jest.mock("../../src/rawLayerList.js", () => {
 
 describe("oaf.js", function () {
     describe("createLayer", function () {
-        it("creates a VectorLayer without id and version", function () {
-            const warn = jest.spyOn(console, "warn").mockImplementation(() => ""),
-                layer = oaf.createLayer();
+        it("creates a VectorLayer without id", function () {
+            const layer = oaf.createLayer();
 
             expect(layer).toBeInstanceOf(VectorLayer);
             expect(layer.getSource()).toBeInstanceOf(VectorSource);
-            expect(warn).toHaveBeenCalled();
-
-            warn.mockReset();
         });
         it("creates a VectorLayer with source", function () {
             const attr = {
                     "id": "id",
                     "name": "Schulen",
                     "url": "https://url.de",
-                    "featureNS": "http://www.deegree.org/app",
-                    "featureType": "staatliche_schulen",
-                    "version": "1.1.0",
+                    "collection": "staatliche_schulen",
                     "typ": "OAF",
-                    "outputFormat": "json",
-                    "limit": 10,
-                    "offset": 0,
-                    "bulk": false,
                     "bbox": "",
                     "bboxCrs": "",
                     "datetime": "",
@@ -65,7 +54,7 @@ describe("oaf.js", function () {
 
                 return [icon];
             }
-            const layer = oaf.createLayer({id: "id", style: styleFunction, version: "1.1.0"});
+            const layer = oaf.createLayer({id: "id", style: styleFunction});
 
             expect(layer).toBeInstanceOf(VectorLayer);
             expect(layer.get("id")).toEqual("id");
@@ -81,7 +70,7 @@ describe("oaf.js", function () {
                     name: "name",
                     layers: "layer1, layer2"
                 },
-                layer = oaf.createLayer({id: "id", version: "1.1.0"}, {layerParams});
+                layer = oaf.createLayer({id: "id"}, {layerParams});
 
             expect(layer).toBeInstanceOf(VectorLayer);
             expect(layer.get("id")).toEqual("id");
@@ -108,7 +97,7 @@ describe("oaf.js", function () {
                     name: "name",
                     layers: "layer1, layer2"
                 },
-                layer = oaf.createLayer({id: "id", version: "2.0.0"}, {layerParams, options});
+                layer = oaf.createLayer({id: "id"}, {layerParams, options});
 
             expect(layer).toBeInstanceOf(VectorLayer);
             expect(layer.get("id")).toEqual("id");
@@ -131,65 +120,6 @@ describe("oaf.js", function () {
         afterEach(() => {
             console.error = consoleError;
         });
-        it("creates a WFS VectorSource and beforeLoading, afterLoading and featuresFilter are called", function () {
-            global.fetch = jest.fn().mockImplementationOnce(() => {
-                return new Promise((resolve) => {
-                    resolve({
-                        ok: true,
-                        status: 200,
-                        text: () => {
-                            return featureCollection;
-                        }
-                    });
-                });
-            });
-
-            const map2D = map.createMap(defaults),
-                rawLayer = {
-                    id: "id",
-                    name: "Schulen",
-                    url: "https://url.de",
-                    featureNS: "http://www.deegree.org/app",
-                    featureType: "staatliche_schulen",
-                    version: "1.1.0",
-                    typ: "OAF",
-                    outputFormat: "xml",
-                    limit: 10,
-                    offset: 0,
-                    bulk: false,
-                    bbox: "",
-                    bboxCrs: "",
-                    datetime: "",
-                    crs: ""
-                },
-                beforeLoadingMock = jest.fn(),
-                afterLoadingMock = jest.fn(),
-                featuresFilterMock = jest.fn((features) => features),
-                // jest.fn().mockReturnValueOnce(10),
-                options = {
-                    beforeLoading: beforeLoadingMock,
-                    afterLoading: afterLoadingMock,
-                    featuresFilter: featuresFilterMock
-                },
-                layer = oaf.createLayer(rawLayer, {options});
-
-            layer.getSource().loadFeatures([-10000, -10000, 10000, 10000],
-                1,
-                map2D.getView().getProjection());
-
-            expect(layer).toBeInstanceOf(VectorLayer);
-            expect(layer.get("id")).toEqual("id");
-            expect(layer.getSource()).toBeInstanceOf(VectorSource);
-            expect(layer.getSource().getFormat()).toBeInstanceOf(WFS);
-            // eslint-disable-next-line no-underscore-dangle
-            expect(typeof layer.getSource().loader_).toEqual("function");
-            expect(beforeLoadingMock.mock.calls.length).toBe(1);
-
-            layer.getSource().on("featuresloadend", function () {
-                expect(featuresFilterMock.mock.calls.length).toBe(1);
-                expect(afterLoadingMock.mock.calls.length).toBe(1);
-            });
-        });
         it("creates a GeoJSON VectorSource", function () {
             global.fetch = jest.fn().mockImplementationOnce(() => {
                 return new Promise((resolve) => {
@@ -208,14 +138,9 @@ describe("oaf.js", function () {
                     id: "id",
                     name: "Schulen",
                     url: "https://url.de",
-                    featureNS: "http://www.deegree.org/app",
-                    featureType: "staatliche_schulen",
-                    version: "1.1.0",
+                    collection: "staatliche_schulen",
                     typ: "OAF",
-                    outputFormat: "json",
                     limit: 10,
-                    offset: 0,
-                    bulk: false,
                     bbox: "",
                     bboxCrs: "",
                     datetime: "",
@@ -244,14 +169,9 @@ describe("oaf.js", function () {
                     id: "id",
                     name: "Schulen",
                     url: "https://url.de",
-                    featureNS: "http://www.deegree.org/app",
-                    featureType: "staatliche_schulen",
-                    version: "1.1.0",
+                    collection: "staatliche_schulen",
                     typ: "OAF",
-                    outputFormat: "xml",
                     limit: 10,
-                    offset: 0,
-                    bulk: false,
                     bbox: "",
                     bboxCrs: "",
                     datetime: "",
@@ -275,7 +195,7 @@ describe("oaf.js", function () {
                     resolve({
                         ok: true,
                         status: 200,
-                        text: () => {
+                        json: () => {
                             return featureCollection;
                         }
                     });
@@ -288,19 +208,10 @@ describe("oaf.js", function () {
                     id: "id",
                     name: "Schulen",
                     url: "https://url.de",
-                    featureNS: "http://www.deegree.org/app",
-                    featureType: "staatliche_schulen",
-                    clusterDistance: 40,
-                    version: "1.1.0",
+                    collection: "staatliche_schulen",
                     typ: "OAF",
-                    outputFormat: "xml",
                     limit: 10,
-                    offset: 0,
-                    bulk: false,
-                    bbox: "",
-                    bboxCrs: "",
-                    datetime: "",
-                    crs: ""
+                    clusterDistance: 40
                 },
                 beforeLoadingMock = jest.fn(),
                 afterLoadingMock = jest.fn(),
@@ -314,13 +225,13 @@ describe("oaf.js", function () {
                 },
                 layer = oaf.createLayer(rawLayer, {options});
 
-            layer.getSource().loadFeatures([-10000, -10000, 10000, 10000],
+            layer.getSource().getSource().loadFeatures([-1000, -1000, -1000, -1000],
                 1,
                 map2D.getView().getProjection());
 
             expect(layer.getSource()).toBeInstanceOf(Cluster);
             expect(layer.getSource().getDistance()).toEqual(40);
-            expect(layer.getSource().getSource().getFormat()).toBeInstanceOf(WFS);
+            expect(layer.getSource().getSource().getFormat()).toBeInstanceOf(GeoJSON);
             // eslint-disable-next-line no-underscore-dangle
             expect(typeof layer.getSource().loader_).toEqual("function");
             expect(beforeLoadingMock.mock.calls.length).toBe(1);
@@ -332,4 +243,3 @@ describe("oaf.js", function () {
         });
     });
 });
-
