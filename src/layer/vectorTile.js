@@ -92,7 +92,7 @@ function mustCreateTileGrid ({epsg, extent, tileSize, resolutions, origin, origi
  * @param {Object} [tileGridProperties] - properties for tileGrid
  * @returns {ol.source.VectorTile} Source
  */
-export function createLayerSource (url, {epsg = defaults.epsg, tileSize = 512, zDirection = 1,
+export function createLayerSource (url, {epsg = defaults.epsg, tileSize = undefined, zDirection = 1,
     minZoom = undefined, maxZoom = 22, extent = undefined,
     resolutions = undefined, origin = undefined, origins = undefined}) {
     const sourceParams = {
