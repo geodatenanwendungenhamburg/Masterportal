@@ -3,6 +3,7 @@ import ImageLayer from "ol/layer/Image";
 import TileWMS from "ol/source/TileWMS.js";
 import TileGrid from "ol/tilegrid/TileGrid";
 import ImageWMS from "ol/source/ImageWMS.js";
+import {get as getProjection} from "ol/proj";
 
 import {getLayerWhere} from "../rawLayerList";
 
@@ -17,6 +18,7 @@ export function generateSessionId () {
  * @param {object} rawLayer - layer specification as in services.json
  * @param {boolean} [rawLayer.STYLES] - styles of the layer, if available
  * @param {boolean} [rawLayer.TIME] - time attribute, if available
+ * @param {boolean} [rawLayer.CRS] - projection code, if available, else projection of map is used
  * @returns {object} maps query extended parameter names to values
  */
 export function addOptionalParams (params, rawLayer) {
@@ -24,7 +26,8 @@ export function addOptionalParams (params, rawLayer) {
         rawLayerParams = {},
         optionalParams = [
             "STYLES",
-            "TIME"
+            "TIME",
+            "CRS"
         ];
 
     Object.keys(rawLayer).forEach(key => {
@@ -80,10 +83,12 @@ export function makeParams (rawLayer) {
  * @param {object} options - optional resolutions and origin to create the TileGrid
  * @param {Array} [options.resolutions] - optional resolutions to create the TileGrid, must be in descending order
  * @param {Array} [options.origin] - optional origin to create the TileGrid
+ * @param {string} [options.crs] - optional projection code, if not available, projection of map is used
  * @returns {(ol.source.TileWMS|ol.source.ImageWMS)} TileWMS or ImageWMS, depending on whether singleTile is true.
  */
 export function createLayerSource (rawLayer, options) {
-    const params = makeParams(rawLayer);
+    const params = makeParams(rawLayer),
+        projection = rawLayer.crs ? getProjection(rawLayer.crs) : undefined;
     let tileGrid = null;
 
     if (rawLayer.singleTile) {
@@ -91,6 +96,7 @@ export function createLayerSource (rawLayer, options) {
             url: rawLayer.url,
             params,
             serverType: rawLayer.serverType,
+            projection: projection,
             attributions: rawLayer.olAttribution
         });
     }
@@ -106,6 +112,7 @@ export function createLayerSource (rawLayer, options) {
         params,
         gutter: rawLayer.gutter || 0,
         tileGrid: tileGrid,
+        projection: projection,
         attributions: rawLayer.olAttribution
     });
 }

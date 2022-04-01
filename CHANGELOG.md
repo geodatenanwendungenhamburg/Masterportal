@@ -7,6 +7,11 @@
 ### Added
 
 ### Changed
+- The WMS layer respects crs code at rawlayer. The WMS request now contains the attribute CRS. If not available, projection of the map is used.
+- OAF
+    - Changing the OAF attribute "featureType" into "collection"
+    - Setting OAF output format only in GeoJSON
+    - Removing unnecessary parameters
 
 ### Deprecated
 
