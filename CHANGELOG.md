@@ -17,6 +17,7 @@
 
 ### Removed
 ### Fixed
+- Fix a vulnerability of third party libraries.
 
 ---
 
