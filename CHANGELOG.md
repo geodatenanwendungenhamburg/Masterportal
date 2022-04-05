@@ -3,8 +3,22 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased
+## Unreleased - in development
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
+
+## 2.1.0 - 2022-04-04
+### Added
+- Add a new layer type OAf (Open API Features).
 
 ### Changed
 - The WMS layer respects crs code at rawlayer. The WMS request now contains the attribute CRS. If not available, projection of the map is used.
@@ -13,10 +27,8 @@
     - Setting OAF output format only in GeoJSON
     - Removing unnecessary parameters
 
-### Deprecated
-
-### Removed
 ### Fixed
+- Fix a vulnerability of third party libraries.
 
 ---
 
