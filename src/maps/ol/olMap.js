@@ -7,6 +7,7 @@ import * as wms from "../../layer/wms";
 import * as geojson from "../../layer/geojson";
 import * as wfs from "../../layer/wfs";
 import * as vectorBase from "../../layer/vectorBase";
+import * as vectortile from "../../layer/vectorTile";
 import * as oaf from "../../layer/oaf";
 import {createMapView} from "../../maps/mapView";
 import {initializeLayerList, getLayerWhere} from "../../rawLayerList";
@@ -24,6 +25,7 @@ const layerBuilderMap = {
         wfs,
         geojson,
         vectorBase,
+        vectortile,
         oaf
     },
     originalAddLayer = PluggableMap.prototype.addLayer;
