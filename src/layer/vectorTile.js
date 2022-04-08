@@ -9,6 +9,8 @@ import {defaultResolutions} from "ol-mapbox-style/dist/util";
 
 import defaults from "../defaults";
 
+const OL_DEFAULT_VECTOR_TILE_GRID_CRS = "EPSG:3857";
+
 /**
  * Used properites of layer specification as in services.json.
  *
@@ -79,7 +81,10 @@ function mustCreateTileGrid ({epsg, extent, tileSize, resolutions, origin, origi
     if (![extent, tileSize, resolutions, origin, origins, minZoom].every((x) => typeof x === "undefined")) {
         return true;
     }
-    if (epsg !== "EPSG:3857") {
+
+    const epsgTest = epsg ? epsg.toUpperCase() : epsg;
+
+    if (epsgTest !== OL_DEFAULT_VECTOR_TILE_GRID_CRS) {
         return true;
     }
     return false;
