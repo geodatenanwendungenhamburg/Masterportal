@@ -5,6 +5,7 @@
 
 ## Unreleased - in development
 ### Added
+- Vector tile layer
 
 ### Changed
 
@@ -31,10 +32,6 @@
 - Fix a vulnerability of third party libraries.
 
 ---
-
-## 2.1.0 - 2022-03-21
-### Added
-- Vector tile layer
 
 ## 2.0.0 - 2022-03-18
 ### Added
