@@ -118,12 +118,13 @@ describe("vectorTile.js", function () {
 
                 layer = vectorTile.createLayer(layerParams);
 
+            let featureStyle = null;
+
             vectorTile.setStyle(layer, vtStyle);
 
             expect(typeof layer.getStyle()).toBe("function");
 
-            // eslint-disable-next-line one-var
-            const featureStyle = layer.getStyle()(feature, 1.3229159522920524);
+            featureStyle = layer.getStyle()(feature, 1.3229159522920524);
 
             expect(featureStyle[0].getFill().getColor()).toBe("rgba(255,253,238,1)");
         });
