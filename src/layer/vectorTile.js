@@ -34,7 +34,7 @@ const OL_DEFAULT_VECTOR_TILE_GRID_CRS = "EPSG:3857";
  * Used properites of layer specification as in services.json.
  *
  * @typedef {Object} tileGridProperties
- * @property {string} [epsg=defaults.epsg] - vector tiles crs
+ * @property {string} [epsg] - vector tiles crs
  * @property {number} [tileSize=512] - size of a tile in px
  * @property {number} [zDirection=1] - zoom level offset for requested tiles
  * @property {number} [minZoom] - min zoom level
@@ -48,26 +48,31 @@ const OL_DEFAULT_VECTOR_TILE_GRID_CRS = "EPSG:3857";
 /**
  * Create a TileGrid.
  *
- * @param {tileGridProperties} options - options
+ * @param {tileGridProperties} [options] - options
  * @returns {ol.tilegrid.TileGrid} TileGrid
  */
-export function createTileGrid ({epsg = defaults.epsg, extent = extentFromProjection(epsg),
-    tileSize = 512, resolutions = defaults.options.map(x => x.resolution),
-    origin = [extent[0], extent[3]], origins = undefined, minZoom = undefined}) {
+export function createTileGrid (options = {}) {
 
-    const tileGridParams = {
-        extent: extent,
-        resolutions: resolutions,
-        tileSize: new Array(2).fill(tileSize),
-        minZoom: minZoom
-    };
+    const epsg = options.epsg ? options.epsg : defaults.epsg,
+        extent = options.extent ? options.extent : extentFromProjection(epsg),
+        resolutions = options.resolutions ? options.resolutions : defaults.options.map(x => x.resolution),
+        tileGridParams = {
+            extent: extent,
+            resolutions: resolutions,
+            minZoom: options.minZoom
+        };
 
-    if (origins) {
-        tileGridParams.origins = origins;
+    if (options.tileSize) {
+        tileGridParams.tileSize = new Array(2).fill(options.tileSize);
+    }
+
+    if (options.origins) {
+        tileGridParams.origins = options.origins;
     }
     else {
-        tileGridParams.origin = origin;
+        tileGridParams.origin = options.origin ? options.origin : [tileGridParams.extent[0], tileGridParams.extent[3]];
     }
+
     return new OpenLayersTileGrid(tileGridParams);
 }
 
@@ -77,12 +82,13 @@ export function createTileGrid ({epsg = defaults.epsg, extent = extentFromProjec
  * @param {tileGridProperties} options - tile grid parameters
  * @returns {boolean} must create tileGrid
  */
-function mustCreateTileGrid ({epsg, extent, tileSize, resolutions, origin, origins, minZoom}) {
-    if (![extent, tileSize, resolutions, origin, origins, minZoom].every((x) => typeof x === "undefined")) {
+function mustCreateTileGrid (options = {}) {
+    const createOptions = [options.extent, options.tileSize, options.resolutions, options.origin, options.origins, options.minZoom],
+        epsgTest = options.epsg ? options.epsg.toUpperCase() : options.epsg;
+
+    if (!createOptions.every((x) => typeof x === "undefined")) {
         return true;
     }
-
-    const epsgTest = epsg ? epsg.toUpperCase() : epsg;
 
     if (epsgTest !== OL_DEFAULT_VECTOR_TILE_GRID_CRS) {
         return true;
@@ -94,34 +100,22 @@ function mustCreateTileGrid ({epsg, extent, tileSize, resolutions, origin, origi
  * Creates a Vector Tiles source.
  *
  * @param {string} url - url to vector tile service
- * @param {Object} [tileGridProperties] - properties for tileGrid
+ * @param {tileGridProperties} [options] - properties for tileGrid
  * @returns {ol.source.VectorTile} Source
  */
-export function createLayerSource (url, {epsg = defaults.epsg, tileSize = undefined, zDirection = 1,
-    minZoom = undefined, maxZoom = 22, extent = undefined,
-    resolutions = undefined, origin = undefined, origins = undefined}) {
+export function createLayerSource (url, options = {}) {
     const sourceParams = {
-            projection: epsg,
-            format: new MVT(),
-            url: url,
-            tileSize: tileSize,
-            zDirection: zDirection,
-            minZoom: minZoom,
-            maxZoom: maxZoom
-        },
+        projection: options.epsg,
+        format: new MVT(),
+        url: url,
+        tileSize: options.tileSize,
+        zDirection: options.zDirection,
+        minZoom: options.minZoom,
+        maxZoom: options.maxZoom
+    };
 
-        gridParams = {
-            epsg: epsg,
-            extent: extent,
-            resolutions: resolutions,
-            tileSize: tileSize,
-            minZoom: minZoom,
-            origin: origin,
-            origins: origins
-        };
-
-    if (mustCreateTileGrid(gridParams)) {
-        sourceParams.tileGrid = createTileGrid(gridParams);
+    if (mustCreateTileGrid(options)) {
+        sourceParams.tileGrid = createTileGrid(options);
     }
 
     return new VectorTileSource(sourceParams);
@@ -135,16 +129,15 @@ export function createLayerSource (url, {epsg = defaults.epsg, tileSize = undefi
  * @param {object} [options={}] - parameter object. Not used atm.
  * @returns {ol.layer.VectorTile} Layer with id and source specified in rawLayer
  */
-export function createLayer ({id, name, url, extent, maxZoom, minZoom,
-    origin, origins, resolutions, tileSize, olAttribution,
-    epsg = defaults.epsg, zDirection = 1},
-{layerParams = {}, options = {}} = {}) {
-    if ([id, name, url].some((x) => typeof x === "undefined")) {
-        console.error(`Cancelled creation of layer "${id}"(${name}) because of missing required parameters`);
+export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {}) {
+    if ([rawLayer.id, rawLayer.name, rawLayer.url].some((x) => typeof x === "undefined")) {
+        console.error(`Cancelled creation of layer "${rawLayer.id}"(${rawLayer.name}) because of missing required parameters`);
         return undefined;
     }
-    const source = createLayerSource(url, {epsg, tileSize, zDirection, minZoom, maxZoom, extent, resolutions, origin, origins}),
-        layer = new VectorTileLayer(Object.assign({id: id, name: name, attribution: olAttribution, minZoom: minZoom, maxZoom: maxZoom, source: source,
+    const source = createLayerSource(rawLayer.url, rawLayer),
+        layer = new VectorTileLayer(Object.assign({
+            id: rawLayer.id, name: rawLayer.name, attribution: rawLayer.olAttribution,
+            minZoom: rawLayer.minZoom, maxZoom: rawLayer.maxZoom, source: source,
             declutter: true}, layerParams));
 
     if (options.style) {
