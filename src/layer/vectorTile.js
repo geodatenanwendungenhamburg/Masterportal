@@ -55,16 +55,14 @@ export function createTileGrid (options = {}) {
 
     const epsg = options.epsg ? options.epsg : defaults.epsg,
         extent = options.extent ? options.extent : extentFromProjection(epsg),
+        tileSize = options.tileSize ? options.tileSize : 512,
         resolutions = options.resolutions ? options.resolutions : defaults.options.map(x => x.resolution),
         tileGridParams = {
             extent: extent,
             resolutions: resolutions,
-            minZoom: options.minZoom
+            minZoom: options.minZoom,
+            tileSize: new Array(2).fill(tileSize)
         };
-
-    if (options.tileSize) {
-        tileGridParams.tileSize = new Array(2).fill(options.tileSize);
-    }
 
     if (options.origins) {
         tileGridParams.origins = options.origins;
