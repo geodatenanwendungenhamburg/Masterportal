@@ -20,7 +20,12 @@ describe("vectorTile.js", function () {
 
     beforeAll(() => registerProjections());
 
-    const tileGridParams = {
+    const layerParams = {
+            name: "VT Test",
+            id: "VT_01",
+            url: "https://example.org"
+        },
+        tileGridParams = {
             extent: [0, 0, 1, 1],
             tileSize: 512,
             minZoom: 0
@@ -79,12 +84,7 @@ describe("vectorTile.js", function () {
 
     describe("createLayer", function () {
         it("creates a vector Tile Layer", function () {
-            const layerParams = {
-                    name: "VT Test",
-                    id: "VT_01",
-                    url: "https://example.org"
-                },
-                layer = vectorTile.createLayer(layerParams);
+            const layer = vectorTile.createLayer(layerParams);
 
             expect(layer).toBeInstanceOf(OpenLayersVectorTileLayer);
             expect(layer.getSource()).toBeInstanceOf(OpenLayersVectorTileSource);
@@ -94,12 +94,10 @@ describe("vectorTile.js", function () {
 
         it("should log an error when required param is missing", function () {
             const spyConsole = jest.spyOn(console, "error").mockImplementation(() => ""),
-
-                layerParams = {
+                layer = vectorTile.createLayer({
                     name: "VT Test",
                     id: "VT_01"
-                },
-                layer = vectorTile.createLayer(layerParams);
+                });
 
             expect(layer).toBeUndefined();
             expect(console.error).toHaveBeenCalled();
@@ -110,13 +108,7 @@ describe("vectorTile.js", function () {
 
     describe("setStyle", function () {
         it("should apply a given style", function () {
-            const layerParams = {
-                    name: "VT Test",
-                    id: "VT_01",
-                    url: "https://example.org"
-                },
-
-                layer = vectorTile.createLayer(layerParams);
+            const layer = vectorTile.createLayer(layerParams);
 
             let featureStyle = null;
 
