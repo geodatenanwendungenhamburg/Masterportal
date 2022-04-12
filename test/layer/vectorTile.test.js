@@ -104,6 +104,54 @@ describe("vectorTile.js", function () {
             expect(spyConsole.mock.calls[0][0]).toContain("Cancelled creation of layer \"VT_01\"(VT Test) because of missing required parameters");
             spyConsole.mockRestore();
         });
+
+        it("should apply default values for all not required ones", function () {
+            const defaultValues = { // defaults defined in services.json.md
+                    zDirection: 1,
+                    epsg: "EPSG:25832", // default value from config.json.md/MapView. Should be the default CRS
+                    extent: [ // If not set, the portal's coordinate reference system's extent is used
+                        // Note: this should be the extent of the projection but is the extent of EPSG:3857
+                        //       this is because in masterportalAPI is no definition of the extent of the
+                        //       default projection which is EPSG:25832
+                        -20015077.371242613,
+                        -20015077.371242613,
+                        20015077.371242613,
+                        20015077.371242613
+                    ],
+                    origin: [ // if not set, the portal's coordinate reference system's top-left corner is used.
+                        // Note: this should be the top left corner of the projection extent but is top left
+                        //       corner of extent of EPSG:3857 this is because in masterportalAPI is no
+                        //       definition of the extent of the default projection which is EPSG:25832
+                        -20015077.371242613,
+                        20015077.371242613
+                    ],
+                    resolutions: [ // If not used, the portal's resolutions are used. (Missing default resolution definition? used default resolutions from masterportal-api)
+                        66.14579761460263,
+                        26.458319045841044,
+                        15.874991427504629,
+                        10.583327618336419,
+                        5.2916638091682096,
+                        2.6458319045841048,
+                        1.3229159522920524,
+                        0.6614579761460262,
+                        0.2645831904584105,
+                        0.13229159522920522
+                    ],
+                    tileSize: 512
+                },
+                layer = vectorTile.createLayer(layerParams),
+                source = layer.getSource(),
+                tileGrid = source.getTileGrid();
+
+            expect(layer.getExtent()).toEqual(defaultValues.extent);
+
+            expect(source.getProjection().getCode()).toEqual(defaultValues.epsg);
+
+            expect(tileGrid.getExtent()).toEqual(defaultValues.extent);
+            expect(tileGrid.getOrigin()).toEqual(defaultValues.origin);
+            expect(tileGrid.getResolutions()).toEqual(defaultValues.resolutions);
+            expect(tileGrid.getTileSize()).toEqual(new Array(2).fill(defaultValues.tileSize));
+        });
     });
 
     describe("setStyle", function () {
