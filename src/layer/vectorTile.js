@@ -104,6 +104,8 @@ function mustCreateTileGrid (options = {}) {
  * @returns {ol.source.VectorTile} Source
  */
 export function createLayerSource (url, options = {}) {
+    options.epsg = options.epsg ? options.epsg : defaults.epsg;
+
     const sourceParams = {
         projection: options.epsg,
         format: new MVT(),
