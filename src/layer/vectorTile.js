@@ -136,7 +136,7 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
     }
     const source = createLayerSource(rawLayer.url, rawLayer),
         layer = new VectorTileLayer(Object.assign({
-            id: rawLayer.id, name: rawLayer.name, attribution: rawLayer.olAttribution,
+            id: rawLayer.id, name: rawLayer.name, attribution: rawLayer.olAttribution, extent: source.getTileGrid().getExtent(),
             minZoom: rawLayer.minZoom, maxZoom: rawLayer.maxZoom, source: source,
             declutter: true}, layerParams));
 
