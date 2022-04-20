@@ -15,7 +15,7 @@ describe("searchAddress", function () {
 
     describe("getIdQuery", function () {
         it("encodes given search phrase(s) and builds query fragment from it", function () {
-            expect(getIdQuery(searchTypes.STREET, "hello world")).toEqual("&StoredQuery_ID=findeStrasse&strassenname=hello%20world");
+            expect(getIdQuery(searchTypes.STREET, "hello world")).toEqual("&StoredQuery_ID=findeStrasse&strassenname=*hello%20world");
             expect(getIdQuery(searchTypes.DISTRICT, "hello world")).toEqual("&StoredQuery_ID=findeStadtteil&stadtteilname=hello%20world");
             expect(getIdQuery(searchTypes.PARCEL, ["1 a", "1 b"])).toEqual("&StoredQuery_ID=Flurstueck&gemarkung=1%20a&flurstuecksnummer=1%20b");
             expect(getIdQuery(searchTypes.STREET_KEY, "A12345")).toEqual("&StoredQuery_ID=findeStrassenSchluessel&strassenschluessel=A12345");
