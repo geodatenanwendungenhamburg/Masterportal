@@ -12,7 +12,13 @@
 
 ### Removed
 
+---
+
 ### Fixed
+## 2.1.1 - 2022-04-20
+
+### Fixed
+- Allow searchAddress to find street names with a prefix.
 
 ---
 
