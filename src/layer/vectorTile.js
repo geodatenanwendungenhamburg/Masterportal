@@ -46,6 +46,16 @@ const OL_DEFAULT_VECTOR_TILE_GRID_CRS = "EPSG:3857";
  */
 
 /**
+ * Additional properties for style specification
+ * @typedef {Object} styleParams
+ * @property {string} [sourceId] - key from the Mapbox Style object. When a source key is provided, all layers for the specified source will be included in the style function.
+ * @property {number[]} [resolutions] - Resolutions for mapping resolution to zoom level.
+ * @property {object} [spriteData] - Sprite data from the url specified in the Mapbox Style object's sprite property. Only required if a sprite property is specified in the Mapbox Style object.
+ * @property {string} [spriteImageUrl] - Url to sprite image
+ * @property {function} [getFonts] - Function that receives a font stack as arguments, and returns a (modified) font stack that is available. Font names are the names used in the Mapbox Style object. If not provided, the font stack will be used as-is. This function can also be used for loading web fonts.
+ */
+
+/**
  * Create a TileGrid.
  *
  * @param {tileGridProperties} [options] - options
@@ -151,15 +161,14 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
  * Set a mapbox style
  * @param {ol.layer.VectorTile} layer - layer to style
  * @param {object} glStyle - MapBox style definition
- * @param {string} [sourceId=id from given style] - key from the Mapbox Style object. When a source key is provided, all layers for the specified source will be included in the style function.
- * @param {number[]} [resolutions=default mapbox resolutions] - Resolutions for mapping resolution to zoom level.
- * @param {object} [spriteData] - Sprite data from the url specified in the Mapbox Style object's sprite property. Only required if a sprite property is specified in the Mapbox Style object.
- * @param {string} [spriteImageUrl] - Url to sprite image
- * @param {function} [getFonts] - Function that receives a font stack as arguments, and returns a (modified) font stack that is available. Font names are the names used in the Mapbox Style object. If not provided, the font stack will be used as-is. This function can also be used for loading web fonts.
+ * @param {options} [styleParams={}] - Additional options for style specification
  * @returns {void}
  */
-export function setStyle (layer, glStyle, {sourceId = Object.keys(glStyle.sources)[0],
-    resolutions = defaultResolutions,
-    spriteData, spriteImageUrl, getFonts} = {}) {
-    stylefunction(layer, glStyle, sourceId, resolutions, spriteData, spriteImageUrl, getFonts);
+export function setStyle (layer, glStyle, {options = {}} = {}) {
+    stylefunction(layer, glStyle,
+        options.sourceId ? options.sourceId : Object.keys(glStyle.sources)[0],
+        options.resolutions ? options.resolutions : defaultResolutions,
+        options.spriteData,
+        options.spriteImageUrl,
+        options.getFonts);
 }
