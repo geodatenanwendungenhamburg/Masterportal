@@ -3,6 +3,19 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased - in development
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
+
 ## 2.2.0 - 2022-04-25
 ### Added
 - Add a new layer type Vector tile layer.
