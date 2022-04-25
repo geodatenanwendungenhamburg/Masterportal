@@ -3,22 +3,13 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.2.0 - 2022-04-25
 ### Added
-- Vector tile layer
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
+- Add a new layer type Vector tile layer.
 
 ---
 
 ## 2.1.1 - 2022-04-20
-
 ### Fixed
 - Allow searchAddress to find street names with a prefix.
 
