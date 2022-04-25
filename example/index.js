@@ -208,3 +208,20 @@ window.mpapi.search("Mümmelmannsberg 72",  {
 }).then(x => console.log(x)).catch(e => console.error(e))
 
 //*/
+
+/* VECTOR TILE EXAMPLE */
+/*
+document.getElementById("enable").style.display = "none";
+map2D.getLayers().forEach(layer => {
+    map2D.removeLayer(layer);
+});
+
+let vtStyleUrl = 'https://dev.adv-smart.de/styles/playground/masterportal_test1.json';
+
+fetch(vtStyleUrl)
+    .then(response => response.json())
+    .then(style => {
+        let vtLayer = window.mpapi.map.addLayer("6001");
+        mpapi.vectorTile.setStyle(vtLayer, style);
+    });
+*/

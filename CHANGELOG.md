@@ -5,6 +5,7 @@
 
 ## Unreleased - in development
 ### Added
+- Vector tile layer
 
 ### Changed
 

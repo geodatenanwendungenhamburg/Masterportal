@@ -15,65 +15,94 @@
     "maxScale": 200
   },
   {
-    "id" : "1002",
-    "name" : "Krankenhäuser",
-    "url" : "https://geodienste.hamburg.de/HH_WMS_Krankenhaeuser",
-    "typ" : "WMS",
-    "layers" : "krankenhaeuser",
-    "format" : "image/png",
-    "version" : "1.3.0",
-    "singleTile" : false,
-    "transparent" : true,
-    "transparency" : 0,
-    "urlIsVisible" : true,
-    "tilesize" : 512
+    "id": "1002",
+    "name": "Krankenhäuser",
+    "url": "https://geodienste.hamburg.de/HH_WMS_Krankenhaeuser",
+    "typ": "WMS",
+    "layers": "krankenhaeuser",
+    "format": "image/png",
+    "version": "1.3.0",
+    "singleTile": false,
+    "transparent": true,
+    "transparency": 0,
+    "urlIsVisible": true,
+    "tilesize": 512
   },
   {
-    "id" : "2001",
-    "typ" : "GeoJSON",
-    "name" : "Landesgrenze Hamburg",
-    "url" : "https://geoportal-hamburg.de/lgv-config/landesgrenze_hh.json"
+    "id": "2001",
+    "typ": "GeoJSON",
+    "name": "Landesgrenze Hamburg",
+    "url": "https://geoportal-hamburg.de/lgv-config/landesgrenze_hh.json"
   },
   {
-    "id" : "3001",
-    "name" : "Bauwerke",
-    "url" : "https://geodienste.hamburg.de/HH_WFS_Geotourismus",
-    "typ" : "WFS",
-    "featureType" : "bauwerke",
-    "outputFormat" : "XML",
-    "version" : "1.1.0",
-    "featureNS" : "http://www.deegree.org/app"
- },
- {
-  "id" : "4001",
-  "name" : "Gelaende",
-  "url" : "https://daten-hamburg.de/gdi3d/datasource-data/Gelaende ",
-  "typ" : "Terrain3D",
-  "cesiumTerrainProviderOptions" : {
-     "requestVertexNormals" : true
-   }
- },
+    "id": "3001",
+    "name": "Bauwerke",
+    "url": "https://geodienste.hamburg.de/HH_WFS_Geotourismus",
+    "typ": "WFS",
+    "featureType": "bauwerke",
+    "outputFormat": "XML",
+    "version": "1.1.0",
+    "featureNS": "http://www.deegree.org/app"
+  },
   {
-  "id" : "4002",
-  "name" : "Gebäude LoD2",
-  "url" : "https://daten-hamburg.de/gdi3d/datasource-data/LoD2",
-  "typ" : "TileSet3D",
-  "cesium3DTilesetOptions" : {
-     "maximumScreenSpaceError" : 6
+    "id": "4001",
+    "name": "Gelaende",
+    "url": "https://daten-hamburg.de/gdi3d/datasource-data/Gelaende ",
+    "typ": "Terrain3D",
+    "cesiumTerrainProviderOptions": {
+      "requestVertexNormals": true
     }
   },
-    {
-        "id": "5001",
-        "name": "Schulen",
-        "url": "https://api.hamburg.de/datasets/v1/schulen",
-        "collection" : "staatliche_schulen",
-        "typ": "OAF",
-        "bbox": "",
-        "bboxCrs": "",
-        "datetime": "",
-        "crs": "EPSG:25832",
-        "params": {
-            "anzahl_schueler": ">1000"
-        }
+  {
+    "id": "4002",
+    "name": "Gebäude LoD2",
+    "url": "https://daten-hamburg.de/gdi3d/datasource-data/LoD2",
+    "typ": "TileSet3D",
+    "cesium3DTilesetOptions": {
+      "maximumScreenSpaceError": 6
     }
+  },
+  {
+    "id": "5001",
+    "name": "Schulen",
+    "url": "https://api.hamburg.de/datasets/v1/schulen",
+    "collection": "staatliche_schulen",
+    "typ": "OAF",
+    "bbox": "",
+    "bboxCrs": "",
+    "datetime": "",
+    "crs": "EPSG:25832",
+    "params": {
+      "anzahl_schueler": ">1000"
+    }
+  },
+  {
+    "id": "6001",
+    "name": "ADV (EPSG:25832)",
+    "url": "https://dev.adv-smart.de/tiles/smarttiles_de_UTM32_dev/{z}/{x}/{y}.pbf",
+    "epsg": "EPSG:25832",
+    "typ": "VectorTile",
+    "extent": [
+      -46133.17,
+      5048875.26857567,
+      1206211.10142433,
+      6301219.54000000
+    ],
+    "resolutions": [
+      4891.96981025128,
+      2445.98490512564,
+      1222.99245256282,
+      611.496226281410,
+      305.748113140705,
+      152.874056570353,
+      76.4370282851763,
+      38.2185141425881,
+      19.1092570712941,
+      9.55462853564703,
+      4.77731426782352,
+      2.38865713391176
+    ],
+    "tileSize": 256,
+    "zDirection": -1
+  }
 ]
