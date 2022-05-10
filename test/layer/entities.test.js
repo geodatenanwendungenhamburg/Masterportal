@@ -30,7 +30,7 @@ describe("entities.js", function () {
                 contains: (value) => dataSourceValues.includes(value)
             };
             this.length = 0;
-            this.show = false;
+            this.forEach = () => dataSourceValues.forEach;
         };
         attr = {
             id: "4003",
@@ -147,7 +147,7 @@ describe("entities.js", function () {
 
             checkAttributes(layer, attr);
             expect(dataSourceValues.length).toEqual(1);
-            expect(dataSourcesContent[attr.id].show).toEqual(false);
+            expect(dataSourceValues[0].show).toEqual(false);
         });
         it("call setVisible without map and rawLayer shall not fail and shall do nothing", function () {
             attr.isSelected = false;
@@ -158,19 +158,20 @@ describe("entities.js", function () {
 
             checkAttributes(layer, attr);
             expect(dataSourceValues.length).toEqual(1);
-            expect(dataSourcesContent[attr.id].show).toEqual(false);
+            expect(dataSourceValues[0].show).toEqual(false);
         });
         it("call setVisible shall set show to true", function () {
             attr.isSelected = false;
+            attr.entities[0].show = false;
             const layer = entities.createLayer(attr, map);
 
-            expect(dataSourcesContent[attr.id].show).toEqual(false);
+            expect(dataSourceValues[0].show).toEqual(false);
 
             layer.setVisible(true, attr, map);
 
             checkAttributes(layer, attr);
             expect(dataSourceValues.length).toEqual(1);
-            expect(dataSourcesContent[attr.id].show).toEqual(true);
+            expect(dataSourceValues[0].show).toEqual(true);
         });
         it("call setVisible shall only warn, if no dataSource found", function () {
             attr.isSelected = false;
@@ -231,20 +232,22 @@ describe("entities.js", function () {
 
             layer.addEntities(attr, map);
             expect(dataSourceValues.length).toEqual(2);
-            expect(dataSourcesContent[attr.id].show).toEqual(false);
+            expect(dataSourceValues[0].show).toEqual(false);
+            expect(dataSourceValues[1].show).toEqual(false);
         });
-        it.only("addEntities shall add entity and set Visible if isSelected=true", function () {
+        it("addEntities shall add entity and set Visible", function () {
             attr.isSelected = true;
-            attr.entities[0].show = false;
+            attr.entities[0].show = true;
             const layer = entities.createLayer(attr, map);
 
             checkAttributes(layer, attr);
             expect(dataSourceValues.length).toEqual(1);
-            expect(dataSourcesContent[attr.id].show).toEqual(true);
+            expect(dataSourceValues[0].show).toEqual(true);
 
             layer.addEntities(attr, map);
             expect(dataSourceValues.length).toEqual(2);
-            expect(dataSourcesContent[attr.id].show).toEqual(true);
+            expect(dataSourceValues[0].show).toEqual(true);
+            expect(dataSourceValues[1].show).toEqual(true);
         });
     });
 });

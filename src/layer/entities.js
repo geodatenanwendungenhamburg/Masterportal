@@ -15,7 +15,10 @@ export function setVisible (value, rawLayer, map) {
             console.warn("Cannot change visibility of 3D entity for layer with id ", rawLayer.id, ". Datasource is not available.");
         }
         else {
-            dataSource.show = value;
+            dataSource.entities.values.forEach(entity => {
+                entity.show = value;
+            });
+            dataSource.show=value;
         }
     }
 }
@@ -41,9 +44,11 @@ export function setVisible (value, rawLayer, map) {
  */
 function addEntity (rawEntity, dataSource, rawLayer) {
     if (typeof rawEntity.url !== "string") {
+        console.warn("Url of entity must be a string, but is:", rawEntity.url);
         return null;
     }
     if (![rawEntity.longitude, rawEntity.latitude, rawEntity.height].every(num => typeof num === "number")) {
+        console.warn("longitude, latitude and height of entity must be a number.");
         return null;
     }
     const position = Cesium.Cartesian3.fromDegrees(rawEntity.longitude, rawEntity.latitude, rawEntity.height),
