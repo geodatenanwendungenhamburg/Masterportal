@@ -56,7 +56,7 @@ describe("entities.js", function () {
         };
         dataSources = {
             getByName: (name) => {
-                return dataSourcesContent[name] ? dataSourcesContent[name] : [];
+                return dataSourcesContent[name] ? [dataSourcesContent[name]] : [];
             },
             add: (dataSource) => {
                 dataSourcesContent[dataSource.name] = dataSource;
@@ -171,7 +171,7 @@ describe("entities.js", function () {
 
             checkAttributes(layer, attr);
             expect(dataSourceValues.length).toEqual(1);
-            expect(dataSourceValues[0].show).toEqual(true);
+            expect(dataSourcesContent[attr.id].show).toEqual(true);
         });
         it("call setVisible shall only warn, if no dataSource found", function () {
             attr.isSelected = false;

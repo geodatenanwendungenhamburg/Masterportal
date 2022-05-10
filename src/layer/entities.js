@@ -15,10 +15,7 @@ export function setVisible (value, rawLayer, map) {
             console.warn("Cannot change visibility of 3D entity for layer with id ", rawLayer.id, ". Datasource is not available.");
         }
         else {
-            dataSource.entities.values.forEach(entity => {
-                entity.show = value;
-            });
-            dataSource.show = value;
+            dataSource[0].show = value;
         }
     }
 }
@@ -86,7 +83,6 @@ function addEntity (rawEntity, dataSource, rawLayer) {
         show: typeof rawEntity.show === "boolean" ? rawEntity.show : rawLayer.isSelected,
         model: modelOptions
     };
-
     entity = dataSource.entities.add(entityOptions);
     entity.attributes = attributes;
     entity.allowPicking = allowPicking;
@@ -117,7 +113,8 @@ export function addEntities (rawLayer, map) {
         }
         if (rawLayer.entities) {
             rawLayer.entities.forEach(entity => {
-                addEntity(entity, dataSource, rawLayer);
+                // just created dataSource is an object, but if it is got by name it is contained in an array
+                addEntity(entity, Array.isArray(dataSource) ? dataSource[0] : dataSource, rawLayer);
             });
         }
         if (rawLayer.isSelected) {
