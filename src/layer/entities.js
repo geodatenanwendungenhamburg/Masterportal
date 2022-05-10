@@ -18,7 +18,7 @@ export function setVisible (value, rawLayer, map) {
             dataSource.entities.values.forEach(entity => {
                 entity.show = value;
             });
-            dataSource.show=value;
+            dataSource.show = value;
         }
     }
 }
