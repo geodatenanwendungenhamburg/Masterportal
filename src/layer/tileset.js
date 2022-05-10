@@ -13,7 +13,6 @@ function createTileSet (rawLayer) {
         Object.assign(options, rawLayer.cesium3DTilesetOptions);
     }
     options.url = url;
-    /* eslint-disable no-undef */
     return new Cesium.Cesium3DTileset(options);
 }
 /**

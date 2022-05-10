@@ -5,6 +5,7 @@
 
 ## Unreleased - in development
 ### Added
+- A new layer typ Entities3D (e.g. layer with glb-files) is implemented and integrated into MaterportalAPI.
 
 ### Changed
 

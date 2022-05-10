@@ -12,7 +12,6 @@ function createTerrainProvider (rawLayer) {
         Object.assign(options, rawLayer.cesiumTerrainProviderOptions);
     }
     options.url = rawLayer.url;
-    /* eslint-disable no-undef */
     return new Cesium.CesiumTerrainProvider(options);
 }
 
@@ -31,7 +30,6 @@ export function setVisible (value, rawLayer, map) {
             map.getCesiumScene().terrainProvider = createTerrainProvider(rawLayer);
         }
         else {
-            /* eslint-disable no-undef */
             map.getCesiumScene().terrainProvider = new Cesium.EllipsoidTerrainProvider({});
         }
     }

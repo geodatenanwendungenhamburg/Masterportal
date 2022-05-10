@@ -46,6 +46,7 @@ document.getElementById("enable").addEventListener("click", function () {
                 map3D = mapsAPI.map.createMap(settings3D, "3D"),
                 rawLayerTerrain = getLayerWhere({id: "4001"}),
                 rawLayerTileset = getLayerWhere({id: "4002"}),
+                rawLayerEntities = getLayerWhere({id: "4003"}),
                 scene = map3D.getCesiumScene();
 
             // set some options to Cesium scene
@@ -60,11 +61,14 @@ document.getElementById("enable").addEventListener("click", function () {
             tilesetLayer = new mpapi.Tileset(rawLayerTileset, window.mpapi.map);
             tilesetLayer.setVisible(true, window.mpapi.map);
 
-            window.mpapi.map.setEnabled(true);
+            //entities are 2 simple buildings in the park 'planten und blomen' near Tiergartenstraße
+            entitiesLayer = mpapi.entities.createLayer(rawLayerEntities, window.mpapi.map);
+            mpapi.entities.setVisible(true, rawLayerEntities, window.mpapi.map);
 
             terrainLayer = mpapi.terrain.createLayer(rawLayerTerrain, window.mpapi.map);
-            terrainLayer.setVisible(true, rawLayerTerrain, window.mpapi.map);
+            mpapi.terrain.setVisible(true, rawLayerTerrain, window.mpapi.map);
 
+            window.mpapi.map.setEnabled(true);
         });
     }
 });
