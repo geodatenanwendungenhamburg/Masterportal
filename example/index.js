@@ -19,7 +19,7 @@ window.mpapi = {
 };
 //* Fake service that holds client-side prepared geojson; also nice to test automatic transformation since data is in WGS 84
 // eslint-disable-next-line no-unused-vars
-const hamburgServicesUrl = "http://geoportal-hamburg.de/lgv-config/services-internet.json",
+const hamburgServicesUrl = "https://geodienste.hamburg.de/services-internet.json",
     localService = {
         id: "2002",
         typ: "GeoJSON",
