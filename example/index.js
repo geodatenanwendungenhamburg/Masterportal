@@ -17,6 +17,21 @@ window.mpapi = {
     map2D: null,
     map: null
 };
+//* Fake service that holds client-side prepared geojson; also nice to test automatic transformation since data is in WGS 84
+// eslint-disable-next-line no-unused-vars
+const hamburgServicesUrl = "http://geoportal-hamburg.de/lgv-config/services-internet.json",
+    localService = {
+        id: "2002",
+        typ: "GeoJSON",
+        features: localGeoJSON
+    },
+    config = {
+        ...portalConfig,
+        layerConf: services
+    },
+    layers2D = [];
+let map2D = null;
+
 // */
 //* Cleans up map before it is re-rendered (happens on every save during dev mode)
 document.getElementById(portalConfig.target).innerHTML = "";
@@ -40,14 +55,8 @@ document.getElementById("enable").addEventListener("click", function () {
             let terrainLayer = null,
                 tilesetLayer = null;
 
-            const settings3D = {
-                    "map2D": window.mpapi.map2D
-                },
-                map3D = mapsAPI.map.createMap(settings3D, "3D"),
-                rawLayerTerrain = getLayerWhere({id: "4001"}),
-                rawLayerTileset = getLayerWhere({id: "4002"}),
-                rawLayerEntities = getLayerWhere({id: "4003"}),
-                scene = map3D.getCesiumScene();
+            map3D = mapsAPI.map.createMap(settings3D, "3D");
+            scene = map3D.getCesiumScene();
 
             // set some options to Cesium scene
             scene.globe.enableLighting = true;
@@ -61,11 +70,11 @@ document.getElementById("enable").addEventListener("click", function () {
             tilesetLayer = new mpapi.Tileset(rawLayerTileset, window.mpapi.map);
             tilesetLayer.setVisible(true, window.mpapi.map);
 
-            //entities are 2 simple buildings in the park 'planten und blomen' near Tiergartenstraße
-            entitiesLayer = mpapi.entities.createLayer(rawLayerEntities, window.mpapi.map);
+            // entities are 2 simple buildings in the park 'planten und blomen' near Tiergartenstraße
+            mpapi.entities.createLayer(rawLayerEntities, window.mpapi.map);
             mpapi.entities.setVisible(true, rawLayerEntities, window.mpapi.map);
 
-            terrainLayer = mpapi.terrain.createLayer(rawLayerTerrain, window.mpapi.map);
+            mpapi.terrain.createLayer(rawLayerTerrain, window.mpapi.map);
             mpapi.terrain.setVisible(true, rawLayerTerrain, window.mpapi.map);
 
             window.mpapi.map.setEnabled(true);
@@ -80,21 +89,7 @@ document.getElementById("layer-visibility").addEventListener("click", function (
     });
 });
 
-//* Fake service that holds client-side prepared geojson; also nice to test automatic transformation since data is in WGS 84
-// eslint-disable-next-line no-unused-vars
-const hamburgServicesUrl = "http://geoportal-hamburg.de/lgv-config/services-internet.json",
-    localService = {
-        id: "2002",
-        typ: "GeoJSON",
-        features: localGeoJSON
-    },
-    config = {
-        ...portalConfig,
-        layerConf: services
-    },
-    map2D = mapsAPI.map.createMap(config, "2D"),
-    layers2D = [];
-
+map2D = mapsAPI.map.createMap(config, "2D");
 services.push(localService);
 // */
 
