@@ -90,16 +90,6 @@ function addEntity (rawEntity, dataSource, rawLayer) {
     entity.layerReferenceId = rawLayer.id;
     return entity;
 }
-/**
- * Creates a Cesium.CustomDataSource and adds it to map's dataSources.
- * Iterates over the entities of the raw layer and adds them to dataSource.
- * @param {Object} rawLayer  attributes of the layer
- * @param {string} [rawLayer.id] the id of the layer
- * @param {string} [rawLayer.entities] array of entities to add
- * @param {boolean} [rawLayer.isSelected] if true, the layer is set visible
- * @param {OLCesium} map ol cesium map
- * @returns {void}
- */
 
 /**
  * Iterates over the entities of the raw layer and adds them to dataSource.
@@ -123,6 +113,16 @@ function addEntities (rawLayer, dataSource, map) {
     }
 }
 
+/**
+ * Creates a Cesium.CustomDataSource and adds it to map's dataSources.
+ * Iterates over the entities of the raw layer and adds them to dataSource.
+ * @param {Object} rawLayer  attributes of the layer
+ * @param {string} [rawLayer.id] the id of the layer
+ * @param {string} [rawLayer.entities] array of entities to add
+ * @param {boolean} [rawLayer.isSelected] if true, the layer is set visible
+ * @param {OLCesium} map ol cesium map
+ * @returns {void}
+ */
 export function createDataSource (rawLayer, map) {
     if (!rawLayer) {
         console.warn("Cannot add entities to rawLayer which is null!");
