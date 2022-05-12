@@ -19,6 +19,7 @@ export function setVisible (value, rawLayer, map) {
         }
     }
 }
+
 /**
  * Adapts the rawEntity and adds it to the dataSource's entities.
  * The created entity has the attribute 'layerReferenceId' which contains the rawLayer's id.
@@ -99,7 +100,30 @@ function addEntity (rawEntity, dataSource, rawLayer) {
  * @param {OLCesium} map ol cesium map
  * @returns {void}
  */
-export function addEntities (rawLayer, map) {
+
+/**
+ * Iterates over the entities of the raw layer and adds them to dataSource.
+ * @param {Object} rawLayer  attributes of the layer
+ * @param {string} [rawLayer.id] the id of the layer
+ * @param {string} [rawLayer.entities] array of entities to add
+ * @param {boolean} [rawLayer.isSelected] if true, the layer is set visible
+ * @param {Cesium.CustomDataSource} dataSource a Cesium.DataSource implementation to manage a group of entities
+ * @param {OLCesium} map ol cesium map
+ * @returns {void}
+ */
+function addEntities (rawLayer, dataSource, map) {
+    if (rawLayer.entities) {
+        rawLayer.entities.forEach(entity => {
+            // just created dataSource is an object, but if it is got by name it is contained in an array
+            addEntity(entity, Array.isArray(dataSource) ? dataSource[0] : dataSource, rawLayer);
+        });
+    }
+    if (rawLayer.isSelected) {
+        setVisible(true, rawLayer, map);
+    }
+}
+
+export function createDataSource (rawLayer, map) {
     if (!rawLayer) {
         console.warn("Cannot add entities to rawLayer which is null!");
     }
@@ -109,19 +133,16 @@ export function addEntities (rawLayer, map) {
 
         if (dataSource.length === 0) {
             dataSource = new Cesium.CustomDataSource(rawLayer.id);
-            dataSources.add(dataSource);
-        }
-        if (rawLayer.entities) {
-            rawLayer.entities.forEach(entity => {
-                // just created dataSource is an object, but if it is got by name it is contained in an array
-                addEntity(entity, Array.isArray(dataSource) ? dataSource[0] : dataSource, rawLayer);
+            dataSources.add(dataSource).then(function (addedDataSource) {
+                addEntities(rawLayer, addedDataSource, map);
             });
         }
-        if (rawLayer.isSelected) {
-            setVisible(true, rawLayer, map);
+        else {
+            addEntities(rawLayer, dataSource, map);
         }
     }
 }
+
 
 /**
  * Creates an entities layer to use in ol-Cesium map.
@@ -135,7 +156,7 @@ export function addEntities (rawLayer, map) {
  * @returns {Object} layer
  */
 export function createLayer (rawLayer, map) {
-    addEntities(rawLayer, map);
+    createDataSource(rawLayer, map);
     this.values = {
         name: rawLayer.name,
         id: rawLayer.id,
@@ -155,4 +176,3 @@ export function get (key) {
     }
     return this.values[key];
 }
-
