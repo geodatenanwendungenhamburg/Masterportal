@@ -4,6 +4,7 @@
 import olLayerGroup from "ol/layer/Group.js";
 import {getUid} from "olcs/util.js";
 import TileWMS from "ol/source/TileWMS.js";
+import ImageWMS from "ol/source/ImageWMS.js";
 import olcsAbstractSynchronizer from "olcs/AbstractSynchronizer.js";
 import olcsCore from "olcs/core.js";
 import {Tile, Image as ImageLayer} from "ol/layer.js";
@@ -129,6 +130,17 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
                     options.maximumLevel = minMax[1];
                 }
             }
+            provider = new Cesium.WebMapServiceImageryProvider(options);
+        }
+        else if (source instanceof ImageWMS) {
+            const params = source.getParams(),
+                options = {
+                    "url": source.getUrl(),
+                    "parameters": params,
+                    "layers": params.LAYERS,
+                    "show": false
+                };
+
             provider = new Cesium.WebMapServiceImageryProvider(options);
         }
         else if (source instanceof StaticImageSource) {
