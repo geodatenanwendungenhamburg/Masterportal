@@ -57,12 +57,12 @@ document.getElementById("enable").addEventListener("click", function () {
                 scene = map3D.getCesiumScene();
 
              //set some options to Cesium scene
-             scene.globe.enableLighting = true;
-             scene.globe.tileCacheSize = 20;
-             scene.globe.maximumScreenSpaceError =2;
-             scene.fxaa = true;
-             scene.highDynamicRange = false;
-             scene.pickTranslucentDepth = true;
+            scene.globe.enableLighting = true;
+            scene.globe.tileCacheSize = 20;
+            scene.globe.maximumScreenSpaceError =2;
+            scene.fxaa = true;
+            scene.highDynamicRange = false;
+            scene.pickTranslucentDepth = true;
 
             window.mpapi.map = map3D;
             tilesetLayer = new mpapi.Tileset(rawLayerTileset, window.mpapi.map);
@@ -225,3 +225,11 @@ fetch(vtStyleUrl)
         mpapi.vectorTile.setStyle(vtLayer, style);
     });
 */
+
+/* WMTS example */
+/*
+map2D.getLayers().forEach(layer => {
+    map2D.removeLayer(layer);
+});
+window.mpapi.map.addLayer("7001");
+// */

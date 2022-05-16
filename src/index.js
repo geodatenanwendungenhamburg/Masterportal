@@ -2,6 +2,7 @@ import {createMapView} from "./maps/mapView";
 import * as crs from "./crs";
 import * as rawLayerList from "./rawLayerList";
 import * as wms from "./layer/wms";
+import * as wmts from "./layer/wmts";
 import * as wfs from "./layer/wfs";
 import * as geojson from "./layer/geojson";
 import * as vectorBase from "./layer/vectorBase";
@@ -16,6 +17,7 @@ import setBackgroundImage from "./lib/setBackgroundImage";
 export {
     createMapView,
     wms,
+    wmts,
     wfs,
     geojson,
     layerLib,

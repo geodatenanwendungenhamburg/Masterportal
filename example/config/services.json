@@ -104,5 +104,16 @@
     ],
     "tileSize": 256,
     "zDirection": -1
+  },
+  {
+    "id": "7001",
+    "name": "BKG TopPlus Open WMTS optionsFromCapabilities",
+    "capabilitiesUrl": "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
+    "typ": "WMTS",
+    "optionsFromCapabilities": true,
+    "layers": "web",
+    "visibility": true,
+    "maxScale": "5000000",
+    "tileMatrixSet": "EU_EPSG_25832_TOPPLUS"
   }
 ]

@@ -4,6 +4,7 @@ import setBackgroundImage from "../../lib/setBackgroundImage";
 import getInitialLayers from "../../lib/getInitialLayers";
 import defaults from "../../defaults";
 import * as wms from "../../layer/wms";
+import * as wmts from "../../layer/wmts";
 import * as geojson from "../../layer/geojson";
 import * as wfs from "../../layer/wfs";
 import * as vectorBase from "../../layer/vectorBase";
@@ -22,6 +23,7 @@ let mapIdCounter = 0;
  */
 const layerBuilderMap = {
         wms,
+        wmts,
         wfs,
         geojson,
         vectorBase,
