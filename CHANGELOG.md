@@ -5,6 +5,7 @@
 
 ## Unreleased - in development
 ### Added
+- Add a new layer type WMTS.
 
 ### Changed
 
