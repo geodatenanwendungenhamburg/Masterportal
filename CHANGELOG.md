@@ -13,6 +13,7 @@
 ### Removed
 
 ### Fixed
+- Vector layers like WFS, GeoJSON or OAF (OGC API - Features) are now displayed in 3D mode.
 
 ---
 
@@ -50,7 +51,7 @@
 - Gazetteer search:
     - Previous gazetteer searches can now be aborted by means of an `AbortController`.
     - Added the possibility to use the `geographicIdentifier` to display the search result.
-- A new layer typ OAF (OGC API features) is implemented and integrated into MaterportalAPI
+- A new layer typ OAF (OGC API - Features) is implemented and integrated into MaterportalAPI
     - Features as parameter can be parsed as filter
 - A new parameter "doNotLoadInitially" for WFS layer so that for the external filter, the filtering of feature will be first loaded
 

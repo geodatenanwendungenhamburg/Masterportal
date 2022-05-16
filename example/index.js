@@ -33,20 +33,13 @@ document.getElementById("enable").addEventListener("click", function () {
         ["1001", "2001", "2002", "1002", "3001", "5001"].forEach(id => window.mpapi.map.addLayer(id));
     }
     else {
-        const lib = portalConfig.cesiumLib ? portalConfig.cesiumLib : "https://geoportal-hamburg.de/mastercode/cesium/1_88/Cesium.js";
+        const lib = portalConfig.cesiumLib ? portalConfig.cesiumLib : "https://geoportal-hamburg.de/mastercode/cesium/1_93/Cesium.js";
 
         document.getElementById("layer-visibility").style.display = "block";
 
         load3DScript(lib, function Loaded3DCallback () {
-            let terrainLayer = null, tilesetLayer = null;
-            const toRemove = ["2001", "2002", "1002", "3001", "5001"];
-
-            layers2D.forEach(layer => {
-                const layerId = layer?.id || layer?.values_?.id;
-                if(toRemove.find(id => id === layerId)){
-                    map2D.removeLayer(layer);
-                }
-            });
+            let terrainLayer = null,
+                tilesetLayer = null;
 
             const settings3D = {
                     "map2D": window.mpapi.map2D
@@ -56,13 +49,13 @@ document.getElementById("enable").addEventListener("click", function () {
                 rawLayerTileset = getLayerWhere({id: "4002"}),
                 scene = map3D.getCesiumScene();
 
-             //set some options to Cesium scene
-             scene.globe.enableLighting = true;
-             scene.globe.tileCacheSize = 20;
-             scene.globe.maximumScreenSpaceError =2;
-             scene.fxaa = true;
-             scene.highDynamicRange = false;
-             scene.pickTranslucentDepth = true;
+            // set some options to Cesium scene
+            scene.globe.enableLighting = true;
+            scene.globe.tileCacheSize = 20;
+            scene.globe.maximumScreenSpaceError = 2;
+            scene.fxaa = true;
+            scene.highDynamicRange = false;
+            scene.pickTranslucentDepth = true;
 
             window.mpapi.map = map3D;
             tilesetLayer = new mpapi.Tileset(rawLayerTileset, window.mpapi.map);
@@ -119,6 +112,7 @@ mpapi.geojson.setCustomStyles({
 const styleWfs = function (feature, resolution) {
     const icon = new Style({
         image: new Icon({
+            crossOrigin: "anonymous",
             src: "https://img.icons8.com/windows/50/000000/building.png",
             scale: 0.5,
             opacity: 1
@@ -136,6 +130,7 @@ services.find(({id}) => id === "3001").style = styleWfs;
 const styleOaf = function (feature, resolution) {
     const icon = new Style({
         image: new Icon({
+            crossOrigin: "anonymous",
             src: "https://geodienste.hamburg.de/lgv-config/img/gymnasien.svg",
             scale: 0.5,
             opacity: 1
