@@ -111,7 +111,7 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
             provider = this.createProviderForTileWMS(source, viewProj);
         }
         else if (source instanceof ImageWMS) {
-            provider = this.createProviderForImageWMS(source);
+            return [olcsCore.tileLayerToImageryLayer(this.map, olLayer, viewProj)];
         }
         else if (source instanceof StaticImageSource) {
             provider = this.createProviderForStaticImageSource(source);
@@ -155,23 +155,6 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
                 options.maximumLevel = minMax[1];
             }
         }
-
-        return new Cesium.WebMapServiceImageryProvider(options);
-    }
-
-    /**
-     * Creates an Cesium.WebMapServiceImageryProvider for RasterLayer of the type ImageWMS.
-     * @param {module:ol/source/ImageWMS} source The raster layer source.
-     * @returns {WebMapServiceImageryProvider} The imagery provider.
-     */
-    createProviderForImageWMS (source) {
-        const params = source.getParams(),
-            options = {
-                "url": source.getUrl(),
-                "parameters": params,
-                "layers": params.LAYERS,
-                "show": false
-            };
 
         return new Cesium.WebMapServiceImageryProvider(options);
     }

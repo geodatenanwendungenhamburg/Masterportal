@@ -138,6 +138,8 @@ export function createLayer (rawLayer, layerParams = {}, options) {
     const source = createLayerSource(rawLayer, options),
         Layer = rawLayer.singleTile ? ImageLayer : TileLayer;
 
+    source.set("olcs.projection", getProjection("EPSG:3857"));
+
     return new Layer(Object.assign({
         source,
         minResolution: rawLayer.minScale,

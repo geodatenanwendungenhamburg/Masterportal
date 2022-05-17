@@ -22,7 +22,7 @@
     "layers": "krankenhaeuser",
     "format": "image/png",
     "version": "1.3.0",
-    "singleTile": false,
+    "singleTile": true,
     "transparent": true,
     "transparency": 0,
     "urlIsVisible": true,
