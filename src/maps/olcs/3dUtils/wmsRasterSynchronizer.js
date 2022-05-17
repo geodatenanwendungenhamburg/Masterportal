@@ -108,7 +108,7 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
         source = olLayer.getSource();
 
         if (source instanceof TileWMS) {
-            provider = this.createProviderForTileWMS(source, viewProj);
+            provider = this.createProviderForTileWMS(source, viewProj, olLayer);
         }
         else if (source instanceof ImageWMS) {
             return [olcsCore.tileLayerToImageryLayer(this.map, olLayer, viewProj)];
@@ -130,9 +130,10 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
      * Creates an Cesium.WebMapServiceImageryProvider for RasterLayer of the type TileWMS.
      * @param {module:ol/source/TileWMS} source The raster layer source.
      * @param {module:ol/proj} viewProj Projection of the view.
+     * @param {module:ol/layer/Base~BaseLayer } olLayer The raster layer.
      * @returns {WebMapServiceImageryProvider} The imagery provider.
      */
-    createProviderForTileWMS (source, viewProj) {
+    createProviderForTileWMS (source, viewProj, olLayer) {
         const params = source.getParams(),
             options = {
                 "url": source.getUrls()[0],
