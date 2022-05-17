@@ -36,24 +36,11 @@ describe("terrain.js", function () {
     }
 
     describe("createLayer", function () {
-        it("creates a wrapper for terrain layer without map and not selected", function () {
-            const layer = terrain.createLayer(attr);
-
-            checkAttributes(layer, attr);
-        });
-        it("creates a wrapper for terrain layer with map and not selected", function () {
-            attr.isSelected = false;
+        it("creates a wrapper for terrain layer with map", function () {
             const layer = terrain.createLayer(attr, map);
 
             checkAttributes(layer, attr);
             expect(cesiumTerrainProviderSpy).toHaveBeenCalledTimes(0);
-        });
-        it("creates a wrapper for terrain layer with map and selected", function () {
-            attr.isSelected = true;
-            const layer = terrain.createLayer(attr, map);
-
-            checkAttributes(layer, attr);
-            expect(cesiumTerrainProviderSpy).toHaveBeenCalledTimes(1);
         });
     });
     describe("setVisible", function () {

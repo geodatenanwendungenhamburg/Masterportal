@@ -15,7 +15,7 @@ export function setVisible (value, rawLayer, map) {
             console.warn("Cannot change visibility of 3D entity for layer with id ", rawLayer.id, ". Datasource is not available.");
         }
         else {
-            dataSource[0].show = value;
+            dataSource[0].show = typeof value === "boolean" ? value : false;
         }
     }
 }
@@ -33,11 +33,10 @@ export function setVisible (value, rawLayer, map) {
  * @param {number} [rawEntity.heading] the rotation about the negative z axis
  * @param {number} [rawEntity.pitch] the rotation about the negative y axis
  * @param {number} [rawEntity.roll] the rotation about the positive x axis
- * @param {boolean} [rawEntity.show] optional- if true, entity is shown. If not available the value of rawLayer.isSelected is used.
+ * @param {boolean} [rawEntity.show] optional- if true, entity is shown.
  * @param {Cesium.CustomDataSource} dataSource a Cesium.DataSource implementation to manage a group of entities
  * @param {Object} rawLayer layer specification as in services.json
  * @param {string} [rawLayer.id] optional id of the layer, passed to help identification in services.json
- * @param {boolean} [rawLayer.isSelected] if true, entity is shown
  * @returns {Object} the created entity
  */
 function addEntity (rawEntity, dataSource, rawLayer) {
@@ -75,13 +74,13 @@ function addEntity (rawEntity, dataSource, rawLayer) {
     modelOptions = Object.assign(rawEntity.modelOptions || {}, {
         uri: rawEntity.url,
         scale: typeof rawEntity.scale === "number" ? rawEntity.scale : 1,
-        show: typeof rawEntity.show === "boolean" ? rawEntity.show : rawLayer.isSelected
+        show: typeof rawEntity.show === "boolean" ? rawEntity.show : false
     });
     entityOptions = {
         name: rawEntity.url,
         position,
         orientation,
-        show: typeof rawEntity.show === "boolean" ? rawEntity.show : rawLayer.isSelected,
+        show: typeof rawEntity.show === "boolean" ? rawEntity.show : false,
         model: modelOptions
     };
     entity = dataSource.entities.add(entityOptions);
@@ -96,20 +95,15 @@ function addEntity (rawEntity, dataSource, rawLayer) {
  * @param {Object} rawLayer  attributes of the layer
  * @param {string} [rawLayer.id] the id of the layer
  * @param {string} [rawLayer.entities] array of entities to add
- * @param {boolean} [rawLayer.isSelected] if true, the layer is set visible
  * @param {Cesium.CustomDataSource} dataSource a Cesium.DataSource implementation to manage a group of entities
- * @param {OLCesium} map ol cesium map
  * @returns {void}
  */
-function addEntities (rawLayer, dataSource, map) {
+function addEntities (rawLayer, dataSource) {
     if (rawLayer.entities) {
         rawLayer.entities.forEach(entity => {
             // just created dataSource is an object, but if it is got by name it is contained in an array
             addEntity(entity, Array.isArray(dataSource) ? dataSource[0] : dataSource, rawLayer);
         });
-    }
-    if (rawLayer.isSelected) {
-        setVisible(true, rawLayer, map);
     }
 }
 
@@ -119,7 +113,6 @@ function addEntities (rawLayer, dataSource, map) {
  * @param {Object} rawLayer  attributes of the layer
  * @param {string} [rawLayer.id] the id of the layer
  * @param {string} [rawLayer.entities] array of entities to add
- * @param {boolean} [rawLayer.isSelected] if true, the layer is set visible
  * @param {OLCesium} map ol cesium map
  * @returns {void}
  */
@@ -151,7 +144,6 @@ export function createDataSource (rawLayer, map) {
  * @param {string} [rawLayer.name] optional name of the layer, passed to help identification in services.json
  * @param {string} [rawLayer.typ] typ of the layer, passed to help identification in services.json
  * @param {Array} [rawLayer.entities] array of entities to add
- * @param {boolean} [rawLayer.isSelected] if true, entity is shown
  * @param {OLCesium} map ol cesium map
  * @returns {Object} layer
  */

@@ -40,20 +40,15 @@ export function setVisible (value, rawLayer, map) {
  * @param {Object} rawLayer - layer specification as in services.json
  * @param {string} [rawLayer.id] - optional id of the layer, passed to help identification in services.json
  * @param {string} [rawLayer.url] - the URL of the Cesium terrain server
- * @param {string} [rawLayer.isSelected] - if true, terrain is created and shown
  * @param {string} [rawLayer.cesiumTerrainProviderOptions] - see https://cesiumjs.org/Cesium/Build/Documentation/CesiumTerrainProvider.html
- * @param {OLCesium} map ol cesium map
  * @returns {Object} layer
  */
-export function createLayer (rawLayer, map) {
+export function createLayer (rawLayer) {
     this.values = {
         name: rawLayer.name,
         id: rawLayer.id,
         typ: rawLayer.typ
     };
-    if (rawLayer.isSelected && map && typeof map.getCesiumScene === "function") {
-        setVisible(true, rawLayer, map);
-    }
     return this;
 }
 /**

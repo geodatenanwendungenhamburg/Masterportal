@@ -92,14 +92,12 @@ describe("entities.js", function () {
     }
 
     describe("createLayer", function () {
-        it("creates a wrapper for terrain layer without map and not selected", function () {
-            attr.isSelected = false;
+        it("creates a wrapper for terrain layer without map", function () {
             const layer = entities.createLayer(attr);
 
             checkAttributes(layer, attr);
         });
-        it("creates a wrapper for entities layer with map and not selected", async function () {
-            attr.isSelected = false;
+        it("creates a wrapper for entities layer with map and show is false", async function () {
             attr.entities[0].show = false;
             const layer = entities.createLayer(attr, map);
 
@@ -112,8 +110,7 @@ describe("entities.js", function () {
             expect(cesiumCustomDataSourceSpy).toHaveBeenCalledTimes(1);
             expect(cesiumHeadingPitchRollSpy).toHaveBeenCalledTimes(1);
         });
-        it("creates a wrapper for terrain layer with map and selected and show not set", async function () {
-            attr.isSelected = true;
+        it("creates a wrapper for terrain layer with map and show not set", async function () {
             attr.entities[0].show = undefined;
             const layer = entities.createLayer(attr, map);
 
@@ -121,13 +118,12 @@ describe("entities.js", function () {
 
             checkAttributes(layer, attr);
             expect(dataSourceValues.length).toEqual(1);
-            expect(dataSourceValues[0].show).toEqual(true);
+            expect(dataSourceValues[0].show).toEqual(false);
             expect(Object.keys(dataSourcesContent).length).toEqual(1);
             expect(cesiumCustomDataSourceSpy).toHaveBeenCalledTimes(1);
             expect(cesiumHeadingPitchRollSpy).toHaveBeenCalledTimes(1);
         });
-        it("creates a wrapper for terrain layer with map and selected and show is true", async function () {
-            attr.isSelected = true;
+        it("creates a wrapper for terrain layer with map and show is true", async function () {
             attr.entities[0].show = true;
             const layer = entities.createLayer(attr, map);
 
@@ -215,8 +211,6 @@ describe("entities.js", function () {
         it("calls get for attributes", async function () {
             const layer = entities.createLayer(attr, map);
 
-            // await tick();
-
             checkAttributes(layer, attr);
             expect(layer.get(null)).toEqual(undefined);
             expect(layer.get(undefined)).toEqual(undefined);
@@ -250,7 +244,6 @@ describe("entities.js", function () {
         });
 
         it("addEntities shall add entity twice", async function () {
-            attr.isSelected = false;
             attr.entities[0].show = false;
             const layer = entities.createLayer(attr, map);
 
@@ -265,7 +258,6 @@ describe("entities.js", function () {
             expect(dataSourceValues[1].show).toEqual(false);
         });
         it("addEntities shall add entity and set Visible", async function () {
-            attr.isSelected = true;
             attr.entities[0].show = true;
             const layer = entities.createLayer(attr, map);
 

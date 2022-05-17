@@ -20,12 +20,10 @@ function createTileSet (rawLayer) {
  * @param {Object} rawLayer - layer specification as in services.json
  * @param {string} [rawLayer.id] - optional id of the layer, passed to help identification in services.json
  * @param {string} [rawLayer.url] - the URL of the Cesium terrain server
- * @param {string} [rawLayer.isSelected] - if true, terrain is created and shown
  * @param {string} [rawLayer.cesiumTerrainProviderOptions] - see https://cesiumjs.org/Cesium/Build/Documentation/CesiumTerrainProvider.html
- * @param {OLCesium} map ol cesium map
  * @returns {void}
  */
-export default function Tileset (rawLayer, map) {
+export default function Tileset (rawLayer) {
     this.values = {
         name: rawLayer.name,
         id: rawLayer.id,
@@ -33,10 +31,6 @@ export default function Tileset (rawLayer, map) {
     };
     this.tileset = createTileSet(rawLayer);
     this.tileset.layerReferenceId = rawLayer.id;
-
-    if (rawLayer.isSelected && map && typeof map.getCesiumScene === "function") {
-        this.setVisible(true, map);
-    }
 }
 /**
  *
