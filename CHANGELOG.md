@@ -8,6 +8,8 @@
 - A new layer typ Entities3D (e.g. layer with glb-files) is implemented and integrated into MaterportalAPI.
 
 ### Changed
+- The following packages have been updated
+    - ol: from 6.13.0 to version 6.14.1
 
 ### Deprecated
 
