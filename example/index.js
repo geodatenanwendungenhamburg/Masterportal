@@ -30,7 +30,6 @@ document.getElementById("enable").addEventListener("click", function () {
         window.mpapi.map.setEnabled(false);
         window.mpapi.map = window.mpapi.map2D;
         document.getElementById("layer-visibility").style.display = "none";
-        ["1001", "2001", "2002", "1002", "3001", "5001"].forEach(id => window.mpapi.map.addLayer(id));
     }
     else {
         const lib = portalConfig.cesiumLib ? portalConfig.cesiumLib : "https://geoportal-hamburg.de/mastercode/cesium/1_93/Cesium.js";
