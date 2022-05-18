@@ -181,8 +181,8 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
                 "url": source.getUrl(),
                 "show": false
             },
-            bottomLeftCorner = proj4("EPSG:25832", "EPSG:4326", getBottomLeft(extent)),
-            topRightCorner = proj4("EPSG:25832", "EPSG:4326", getTopRight(extent));
+            bottomLeftCorner = proj4(source.getProjection().getCode(), "EPSG:4326", getBottomLeft(extent)),
+            topRightCorner = proj4(source.getProjection().getCode(), "EPSG:4326", getTopRight(extent));
 
         options.rectangle = Cesium.Rectangle.fromDegrees(bottomLeftCorner[0], bottomLeftCorner[1], topRightCorner[0], topRightCorner[1]);
 
