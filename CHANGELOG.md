@@ -14,6 +14,7 @@
 ### Deprecated
 
 ### Removed
+- Removes the `depthTestAgainstTerrain` attribute from 3D mode as it prevents vector features from being displayed at small scales.
 
 ### Fixed
 - Vector layers like WFS, GeoJSON or OAF (OGC API - Features) are now displayed in 3D mode.

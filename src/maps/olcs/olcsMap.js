@@ -30,7 +30,6 @@ function setCesiumSceneDefaults (scene, config) {
         scene.shadowMap.size = 2048;
         scene.fxaa = params?.fxaa ? params.fxaa : scene.fxaa;
         scene.globe.enableLighting = params?.enableLighting ? params.enableLighting : scene.globe.enableLighting;
-        scene.globe.depthTestAgainstTerrain = true;
         scene.highDynamicRange = false;
         scene.pickTranslucentDepth = true;
         scene.camera.enableTerrainAdjustmentWhenLoading = true;
