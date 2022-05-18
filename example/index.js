@@ -52,11 +52,16 @@ document.getElementById("enable").addEventListener("click", function () {
         document.getElementById("layer-visibility").style.display = "block";
 
         load3DScript(lib, function Loaded3DCallback () {
-            let terrainLayer = null,
-                tilesetLayer = null;
+            let tilesetLayer = null;
 
-            map3D = mapsAPI.map.createMap(settings3D, "3D");
-            scene = map3D.getCesiumScene();
+            const settings3D = {
+                    "map2D": window.mpapi.map2D
+                },
+                map3D = mapsAPI.map.createMap(settings3D, "3D"),
+                scene = map3D.getCesiumScene(),
+                rawLayerTerrain = getLayerWhere({id: "4001"}),
+                rawLayerTileset = getLayerWhere({id: "4002"}),
+                rawLayerEntities = getLayerWhere({id: "4003"});
 
             // set some options to Cesium scene
             scene.globe.enableLighting = true;
