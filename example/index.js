@@ -28,8 +28,7 @@ const hamburgServicesUrl = "https://geodienste.hamburg.de/services-internet.json
     config = {
         ...portalConfig,
         layerConf: services
-    },
-    layers2D = [];
+    };
 let map2D = null;
 
 // */
@@ -44,6 +43,7 @@ document.getElementById("enable").addEventListener("click", function () {
     if (window.mpapi.map.mapMode === "3D") {
         window.mpapi.map.setEnabled(false);
         window.mpapi.map = window.mpapi.map2D;
+        window.mpapi.map.getView().setRotation(0);
         document.getElementById("layer-visibility").style.display = "none";
     }
     else {
@@ -149,9 +149,6 @@ services.find(({id}) => id === "5001").style = styleOaf;
 window.mpapi.map = map2D;
 
 ["2001", "2002", "1002", "3001", "5001"].forEach(id => window.mpapi.map.addLayer(id));
-map2D.getLayers().forEach(layer => {
-    layers2D.push(layer);
-});
 
 // */
 
