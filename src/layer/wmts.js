@@ -8,8 +8,8 @@ import {get as getProjection} from "ol/proj";
 
 /**
  * Shows error message in console for various WMTS errors.
- * @param {string} errorMessage error message
- * @param {string} layerName layerName
+ * @param {String} errorMessage error message
+ * @param {String} layerName layerName
  * @returns {void}
  */
 export function showErrorMessage (errorMessage, layerName) {
@@ -33,7 +33,7 @@ export function generateArrays (resolutions, matrixIds, length, size) {
 
 /**
  * Gets the WMTS-GetCapabilities document and parse it
- * @param {string} url url for getting capabilities
+ * @param {String} url url for getting capabilities
  * @throws {Error} on unexpected return
  * @returns {promise} promise resolves to parsed WMTS-GetCapabilities object
  */
