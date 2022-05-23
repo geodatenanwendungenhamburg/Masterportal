@@ -115,7 +115,14 @@ function reactTo3DClickEvent (event) {
         transformedPickedPosition = null;
 
         if (scene.pickPositionSupported) {
+            const pickedObject = scene.pick(event.position);
+
             pickedPositionCartesian = scene.pickPosition(event.position);
+
+            if (!pickedPositionCartesian && pickedObject?.primitive instanceof window.Cesium.Billboard) {
+                pickedPositionCartesian = pickedObject.primitive?.position;
+            }
+
             if (pickedPositionCartesian) {
                 cartographicPickedPosition = scene.globe.ellipsoid.cartesianToCartographic(pickedPositionCartesian);
                 transformedPickedPosition = transform([Cesium.Math.toDegrees(cartographicPickedPosition.longitude), Cesium.Math.toDegrees(cartographicPickedPosition.latitude)], get("EPSG:4326"), mapProjection);

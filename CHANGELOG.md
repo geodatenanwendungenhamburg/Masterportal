@@ -20,6 +20,7 @@
 ### Fixed
 - Vector layers like WFS, GeoJSON or OAF (OGC API - Features) are now displayed in 3D mode.
 - WMS layers of type `TileWMS` are now also displayed in 3D.
+- In 3D mode a pick position is now provided for clicked billboards.
 
 ---
 
