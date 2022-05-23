@@ -14,6 +14,7 @@ export function setCustomStyles (styles) {
 
 // // // STYLE PARTS
 const marker = new Icon({
+        crossOrigin: "anonymous",
         src: markerSvg,
         // center bottom of marker 📍 is intended to show the spot
         anchor: [0.5, 1]

@@ -6,14 +6,20 @@
 ## Unreleased - in development
 ### Added
 - Add a new layer type WMTS.
+- A new layer typ Entities3D (e.g. layer with glb-files) is implemented and integrated into MaterportalAPI.
 
 ### Changed
+- The following packages have been updated
+    - ol: from 6.13.0 to version 6.14.1
 
 ### Deprecated
 
 ### Removed
+- Removes the `depthTestAgainstTerrain` attribute from 3D mode as it prevents vector features from being displayed at small scales.
 
 ### Fixed
+- Vector layers like WFS, GeoJSON or OAF (OGC API - Features) are now displayed in 3D mode.
+- WMS layers of type `TileWMS` are now also displayed in 3D.
 
 ---
 
@@ -51,7 +57,7 @@
 - Gazetteer search:
     - Previous gazetteer searches can now be aborted by means of an `AbortController`.
     - Added the possibility to use the `geographicIdentifier` to display the search result.
-- A new layer typ OAF (OGC API features) is implemented and integrated into MaterportalAPI
+- A new layer typ OAF (OGC API - Features) is implemented and integrated into MaterportalAPI
     - Features as parameter can be parsed as filter
 - A new parameter "doNotLoadInitially" for WFS layer so that for the external filter, the filtering of feature will be first loaded
 

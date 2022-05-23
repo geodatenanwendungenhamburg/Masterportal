@@ -30,7 +30,6 @@ function setCesiumSceneDefaults (scene, config) {
         scene.shadowMap.size = 2048;
         scene.fxaa = params?.fxaa ? params.fxaa : scene.fxaa;
         scene.globe.enableLighting = params?.enableLighting ? params.enableLighting : scene.globe.enableLighting;
-        scene.globe.depthTestAgainstTerrain = true;
         scene.highDynamicRange = false;
         scene.pickTranslucentDepth = true;
         scene.camera.enableTerrainAdjustmentWhenLoading = true;
@@ -104,13 +103,13 @@ function reactTo3DClickEvent (event) {
             document.querySelector(".nav li").classList.remove("open");
         }
         cartographic = scene.globe.ellipsoid.cartesianToCartographic(cartesian);
-        coords = [window.Cesium.Math.toDegrees(cartographic.longitude), window.Cesium.Math.toDegrees(cartographic.latitude)];
+        coords = [Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude)];
         height = scene.globe.getHeight(cartographic);
         if (height) {
             coords = coords.concat([height]);
         }
 
-        distance = window.Cesium.Cartesian3.distance(cartesian, scene.camera.position);
+        distance = Cesium.Cartesian3.distance(cartesian, scene.camera.position);
         resolution = this.map3D.getCamera().calcResolutionForDistance(distance, cartographic.latitude);
         transformedCoords = transform(coords, get("EPSG:4326"), mapProjection);
         transformedPickedPosition = null;
@@ -119,7 +118,7 @@ function reactTo3DClickEvent (event) {
             pickedPositionCartesian = scene.pickPosition(event.position);
             if (pickedPositionCartesian) {
                 cartographicPickedPosition = scene.globe.ellipsoid.cartesianToCartographic(pickedPositionCartesian);
-                transformedPickedPosition = transform([window.Cesium.Math.toDegrees(cartographicPickedPosition.longitude), window.Cesium.Math.toDegrees(cartographicPickedPosition.latitude)], get("EPSG:4326"), mapProjection);
+                transformedPickedPosition = transform([Cesium.Math.toDegrees(cartographicPickedPosition.longitude), Cesium.Math.toDegrees(cartographicPickedPosition.latitude)], get("EPSG:4326"), mapProjection);
                 transformedPickedPosition.push(cartographicPickedPosition.height);
             }
         }
@@ -145,9 +144,9 @@ function reactTo3DClickEvent (event) {
 function handle3DEvents (map3DObject) {
     let eventHandler;
 
-    if (window.Cesium) {
-        eventHandler = new window.Cesium.ScreenSpaceEventHandler(map3DObject.scene.canvas);
-        eventHandler.setInputAction(reactTo3DClickEvent.bind(map3DObject), window.Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    if (Cesium) {
+        eventHandler = new Cesium.ScreenSpaceEventHandler(map3DObject.scene.canvas);
+        eventHandler.setInputAction(reactTo3DClickEvent.bind(map3DObject), Cesium.ScreenSpaceEventType.LEFT_CLICK);
     }
 }
 

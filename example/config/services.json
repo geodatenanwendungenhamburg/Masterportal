@@ -22,7 +22,7 @@
     "layers": "krankenhaeuser",
     "format": "image/png",
     "version": "1.3.0",
-    "singleTile": false,
+    "singleTile": true,
     "transparent": true,
     "transparency": 0,
     "urlIsVisible": true,
@@ -115,5 +115,45 @@
     "visibility": true,
     "maxScale": "5000000",
     "tileMatrixSet": "EU_EPSG_25832_TOPPLUS"
+  },
+  {
+    "id": "4003",
+    "name": "EntitiesLayer",
+    "typ": "Entities3D",
+    "entities": [
+      {
+          "url": "https://daten-hamburg.de/gdi3d/datasource-data/Simple_Building.glb",
+        "attributes": {
+          "name": "einfaches Haus in Planten und Blomen"
+        },
+        "latitude": 53.5631,
+        "longitude": 9.9800,
+        "height": 16,
+        "heading": 0,
+        "pitch": 0,
+        "roll": 0,
+        "scale": 5,
+        "allowPicking": true,
+        "show": true
+      },
+      {
+        "url": "https://daten-hamburg.de/gdi3d/datasource-data/Simple_Building.glb",
+        "attributes": {
+          "name": "einfaches Haus im See"
+        },
+        "latitude": 53.5622,
+        "longitude": 9.9808,
+        "height": 16,
+        "heading": 0,
+        "pitch": 0,
+        "roll": 0,
+        "scale": 2,
+        "allowPicking": true,
+        "show": true
+      }
+    ],
+    "gfiAttributes" : {
+      "name": "Name"
+    }
   }
 ]

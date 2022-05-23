@@ -17,6 +17,20 @@ window.mpapi = {
     map2D: null,
     map: null
 };
+//* Fake service that holds client-side prepared geojson; also nice to test automatic transformation since data is in WGS 84
+// eslint-disable-next-line no-unused-vars
+const hamburgServicesUrl = "https://geodienste.hamburg.de/services-internet.json",
+    localService = {
+        id: "2002",
+        typ: "GeoJSON",
+        features: localGeoJSON
+    },
+    config = {
+        ...portalConfig,
+        layerConf: services
+    };
+let map2D = null;
+
 // */
 //* Cleans up map before it is re-rendered (happens on every save during dev mode)
 document.getElementById(portalConfig.target).innerHTML = "";
@@ -29,37 +43,30 @@ document.getElementById("enable").addEventListener("click", function () {
     if (window.mpapi.map.mapMode === "3D") {
         window.mpapi.map.setEnabled(false);
         window.mpapi.map = window.mpapi.map2D;
+        window.mpapi.map.getView().setRotation(0);
         document.getElementById("layer-visibility").style.display = "none";
-        ["1001", "2001", "2002", "1002", "3001", "5001"].forEach(id => window.mpapi.map.addLayer(id));
     }
     else {
-        const lib = portalConfig.cesiumLib ? portalConfig.cesiumLib : "https://geoportal-hamburg.de/mastercode/cesium/1_88/Cesium.js";
+        const lib = portalConfig.cesiumLib ? portalConfig.cesiumLib : "https://geoportal-hamburg.de/mastercode/cesium/1_93/Cesium.js";
 
         document.getElementById("layer-visibility").style.display = "block";
 
         load3DScript(lib, function Loaded3DCallback () {
-            let terrainLayer = null, tilesetLayer = null;
-            const toRemove = ["2001", "2002", "1002", "3001", "5001"];
-
-            layers2D.forEach(layer => {
-                const layerId = layer?.id || layer?.values_?.id;
-                if(toRemove.find(id => id === layerId)){
-                    map2D.removeLayer(layer);
-                }
-            });
+            let tilesetLayer = null;
 
             const settings3D = {
                     "map2D": window.mpapi.map2D
                 },
                 map3D = mapsAPI.map.createMap(settings3D, "3D"),
+                scene = map3D.getCesiumScene(),
                 rawLayerTerrain = getLayerWhere({id: "4001"}),
                 rawLayerTileset = getLayerWhere({id: "4002"}),
-                scene = map3D.getCesiumScene();
+                rawLayerEntities = getLayerWhere({id: "4003"});
 
-             //set some options to Cesium scene
+            // set some options to Cesium scene
             scene.globe.enableLighting = true;
             scene.globe.tileCacheSize = 20;
-            scene.globe.maximumScreenSpaceError =2;
+            scene.globe.maximumScreenSpaceError = 2;
             scene.fxaa = true;
             scene.highDynamicRange = false;
             scene.pickTranslucentDepth = true;
@@ -68,11 +75,14 @@ document.getElementById("enable").addEventListener("click", function () {
             tilesetLayer = new mpapi.Tileset(rawLayerTileset, window.mpapi.map);
             tilesetLayer.setVisible(true, window.mpapi.map);
 
+            // entities are 2 simple buildings in the park 'planten und blomen' near Tiergartenstraße
+            mpapi.entities.createLayer(rawLayerEntities, window.mpapi.map);
+            mpapi.entities.setVisible(true, rawLayerEntities, window.mpapi.map);
+
+            mpapi.terrain.createLayer(rawLayerTerrain, window.mpapi.map);
+            mpapi.terrain.setVisible(true, rawLayerTerrain, window.mpapi.map);
+
             window.mpapi.map.setEnabled(true);
-
-            terrainLayer = mpapi.terrain.createLayer(rawLayerTerrain, window.mpapi.map);
-            terrainLayer.setVisible(true, rawLayerTerrain, window.mpapi.map);
-
         });
     }
 });
@@ -84,21 +94,7 @@ document.getElementById("layer-visibility").addEventListener("click", function (
     });
 });
 
-//* Fake service that holds client-side prepared geojson; also nice to test automatic transformation since data is in WGS 84
-// eslint-disable-next-line no-unused-vars
-const hamburgServicesUrl = "http://geoportal-hamburg.de/lgv-config/services-internet.json",
-    localService = {
-        id: "2002",
-        typ: "GeoJSON",
-        features: localGeoJSON
-    },
-    config = {
-        ...portalConfig,
-        layerConf: services
-    },
-    map2D = mapsAPI.map.createMap(config, "2D"),
-    layers2D = [];
-
+map2D = mapsAPI.map.createMap(config, "2D");
 services.push(localService);
 // */
 
@@ -119,6 +115,7 @@ mpapi.geojson.setCustomStyles({
 const styleWfs = function (feature, resolution) {
     const icon = new Style({
         image: new Icon({
+            crossOrigin: "anonymous",
             src: "https://img.icons8.com/windows/50/000000/building.png",
             scale: 0.5,
             opacity: 1
@@ -136,6 +133,7 @@ services.find(({id}) => id === "3001").style = styleWfs;
 const styleOaf = function (feature, resolution) {
     const icon = new Style({
         image: new Icon({
+            crossOrigin: "anonymous",
             src: "https://geodienste.hamburg.de/lgv-config/img/gymnasien.svg",
             scale: 0.5,
             opacity: 1
@@ -151,9 +149,6 @@ services.find(({id}) => id === "5001").style = styleOaf;
 window.mpapi.map = map2D;
 
 ["2001", "2002", "1002", "3001", "5001"].forEach(id => window.mpapi.map.addLayer(id));
-map2D.getLayers().forEach(layer => {
-    layers2D.push(layer);
-});
 
 // */
 
