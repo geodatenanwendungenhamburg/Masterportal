@@ -11,12 +11,10 @@ let mapIdCounter = 0;
 /**
  * Sets the cesium default scene params.
  * @param {Cesium.scene} scene The cesium scene.
- * @param {Object} [cesiumParameter={}] Optional configuration parameters.
+ * @param {Object} params Optional configuration parameters.
  * @returns {void}
  */
-function setCesiumSceneParams (scene, cesiumParameter = {}) {
-    const params = Object.assign(defaults.sceneOptions, cesiumParameter);
-
+export function setCesiumSceneParams (scene, params) {
     Object.keys(params).forEach(paramKey => {
         const paramValue = params[paramKey];
 
@@ -51,7 +49,7 @@ export function createMap (settings) {
     map3D.id = `map3D_${mapIdCounter++}`;
     map3D.mapMode = "3D";
 
-    setCesiumSceneParams(map3D.getCesiumScene(), settings?.cesiumParameter);
+    setCesiumSceneParams(map3D.getCesiumScene(), Object.assign(defaults.sceneOptions, settings?.cesiumParameter));
 
     return map3D;
 }
@@ -181,12 +179,10 @@ export function handle3DEvents (map3DObject) {
  * Prepares the camera and listens to camera changed events.
  * @param {Cesium.scene} scene Cesium scene.
  * @param {Object} urlParams optional urlParams for camera.
- * @param {Object} map3D olcs map.
  * @param {Object} config optional configuration parameters.
- * @param {Cesium} cesium optional cesium.
  * @returns {Cesium.scene.camera} Cesium camera.
  */
-export function prepareCamera (scene, urlParams, map3D, config, cesium) {
+export function prepareCamera (scene, urlParams, config) {
     const camera = scene.camera;
     let cameraParameter = Object.prototype.hasOwnProperty.call(config, "cameraParameter") ? config.cameraParameter : {};
 
@@ -195,7 +191,7 @@ export function prepareCamera (scene, urlParams, map3D, config, cesium) {
     cameraParameter = urlParams?.tilt ? Object.assign(cameraParameter || {}, {tilt: urlParams?.tilt}) : cameraParameter;
 
     if (Object.keys(cameraParameter).length > 0) {
-        setCesiumSceneParams(cameraParameter, map3D, cesium);
+        setCesiumSceneParams(scene, {camera: cameraParameter});
     }
 
     return camera;
