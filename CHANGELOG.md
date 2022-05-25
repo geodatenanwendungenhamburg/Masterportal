@@ -11,6 +11,9 @@
 ### Changed
 - The following packages have been updated
     - ol: from 6.13.0 to version 6.14.1
+- 3D Mode:
+  - Default values are now set for the 3D Scene when creating the 3D Map.
+  - Default values for the 3D Scene can be overwritten with the attribute `sceneOptions` any.
 
 ### Deprecated
 

@@ -34,5 +34,21 @@ export default {
         }
     ],
     gazetteerUrl: "https://geodienste.hamburg.de/HH_WFS_GAGES?service=WFS&request=GetFeature&version=2.0.0",
-    showGeographicIdentifier: false
+    showGeographicIdentifier: false,
+    sceneOptions: {
+        camera: {
+            enableTerrainAdjustmentWhenLoading: true
+        },
+        globe: {
+            depthTestAgainstTerrain: true
+        },
+        highDynamicRange: false,
+        pickTranslucentDepth: true,
+        shadowMap: {
+            darkness: 0.6,
+            maximumDistance: 5000.0,
+            size: 2048
+        },
+        shadows: false
+    }
 };

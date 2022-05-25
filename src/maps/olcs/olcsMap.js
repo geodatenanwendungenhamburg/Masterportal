@@ -1,40 +1,59 @@
 import OLCesium from "olcs/OLCesium.js";
+import {transform, get} from "ol/proj.js";
 import VectorSynchronizer from "olcs/VectorSynchronizer.js";
+
 import FixedOverlaySynchronizer from "./3dUtils/fixedOverlaySynchronizer.js";
 import WMSRasterSynchronizer from "./3dUtils/wmsRasterSynchronizer.js";
-import {transform, get} from "ol/proj.js";
+import defaults from "../../defaults";
 
 let mapIdCounter = 0;
 
 /**
- * Sets the cesium scene defaults from the config.js
- * @param {Cesium.scene} scene Cesium scene.
- * @param {Object} config optional configuration parameters.
+ * Sets the cesium default scene params.
+ * @param {Cesium.scene} scene The cesium scene.
+ * @param {Object} [cesiumParameter={}] Optional configuration parameters.
  * @returns {void}
  */
-function setCesiumSceneDefaults (scene, config) {
-    let params;
+function setCesiumSceneParams (scene, cesiumParameter = {}) {
+    const params = Object.assign(defaults.sceneOptions, cesiumParameter);
 
-    if (Object.prototype.hasOwnProperty.call(config, "cesiumParameter")) {
-        params = config.cesiumParameter;
-        if (params?.fog) {
-            scene.fog.enabled = params.fog?.enabled ? params.fog.enabled : scene.fog.enabled;
-            scene.fog.density = params.fog?.density ? parseFloat(params.fog.density) : scene.fog.density;
-            scene.fog.screenSpaceErrorFactor = params.fog?.screenSpaceErrorFactor ? parseFloat(params.fog.screenSpaceErrorFactor) : scene.fog.screenSpaceErrorFactor;
+    Object.keys(params).forEach(paramKey => {
+        const paramValue = params[paramKey];
+
+        if (typeof paramValue === "object") {
+            Object.keys(paramValue).forEach(paramSubKey => {
+                scene[paramKey][paramSubKey] = paramValue[paramSubKey];
+            });
         }
+        else {
+            scene[paramKey] = paramValue;
+        }
+    });
+}
 
-        scene.globe.depthTestAgainstTerrain = true; // is necessary for scene.pickedPosition and correct height of the terrain. @see {https://github.com/CesiumGS/cesium/issues/5676}
-        scene.globe.tileCacheSize = params?.tileCacheSize ? parseInt(params.tileCacheSize, 10) : scene.globe.tileCacheSize;
-        scene.globe.maximumScreenSpaceError = params?.maximumScreenSpaceError ? params.maximumScreenSpaceError : scene.globe.maximumScreenSpaceError;
-        scene.shadowMap.maximumDistance = 5000.0;
-        scene.shadowMap.darkness = 0.6;
-        scene.shadowMap.size = 2048;
-        scene.fxaa = params?.fxaa ? params.fxaa : scene.fxaa;
-        scene.globe.enableLighting = params?.enableLighting ? params.enableLighting : scene.globe.enableLighting;
-        scene.highDynamicRange = false;
-        scene.pickTranslucentDepth = true;
-        scene.camera.enableTerrainAdjustmentWhenLoading = true;
-    }
+/**
+ * Creates a 3D-map.
+ * @param {object} [settings] The settings for the 3D-map.
+ * @param {module:ol/PluggableMap~PluggableMap} [settings.map2D] The 2D-Map
+ * @param {Cesium.JulianDate} [settings.shadowTime] The shadow time in julian date format if undefined olcs default is Cesium.JulianDate.now().
+ * @returns {module:OLCesium} the 3d-map
+ */
+export function createMap (settings) {
+    const map3D = new OLCesium({
+        map: settings.map2D,
+        time: settings?.shadowTime,
+        stopOpenLayersEventsPropagation: true,
+        createSynchronizers: (olMap, scene) => {
+            return [new WMSRasterSynchronizer(olMap, scene), new VectorSynchronizer(olMap, scene), new FixedOverlaySynchronizer(olMap, scene)];
+        }
+    });
+
+    map3D.id = `map3D_${mapIdCounter++}`;
+    map3D.mapMode = "3D";
+
+    setCesiumSceneParams(map3D.getCesiumScene(), settings?.cesiumParameter);
+
+    return map3D;
 }
 
 /**
@@ -149,39 +168,13 @@ function reactTo3DClickEvent (event) {
  * @param {Object} map3DObject Contains the scene, 3D map and a callback function.
  * @returns {void}
  */
-function handle3DEvents (map3DObject) {
+export function handle3DEvents (map3DObject) {
     let eventHandler;
 
     if (Cesium) {
         eventHandler = new Cesium.ScreenSpaceEventHandler(map3DObject.scene.canvas);
         eventHandler.setInputAction(reactTo3DClickEvent.bind(map3DObject), Cesium.ScreenSpaceEventType.LEFT_CLICK);
     }
-}
-
-/**
- * Creates a 3D-map.
- * @param {object} [settings] The settings for the 3D-map.
- * @param {module:ol/PluggableMap~PluggableMap} [settings.map2D] The 2D-Map
- * @param {Cesium.JulianDate} [settings.shadowTime] The shadow time in julian date format if undefined olcs default is Cesium.JulianDate.now().
- * @returns {module:OLCesium} the 3d-map
- */
-export function createMap (settings) {
-    const map3D = new OLCesium({
-        map: settings.map2D,
-        time: settings.shadowTime ? settings.shadowTime : undefined,
-        sceneOptions: {
-            shadows: false
-        },
-        stopOpenLayersEventsPropagation: true,
-        createSynchronizers: (olMap, scene) => {
-            return [new WMSRasterSynchronizer(olMap, scene), new VectorSynchronizer(olMap, scene), new FixedOverlaySynchronizer(olMap, scene)];
-        }
-    });
-
-    map3D.id = `map3D_${mapIdCounter++}`;
-    map3D.mapMode = "3D";
-
-    return map3D;
 }
 
 /**
@@ -202,18 +195,8 @@ export function prepareCamera (scene, urlParams, map3D, config, cesium) {
     cameraParameter = urlParams?.tilt ? Object.assign(cameraParameter || {}, {tilt: urlParams?.tilt}) : cameraParameter;
 
     if (Object.keys(cameraParameter).length > 0) {
-        setCameraParameter(cameraParameter, map3D, cesium);
+        setCesiumSceneParams(cameraParameter, map3D, cesium);
     }
-    return camera;
-}
 
-/**
- * Prepares the cesium scene.
- * @param {Object} map3DObject Contains the scene, 3D map and a callback function.
- * @param {Object} config optional configuration parameters.
- * @returns {void}
- */
-export function prepareScene (map3DObject, config) {
-    handle3DEvents(map3DObject);
-    setCesiumSceneDefaults(map3DObject.scene, config);
+    return camera;
 }

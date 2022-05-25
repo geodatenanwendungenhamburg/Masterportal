@@ -55,21 +55,21 @@ document.getElementById("enable").addEventListener("click", function () {
             let tilesetLayer = null;
 
             const settings3D = {
-                    "map2D": window.mpapi.map2D
+                    map2D: window.mpapi.map2D,
+                    // set some options to Cesium scene
+                    cesiumParameter: {
+                        fxaa: true,
+                        globe: {
+                            enableLighting: true,
+                            maximumScreenSpaceError: 2,
+                            tileCacheSize: 20
+                        }
+                    }
                 },
                 map3D = mapsAPI.map.createMap(settings3D, "3D"),
-                scene = map3D.getCesiumScene(),
                 rawLayerTerrain = getLayerWhere({id: "4001"}),
                 rawLayerTileset = getLayerWhere({id: "4002"}),
                 rawLayerEntities = getLayerWhere({id: "4003"});
-
-            // set some options to Cesium scene
-            scene.globe.enableLighting = true;
-            scene.globe.tileCacheSize = 20;
-            scene.globe.maximumScreenSpaceError = 2;
-            scene.fxaa = true;
-            scene.highDynamicRange = false;
-            scene.pickTranslucentDepth = true;
 
             window.mpapi.map = map3D;
             tilesetLayer = new mpapi.Tileset(rawLayerTileset, window.mpapi.map);
@@ -77,7 +77,7 @@ document.getElementById("enable").addEventListener("click", function () {
 
             // entities are 2 simple buildings in the park 'planten und blomen' near Tiergartenstraße
             mpapi.entities.createLayer(rawLayerEntities, window.mpapi.map);
-            mpapi.entities.setVisible(true, rawLayerEntities, window.mpapi.map);
+            // mpapi.entities.setVisible(true, rawLayerEntities, window.mpapi.map);
 
             mpapi.terrain.createLayer(rawLayerTerrain, window.mpapi.map);
             mpapi.terrain.setVisible(true, rawLayerTerrain, window.mpapi.map);
@@ -154,53 +154,45 @@ window.mpapi.map = map2D;
 
 /* ASYNCHRONOUS EXAMPLE 1: work with layerConf callback
 document.getElementById("enable").style.display = "none";
-mpapi.rawLayerList.initializeLayerList(
-    hamburgServicesUrl,
+mpapi.rawLayerList.initializeLayerList(hamburgServicesUrl,
     conf => {
         window.mpapi.map = mapsAPI.map.createMap({
             ...portalConfig,
             layerConf: conf,
             layers: null
         }, "2D");
-        ["6357", "6074"].forEach(
-            id => window.mpapi.map.addLayer(id)
-        );
-    }
-);
+        ["6357", "6074"].forEach(id => window.mpapi.map.addLayer(id));
+    });
 //*/
 
 /* ASYNCHRONOUS EXAMPLE 2: work with createMap callback
 document.getElementById("enable").style.display = "none";
-window.mpapi.map = mapsAPI.map.createMap(
-    {...portalConfig, layerConf: hamburgServicesUrl, layers: [
-        { id: "6357" },
-        { id: "453", transparency: 50 }
+window.mpapi.map = mapsAPI.map.createMap({
+    ...portalConfig, layerConf: hamburgServicesUrl, layers: [
+        {id: "6357"},
+        {id: "453", transparency: 50}
     ]}, "2D",
-    {
-        callback: () =>
-            ["6074"].forEach(
-                id => window.mpapi.map.addLayer(id)
-            )
-    }
-);
+{
+    callback: () => ["6074"].forEach(id => window.mpapi.map.addLayer(id))
+});
 //*/
 
 /* SEARCH FUNCTION EXAMPLE
 // You may e.g. copy this code to the browser's console to run a search.
 
-window.mpapi.search("Eiffe",  {
+window.mpapi.search("Eiffe", {
     map: window.mpapi.map,
     zoom: true,
     zoomToParams: {duration: 1000, maxZoom: 8},
     searchStreets: true
-}).then(x => console.log(x)).catch(e => console.error(e))
+}).then(x => console.log(x)).catch(e => console.error(e));
 
-window.mpapi.search("Mümmelmannsberg 72",  {
+window.mpapi.search("Mümmelmannsberg 72", {
     map: window.mpapi.map,
     zoom: true,
     zoomToParams: {duration: 1000, maxZoom: 8},
     searchAddress: true
-}).then(x => console.log(x)).catch(e => console.error(e))
+}).then(x => console.log(x)).catch(e => console.error(e));
 
 //*/
 
@@ -211,15 +203,16 @@ map2D.getLayers().forEach(layer => {
     map2D.removeLayer(layer);
 });
 
-let vtStyleUrl = 'https://dev.adv-smart.de/styles/playground/masterportal_test1.json';
+const vtStyleUrl = "https://dev.adv-smart.de/styles/playground/masterportal_test1.json";
 
 fetch(vtStyleUrl)
     .then(response => response.json())
     .then(style => {
-        let vtLayer = window.mpapi.map.addLayer("6001");
+        const vtLayer = window.mpapi.map.addLayer("6001");
+
         mpapi.vectorTile.setStyle(vtLayer, style);
     });
-*/
+//*/
 
 /* WMTS example */
 /*
