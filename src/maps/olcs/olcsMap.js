@@ -23,7 +23,7 @@ function setCesiumSceneDefaults (scene, config) {
             scene.fog.screenSpaceErrorFactor = params.fog?.screenSpaceErrorFactor ? parseFloat(params.fog.screenSpaceErrorFactor) : scene.fog.screenSpaceErrorFactor;
         }
 
-        scene.globe.depthTestAgainstTerrain = true; // is necessary for scene.pickedPosition. @see {https://github.com/CesiumGS/cesium/issues/5676}
+        scene.globe.depthTestAgainstTerrain = true; // is necessary for scene.pickedPosition and correct height of the terrain. @see {https://github.com/CesiumGS/cesium/issues/5676}
         scene.globe.tileCacheSize = params?.tileCacheSize ? parseInt(params.tileCacheSize, 10) : scene.globe.tileCacheSize;
         scene.globe.maximumScreenSpaceError = params?.maximumScreenSpaceError ? params.maximumScreenSpaceError : scene.globe.maximumScreenSpaceError;
         scene.shadowMap.maximumDistance = 5000.0;
