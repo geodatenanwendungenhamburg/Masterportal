@@ -40,7 +40,7 @@ export default {
             enableTerrainAdjustmentWhenLoading: true
         },
         globe: {
-            depthTestAgainstTerrain: true
+            depthTestAgainstTerrain: true // is necessary for scene.pickedPosition and correct height of the terrain. @see {https://github.com/CesiumGS/cesium/issues/5676}
         },
         highDynamicRange: false,
         pickTranslucentDepth: true,
