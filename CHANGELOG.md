@@ -3,7 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.3.0 - 2022-05-27
 ### Added
 - Add a new layer type WMTS.
 - A new layer typ Entities3D (e.g. layer with glb-files) is implemented and integrated into MaterportalAPI.
@@ -12,19 +12,15 @@
 - The following packages have been updated
     - ol: from 6.13.0 to version 6.14.1
 - 3D Mode:
-  - Default values are now set for the 3D Scene when creating the 3D Map.
-  - Default values for the 3D Scene can be overwritten with the attribute `sceneOptions` any.
-  - Default values of the 3D Scene are always set first. After that, attributes configured by the user are set.
-
-### Deprecated
-
-### Removed
-- Removes the `depthTestAgainstTerrain` attribute from 3D mode as it prevents vector features from being displayed at small scales.
+    - Default values are now set for the 3D Scene when creating the 3D Map.
+    - Default values for the 3D Scene can be overwritten with the attribute `sceneOptions` any.
+    - Default values of the 3D Scene are always set first. After that, attributes configured by the user are set.
 
 ### Fixed
-- Vector layers like WFS, GeoJSON or OAF (OGC API - Features) are now displayed in 3D mode.
-- WMS layers of type `TileWMS` are now also displayed in 3D.
-- In 3D mode a pick position is now provided for clicked billboards.
+- 3D Mode:
+    - Vector layers like WFS, GeoJSON or OAF (OGC API - Features) are now displayed in 3D mode.
+    - WMS layers of type `TileWMS` are now also displayed in 3D.
+    - In 3D mode a pick position is now provided for clicked billboards.
 
 ---
 
