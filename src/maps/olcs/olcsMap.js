@@ -49,7 +49,10 @@ export function createMap (settings) {
     map3D.id = `map3D_${mapIdCounter++}`;
     map3D.mapMode = "3D";
 
-    setCesiumSceneParams(map3D.getCesiumScene(), Object.assign(defaults.sceneOptions, settings?.cesiumParameter));
+    setCesiumSceneParams(map3D.getCesiumScene(), defaults.sceneOptions);
+    if (settings?.cesiumParameter) {
+        setCesiumSceneParams(map3D.getCesiumScene(), settings.cesiumParameter);
+    }
 
     return map3D;
 }

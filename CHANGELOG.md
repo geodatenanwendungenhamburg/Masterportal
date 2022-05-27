@@ -14,6 +14,7 @@
 - 3D Mode:
   - Default values are now set for the 3D Scene when creating the 3D Map.
   - Default values for the 3D Scene can be overwritten with the attribute `sceneOptions` any.
+  - Default values of the 3D Scene are always set first. After that, attributes configured by the user are set.
 
 ### Deprecated
 
