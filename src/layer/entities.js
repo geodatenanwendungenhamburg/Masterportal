@@ -114,9 +114,10 @@ function addEntities (rawLayer, dataSource) {
  * @param {string} [rawLayer.id] the id of the layer
  * @param {string} [rawLayer.entities] array of entities to add
  * @param {OLCesium} map ol cesium map
- * @returns {void}
+ * @param {function} callback to execute after datasource is added to map and entities are added
+ * @returns {*} null or the return-value of the callback
  */
-export function createDataSource (rawLayer, map) {
+export function createDataSource (rawLayer, map, callback) {
     if (!rawLayer) {
         console.warn("Cannot add entities to rawLayer which is null!");
     }
@@ -128,12 +129,20 @@ export function createDataSource (rawLayer, map) {
             dataSource = new Cesium.CustomDataSource(rawLayer.id);
             dataSources.add(dataSource).then(function (addedDataSource) {
                 addEntities(rawLayer, addedDataSource, map);
+                if (callback) {
+                    return callback();
+                }
+                return null;
             });
         }
         else {
             addEntities(rawLayer, dataSource, map);
+            if (callback) {
+                return callback();
+            }
         }
     }
+    return null;
 }
 
 
