@@ -13,6 +13,7 @@
 ### Removed
 
 ### Fixed
+- Issue 776: Fix 3D mode for WMTS layers.
 
 ---
 

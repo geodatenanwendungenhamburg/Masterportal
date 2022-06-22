@@ -5,6 +5,7 @@ import olLayerGroup from "ol/layer/Group.js";
 import {getUid} from "olcs/util.js";
 import TileWMS from "ol/source/TileWMS.js";
 import ImageWMS from "ol/source/ImageWMS.js";
+import WMTS from "ol/source/WMTS.js";
 import olcsAbstractSynchronizer from "olcs/AbstractSynchronizer.js";
 import olcsCore from "olcs/core.js";
 import {Tile, Image as ImageLayer} from "ol/layer.js";
@@ -115,6 +116,16 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
         }
         else if (source instanceof StaticImageSource) {
             provider = this.createProviderForStaticImageSource(source);
+        }
+        else if (source instanceof WMTS) {
+            provider = new Cesium.WebMapTileServiceImageryProvider({
+                url: source.getUrls()[0],
+                format: source.getFormat(),
+                layer: source.getLayer(),
+                style: source.getStyle(),
+                tileMatrixSetID: source.getMatrixSet(),
+                credit: source.getAttributions()
+            });
         }
         else {
             console.warn("Sources other than TileImage are currently not supported.");

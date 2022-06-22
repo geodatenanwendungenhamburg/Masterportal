@@ -220,4 +220,5 @@ map2D.getLayers().forEach(layer => {
     map2D.removeLayer(layer);
 });
 window.mpapi.map.addLayer("7001");
+window.mpapi.map.addLayer("7002");
 // */

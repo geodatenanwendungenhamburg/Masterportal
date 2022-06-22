@@ -106,15 +106,63 @@
     "zDirection": -1
   },
   {
-    "id": "7001",
-    "name": "BKG TopPlus Open WMTS optionsFromCapabilities",
-    "capabilitiesUrl": "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
+    "id":"7001",
+    "name":"TopPlusOpen",
+    "capabilitiesUrl":"https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
+    "optionsFromCapabilities":true,
+    "typ":"WMTS",
+    "layers":"web"
+  },
+  {
+    "id": "7002",
+    "name": "Geoland Basemap",
+    "urls": [
+      "https://maps1.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+      "https://maps2.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+      "https://maps3.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+      "https://maps4.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+      "https://maps.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"
+    ],
     "typ": "WMTS",
-    "optionsFromCapabilities": true,
-    "layers": "web",
-    "visibility": true,
-    "maxScale": "5000000",
-    "tileMatrixSet": "EU_EPSG_25832_TOPPLUS"
+    "layer": "geolandbasemap",
+    "version": "1.0.0",
+    "format": "image/png",
+    "style": "normal",
+    "transparent": false,
+    "tileSize": "256",
+    "minScale": "0",
+    "maxScale": "2500000",
+    "tileMatrixSet": "google3857",
+    "matrixSizes": [
+      [1, 1], [2, 2],
+      [4, 4], [8, 8],
+      [16, 16], [32, 32],
+      [64, 64], [128, 128],
+      [256, 256], [512, 512],
+      [1024, 1024], [2048, 2048],
+      [4096, 4096], [8192, 8192],
+      [16384, 16384], [32768, 32768],
+      [65536, 65536], [131072, 131072],
+      [262144, 262144], [524288, 524288]
+    ],
+    "coordinateSystem": "EPSG:3857",
+    "layerAttribution": "nicht vorhanden",
+    "legend": false,
+    "cache": true,
+    "wrapX": true,
+    "origin": [
+      -20037508.3428,
+      20037508.3428
+    ],
+    "scales": [
+      559082264.029, 279541132.015, 139770566.007, 69885283.0036,
+      34942641.5018, 17471320.7509, 8735660.37545, 4367830.18773,
+      2183915.09386, 1091957.54693, 45978.773466, 272989.386733,
+      136494.693366, 68247.3466832, 34123.6733416, 17061.8366708,
+      8530.91833540, 4265.45916770, 2132.72958385, 1066.36479193
+    ],
+    "resLength": "20",
+    "requestEncoding": "REST"
   },
   {
     "id": "4003",
