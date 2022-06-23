@@ -221,4 +221,5 @@ map2D.getLayers().forEach(layer => {
 });
 window.mpapi.map.addLayer("7001");
 window.mpapi.map.addLayer("7002");
+window.mpapi.map.addLayer("7003");
 // */

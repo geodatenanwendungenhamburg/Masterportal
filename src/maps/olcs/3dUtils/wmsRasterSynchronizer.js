@@ -124,6 +124,7 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
                 layer: source.getLayer(),
                 style: source.getStyle(),
                 tileMatrixSetID: source.getMatrixSet(),
+                tileMatrixLabels: source.getTileGrid().getMatrixIds(),
                 credit: source.getAttributions()
             });
         }

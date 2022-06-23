@@ -115,6 +115,14 @@
   },
   {
     "id": "7002",
+    "name": "EOC Basemap",
+    "capabilitiesUrl": "https://tiles.geoservice.dlr.de/service/wmts?SERVICE=WMTS&REQUEST=GetCapabilities",
+    "typ": "WMTS",
+    "optionsFromCapabilities": true,
+    "layers": "eoc:basemap"
+  },
+  {
+    "id": "7003",
     "name": "Geoland Basemap",
     "urls": [
       "https://maps1.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
