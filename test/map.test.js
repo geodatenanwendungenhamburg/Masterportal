@@ -167,8 +167,41 @@ describe("map.js", function () {
                 const map3D = map.createMap(config, "3D");
 
                 expect(map3D.mapMode).toBe("3D");
-                map.setCameraParameter(config.cameraParameter, map3D, config.cesiumLib);
+                expect(map3D.getCesiumScene().camera.getAltitude()).toBe(config.cameraParameter.altitude);
+                expect(map3D.getCesiumScene().camera.getHeading()).toBe(config.cameraParameter.heading);
+                expect(map3D.getCesiumScene().camera.getTilt()).toBe(config.cameraParameter.tilt);
+            });
+        });
+        it("set the camera parameter from config under camera", function () {
+            const config = {
+                map2D: {
+                    getView: () => {
+                        return {
+                            getProjection: () => {
+                                return {getCode: () => "code"};
+                            }
+                        };
+                    },
+                    getViewport: () => {
+                        return {
+                            appendChild: jest.fn()
+                        };
+                    }
+                },
+                cameraParameter: {
+                    camera: {
+                        altitude: 272.3469798217454,
+                        heading: -0.30858728378862876,
+                        tilt: 0.9321791580603296
+                    }
+                },
+                cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
+            };
 
+            load3DScript(config.cesiumLib, function Loaded3DCallback () {
+                const map3D = map.createMap(config, "3D");
+
+                expect(map3D.mapMode).toBe("3D");
                 expect(map3D.getCesiumScene().camera.getAltitude()).toBe(config.cameraParameter.altitude);
                 expect(map3D.getCesiumScene().camera.getHeading()).toBe(config.cameraParameter.heading);
                 expect(map3D.getCesiumScene().camera.getTilt()).toBe(config.cameraParameter.tilt);
