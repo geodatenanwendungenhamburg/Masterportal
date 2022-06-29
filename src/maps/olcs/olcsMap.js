@@ -20,13 +20,80 @@ export function setCesiumSceneParams (scene, params) {
 
         if (typeof paramValue === "object") {
             Object.keys(paramValue).forEach(paramSubKey => {
-                scene[paramKey][paramSubKey] = paramValue[paramSubKey];
+                if (paramSubKey !== "heading" && paramSubKey !== "tilt" && paramSubKey !== "altitude") {
+                    scene[paramKey][paramSubKey] = paramValue[paramSubKey];
+                }
             });
         }
         else {
             scene[paramKey] = paramValue;
         }
     });
+}
+/**
+ * Sets the camera parameters either from config or from an trigger.
+ * @param {Object} params Params.
+ * @param {Object} map3D olcs map.
+ * @param {Cesium} cesium cesium.
+ * @returns {void}
+ */
+export function setCameraParameter (params, map3D, cesium) {
+    let camera,
+        destination,
+        orientation,
+        heading;
+
+    if (params && map3D) {
+        if (typeof params.heading !== "undefined") {
+            heading = parseFloat(params.heading);
+        }
+        else if (typeof params.camera?.heading !== "undefined") {
+            heading = parseFloat(params.camera?.heading);
+        }
+        // if the cameraPosition is given, directly set the cesium camera position, otherwise use olcesium Camera
+        if (params.cameraPosition) {
+            camera = map3D.getCesiumScene().camera;
+            destination = cesium.Cartesian3.fromDegrees(params.cameraPosition[0], params.cameraPosition[1], params.cameraPosition[2]);
+            orientation = {
+                heading: cesium.Math.toRadians(heading),
+                pitch: cesium.Math.toRadians(parseFloat(params.pitch)),
+                roll: cesium.Math.toRadians(parseFloat(params.roll))
+            };
+
+            camera.setView({
+                destination,
+                orientation
+            });
+        }
+        else {
+            let tilt,
+                altitude;
+
+            if (typeof params.tilt !== "undefined") {
+                tilt = parseFloat(params.tilt);
+            }
+            else if (typeof params.camera?.tilt !== "undefined") {
+                tilt = parseFloat(params.camera?.tilt);
+            }
+            if (typeof params.altitude !== "undefined") {
+                altitude = parseFloat(params.altitude);
+            }
+            else if (typeof params.camera?.altitude !== "undefined") {
+                altitude = parseFloat(params.camera?.altitude);
+            }
+            camera = map3D.getCamera();
+
+            if (tilt) {
+                camera.setTilt(tilt);
+            }
+            if (heading) {
+                camera.setHeading(heading);
+            }
+            if (altitude) {
+                camera.setAltitude(altitude);
+            }
+        }
+    }
 }
 
 /**
@@ -52,50 +119,10 @@ export function createMap (settings) {
     setCesiumSceneParams(map3D.getCesiumScene(), defaults.sceneOptions);
     if (settings?.cesiumParameter) {
         setCesiumSceneParams(map3D.getCesiumScene(), settings.cesiumParameter);
+        setCameraParameter(settings.cesiumParameter, map3D, Cesium);
     }
 
     return map3D;
-}
-
-/**
- * Sets the camera parameters either from config or from an trigger.
- * @param {Object} params Params.
- * @param {Object} map3D olcs map.
- * @param {Cesium} cesium cesium.
- * @returns {void}
- */
-export function setCameraParameter (params, map3D, cesium) {
-    let camera,
-        destination,
-        orientation;
-
-    // if the cameraPosition is given, directly set the cesium camera position, otherwise use olcesium Camera
-    if (map3D && params.cameraPosition) {
-        camera = map3D.getCesiumScene().camera;
-        destination = cesium.Cartesian3.fromDegrees(params.cameraPosition[0], params.cameraPosition[1], params.cameraPosition[2]);
-        orientation = {
-            heading: cesium.Math.toRadians(parseFloat(params.heading)),
-            pitch: cesium.Math.toRadians(parseFloat(params.pitch)),
-            roll: cesium.Math.toRadians(parseFloat(params.roll))
-        };
-
-        camera.setView({
-            destination,
-            orientation
-        });
-    }
-    else if (map3D !== undefined && params !== null) {
-        camera = map3D.getCamera();
-        if (params?.tilt) {
-            camera.setTilt(parseFloat(params.tilt));
-        }
-        if (params?.heading) {
-            camera.setHeading(parseFloat(params.heading));
-        }
-        if (params?.altitude) {
-            camera.setAltitude(parseFloat(params.altitude));
-        }
-    }
 }
 
 /**
