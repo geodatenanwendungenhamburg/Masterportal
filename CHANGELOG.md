@@ -3,16 +3,66 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased
+## Unreleased - in development
 ### Added
 
 ### Changed
-- The WMS layer respects crs code at rawlayer. The WMS request now contains the attribute CRS. If not available, projection of the map is used.
 
 ### Deprecated
 
 ### Removed
+
 ### Fixed
+- Issue 776: Fix 3D mode for WMTS layers.
+
+---
+
+## 2.3.0 - 2022-05-27
+### Added
+- Add a new layer type WMTS.
+- A new layer typ Entities3D (e.g. layer with glb-files) is implemented and integrated into MaterportalAPI.
+
+### Changed
+- The following packages have been updated
+    - ol: from 6.13.0 to version 6.14.1
+- 3D Mode:
+    - Default values are now set for the 3D Scene when creating the 3D Map.
+    - Default values for the 3D Scene can be overwritten with the attribute `sceneOptions` any.
+    - Default values of the 3D Scene are always set first. After that, attributes configured by the user are set.
+
+### Fixed
+- 3D Mode:
+    - Vector layers like WFS, GeoJSON or OAF (OGC API - Features) are now displayed in 3D mode.
+    - WMS layers of type `TileWMS` are now also displayed in 3D.
+    - In 3D mode a pick position is now provided for clicked billboards.
+
+---
+
+## 2.2.0 - 2022-04-25
+### Added
+- Add a new layer type Vector tile layer.
+
+---
+
+## 2.1.1 - 2022-04-20
+### Fixed
+- Allow searchAddress to find street names with a prefix.
+
+---
+
+## 2.1.0 - 2022-04-04
+### Added
+- Add a new layer type OAf (Open API Features).
+
+### Changed
+- The WMS layer respects crs code at rawlayer. The WMS request now contains the attribute CRS. If not available, projection of the map is used.
+- OAF
+    - Changing the OAF attribute "featureType" into "collection"
+    - Setting OAF output format only in GeoJSON
+    - Removing unnecessary parameters
+
+### Fixed
+- Fix a vulnerability of third party libraries.
 
 ---
 
@@ -22,7 +72,7 @@
 - Gazetteer search:
     - Previous gazetteer searches can now be aborted by means of an `AbortController`.
     - Added the possibility to use the `geographicIdentifier` to display the search result.
-- A new layer typ OAF (OGC API features) is implemented and integrated into MaterportalAPI
+- A new layer typ OAF (OGC API - Features) is implemented and integrated into MaterportalAPI
     - Features as parameter can be parsed as filter
 - A new parameter "doNotLoadInitially" for WFS layer so that for the external filter, the filtering of feature will be first loaded
 

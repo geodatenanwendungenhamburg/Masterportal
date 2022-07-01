@@ -45,22 +45,15 @@ describe("tileset.js", function () {
     }
 
     describe("createLayer", function () {
-        it("creates tileset layer without map and not selected", function () {
+        it("creates tileset layer without map", function () {
             const layer = new Tileset(attr);
 
             checkAttributes(layer, attr);
             expect(layer.tileSet).toEqual(undefined);
+            expect(layer.tileset.show).toEqual(undefined);
             expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
         });
-        it("creates tileset layer with map and selected", function () {
-            attr.isSelected = true;
-            const layer = new Tileset(attr, map);
-
-            checkAttributes(layer, attr);
-            expect(layer.tileset.show).toEqual(true);
-            expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
-        });
-        it("creates 2 tileset layers  with map and selected and checks attributes", function () {
+        it("creates 2 tileset layers  with map and checks attributes", function () {
             const attr2 = {
                     id: "4003",
                     name: "name",

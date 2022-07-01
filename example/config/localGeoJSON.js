@@ -4,29 +4,29 @@
  * @type {object} GeoJSON Feature Collection
  */
 export default {
-    "type":"FeatureCollection",
-    "features":[
+    "type": "FeatureCollection",
+    "features": [
         {
             "type": "Feature",
-            "properties":{
+            "properties": {
                 "name": "Testmarker"
             },
-            "geometry":{
-                "type":"Point",
-                "coordinates":[9.8436, 53.4800]
+            "geometry": {
+                "type": "Point",
+                "coordinates": [9.8436, 53.4800]
             }
         },
         {
-            "type":"Feature",
-            "properties":{
-                "name":"Wilhelmsburg",
-                "cartodb_id":23,
-                "created_at":"2013-02-18T21:04:33.987Z",
-                "updated_at":"2013-02-18T21:04:34.218Z"
+            "type": "Feature",
+            "properties": {
+                "name": "Wilhelmsburg",
+                "cartodb_id": 23,
+                "created_at": "2013-02-18T21:04:33.987Z",
+                "updated_at": "2013-02-18T21:04:34.218Z"
             },
-            "geometry":{
-                "type":"MultiPolygon",
-                "coordinates":[
+            "geometry": {
+                "type": "MultiPolygon",
+                "coordinates": [
                     [
                         [
                             [
@@ -583,16 +583,16 @@ export default {
             }
         },
         {
-            "type":"Feature",
-            "properties":{
-                "name":"Blankenese",
-                "cartodb_id":30,
-                "created_at":"2013-02-18T21:04:33.987Z",
-                "updated_at":"2013-02-18T21:04:34.218Z"
+            "type": "Feature",
+            "properties": {
+                "name": "Blankenese",
+                "cartodb_id": 30,
+                "created_at": "2013-02-18T21:04:33.987Z",
+                "updated_at": "2013-02-18T21:04:34.218Z"
             },
-            "geometry":{
-                "type":"MultiPolygon",
-                "coordinates":[
+            "geometry": {
+                "type": "MultiPolygon",
+                "coordinates": [
                     [
                         [
                             [

@@ -7,6 +7,8 @@ import {get as getProjection} from "ol/proj";
 
 import {getLayerWhere} from "../rawLayerList";
 
+const OLCS_DEFAULT_OLCS_PROJECTION_CRS = "EPSG:3857";
+
 /** @returns {number} random session id in range (0, 9999999) */
 export function generateSessionId () {
     return Math.floor(Math.random() * 9999999);
@@ -137,6 +139,8 @@ export function createLayerSource (rawLayer, options) {
 export function createLayer (rawLayer, layerParams = {}, options) {
     const source = createLayerSource(rawLayer, options),
         Layer = rawLayer.singleTile ? ImageLayer : TileLayer;
+
+    source.set("olcs.projection", getProjection(OLCS_DEFAULT_OLCS_PROJECTION_CRS));
 
     return new Layer(Object.assign({
         source,

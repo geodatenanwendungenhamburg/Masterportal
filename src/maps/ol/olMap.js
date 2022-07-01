@@ -4,9 +4,11 @@ import setBackgroundImage from "../../lib/setBackgroundImage";
 import getInitialLayers from "../../lib/getInitialLayers";
 import defaults from "../../defaults";
 import * as wms from "../../layer/wms";
+import * as wmts from "../../layer/wmts";
 import * as geojson from "../../layer/geojson";
 import * as wfs from "../../layer/wfs";
 import * as vectorBase from "../../layer/vectorBase";
+import * as vectortile from "../../layer/vectorTile";
 import * as oaf from "../../layer/oaf";
 import {createMapView} from "../../maps/mapView";
 import {initializeLayerList, getLayerWhere} from "../../rawLayerList";
@@ -21,9 +23,11 @@ let mapIdCounter = 0;
  */
 const layerBuilderMap = {
         wms,
+        wmts,
         wfs,
         geojson,
         vectorBase,
+        vectortile,
         oaf
     },
     originalAddLayer = PluggableMap.prototype.addLayer;

@@ -20,7 +20,7 @@ export function encode (v) {
  */
 export function getIdQuery (key, v) {
     return {
-        [searchTypes.STREET]: encodedValue => `&StoredQuery_ID=findeStrasse&strassenname=${encodedValue}`,
+        [searchTypes.STREET]: encodedValue => `&StoredQuery_ID=findeStrasse&strassenname=*${encodedValue}`,
         [searchTypes.DISTRICT]: encodedValue => `&StoredQuery_ID=findeStadtteil&stadtteilname=${encodedValue}`,
         [searchTypes.PARCEL]: encodedValue => `&StoredQuery_ID=Flurstueck&gemarkung=${encodedValue[0]}&flurstuecksnummer=${encodedValue[1]}`,
         [searchTypes.STREET_KEY]: encodedValue => `&StoredQuery_ID=findeStrassenSchluessel&strassenschluessel=${encodedValue}`,

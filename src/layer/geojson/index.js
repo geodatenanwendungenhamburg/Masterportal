@@ -25,6 +25,13 @@ export function createLayerSource ({url, features, clusterDistance}, options) {
     if (clusterDistance) {
         return createClusterVectorSource(source, clusterDistance, options.clusterGeometryFunction);
     }
+
+    source.once("featuresloadend", event => {
+        if (typeof options.afterLoading === "function") {
+            options.afterLoading(event?.features);
+        }
+    });
+
     return source;
 }
 

@@ -4,6 +4,8 @@
 import olLayerGroup from "ol/layer/Group.js";
 import {getUid} from "olcs/util.js";
 import TileWMS from "ol/source/TileWMS.js";
+import ImageWMS from "ol/source/ImageWMS.js";
+import WMTS from "ol/source/WMTS.js";
 import olcsAbstractSynchronizer from "olcs/AbstractSynchronizer.js";
 import olcsCore from "olcs/core.js";
 import {Tile, Image as ImageLayer} from "ol/layer.js";
@@ -40,7 +42,6 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
          * @type {!Cesium.ImageryLayerCollection}
          * @private
          */
-        /* eslint-disable no-undef */
         this.ourLayers = new Cesium.ImageryLayerCollection();
     }
 
@@ -87,17 +88,17 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
      * May be overriden by child classes to implement custom behavior.
      * The default implementation handles tiled imageries in EPSG:4326 or
      * EPSG:3859.
-     * @param {!ol.layer.Base} olLayer -
-     * @param {?ol.proj.Projection} viewProj Projection of the view.
-     * @return {?Array.<!Cesium.ImageryLayer>} array or null if not possible
+     * @param {module:ol/layer/Base~BaseLayer } olLayer The raster layer.
+     * @param {module:ol/proj} viewProj Projection of the view.
+     * @return {?Array.<!Cesium.ImageryLayer>} Array or null if not possible.
      * (or supported)
      * @protected
      */
     convertLayerToCesiumImageries (olLayer, viewProj) {
-        let layerOptions = {
-                "show": false
-            },
-            source = {},
+        const layerOptions = {
+            "show": false
+        };
+        let source = {},
             cesiumLayer = {},
             provider = null;
 
@@ -108,59 +109,96 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
         source = olLayer.getSource();
 
         if (source instanceof TileWMS) {
-            const params = source.getParams(),
-                options = {
-                    "url": source.getUrls()[0],
-                    "parameters": params,
-                    "layers": params.LAYERS,
-                    "show": false
-                },
-                tileGrid = source.getTileGrid();
-
-            if (tileGrid) {
-                const ext = olLayer.getExtent();
-
-                if (ext && viewProj) {
-                    options.rectangle = olcsCore.extentToRectangle(ext, viewProj);
-                    const minMax = this.getMinMaxLevelFromTileGrid(tileGrid, ext, viewProj);
-
-                    options.tileWidth = tileGrid.getTileSize(0)[0];
-                    options.tileHeight = tileGrid.getTileSize(0)[1];
-                    options.minimumLevel = minMax[0];
-                    options.maximumLevel = minMax[1];
-                }
-            }
-            /* eslint-disable no-undef */
-            provider = new Cesium.WebMapServiceImageryProvider(options);
+            provider = this.createProviderForTileWMS(source, viewProj, olLayer);
+        }
+        else if (source instanceof ImageWMS) {
+            return [this.createImageryLayerForImageWMS(olLayer, viewProj)];
         }
         else if (source instanceof StaticImageSource) {
-            const extent = source.getImageExtent(),
-                options = {
-                    "url": source.getUrl(),
-                    "show": false
-                },
-                bottomLeftCorner = proj4("EPSG:25832", "EPSG:4326", getBottomLeft(extent)),
-                topRightCorner = proj4("EPSG:25832", "EPSG:4326", getTopRight(extent));
-
-            /* eslint-disable no-undef */
-            options.rectangle = Cesium.Rectangle.fromDegrees(bottomLeftCorner[0], bottomLeftCorner[1], topRightCorner[0], topRightCorner[1]);
-            /* eslint-disable no-undef */
-            provider = new Cesium.SingleTileImageryProvider(options);
-
+            provider = this.createProviderForStaticImageSource(source);
+        }
+        else if (source instanceof WMTS) {
+            provider = new Cesium.WebMapTileServiceImageryProvider({
+                url: source.getUrls()[0],
+                format: source.getFormat(),
+                layer: source.getLayer(),
+                style: source.getStyle(),
+                tileMatrixSetID: source.getMatrixSet(),
+                tileMatrixLabels: source.getTileGrid().getMatrixIds(),
+                credit: source.getAttributions()
+            });
         }
         else {
             console.warn("Sources other than TileImage are currently not supported.");
             return null;
         }
 
-        // the provider is always non-null if we got this far
-        layerOptions = {
-            "show": false
-        };
-        /* eslint-disable no-undef */
         cesiumLayer = new Cesium.ImageryLayer(provider, layerOptions);
 
         return cesiumLayer ? [cesiumLayer] : null;
+    }
+
+    /**
+     * Creates an Cesium.WebMapServiceImageryProvider for RasterLayer of the type TileWMS.
+     * @param {module:ol/source/TileWMS} source The raster layer source.
+     * @param {module:ol/proj} viewProj Projection of the view.
+     * @param {module:ol/layer/Base~BaseLayer } olLayer The raster layer.
+     * @returns {WebMapServiceImageryProvider} The imagery provider.
+     */
+    createProviderForTileWMS (source, viewProj, olLayer) {
+        const params = source.getParams(),
+            options = {
+                "url": source.getUrls()[0],
+                "parameters": params,
+                "layers": params.LAYERS,
+                "show": false
+            },
+            tileGrid = source.getTileGrid();
+
+        if (tileGrid) {
+            const ext = olLayer.getExtent();
+
+            if (ext && viewProj) {
+                options.rectangle = olcsCore.extentToRectangle(ext, viewProj);
+                const minMax = this.getMinMaxLevelFromTileGrid(tileGrid, ext, viewProj);
+
+                options.tileWidth = tileGrid.getTileSize(0)[0];
+                options.tileHeight = tileGrid.getTileSize(0)[1];
+                options.minimumLevel = minMax[0];
+                options.maximumLevel = minMax[1];
+            }
+        }
+
+        return new Cesium.WebMapServiceImageryProvider(options);
+    }
+
+    /**
+     * Creates an Cesium.ImageryLayer for RasterLayer of the type ImageWMS.
+     * @param {module:ol/layer/Base~BaseLayer } olLayer The raster layer.
+     * @param {module:ol/proj} viewProj Projection of the view.
+     * @returns {Cesium.ImageryLayer} The imagery layer.
+     */
+    createImageryLayerForImageWMS (olLayer, viewProj) {
+        return olcsCore.tileLayerToImageryLayer(this.map, olLayer, viewProj);
+    }
+
+    /**
+     * Creates an Cesium.SingleTileImageryProvider for RasterLayer of the type StaticImageSource.
+     * @param {module:ol/source/ImageStatic} source The raster layer source.
+     * @returns {SingleTileImageryProvider} The imagery provider.
+     */
+    createProviderForStaticImageSource (source) {
+        const extent = source.getImageExtent(),
+            options = {
+                "url": source.getUrl(),
+                "show": false
+            },
+            bottomLeftCorner = proj4(source.getProjection().getCode(), "EPSG:4326", getBottomLeft(extent)),
+            topRightCorner = proj4(source.getProjection().getCode(), "EPSG:4326", getTopRight(extent));
+
+        options.rectangle = Cesium.Rectangle.fromDegrees(bottomLeftCorner[0], bottomLeftCorner[1], topRightCorner[0], topRightCorner[1]);
+
+        return new Cesium.SingleTileImageryProvider(options);
     }
 
     /**
@@ -179,7 +217,6 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
                 getTopLeft(wgs84Extent)
             ];
 
-        /* eslint-disable no-undef */
         return olCoords.map(coord => Cesium.Cartographic.fromDegrees(coord[0], coord[1]));
     }
     /**
@@ -201,7 +238,6 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
             distanceLocalX = Math.abs(tileCoordsLocal[0][1] - tileCoordsLocal[1][1]),
             distanceLocalY = Math.abs(tileCoordsLocal[0][2] - tileCoordsLocal[3][2]),
             extentCoords = this.getExtentPoints(extent, projection),
-            /* eslint-disable no-undef */
             tilingScheme = new Cesium.GeographicTilingScheme({});
         let minLevel = 0,
             maxLevel = 20;
