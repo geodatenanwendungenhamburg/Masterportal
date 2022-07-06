@@ -3,17 +3,12 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.4.0 - 2022-07-06
 ### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
+- Issue 776: Add 3D mode for WMTS layers.
 
 ### Fixed
-- Issue 776: Fix 3D mode for WMTS layers.
+- 3D: Handling of camera parameters at olcsmap are adapted.
 
 ---
 
