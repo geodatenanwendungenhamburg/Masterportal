@@ -3,6 +3,15 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased - in development
+### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+
+---
+
 ## 2.4.0 - 2022-07-06
 ### Added
 - Issue 776: Add 3D mode for WMTS layers.
