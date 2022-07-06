@@ -1,11 +1,11 @@
 import {getValueFromObjectByPath} from "../../lib/getValueFromObjectByPath";
 
 class StyleModel {
-    constructor(feature, style, isClustered) {
+    constructor (feature, style, isClustered) {
         this.feature = feature;
         this.style = style;
         this.isClustered = isClustered;
-        this.attributes = {}
+        this.attributes = {};
     }
 
     /*
@@ -63,6 +63,6 @@ class StyleModel {
         }
         return value;
     }
-};
+}
 
 export default StyleModel;
