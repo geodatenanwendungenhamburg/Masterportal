@@ -9,115 +9,26 @@ import defaultStyle from "./defaultStyle";
  * @type{Array}
  * @ignore
  */
-const styleList = [];
-
-/**
- * Gets the default style for mapmarker as point.
- * @returns {Object} The default style for mapMarker point Style.
- */
-function getMapmarkerPointDefaultStyle () {
-    return {
-        styleId: "defaultMapMarkerPoint",
-        rules: [{
-            style:
-            {
-                type: "icon",
-                imageName: "mapMarker.svg",
-                imagePath: "../../img/",
-                imageScale: 1,
-                imageWidth: 34,
-                imageHeight: 48,
-                imageOffsetY: 46,
-                imageOffsetYUnit: "pixels"
-            }
-        }]
-    };
-}
-/**
- * Gets the default style for mapmarker as polygon.
- * @returns {Object} The default style for mapMarker polygon Style.
- */
-function getMapmarkerPolygonDefaultStyle () {
-    return {
-        styleId: "defaultMapMarkerPolygon",
-        rules: [{
-            style:
-            {
-                polygonStrokeColor: [8, 119, 95, 1],
-                polygonStrokeWidth: 4,
-                polygonFillColor: [8, 119, 95, 0.3],
-                polygonStrokeDash: [8]
-            }
-        }]
-    };
-}
-
-/**
- * Gets the default style for highlightFeatures as point.
- * @returns {Object} The default style for highlightFeatures point Style.
- */
-function getHighlightFeaturesPointDefaultStyle () {
-    return {
-        styleId: "defaultHighlightFeaturesPoint",
-        rules: [{
-            style:
-            {
-                type: "circle",
-                circleFillColor: [255, 255, 0, 0.9],
-                circleRadius: 8
-            }
-        }]
-    };
-}
-
-/**
- * Gets the default style for highlightFeatures as polygon.
- * @returns {Object} The default style for highlightFeatures polygon Style.
- */
-function getHighlightFeaturesPolygonDefaultStyle () {
-    return {
-        styleId: "defaultHighlightFeaturesPolygon",
-        rules: [{
-            style:
-            {
-                polygonStrokeColor: [8, 119, 95, 1],
-                polygonStrokeWidth: 4,
-                polygonFillColor: [8, 119, 95, 0.3],
-                polygonStrokeDash: [8]
-            }
-        }]
-    };
-}
-
-/**
- * Gets the default style for highlightFeatures as line.
- * @returns {Object} The default style for highlightFeatures line Style.
- */
-function getHighlightFeaturesLineDefaultStyle () {
-    return {
-        styleId: "defaultHighlightFeaturesLine",
-        rules: [{
-            style:
-            {
-                polygonStrokeColor: [8, 119, 95, 1],
-                polygonStrokeWidth: 4,
-                polygonFillColor: [8, 119, 95, 0.3],
-                polygonStrokeDash: [8]
-            }
-        }]
-    };
-}
+let styleList,
+    configuredLayers,
+    configuredTools,
+    mapMarkerPointStyleId,
+    mapMarkerPolygonStyleId,
+    highlightFeaturesPointStyleId,
+    highlightFeaturesPolygonStyleId,
+    highlightFeaturesLineStyleId,
+    styleConf,
+    featureViaUrlLayers;
 
 /**
  * Gathers the styleIds of the layers.
- * @param {Object[]} layers The configured layers.
  * @returns {Sting[]} - StyleIds from layers.
  */
-function getStyleIdsFromLayers (layers) {
+function getStyleIdsFromLayers () {
     const styleIds = [];
 
-    if (layers) {
-        layers.forEach(layer => {
+    if (configuredLayers) {
+        configuredLayers.forEach(layer => {
             if (layer.typ === "WFS" || layer.typ === "GeoJSON" || layer.typ === "SensorThings" || layer.typ === "TileSet3D") {
                 if (layer?.styleId) {
                     styleIds.push(layer.styleId);
@@ -137,14 +48,13 @@ function getStyleIdsFromLayers (layers) {
 
 /**
  * Gathers the styleIds of the configured tools.
- * @param {Object[]} tools The configured tools.
  * @returns {String[]} - StyleIds of Tools
  */
-function getStyleIdsFromTools (tools) {
+function getStyleIdsFromTools () {
     const styleIds = [];
 
-    if (tools) {
-        tools.forEach(tool => {
+    if (configuredTools) {
+        configuredTools.forEach(tool => {
             if (tool?.styleId) {
                 if (Array.isArray(tool.styleId)) {
                     tool.styleId.forEach(styleIdInArray => {
@@ -169,7 +79,7 @@ function getStyleIdsFromTools (tools) {
  * @param {String} mapMarkerPointStyleId The styleId from mapMarker store getter.
  * @returns {String} - Style id of mapMarker.
  */
-function getStyleIdForMapMarkerPoint (mapMarkerPointStyleId) {
+function getStyleIdForMapMarkerPoint () {
     let styleId;
 
     if (mapMarkerPointStyleId) {
@@ -183,7 +93,7 @@ function getStyleIdForMapMarkerPoint (mapMarkerPointStyleId) {
  * @param {String} highlightFeaturesPointStyleId The styleId from highlightFeatures store getter.
  * @returns {String} - Style id of highlightFeatures.
  */
-function getStyleIdForHighlightFeaturesPoint (highlightFeaturesPointStyleId) {
+function getStyleIdForHighlightFeaturesPoint () {
     let styleId;
 
     if (highlightFeaturesPointStyleId) {
@@ -200,7 +110,7 @@ function getStyleIdForHighlightFeaturesPoint (highlightFeaturesPointStyleId) {
  * @param {String} highlightFeaturesLineStyleId The styleId from highlightFeatures store getter.
  * @returns {String} - Style id of highlightFeatures.
  */
-function getStyleIdForHighlightFeaturesLine (highlightFeaturesLineStyleId) {
+function getStyleIdForHighlightFeaturesLine () {
     let styleId;
 
     if (highlightFeaturesLineStyleId) {
@@ -217,7 +127,7 @@ function getStyleIdForHighlightFeaturesLine (highlightFeaturesLineStyleId) {
  * @param {String} mapMarkerPolygonStyleId The styleId from mapMarker store getter.
  * @returns {String} - Style id of mapMarker.
  */
-function getStyleIdForMapMarkerPolygon (mapMarkerPolygonStyleId) {
+function getStyleIdForMapMarkerPolygon () {
     let styleId;
 
     if (mapMarkerPolygonStyleId) {
@@ -231,7 +141,7 @@ function getStyleIdForMapMarkerPolygon (mapMarkerPolygonStyleId) {
  * @param {String} highlightFeaturesPolygonStyleId The styleId from highlightFeatures store getter.
  * @returns {String} - Style id of highlightFeatures.
  */
-function getStyleIdForHighlightFeaturesPolygon (highlightFeaturesPolygonStyleId) {
+function getStyleIdForHighlightFeaturesPolygon () {
     let styleId;
 
     if (highlightFeaturesPolygonStyleId) {
@@ -244,15 +154,13 @@ function getStyleIdForHighlightFeaturesPolygon (highlightFeaturesPolygonStyleId)
 }
 /**
  * Checks whether the module featureViaURL is activated and retrieves the styleIds.
- * @param {Object} Config Config object from store
  * @returns {String[]} Array of styleIds for the layers for the features given via the URL.
  */
-function getFeatureViaURLStyles (Config) {
-    const styleIds = [],
-        layers = Config?.featureViaURL?.layers;
+function getFeatureViaURLStyles () {
+    const styleIds = [];
 
-    if (layers !== undefined) {
-        layers.forEach(layer => {
+    if (featureViaUrlLayers !== undefined) {
+        featureViaUrlLayers.forEach(layer => {
             styleIds.push(layer.styleId);
         });
     }
@@ -262,36 +170,31 @@ function getFeatureViaURLStyles (Config) {
  * overwrite parse function so that only the style-models are saved
  * whose layers are configured in the config.json
  * After that these models are automatically added to the collection
- * @param  {object} styleGetters parsed style.json
- * @param  {object} Config parsed style.json
  * @param  {object[]} data parsed style.json
- * @param {array} [layers] - an array with the configured layers
- * @param {array} [tools] - an array with the configured tools
  * @return {object[]} filtered style.json objects
- * @fires Core.ConfigLoader#RadioRequestParserGetItemsByAttributes
  */
-function parseStyles (styleGetters, Config, data, layers, tools) {
+function parseStyles (data) {
     const dataWithDefaultValue = [...data];
     let styleIds = [],
         filteredData = [];
 
     dataWithDefaultValue.push({styleId: "default", rules: [{style: {}}]});
-    dataWithDefaultValue.push(getMapmarkerPointDefaultStyle());
-    dataWithDefaultValue.push(getMapmarkerPolygonDefaultStyle());
-    dataWithDefaultValue.push(getHighlightFeaturesPointDefaultStyle());
-    dataWithDefaultValue.push(getHighlightFeaturesPolygonDefaultStyle());
-    dataWithDefaultValue.push(getHighlightFeaturesLineDefaultStyle());
+    dataWithDefaultValue.push(defaultStyle.defaultMapMarkerPoint,
+        defaultStyle.defaultMapMarkerPolygon,
+        defaultStyle.defaultHighlightFeaturesPoint,
+        defaultStyle.defaultHighlightFeaturesPolygon,
+        defaultStyle.defaultHighlightFeaturesLine);
 
-    styleIds.push(getStyleIdsFromLayers(layers));
-    styleIds.push(getStyleIdForMapMarkerPoint(styleGetters.mapMarkerPointStyleId));
-    styleIds.push(getStyleIdForMapMarkerPolygon(styleGetters.mapMarkerPolygonStyleId));
-    styleIds.push(getStyleIdForHighlightFeaturesPoint(styleGetters.highlightFeaturesPointStyleId));
-    styleIds.push(getStyleIdForHighlightFeaturesPolygon(styleGetters.highlightFeaturesPolygonStyleId));
-    styleIds.push(getStyleIdForHighlightFeaturesLine(styleGetters.highlightFeaturesLineStyleId));
-    styleIds.push(getStyleIdsFromTools(tools));
-    styleIds.push(getFeatureViaURLStyles(Config));
+    styleIds.push(getStyleIdsFromLayers(),
+        getStyleIdForMapMarkerPoint(),
+        getStyleIdForMapMarkerPolygon(),
+        getStyleIdForHighlightFeaturesPoint(),
+        getStyleIdForHighlightFeaturesPolygon(),
+        getStyleIdForHighlightFeaturesLine(),
+        getStyleIdsFromTools(),
+        getFeatureViaURLStyles());
 
-    styleIds = Array.isArray(styleIds) ? styleIds.reduce((acc, val) => acc.concat(val), []) : styleIds;
+    styleIds = styleIds.reduce((acc, val) => acc.concat(val), []);
     filteredData = dataWithDefaultValue.filter(styleModel => styleIds.includes(styleModel.styleId));
 
     return filteredData;
@@ -307,11 +210,24 @@ function parseStyles (styleGetters, Config, data, layers, tools) {
     * @param {object} [style] - an object with styles
     * @returns {undefined} nothing, add callback to receive styleList
  */
-export function initializeStyleList (styleGetters, Config, layers, tools, callback, style = defaultStyle) {
-    styleList.push(style);
+export function initializeStyleList (styleGetters, Config, layers, tools, callback) {
+    // TODO: defaultStyles implementieren in Funktionsaufrud style = defaultStyle?
+
+    configuredLayers = layers;
+    configuredTools = tools;
+
+    mapMarkerPointStyleId = styleGetters.mapMarkerPointStyleId;
+    mapMarkerPolygonStyleId = styleGetters.mapMarkerPolygonStyleId;
+    highlightFeaturesPointStyleId = styleGetters.highlightFeaturesPointStyleId;
+    highlightFeaturesPolygonStyleId = styleGetters.highlightFeaturesPolygonStyleId;
+    highlightFeaturesLineStyleId = styleGetters.highlightFeaturesLineStyleId;
+
+    styleConf = Config.styleConf;
+    featureViaUrlLayers = Config.featureViaURL?.layers;
+
     const xhr = new XMLHttpRequest();
 
-    xhr.open("GET", Config.styleConf, false);
+    xhr.open("GET", styleConf, false);
     xhr.onreadystatechange = function (event) {
         const target = event.target,
             status = target.status;
@@ -323,14 +239,14 @@ export function initializeStyleList (styleGetters, Config, layers, tools, callba
                 data = JSON.parse(target.response);
             }
             catch (error) {
-                console.error("An error occured when parsing the response after loading '" + Config.styleConf + "':", error);
+                console.error("An error occured when parsing the response after loading '" + styleConf + "':", error);
                 return callback(false, error);
             }
-            parseStyles(styleGetters, Config, data, layers, tools);
+            styleList = parseStyles(data);
         }
         // not found
         else if (status === 404) {
-            console.error("An error occured when trying to fetch services from '" + Config.styleConf + "':", 404);
+            console.error("An error occured when trying to fetch services from '" + styleConf + "':", 404);
             return callback(false, true);
         }
         if (typeof callback === "function") {
@@ -339,4 +255,12 @@ export function initializeStyleList (styleGetters, Config, layers, tools, callba
         return true;
     };
     xhr.send();
+}
+/**
+     * Returns model or by styleId or by layerId
+     * @param {string} layerId layerId
+     * @returns {object} style model
+    */
+export function returnStyleObject (layerId) {
+    return styleList.find(slmodel => slmodel.styleId === layerId);
 }

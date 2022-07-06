@@ -11,6 +11,7 @@ const defaultColors = {
             isClustered: false,
             type: "circle",
             imagePath: "",
+            // für type icon
             imageName: "blank.png",
             imageWidth: 1,
             imageHeight: 1,
@@ -19,26 +20,31 @@ const defaultColors = {
             imageOffsetY: 0.5,
             imageOffsetXUnit: "fraction",
             imageOffsetYUnit: "fraction",
+            // for type circle
             circleRadius: 10,
             circleFillColor: defaultColors.fill,
             circleStrokeColor: defaultColors.stroke,
             circleStrokeWidth: 2,
             clusterType: "circle",
+            // for type circle
             clusterCircleRadius: 15,
             clusterCircleFillColor: defaultColors.fill,
             clusterCircleStrokeColor: defaultColors.stroke,
             clusterCircleStrokeWidth: 2,
+            // for type icon
             clusterImageName: "blank.png",
             clusterImageWidth: 1,
             clusterImageHeight: 1,
             clusterImageScale: 1,
             clusterImageOffsetX: 0.5,
             clusterImageOffsetY: 0.5,
+            // Für scalingShape CIRCLESEGMENTS
             circleSegmentsRadius: 10,
             circleSegmentsStrokeWidth: 4,
             circleSegmentsBackgroundColor: defaultColors.background,
             scalingValueDefaultColor: defaultColors.stroke,
             circleSegmentsGap: 10,
+            // Für scalingShape CIRCLE_BAR
             circleBarScalingFactor: 1,
             circleBarRadius: 6,
             circleBarLineStroke: 5,
@@ -89,6 +95,69 @@ const defaultColors = {
             clusterTextFillColor: defaultColors.textFill,
             clusterTextStrokeColor: defaultColors.textStroke,
             clusterTextStrokeWidth: 0
+        },
+        defaultMapMarkerPoint: {
+            styleId: "defaultMapMarkerPoint",
+            rules: [{
+                style:
+                {
+                    type: "icon",
+                    imageName: "mapMarker.svg",
+                    imagePath: "../../img/",
+                    imageScale: 1,
+                    imageWidth: 34,
+                    imageHeight: 48,
+                    imageOffsetY: 46,
+                    imageOffsetYUnit: "pixels"
+                }
+            }]
+        },
+        defaultMapMarkerPolygon: {
+            styleId: "defaultMapMarkerPolygon",
+            rules: [{
+                style:
+                {
+                    polygonStrokeColor: [8, 119, 95, 1],
+                    polygonStrokeWidth: 4,
+                    polygonFillColor: [8, 119, 95, 0.3],
+                    polygonStrokeDash: [8]
+                }
+            }]
+        },
+        defaultHighlightFeaturesPoint: {
+            styleId: "defaultHighlightFeaturesPoint",
+            rules: [{
+                style:
+                {
+                    type: "circle",
+                    circleFillColor: [255, 255, 0, 0.9],
+                    circleRadius: 8
+                }
+            }]
+        },
+        defaultHighlightFeaturesPolygon: {
+            styleId: "defaultHighlightFeaturesPolygon",
+            rules: [{
+                style:
+                {
+                    polygonStrokeColor: [8, 119, 95, 1],
+                    polygonStrokeWidth: 4,
+                    polygonFillColor: [8, 119, 95, 0.3],
+                    polygonStrokeDash: [8]
+                }
+            }]
+        },
+        defaultHighlightFeaturesLine: {
+            styleId: "defaultHighlightFeaturesLine",
+            rules: [{
+                style:
+            {
+                polygonStrokeColor: [8, 119, 95, 1],
+                polygonStrokeWidth: 4,
+                polygonFillColor: [8, 119, 95, 0.3],
+                polygonStrokeDash: [8]
+            }
+            }]
         }
     };
 
