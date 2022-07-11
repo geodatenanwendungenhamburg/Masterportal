@@ -1,5 +1,6 @@
 import {Style, Icon} from "ol/style.js";
 import {prepareValue, isObjectPath} from "../../../lib/attributeMapper";
+import PointStyleModel from "./stylePoint";
 
 /**
 * Returns the rotation value and its corresponding value according to style.json.
@@ -32,7 +33,7 @@ function getRotationValue (rotation) {
 */
 export function createIconPointStyle (attributes) {
     const src = attributes.imagePath + attributes.imageName,
-        isSVG = src.indexOf(".svg > -1"),
+        isSVG = src.indexOf(".svg") > -1,
         width = attributes.imageWidth,
         height = attributes.imageHeight,
         scale = parseFloat(attributes.imageScale),
@@ -81,6 +82,24 @@ export function createIconClusterStyle (attributes) {
             scale: scale,
             anchor: offset,
             imgSize: isSVG ? [width, height] : ""
+        })
+    });
+}
+
+/**
+     * create Style for SVG
+     * @param  {String} svgPath - contains the params to be draw
+     * @see {@link https://community.cesium.com/t/cors-and-billboard-image/3920/2} crossOrigin: "anonymous", is necessary for the 3D mode.
+     * @return {ol.Style} style
+     */
+export function createSVGStyle (svgPath) {
+    const size = PointStyleModel.prototype.getSize();
+
+    return new Style({
+        image: new Icon({
+            crossOrigin: "anonymous",
+            src: "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgPath),
+            imgSize: [size, size]
         })
     });
 }

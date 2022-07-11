@@ -1,5 +1,6 @@
-import {createIconPointStyle} from "./stylePointIcon";
-import {createSVGStyle} from "./stylePoint";
+import {createIconPointStyle, createSVGStyle} from "./stylePointIcon";
+import StyleModel from "../style";
+import PointStyleModel from "./stylePoint";
 
 /**
      * Create SVG for nominalscaled circle segments
@@ -128,25 +129,26 @@ function extendsSvgNominalCircleSegments (svg, circleSegmentsStrokeWidth, stroke
 }
 /**
      * Create a svg with colored circle segments by nominal scaling
-     * @param  {ol.Feature} feature - feature to be draw
+     * @param  {ol.Feature} feature - feature to be drawn
+     * @param {Object} attributes - The attributes from the nominal circle segment
      * @return {String} svg with colored circle segments
      */
-function createNominalCircleSegments (feature) {
-    const circleSegmentsRadius = parseFloat(this.get("circleSegmentsRadius"), 10),
-        circleSegmentsStrokeWidth = parseFloat(this.get("circleSegmentsStrokeWidth"), 10),
-        circleSegBCArray = this.get("circleSegmentsBackgroundColor"),
+function createNominalCircleSegments (feature, attributes) {
+    const circleSegmentsRadius = parseFloat(attributes.circleSegmentsRadius, 10),
+        circleSegmentsStrokeWidth = parseFloat(attributes.circleSegmentsStrokeWidth, 10),
+        circleSegBCArray = attributes.circleSegmentsBackgroundColor,
         circleSegmentsFillOpacity = Array.isArray(circleSegBCArray) && circleSegBCArray[circleSegBCArray.length - 1],
-        circleSegmentsBackgroundColor = this.returnColor(this.get("circleSegmentsBackgroundColor"), "hex"),
-        scalingValueDefaultColor = this.returnColor(this.get("scalingValueDefaultColor"), "hex"),
-        scalingValues = this.get("scalingValues"),
+        circleSegmentsBackgroundColor = StyleModel.prototype.returnColor(attributes.circleSegmentsBackgroundColor, "hex"),
+        scalingValueDefaultColor = StyleModel.prototype.returnColor(attributes.scalingValueDefaultColor, "hex"),
+        scalingValues = attributes.scalingValues,
         scalingAttributesAsObject = getScalingAttributesAsObject(scalingValues),
-        scalingAttribute = feature.get(this.get("scalingAttribute")),
+        scalingAttribute = feature.get(attributes.scalingAttribute),
         scalingObject = fillScalingAttributes(scalingAttributesAsObject, scalingAttribute),
         totalSegments = Object.values(scalingObject).reduce(function (memo, num) {
             return memo + num;
         }, 0),
         degreeSegment = totalSegments >= 0 ? 360 / totalSegments : 360,
-        gap = parseFloat(this.get("circleSegmentsGap"), 10);
+        gap = parseFloat(attributes.circleSegmentsGap, 10);
     let size = 10,
         startAngelDegree = 0,
         endAngelDegree = degreeSegment,
@@ -164,14 +166,14 @@ function createNominalCircleSegments (feature) {
 
     // is required for the display in the Internet Explorer,
     // because in addition to the SVG and the size must be specified
-    this.setSize(size);
+    PointStyleModel.prototype.setSize(size);
 
     svg = createSvgNominalCircleSegments(size, circleSegmentsRadius, circleSegmentsBackgroundColor, circleSegmentsStrokeWidth, circleSegmentsFillOpacity);
 
     for (key in scalingObject) {
         value = scalingObject[key];
         if (scalingValues !== undefined && (key !== "empty")) {
-            strokeColor = this.returnColor(scalingValues[key], "hex");
+            strokeColor = StyleModel.prototype.returnColor(scalingValues[key], "hex");
         }
         else {
             strokeColor = scalingValueDefaultColor;
@@ -197,27 +199,28 @@ function createNominalCircleSegments (feature) {
 
 /**
      * create nominal scaled advanced style for pointFeatures
+     * @param {Object} feature - the feature to be drawn
+     * @param {Object} attributes - The attributes from the nominal point
+     * @param {Object} defaultImageName - The image name from the default style
      * @return {ol.Style} style
      */
-export function createNominalPointStyle () {
-    const feature = this.get("feature"),
-        workingFeature = Array.isArray(feature.get("features")) ? feature.get("features")[0] : feature,
-        styleScalingShape = this.get("scalingShape").toUpperCase(),
-        imageName = this.get("imageName"),
-        imageNameDefault = this.attributes.imageName;
+export function createNominalPointStyle (feature, attributes, defaultImageName) {
+    const workingFeature = Array.isArray(feature.get("features")) ? feature.get("features")[0] : feature,
+        styleScalingShape = attributes.scalingShape.toUpperCase(),
+        imageName = attributes.imageName;
 
     let svgPath,
         style,
         imageStyle;
 
     if (styleScalingShape === "CIRCLESEGMENTS") {
-        svgPath = createNominalCircleSegments(workingFeature);
-        style = createSVGStyle(svgPath);
+        svgPath = createNominalCircleSegments(workingFeature, attributes);
+        style = createSVGStyle(svgPath, 5);
     }
 
     // create style from svg and image
-    if (imageName !== imageNameDefault) {
-        imageStyle = createIconPointStyle();
+    if (imageName !== defaultImageName) {
+        imageStyle = createIconPointStyle(attributes);
         style = [style, imageStyle];
     }
 

@@ -55,7 +55,7 @@ class TextStyleModel extends StyleModel {
         let text;
 
         if (this.attributes.clusterTextType === "counter") {
-            text = feature.attributes.features.length.toString();
+            text = feature.get("features").length.toString();
         }
         else if (this.attributes.clusterTextType === "text" && typeof this.attributes.clusterText === "string") {
             text = this.attributes.clusterText;
