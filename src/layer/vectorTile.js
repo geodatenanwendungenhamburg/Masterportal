@@ -4,8 +4,8 @@ import VectorTileSource from "ol/source/VectorTile";
 import OpenLayersTileGrid from "ol/tilegrid/TileGrid";
 import {extentFromProjection} from "ol/tilegrid";
 
-import stylefunction from "ol-mapbox-style/dist/stylefunction";
-import {defaultResolutions} from "ol-mapbox-style/dist/util";
+import {stylefunction} from "ol-mapbox-style";
+import {defaultResolutions} from "ol-mapbox-style";
 
 import defaults from "../defaults";
 

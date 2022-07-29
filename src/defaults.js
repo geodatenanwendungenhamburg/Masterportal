@@ -19,7 +19,7 @@ export default {
         {resolution: 1.3229159522920524, scale: 5000, zoomLevel: 6},
         {resolution: 0.6614579761460262, scale: 2500, zoomLevel: 7},
         {resolution: 0.2645831904584105, scale: 1000, zoomLevel: 8},
-        {resolution: 0.13229159522920521, scale: 500, zoomLevel: 9}
+        {resolution: 0.1322915952292052, scale: 500, zoomLevel: 9}
     ],
     namedProjections: [
         ["EPSG:25832", "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"]
