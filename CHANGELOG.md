@@ -5,9 +5,36 @@
 
 ## Unreleased - in development
 ### Added
+- The following packages have been installed:
+    - jest-environment-jsdom: 28.1.3
+
 ### Changed
+- The following packages have been updated:
+    - dependencies:
+        - core-js: 3.16.1 to 3.24.0
+        - ol: 6.14.1 to 6.15.1 (This also raised ol-mapbox-style from 7 to version 8)
+        - proj4: 2.7.5 to 2.8.0
+    - devDependencies:
+        - @babel/core: 7.16.7 to 7.18.9
+        - @babel/plugin-transform-modules-commonjs: 7.16.8 to 7.18.6
+        - @parcel/transformer-sass: 2.2.0 to 2.6.2
+        - canvas: 2.8.0 to 2.9.3
+        - eslint: 7.32.0 to 8.20.0
+        - husky: 7.0.1 to 8.0.1
+        - jest: 27.4.0 to 28.1.3
+        - jest-canvas-mock: 2.3.1 to 2.4.0
+        - jsdoc: 3.6.7 to 3.6.11
+        - parcel: 2.2.0 to 2.6.2
+        - sass: 1.37.5 to 1.54.0
+    - peerDependencies:
+        - cesium: 1.88.0 to 1.93.0
+
 ### Deprecated
+
 ### Removed
+- The following packages have been removed:
+    - regenerator-runtime
+
 ### Fixed
 
 ---
