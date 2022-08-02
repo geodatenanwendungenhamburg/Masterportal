@@ -10,6 +10,7 @@ class CesiumStyleModel extends StyleModel {
     initialize (rule) {
         this.overwriteStyling(rule.style);
         this.setConditions(rule.conditions);
+        this.setStyle(this.getStyle());
     }
 
     /**

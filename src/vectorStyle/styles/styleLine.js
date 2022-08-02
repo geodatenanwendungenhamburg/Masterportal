@@ -12,6 +12,7 @@ class LinestringStyleModel extends StyleModel {
         this.setFeature(feature);
         this.setIsClustered(isClustered);
         this.overwriteStyling(styles);
+        this.setStyle(this.getStyle());
     }
 
     /**
