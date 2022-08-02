@@ -47,7 +47,7 @@ document.getElementById("enable").addEventListener("click", function () {
         document.getElementById("layer-visibility").style.display = "none";
     }
     else {
-        const lib = portalConfig.cesiumLib ? portalConfig.cesiumLib : "https://geoportal-hamburg.de/mastercode/cesium/1_93/Cesium.js";
+        const lib = portalConfig.cesiumLib ? portalConfig.cesiumLib : "https://geoportal-hamburg.de/mastercode/cesium/1_95/index.js";
 
         document.getElementById("layer-visibility").style.display = "block";
 

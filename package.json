@@ -45,7 +45,7 @@
     "timers-browserify": "^2.0.12"
   },
   "peerDependencies": {
-    "cesium": "^1.93.0"
+    "cesium": "^1.95.0"
   },
   "engines": {
     "node": "^16.13.2",
