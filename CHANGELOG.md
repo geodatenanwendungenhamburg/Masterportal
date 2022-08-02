@@ -27,7 +27,7 @@
         - parcel: 2.2.0 to 2.6.2
         - sass: 1.37.5 to 1.54.0
     - peerDependencies:
-        - cesium: 1.88.0 to 1.93.0
+        - cesium: 1.88.0 to 1.95.0
 
 ### Deprecated
 
