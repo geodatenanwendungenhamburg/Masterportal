@@ -3,7 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.5.0 - 2022-08-05
 ### Added
 - The following packages have been installed:
     - jest-environment-jsdom: 28.1.3
@@ -28,14 +28,6 @@
         - sass: 1.37.5 to 1.54.0
     - peerDependencies:
         - cesium: 1.88.0 to 1.95.0
-
-### Deprecated
-
-### Removed
-- The following packages have been removed:
-    - regenerator-runtime
-
-### Fixed
 
 ---
 
