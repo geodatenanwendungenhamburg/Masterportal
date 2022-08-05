@@ -3,6 +3,16 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased - in development
+### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+- remove import of `defaultResolutions` for the vectorStyle layer
+
+---
+
 ## 2.5.0 - 2022-08-05
 ### Added
 - The following packages have been installed:

@@ -5,7 +5,6 @@ import OpenLayersTileGrid from "ol/tilegrid/TileGrid";
 import {extentFromProjection} from "ol/tilegrid";
 
 import {stylefunction} from "ol-mapbox-style";
-import {defaultResolutions} from "ol-mapbox-style";
 
 import defaults from "../defaults";
 
@@ -167,7 +166,7 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
 export function setStyle (layer, glStyle, {options = {}} = {}) {
     stylefunction(layer, glStyle,
         options.sourceId ? options.sourceId : Object.keys(glStyle.sources)[0],
-        options.resolutions ? options.resolutions : defaultResolutions,
+        options.resolutions,
         options.spriteData,
         options.spriteImageUrl,
         options.getFonts);
