@@ -1,10 +1,13 @@
 import {getValueFromObjectByPath} from "../../lib/getValueFromObjectByPath";
+
 class StyleModel {
     constructor (feature, style, isClustered) {
         this.feature = feature;
         this.style = style;
         this.isClustered = isClustered;
         this.attributes = {};
+        this.legendInfos = [];
+        this.styleMultiGeomOnlyWithRule = false;
     }
 
     /*
@@ -14,6 +17,90 @@ class StyleModel {
     */
     setFeature (value) {
         this.feature = value;
+    }
+
+    /**
+     * Setter for style.
+     * @param {*} style Style
+     * @returns {void}
+     */
+    setStyle (style) {
+        this.style = style;
+    }
+
+    /**
+    * returns the legend info
+    * @returns {object[]} legend objects
+    */
+    getLegendInfos () {
+        return this.legendInfos;
+    }
+
+    /**
+     * Returns an id created from geometryType and conditions using encodeURIComponent.
+     * @param   {string} geometryType features geometry type
+     * @param   {object} rule         a rule description
+     * @returns {string} id
+     */
+    createLegendId (geometryType, rule) {
+        const properties = rule?.conditions ? rule.conditions : null;
+
+        return encodeURIComponent(geometryType + JSON.stringify(properties));
+    }
+
+    /**
+    * Returns the label or null examining some attributes. Giving precedence to "legendValue". Otherwhile creates a string out of rules conditions.
+    * @param   {Object} rule conditions
+    * @param   {vectorStyle/style} styleObject a vector style needed in
+    * @returns {String | null} label for styleObject
+    */
+    createLegendLabel (rule, styleObject) {
+        if (styleObject?.attributes?.legendValue) {
+            return styleObject.attributes.legendValue.toString();
+        }
+        else if (rule?.conditions) {
+            let label = "";
+
+            if (rule.conditions?.properties) {
+                label = Object.values(rule.conditions.properties).join(", ");
+            }
+
+            if (rule.conditions?.sequence
+                && Array.isArray(rule.conditions.sequence)
+                && rule.conditions.sequence.every(element => typeof element === "number")
+                && rule.conditions.sequence.length === 2
+                && rule.conditions.sequence[1] >= rule.conditions.sequence[0]) {
+                label = label + " (" + rule.conditions.sequence.join("-") + ")";
+            }
+
+            return label;
+        }
+
+        return null;
+    }
+
+    /**
+    * Adds a unique legendInfo for each id to vectorStyle model to be used for legend descriptions.
+    * @param {string} geometryType features geometry type needed in legend model
+    * @param {vectorStyle/style} styleObject  a vector style needed in
+    * @param {Object} rule conditions
+    * @returns {void}
+    */
+    addLegendInfo (geometryType, styleObject, rule) {
+        const legendInfos = styleObject.legendInfos,
+            id = this.createLegendId(geometryType, rule),
+            hasLegendInfo = legendInfos.some(legend => {
+                return legend.id === id;
+            });
+
+        if (!hasLegendInfo) {
+            this.legendInfos.push({
+                "id": id,
+                "geometryType": geometryType,
+                "styleObject": styleObject.attributes,
+                "label": this.createLegendLabel(rule, styleObject)
+            });
+        }
     }
 
     /*
@@ -41,6 +128,7 @@ class StyleModel {
             });
         }
     }
+
     /**
      * Returns the value of the given field. Also considers that the field can be an object path.
      * @param {Object} featureProperties Feature properties.

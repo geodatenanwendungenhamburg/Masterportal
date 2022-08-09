@@ -87,11 +87,11 @@ export function createIconClusterStyle (attributes) {
 }
 
 /**
-     * create Style for SVG
-     * @param  {String} svgPath - contains the params to be draw
-     * @see {@link https://community.cesium.com/t/cors-and-billboard-image/3920/2} crossOrigin: "anonymous", is necessary for the 3D mode.
-     * @return {ol.Style} style
-     */
+ * create Style for SVG
+ * @param  {String} svgPath - contains the params to be draw
+ * @see {@link https://community.cesium.com/t/cors-and-billboard-image/3920/2} crossOrigin: "anonymous", is necessary for the 3D mode.
+ * @return {ol.Style} style
+ */
 export function createSVGStyle (svgPath) {
     const size = PointStyleModel.prototype.getSize();
 

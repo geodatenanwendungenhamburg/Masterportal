@@ -1,11 +1,11 @@
 /**
-     * Calculate size for intervalscaled circle bar
-     * @param  {number} stateValue - value from feature
-     * @param  {number} circleBarScalingFactor - factor is multiplied by the stateValue
-     * @param  {number} circleBarLineStroke - stroke from bar
-     * @param  {number} circleBarRadius - radius from point
-     * @return {number} size - size of the section to be drawn
-     */
+ * Calculate size for intervalscaled circle bar
+ * @param  {number} stateValue - value from feature
+ * @param  {number} circleBarScalingFactor - factor is multiplied by the stateValue
+ * @param  {number} circleBarLineStroke - stroke from bar
+ * @param  {number} circleBarRadius - radius from point
+ * @return {number} size - size of the section to be drawn
+ */
 function calculateSizeIntervalCircleBar (stateValue, circleBarScalingFactor, circleBarLineStroke, circleBarRadius) {
     let size = circleBarRadius * 2;
 
@@ -15,14 +15,15 @@ function calculateSizeIntervalCircleBar (stateValue, circleBarScalingFactor, cir
 
     return size;
 }
+
 /**
-     * Calculate the length for the bar
-     * @param  {number} size - size of the section to be drawn
-     * @param  {number} circleBarRadius - radius from point
-     * @param  {number} stateValue - value from feature
-     * @param  {number} circleBarScalingFactor - factor is multiplied by the stateValue
-     * @return {number} barLength
-     */
+ * Calculate the length for the bar
+ * @param  {number} size - size of the section to be drawn
+ * @param  {number} circleBarRadius - radius from point
+ * @param  {number} stateValue - value from feature
+ * @param  {number} circleBarScalingFactor - factor is multiplied by the stateValue
+ * @return {number} barLength
+ */
 function calculateLengthIntervalCircleBar (size, circleBarRadius, stateValue, circleBarScalingFactor) {
     let barLength;
 
@@ -38,18 +39,19 @@ function calculateLengthIntervalCircleBar (size, circleBarRadius, stateValue, ci
 
     return barLength;
 }
+
 /**
-     * Create SVG for intervalscaled circle bars
-     * @param  {number} size - size of the section to be drawn
-     * @param  {number} barLength - length from bar
-     * @param  {String} circleBarCircleFillColor - fill color from circle
-     * @param  {String} circleBarCircleStrokeColor - stroke color from circle
-     * @param  {number} circleBarCircleStrokeWidth - stroke width from circle
-     * @param  {String} circleBarLineStrokeColor - stroke color from bar
-     * @param  {number} circleBarLineStroke - stroke from bar
-     * @param  {number} circleBarRadius - radius from point
-     * @return {String} svg
-     */
+ * Create SVG for intervalscaled circle bars
+ * @param  {number} size - size of the section to be drawn
+ * @param  {number} barLength - length from bar
+ * @param  {String} circleBarCircleFillColor - fill color from circle
+ * @param  {String} circleBarCircleStrokeColor - stroke color from circle
+ * @param  {number} circleBarCircleStrokeWidth - stroke width from circle
+ * @param  {String} circleBarLineStrokeColor - stroke color from bar
+ * @param  {number} circleBarLineStroke - stroke from bar
+ * @param  {number} circleBarRadius - radius from point
+ * @return {String} svg
+ */
 // TODO: Klärung wegen eslint
 // eslint-disable-next-line max-params
 function createSvgIntervalCircleBar (size, barLength, circleBarCircleFillColor, circleBarCircleStrokeColor, circleBarCircleStrokeWidth, circleBarLineStrokeColor, circleBarLineStroke, circleBarRadius) {
@@ -77,11 +79,12 @@ function createSvgIntervalCircleBar (size, barLength, circleBarCircleFillColor, 
 
     return svg;
 }
+
 /**
-     * Create interval circle bar
-     * @param  {ol.Feature} feature - contains features to draw
-     * @return {String} svg
-     */
+ * Create interval circle bar
+ * @param  {ol.Feature} feature - contains features to draw
+ * @return {String} svg
+ */
 function createIntervalCircleBar (feature) {
     const circleBarScalingFactor = parseFloat(this.get("circleBarScalingFactor")),
         circleBarRadius = parseFloat(this.get("circleBarRadius"), 10),
@@ -102,10 +105,11 @@ function createIntervalCircleBar (feature) {
     // create svg
     return createSvgIntervalCircleBar(size, barLength, circleBarCircleFillColor, circleBarCircleStrokeColor, circleBarCircleStrokeWidth, circleBarLineStrokeColor, circleBarLineStroke, circleBarRadius);
 }
+
 /**
-     * create interval scaled advanced style for pointFeatures
-     * @return {ol.Style} style
-     */
+ * create interval scaled advanced style for pointFeatures
+ * @return {ol.Style} style
+ */
 export function createIntervalPointStyle () {
     const feature = this.get("feature"),
         styleScalingShape = this.get("scalingShape").toUpperCase(),

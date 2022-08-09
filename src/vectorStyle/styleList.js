@@ -74,6 +74,7 @@ function getStyleIdsFromTools () {
     }
     return styleIds;
 }
+
 /**
  * gets style id from MapMarker
  * @param {String} mapMarkerPointStyleId The styleId from mapMarker store getter.
@@ -152,6 +153,7 @@ function getStyleIdForHighlightFeaturesPolygon () {
     }
     return styleId;
 }
+
 /**
  * Checks whether the module featureViaURL is activated and retrieves the styleIds.
  * @returns {String[]} Array of styleIds for the layers for the features given via the URL.
@@ -166,6 +168,7 @@ function getFeatureViaURLStyles () {
     }
     return styleIds;
 }
+
 /**
  * overwrite parse function so that only the style-models are saved
  * whose layers are configured in the config.json
@@ -178,7 +181,7 @@ function parseStyles (data) {
     let styleIds = [],
         filteredData = [];
 
-    dataWithDefaultValue.push({styleId: "default", rules: [{style: {}}]});
+    dataWithDefaultValue.push({styleId: "default", rules: [{style: {}}], legendInfos: ["s"]});
     dataWithDefaultValue.push(defaultStyle.defaultMapMarkerPoint,
         defaultStyle.defaultMapMarkerPolygon,
         defaultStyle.defaultHighlightFeaturesPoint,
@@ -199,16 +202,17 @@ function parseStyles (data) {
 
     return filteredData;
 }
+
 /**
-    * Initializes the style list with fetching the services.json.
-    * [styleConf="https://geoportal-hamburg.de/lgv-config/style_v3.json"] - the URL to fetch the services from.
-    * @param {object} [styleGetters] - object with the needed getters from vue store
-    * @param {object} [Config] - the Config.js object
-    * @param {array} [layers] - an array with the configured layers
-    * @param {array} [tools] - an array with the configured tools
-    * @param {function} [callback] - called with services after loaded; called with false and error on error
-    * @param {object} [style] - an object with styles
-    * @returns {undefined} nothing, add callback to receive styleList
+ * Initializes the style list with fetching the services.json.
+ * [styleConf="https://geoportal-hamburg.de/lgv-config/style_v3.json"] - the URL to fetch the services from.
+ * @param {object} [styleGetters] - object with the needed getters from vue store
+ * @param {object} [Config] - the Config.js object
+ * @param {array} [layers] - an array with the configured layers
+ * @param {array} [tools] - an array with the configured tools
+ * @param {function} [callback] - called with services after loaded; called with false and error on error
+ * @param {object} [style] - an object with styles
+ * @returns {undefined} nothing, add callback to receive styleList
  */
 export function initializeStyleList (styleGetters, Config, layers, tools, callback) {
     // TODO: defaultStyles implementieren in Funktionsaufrud style = defaultStyle?
@@ -256,11 +260,12 @@ export function initializeStyleList (styleGetters, Config, layers, tools, callba
     };
     xhr.send();
 }
+
 /**
-     * Returns model or by styleId or by layerId
-     * @param {string} layerId layerId
-     * @returns {object} style model
-    */
+ * Returns model or by styleId or by layerId
+ * @param {string} layerId layerId
+ * @returns {object} style model
+ */
 export function returnStyleObject (layerId) {
     return styleList.find(slmodel => slmodel.styleId === layerId);
 }

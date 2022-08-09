@@ -3,14 +3,14 @@ import StyleModel from "../style";
 import PointStyleModel from "./stylePoint";
 
 /**
-     * Create SVG for nominalscaled circle segments
-     * @param  {number} size - size of the section to be drawn
-     * @param  {number} circleSegmentsRadius - radius from circlesegment
-     * @param  {String} circleSegmentsBackgroundColor - backgroundcolor from circlesegment
-     * @param  {number} circleSegmentsStrokeWidth - strokewidth from circlesegment
-     * @param  {String} circleSegmentsFillOpacity - opacity from circlesegment
-     * @return {String} svg
-     */
+ * Create SVG for nominalscaled circle segments
+ * @param  {number} size - size of the section to be drawn
+ * @param  {number} circleSegmentsRadius - radius from circlesegment
+ * @param  {String} circleSegmentsBackgroundColor - backgroundcolor from circlesegment
+ * @param  {number} circleSegmentsStrokeWidth - strokewidth from circlesegment
+ * @param  {String} circleSegmentsFillOpacity - opacity from circlesegment
+ * @return {String} svg
+ */
 function createSvgNominalCircleSegments (size, circleSegmentsRadius, circleSegmentsBackgroundColor, circleSegmentsStrokeWidth, circleSegmentsFillOpacity) {
     const halfSize = size / 2;
     let svg = "<svg width='" + size + "'" +
@@ -30,11 +30,11 @@ function createSvgNominalCircleSegments (size, circleSegmentsRadius, circleSegme
 }
 
 /**
-     * Fills the object with values
-     * @param {object} scalingAttributesAsObject - object with possible attributes as keys and values = 0
-     * @param {string} scalingAttribute - actual states from feature
-     * @return {Object} scalingObject - contains the states
-     */
+ * Fills the object with values
+ * @param {object} scalingAttributesAsObject - object with possible attributes as keys and values = 0
+ * @param {string} scalingAttribute - actual states from feature
+ * @return {Object} scalingObject - contains the states
+ */
 function fillScalingAttributes (scalingAttributesAsObject, scalingAttribute) {
     const scalingObject = scalingAttributesAsObject === undefined || Object.keys(scalingAttributesAsObject).length === 0
         ? {empty: 0} : scalingAttributesAsObject;
@@ -57,11 +57,12 @@ function fillScalingAttributes (scalingAttributesAsObject, scalingAttribute) {
 
     return scalingObject;
 }
+
 /**
-     * Convert scalingAttributes to object
-     * @param {object} scalingValues - contains attribute with color
-     * @return {object} scalingAttribute with value 0
-     */
+ * Convert scalingAttributes to object
+ * @param {object} scalingValues - contains attribute with color
+ * @return {object} scalingAttribute with value 0
+ */
 function getScalingAttributesAsObject (scalingValues) {
     const obj = {};
     let key;
@@ -76,15 +77,16 @@ function getScalingAttributesAsObject (scalingValues) {
 
     return obj;
 }
+
 /**
-     * Create circle segments
-     * @param  {number} startAngelDegree - start with circle segment
-     * @param  {number} endAngelDegree - finish with circle segment
-     * @param  {number} circleRadius - radius from circle
-     * @param  {number} size - size of the window to be draw
-     * @param  {number} gap - gap between segments
-     * @return {String} all circle segments
-     */
+ * Create circle segments
+ * @param  {number} startAngelDegree - start with circle segment
+ * @param  {number} endAngelDegree - finish with circle segment
+ * @param  {number} circleRadius - radius from circle
+ * @param  {number} size - size of the window to be draw
+ * @param  {number} gap - gap between segments
+ * @return {String} all circle segments
+ */
 function calculateCircleSegment (startAngelDegree, endAngelDegree, circleRadius, size, gap) {
     const rad = Math.PI / 180,
         xy = size / 2,
@@ -112,14 +114,15 @@ function calculateCircleSegment (startAngelDegree, endAngelDegree, circleRadius,
         "A", circleRadius, circleRadius, 0, 0, 0, xEnd, yEnd
     ].join(" ");
 }
+
 /**
-     * Extends the SVG with given tags
-     * @param  {String} svg - String with svg tags
-     * @param  {number} circleSegmentsStrokeWidth strokewidth from circlesegment
-     * @param  {String} strokeColor - strokecolor from circlesegment
-     * @param  {String} d - circle segment
-     * @return {String} extended svg
-     */
+ * Extends the SVG with given tags
+ * @param  {String} svg - String with svg tags
+ * @param  {number} circleSegmentsStrokeWidth strokewidth from circlesegment
+ * @param  {String} strokeColor - strokecolor from circlesegment
+ * @param  {String} d - circle segment
+ * @return {String} extended svg
+ */
 function extendsSvgNominalCircleSegments (svg, circleSegmentsStrokeWidth, strokeColor, d) {
     return svg + "<path" +
             " fill='none'" +
@@ -127,12 +130,13 @@ function extendsSvgNominalCircleSegments (svg, circleSegmentsStrokeWidth, stroke
             " stroke='" + strokeColor + "'" +
             " d='" + d + "'/>";
 }
+
 /**
-     * Create a svg with colored circle segments by nominal scaling
-     * @param  {ol.Feature} feature - feature to be drawn
-     * @param {Object} attributes - The attributes from the nominal circle segment
-     * @return {String} svg with colored circle segments
-     */
+ * Create a svg with colored circle segments by nominal scaling
+ * @param  {ol.Feature} feature - feature to be drawn
+ * @param {Object} attributes - The attributes from the nominal circle segment
+ * @return {String} svg with colored circle segments
+ */
 function createNominalCircleSegments (feature, attributes) {
     const circleSegmentsRadius = parseFloat(attributes.circleSegmentsRadius, 10),
         circleSegmentsStrokeWidth = parseFloat(attributes.circleSegmentsStrokeWidth, 10),
@@ -198,12 +202,12 @@ function createNominalCircleSegments (feature, attributes) {
 }
 
 /**
-     * create nominal scaled advanced style for pointFeatures
-     * @param {Object} feature - the feature to be drawn
-     * @param {Object} attributes - The attributes from the nominal point
-     * @param {Object} defaultImageName - The image name from the default style
-     * @return {ol.Style} style
-     */
+ * create nominal scaled advanced style for pointFeatures
+ * @param {Object} feature - the feature to be drawn
+ * @param {Object} attributes - The attributes from the nominal point
+ * @param {Object} defaultImageName - The image name from the default style
+ * @return {ol.Style} style
+ */
 export function createNominalPointStyle (feature, attributes, defaultImageName) {
     const workingFeature = Array.isArray(feature.get("features")) ? feature.get("features")[0] : feature,
         styleScalingShape = attributes.scalingShape.toUpperCase(),

@@ -82,7 +82,7 @@ class CesiumStyleModel extends StyleModel {
     }
 
     /**
-     * Setter fir attribute "conditions"
+     * Setter for attribute "conditions"
      * @param {*} conditions conditions
      * @returns {void}
      */
