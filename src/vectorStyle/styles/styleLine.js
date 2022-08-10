@@ -3,11 +3,25 @@ import {Style, Stroke} from "ol/style.js";
 import defaultStyle from "../defaultStyle";
 
 class LinestringStyleModel extends StyleModel {
+    /**
+     * @description Class to create ol.style.Style
+     * @constructor
+     * @class LinestringStyleModel
+     * @extends StyleModel
+     * @memberof VectorStyle.Style
+     */
     constructor () {
         super();
         this.attributes = {...defaultStyle.line};
     }
 
+    /**
+    * This function initializes the Linestring Object by setting or overwriting some attributes.
+    * @param {ol/feature} feature Feature to be styled.
+    * @param {object} styles styling properties to overwrite defaults
+    * @param {Boolean} isClustered Flag to show if feature is clustered.
+    * @returns {void}
+    */
     initialize (feature, styles, isClustered) {
         this.setFeature(feature);
         this.setIsClustered(isClustered);
