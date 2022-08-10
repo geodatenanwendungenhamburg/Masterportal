@@ -1,12 +1,24 @@
 import StyleModel from "./style";
 import defaultStyle from "../defaultStyle";
 class CesiumStyleModel extends StyleModel {
+    /**
+     * @description Class to create ol.style.Style
+     * @constructor
+     * @class CesiumStyleModel
+     * @extends StyleModel
+     * @memberof VectorStyle.Style
+     */
     constructor () {
         super();
         this.attributes = {...defaultStyle.point};
         this.conditions = [];
     }
 
+    /**
+    * This function initializes the Linestring Object by setting or overwriting some attributes.
+    * @param {ol/feature} rule styling rule of the feature.
+    * @returns {void}
+    */
     initialize (rule) {
         this.overwriteStyling(rule.style);
         this.setConditions(rule.conditions);
@@ -28,7 +40,7 @@ class CesiumStyleModel extends StyleModel {
      * @returns {*} - Condition for cesium 3d tile style.
      */
     createCondition (conditions, style) {
-        const ruleColor = style.color,
+        const {color} = style,
             condition = [];
         let ruleCondition;
 
@@ -38,10 +50,10 @@ class CesiumStyleModel extends StyleModel {
 
                 condition.push([key, value]);
             });
-            ruleCondition = [this.createCesiumConditionForRule(condition), ruleColor];
+            ruleCondition = [this.createCesiumConditionForRule(condition), color];
         }
         else {
-            ruleCondition = ["true", ruleColor];
+            ruleCondition = ["true", color];
         }
         return ruleCondition;
     }
