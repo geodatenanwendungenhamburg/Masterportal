@@ -16,12 +16,12 @@ class PolygonStyleModel extends StyleModel {
     }
 
     /**
-    * This function initializes the stylePolygon Object by setting or overwriting some attributes.
-    * @param {ol/feature} feature Feature to be styled.
-    * @param {object} styles styling properties to overwrite defaults
-    * @param {Boolean} isClustered Flag to show if feature is clustered.
-    * @returns {void}
-    */
+     * This function initializes the stylePolygon Object by setting or overwriting some attributes.
+     * @param {ol/feature} feature Feature to be styled.
+     * @param {object} styles styling properties to overwrite defaults
+     * @param {Boolean} isClustered Flag to show if feature is clustered.
+     * @returns {void}
+     */
     initialize (feature, styles, isClustered) {
         this.setFeature(feature);
         this.setIsClustered(isClustered);

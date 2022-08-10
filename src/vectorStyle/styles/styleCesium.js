@@ -15,10 +15,10 @@ class CesiumStyleModel extends StyleModel {
     }
 
     /**
-    * This function initializes the Linestring Object by setting or overwriting some attributes.
-    * @param {ol/feature} rule styling rule of the feature.
-    * @returns {void}
-    */
+     * This function initializes the Linestring Object by setting or overwriting some attributes.
+     * @param {ol/feature} rule styling rule of the feature.
+     * @returns {void}
+     */
     initialize (rule) {
         this.overwriteStyling(rule.style);
         this.setConditions(rule.conditions);
@@ -26,9 +26,9 @@ class CesiumStyleModel extends StyleModel {
     }
 
     /**
-    * This function returns a style for each feature.
-    * @returns {ol/style} - The created style.
-    */
+     * This function returns a style for each feature.
+     * @returns {ol/style} - The created style.
+     */
     getStyle () {
         return this.createCondition(this.get("conditions"), this.get("style"));
     }

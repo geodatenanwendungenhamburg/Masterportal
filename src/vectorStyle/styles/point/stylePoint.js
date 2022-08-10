@@ -6,11 +6,26 @@ import {Style} from "ol/style.js";
 import defaultStyle from "../../defaultStyle";
 
 class PointStyleModel extends StyleModel {
+    /**
+     * @description Class to create ol.style.Style
+     * @constructor
+     * @class PointStyleModel
+     * @extends StyleModel
+     * @memberof VectorStyle.Style
+     */
     constructor () {
         super();
         this.attributes = {...defaultStyle.point};
     }
 
+    /**
+     * This function initializes the Linestring Object by setting or overwriting some attributes.
+     * @param {ol/feature} feature Feature to be styled.
+     * @param {object} styles styling properties to overwrite defaults
+     * @param {Boolean} isClustered Flag to show if feature is clustered.
+     * @param {Boolean} wfsImgPathFromConfig image Path of the wfs.
+     * @returns {void}
+     */
     initialize (feature, styles, isClustered, wfsImgPathFromConfig) {
         if (wfsImgPathFromConfig !== undefined) {
             this.setImagePath(wfsImgPathFromConfig);
@@ -25,9 +40,9 @@ class PointStyleModel extends StyleModel {
     }
 
     /**
-    * This function returns a style for each feature.
-    * @returns {ol/style} - The created style.
-    */
+     * This function returns a style for each feature.
+     * @returns {ol/style} - The created style.
+     */
     getStyle () {
         const type = this.attributes.type.toLowerCase(),
             isClustered = this.isClustered,
@@ -69,11 +84,11 @@ class PointStyleModel extends StyleModel {
 
     /**
      * Setter for size.
-     * @param {*} size Size
+     * @param {*} value Size
      * @returns {void}
      */
-    setSize (size) {
-        this.size = size;
+    setSize (value) {
+        this.size = value;
     }
 
     /**
