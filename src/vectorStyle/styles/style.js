@@ -1,6 +1,12 @@
 import {getValueFromObjectByPath} from "../../lib/getValueFromObjectByPath";
 
 class StyleModel {
+    /**
+     * @param {ol/feature} feature Feature to be styled.
+     * @param {object} style styling properties to overwrite defaults
+     * @param {Boolean} isClustered Flag to show if feature is clustered.
+     * @constructor
+     */
     constructor (feature, style, isClustered) {
         this.feature = feature;
         this.style = style;
@@ -10,28 +16,54 @@ class StyleModel {
         this.styleMultiGeomOnlyWithRule = false;
     }
 
-    /*
-    * setter for feature
-    * @param {ol/feature} value feature
-    * @returns {void}
-    */
+    /**
+     * setter for feature
+     * @param {ol/feature} value the feature to set
+     * @returns {void}
+     */
     setFeature (value) {
         this.feature = value;
     }
 
     /**
      * Setter for style.
-     * @param {*} style Style
+     * @param {object} value the style to set
      * @returns {void}
      */
-    setStyle (style) {
-        this.style = style;
+    setStyle (value) {
+        this.style = value;
+    }
+
+    /*
+     * setter for styles
+     * @param {object} styles styles
+     * @returns {void}
+     */
+    overwriteStyling (styles) {
+        // check if styles object is defined
+        // if not, use defaults instead
+        if (styles) {
+            Object.keys(styles).forEach(element => {
+                const value = styles[element];
+
+                this.attributes[element] = value;
+            });
+        }
     }
 
     /**
-    * returns the legend info
-    * @returns {object[]} legend objects
-    */
+     * setter for isClustered
+     * @param {Boolean} value isClustered
+     * @returns {void}
+     */
+    setIsClustered (value) {
+        this.isClustered = value;
+    }
+
+    /**
+     * returns the legend info
+     * @returns {object[]} legend objects
+     */
     getLegendInfos () {
         return this.legendInfos;
     }
@@ -49,11 +81,11 @@ class StyleModel {
     }
 
     /**
-    * Returns the label or null examining some attributes. Giving precedence to "legendValue". Otherwhile creates a string out of rules conditions.
-    * @param   {Object} rule conditions
-    * @param   {vectorStyle/style} styleObject a vector style needed in
-    * @returns {String | null} label for styleObject
-    */
+     * Returns the label or null examining some attributes. Giving precedence to "legendValue". Otherwhile creates a string out of rules conditions.
+     * @param   {Object} rule conditions
+     * @param   {vectorStyle/style} styleObject a vector style needed in
+     * @returns {String | null} label for styleObject
+     */
     createLegendLabel (rule, styleObject) {
         if (styleObject?.attributes?.legendValue) {
             return styleObject.attributes.legendValue.toString();
@@ -80,14 +112,14 @@ class StyleModel {
     }
 
     /**
-    * Adds a unique legendInfo for each id to vectorStyle model to be used for legend descriptions.
-    * @param {string} geometryType features geometry type needed in legend model
-    * @param {vectorStyle/style} styleObject  a vector style needed in
-    * @param {Object} rule conditions
-    * @returns {void}
-    */
+     * Adds a unique legendInfo for each id to vectorStyle model to be used for legend descriptions.
+     * @param {string} geometryType features geometry type needed in legend model
+     * @param {vectorStyle/style} styleObject  a vector style needed in
+     * @param {Object} rule conditions
+     * @returns {void}
+     */
     addLegendInfo (geometryType, styleObject, rule) {
-        const legendInfos = styleObject.legendInfos,
+        const {legendInfos} = styleObject,
             id = this.createLegendId(geometryType, rule),
             hasLegendInfo = legendInfos.some(legend => {
                 return legend.id === id;
@@ -99,32 +131,6 @@ class StyleModel {
                 "geometryType": geometryType,
                 "styleObject": styleObject.attributes,
                 "label": this.createLegendLabel(rule, styleObject)
-            });
-        }
-    }
-
-    /*
-    * setter for isClustered
-    * @param {Boolean} value isClustered
-    * @returns {void}
-    */
-    setIsClustered (value) {
-        this.isClustered = value;
-    }
-
-    /*
-    * setter for styles
-    * @param {object} styles styles
-    * @returns {void}
-    */
-    overwriteStyling (styles) {
-        // check if styles object is defined
-        // if not, use defaults instead
-        if (styles) {
-            Object.keys(styles).forEach(element => {
-                const value = styles[element];
-
-                this.attributes[element] = value;
             });
         }
     }
