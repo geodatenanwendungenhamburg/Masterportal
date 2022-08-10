@@ -3,21 +3,25 @@ import {Style, Fill, Stroke} from "ol/style.js";
 import defaultStyle from "../defaultStyle";
 
 class PolygonStyleModel extends StyleModel {
+    /**
+     * @description Class to create ol.style.Style
+     * @constructor
+     * @class PolygonStyleModel
+     * @extends StyleModel
+     * @memberof VectorStyle.Style
+     */
     constructor () {
         super();
         this.attributes = {...defaultStyle.polygon};
     }
-    /**
-     * @description Class to create ol.style.Style
-     * @class PolygonStyleModel
-     * @extends StyleModel
-     * @memberof VectorStyle.Style
-     * @constructs
-     * @property {ol/feature} feature Feature to be styled.
-     * @property {object} styles styling properties to overwrite defaults
-     * @property {Boolean} isClustered Flag to show if feature is clustered.
-     */
 
+    /**
+    * This function initializes the stylePolygon Object by setting or overwriting some attributes.
+    * @param {ol/feature} feature Feature to be styled.
+    * @param {object} styles styling properties to overwrite defaults
+    * @param {Boolean} isClustered Flag to show if feature is clustered.
+    * @returns {void}
+    */
     initialize (feature, styles, isClustered) {
         this.setFeature(feature);
         this.setIsClustered(isClustered);
