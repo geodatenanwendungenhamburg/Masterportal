@@ -77,7 +77,6 @@ function getStyleIdsFromTools () {
 
 /**
  * gets style id from MapMarker
- * @param {String} mapMarkerPointStyleId The styleId from mapMarker store getter.
  * @returns {String} - Style id of mapMarker.
  */
 function getStyleIdForMapMarkerPoint () {
@@ -91,7 +90,6 @@ function getStyleIdForMapMarkerPoint () {
 
 /**
  * gets style id from HighlightFeatures
- * @param {String} highlightFeaturesPointStyleId The styleId from highlightFeatures store getter.
  * @returns {String} - Style id of highlightFeatures.
  */
 function getStyleIdForHighlightFeaturesPoint () {
@@ -108,7 +106,6 @@ function getStyleIdForHighlightFeaturesPoint () {
 
 /**
  * gets style id from HighlightFeatures
- * @param {String} highlightFeaturesLineStyleId The styleId from highlightFeatures store getter.
  * @returns {String} - Style id of highlightFeatures.
  */
 function getStyleIdForHighlightFeaturesLine () {
@@ -125,7 +122,6 @@ function getStyleIdForHighlightFeaturesLine () {
 
 /**
  * gets style id from MapMarker
- * @param {String} mapMarkerPolygonStyleId The styleId from mapMarker store getter.
  * @returns {String} - Style id of mapMarker.
  */
 function getStyleIdForMapMarkerPolygon () {
@@ -139,7 +135,6 @@ function getStyleIdForMapMarkerPolygon () {
 
 /**
  * gets style id from HighlightFeatures
- * @param {String} highlightFeaturesPolygonStyleId The styleId from highlightFeatures store getter.
  * @returns {String} - Style id of highlightFeatures.
  */
 function getStyleIdForHighlightFeaturesPolygon () {
@@ -170,9 +165,9 @@ function getFeatureViaURLStyles () {
 }
 
 /**
- * overwrite parse function so that only the style-models are saved
+ * overwrite parse function so that only the style objects are saved
  * whose layers are configured in the config.json
- * After that these models are automatically added to the collection
+ * After that these objects are automatically added to the collection
  * @param  {object[]} data parsed style.json
  * @return {object[]} filtered style.json objects
  */
@@ -181,8 +176,8 @@ function parseStyles (data) {
     let styleIds = [],
         filteredData = [];
 
-    dataWithDefaultValue.push({styleId: "default", rules: [{style: {}}], legendInfos: ["s"]});
-    dataWithDefaultValue.push(defaultStyle.defaultMapMarkerPoint,
+    dataWithDefaultValue.push({styleId: "default", rules: [{style: {}}]},
+        defaultStyle.defaultMapMarkerPoint,
         defaultStyle.defaultMapMarkerPolygon,
         defaultStyle.defaultHighlightFeaturesPoint,
         defaultStyle.defaultHighlightFeaturesPolygon,
@@ -198,7 +193,7 @@ function parseStyles (data) {
         getFeatureViaURLStyles());
 
     styleIds = styleIds.reduce((acc, val) => acc.concat(val), []);
-    filteredData = dataWithDefaultValue.filter(styleModel => styleIds.includes(styleModel.styleId));
+    filteredData = dataWithDefaultValue.filter(styleObject => styleIds.includes(styleObject.styleId));
 
     return filteredData;
 }
@@ -211,12 +206,9 @@ function parseStyles (data) {
  * @param {array} [layers] - an array with the configured layers
  * @param {array} [tools] - an array with the configured tools
  * @param {function} [callback] - called with services after loaded; called with false and error on error
- * @param {object} [style] - an object with styles
  * @returns {undefined} nothing, add callback to receive styleList
  */
 export function initializeStyleList (styleGetters, Config, layers, tools, callback) {
-    // TODO: defaultStyles implementieren in Funktionsaufrud style = defaultStyle?
-
     configuredLayers = layers;
     configuredTools = tools;
 
@@ -262,10 +254,10 @@ export function initializeStyleList (styleGetters, Config, layers, tools, callba
 }
 
 /**
- * Returns model or by styleId or by layerId
+ * Returns style object by styleId or by layerId
  * @param {string} layerId layerId
- * @returns {object} style model
+ * @returns {object} style object
  */
 export function returnStyleObject (layerId) {
-    return styleList.find(slmodel => slmodel.styleId === layerId);
+    return styleList.find(styleObject => styleObject.styleId === layerId);
 }
