@@ -1,10 +1,17 @@
 import {Style} from "ol/style.js";
 import PointStyle from "./styles/point/stylePoint";
 import TextStyle from "./styles/styleText";
-import PolygonStyle from "./styles/stylePolygon";
+import PolygonStyle from "./styles/polygon/stylePolygon";
+import {drawHatch} from "./styles/polygon/polygonStyleHatch";
 import LinestringStyle from "./styles/styleLine";
 import CesiumStyle from "./styles/styleCesium";
 import {mapAttributes, isObjectPath} from "../lib/attributeMapper";
+import axios from "axios";
+import getProxyUrl from "../../lib/getProxyUrl";
+
+const legendsOfAllStyles = [],
+    alreadyCapturedLegends = [],
+    desiredLegends = [];
 
 /**
  * get value without comma and into number format
@@ -215,7 +222,7 @@ function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsIm
 
     // if (style && Object.prototype.hasOwnProperty.call(style, "labelField")) {
     //     console.log("hat er label?");
-    //     this.set("labelField", style.labelField);
+    //     set("labelField", style.labelField);
     // }
     if (geometryType === "Point") {
         styleObject = new PointStyle(feature, style, isClustered);
@@ -368,7 +375,7 @@ function getMultiGeometryStyle (geometryType, feature, rules, isClustered, wfsIm
  * @param   {String} wfsImgPathFromConfig path to wfsImg from Config
  * @returns {ol/style/Style}    style is always returned
  */
-function getGeometryStyle (feature, rules, isClustered, wfsImgPathFromConfig) {
+export function getGeometryStyle (feature, rules, isClustered, wfsImgPathFromConfig) {
     const geometryType = feature ? feature.getGeometry().getType() : "Cesium";
 
     // For simple geometries the first styling rule is used.
@@ -403,6 +410,21 @@ function getLabelStyle (feature, style, isClustered) {
 }
 
 /**
+ * Function is called from layer models for each feature.
+ * @param   {String}  found legendInfo of feature
+ * @param   {ol/feature}  legendInformation legendInformation for the layer
+ * @returns {ol/style/Style} style used in layer model
+ */
+function getLegendsFromStyle (found, legendInformation) {
+    if (found && !found.legendInformation.find(element => element.label === legendInformation.label)) {
+        found.legendInformation.push(legendInformation);
+    }
+    if (!desiredLegends.includes(found)) {
+        desiredLegends.push(found);
+    }
+}
+
+/**
      * Function is called from layer models for each feature.
      * @param   {String}  styleObject     id of the style
      * @param   {ol/feature}  feature     the feature to style
@@ -416,8 +438,32 @@ export function createStyle (styleObject, feature, isClustered, wfsImgPathFromCo
         style = Array.isArray(rules) && rules.length > 0 ? rules[0].style : null,
         hasLabelField = style?.labelField,
         geometryStyle = getGeometryStyle(feature, rules, isClustered, wfsImgPathFromConfig),
+        legendInformation = Array.isArray(geometryStyle) ? geometryStyle[0].legendInfos[0] : geometryStyle.legendInfos[0],
         styleObjectGeometry = Array.isArray(geometryStyle) ? geometryStyle[0].getStyle() : geometryStyle.getStyle();
 
+    if (!legendsOfAllStyles.find(element => element.id === styleObject.styleId)) {
+        legendsOfAllStyles.push({id: styleObject.styleId, legendInformation: []});
+    }
+    else if (styleObject.styleId === "default") {
+        const defaultLegends = legendsOfAllStyles.find(element => element.id === styleObject.styleId);
+
+        if (!defaultLegends.legendInformation.find(element => element.id === legendInformation.id)) {
+            defaultLegends.legendInformation.push(legendInformation);
+        }
+    }
+
+    if (rules && !alreadyCapturedLegends.includes(rules[0].style.imageName)) {
+        const found = legendsOfAllStyles.find(element => element.id === styleObject.styleId);
+
+        getLegendsFromStyle(found, legendInformation);
+        alreadyCapturedLegends.push(rules[0].style.imageName);
+    }
+    else {
+        const found = legendsOfAllStyles.find(element => element.id === styleObject.styleId);
+
+        getLegendsFromStyle(found, legendInformation);
+        alreadyCapturedLegends.push(styleObject.styleId);
+    }
     // label style is optional and depends on some fields
     if (isClustered || hasLabelField) {
         if (Array.isArray(styleObjectGeometry)) {
@@ -428,4 +474,389 @@ export function createStyle (styleObject, feature, isClustered, wfsImgPathFromCo
         }
     }
     return styleObjectGeometry;
+}
+
+export function returnLegends () {
+    return desiredLegends;
+}
+
+/**
+ * Parses the xml with another structure to get the subelements from the layer
+ * @param   {string} xml response xml
+ * @param   {string} featureType wfs feature type from layer without namespace
+ * @returns {object[]} subElements of the xml element
+ */
+function getSubelementsFromXMLOtherStructure (xml, featureType) {
+    const elements = xml ? Array.from(xml.getElementsByTagName("element")) : [];
+    let subElements = [];
+
+    elements.forEach(element => {
+        if (element.getAttribute("name") === featureType) {
+            const sibling = element.nextElementSibling;
+
+            if (sibling && sibling.tagName === "complexType" && sibling.hasAttribute("name")) {
+                subElements = Array.from(sibling.getElementsByTagName("element"));
+            }
+        }
+    });
+    return subElements;
+}
+
+
+/**
+ * Parses the xml to get the subelements from the layer
+ * @param   {string} xml response xml
+ * @param   {string} featureType wfs feature type from layer. Namespace is taken into account.
+ * @returns {object[]} subElements of the xml element
+ */
+function getSubelementsFromXML (xml, featureType) {
+    const elements = xml ? Array.from(xml.getElementsByTagName("element")) : [];
+    let subElements = [],
+        featureTypeWithoutNamespace = featureType;
+
+    if (featureType && featureType.indexOf(":") > -1) {
+        featureTypeWithoutNamespace = featureType.substr(featureType.indexOf(":") + 1, featureType.length);
+    }
+
+    elements.forEach(element => {
+        if (element.getAttribute("name") === featureTypeWithoutNamespace) {
+            subElements = Array.from(element.getElementsByTagName("element"));
+        }
+    });
+    if (subElements.length === 0) {
+        subElements = getSubelementsFromXMLOtherStructure(xml, featureTypeWithoutNamespace);
+    }
+    return subElements;
+}
+
+/**
+ * Parses the geometry types from the subelements
+ * @param   {Object[]} [subElements=[]] xml subelements
+ * @param   {String[] | String} [styleGeometryType=null] The configured geometry type of the layer
+ * @returns {String[]} geometry types of the layer
+ */
+function getTypeAttributesFromSubelements (subElements = [], styleGeometryType = null) {
+    const geometryType = [];
+
+    subElements.forEach(elements => {
+        const typeAttribute = elements.getAttribute("type");
+        let geomType = styleGeometryType;
+
+        if (typeAttribute && typeAttribute.includes("gml")) {
+            geomType = styleGeometryType || typeAttribute.split("gml:")[1].replace("PropertyType", "");
+            if (geomType === "Geometry") {
+                geometryType.push("Point");
+                geometryType.push("Polygon");
+                geometryType.push("LineString");
+            }
+            else if (Array.isArray(geomType)) {
+                geomType.forEach(singleGeomType => geometryType.push(singleGeomType));
+            }
+            else {
+                geometryType.push(geomType);
+            }
+        }
+    });
+    return geometryType;
+}
+
+/**
+ * Creates the style objects for the layer
+ * @param   {string[]} geometryType Array of geometry types
+ * @returns {void}
+ */
+function createLegendInfo (geometryType) {
+    const rules = this.get("rules");
+    // eslint-disable-next-line no-unused-vars
+    let styleObject,
+        simpleGeom;
+
+    geometryType.forEach(geom => rules.forEach(rule => {
+        if (geom === "MultiSurface") {
+            simpleGeom = "Polygon";
+            styleObject = getSimpleGeometryStyle(simpleGeom, "", rule, false);
+        }
+        else if (geom.includes("Multi")) {
+            simpleGeom = geom.replace("Multi", "");
+            styleObject = getMultiGeometryStyle(simpleGeom, "", rule, false);
+        }
+        else {
+            simpleGeom = geom;
+            styleObject = getSimpleGeometryStyle(simpleGeom, "", rule, false);
+        }
+        // TODO: Was passiert hiermit? addLegendInfo(simpleGeom, styleObject, rule);
+    }));
+}
+
+
+/**
+* Requests the DescribeFeatureType of the wfs layer and starts the function to parse the xml and creates the legend info
+* @param   {string} wfsURL url from layer
+* @param   {string} version wfs version from layer
+* @param   {string} featureType wfs feature type from layer
+* @param   {string[] | string} styleGeometryType The configured geometry type of the layer
+* @param   {Boolean} useProxy Attribute to request the URL via a reverse proxy
+* @param {function} [callback] - called with services after loaded; called with false and error on error
+* @returns {void}
+*/
+export function getGeometryTypeFromWFS (wfsURL, version, featureType, styleGeometryType, useProxy, callback) {
+    const params = {
+        "SERVICE": "WFS",
+        "VERSION": version,
+        "REQUEST": "DescribeFeatureType"
+    };
+    /**
+    * @deprecated in the next major-release!
+    * useProxy
+    * getProxyUrl()
+    */
+    let url = useProxy ? getProxyUrl(wfsURL) + "?" : wfsURL + "?";
+
+    Object.keys(params).forEach(key => {
+        url += key + "=" + params[key] + "&";
+    });
+    url = url.slice(0, -1);
+
+
+    axios({
+        method: "get",
+        url: url,
+        // headers: {"Content-Type'": "text/xml"},
+        responseType: "document"
+    }).then(response => {
+        const subElements = getSubelementsFromXML(response.data, featureType),
+            geometryTypes = getTypeAttributesFromSubelements(subElements, styleGeometryType);
+
+        createLegendInfo(geometryTypes);
+    }).catch(error => {
+        console.warn("The fetch of the data failed with the following error message: " + error);
+        return callback(error);
+    });
+}
+
+/**
+ * Requests the DescribeFeatureType of the secured wfs layer and starts the function to parse the xml and creates the legend info
+ * @param   {string} wfsURL url from layer
+ * @param   {string} version wfs version from layer
+ * @param   {string} featureType wfs feature type from layer
+ * @param   {string[] | string} styleGeometryType The configured geometry type of the layer
+ * @param {function} [callback] - called with services after loaded; called with false and error on error
+ * @returns {void}
+ */
+export function getGeometryTypeFromSecuredWFS (wfsURL, version, featureType, styleGeometryType, callback) {
+    const params = {
+        "SERVICE": "WFS",
+        "VERSION": version,
+        "REQUEST": "DescribeFeatureType"
+    };
+    let url = wfsURL + "?";
+
+    Object.keys(params).forEach(key => {
+        url += key + "=" + params[key] + "&";
+    });
+    url = url.slice(0, -1);
+
+    axios({
+        method: "GET",
+        url: url,
+        withCredentials: true,
+        responseType: "text"
+    })
+        .then(responseAsString => new window.DOMParser().parseFromString(responseAsString, "text/xml"))
+        .then(responseXML => {
+            const subElements = getSubelementsFromXML(responseXML, featureType),
+                geometryTypes = getTypeAttributesFromSubelements(subElements, styleGeometryType);
+
+            createLegendInfo(geometryTypes);
+        })
+        .catch(error => {
+            console.warn("The fetch of the data failed with the following error message: " + error);
+            return callback(error);
+        });
+}
+
+/**
+ * Requests the geometry type of the OAF collection and creates the legend info
+ * @param   {string} oafURL url from layer
+ * @param   {String} collection the collection name to fetch geometry type for
+ * @param {function} [callback] - called with services after loaded; called with false and error on error
+ * @returns {void}
+ */
+export function getGeometryTypeFromOAF (oafURL, collection, callback) {
+/**
+ * @deprecated in the next major-release!
+ * useProxy
+ * getProxyUrl()
+ */
+    const url = oafURL + "/collections/" + collection + "/items?limit=1";
+
+    axios({
+        method: "get",
+        url: url,
+        headers: {
+            accept: "application/geo+json"
+        }
+    }).then(response => {
+        const geometryType = response.data?.features[0]?.geometry?.type;
+
+        if (geometryType) {
+            createLegendInfo([geometryType]);
+        }
+    }).catch(error => {
+        console.warn("The fetch of the data failed with the following error message: " + error);
+        return callback(error);
+    });
+}
+
+/**
+     * Makes sure that one rgb color always consists of four values
+     * @param {Number[]} newColor Color in rgb
+     * @return {Number[]} normColor
+     */
+function normalizeRgbColor (newColor) {
+    const defaultArray = [1, 1, 1, 1];
+
+    return newColor.concat(defaultArray).slice(0, 4);
+}
+
+/**
+     * Converts hex value to rgbarray.
+     * @param {String} hex Color as hex string.
+     * @returns {Number[]} - Color als rgb array.
+     */
+function hexToRgb (hex) {
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i,
+        hexReplace = hex.replace(shorthandRegex, function (m, r, g, b) {
+            return r + r + g + g + b + b;
+        });
+    let result;
+
+    result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i;
+    result = result.exec(hexReplace);
+
+    return result ? [parseFloat(result[1], 16), parseFloat(result[2], 16), parseFloat(result[3], 16)] : null;
+}
+
+/**
+     * Converts number to hex string.
+     * @param {Number} c Color value as number.
+     * @returns {String} - Converted color number as hex string.
+     */
+function componentToHex (c) {
+    const hex = Number(c).toString(16);
+
+    return hex.length === 1 ? "0" + hex : hex;
+}
+/**
+     * Converts rgb to hex.
+     * @param {Number} r Red value.
+     * @param {Number} g Green Value.
+     * @param {Number} b Blue value.
+     * @returns {String} - Hex color string.
+     */
+function rgbToHex (r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+/**
+     * Returns input color to destinated color.
+     * possible values for dest are "rgb" and "hex".
+     * color has to come as hex (e.g. "#ffffff" || "#fff") or as array (e.g [255,255,255,0]) or as String ("[255,255,255,0]")
+     * @param {Number[]|String} color The color to return.
+     * @param {String} dest Destination color type.
+     * @returns {String|Number[]} - The converted color.
+     */
+export function returnColor (color, dest) {
+    let src,
+        newColor = color,
+        pArray = [];
+
+    if (Array.isArray(newColor)) {
+        src = "rgb";
+    }
+    else if (typeof newColor === "string" && newColor.indexOf("#") === 0) {
+        src = "hex";
+    }
+    else if (typeof newColor === "string" && newColor.indexOf("#") === -1) {
+        src = "rgb";
+
+        pArray = newColor.replace("[", "").replace("]", "").replace(/ /g, "").split(",");
+        newColor = [
+            pArray[0], pArray[1], pArray[2], pArray[3]
+        ];
+    }
+
+    if (src === "hex" && dest === "rgb") {
+        newColor = hexToRgb(newColor);
+    }
+    else if (src === "rgb" && dest === "hex") {
+        newColor = rgbToHex(newColor[0], newColor[1], newColor[2]);
+    }
+
+    newColor = dest === "rgb" ? normalizeRgbColor(newColor) : newColor;
+
+    return newColor;
+}
+
+/**
+     * Generates a polygon fill pattern.
+     * @param {object} params parameters as defined in style.json.md#Polygon.polygonFillHatch
+     * @returns {HTMLCanvasElement} contains polygon fill pattern
+     */
+function getPolygonFillHatch ({
+    pattern = "diagonal",
+    size = 30,
+    lineWidth = 10,
+    backgroundColor = [0, 0, 0, 1],
+    patternColor = [255, 255, 255, 1]
+}) {
+    const canvas = document.createElement("canvas"),
+        context = canvas.getContext("2d");
+
+    canvas.width = size;
+    canvas.height = size;
+
+    context.fillStyle = `rgba(${backgroundColor.join(",")})`;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    context.lineWidth = lineWidth;
+    context.strokeStyle = `rgba(${patternColor.join(",")})`;
+
+    drawHatch(context, size, pattern);
+
+    context.fillStyle = context.createPattern(canvas, "repeat");
+
+    return canvas;
+}
+
+export function getPolygonFillHatchLegendDataUrl (style) {
+    const originalCanvas = getPolygonFillHatch(style.polygonFillHatch),
+        strokeColor = returnColor(style.polygonStrokeColor, "hex"),
+        strokeWidth = parseInt(style.polygonStrokeWidth, 10),
+        strokeOpacity = style.polygonStrokeColor[3].toString() || 0,
+        legendCanvas = document.createElement("canvas"),
+        legendContext = legendCanvas.getContext("2d"),
+        halfStroke = strokeWidth / 2,
+        doubleStroke = strokeWidth * 2;
+
+    legendCanvas.width = originalCanvas.width + doubleStroke;
+    legendCanvas.height = originalCanvas.height + doubleStroke;
+
+    legendContext.drawImage(originalCanvas,
+        strokeWidth,
+        strokeWidth);
+
+    legendContext.lineCap = "round";
+    legendContext.lineJoin = "round";
+    legendContext.strokeStyle = strokeColor;
+    legendContext.lineWidth = strokeWidth;
+    legendContext.globalAlpha = strokeOpacity;
+
+    legendContext.strokeRect(halfStroke,
+        halfStroke,
+        legendCanvas.width - strokeWidth,
+        legendCanvas.height - strokeWidth);
+
+    return legendCanvas.toDataURL();
 }

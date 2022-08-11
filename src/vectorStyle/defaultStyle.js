@@ -65,6 +65,7 @@ const defaultColors = {
             lineStrokeMiterLimit: 10
         },
         polygon: {
+            // for stroke
             polygonStrokeColor: defaultColors.stroke,
             polygonStrokeWidth: 1,
             polygonStrokeCap: "round",
@@ -72,7 +73,9 @@ const defaultColors = {
             polygonStrokeDash: undefined,
             polygonStrokeDashOffset: 0,
             polygonStrokeMiterLimit: 10,
-            polygonFillColor: defaultColors.fill
+            // for fill
+            polygonFillColor: defaultColors.fill,
+            polygonFillHatch: undefined
         },
         text: {
             textAlign: "center",
