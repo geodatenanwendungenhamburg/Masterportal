@@ -58,7 +58,9 @@ class PointStyleModel extends StyleModel {
         }
 
         if (type === "icon") {
-            return createIconPointStyle(this.attributes);
+            // TODO: Underscore klären
+            // eslint-disable-next-line no-underscore-dangle
+            return createIconPointStyle(this.attributes, this.feature.values_);
         }
         else if (type === "circle") {
             return createCirclePointStyle(this.attributes);
@@ -67,7 +69,7 @@ class PointStyleModel extends StyleModel {
             return createNominalPointStyle(this.feature, this.attributes, defaultStyle.point.imageName);
         }
         else if (type === "interval") {
-            return this.createIntervalPointStyle(this.attributes);
+            return this.createIntervalPointStyle(this.feature, this.attributes);
         }
 
         return new Style();

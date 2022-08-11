@@ -5,17 +5,15 @@ import PointStyleModel from "./stylePoint";
 /**
 * Returns the rotation value and its corresponding value according to style.json.
 * @param {Object} rotation - The rotation object from the style.json
+* @param {Object} featureValues - The values object from the feature
 * @returns {number} - The rotation value in degrees or radiants.
 */
-function getRotationValue (rotation) {
+function getRotationValue (rotation, featureValues) {
     if (typeof rotation === "object") {
         const {value, isDegree} = rotation;
 
-        // TODO: no underscore klären
-        // eslint-disable-next-line no-underscore-dangle
-        if (isObjectPath(value) && this.attributes.values_ !== undefined) {
-            // eslint-disable-next-line no-underscore-dangle
-            const rotationValueFromService = parseInt(prepareValue(this.attributes.values_, value), 10);
+        if (isObjectPath(value) && featureValues !== undefined) {
+            const rotationValueFromService = parseInt(prepareValue(featureValues, value), 10);
 
             return isDegree ? rotationValueFromService * Math.PI / 180 : rotationValueFromService;
         }
@@ -29,9 +27,10 @@ function getRotationValue (rotation) {
 * all features get same image.
 * @see {@link https://community.cesium.com/t/cors-and-billboard-image/3920/2} crossOrigin: "anonymous", is necessary for the 3D mode.
 * @param {Object} attributes - The attributes from the icon
+* @param {Object} featureValues - The values object from the feature
 * @returns {ol/style} - The created style.
 */
-export function createIconPointStyle (attributes) {
+export function createIconPointStyle (attributes, featureValues) {
     const src = attributes.imagePath + attributes.imageName,
         isSVG = src.indexOf(".svg") > -1,
         width = attributes.imageWidth,
@@ -40,7 +39,7 @@ export function createIconPointStyle (attributes) {
         offset = [parseFloat(attributes.imageOffsetX), parseFloat(attributes.imageOffsetY)],
         offsetXUnit = attributes.imageOffsetXUnit,
         offsetYUnit = attributes.imageOffsetYUnit,
-        rotation = getRotationValue(attributes.rotation);
+        rotation = getRotationValue(attributes.rotation, featureValues);
 
     return new Style({
         image: new Icon({
