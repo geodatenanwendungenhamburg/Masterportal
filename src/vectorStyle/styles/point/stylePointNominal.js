@@ -1,6 +1,6 @@
 import {createIconPointStyle, createSVGStyle} from "./stylePointIcon";
-import StyleModel from "../style";
 import PointStyleModel from "./stylePoint";
+import {returnColor} from "../../createStyle";
 
 /**
  * Create SVG for nominalscaled circle segments
@@ -142,8 +142,8 @@ function createNominalCircleSegments (feature, attributes) {
         circleSegmentsStrokeWidth = parseFloat(attributes.circleSegmentsStrokeWidth, 10),
         circleSegBCArray = attributes.circleSegmentsBackgroundColor,
         circleSegmentsFillOpacity = Array.isArray(circleSegBCArray) && circleSegBCArray[circleSegBCArray.length - 1],
-        circleSegmentsBackgroundColor = StyleModel.prototype.returnColor(attributes.circleSegmentsBackgroundColor, "hex"),
-        scalingValueDefaultColor = StyleModel.prototype.returnColor(attributes.scalingValueDefaultColor, "hex"),
+        circleSegmentsBackgroundColor = returnColor(attributes.circleSegmentsBackgroundColor, "hex"),
+        scalingValueDefaultColor = returnColor(attributes.scalingValueDefaultColor, "hex"),
         scalingValues = attributes.scalingValues,
         scalingAttributesAsObject = getScalingAttributesAsObject(scalingValues),
         scalingAttribute = feature.get(attributes.scalingAttribute),
@@ -177,7 +177,7 @@ function createNominalCircleSegments (feature, attributes) {
     for (key in scalingObject) {
         value = scalingObject[key];
         if (scalingValues !== undefined && (key !== "empty")) {
-            strokeColor = StyleModel.prototype.returnColor(scalingValues[key], "hex");
+            strokeColor = returnColor(scalingValues[key], "hex");
         }
         else {
             strokeColor = scalingValueDefaultColor;

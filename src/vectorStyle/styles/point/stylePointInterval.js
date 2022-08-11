@@ -1,3 +1,5 @@
+import {returnColor} from "../../createStyle";
+
 /**
  * Calculate size for intervalscaled circle bar
  * @param  {number} stateValue - value from feature
@@ -89,10 +91,10 @@ function createIntervalCircleBar (feature) {
     const circleBarScalingFactor = parseFloat(this.get("circleBarScalingFactor")),
         circleBarRadius = parseFloat(this.get("circleBarRadius"), 10),
         circleBarLineStroke = parseFloat(this.get("circleBarLineStroke"), 10),
-        circleBarCircleFillColor = this.returnColor(this.get("circleBarCircleFillColor"), "hex"),
-        circleBarCircleStrokeColor = this.returnColor(this.get("circleBarCircleStrokeColor"), "hex"),
+        circleBarCircleFillColor = returnColor(this.get("circleBarCircleFillColor"), "hex"),
+        circleBarCircleStrokeColor = returnColor(this.get("circleBarCircleStrokeColor"), "hex"),
         circleBarCircleStrokeWidth = this.get("circleBarCircleStrokeWidth"),
-        circleBarLineStrokeColor = this.returnColor(this.get("circleBarLineStrokeColor"), "hex"),
+        circleBarLineStrokeColor = returnColor(this.get("circleBarLineStrokeColor"), "hex"),
         featureProperties = feature.getProperties(),
         preparedField = this.prepareField(featureProperties, this.get("scalingAttribute")),
         scalingAttribute = preparedField === "undefined" ? undefined : preparedField,

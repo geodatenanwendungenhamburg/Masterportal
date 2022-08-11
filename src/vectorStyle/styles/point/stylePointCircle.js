@@ -1,5 +1,5 @@
 import {Circle as CircleStyle, Fill, Stroke, Style} from "ol/style.js";
-import StyleModel from "../style";
+import {returnColor} from "../../createStyle";
 
 /**
 * Creates circleClusterStyle.
@@ -9,8 +9,8 @@ import StyleModel from "../style";
 */
 export function createCircleClusterStyle (attributes) {
     const radius = parseFloat(attributes.clusterCircleRadius, 10),
-        fillcolor = StyleModel.prototype.returnColor(attributes.clusterCircleFillColor, "rgb"),
-        strokecolor = StyleModel.prototype.returnColor(attributes.clusterCircleStrokeColor, "rgb"),
+        fillcolor = returnColor(attributes.clusterCircleFillColor, "rgb"),
+        strokecolor = returnColor(attributes.clusterCircleStrokeColor, "rgb"),
         strokewidth = parseFloat(attributes.clusterCircleStrokeWidth, 10);
 
     return new Style({
@@ -35,8 +35,8 @@ export function createCircleClusterStyle (attributes) {
 */
 export function createCirclePointStyle (attributes) {
     const radius = parseFloat(attributes.circleRadius, 10),
-        fillcolor = StyleModel.prototype.returnColor(attributes.circleFillColor, "rgb"),
-        strokecolor = StyleModel.prototype.returnColor(attributes.circleStrokeColor, "rgb"),
+        fillcolor = returnColor(attributes.circleFillColor, "rgb"),
+        strokecolor = returnColor(attributes.circleStrokeColor, "rgb"),
         strokewidth = parseFloat(attributes.circleStrokeWidth, 10);
 
     return new Style({
