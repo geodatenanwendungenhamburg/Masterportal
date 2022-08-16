@@ -7,11 +7,9 @@ import LinestringStyle from "./styles/styleLine";
 import CesiumStyle from "./styles/styleCesium";
 import {mapAttributes, isObjectPath} from "../lib/attributeMapper";
 import axios from "axios";
-import getProxyUrl from "../../lib/getProxyUrl";
+// import getProxyUrl from "../../lib/getProxyUrl";
 
-const legendsOfAllStyles = [],
-    alreadyCapturedLegends = [],
-    desiredLegends = [];
+const legendsOfAllStyles = [];
 
 /**
  * get value without comma and into number format
@@ -224,16 +222,20 @@ function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsIm
     //     console.log("hat er label?");
     //     set("labelField", style.labelField);
     // }
+    feature.legendValue = style.legendValue
+    
     if (geometryType === "Point") {
         styleObject = new PointStyle(feature, style, isClustered);
         styleObject.initialize(feature, style, isClustered, wfsImgPathFromConfig);
         styleObject.addLegendInfo("Point", styleObject, rule);
+        styleObject.legendValue = style.legendValue
         return styleObject;
     }
     else if (geometryType === "LineString") {
         styleObject = new LinestringStyle(feature, style, isClustered);
         styleObject.initialize(feature, style, isClustered);
         styleObject.addLegendInfo("LineString", styleObject, rule);
+        styleObject.legendValue = style.legendValue
         return styleObject;
     }
     else if (geometryType === "LinearRing") {
@@ -244,12 +246,14 @@ function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsIm
         styleObject = new PolygonStyle(feature, style, isClustered);
         styleObject.initialize(feature, style, isClustered);
         styleObject.addLegendInfo("Polygon", styleObject, rule);
+        styleObject.legendValue = style.legendValue
         return styleObject;
     }
     else if (geometryType === "Cesium") {
         styleObject = new CesiumStyle(rule);
         styleObject.initialize(rule);
         styleObject.addLegendInfo("Cesium", styleObject, rule);
+        styleObject.legendValue = style.legendValue
         return styleObject;
     }
     else if (geometryType === "Circle") {
@@ -410,17 +414,26 @@ function getLabelStyle (feature, style, isClustered) {
 }
 
 /**
- * Function is called from layer models for each feature.
- * @param   {String}  found legendInfo of feature
- * @param   {ol/feature}  legendInformation legendInformation for the layer
- * @returns {ol/style/Style} style used in layer model
+ * Captures the legend from a feature and pushes it to an array of all legends.
+ * @param   {string}  styleId styleId from a given feature
+ * @param   {object}  legendInformation legendInformation from a given feature
+ * @returns {void}
  */
-function getLegendsFromStyle (found, legendInformation) {
+function captureLegendFromFeature (styleId, legendInformation) {
+    if (!legendsOfAllStyles.find(element => element.id === styleId)) {
+        legendsOfAllStyles.push({id: styleId, legendInformation: []});
+    }
+    else if (styleId === "default") {
+        const defaultLegends = legendsOfAllStyles.find(element => element.id === styleId);
+
+        if (!defaultLegends.legendInformation.find(element => element.id === legendInformation.id)) {
+            defaultLegends.legendInformation.push(legendInformation);
+        }
+    }
+    const found = legendsOfAllStyles.find(element => element.id === styleId);
+
     if (found && !found.legendInformation.find(element => element.label === legendInformation.label)) {
         found.legendInformation.push(legendInformation);
-    }
-    if (!desiredLegends.includes(found)) {
-        desiredLegends.push(found);
     }
 }
 
@@ -441,29 +454,8 @@ export function createStyle (styleObject, feature, isClustered, wfsImgPathFromCo
         legendInformation = Array.isArray(geometryStyle) ? geometryStyle[0].legendInfos[0] : geometryStyle.legendInfos[0],
         styleObjectGeometry = Array.isArray(geometryStyle) ? geometryStyle[0].getStyle() : geometryStyle.getStyle();
 
-    if (!legendsOfAllStyles.find(element => element.id === styleObject.styleId)) {
-        legendsOfAllStyles.push({id: styleObject.styleId, legendInformation: []});
-    }
-    else if (styleObject.styleId === "default") {
-        const defaultLegends = legendsOfAllStyles.find(element => element.id === styleObject.styleId);
+    captureLegendFromFeature(styleObject.styleId, legendInformation);
 
-        if (!defaultLegends.legendInformation.find(element => element.id === legendInformation.id)) {
-            defaultLegends.legendInformation.push(legendInformation);
-        }
-    }
-
-    if (rules && !alreadyCapturedLegends.includes(rules[0].style.imageName)) {
-        const found = legendsOfAllStyles.find(element => element.id === styleObject.styleId);
-
-        getLegendsFromStyle(found, legendInformation);
-        alreadyCapturedLegends.push(rules[0].style.imageName);
-    }
-    else {
-        const found = legendsOfAllStyles.find(element => element.id === styleObject.styleId);
-
-        getLegendsFromStyle(found, legendInformation);
-        alreadyCapturedLegends.push(styleObject.styleId);
-    }
     // label style is optional and depends on some fields
     if (isClustered || hasLabelField) {
         if (Array.isArray(styleObjectGeometry)) {
@@ -477,7 +469,7 @@ export function createStyle (styleObject, feature, isClustered, wfsImgPathFromCo
 }
 
 export function returnLegends () {
-    return desiredLegends;
+    return legendsOfAllStyles;
 }
 
 /**
