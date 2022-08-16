@@ -7,7 +7,7 @@ import LinestringStyle from "./styles/styleLine";
 import CesiumStyle from "./styles/styleCesium";
 import {mapAttributes, isObjectPath} from "../lib/attributeMapper";
 import axios from "axios";
-// import getProxyUrl from "../../lib/getProxyUrl";
+import getProxyUrl from "../../lib/getProxyUrl";
 
 const legendsOfAllStyles = [];
 
@@ -222,20 +222,20 @@ function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsIm
     //     console.log("hat er label?");
     //     set("labelField", style.labelField);
     // }
-    feature.legendValue = style.legendValue
-    
+    feature.legendValue = style.legendValue;
+
     if (geometryType === "Point") {
         styleObject = new PointStyle(feature, style, isClustered);
         styleObject.initialize(feature, style, isClustered, wfsImgPathFromConfig);
         styleObject.addLegendInfo("Point", styleObject, rule);
-        styleObject.legendValue = style.legendValue
+        styleObject.legendValue = style.legendValue;
         return styleObject;
     }
     else if (geometryType === "LineString") {
         styleObject = new LinestringStyle(feature, style, isClustered);
         styleObject.initialize(feature, style, isClustered);
         styleObject.addLegendInfo("LineString", styleObject, rule);
-        styleObject.legendValue = style.legendValue
+        styleObject.legendValue = style.legendValue;
         return styleObject;
     }
     else if (geometryType === "LinearRing") {
@@ -246,14 +246,14 @@ function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsIm
         styleObject = new PolygonStyle(feature, style, isClustered);
         styleObject.initialize(feature, style, isClustered);
         styleObject.addLegendInfo("Polygon", styleObject, rule);
-        styleObject.legendValue = style.legendValue
+        styleObject.legendValue = style.legendValue;
         return styleObject;
     }
     else if (geometryType === "Cesium") {
         styleObject = new CesiumStyle(rule);
         styleObject.initialize(rule);
         styleObject.addLegendInfo("Cesium", styleObject, rule);
-        styleObject.legendValue = style.legendValue
+        styleObject.legendValue = style.legendValue;
         return styleObject;
     }
     else if (geometryType === "Circle") {
