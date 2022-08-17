@@ -5,6 +5,8 @@
 
 ## Unreleased - in development
 ### Added
+- Added possibility to set initial features for layer vectorBase.
+
 ### Changed
 ### Deprecated
 ### Removed
