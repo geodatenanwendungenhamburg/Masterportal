@@ -5,6 +5,8 @@
 
 ## Unreleased - in development
 ### Added
+- Issue #814: Adding optional error callbacks and availability detection to layers.
+
 ### Changed
 ### Deprecated
 ### Removed
