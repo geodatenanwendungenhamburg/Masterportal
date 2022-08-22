@@ -58,9 +58,7 @@ class PointStyleModel extends StyleModel {
         }
 
         if (type === "icon") {
-            // TODO: Underscore klären
-            // eslint-disable-next-line no-underscore-dangle
-            return createIconPointStyle(this.attributes, this.feature.values_);
+            return createIconPointStyle(this.attributes, this.feature.getProperties());
         }
         else if (type === "circle") {
             return createCirclePointStyle(this.attributes);
