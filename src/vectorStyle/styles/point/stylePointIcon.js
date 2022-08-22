@@ -8,7 +8,7 @@ import PointStyleModel from "./stylePoint";
 * @param {Object} featureValues - The values object from the feature
 * @returns {number} - The rotation value in degrees or radiants.
 */
-function getRotationValue (rotation, featureValues) {
+export function getRotationValue (rotation, featureValues) {
     if (typeof rotation === "object") {
         const {value, isDegree} = rotation;
 

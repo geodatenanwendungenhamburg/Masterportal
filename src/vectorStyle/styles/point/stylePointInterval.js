@@ -1,3 +1,5 @@
+import {createSVGStyle} from "./stylePointIcon";
+import PointStyleModel from "./stylePoint";
 import {returnColor} from "../../createStyle";
 
 /**
@@ -8,7 +10,7 @@ import {returnColor} from "../../createStyle";
  * @param  {number} circleBarRadius - radius from point
  * @return {number} size - size of the section to be drawn
  */
-function calculateSizeIntervalCircleBar (stateValue, circleBarScalingFactor, circleBarLineStroke, circleBarRadius) {
+export function calculateSizeIntervalCircleBar (stateValue, circleBarScalingFactor, circleBarLineStroke, circleBarRadius) {
     let size = circleBarRadius * 2;
 
     if (((stateValue * circleBarScalingFactor) + circleBarLineStroke) >= size) {
@@ -26,7 +28,7 @@ function calculateSizeIntervalCircleBar (stateValue, circleBarScalingFactor, cir
  * @param  {number} circleBarScalingFactor - factor is multiplied by the stateValue
  * @return {number} barLength
  */
-function calculateLengthIntervalCircleBar (size, circleBarRadius, stateValue, circleBarScalingFactor) {
+export function calculateLengthIntervalCircleBar (size, circleBarRadius, stateValue, circleBarScalingFactor) {
     let barLength;
 
     if (stateValue >= 0) {
@@ -56,7 +58,7 @@ function calculateLengthIntervalCircleBar (size, circleBarRadius, stateValue, ci
  */
 // TODO: Klärung wegen eslint
 // eslint-disable-next-line max-params
-function createSvgIntervalCircleBar (size, barLength, circleBarCircleFillColor, circleBarCircleStrokeColor, circleBarCircleStrokeWidth, circleBarLineStrokeColor, circleBarLineStroke, circleBarRadius) {
+export function createSvgIntervalCircleBar (size, barLength, circleBarCircleFillColor, circleBarCircleStrokeColor, circleBarCircleStrokeWidth, circleBarLineStrokeColor, circleBarLineStroke, circleBarRadius) {
     let svg = "<svg width='" + size + "'" +
                 " height='" + size + "'" +
                 " xmlns='http://www.w3.org/2000/svg'" +
@@ -88,7 +90,7 @@ function createSvgIntervalCircleBar (size, barLength, circleBarCircleFillColor, 
  * @param  {ol.Feature} attributes - The attributes of the feature
  * @return {String} svg
  */
-function createIntervalCircleBar (feature, attributes) {
+export function createIntervalCircleBar (feature, attributes) {
     const circleBarScalingFactor = parseFloat(attributes.circleBarScalingFactor),
         circleBarRadius = parseFloat(attributes.circleBarRadius, 10),
         circleBarLineStroke = parseFloat(attributes.circleBarLineStroke, 10),
@@ -97,13 +99,13 @@ function createIntervalCircleBar (feature, attributes) {
         circleBarCircleStrokeWidth = attributes.circleBarCircleStrokeWidth,
         circleBarLineStrokeColor = returnColor(attributes.circleBarLineStrokeColor, "hex"),
         featureProperties = feature.getProperties(),
-        preparedField = this.prepareField(featureProperties, attributes.scalingAttribute),
+        preparedField = PointStyleModel.prototype.prepareField(featureProperties, attributes.scalingAttribute),
         scalingAttribute = preparedField === "undefined" ? undefined : preparedField,
         stateValue = scalingAttribute !== undefined && scalingAttribute.indexOf(" ") !== -1 ? scalingAttribute.split(" ")[0] : scalingAttribute,
         size = calculateSizeIntervalCircleBar(stateValue, circleBarScalingFactor, circleBarLineStroke, circleBarRadius),
         barLength = calculateLengthIntervalCircleBar(size, circleBarRadius, stateValue, circleBarScalingFactor);
 
-    this.setSize(size);
+    PointStyleModel.prototype.setSize(size);
 
     // create svg
     return createSvgIntervalCircleBar(size, barLength, circleBarCircleFillColor, circleBarCircleStrokeColor, circleBarCircleStrokeWidth, circleBarLineStrokeColor, circleBarLineStroke, circleBarRadius);
@@ -119,5 +121,5 @@ export function createIntervalPointStyle (feature, attributes) {
     const styleScalingShape = attributes.scalingShape.toUpperCase(),
         svgPath = styleScalingShape === "CIRCLE_BAR" ? createIntervalCircleBar(feature, attributes) : "";
 
-    return this.createSVGStyle(svgPath);
+    return createSVGStyle(svgPath);
 }

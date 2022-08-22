@@ -11,7 +11,7 @@ import {returnColor} from "../../createStyle";
  * @param  {String} circleSegmentsFillOpacity - opacity from circlesegment
  * @return {String} svg
  */
-function createSvgNominalCircleSegments (size, circleSegmentsRadius, circleSegmentsBackgroundColor, circleSegmentsStrokeWidth, circleSegmentsFillOpacity) {
+export function createSvgNominalCircleSegments (size, circleSegmentsRadius, circleSegmentsBackgroundColor, circleSegmentsStrokeWidth, circleSegmentsFillOpacity) {
     const halfSize = size / 2;
     let svg = "<svg width='" + size + "'" +
             " height='" + size + "'" +
@@ -35,7 +35,7 @@ function createSvgNominalCircleSegments (size, circleSegmentsRadius, circleSegme
  * @param {string} scalingAttribute - actual states from feature
  * @return {Object} scalingObject - contains the states
  */
-function fillScalingAttributes (scalingAttributesAsObject, scalingAttribute) {
+export function fillScalingAttributes (scalingAttributesAsObject, scalingAttribute) {
     const scalingObject = scalingAttributesAsObject === undefined || Object.keys(scalingAttributesAsObject).length === 0
         ? {empty: 0} : scalingAttributesAsObject;
     let states = scalingAttribute;
@@ -63,7 +63,7 @@ function fillScalingAttributes (scalingAttributesAsObject, scalingAttribute) {
  * @param {object} scalingValues - contains attribute with color
  * @return {object} scalingAttribute with value 0
  */
-function getScalingAttributesAsObject (scalingValues) {
+export function getScalingAttributesAsObject (scalingValues) {
     const obj = {};
     let key;
 
@@ -87,7 +87,7 @@ function getScalingAttributesAsObject (scalingValues) {
  * @param  {number} gap - gap between segments
  * @return {String} all circle segments
  */
-function calculateCircleSegment (startAngelDegree, endAngelDegree, circleRadius, size, gap) {
+export function calculateCircleSegment (startAngelDegree, endAngelDegree, circleRadius, size, gap) {
     const rad = Math.PI / 180,
         xy = size / 2,
         isCircle = startAngelDegree === 0 && endAngelDegree === 360,
@@ -123,7 +123,7 @@ function calculateCircleSegment (startAngelDegree, endAngelDegree, circleRadius,
  * @param  {String} d - circle segment
  * @return {String} extended svg
  */
-function extendsSvgNominalCircleSegments (svg, circleSegmentsStrokeWidth, strokeColor, d) {
+export function extendsSvgNominalCircleSegments (svg, circleSegmentsStrokeWidth, strokeColor, d) {
     return svg + "<path" +
             " fill='none'" +
             " stroke-width='" + circleSegmentsStrokeWidth + "'" +
@@ -137,7 +137,7 @@ function extendsSvgNominalCircleSegments (svg, circleSegmentsStrokeWidth, stroke
  * @param {Object} attributes - The attributes from the nominal circle segment
  * @return {String} svg with colored circle segments
  */
-function createNominalCircleSegments (feature, attributes) {
+export function createNominalCircleSegments (feature, attributes) {
     const circleSegmentsRadius = parseFloat(attributes.circleSegmentsRadius, 10),
         circleSegmentsStrokeWidth = parseFloat(attributes.circleSegmentsStrokeWidth, 10),
         circleSegBCArray = attributes.circleSegmentsBackgroundColor,
