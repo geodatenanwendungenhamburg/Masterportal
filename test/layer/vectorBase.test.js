@@ -1,3 +1,6 @@
+import Feature from "ol/Feature";
+import Point from "ol/geom/Point";
+import Polygon from "ol/geom/Polygon";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector.js";
 import * as vectorBase from "../../src/layer/vectorBase";
@@ -5,8 +8,20 @@ import * as vectorBase from "../../src/layer/vectorBase";
 describe("vectorBase.js", function () {
 
     describe("createLayerSource", function () {
-        it("creates a layerSource", function () {
-            const source = vectorBase.createLayerSource();
+        it("creates a layerSource with features", function () {
+            const attr = {
+                    features: [
+                        new Feature({geometry: new Polygon([[[565086.1948534324, 5934664.461947621], [565657.6945448224, 5934738.54524095], [565625.9445619675, 5934357.545446689], [565234.3614400891, 5934346.962119071], [565086.1948534324, 5934664.461947621]]])}),
+                        new Feature({geometry: new Point([565826.38, 5934174.40])})
+                    ]
+                },
+                source = vectorBase.createLayerSource(attr);
+
+            expect(source).toBeInstanceOf(VectorSource);
+        });
+
+        it("creates a layerSource without features", function () {
+            const source = vectorBase.createLayerSource({});
 
             expect(source).toBeInstanceOf(VectorSource);
         });
