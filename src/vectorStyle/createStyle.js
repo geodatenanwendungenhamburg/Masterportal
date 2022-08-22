@@ -7,7 +7,6 @@ import LinestringStyle from "./styles/styleLine";
 import CesiumStyle from "./styles/styleCesium";
 import {mapAttributes, isObjectPath} from "../lib/attributeMapper";
 import axios from "axios";
-import getProxyUrl from "../../lib/getProxyUrl";
 
 const legendsOfAllStyles = [];
 
@@ -597,12 +596,7 @@ export function getGeometryTypeFromWFS (wfsURL, version, featureType, styleGeome
         "VERSION": version,
         "REQUEST": "DescribeFeatureType"
     };
-    /**
-    * @deprecated in the next major-release!
-    * useProxy
-    * getProxyUrl()
-    */
-    let url = useProxy ? getProxyUrl(wfsURL) + "?" : wfsURL + "?";
+    let url = wfsURL + "?";
 
     Object.keys(params).forEach(key => {
         url += key + "=" + params[key] + "&";
