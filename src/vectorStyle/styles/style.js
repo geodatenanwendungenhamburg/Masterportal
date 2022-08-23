@@ -1,6 +1,6 @@
 import {getValueFromObjectByPath} from "../../lib/getValueFromObjectByPath";
 
-class StyleModel {
+class StyleClass {
     /**
      * @param {ol/feature} feature Feature to be styled.
      * @param {object} style styling properties to overwrite defaults
@@ -158,4 +158,4 @@ class StyleModel {
     }
 }
 
-export default StyleModel;
+export default StyleClass;

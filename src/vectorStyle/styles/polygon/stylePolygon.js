@@ -1,15 +1,15 @@
-import StyleModel from "../style";
+import StyleClass from "../style";
 import {Style, Fill, Stroke} from "ol/style.js";
 import defaultStyle from "../../defaultStyle";
 import {drawHatch} from "./polygonStyleHatch";
 import {returnColor} from "../../lib/colorConvertions";
 
-class PolygonStyleModel extends StyleModel {
+class PolygonStyle extends StyleClass {
     /**
      * @description Class to create ol.style.Style
      * @constructor
-     * @class PolygonStyleModel
-     * @extends StyleModel
+     * @class PolygonStyle
+     * @extends StyleClass
      * @memberof VectorStyle.Style
      */
     constructor () {
@@ -122,4 +122,4 @@ class PolygonStyleModel extends StyleModel {
     }
 }
 
-export default PolygonStyleModel;
+export default PolygonStyle;

@@ -1,4 +1,4 @@
-import PointStyleModel from "../../../../src/vectorStyle/styles/point/stylePoint";
+import PointStyle from "../../../../src/vectorStyle/styles/point/stylePoint";
 import {Style} from "ol/style.js";
 
 describe("stylePoint", () => {
@@ -13,7 +13,7 @@ describe("stylePoint", () => {
             imageName: "krankenhaus.png"
         },
         isClustered = false,
-        stylePointClass = new PointStyleModel(feature, style, isClustered);
+        stylePointClass = new PointStyle(feature, style, isClustered);
 
     describe("setSize", function () {
         it("defines setSize()", () => {

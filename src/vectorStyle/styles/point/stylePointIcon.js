@@ -1,6 +1,6 @@
 import {Style, Icon} from "ol/style.js";
 import {prepareValue, isObjectPath} from "../../../lib/attributeMapper";
-import PointStyleModel from "./stylePoint";
+import PointStyle from "./stylePoint";
 
 /**
 * Returns the rotation value and its corresponding value according to style.json.
@@ -67,7 +67,7 @@ export function createIconStyle (attributes, featureValues, isClustered) {
  * @return {ol.Style} style
  */
 export function createSVGStyle (svgPath) {
-    const size = PointStyleModel.prototype.getSize();
+    const size = PointStyle.prototype.getSize();
 
     return new Style({
         image: new Icon({

@@ -1,16 +1,16 @@
-import StyleModel from "../style";
+import StyleClass from "../style";
 import {createIconStyle} from "./stylePointIcon";
 import {createCircleStyle} from "./stylePointCircle";
 import {createNominalPointStyle} from "./stylePointNominal";
 import {Style} from "ol/style.js";
 import defaultStyle from "../../defaultStyle";
 
-class PointStyleModel extends StyleModel {
+class PointStyle extends StyleClass {
     /**
      * @description Class to create ol.style.Style
      * @constructor
-     * @class PointStyleModel
-     * @extends StyleModel
+     * @class PointStyle
+     * @extends StyleClass
      * @memberof VectorStyle.Style
      */
     constructor () {
@@ -100,4 +100,4 @@ class PointStyleModel extends StyleModel {
     }
 }
 
-export default PointStyleModel;
+export default PointStyle;

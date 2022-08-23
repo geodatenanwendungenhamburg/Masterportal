@@ -1,11 +1,11 @@
-import StyleModel from "./style";
+import StyleClass from "./style";
 import defaultStyle from "../defaultStyle";
-class CesiumStyleModel extends StyleModel {
+class CesiumStyle extends StyleClass {
     /**
      * @description Class to create ol.style.Style
      * @constructor
-     * @class CesiumStyleModel
-     * @extends StyleModel
+     * @class CesiumStyleMode
+     * @extends StyleClass
      * @memberof VectorStyle.Style
      */
     constructor () {
@@ -103,4 +103,4 @@ class CesiumStyleModel extends StyleModel {
     }
 }
 
-export default CesiumStyleModel;
+export default CesiumStyle;

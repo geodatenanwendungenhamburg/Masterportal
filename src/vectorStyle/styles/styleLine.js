@@ -1,13 +1,13 @@
-import StyleModel from "./style";
+import StyleClass from "./style";
 import {Style, Stroke} from "ol/style.js";
 import defaultStyle from "../defaultStyle";
 
-class LinestringStyleModel extends StyleModel {
+class LineStringStyle extends StyleClass {
     /**
      * @description Class to create ol.style.Style
      * @constructor
-     * @class LinestringStyleModel
-     * @extends StyleModel
+     * @class LineStringStyle
+     * @extends StyleClass
      * @memberof VectorStyle.Style
      */
     constructor () {
@@ -48,4 +48,4 @@ class LinestringStyleModel extends StyleModel {
     }
 }
 
-export default LinestringStyleModel;
+export default LineStringStyle;

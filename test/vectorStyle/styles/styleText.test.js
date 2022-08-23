@@ -1,4 +1,4 @@
-import TextStyleModel from "../../../src/vectorStyle/styles/styleText";
+import TextStyle from "../../../src/vectorStyle/styles/styleText";
 import {Text} from "ol/style.js";
 
 describe("styleText", () => {
@@ -19,7 +19,7 @@ describe("styleText", () => {
             imageName: "krankenhaus.png"
         },
         isClustered = false,
-        styleTextClass = new TextStyleModel(feature, style, isClustered);
+        styleTextClass = new TextStyle(feature, style, isClustered);
 
     styleTextClass.initialize(feature, style, isClustered);
 

@@ -1,5 +1,5 @@
 import {createSVGStyle} from "./stylePointIcon";
-import PointStyleModel from "./stylePoint";
+import PointStyle from "./stylePoint";
 import {returnColor} from "../../lib/colorConvertions";
 
 /**
@@ -99,13 +99,13 @@ export function createIntervalCircleBar (feature, attributes) {
         circleBarCircleStrokeWidth = attributes.circleBarCircleStrokeWidth,
         circleBarLineStrokeColor = returnColor(attributes.circleBarLineStrokeColor, "hex"),
         featureProperties = feature.getProperties(),
-        preparedField = PointStyleModel.prototype.prepareField(featureProperties, attributes.scalingAttribute),
+        preparedField = PointStyle.prototype.prepareField(featureProperties, attributes.scalingAttribute),
         scalingAttribute = preparedField === "undefined" ? undefined : preparedField,
         stateValue = scalingAttribute !== undefined && scalingAttribute.indexOf(" ") !== -1 ? scalingAttribute.split(" ")[0] : scalingAttribute,
         size = calculateSizeIntervalCircleBar(stateValue, circleBarScalingFactor, circleBarLineStroke, circleBarRadius),
         barLength = calculateLengthIntervalCircleBar(size, circleBarRadius, stateValue, circleBarScalingFactor);
 
-    PointStyleModel.prototype.setSize(size);
+    PointStyle.prototype.setSize(size);
 
     // create svg
     return createSvgIntervalCircleBar(size, barLength, circleBarCircleFillColor, circleBarCircleStrokeColor, circleBarCircleStrokeWidth, circleBarLineStrokeColor, circleBarLineStroke, circleBarRadius);

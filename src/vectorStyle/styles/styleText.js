@@ -1,14 +1,14 @@
-import StyleModel from "./style";
+import StyleClass from "./style";
 import {Text, Fill, Stroke} from "ol/style.js";
 import {mapAttributes} from "../../lib/attributeMapper";
 import defaultStyle from "../defaultStyle";
 
-class TextStyleModel extends StyleModel {
+class TextStyle extends StyleClass {
     /**
      * @description Class to create ol.style/Text
-     * @class TextStyleModel
+     * @class TextStyle
      * @constructor
-     * @extends StyleModel
+     * @extends StyleClass
      * @memberof VectorStyle.Style
      */
     constructor () {
@@ -117,4 +117,4 @@ class TextStyleModel extends StyleModel {
     }
 }
 
-export default TextStyleModel;
+export default TextStyle;

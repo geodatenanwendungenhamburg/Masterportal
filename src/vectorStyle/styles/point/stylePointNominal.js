@@ -1,5 +1,5 @@
 import {createIconPointStyle, createSVGStyle} from "./stylePointIcon";
-import PointStyleModel from "./stylePoint";
+import PointStyle from "./stylePoint";
 import {returnColor} from "../../lib/colorConvertions";
 
 /**
@@ -170,7 +170,7 @@ export function createNominalCircleSegments (feature, attributes) {
 
     // is required for the display in the Internet Explorer,
     // because in addition to the SVG and the size must be specified
-    PointStyleModel.prototype.setSize(size);
+    PointStyle.prototype.setSize(size);
 
     svg = createSvgNominalCircleSegments(size, circleSegmentsRadius, circleSegmentsBackgroundColor, circleSegmentsStrokeWidth, circleSegmentsFillOpacity);
 

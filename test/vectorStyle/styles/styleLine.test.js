@@ -1,4 +1,4 @@
-import LineStyleModel from "../../../src/vectorStyle/styles/styleLine";
+import LineStyle from "../../../src/vectorStyle/styles/styleLine";
 import {Style} from "ol/style.js";
 
 describe("styleLine", () => {
@@ -13,7 +13,7 @@ describe("styleLine", () => {
             imageName: "krankenhaus.png"
         },
         isClustered = false,
-        styleLineClass = new LineStyleModel(feature, style, isClustered);
+        styleLineClass = new LineStyle(feature, style, isClustered);
 
     describe("initialize", function () {
         it("returns an instance of openlayers style", () => {
