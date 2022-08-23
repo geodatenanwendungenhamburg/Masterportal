@@ -1,4 +1,4 @@
-import {createIconPointStyle, createSVGStyle} from "./stylePointIcon";
+import {createIconStyle, createSVGStyle} from "./stylePointIcon";
 import PointStyle from "./stylePoint";
 import {returnColor} from "../../lib/colorConvertions";
 
@@ -224,7 +224,7 @@ export function createNominalPointStyle (feature, attributes, defaultImageName) 
 
     // create style from svg and image
     if (imageName !== defaultImageName) {
-        imageStyle = createIconPointStyle(attributes);
+        imageStyle = createIconStyle(attributes);
         style = [style, imageStyle];
     }
 
