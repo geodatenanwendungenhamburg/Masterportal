@@ -2,6 +2,7 @@ import StyleModel from "../style";
 import {Style, Fill, Stroke} from "ol/style.js";
 import defaultStyle from "../../defaultStyle";
 import {drawHatch} from "./polygonStyleHatch";
+import {returnColor} from "../../lib/colorConvertions";
 
 class PolygonStyleModel extends StyleModel {
     /**
@@ -87,6 +88,37 @@ class PolygonStyleModel extends StyleModel {
         context.fillStyle = context.createPattern(canvas, "repeat");
 
         return canvas;
+    }
+
+    getPolygonFillHatchLegendDataUrl (style) {
+        const originalCanvas = this.getPolygonFillHatch(style.polygonFillHatch),
+            strokeColor = returnColor(style.polygonStrokeColor, "hex"),
+            strokeWidth = parseInt(style.polygonStrokeWidth, 10),
+            strokeOpacity = style.polygonStrokeColor[3].toString() || 0,
+            legendCanvas = document.createElement("canvas"),
+            legendContext = legendCanvas.getContext("2d"),
+            halfStroke = strokeWidth / 2,
+            doubleStroke = strokeWidth * 2;
+
+        legendCanvas.width = originalCanvas.width + doubleStroke;
+        legendCanvas.height = originalCanvas.height + doubleStroke;
+
+        legendContext.drawImage(originalCanvas,
+            strokeWidth,
+            strokeWidth);
+
+        legendContext.lineCap = "round";
+        legendContext.lineJoin = "round";
+        legendContext.strokeStyle = strokeColor;
+        legendContext.lineWidth = strokeWidth;
+        legendContext.globalAlpha = strokeOpacity;
+
+        legendContext.strokeRect(halfStroke,
+            halfStroke,
+            legendCanvas.width - strokeWidth,
+            legendCanvas.height - strokeWidth);
+
+        return legendCanvas.toDataURL();
     }
 }
 

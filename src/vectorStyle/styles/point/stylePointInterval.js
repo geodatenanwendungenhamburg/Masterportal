@@ -1,6 +1,6 @@
 import {createSVGStyle} from "./stylePointIcon";
 import PointStyleModel from "./stylePoint";
-import {returnColor} from "../../createStyle";
+import {returnColor} from "../../lib/colorConvertions";
 
 /**
  * Calculate size for intervalscaled circle bar

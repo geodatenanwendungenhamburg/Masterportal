@@ -1,6 +1,6 @@
 import {createIconPointStyle, createSVGStyle} from "./stylePointIcon";
 import PointStyleModel from "./stylePoint";
-import {returnColor} from "../../createStyle";
+import {returnColor} from "../../lib/colorConvertions";
 
 /**
  * Create SVG for nominalscaled circle segments

@@ -18,42 +18,36 @@ describe("stylePointIcon.js", () => {
             expect(stylePointIcon.getRotationValue({isDegree: false, value: "@angle"}, featureValues)).toEqual(45);
         });
     });
-    describe("createIconPointStyle", () => {
+    describe("createIconStyle", () => {
         const attributes = {
-            imagePath: "/imagePath",
-            imageName: "bild.svg",
-            imageWidth: 10,
-            imageHeight: 20,
-            imageScale: 1,
-            imageOffsetX: 0,
-            imageOffsetY: 0,
-            imageOffsetXUnit: "px",
-            imageOffsetYUnit: "px",
-            rotation: 0
-        };
+                imagePath: "/imagePath",
+                imageName: "bild.svg",
+                imageWidth: 10,
+                imageHeight: 20,
+                imageScale: 1,
+                imageOffsetX: 0,
+                imageOffsetY: 0,
+                imageOffsetXUnit: "px",
+                imageOffsetYUnit: "px",
+                rotation: 0
+            },
+            clusterAttributes = {
+                clusterImageName: "bild.svg",
+                clusterImageWidth: 10,
+                clusterImagePath: "/imagePath",
+                clusterImageHeight: 20,
+                clusterImageScale: 1
+            };
 
         it("should create icon point style", () => {
-            expect(stylePointIcon.createIconPointStyle(attributes)).toBeInstanceOf(Style);
-            expect(stylePointIcon.createIconPointStyle(attributes).getImage()).toBeInstanceOf(Icon);
-            expect(stylePointIcon.createIconPointStyle(attributes).getImage().getScale()).toEqual(1);
+            expect(stylePointIcon.createIconStyle(attributes, null, false)).toBeInstanceOf(Style);
+            expect(stylePointIcon.createIconStyle(clusterAttributes, null, true)).toBeInstanceOf(Style);
+            expect(stylePointIcon.createIconStyle(attributes, null, false).getImage()).toBeInstanceOf(Icon);
+            expect(stylePointIcon.createIconStyle(attributes, null, false).getImage().getScale()).toEqual(1);
         });
-    });
-
-    describe("createIconClusterStyle", () => {
-        const clusterAttributes = {
-            imagePath: "/imagePath",
-            clusterImageName: "bild.svg",
-            clusterImageWidth: 10,
-            clusterImageHeight: 20,
-            clusterImageScale: 1,
-            clusterImageOffsetX: 0,
-            clusterImageOffsetY: 0
-        };
-
-        it("should create icon cluster style", () => {
-            expect(stylePointIcon.createIconClusterStyle(clusterAttributes)).toBeInstanceOf(Style);
-            expect(stylePointIcon.createIconClusterStyle(clusterAttributes).getImage()).toBeInstanceOf(Icon);
-            expect(stylePointIcon.createIconClusterStyle(clusterAttributes).getImage().getScale()).toEqual(1);
+        it("should create cluster icon point style", () => {
+            expect(stylePointIcon.createIconStyle(clusterAttributes, null, true)).toBeInstanceOf(Style);
+            expect(stylePointIcon.createIconStyle(clusterAttributes, null, true).getImage()).toBeInstanceOf(Icon);
         });
     });
 

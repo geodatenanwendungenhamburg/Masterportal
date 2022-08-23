@@ -28,60 +28,35 @@ export function getRotationValue (rotation, featureValues) {
 * @see {@link https://community.cesium.com/t/cors-and-billboard-image/3920/2} crossOrigin: "anonymous", is necessary for the 3D mode.
 * @param {Object} attributes - The attributes from the icon
 * @param {Object} featureValues - The values object from the feature
+* @param {Boolean} isClustered - true if features are clustered
 * @returns {ol/style} - The created style.
 */
-export function createIconPointStyle (attributes, featureValues) {
-    const src = attributes.imagePath + attributes.imageName,
-        isSVG = src.indexOf(".svg") > -1,
-        width = attributes.imageWidth,
-        height = attributes.imageHeight,
-        scale = parseFloat(attributes.imageScale),
-        offset = [parseFloat(attributes.imageOffsetX), parseFloat(attributes.imageOffsetY)],
-        offsetXUnit = attributes.imageOffsetXUnit,
-        offsetYUnit = attributes.imageOffsetYUnit,
-        rotation = getRotationValue(attributes.rotation, featureValues);
+export function createIconStyle (attributes, featureValues, isClustered) {
+    const height = isClustered ? attributes.clusterImageHeight : attributes.imageHeight,
+        imageName = isClustered ? attributes.clusterImageName : attributes.imageName,
+        imageOffsetX = isClustered ? attributes.clusterImageOffsetY : attributes.imageOffsetX,
+        imageOffsetY = isClustered ? attributes.clusterImageOffsetX : attributes.imageOffsetY,
+        scale = isClustered ? attributes.clusterImageScale : attributes.imageScale,
+        src = imageName.indexOf("/") === -1 ? attributes.imagePath + imageName : imageName,
+        width = isClustered ? attributes.clusterImageWidth : attributes.imageWidth,
+        iconOptions = {
+            crossOrigin: "anonymous",
+            src,
+            width,
+            height,
+            scale,
+            anchor: [parseFloat(imageOffsetX), parseFloat(imageOffsetY)],
+            imgSize: src.indexOf(".svg") > -1 ? [width, height] : ""
+        };
+
+    if (!isClustered) {
+        iconOptions.anchorXUnits = attributes.imageOffsetXUnit;
+        iconOptions.anchorYUnits = attributes.imageOffsetYUnit;
+        iconOptions.rotation = getRotationValue(attributes.rotation, featureValues);
+    }
 
     return new Style({
-        image: new Icon({
-            crossOrigin: "anonymous",
-            src: src,
-            width: width,
-            height: height,
-            scale: scale,
-            anchor: offset,
-            anchorXUnits: offsetXUnit,
-            anchorYUnits: offsetYUnit,
-            imgSize: isSVG ? [width, height] : "",
-            rotation
-        })
-    });
-}
-
-/**
-* Creates simpleClusterStyle.
-* all clustered features get same image.
-* @see {@link https://community.cesium.com/t/cors-and-billboard-image/3920/2} crossOrigin: "anonymous", is necessary for the 3D mode.
-* @param {Object} attributes - The attributes from the icon
-* @returns {ol/style} - The created style.
-*/
-export function createIconClusterStyle (attributes) {
-    const src = attributes.imagePath + attributes.clusterImageName,
-        isSVG = src.indexOf(".svg") > -1,
-        width = attributes.clusterImageWidth,
-        height = attributes.clusterImageHeight,
-        scale = attributes.clusterImageScale,
-        offset = [parseFloat(attributes.clusterImageOffsetX), parseFloat(attributes.clusterImageOffsetY)];
-
-    return new Style({
-        image: new Icon({
-            crossOrigin: "anonymous",
-            src: src,
-            width: width,
-            height: height,
-            scale: scale,
-            anchor: offset,
-            imgSize: isSVG ? [width, height] : ""
-        })
+        image: new Icon(iconOptions)
     });
 }
 

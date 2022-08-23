@@ -1,6 +1,6 @@
 import StyleModel from "../style";
-import {createIconPointStyle, createIconClusterStyle} from "./stylePointIcon";
-import {createCirclePointStyle, createCircleClusterStyle} from "./stylePointCircle";
+import {createIconStyle} from "./stylePointIcon";
+import {createCircleStyle} from "./stylePointCircle";
 import {createNominalPointStyle} from "./stylePointNominal";
 import {Style} from "ol/style.js";
 import defaultStyle from "../../defaultStyle";
@@ -45,23 +45,13 @@ class PointStyleModel extends StyleModel {
      */
     getStyle () {
         const type = this.attributes.type.toLowerCase(),
-            isClustered = this.isClustered,
-            feature = this.feature;
-
-        if (isClustered && feature.get("features")?.length > 1) {
-            if (this.attributes.clusterType === "circle") {
-                return createCircleClusterStyle(this.attributes);
-            }
-            else if (this.attributes.clusterType === "icon") {
-                return createIconClusterStyle(this.attributes);
-            }
-        }
+            isClustered = this.isClustered;
 
         if (type === "icon") {
-            return createIconPointStyle(this.attributes, this.feature.getProperties());
+            return createIconStyle(this.attributes, this.feature.getProperties(), isClustered);
         }
         else if (type === "circle") {
-            return createCirclePointStyle(this.attributes);
+            return createCircleStyle(this.attributes, isClustered);
         }
         else if (type === "nominal") {
             return createNominalPointStyle(this.feature, this.attributes, defaultStyle.point.imageName);
