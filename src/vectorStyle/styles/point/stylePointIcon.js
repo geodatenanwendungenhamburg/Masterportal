@@ -27,18 +27,20 @@ export function getRotationValue (rotation, featureValues) {
 * all features get same image.
 * @see {@link https://community.cesium.com/t/cors-and-billboard-image/3920/2} crossOrigin: "anonymous", is necessary for the 3D mode.
 * @param {Object} attributes - The attributes from the icon
-* @param {Object} featureValues - The values object from the feature
+* @param {Object} feature - The feature
 * @param {Boolean} isClustered - true if features are clustered
 * @returns {ol/style} - The created style.
 */
-export function createIconStyle (attributes, featureValues, isClustered) {
-    const height = isClustered ? attributes.clusterImageHeight : attributes.imageHeight,
-        imageName = isClustered ? attributes.clusterImageName : attributes.imageName,
-        imageOffsetX = isClustered ? attributes.clusterImageOffsetY : attributes.imageOffsetX,
-        imageOffsetY = isClustered ? attributes.clusterImageOffsetX : attributes.imageOffsetY,
-        scale = isClustered ? attributes.clusterImageScale : attributes.imageScale,
+export function createIconStyle (attributes, feature, isClustered) {
+    const showCluster = isClustered && feature.get("features")?.length > 1,
+
+        height = showCluster ? attributes.clusterImageHeight : attributes.imageHeight,
+        imageName = showCluster ? attributes.clusterImageName : attributes.imageName,
+        imageOffsetX = showCluster ? attributes.clusterImageOffsetY : attributes.imageOffsetX,
+        imageOffsetY = showCluster ? attributes.clusterImageOffsetX : attributes.imageOffsetY,
+        scale = showCluster ? attributes.clusterImageScale : attributes.imageScale,
         src = imageName.indexOf("/") === -1 ? attributes.imagePath + imageName : imageName,
-        width = isClustered ? attributes.clusterImageWidth : attributes.imageWidth,
+        width = showCluster ? attributes.clusterImageWidth : attributes.imageWidth,
         iconOptions = {
             crossOrigin: "anonymous",
             src,
@@ -49,10 +51,10 @@ export function createIconStyle (attributes, featureValues, isClustered) {
             imgSize: src.indexOf(".svg") > -1 ? [width, height] : ""
         };
 
-    if (!isClustered) {
+    if (!showCluster) {
         iconOptions.anchorXUnits = attributes.imageOffsetXUnit;
         iconOptions.anchorYUnits = attributes.imageOffsetYUnit;
-        iconOptions.rotation = getRotationValue(attributes.rotation, featureValues);
+        iconOptions.rotation = getRotationValue(attributes.rotation, feature.getProperties());
     }
 
     return new Style({

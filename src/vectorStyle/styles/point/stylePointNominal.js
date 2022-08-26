@@ -224,7 +224,7 @@ export function createNominalPointStyle (feature, attributes, defaultImageName) 
 
     // create style from svg and image
     if (imageName !== defaultImageName) {
-        imageStyle = createIconStyle(attributes);
+        imageStyle = createIconStyle(attributes, feature);
         style = [style, imageStyle];
     }
 

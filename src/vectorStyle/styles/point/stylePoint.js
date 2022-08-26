@@ -48,7 +48,7 @@ class PointStyle extends StyleClass {
             isClustered = this.isClustered;
 
         if (type === "icon") {
-            return createIconStyle(this.attributes, this.feature.getProperties(), isClustered);
+            return createIconStyle(this.attributes, this.feature, isClustered);
         }
         else if (type === "circle") {
             return createCircleStyle(this.attributes, isClustered);
