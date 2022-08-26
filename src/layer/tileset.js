@@ -29,8 +29,10 @@ export default function Tileset (rawLayer) {
         id: rawLayer.id,
         typ: rawLayer.typ
     };
-    this.tileset = createTileSet(rawLayer);
-    this.tileset.layerReferenceId = rawLayer.id;
+    if (Cesium){
+        this.tileset = createTileSet(rawLayer);
+        this.tileset.layerReferenceId = rawLayer.id;
+    }
 }
 /**
  *
