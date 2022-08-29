@@ -13,7 +13,7 @@ const legendsOfAllStyles = [];
  * @param   {string}  geometryType     the geometry type to check
  * @returns {Boolean} is geometrytype a multiGeometry
  */
-function isMultiGeometry (geometryType) {
+export function isMultiGeometry (geometryType) {
     return geometryType === "MultiPoint" || geometryType === "MultiLineString" || geometryType === "MultiPolygon" || geometryType === "GeometryCollection" || geometryType === "Cesium";
 }
 
@@ -27,27 +27,30 @@ function isMultiGeometry (geometryType) {
  * @returns {ol/style/Style}    style is always returned
  */
 export function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsImgPathFromConfig) {
-    const style = rule?.style;
+    const style = rule?.style,
+        legendValue = style ? style.legendValue : null;
     let styleObject;
 
     // if (style && Object.prototype.hasOwnProperty.call(style, "labelField")) {
     //     console.log("hat er label?");
     //     set("labelField", style.labelField);
     // }
-    feature.legendValue = style.legendValue;
+    if (legendValue) {
+        feature.legendValue = legendValue;
+    }
 
     if (geometryType === "Point") {
         styleObject = new PointStyle(feature, style, isClustered);
         styleObject.initialize(feature, style, isClustered, wfsImgPathFromConfig);
         styleObject.addLegendInfo("Point", styleObject, rule);
-        styleObject.legendValue = style.legendValue;
+        styleObject.legendValue = legendValue;
         return styleObject;
     }
     else if (geometryType === "LineString") {
         styleObject = new LineStringStyle(feature, style, isClustered);
         styleObject.initialize(feature, style, isClustered);
         styleObject.addLegendInfo("LineString", styleObject, rule);
-        styleObject.legendValue = style.legendValue;
+        styleObject.legendValue = legendValue;
         return styleObject;
     }
     else if (geometryType === "LinearRing") {
@@ -58,14 +61,14 @@ export function getSimpleGeometryStyle (geometryType, feature, rule, isClustered
         styleObject = new PolygonStyle(feature, style, isClustered);
         styleObject.initialize(feature, style, isClustered);
         styleObject.addLegendInfo("Polygon", styleObject, rule);
-        styleObject.legendValue = style.legendValue;
+        styleObject.legendValue = legendValue;
         return styleObject;
     }
     else if (geometryType === "Cesium") {
         styleObject = new CesiumStyle(rule);
         styleObject.initialize(rule);
         styleObject.addLegendInfo("Cesium", styleObject, rule);
-        styleObject.legendValue = style.legendValue;
+        styleObject.legendValue = legendValue;
         return styleObject;
     }
     else if (geometryType === "Circle") {
@@ -170,7 +173,7 @@ export function getGeometryStyle (feature, rules, isClustered, wfsImgPathFromCon
  * @param   {Boolean} isClustered Flag to show if feature is clustered.
  * @returns {ol/style/Text}    style is always returned
  */
-function getLabelStyle (feature, style, isClustered) {
+export function getLabelStyle (feature, style, isClustered) {
     const styleObject = new TextStyle(feature, style, isClustered);
 
     styleObject.initialize(feature, style, isClustered);
