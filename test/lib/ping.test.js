@@ -21,31 +21,49 @@ describe("ping.js", function () {
             const status = await ping({url: "www.example.com", typ: "WMS"});
 
             expect(status).toBe(200);
-            expect(mockFetch).toHaveBeenCalledWith("www.example.com?service=WMS&request=GetCapabilities");
+            expect(mockFetch).toHaveBeenCalledWith("www.example.com?service=WMS&request=GetCapabilities", {method: "HEAD"});
         });
 
         it("calls 0/0/0 tile for VectorTile services", async function () {
             const status = await ping({url: "www.example.com/{x}/{y}/{z}", typ: "VectorTile"});
 
             expect(status).toBe(200);
-            expect(mockFetch).toHaveBeenCalledWith("www.example.com/0/0/0");
+            expect(mockFetch).toHaveBeenCalledWith("www.example.com/0/0/0", {method: "HEAD"});
         });
 
         it("calls the URL directly for OAF services", async function () {
             const status = await ping({url: "www.example.com", typ: "OAF"});
 
             expect(status).toBe(200);
-            expect(mockFetch).toHaveBeenCalledWith("www.example.com");
+            expect(mockFetch).toHaveBeenCalledWith("www.example.com", {method: "HEAD"});
         });
 
-        it("returns 404 on network errors", async function () {
-            mockFetch = jest.fn(() => Promise.reject(new Error("CÖRS!!!")));
+        it("returns 900 on network errors", async function () {
+            mockFetch = jest.fn(() => Promise.resolve({status: 900}));
             global.fetch = mockFetch;
 
             const status = await ping({url: "www.example.com", typ: "OAF"});
 
-            expect(status).toBe(404);
-            expect(mockFetch).toHaveBeenCalledWith("www.example.com");
+            expect(status).toBe(900);
+            expect(mockFetch).toHaveBeenCalledWith("www.example.com", {method: "HEAD"});
+        });
+
+        it("returns highest status code on multiple urls", async function () {
+            let counter = 200;
+
+            mockFetch = jest.fn(() => Promise.resolve({status: counter++}));
+            global.fetch = mockFetch;
+
+            const status = await ping({urls: [
+                "www.example.com",
+                "www.example.com/but"
+            ], typ: "WMTS"});
+
+            expect(status).toBe(201);
+            expect(mockFetch)
+                .toHaveBeenCalledWith("www.example.com", {method: "HEAD"});
+            expect(mockFetch)
+                .toHaveBeenCalledWith("www.example.com/but", {method: "HEAD"});
         });
     });
 });
