@@ -37,17 +37,39 @@ describe("stylePointIcon.js", () => {
                 clusterImagePath: "/imagePath",
                 clusterImageHeight: 20,
                 clusterImageScale: 1
+            },
+            feature = {
+                getProperties: () => {
+                    return {
+                        name: "singleFeature",
+                        id: "123"
+                    };
+                }
+            },
+            clusteredFeature = {
+                get: () => {
+                    return [
+                        {
+                            name: "singleFeature1",
+                            id: "123"
+                        },
+                        {
+                            name: "singleFeature2",
+                            id: "456"
+                        }
+                    ];
+                }
             };
 
         it("should create icon point style", () => {
-            expect(stylePointIcon.createIconStyle(attributes, null, false)).toBeInstanceOf(Style);
-            expect(stylePointIcon.createIconStyle(clusterAttributes, null, true)).toBeInstanceOf(Style);
-            expect(stylePointIcon.createIconStyle(attributes, null, false).getImage()).toBeInstanceOf(Icon);
-            expect(stylePointIcon.createIconStyle(attributes, null, false).getImage().getScale()).toEqual(1);
+            expect(stylePointIcon.createIconStyle(attributes, feature, false)).toBeInstanceOf(Style);
+            expect(stylePointIcon.createIconStyle(clusterAttributes, clusteredFeature, true)).toBeInstanceOf(Style);
+            expect(stylePointIcon.createIconStyle(attributes, feature, false).getImage()).toBeInstanceOf(Icon);
+            expect(stylePointIcon.createIconStyle(attributes, feature, false).getImage().getScale()).toEqual(1);
         });
         it("should create cluster icon point style", () => {
-            expect(stylePointIcon.createIconStyle(clusterAttributes, null, true)).toBeInstanceOf(Style);
-            expect(stylePointIcon.createIconStyle(clusterAttributes, null, true).getImage()).toBeInstanceOf(Icon);
+            expect(stylePointIcon.createIconStyle(clusterAttributes, clusteredFeature, true)).toBeInstanceOf(Style);
+            expect(stylePointIcon.createIconStyle(clusterAttributes, clusteredFeature, true).getImage()).toBeInstanceOf(Icon);
         });
     });
 
