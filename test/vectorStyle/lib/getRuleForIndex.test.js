@@ -44,7 +44,7 @@ describe("getRuleForIndex", function () {
                 }
             ]
         },
-        rules2 = [
+        rules = [
             {
                 "conditions": {
                     "properties": {
@@ -82,19 +82,19 @@ describe("getRuleForIndex", function () {
     });
 
     it("should return rule with conditions but without sequence", function () {
-        expect(typeof getRuleForIndex(rules2, 0)).toBe("object");
-        expect(getRuleForIndex(rules2, 0)).toEqual(expect.objectContaining({style: {polygonStrokeColor: [100, 100, 0, 1]}}));
-        expect(Array.isArray(getRuleForIndex(rules2, 0).style.polygonStrokeColor)).toBe(true);
+        expect(typeof getRuleForIndex(rules, 0)).toBe("object");
+        expect(getRuleForIndex(rules, 0)).toEqual(expect.objectContaining({style: {polygonStrokeColor: [100, 100, 0, 1]}}));
+        expect(Array.isArray(getRuleForIndex(rules, 0).style.polygonStrokeColor)).toBe(true);
     });
     it("should return rule with conditions and sequence", function () {
-        expect(typeof getRuleForIndex(rules2, 1)).toBe("object");
-        expect(getRuleForIndex(rules2, 1)).toEqual(expect.objectContaining({style: {labelField: "name", polygonStrokeColor: [100, 0, 0, 1]}}));
-        expect(Array.isArray(getRuleForIndex(rules2, 1).style.polygonStrokeColor)).toBe(true);
+        expect(typeof getRuleForIndex(rules, 1)).toBe("object");
+        expect(getRuleForIndex(rules, 1)).toEqual(expect.objectContaining({style: {labelField: "name", polygonStrokeColor: [100, 0, 0, 1]}}));
+        expect(Array.isArray(getRuleForIndex(rules, 1).style.polygonStrokeColor)).toBe(true);
     });
     it("should return fallback rule", function () {
         const newArray = [];
 
-        newArray.push(rules2[2]);
+        newArray.push(rules[2]);
         expect(typeof getRuleForIndex(newArray, 0)).toBe("object");
         expect(getRuleForIndex(newArray, 0)).toEqual(expect.objectContaining({style: {polygonStrokeColor: [100, 100, 100, 1]}}));
         expect(Array.isArray(getRuleForIndex(newArray, 0).style.polygonStrokeColor)).toBe(true);
@@ -102,23 +102,23 @@ describe("getRuleForIndex", function () {
     it("should return null if no rule can be used", function () {
         const newArray = [];
 
-        newArray.push(rules2[0]);
+        newArray.push(rules[0]);
         expect(getRuleForIndex(newArray, 0)).toBe(null);
     });
 
     describe("getIndexedRule", function () {
         it("should return rule with fitting sequence", function () {
-            expect(typeof getIndexedRule(rules2, 1)).toBe("object");
-            expect(getIndexedRule(rules2, 1)).toEqual(expect.objectContaining({style: {labelField: "name", polygonStrokeColor: [100, 0, 0, 1]}}));
-            expect(Array.isArray(getIndexedRule(rules2, 1).style.polygonStrokeColor)).toBe(true);
+            expect(typeof getIndexedRule(rules, 1)).toBe("object");
+            expect(getIndexedRule(rules, 1)).toEqual(expect.objectContaining({style: {labelField: "name", polygonStrokeColor: [100, 0, 0, 1]}}));
+            expect(Array.isArray(getIndexedRule(rules, 1).style.polygonStrokeColor)).toBe(true);
         });
         it("should return undefined if no rule fits sequence", function () {
-            expect(getIndexedRule(rules2, 0)).toBe(undefined);
+            expect(getIndexedRule(rules, 0)).toBe(undefined);
         });
     });
 
     describe("getRulesForFeature", function () {
-        const styleObject = {rules: rules2};
+        const styleObject = {rules: rules};
 
         it("should return correct list of rules for feature1", function () {
             expect(Array.isArray(getRulesForFeature(styleObject, jsonObjects[0]))).toBe(true);
