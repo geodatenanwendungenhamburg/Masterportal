@@ -5,7 +5,7 @@ import {mapAttributes, isObjectPath} from "../../lib/attributeMapper";
  * @param   {string|number} value the parameter
  * @returns {number} the parsed value
  */
-function getValueWithoutComma (value) {
+export function getValueWithoutComma (value) {
     if (typeof value === "string" && value.indexOf(",") > -1) {
         return parseFloat(value.replace(",", "."));
     }
@@ -18,7 +18,7 @@ function getValueWithoutComma (value) {
  * @param   {string} value attribute value or object path to check
  * @returns {void} attribute property can be of any type
  */
-function getReferenceValue (featureProperties, value) {
+export function getReferenceValue (featureProperties, value) {
     const valueIsObjectPath = isObjectPath(value);
     let referenceValue = value;
 
@@ -44,7 +44,7 @@ function getReferenceValue (featureProperties, value) {
  * @param   {string|number|array} referenceValue value to compare
  * @returns {Boolean} true if values equal or in range
  */
-function compareValues (featureValue, referenceValue) {
+export function compareValues (featureValue, referenceValue) {
     let value = featureValue;
 
     // plain value compare for strings
@@ -111,7 +111,7 @@ function compareValues (featureValue, referenceValue) {
  * @param   {string|number|array} value attribute value or object path to check
  * @returns {Boolean} true if property is satisfied. Otherwhile returns false.
  */
-function checkProperty (featureProperties, key, value) {
+export function checkProperty (featureProperties, key, value) {
     let featureProperty = featureProperties;
 
     // if they are clustered features, then the first one is taken from the array
