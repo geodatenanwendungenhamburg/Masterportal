@@ -1,4 +1,5 @@
 import {getValueFromObjectByPath} from "./getValueFromObjectByPath.js";
+import moment from "moment";
 import thousandsSeparator from "./thousandsSeparator";
 /**
  * checks if value starts with special prefix to determine if value is a object path
@@ -127,7 +128,7 @@ function prepareValueFromObject (key, mappingObj, properties) {
     }
     switch (type) {
         case "date": {
-            date = String(preparedValue); // TODO: should moment be integrated?
+            date = moment(String(preparedValue));
             if (date.isValid()) {
                 preparedValue = date.format(format);
             }
