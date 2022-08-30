@@ -3,7 +3,7 @@
  * @param {Number[]} newColor Color in rgb
  * @return {Number[]} normColor
  */
-function normalizeRgbColor (newColor) {
+export function normalizeRgbColor (newColor) {
     const defaultArray = [1, 1, 1, 1];
 
     return newColor.concat(defaultArray).slice(0, 4);
@@ -14,7 +14,7 @@ function normalizeRgbColor (newColor) {
  * @param {String} hex Color as hex string.
  * @returns {Number[]} - Color als rgb array.
  */
-function hexToRgb (hex) {
+export function hexToRgb (hex) {
     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
     const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i,
         hexReplace = hex.replace(shorthandRegex, function (m, r, g, b) {
@@ -39,7 +39,7 @@ function hexToRgb (hex) {
  * @param {Number} c Color value as number.
  * @returns {String} - Converted color number as hex string.
  */
-function componentToHex (c) {
+export function componentToHex (c) {
     const hex = Number(c).toString(16);
 
     return hex.length === 1 ? "0" + hex : hex;
@@ -51,7 +51,7 @@ function componentToHex (c) {
  * @param {Number} b Blue value.
  * @returns {String} - Hex color string.
  */
-function rgbToHex (r, g, b) {
+export function rgbToHex (r, g, b) {
     return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 /**
