@@ -15,7 +15,7 @@ export function getRulesForFeature (styleObject, feature) {
  * @param   {integer} index the simple geometries index
  * @returns {object|undefined} the proper rule
  */
-function getIndexedRule (rules, index) {
+export function getIndexedRule (rules, index) {
     return rules.find(rule => {
         const sequence = rule.conditions?.sequence ? rule.conditions.sequence : null,
             isSequenceValid = sequence && Array.isArray(sequence) && sequence.every(element => typeof element === "number") && sequence.length === 2 && sequence[1] >= sequence[0],
