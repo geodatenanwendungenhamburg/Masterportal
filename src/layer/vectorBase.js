@@ -4,10 +4,13 @@ import VectorSource from "ol/source/Vector.js";
 
 /**
  * Triggered by Layer to create a layerSource
+ * @param {Object} attrs  attributes of the layer
  * @returns {void}
  */
-export function createLayerSource () {
-    return new VectorSource();
+export function createLayerSource (attrs) {
+    return new VectorSource({
+        features: attrs.features
+    });
 }
 
 /**
@@ -27,7 +30,7 @@ export function updateSource (layer, features) {
  * @returns {Object} layer
  */
 export function createLayer (attrs) {
-    const source = this.createLayerSource();
+    const source = this.createLayerSource(attrs);
 
     return new VectorLayer({
         source: source,

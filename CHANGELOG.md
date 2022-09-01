@@ -5,7 +5,10 @@
 
 ## Unreleased - in development
 ### Added
+- Added possibility to set initial features for layer vectorBase.
+
 ### Changed
+- OAF: Fixed oaf recursion and a possibility to disable the CRS parameter is added.
 ### Deprecated
 ### Removed
 ### Fixed

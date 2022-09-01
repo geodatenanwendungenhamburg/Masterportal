@@ -57,7 +57,8 @@ function getNextLinkFromFeatureCollection (featureCollection) {
         if (
             typeof featureCollection.links[i] === "object" && featureCollection.links[i] !== null
             && typeof featureCollection.links[i].href === "string"
-            && featureCollection.links[i].title === "next page"
+            && featureCollection.links[i].rel === "next"
+            && featureCollection.links[i].type === "application/geo+json"
         ) {
             return featureCollection.links[i].href;
         }
@@ -157,7 +158,9 @@ function createUrl (rawLayer) {
         url += "bbox=" + appendingString + "&";
     }
     url += typeof rawLayer.bboxCrs === "string" && rawLayer.bboxCrs !== "" ? "bbox-crs=" + encodeURIComponent(rawLayer.bboxCrs) + "&" : "";
-    url += "crs=" + encodeURIComponent(typeof rawLayer.crs === "string" && rawLayer.crs !== "" ? rawLayer.crs : crsDefault) + "&";
+    if (rawLayer.crs !== false) {
+        url += "crs=" + encodeURIComponent(typeof rawLayer.crs === "string" && rawLayer.crs !== "" ? rawLayer.crs : crsDefault) + "&";
+    }
     url += typeof rawLayer.datetime === "string" && rawLayer.datetime !== "" ? "datetime=" + rawLayer.datetime + "&" : "";
     url += getParamsUrl(rawLayer.params);
 
