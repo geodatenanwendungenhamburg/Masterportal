@@ -248,11 +248,7 @@ export function initializeStyleList (styleGetters, Config, layers, tools, callba
             console.error("An error occured when trying to fetch services from '" + styleConf + "':", 404);
             return callback(false, true);
         }
-        // TODO(roehlipa): Falls an dieser Stelle der keine Funktion ist, dann hat jemand initializeStyleList eh falsch verwendet :D
-        if (typeof callback === "function") {
-            return callback(styleList);
-        }
-        return true;
+        return callback(styleList);
     };
     xhr.send();
 }
