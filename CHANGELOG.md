@@ -6,6 +6,12 @@
 ## Unreleased - in development
 ### Added
 - Added possibility to set initial features for layer vectorBase.
+- VectorStyle is now part of the masterportalApi.
+
+- The following packages have been added:
+    - dependencies:
+        - "axios": "^0.27.2",
+        - "moment": "^2.29.1",
 
 ### Changed
 - OAF: Fixed oaf recursion and a possibility to disable the CRS parameter is added.
