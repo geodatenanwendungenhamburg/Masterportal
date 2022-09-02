@@ -56,7 +56,6 @@ export function calculateLengthIntervalCircleBar (size, circleBarRadius, stateVa
  * @param  {number} circleBarRadius - radius from point
  * @return {String} svg
  */
-// TODO: Klärung wegen eslint
 // eslint-disable-next-line max-params
 export function createSvgIntervalCircleBar (size, barLength, circleBarCircleFillColor, circleBarCircleStrokeColor, circleBarCircleStrokeWidth, circleBarLineStrokeColor, circleBarLineStroke, circleBarRadius) {
     let svg = "<svg width='" + size + "'" +
