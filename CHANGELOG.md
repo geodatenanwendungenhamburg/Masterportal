@@ -3,15 +3,12 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.6.0 - 2022-09-06
 ### Added
 - Added possibility to set initial features for layer vectorBase.
 
 ### Changed
 - OAF: Fixed oaf recursion and a possibility to disable the CRS parameter is added.
-### Deprecated
-### Removed
-### Fixed
 
 ---
 
