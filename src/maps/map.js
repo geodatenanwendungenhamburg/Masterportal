@@ -20,7 +20,7 @@ export default {
     * @param {object}  [settings={}] - settings object
     * @param {object} [settings.mapParams] - additional parameter object that is spread into the ol.Map constructor object
     * @param {function} [settings.callback] - optional callback for layer list loading
-    * @returns {module:ol/PluggableMap~PluggableMap} The map.
+    * @returns {module:ol/Map~Map} The map.
     */
     createMap: function (config, mapMode = "2D", settings = {}) {
         const createMapFunctions = {

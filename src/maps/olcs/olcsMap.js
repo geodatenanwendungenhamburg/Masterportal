@@ -99,7 +99,7 @@ export function setCameraParameter (params, map3D, cesium) {
 /**
  * Creates a 3D-map.
  * @param {object} [settings] The settings for the 3D-map.
- * @param {module:ol/PluggableMap~PluggableMap} [settings.map2D] The 2D-Map
+ * @param {module:ol/Map~Map} [settings.map2D] The 2D-Map
  * @param {Cesium.JulianDate} [settings.shadowTime] The shadow time in julian date format if undefined olcs default is Cesium.JulianDate.now().
  * @returns {module:OLCesium} the 3d-map
  */
