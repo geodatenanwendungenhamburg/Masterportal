@@ -98,7 +98,7 @@ function addLayer (layerOrId, params = {visibility: true, transparency: 0, error
     }
 
     // else use original function
-    injectErrorCallback(layer, errorCallback);
+    injectErrorCallback(layerOrId, errorCallback);
     return originalAddLayer.call(this, layerOrId);
 }
 
