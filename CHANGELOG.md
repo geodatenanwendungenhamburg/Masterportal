@@ -15,6 +15,15 @@
 
 ---
 
+## 2.6.0 - 2022-09-06
+### Added
+- Added possibility to set initial features for layer vectorBase.
+
+### Changed
+- OAF: Fixed oaf recursion and a possibility to disable the CRS parameter is added.
+
+---
+
 ## 2.5.1 - 2022-08-05
 ### Fixed
 - Remove import of `defaultResolutions` for the vectorStyle layer
