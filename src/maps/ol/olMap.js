@@ -74,7 +74,7 @@ function addLayer (layerOrId, params = {visibility: true, transparency: 0, error
     const errorCallback = typeof params.errorCallback === "function"
         ? params.errorCallback
         : console.error;
-    var layer, layerBuilder;
+    let layer, layerBuilder;
 
     // if parameter is id, create and add layer with masterportalAPI mechanisms
     if (typeof layerOrId === "string") {
