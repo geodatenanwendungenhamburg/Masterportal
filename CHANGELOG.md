@@ -6,6 +6,10 @@
 ## Unreleased - in development
 ### Added
 ### Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol: 6.15.1 to 7.1.0
+        - olcs: 2.13.0 to 2.13.1
 ### Deprecated
 ### Removed
 ### Fixed
