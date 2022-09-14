@@ -33,26 +33,45 @@ const layerBuilderMap = {
     originalAddLayer = PluggableMap.prototype.addLayer;
 
 /**
+ * Flattens a Layer/LayerGroup to an array of non-group instances.
+ * @param {ol/layer/Base} layer any layer, possibly a LayerGroup
+ * @returns {ol/layer/Base[]} array of all given layers
+ */
+function flattenLayerGroups (layer) {
+    return layer.getLayers
+        ? layer
+            .getLayers()
+            .getArray()
+            .map(l => flattenLayerGroups(l))
+            .flat(1)
+        : [layer];
+}
+
+/**
  * Adds an error handling function to an arbitrary layer. The event will be
  * registered to the tileloaderror, imageloaderror, featuresloaderror, and
  * generic error event. Depending on the type of layer and error, only one of
  * these events will fire.
- * @param {ol/Layer} layer Any type of layer implemented.
+ * @param {ol/layer/Base} layer Any type of layer implemented.
  * @param {Function} errorCallback Error callback, called from OL event.
  * @returns {void} side-effect to layer
  */
 function injectErrorCallback (layer, errorCallback) {
-    const source = layer.getSource?.();
+    const layers = flattenLayerGroups(layer);
 
-    if (source) {
-        source.on?.("tileloaderror", errorCallback);
-        source.on?.("imageloaderror", errorCallback);
-        source.on?.("featuresloaderror", errorCallback);
-        source.on?.("error", errorCallback);
-    }
-    else {
-        console.error("Could not register error callback on layer:", layer);
-    }
+    layers.forEach(l => {
+        const source = l.getSource?.();
+
+        if (source) {
+            source.on?.("tileloaderror", errorCallback);
+            source.on?.("imageloaderror", errorCallback);
+            source.on?.("featuresloaderror", errorCallback);
+            source.on?.("error", errorCallback);
+        }
+        else {
+            console.error("Could not register error callback on layer:", l);
+        }
+    });
 }
 
 /**
@@ -63,7 +82,7 @@ function injectErrorCallback (layer, errorCallback) {
  * if you request the services from the internet.
  *
  * This function is available on all ol/Map instances.
- * @param {(string|ol/Layer)} layerOrId - if of layer to add to map
+ * @param {(string|ol/layer/Base)} layerOrId - if of layer to add to map
  * @param {object} [params] - optional parameter object
  * @param {boolean} [params.visibility=true] - whether added layer is initially visible
  * @param {Number} [params.transparency=0] - how visible the layer is initially
