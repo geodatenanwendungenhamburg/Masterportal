@@ -1,4 +1,4 @@
-import {Map, PluggableMap} from "ol";
+import {Map} from "ol";
 import {defaults as olDefaultInteractions} from "ol/interaction.js";
 import setBackgroundImage from "../../lib/setBackgroundImage";
 import getInitialLayers from "../../lib/getInitialLayers";
@@ -30,7 +30,7 @@ const layerBuilderMap = {
         vectortile,
         oaf
     },
-    originalAddLayer = PluggableMap.prototype.addLayer;
+    originalAddLayer = Map.prototype.addLayer;
 
 /**
  * Flattens a Layer/LayerGroup to an array of non-group instances.
@@ -121,7 +121,7 @@ function addLayer (layerOrId, params = {visibility: true, transparency: 0, error
     return originalAddLayer.call(this, layerOrId);
 }
 
-PluggableMap.prototype.addLayer = addLayer;
+Map.prototype.addLayer = addLayer;
 
 /**
  * Creates an openlayers map according to configuration. Does not set many default values itself, but uses function that do.

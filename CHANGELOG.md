@@ -9,9 +9,18 @@
 - Added possibility to set initial features for layer vectorBase.
 
 ### Changed
+
 ### Deprecated
+
 ### Removed
 ### Fixed
+
+## 2.7.0 - 2022-09-14
+### Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol: 6.15.1 to 7.1.0
+        - olcs: 2.13.0 to 2.13.1
 
 ---
 

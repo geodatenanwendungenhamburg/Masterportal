@@ -1,4 +1,4 @@
-import {PluggableMap, Map} from "ol";
+import {Map} from "ol";
 import TileLayer from "ol/layer/Tile";
 import map from "../src/maps/map.js";
 import {createMap as create3DMap} from "../src/maps/olcs/olcsMap.js";
@@ -86,12 +86,12 @@ describe("map.js", function () {
         });
     });
 
-    // NOTE: loading map.js monkey patches PluggableMap.prototype.addLayer - testing result here
+    // NOTE: loading map.js monkey patches Map.prototype.addLayer - testing result here
     describe("addLayer", function () {
         it("logs an error for unknown ids", function () {
             console.error = jest.fn();
             const consoleError = console.error,
-                result = PluggableMap.prototype.addLayer("999999999999999");
+                result = Map.prototype.addLayer("999999999999999");
 
             expect(console.error).toHaveBeenCalled();
             expect(result).toBeNull();
@@ -101,7 +101,7 @@ describe("map.js", function () {
         it("logs an error for unknown types", function () {
             console.error = jest.fn();
             const consoleError = console.error,
-                result = PluggableMap.prototype.addLayer("exists");
+                result = Map.prototype.addLayer("exists");
 
             expect(result).toBeNull();
             expect(console.error).toHaveBeenCalledWith("Layer with id 'exists' has unknown type 'doesntExist'. No layer added to map.");
@@ -109,17 +109,17 @@ describe("map.js", function () {
         });
 
         it("creates existing layers that have a known builder", function () {
-            const result = PluggableMap.prototype.addLayer("works");
+            const result = Map.prototype.addLayer("works");
 
             expect(result).toBeInstanceOf(TileLayer);
         });
 
         it("sets visibility and transparency", function () {
-            const result1 = PluggableMap.prototype.addLayer("works"),
-                result2 = PluggableMap.prototype.addLayer("works", {}),
-                result3 = PluggableMap.prototype.addLayer("works", {visibility: false}),
-                result4 = PluggableMap.prototype.addLayer("works", {transparency: 50}),
-                result5 = PluggableMap.prototype.addLayer("works", {visibility: false, transparency: 20});
+            const result1 = Map.prototype.addLayer("works"),
+                result2 = Map.prototype.addLayer("works", {}),
+                result3 = Map.prototype.addLayer("works", {visibility: false}),
+                result4 = Map.prototype.addLayer("works", {transparency: 50}),
+                result5 = Map.prototype.addLayer("works", {visibility: false, transparency: 20});
 
             expect(result1.getOpacity()).toBe(1);
             expect(result1.getVisible()).toBe(true);

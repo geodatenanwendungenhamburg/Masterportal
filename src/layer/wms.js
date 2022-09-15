@@ -80,7 +80,7 @@ export function makeParams (rawLayer) {
  * @param {string} [rawLayer.url] - WMS service URL
  * @param {string} [rawLayer.serverType] - optional servertype definition: "geoserver" or "mapserver" or "qgis"
  * @param {string} [rawLayer.gutter] - optional the size in pixels of the gutter around image tiles to ignore
- * @param {function} [rawLayer.olAttribution] - optional function that takes a module:ol/PluggableMap~FrameState and returns a string or an array of strings representing source attributions
+ * @param {function} [rawLayer.olAttribution] - optional function that takes a module:ol/Map~FrameState and returns a string or an array of strings representing source attributions
  * @param {string|number} [rawLayer.tilesize] - optional needed to create the tileGrid
  * @param {object} options - optional resolutions and origin to create the TileGrid
  * @param {Array} [options.resolutions] - optional resolutions to create the TileGrid, must be in descending order
@@ -128,7 +128,7 @@ export function createLayerSource (rawLayer, options) {
  * @param {string} [rawLayer.maxScale] - optional the maximal resolution
  * @param {string} [rawLayer.serverType] - optional servertype definition: "geoserver" or "mapserver" or "qgis"
  * @param {string} [rawLayer.gutter] - optional the size in pixels of the gutter around image tiles to ignore
- * @param {function} [rawLayer.olAttribution] - optional function that takes a module:ol/PluggableMap~FrameState and returns a string or an array of strings representing source attributions
+ * @param {function} [rawLayer.olAttribution] - optional function that takes a module:ol/Map~FrameState and returns a string or an array of strings representing source attributions
  * @param {string|number} [rawLayer.tilesize] - optional needed to create the tileGrid
  * @param {object} layerParams - additional layer params
  * @param {object} options - optional resolutions and origin to create the TileGrid
