@@ -11,10 +11,6 @@ import portalConfig from "./config/portal.json";
 import localGeoJSON from "./config/localGeoJSON.js";
 import {load3DScript} from "../src/lib/load3DScript";
 
-function errorCallback (errorEvent) {
-    console.error("This is an error event:", errorEvent);
-}
-
 //* Add elements to window to play with API in console
 window.mpapi = {
     ...mpapi,
@@ -98,7 +94,7 @@ document.getElementById("layer-visibility").addEventListener("click", function (
     });
 });
 
-map2D = mapsAPI.map.createMap(config, "2D", {errorCallback});
+map2D = mapsAPI.map.createMap(config, "2D");
 services.push(localService);
 // */
 
@@ -152,18 +148,7 @@ services.find(({id}) => id === "5001").style = styleOaf;
 //* SYNCHRONOUS EXAMPLE: layerConf is known
 window.mpapi.map = map2D;
 
-["2001", "2002", "1002", "3001", "5001"].forEach(id => window.mpapi.map.addLayer(id, {errorCallback}));
-
-// ping all layers
-services
-    .map(service => ({
-        ping: mpapi.ping(service),
-        service
-    }))
-    .forEach(({ping, service}) => ping
-        // eslint-disable-next-line no-console
-        .then(statusCode => console.log(`Service ${service.id} pinged; returned ${statusCode}.`))
-        .catch(console.error));
+["2001", "2002", "1002", "3001", "5001"].forEach(id => window.mpapi.map.addLayer(id));
 
 // */
 

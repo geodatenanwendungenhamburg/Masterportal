@@ -11,7 +11,7 @@ import * as vectorBase from "../../layer/vectorBase";
 import * as vectortile from "../../layer/vectorTile";
 import * as oaf from "../../layer/oaf";
 import {createMapView} from "../../maps/mapView";
-import {initializeLayerList, getLayerWhere} from "../../rawLayerList";
+import {rawLayerList} from "../../index.js";
 import {registerProjections} from "../../crs";
 import {setGazetteerUrl} from "../../searchAddress";
 
@@ -33,48 +33,6 @@ const layerBuilderMap = {
     originalAddLayer = Map.prototype.addLayer;
 
 /**
- * Flattens a Layer/LayerGroup to an array of non-group instances.
- * @param {ol/layer/Base} layer any layer, possibly a LayerGroup
- * @returns {ol/layer/Base[]} array of all given layers
- */
-function flattenLayerGroups (layer) {
-    return layer.getLayers
-        ? layer
-            .getLayers()
-            .getArray()
-            .map(l => flattenLayerGroups(l))
-            .flat(1)
-        : [layer];
-}
-
-/**
- * Adds an error handling function to an arbitrary layer. The event will be
- * registered to the tileloaderror, imageloaderror, featuresloaderror, and
- * generic error event. Depending on the type of layer and error, only one of
- * these events will fire.
- * @param {ol/layer/Base} layer Any type of layer implemented.
- * @param {Function} errorCallback Error callback, called from OL event.
- * @returns {void} side-effect to layer
- */
-function injectErrorCallback (layer, errorCallback) {
-    const layers = flattenLayerGroups(layer);
-
-    layers.forEach(l => {
-        const source = l.getSource?.();
-
-        if (source) {
-            source.on?.("tileloaderror", errorCallback);
-            source.on?.("imageloaderror", errorCallback);
-            source.on?.("featuresloaderror", errorCallback);
-            source.on?.("error", errorCallback);
-        }
-        else {
-            console.error("Could not register error callback on layer:", l);
-        }
-    });
-}
-
-/**
  * Adds a layer to the map, or adds a layer to the map by id.
  * This id is looked up within the array of all known services.
  *
@@ -82,22 +40,18 @@ function injectErrorCallback (layer, errorCallback) {
  * if you request the services from the internet.
  *
  * This function is available on all ol/Map instances.
- * @param {(string|ol/layer/Base)} layerOrId - if of layer to add to map
+ * @param {(string|ol/Layer)} layerOrId - if of layer to add to map
  * @param {object} [params] - optional parameter object
  * @param {boolean} [params.visibility=true] - whether added layer is initially visible
  * @param {Number} [params.transparency=0] - how visible the layer is initially
- * @param {Function} [params.errorCallback=console.error] - callback for layer source error events
  * @returns {?ol.Layer} added layer
  */
-function addLayer (layerOrId, params = {visibility: true, transparency: 0, errorCallback: console.error}) {
-    const errorCallback = typeof params.errorCallback === "function"
-        ? params.errorCallback
-        : console.error;
-    let layer, layerBuilder;
+function addLayer (layerOrId, params = {visibility: true, transparency: 0}) {
+    var layer, layerBuilder;
 
     // if parameter is id, create and add layer with masterportalAPI mechanisms
     if (typeof layerOrId === "string") {
-        const rawLayer = getLayerWhere({id: layerOrId});
+        const rawLayer = rawLayerList.getLayerWhere({id: layerOrId});
 
         if (!rawLayer) {
             console.error("Layer with id '" + layerOrId + "' not found. No layer added to map.");
@@ -111,13 +65,11 @@ function addLayer (layerOrId, params = {visibility: true, transparency: 0, error
         layer = layerBuilder.createLayer(rawLayer, {}, {map: this});
         layer.setVisible(typeof params.visibility === "boolean" ? params.visibility : true);
         layer.setOpacity(typeof params.transparency === "number" ? (100 - params.transparency) / 100 : 1);
-        injectErrorCallback(layer, errorCallback);
         originalAddLayer.call(this, layer);
         return layer;
     }
 
     // else use original function
-    injectErrorCallback(layerOrId, errorCallback);
     return originalAddLayer.call(this, layerOrId);
 }
 
@@ -141,11 +93,10 @@ Map.prototype.addLayer = addLayer;
  * @param {object}  [settings={}] - setings object
  * @param {object} [settings.mapParams] - additional parameter object that is spread into the ol.Map constructor object
  * @param {function} [settings.callback] - optional callback for layer list loading
- * @param {function} [settings.errorCallback] – method called on error events
  * @param {String} [mapMode = "2D"] The map mode. '2D' to craete a 2D-map and '3D' to create a 3D-map.
  * @returns {object} map object from ol
  */
-export function createMap (config = defaults, {mapParams, callback, errorCallback} = {}) {
+export function createMap (config = defaults, {mapParams, callback} = {}) {
     registerProjections(config.namedProjections);
     setBackgroundImage(config);
     setGazetteerUrl(config.gazetteerUrl);
@@ -160,10 +111,10 @@ export function createMap (config = defaults, {mapParams, callback, errorCallbac
     map.set("id", `map2D_${mapIdCounter++}`);
 
     // extend callback to load configured initial layers
-    initializeLayerList(config.layerConf, (param, error) => {
+    rawLayerList.initializeLayerList(config.layerConf, (param, error) => {
         getInitialLayers(config)
             .forEach(layer => {
-                map.addLayer(layer.id, {errorCallback});
+                map.addLayer(layer.id, layer);
             });
 
         if (typeof callback === "function") {
