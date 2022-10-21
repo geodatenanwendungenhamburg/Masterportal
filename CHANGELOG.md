@@ -7,7 +7,7 @@
 ### Added
 
 ### Changed
-- Exports in rawLayerList changed to module.exports to provide the possibility to stub the functions with sinon in masterportal.
+- Exports in src/rawLayerList and src/crs.js changed to module.exports to provide the possibility to stub the functions with sinon in masterportal.
 
 ### Deprecated
 
