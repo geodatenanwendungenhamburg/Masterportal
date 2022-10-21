@@ -14,6 +14,7 @@ import Tileset from "./layer/tileset";
 import * as layerLib from "./layer/lib";
 import {search, setGazetteerUrl} from "./searchAddress";
 import setBackgroundImage from "./lib/setBackgroundImage";
+import ping from "./lib/ping";
 
 export {
     createMapView,
@@ -31,6 +32,7 @@ export {
     setBackgroundImage,
     setGazetteerUrl,
     rawLayerList,
+    ping,
     search,
     crs
 };

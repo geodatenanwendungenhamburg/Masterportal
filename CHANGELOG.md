@@ -7,6 +7,7 @@
 ### Added
 
 ### Changed
+- Exports in rawLayerList changed to module.exports to provide the possibility to stub the functions with sinon in masterportal.
 
 ### Deprecated
 

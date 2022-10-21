@@ -14,7 +14,7 @@ let layerList = [];
  * @param {function} [callback] - called with services after loaded; called with false and error on error
  * @returns {undefined} nothing, add callback to receive layerList
  */
- function initializeLayerList (layerConf = defaults.layerConf, callback) {
+function initializeLayerList (layerConf = defaults.layerConf, callback) {
     if (Array.isArray(layerConf)) {
         // case: parameter was services.json contents
         layerList = layerConf;
@@ -55,14 +55,14 @@ let layerList = [];
  * @param {object} searchAttributes - key/value-pairs to be searched for, e.g. { typ: "WMS" } to get the first WMS
  * @returns {?object} first layer matching the searchAttributes or null if none was found
  */
- function getLayerWhere (searchAttributes) {
+function getLayerWhere (searchAttributes) {
     const keys = Object.keys(searchAttributes);
 
     return layerList.find(entry => keys.every(key => entry[key] === searchAttributes[key])) || null;
 }
 
 /** @returns {object[]} complete layerList as initialized */
- function getLayerList () {
+function getLayerList () {
     return layerList;
 }
 
