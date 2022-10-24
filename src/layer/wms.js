@@ -99,14 +99,16 @@ export function createLayerSource (rawLayer, options) {
             params,
             serverType: rawLayer.serverType,
             projection: projection,
-            attributions: rawLayer.olAttribution
+            attributions: rawLayer.olAttribution,
+            crossOrigin: rawLayer.crossOrigin
         });
     }
     if (options && options.resolutions) {
         tileGrid = new TileGrid({
             resolutions: options.resolutions,
             origin: options.origin ? options.origin : undefined,
-            tileSize: parseInt(rawLayer.tilesize, 10)
+            tileSize: parseInt(rawLayer.tilesize, 10),
+            crossOrigin: rawLayer.crossOrigin
         });
     }
     return new TileWMS({
@@ -115,7 +117,8 @@ export function createLayerSource (rawLayer, options) {
         gutter: rawLayer.gutter || 0,
         tileGrid: tileGrid,
         projection: projection,
-        attributions: rawLayer.olAttribution
+        attributions: rawLayer.olAttribution,
+        crossOrigin: rawLayer.crossOrigin
     });
 }
 
