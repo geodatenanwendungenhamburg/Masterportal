@@ -107,8 +107,7 @@ export function createLayerSource (rawLayer, options) {
         tileGrid = new TileGrid({
             resolutions: options.resolutions,
             origin: options.origin ? options.origin : undefined,
-            tileSize: parseInt(rawLayer.tilesize, 10),
-            crossOrigin: rawLayer.crossOrigin
+            tileSize: parseInt(rawLayer.tilesize, 10)
         });
     }
     return new TileWMS({

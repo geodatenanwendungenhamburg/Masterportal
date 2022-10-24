@@ -5,6 +5,7 @@
 
 ## Unreleased - in development
 ### Added
+- crossOrigin settings can now be passed to WMSSources (TileWMS, ImageWMS) via config.json or services.json
 
 ### Changed
 
