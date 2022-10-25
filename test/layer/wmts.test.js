@@ -3,7 +3,7 @@ import {getWidth} from "ol/extent";
 
 import * as wmts from "../../src/layer/wmts";
 
-describe.only("wmts.js", function () {
+describe("wmts.js", function () {
     describe("generateArrays", function () {
         it("should fill the arrays resolutions and matrixIds with numbers", function () {
             const size = getWidth(getProjection("EPSG:3857").getExtent()) / 256,
