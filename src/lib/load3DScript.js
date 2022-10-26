@@ -4,7 +4,7 @@
  * @param {Function} callback - the Function to call after loading has completed
  * @returns {undefined}
  */
-export function load3DScript (fileName, callback) {
+function load3DScript (fileName, callback) {
     const head = document.getElementsByTagName("head")[0],
         script = document.createElement("script");
 
@@ -19,4 +19,8 @@ export function load3DScript (fileName, callback) {
         return null;
     };
     head.appendChild(script);
+}
+
+module.exports={
+    load3DScript
 }
