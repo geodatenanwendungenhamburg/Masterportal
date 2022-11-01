@@ -1,5 +1,5 @@
 import {Map} from "ol";
-import {defaults as olDefaultInteractions} from "ol/interaction.js";
+import {DragPan, defaults as olDefaultInteractions} from "ol/interaction.js";
 import setBackgroundImage from "../../lib/setBackgroundImage";
 import getInitialLayers from "../../lib/getInitialLayers";
 import defaults from "../../defaults";
@@ -151,7 +151,13 @@ export function createMap (config = defaults, {mapParams, callback, errorCallbac
     setGazetteerUrl(config.gazetteerUrl);
     const map = new Map(Object.assign({
         target: config.target || defaults.target,
-        interactions: olDefaultInteractions({altShiftDragRotate: false, pinchRotate: false}),
+        interactions: olDefaultInteractions({dragPan: false, altShiftDragRotate: false, pinchRotate: false}).extend([
+            new DragPan({
+              condition: function (event) {
+                return (!event.originalEvent.pointerType || event.originalEvent.pointerType === "mouse") || (config.twoFingerPan && this.getPointerCount() === 2) || !config.twoFingerPan;
+              },
+            })
+        ]),
         controls: [],
         view: createMapView(config)
     }, mapParams));
