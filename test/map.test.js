@@ -113,7 +113,7 @@ describe("map.js", function () {
             console.error = consoleError;
         });
 
-        it.only("creates existing layers that have a known builder", function () {
+        it("creates existing layers that have a known builder", function () {
             const result = Map.prototype.addLayer("works");
 
             expect(result).toBeInstanceOf(TileLayer);
