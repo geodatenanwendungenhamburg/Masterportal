@@ -1,4 +1,4 @@
-import * as rll from "../src/rawLayerList";
+import rll from "../src/rawLayerList";
 
 const symbol = Symbol(),
     services = [

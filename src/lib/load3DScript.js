@@ -21,6 +21,6 @@ function load3DScript (fileName, callback) {
     head.appendChild(script);
 }
 
-module.exports={
+module.exports = {
     load3DScript
-}
+};

@@ -11,8 +11,8 @@ import * as vectorBase from "../../layer/vectorBase";
 import * as vectortile from "../../layer/vectorTile";
 import * as oaf from "../../layer/oaf";
 import {createMapView} from "../../maps/mapView";
-import {rawLayerList} from "../../index.js";
-import {registerProjections} from "../../crs";
+import rawLayerList from "../../rawLayerList";
+import crs from "../../crs";
 import {setGazetteerUrl} from "../../searchAddress";
 
 let mapIdCounter = 0;
@@ -146,7 +146,7 @@ Map.prototype.addLayer = addLayer;
  * @returns {object} map object from ol
  */
 export function createMap (config = defaults, {mapParams, callback, errorCallback} = {}) {
-    registerProjections(config.namedProjections);
+    crs.registerProjections(config.namedProjections);
     setBackgroundImage(config);
     setGazetteerUrl(config.gazetteerUrl);
     const map = new Map(Object.assign({

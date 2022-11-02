@@ -4,7 +4,7 @@ import {Style, Stroke, Fill, Icon} from "ol/style.js";
 
 import * as mpapi from "../src";
 import mapsAPI from "../src/maps/api.js";
-import {getLayerWhere} from "../src/rawLayerList";
+import rawLayerList from "../src/rawLayerList";
 
 import services from "./config/services.json";
 import portalConfig from "./config/portal.json";
@@ -71,9 +71,9 @@ document.getElementById("enable").addEventListener("click", function () {
                     }
                 },
                 map3D = mapsAPI.map.createMap(settings3D, "3D"),
-                rawLayerTerrain = getLayerWhere({id: "4001"}),
-                rawLayerTileset = getLayerWhere({id: "4002"}),
-                rawLayerEntities = getLayerWhere({id: "4003"});
+                rawLayerTerrain = rawLayerList.getLayerWhere({id: "4001"}),
+                rawLayerTileset = rawLayerList.getLayerWhere({id: "4002"}),
+                rawLayerEntities = rawLayerList.getLayerWhere({id: "4003"});
 
             window.mpapi.map = map3D;
             tilesetLayer = new mpapi.Tileset(rawLayerTileset, window.mpapi.map);

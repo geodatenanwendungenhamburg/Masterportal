@@ -121,7 +121,7 @@ function transformFromMapProjection (map, targetProjection, point) {
     return transform(getMapProjection(map), targetProjection, point);
 }
 
-module.exports = {
+export default {
     transformFromMapProjection,
     transformToMapProjection,
     transform,

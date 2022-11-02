@@ -88,7 +88,7 @@ function getDisplayNamesOfFeatureAttributes (layerId, featureAttribute) {
 }
 
 
-module.exports = {
+export default {
     getLayerWhere,
     getDisplayNamesOfFeatureAttributes,
     initializeLayerList,

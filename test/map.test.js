@@ -2,8 +2,8 @@ import {Map} from "ol";
 import TileLayer from "ol/layer/Tile";
 import map from "../src/maps/map.js";
 import {createMap as create3DMap} from "../src/maps/olcs/olcsMap.js";
-import {initializeLayerList} from "../src/rawLayerList.js";
-import {registerProjections} from "../src/crs.js";
+import rawLayerList from "../src/rawLayerList.js";
+import crs from "../src/crs.js";
 import setBackgroundImage from "../src/lib/setBackgroundImage.js";
 import {createMapView} from "../src/maps/mapView";
 import defaults from "../src/defaults";
@@ -15,18 +15,23 @@ import {load3DScript} from "../src/lib/load3DScript";
  */
 jest.mock("ol");
 jest.mock("../src/rawLayerList.js", () => {
-    const original = jest.requireActual("../src/rawLayerList.js");
+    const originalModule = jest.requireActual("../src/rawLayerList.js");
 
-    original.getLayerWhere = ({id}) => ({
-        exists: {
-            typ: "doesntExist"
-        },
-        works: {
-            typ: "WMS"
+    return {
+        __esModule: true,
+        ...originalModule,
+        default: {
+            getLayerWhere: ({id}) => ({
+                exists: {
+                    typ: "doesntExist"
+                },
+                works: {
+                    typ: "WMS"
+                }
+            })[id],
+            initializeLayerList: jest.fn()
         }
-    })[id];
-    original.initializeLayerList = jest.fn();
-    return original;
+    };
 });
 jest.mock("../src/crs.js");
 jest.mock("../src/lib/setBackgroundImage.js");
@@ -38,8 +43,8 @@ describe("map.js", function () {
             const callback = jest.fn();
 
             map.createMap(defaults, "2D", {mapParams: {}, callback: callback});
-            expect(initializeLayerList).toHaveBeenCalledWith(defaults.layerConf, expect.any(Function));
-            expect(registerProjections).toHaveBeenCalledWith(defaults.namedProjections);
+            expect(rawLayerList.initializeLayerList).toHaveBeenCalledWith(defaults.layerConf, expect.any(Function));
+            expect(crs.registerProjections).toHaveBeenCalledWith(defaults.namedProjections);
             expect(setBackgroundImage).toHaveBeenCalledWith(defaults);
         });
 
@@ -108,7 +113,7 @@ describe("map.js", function () {
             console.error = consoleError;
         });
 
-        it("creates existing layers that have a known builder", function () {
+        it.only("creates existing layers that have a known builder", function () {
             const result = Map.prototype.addLayer("works");
 
             expect(result).toBeInstanceOf(TileLayer);
