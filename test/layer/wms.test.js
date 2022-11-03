@@ -99,7 +99,7 @@ describe("wms.js", function () {
         });
     });
 
-    describe("createLayerSource", function () {
+    describe.only("createLayerSource", function () {
         it("creates a TileWMS for multi tile requests", function () {
             const source = wms.createLayerSource({singleTile: false});
 
@@ -110,6 +110,17 @@ describe("wms.js", function () {
             const source = wms.createLayerSource({singleTile: true});
 
             expect(source).toBeInstanceOf(ImageWMS);
+        });
+        it("creates a LayerSource with crossOrigin set to 'anonymous'", function () {
+            // only relevant for TileWMS and ImageWMS instances
+            const
+                tileWMS = wms.createLayerSource({singleTile: false, crossOrigin: "anonymous"}),
+                imageWMS = wms.createLayerSource({singleTile: true, crossOrigin: "anonymous"});
+
+            // inconsistency in OpenLayers 6.x.x, removed in 7.0.0
+            // eslint-disable-next-line no-underscore-dangle
+            expect(imageWMS.crossOrigin_).toEqual("anonymous");
+            expect(tileWMS.crossOrigin).toEqual("anonymous");
         });
     });
     describe("createLayerSource with a tileGrid", function () {

@@ -82,6 +82,7 @@ export function makeParams (rawLayer) {
  * @param {string} [rawLayer.gutter] - optional the size in pixels of the gutter around image tiles to ignore
  * @param {function} [rawLayer.olAttribution] - optional function that takes a module:ol/Map~FrameState and returns a string or an array of strings representing source attributions
  * @param {string|number} [rawLayer.tilesize] - optional needed to create the tileGrid
+ * @param {string|"anonymous"} [rawLayer.crossOrigin] - optional needed for CORS requests of image data, to enable canvas export
  * @param {object} options - optional resolutions and origin to create the TileGrid
  * @param {Array} [options.resolutions] - optional resolutions to create the TileGrid, must be in descending order
  * @param {Array} [options.origin] - optional origin to create the TileGrid
@@ -132,6 +133,7 @@ export function createLayerSource (rawLayer, options) {
  * @param {string} [rawLayer.gutter] - optional the size in pixels of the gutter around image tiles to ignore
  * @param {function} [rawLayer.olAttribution] - optional function that takes a module:ol/Map~FrameState and returns a string or an array of strings representing source attributions
  * @param {string|number} [rawLayer.tilesize] - optional needed to create the tileGrid
+ * @param {string|"anonymous"} [rawLayer.crossOrigin] - optional needed for CORS requests of image data, to enable canvas export
  * @param {object} layerParams - additional layer params
  * @param {object} options - optional resolutions and origin to create the TileGrid
  * @param {Array} [options.resolutions] - optional resolutions to create the TileGrid, must be in descending order
