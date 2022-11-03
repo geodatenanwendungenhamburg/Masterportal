@@ -153,9 +153,9 @@ export function createMap (config = defaults, {mapParams, callback, errorCallbac
         target: config.target || defaults.target,
         interactions: olDefaultInteractions({dragPan: false, altShiftDragRotate: false, pinchRotate: false}).extend([
             new DragPan({
-              condition: function (event) {
-                return (!event.originalEvent.pointerType || event.originalEvent.pointerType === "mouse") || (config.twoFingerPan && this.getPointerCount() === 2) || !config.twoFingerPan;
-              },
+                condition: function (event) {
+                    return (!event.originalEvent.pointerType || event.originalEvent.pointerType === "mouse") || (config.twoFingerPan && this.getPointerCount() === 2) || !config.twoFingerPan;
+                }
             })
         ]),
         controls: [],
