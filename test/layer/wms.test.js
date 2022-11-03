@@ -117,7 +117,6 @@ describe("wms.js", function () {
                 tileWMS = wms.createLayerSource({singleTile: false, crossOrigin: "anonymous"}),
                 imageWMS = wms.createLayerSource({singleTile: true, crossOrigin: "anonymous"});
 
-            // inconsistency in OpenLayers 6.x.x, removed in 7.0.0
             // eslint-disable-next-line no-underscore-dangle
             expect(imageWMS.crossOrigin_).toEqual("anonymous");
             expect(tileWMS.crossOrigin).toEqual("anonymous");
