@@ -22,7 +22,7 @@ function addAliasForWFSFromGeoserver (epsgCode) {
  * @param {string} name - projection name as written in [0] position of namedProjections
  * @returns {(object|undefined)} proj4 projection object or undefined
  */
-export function getProjection (name) {
+function getProjection (name) {
     return proj4.defs(name);
 }
 
@@ -33,7 +33,7 @@ export function getProjection (name) {
     ]] - projection name, projection definition string
  * @returns {undefined}
  */
-export function registerProjections (namedProjections = defaults.namedProjections) {
+function registerProjections (namedProjections = defaults.namedProjections) {
     proj4.defs(namedProjections);
     register(proj4);
     namedProjections.forEach(projection => {
@@ -48,7 +48,7 @@ export function registerProjections (namedProjections = defaults.namedProjection
  * Returns all known projections.
  * @returns {object[]} array of projection objects with their name added
  */
-export function getProjections () {
+function getProjections () {
     const projections = Object
         .keys(proj4.defs)
         .map(name => Object.assign(proj4.defs(name), {name}));
@@ -64,7 +64,7 @@ export function getProjections () {
  * @param {ol.Map} map - map to get projection of
  * @returns {string} active projection name of map
  */
-export function getMapProjection (map) {
+function getMapProjection (map) {
     return map.getView().getProjection().getCode();
 }
 
@@ -87,7 +87,7 @@ function getProj4Projection (projection) {
  * @param {number[]} point - point to project
  * @returns {number[]|undefined} transformed point
  */
-export function transform (sourceProjection, targetProjection, point) {
+function transform (sourceProjection, targetProjection, point) {
     const source = getProj4Projection(sourceProjection),
         target = getProj4Projection(targetProjection);
 
@@ -106,7 +106,7 @@ export function transform (sourceProjection, targetProjection, point) {
  * @param {number[]} point - point to project
  * @returns {number[]|undefined} new point or undefined
  */
-export function transformToMapProjection (map, sourceProjection, point) {
+function transformToMapProjection (map, sourceProjection, point) {
     return transform(sourceProjection, getMapProjection(map), point);
 }
 
@@ -117,6 +117,16 @@ export function transformToMapProjection (map, sourceProjection, point) {
  * @param {number[]} point - point to project
  * @returns {(number[]|undefined)} new point or undefined
  */
-export function transformFromMapProjection (map, targetProjection, point) {
+function transformFromMapProjection (map, targetProjection, point) {
     return transform(getMapProjection(map), targetProjection, point);
 }
+
+module.exports = {
+    transformFromMapProjection,
+    transformToMapProjection,
+    transform,
+    getMapProjection,
+    getProjections,
+    registerProjections,
+    getProjection
+};

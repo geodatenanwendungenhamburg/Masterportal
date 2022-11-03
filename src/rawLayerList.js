@@ -14,7 +14,7 @@ let layerList = [];
  * @param {function} [callback] - called with services after loaded; called with false and error on error
  * @returns {undefined} nothing, add callback to receive layerList
  */
-export function initializeLayerList (layerConf = defaults.layerConf, callback) {
+function initializeLayerList (layerConf = defaults.layerConf, callback) {
     if (Array.isArray(layerConf)) {
         // case: parameter was services.json contents
         layerList = layerConf;
@@ -55,14 +55,14 @@ export function initializeLayerList (layerConf = defaults.layerConf, callback) {
  * @param {object} searchAttributes - key/value-pairs to be searched for, e.g. { typ: "WMS" } to get the first WMS
  * @returns {?object} first layer matching the searchAttributes or null if none was found
  */
-export function getLayerWhere (searchAttributes) {
+function getLayerWhere (searchAttributes) {
     const keys = Object.keys(searchAttributes);
 
     return layerList.find(entry => keys.every(key => entry[key] === searchAttributes[key])) || null;
 }
 
 /** @returns {object[]} complete layerList as initialized */
-export function getLayerList () {
+function getLayerList () {
     return layerList;
 }
 
@@ -72,7 +72,7 @@ export function getLayerList () {
  * @param {string} [featureAttribute] - if given, only one entry of map is returned
  * @returns {?(object|string)} - map of originalName->displayName or name of featureAttribute if specified; if layer or featureAttribute not found, null
  */
-export function getDisplayNamesOfFeatureAttributes (layerId, featureAttribute) {
+function getDisplayNamesOfFeatureAttributes (layerId, featureAttribute) {
     const attributes = getLayerWhere({id: layerId});
 
     if (attributes && typeof featureAttribute === "string") {
@@ -86,3 +86,11 @@ export function getDisplayNamesOfFeatureAttributes (layerId, featureAttribute) {
 
     return null;
 }
+
+
+module.exports = {
+    getLayerWhere,
+    getDisplayNamesOfFeatureAttributes,
+    initializeLayerList,
+    getLayerList
+};

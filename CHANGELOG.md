@@ -17,6 +17,20 @@
 
 ---
 
+## 2.9.0 - 2022-10-25
+### Added
+
+### Changed
+- Exports in src/rawLayerList and src/crs.js changed to module.exports to provide the possibility to stub the functions with sinon in masterportal.
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
+
 ## 2.8.0 - 2022-10-04
 ### Added
 - Issue #814: Adding optional error callbacks and availability detection to layers.

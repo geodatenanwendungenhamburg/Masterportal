@@ -5,7 +5,7 @@ import TileGrid from "ol/tilegrid/TileGrid";
 import ImageWMS from "ol/source/ImageWMS.js";
 import {get as getProjection} from "ol/proj";
 
-import {getLayerWhere} from "../rawLayerList";
+import {rawLayerList} from "../index.js";
 
 const OLCS_DEFAULT_OLCS_PROJECTION_CRS = "EPSG:3857";
 
@@ -180,7 +180,7 @@ export function updateSource (layer) {
  * @returns {(string|undefined)} the gfiURL, or undefined if it could not be constructed
  */
 export function getGfiURL (layer, map, coordinate) {
-    const rawLayer = getLayerWhere({Id: layer.get("id")}),
+    const rawLayer = rawLayerList.getLayerWhere({Id: layer.get("id")}),
         resolution = map.getView().getResolution(),
         projection = map.getView().getProjection(),
         params = Object.assign({

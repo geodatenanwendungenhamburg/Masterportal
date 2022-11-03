@@ -11,7 +11,7 @@ import * as vectorBase from "../../layer/vectorBase";
 import * as vectortile from "../../layer/vectorTile";
 import * as oaf from "../../layer/oaf";
 import {createMapView} from "../../maps/mapView";
-import {initializeLayerList, getLayerWhere} from "../../rawLayerList";
+import {rawLayerList} from "../../index.js";
 import {registerProjections} from "../../crs";
 import {setGazetteerUrl} from "../../searchAddress";
 
@@ -97,7 +97,7 @@ function addLayer (layerOrId, params = {visibility: true, transparency: 0, error
 
     // if parameter is id, create and add layer with masterportalAPI mechanisms
     if (typeof layerOrId === "string") {
-        const rawLayer = getLayerWhere({id: layerOrId});
+        const rawLayer = rawLayerList.getLayerWhere({id: layerOrId});
 
         if (!rawLayer) {
             console.error("Layer with id '" + layerOrId + "' not found. No layer added to map.");
@@ -160,7 +160,7 @@ export function createMap (config = defaults, {mapParams, callback, errorCallbac
     map.set("id", `map2D_${mapIdCounter++}`);
 
     // extend callback to load configured initial layers
-    initializeLayerList(config.layerConf, (param, error) => {
+    rawLayerList.initializeLayerList(config.layerConf, (param, error) => {
         getInitialLayers(config)
             .forEach(layer => {
                 map.addLayer(layer.id, {errorCallback});
