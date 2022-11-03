@@ -12,11 +12,12 @@
 ### Deprecated
 
 ### Removed
+
 ### Fixed
 
 ---
 
-## 2.8.0 - 2022-??-??
+## 2.8.0 - 2022-10-04
 ### Added
 - Issue #814: Adding optional error callbacks and availability detection to layers.
 - Added possibility to set initial features for layer vectorBase.
