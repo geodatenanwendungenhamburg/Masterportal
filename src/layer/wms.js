@@ -5,7 +5,7 @@ import TileGrid from "ol/tilegrid/TileGrid";
 import ImageWMS from "ol/source/ImageWMS.js";
 import {get as getProjection} from "ol/proj";
 
-import {rawLayerList} from "../index.js";
+import rawLayerList from "../rawLayerList";
 
 const OLCS_DEFAULT_OLCS_PROJECTION_CRS = "EPSG:3857";
 
