@@ -99,7 +99,7 @@ describe("wms.js", function () {
         });
     });
 
-    describe.only("createLayerSource", function () {
+    describe("createLayerSource", function () {
         it("creates a TileWMS for multi tile requests", function () {
             const source = wms.createLayerSource({singleTile: false});
 
