@@ -3,6 +3,18 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased - in development
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
 ## 2.10.0 - 2022-03-11
 ### Added
 - DPS-1313: Added custom DragPan interaction to add ability to use 2-Finger-Pan instead of 1-Finger-Pan on mobile devices
