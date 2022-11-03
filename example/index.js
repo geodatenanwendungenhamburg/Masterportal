@@ -9,7 +9,7 @@ import rawLayerList from "../src/rawLayerList";
 import services from "./config/services.json";
 import portalConfig from "./config/portal.json";
 import localGeoJSON from "./config/localGeoJSON.js";
-import {load3DScript} from "../src/lib/load3DScript";
+import load3DScriptModule from "../src/lib/load3DScript";
 
 function errorCallback (errorEvent) {
     console.error("This is an error event:", errorEvent);
@@ -55,7 +55,7 @@ document.getElementById("enable").addEventListener("click", function () {
 
         document.getElementById("layer-visibility").style.display = "block";
 
-        load3DScript(lib, function Loaded3DCallback () {
+        load3DScriptModule.load3DScript(lib, function Loaded3DCallback () {
             let tilesetLayer = null;
 
             const settings3D = {

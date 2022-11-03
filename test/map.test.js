@@ -7,7 +7,7 @@ import crs from "../src/crs.js";
 import setBackgroundImage from "../src/lib/setBackgroundImage.js";
 import {createMapView} from "../src/maps/mapView";
 import defaults from "../src/defaults";
-import {load3DScript} from "../src/lib/load3DScript";
+import load3DScriptModule from "../src/lib/load3DScript";
 
 /*
  * This test is mocking a lot to check what functions are called with.
@@ -75,7 +75,7 @@ describe("map.js", function () {
                 cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
             };
 
-            load3DScript(config.cesiumLib, function Loaded3DCallback () {
+            load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
                 const map3D = map.createMap(config, "3D");
 
                 expect(create3DMap).toHaveBeenCalledWith(defaults);
@@ -168,7 +168,7 @@ describe("map.js", function () {
                 cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
             };
 
-            load3DScript(config.cesiumLib, function Loaded3DCallback () {
+            load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
                 const map3D = map.createMap(config, "3D");
 
                 expect(map3D.mapMode).toBe("3D");
@@ -203,7 +203,7 @@ describe("map.js", function () {
                 cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
             };
 
-            load3DScript(config.cesiumLib, function Loaded3DCallback () {
+            load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
                 const map3D = map.createMap(config, "3D");
 
                 expect(map3D.mapMode).toBe("3D");
@@ -248,7 +248,7 @@ describe("map.js", function () {
                 cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
             };
 
-            load3DScript(config.cesiumLib, function Loaded3DCallback () {
+            load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
                 const map3D = map.createMap(config, "3D");
 
                 expect(map3D.mapMode).toBe("3D");
@@ -284,7 +284,7 @@ describe("map.js", function () {
                 cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
             };
 
-            load3DScript(config.cesiumLib, function Loaded3DCallback () {
+            load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
                 const map3D = map.createMap(config, "3D");
 
                 expect(map3D.mapMode).toBe("3D");

@@ -8,7 +8,7 @@
 - DPS-1313: Added custom DragPan interaction to add ability to use 2-Finger-Pan instead of 1-Finger-Pan on mobile devices
 
 ### Changed
-- Exports in src/rawLayerList and src/crs.js changed to export default {} to provide  ES-Syntax.
+- Exports in src/rawLayerList, src/crs.js and src/lib/load3DScript.js changed to export default {} to provide  ES-Syntax.
 
 ### Deprecated
 
