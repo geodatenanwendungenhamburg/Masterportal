@@ -14,6 +14,7 @@
 ### Removed
 
 ### Fixed
+- Issue #847(Masterportal): searchAddress now keeps searching for house numbers if a digit was entered at the end of the search string
 
 ---
 ## 2.10.0 - 2022-03-11
