@@ -10,6 +10,13 @@ If you want to create a 3d map, you have to provide the peer dependency cesium.
 
 By importing the project by module name like ``import ... from "masterportalAPI"``, most bundlers and bundler configurations will include the whole masterportalAPI. If you only need a subset of the provided functions and want to keep your build clean, directly import the needed functions like ``import {createMap} from "masterportalAPI/src/map.js``.
 
+## Error Handling
+
+1. Error event callback: The methods `createMap` and `addLayer` both optionally accept error event callbacks that are called with OpenLayers error events (tileloaderror, imageloaderror, featuresloaderror, error).
+2. Ping: A method that returns a Promise. This resolves to the status code of the layer's GetCapabilities request, which can be used to decide if the service is reachable and usable at all.
+
+Both methods may be required for useful user feedback. For example, a WMS may answer a tile request with 404 if no tile is available for a region, but may be fully available within its specification. This may throw an error while the service itself is available as specified. It is up to the using implementation how to react, how often to ping, and so on.
+
 ## Scripts
 
 |Script|Effect|

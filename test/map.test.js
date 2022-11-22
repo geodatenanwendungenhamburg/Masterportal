@@ -1,13 +1,13 @@
-import {PluggableMap, Map} from "ol";
+import {Map} from "ol";
 import TileLayer from "ol/layer/Tile";
 import map from "../src/maps/map.js";
 import {createMap as create3DMap} from "../src/maps/olcs/olcsMap.js";
-import {initializeLayerList} from "../src/rawLayerList.js";
-import {registerProjections} from "../src/crs.js";
+import rawLayerList from "../src/rawLayerList.js";
+import crs from "../src/crs.js";
 import setBackgroundImage from "../src/lib/setBackgroundImage.js";
 import {createMapView} from "../src/maps/mapView";
 import defaults from "../src/defaults";
-import {load3DScript} from "../src/lib/load3DScript";
+import load3DScriptModule from "../src/lib/load3DScript";
 
 /*
  * This test is mocking a lot to check what functions are called with.
@@ -15,18 +15,23 @@ import {load3DScript} from "../src/lib/load3DScript";
  */
 jest.mock("ol");
 jest.mock("../src/rawLayerList.js", () => {
-    const original = jest.requireActual("../src/rawLayerList.js");
+    const originalModule = jest.requireActual("../src/rawLayerList.js");
 
-    original.getLayerWhere = ({id}) => ({
-        exists: {
-            typ: "doesntExist"
-        },
-        works: {
-            typ: "WMS"
+    return {
+        __esModule: true,
+        ...originalModule,
+        default: {
+            getLayerWhere: ({id}) => ({
+                exists: {
+                    typ: "doesntExist"
+                },
+                works: {
+                    typ: "WMS"
+                }
+            })[id],
+            initializeLayerList: jest.fn()
         }
-    })[id];
-    original.initializeLayerList = jest.fn();
-    return original;
+    };
 });
 jest.mock("../src/crs.js");
 jest.mock("../src/lib/setBackgroundImage.js");
@@ -38,8 +43,8 @@ describe("map.js", function () {
             const callback = jest.fn();
 
             map.createMap(defaults, "2D", {mapParams: {}, callback: callback});
-            expect(initializeLayerList).toHaveBeenCalledWith(defaults.layerConf, expect.any(Function));
-            expect(registerProjections).toHaveBeenCalledWith(defaults.namedProjections);
+            expect(rawLayerList.initializeLayerList).toHaveBeenCalledWith(defaults.layerConf, expect.any(Function));
+            expect(crs.registerProjections).toHaveBeenCalledWith(defaults.namedProjections);
             expect(setBackgroundImage).toHaveBeenCalledWith(defaults);
         });
 
@@ -70,7 +75,7 @@ describe("map.js", function () {
                 cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
             };
 
-            load3DScript(config.cesiumLib, function Loaded3DCallback () {
+            load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
                 const map3D = map.createMap(config, "3D");
 
                 expect(create3DMap).toHaveBeenCalledWith(defaults);
@@ -86,12 +91,12 @@ describe("map.js", function () {
         });
     });
 
-    // NOTE: loading map.js monkey patches PluggableMap.prototype.addLayer - testing result here
+    // NOTE: loading map.js monkey patches Map.prototype.addLayer - testing result here
     describe("addLayer", function () {
         it("logs an error for unknown ids", function () {
             console.error = jest.fn();
             const consoleError = console.error,
-                result = PluggableMap.prototype.addLayer("999999999999999");
+                result = Map.prototype.addLayer("999999999999999");
 
             expect(console.error).toHaveBeenCalled();
             expect(result).toBeNull();
@@ -101,7 +106,7 @@ describe("map.js", function () {
         it("logs an error for unknown types", function () {
             console.error = jest.fn();
             const consoleError = console.error,
-                result = PluggableMap.prototype.addLayer("exists");
+                result = Map.prototype.addLayer("exists");
 
             expect(result).toBeNull();
             expect(console.error).toHaveBeenCalledWith("Layer with id 'exists' has unknown type 'doesntExist'. No layer added to map.");
@@ -109,17 +114,17 @@ describe("map.js", function () {
         });
 
         it("creates existing layers that have a known builder", function () {
-            const result = PluggableMap.prototype.addLayer("works");
+            const result = Map.prototype.addLayer("works");
 
             expect(result).toBeInstanceOf(TileLayer);
         });
 
         it("sets visibility and transparency", function () {
-            const result1 = PluggableMap.prototype.addLayer("works"),
-                result2 = PluggableMap.prototype.addLayer("works", {}),
-                result3 = PluggableMap.prototype.addLayer("works", {visibility: false}),
-                result4 = PluggableMap.prototype.addLayer("works", {transparency: 50}),
-                result5 = PluggableMap.prototype.addLayer("works", {visibility: false, transparency: 20});
+            const result1 = Map.prototype.addLayer("works"),
+                result2 = Map.prototype.addLayer("works", {}),
+                result3 = Map.prototype.addLayer("works", {visibility: false}),
+                result4 = Map.prototype.addLayer("works", {transparency: 50}),
+                result5 = Map.prototype.addLayer("works", {visibility: false, transparency: 20});
 
             expect(result1.getOpacity()).toBe(1);
             expect(result1.getVisible()).toBe(true);
@@ -163,7 +168,7 @@ describe("map.js", function () {
                 cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
             };
 
-            load3DScript(config.cesiumLib, function Loaded3DCallback () {
+            load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
                 const map3D = map.createMap(config, "3D");
 
                 expect(map3D.mapMode).toBe("3D");
@@ -198,7 +203,7 @@ describe("map.js", function () {
                 cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
             };
 
-            load3DScript(config.cesiumLib, function Loaded3DCallback () {
+            load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
                 const map3D = map.createMap(config, "3D");
 
                 expect(map3D.mapMode).toBe("3D");
@@ -243,7 +248,7 @@ describe("map.js", function () {
                 cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
             };
 
-            load3DScript(config.cesiumLib, function Loaded3DCallback () {
+            load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
                 const map3D = map.createMap(config, "3D");
 
                 expect(map3D.mapMode).toBe("3D");
@@ -279,7 +284,7 @@ describe("map.js", function () {
                 cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
             };
 
-            load3DScript(config.cesiumLib, function Loaded3DCallback () {
+            load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
                 const map3D = map.createMap(config, "3D");
 
                 expect(map3D.mapMode).toBe("3D");

@@ -111,6 +111,16 @@ describe("wms.js", function () {
 
             expect(source).toBeInstanceOf(ImageWMS);
         });
+        it("creates a LayerSource with crossOrigin set to 'anonymous'", function () {
+            // only relevant for TileWMS and ImageWMS instances
+            const
+                tileWMS = wms.createLayerSource({singleTile: false, crossOrigin: "anonymous"}),
+                imageWMS = wms.createLayerSource({singleTile: true, crossOrigin: "anonymous"});
+
+            // eslint-disable-next-line no-underscore-dangle
+            expect(imageWMS.crossOrigin_).toEqual("anonymous");
+            expect(tileWMS.crossOrigin).toEqual("anonymous");
+        });
     });
     describe("createLayerSource with a tileGrid", function () {
         function attrFunction () {

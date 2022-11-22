@@ -5,7 +5,7 @@
 
 ## Unreleased - in development
 ### Added
-- Added possibility to set initial features for layer vectorBase.
+- crossOrigin settings can now be passed to WMSSources (TileWMS, ImageWMS) via config.json or services.json
 - VectorStyle is now part of the masterportalApi.
 
 - The following packages have been added:
@@ -14,10 +14,65 @@
         - "moment": "^2.29.1",
 
 ### Changed
-- OAF: Fixed oaf recursion and a possibility to disable the CRS parameter is added.
+
 ### Deprecated
+
 ### Removed
+
 ### Fixed
+
+---
+## 2.10.0 - 2022-03-11
+### Added
+- DPS-1313: Added custom DragPan interaction to add ability to use 2-Finger-Pan instead of 1-Finger-Pan on mobile devices
+
+### Changed
+- Exports in src/rawLayerList, src/crs.js and src/lib/load3DScript.js changed to export default {} to provide  ES-Syntax.
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
+
+## 2.9.0 - 2022-10-25
+### Added
+
+### Changed
+- Exports in src/rawLayerList and src/crs.js changed to module.exports to provide the possibility to stub the functions with sinon in masterportal.
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
+
+## 2.8.0 - 2022-10-04
+### Added
+- Issue #814: Adding optional error callbacks and availability detection to layers.
+- Added possibility to set initial features for layer vectorBase.
+
+---
+
+## 2.7.0 - 2022-09-14
+### Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol: 6.15.1 to 7.1.0
+        - olcs: 2.13.0 to 2.13.1
+
+---
+
+## 2.6.0 - 2022-09-06
+### Added
+- Added possibility to set initial features for layer vectorBase.
+
+### Changed
+- OAF: Fixed oaf recursion and a possibility to disable the CRS parameter is added.
 
 ---
 

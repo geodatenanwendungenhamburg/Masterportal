@@ -4,12 +4,16 @@ import {Style, Stroke, Fill, Icon} from "ol/style.js";
 
 import * as mpapi from "../src";
 import mapsAPI from "../src/maps/api.js";
-import {getLayerWhere} from "../src/rawLayerList";
+import rawLayerList from "../src/rawLayerList";
 
 import services from "./config/services.json";
 import portalConfig from "./config/portal.json";
 import localGeoJSON from "./config/localGeoJSON.js";
-import {load3DScript} from "../src/lib/load3DScript";
+import load3DScriptModule from "../src/lib/load3DScript";
+
+function errorCallback (errorEvent) {
+    console.error("This is an error event:", errorEvent);
+}
 
 //* Add elements to window to play with API in console
 window.mpapi = {
@@ -51,7 +55,7 @@ document.getElementById("enable").addEventListener("click", function () {
 
         document.getElementById("layer-visibility").style.display = "block";
 
-        load3DScript(lib, function Loaded3DCallback () {
+        load3DScriptModule.load3DScript(lib, function Loaded3DCallback () {
             let tilesetLayer = null;
 
             const settings3D = {
@@ -67,9 +71,9 @@ document.getElementById("enable").addEventListener("click", function () {
                     }
                 },
                 map3D = mapsAPI.map.createMap(settings3D, "3D"),
-                rawLayerTerrain = getLayerWhere({id: "4001"}),
-                rawLayerTileset = getLayerWhere({id: "4002"}),
-                rawLayerEntities = getLayerWhere({id: "4003"});
+                rawLayerTerrain = rawLayerList.getLayerWhere({id: "4001"}),
+                rawLayerTileset = rawLayerList.getLayerWhere({id: "4002"}),
+                rawLayerEntities = rawLayerList.getLayerWhere({id: "4003"});
 
             window.mpapi.map = map3D;
             tilesetLayer = new mpapi.Tileset(rawLayerTileset, window.mpapi.map);
@@ -94,7 +98,7 @@ document.getElementById("layer-visibility").addEventListener("click", function (
     });
 });
 
-map2D = mapsAPI.map.createMap(config, "2D");
+map2D = mapsAPI.map.createMap(config, "2D", {errorCallback});
 services.push(localService);
 // */
 
@@ -148,7 +152,18 @@ services.find(({id}) => id === "5001").style = styleOaf;
 //* SYNCHRONOUS EXAMPLE: layerConf is known
 window.mpapi.map = map2D;
 
-["2001", "2002", "1002", "3001", "5001"].forEach(id => window.mpapi.map.addLayer(id));
+["2001", "2002", "1002", "3001", "5001"].forEach(id => window.mpapi.map.addLayer(id, {errorCallback}));
+
+// ping all layers
+services
+    .map(service => ({
+        ping: mpapi.ping(service),
+        service
+    }))
+    .forEach(({ping, service}) => ping
+        // eslint-disable-next-line no-console
+        .then(statusCode => console.log(`Service ${service.id} pinged; returned ${statusCode}.`))
+        .catch(console.error));
 
 // */
 

@@ -21,7 +21,7 @@ const OL_DEFAULT_VECTOR_TILE_GRID_CRS = "EPSG:3857";
  * @property {number[]} [extent] - extent
  * @property {number} [maxZoom=22] - min zoom level
  * @property {number} [minZoom] - max zoom level
- * @property {function} [olAttribution] - optional function that takes a module:ol/PluggableMap~FrameState and returns a string or an array of strings representing source attributions
+ * @property {function} [olAttribution] - optional function that takes a module:ol/Map~FrameState and returns a string or an array of strings representing source attributions
  * @property {number[]} [origin] - The tile grid origin, i.e. where the x and y axes meet ([z, 0, 0]). Tile coordinates increase left to right and downwards
  * @property {number[][]} [origins] - Tile grid origins, i.e. where the x and y axes meet ([z, 0, 0]), for each zoom level. If given, the array length should match the length of the resolutions array, i.e. each resolution can have a different origin. Tile coordinates increase left to right and downwards. If not specified, extent or origin must be provided.
  * @property {number[]} [resolutions] - Resolutions. The array index of each resolution needs to match the zoom level. This means that even if a minZoom is configured, the resolutions array will have a length of maxZoom + 1.

@@ -6,7 +6,7 @@ import {Feature} from "ol";
 import Polygon from "ol/geom/Polygon";
 
 import * as vectorTile from "../../src/layer/vectorTile";
-import {registerProjections} from "../../src/crs";
+import crs from "../../src/crs";
 import defaults from "../../src/defaults";
 
 jest.mock("../../src/rawLayerList.js", () => {
@@ -18,7 +18,7 @@ jest.mock("../../src/rawLayerList.js", () => {
 
 describe("vectorTile.js", function () {
 
-    beforeAll(() => registerProjections());
+    beforeAll(() => crs.registerProjections());
 
     const layerParams = {
             name: "VT Test",

@@ -1,6 +1,6 @@
 import {createMapView} from "./maps/mapView";
-import * as crs from "./crs";
-import * as rawLayerList from "./rawLayerList";
+import crs from "./crs";
+import rawLayerList from "./rawLayerList";
 import * as wms from "./layer/wms";
 import * as wmts from "./layer/wmts";
 import * as wfs from "./layer/wfs";
@@ -14,6 +14,7 @@ import Tileset from "./layer/tileset";
 import * as layerLib from "./layer/lib";
 import {search, setGazetteerUrl} from "./searchAddress";
 import setBackgroundImage from "./lib/setBackgroundImage";
+import ping from "./lib/ping";
 
 export {
     createMapView,
@@ -31,6 +32,7 @@ export {
     setBackgroundImage,
     setGazetteerUrl,
     rawLayerList,
+    ping,
     search,
     crs
 };

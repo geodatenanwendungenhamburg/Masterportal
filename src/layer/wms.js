@@ -5,7 +5,7 @@ import TileGrid from "ol/tilegrid/TileGrid";
 import ImageWMS from "ol/source/ImageWMS.js";
 import {get as getProjection} from "ol/proj";
 
-import {getLayerWhere} from "../rawLayerList";
+import rawLayerList from "../rawLayerList";
 
 const OLCS_DEFAULT_OLCS_PROJECTION_CRS = "EPSG:3857";
 
@@ -80,8 +80,9 @@ export function makeParams (rawLayer) {
  * @param {string} [rawLayer.url] - WMS service URL
  * @param {string} [rawLayer.serverType] - optional servertype definition: "geoserver" or "mapserver" or "qgis"
  * @param {string} [rawLayer.gutter] - optional the size in pixels of the gutter around image tiles to ignore
- * @param {function} [rawLayer.olAttribution] - optional function that takes a module:ol/PluggableMap~FrameState and returns a string or an array of strings representing source attributions
+ * @param {function} [rawLayer.olAttribution] - optional function that takes a module:ol/Map~FrameState and returns a string or an array of strings representing source attributions
  * @param {string|number} [rawLayer.tilesize] - optional needed to create the tileGrid
+ * @param {string|"anonymous"} [rawLayer.crossOrigin] - optional needed for CORS requests of image data, to enable canvas export
  * @param {object} options - optional resolutions and origin to create the TileGrid
  * @param {Array} [options.resolutions] - optional resolutions to create the TileGrid, must be in descending order
  * @param {Array} [options.origin] - optional origin to create the TileGrid
@@ -99,7 +100,8 @@ export function createLayerSource (rawLayer, options) {
             params,
             serverType: rawLayer.serverType,
             projection: projection,
-            attributions: rawLayer.olAttribution
+            attributions: rawLayer.olAttribution,
+            crossOrigin: rawLayer.crossOrigin
         });
     }
     if (options && options.resolutions) {
@@ -115,7 +117,8 @@ export function createLayerSource (rawLayer, options) {
         gutter: rawLayer.gutter || 0,
         tileGrid: tileGrid,
         projection: projection,
-        attributions: rawLayer.olAttribution
+        attributions: rawLayer.olAttribution,
+        crossOrigin: rawLayer.crossOrigin
     });
 }
 
@@ -128,8 +131,9 @@ export function createLayerSource (rawLayer, options) {
  * @param {string} [rawLayer.maxScale] - optional the maximal resolution
  * @param {string} [rawLayer.serverType] - optional servertype definition: "geoserver" or "mapserver" or "qgis"
  * @param {string} [rawLayer.gutter] - optional the size in pixels of the gutter around image tiles to ignore
- * @param {function} [rawLayer.olAttribution] - optional function that takes a module:ol/PluggableMap~FrameState and returns a string or an array of strings representing source attributions
+ * @param {function} [rawLayer.olAttribution] - optional function that takes a module:ol/Map~FrameState and returns a string or an array of strings representing source attributions
  * @param {string|number} [rawLayer.tilesize] - optional needed to create the tileGrid
+ * @param {string|"anonymous"} [rawLayer.crossOrigin] - optional needed for CORS requests of image data, to enable canvas export
  * @param {object} layerParams - additional layer params
  * @param {object} options - optional resolutions and origin to create the TileGrid
  * @param {Array} [options.resolutions] - optional resolutions to create the TileGrid, must be in descending order
@@ -176,7 +180,7 @@ export function updateSource (layer) {
  * @returns {(string|undefined)} the gfiURL, or undefined if it could not be constructed
  */
 export function getGfiURL (layer, map, coordinate) {
-    const rawLayer = getLayerWhere({Id: layer.get("id")}),
+    const rawLayer = rawLayerList.getLayerWhere({Id: layer.get("id")}),
         resolution = map.getView().getResolution(),
         projection = map.getView().getProjection(),
         params = Object.assign({
