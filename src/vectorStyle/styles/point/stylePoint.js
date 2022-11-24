@@ -54,7 +54,7 @@ class PointStyle extends StyleClass {
             return createCircleStyle(this.attributes, isClustered);
         }
         else if (type === "nominal") {
-            return createNominalPointStyle(this.feature, this.attributes, defaultStyle.point.imageName);
+            return isClustered ? createIconStyle(this.attributes, this.feature, isClustered) : createNominalPointStyle(this.attributes, this.feature, defaultStyle.point.imageName);
         }
         else if (type === "interval") {
             return this.createIntervalPointStyle(this.feature, this.attributes);

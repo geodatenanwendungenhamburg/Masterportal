@@ -208,7 +208,7 @@ export function createNominalCircleSegments (feature, attributes) {
  * @param {Object} defaultImageName - The image name from the default style
  * @return {ol.Style} style
  */
-export function createNominalPointStyle (feature, attributes, defaultImageName) {
+export function createNominalPointStyle (attributes, feature, defaultImageName) {
     const workingFeature = Array.isArray(feature.get("features")) ? feature.get("features")[0] : feature,
         styleScalingShape = attributes.scalingShape.toUpperCase(),
         imageName = attributes.imageName;
