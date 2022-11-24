@@ -3,6 +3,20 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+
+## Unreleased - in development
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
+
 ## 2.11.0 - 2022-11-24
 ### Added
 - crossOrigin settings can now be passed to WMSSources (TileWMS, ImageWMS) via config.json or services.json
