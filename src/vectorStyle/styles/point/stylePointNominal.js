@@ -203,8 +203,8 @@ export function createNominalCircleSegments (feature, attributes) {
 
 /**
  * create nominal scaled advanced style for pointFeatures
- * @param {Object} feature - the feature to be drawn
  * @param {Object} attributes - The attributes from the nominal point
+ * @param {Object} feature - the feature to be drawn
  * @param {Object} defaultImageName - The image name from the default style
  * @return {ol.Style} style
  */
