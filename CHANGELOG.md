@@ -3,46 +3,27 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.11.0 - 2022-11-24
 ### Added
 - crossOrigin settings can now be passed to WMSSources (TileWMS, ImageWMS) via config.json or services.json
-
-### Changed
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - Issue #847(Masterportal): searchAddress now keeps searching for house numbers if a digit was entered at the end of the search string
 
 ---
-## 2.10.0 - 2022-03-11
+
+## 2.10.0 - 2022-11-03
 ### Added
 - DPS-1313: Added custom DragPan interaction to add ability to use 2-Finger-Pan instead of 1-Finger-Pan on mobile devices
 
 ### Changed
 - Exports in src/rawLayerList, src/crs.js and src/lib/load3DScript.js changed to export default {} to provide  ES-Syntax.
 
-### Deprecated
-
-### Removed
-
-### Fixed
-
 ---
 
 ## 2.9.0 - 2022-10-25
-### Added
-
 ### Changed
 - Exports in src/rawLayerList and src/crs.js changed to module.exports to provide the possibility to stub the functions with sinon in masterportal.
-
-### Deprecated
-
-### Removed
-
-### Fixed
 
 ---
 
