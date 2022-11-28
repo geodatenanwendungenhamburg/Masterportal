@@ -31,10 +31,6 @@ export function getSimpleGeometryStyle (geometryType, feature, rule, isClustered
         legendValue = style ? style.legendValue : null;
     let styleObject;
 
-    // if (style && Object.prototype.hasOwnProperty.call(style, "labelField")) {
-    //     console.log("hat er label?");
-    //     set("labelField", style.labelField);
-    // }
     if (legendValue) {
         feature.legendValue = legendValue;
     }
