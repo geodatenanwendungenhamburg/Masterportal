@@ -10,16 +10,19 @@ let abortController = null;
  * Chains gazetteer request and response parser.
  * @param {string} type from searchTypes
  * @param {(string|string[])} values one or multiple strings, depending on type
+ * @param {function} sortFunction a function with two parameters which can be used to sort all results
+ * @param {function} filterFunction a function which will be executed to filter results
  * @returns {Promise<SearchResult[]>} parsed response
  * @ignore
  */
-function searchAndParse (type, values) {
+function searchAndParse (type, values, sortFunction = (a, b) => a.name.localeCompare(b.name), filterFunction = () => true) {
     return new Promise((resolve, reject) => {
         searchGazetteer(type, values, abortController)
             .then(results => {
-                const parsed = parse(type, results);
-
-                resolve(parsed);
+                parse(type, results).then(parsed => {
+                    resolve(parsed.filter(filterFunction)
+                        .sort(sortFunction));
+                });
             })
             .catch(e => reject(e));
     });
@@ -38,7 +41,8 @@ function searchAndParseStreetAndHouseNumber (searchstring, searchHouseNumbers) {
         searchGazetteer(searchTypes.STREET, searchstring, abortController)
             .then(streetResults => parse(searchTypes.STREET, streetResults))
             .then(parsedStreetResults => {
-                const allSearches = [];
+                const allSearches = [],
+                    matches = searchstring.match(new RegExp("^(.+)[\\s,](\\d+|\\d.*)$"));
 
                 for (let i = 0; i < parsedStreetResults.length; i++) {
                     // put street in front of street's street+hnr as ordering
@@ -46,6 +50,13 @@ function searchAndParseStreetAndHouseNumber (searchstring, searchHouseNumbers) {
                     if (searchHouseNumbers) {
                         allSearches.push(searchAndParse(searchTypes.HOUSE_NUMBERS_FOR_STREET, parsedStreetResults[i].name));
                     }
+                }
+
+                if (!parsedStreetResults.length && matches?.length && searchHouseNumbers) {
+                    allSearches.push(searchAndParse(searchTypes.HOUSE_NUMBERS_FOR_STREET,
+                        matches[1],
+                        (a, b) => parseInt(a.properties?.hausnummer, 10) - parseInt(b.properties?.hausnummer, 10),
+                        item => item.properties?.hausnummerkomplett?.indexOf(matches[2]) === 0)); // check longer housenumbers and suffixes!
                 }
 
                 return Promise.all(allSearches);
