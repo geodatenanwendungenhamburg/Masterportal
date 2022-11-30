@@ -31,5 +31,5 @@
       "id": "1001"
     }
   ],
-  "cesiumLib":"https://geoportal-hamburg.de/mastercode/cesium/1_95/Cesium.js"
+  "cesiumLib":"https://geoportal-hamburg.de/mastercode/cesium/1_99/Cesium.js"
 }

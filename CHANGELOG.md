@@ -22,6 +22,8 @@
         - jest-environment-jsdom: 28.1.3 to 29.3.1
         - jsdoc: 3.6.11 to 4.0.0
         - sass: 1.54.0 to 1.56.1
+     peerDependencies:
+        - cesium: 1.95.0 to 1.99.0
 
 ### Deprecated
 
