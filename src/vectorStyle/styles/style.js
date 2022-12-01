@@ -129,7 +129,7 @@ class StyleClass {
             this.legendInfos.push({
                 "id": id,
                 "geometryType": geometryType,
-                "styleObject": styleObject.attributes.type === "NOMINAL" ? styleObject : styleObject.attributes,
+                "styleObject": styleObject.attributes.type === "NOMINAL" ? {attributes: styleObject.attributes, style: styleObject.style} : styleObject.attributes,
                 "label": this.createLegendLabel(rule, styleObject)
             });
         }
