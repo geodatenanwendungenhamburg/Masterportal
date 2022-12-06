@@ -57,8 +57,6 @@ export function createIconStyle (attributes, feature, isClustered) {
         iconOptions.rotation = getRotationValue(attributes.rotation, feature.getProperties());
     }
 
-    console.log(iconOptions);
-
     return new Style({
         image: new Icon(iconOptions)
     });
