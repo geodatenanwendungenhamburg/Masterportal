@@ -43,7 +43,7 @@ export function createIconStyle (attributes, feature, isClustered) {
         width = showCluster ? attributes.clusterImageWidth : attributes.imageWidth,
         iconOptions = {
             crossOrigin: "anonymous",
-            src,
+            src: src.startsWith("<svg") ? "data:image/svg+xml;charset=utf-8," + encodeURIComponent(src) : src,
             width,
             height,
             scale,
@@ -56,6 +56,8 @@ export function createIconStyle (attributes, feature, isClustered) {
         iconOptions.anchorYUnits = attributes.imageOffsetYUnit;
         iconOptions.rotation = getRotationValue(attributes.rotation, feature.getProperties());
     }
+
+    console.log(iconOptions);
 
     return new Style({
         image: new Icon(iconOptions)
