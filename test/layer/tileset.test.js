@@ -7,6 +7,7 @@ describe("tileset.js", function () {
     beforeEach(() => {
         global.Cesium = {};
         global.Cesium.Cesium3DTileset = jest.fn();
+        global.Cesium.Cesium3DTileStyle = jest.fn(color => color);
         attr = {
             id: "4002",
             name: "Gebäude LoD2",
@@ -66,6 +67,15 @@ describe("tileset.js", function () {
             checkAttributes(layer, attr);
             checkAttributes(layer2, attr2);
             expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(2);
+        });
+    });
+    describe("setOpacity", function () {
+        it("calls setOpacity sets opacity to terrain style", function () {
+            const layer = new Tileset(attr, map);
+
+            layer.setOpacity(0.5);
+
+            expect(layer.tileset.style).toEqual({color: "rgba(255, 255, 255, 0.5)"});
         });
     });
     describe("setVisible", function () {
