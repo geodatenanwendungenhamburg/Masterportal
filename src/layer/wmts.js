@@ -165,29 +165,30 @@ export function createLayerSourceByCapabilities (attrs, tileLayer) {
 
 /**
  * Creates the WMTSLayer.
- * @param {Object} attrs  attributes of the layer
+ * @param {object} rawLayer - layer specification as in services.json
+ * @param {object} layerParams - additional layer params
  * @returns {void}
  */
-export function createLayer (attrs) {
-    const tileLayer = new TileLayer({
-        id: attrs.id,
+export function createLayer (rawLayer, layerParams = {}) {
+    const tileLayer = new TileLayer(Object.assign({
+        id: rawLayer.id,
         source: new WMTS({}),
-        name: attrs.name,
-        minResolution: attrs.minScale,
-        maxResolution: attrs.maxScale,
+        name: rawLayer.name,
+        minResolution: rawLayer.minScale,
+        maxResolution: rawLayer.maxScale,
         supported: ["2D", "3D"],
         showSettings: true,
         extent: null,
-        typ: attrs.typ,
-        legendURL: attrs.legendURL,
-        infoFormat: attrs.infoFormat
-    });
+        typ: rawLayer.typ,
+        legendURL: rawLayer.legendURL,
+        infoFormat: rawLayer.infoFormat
+    }, layerParams));
 
-    if (attrs.optionsFromCapabilities === undefined) {
-        createLayerSourceByDefinitions(attrs, tileLayer);
+    if (rawLayer.optionsFromCapabilities === undefined) {
+        createLayerSourceByDefinitions(rawLayer, tileLayer);
     }
     else {
-        createLayerSourceByCapabilities(attrs, tileLayer);
+        createLayerSourceByCapabilities(rawLayer, tileLayer);
     }
 
     return tileLayer;

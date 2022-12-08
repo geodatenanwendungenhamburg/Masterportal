@@ -7,6 +7,7 @@
 ## Unreleased - in development
 ### Added
 - Added support for Node LTS version 18.
+- Add possibility to specify additional layerüparams for a wmts layer, like opacity for example
 
 ### Changed
 - The following packages have been updated:
