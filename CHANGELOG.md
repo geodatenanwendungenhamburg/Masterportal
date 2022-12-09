@@ -7,7 +7,7 @@
 ## Unreleased - in development
 ### Added
 - Added support for Node LTS version 18.
-- Add possibility to specify additional layerüparams for a wmts layer, like opacity for example.
+- Add possibility to specify additional layerparams for a wmts layer, like opacity for example.
 - Add possibility to make a 3DTilset layer transparent/opaque.
 
 ### Changed
