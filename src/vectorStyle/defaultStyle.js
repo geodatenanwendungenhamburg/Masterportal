@@ -88,6 +88,7 @@ const defaultColors = {
             textStrokeWidth: 3,
             labelField: "",
             textSuffix: "",
+            rotation: 0,
             clusterTextType: "counter",
             clusterText: "",
             clusterTextAlign: "center",

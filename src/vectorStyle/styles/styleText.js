@@ -1,6 +1,7 @@
 import StyleClass from "./style";
 import {Text, Fill, Stroke} from "ol/style.js";
 import {mapAttributes} from "../../lib/attributeMapper";
+import {prepareValue, isObjectPath} from "../../lib/attributeMapper";
 import defaultStyle from "../defaultStyle";
 
 class TextStyle extends StyleClass {
@@ -50,6 +51,26 @@ class TextStyle extends StyleClass {
     }
 
     /**
+     * Returns the rotation value and its corresponding value according to style.json.
+     * @param {Object} rotation - The rotation object from the style.json
+     * @param {Object} featureValues - The values object from the feature
+     * @returns {number} - The rotation value in degrees or radiants.
+     */
+    getRotationValue (rotation, featureValues) {
+        if (typeof rotation === "object") {
+            const {value, isDegree} = rotation;
+
+            if (isObjectPath(value) && featureValues !== undefined) {
+                const rotationValueFromService = parseInt(prepareValue(featureValues, value), 10);
+
+                return isDegree ? rotationValueFromService * Math.PI / 180 : rotationValueFromService;
+            }
+            return isDegree ? parseInt(value, 10) * Math.PI / 180 : parseInt(value, 10);
+        }
+        return 0;
+    }
+
+    /**
     * Creates text style for clustered features. The text attribute is set according to "clusterTextType".
     * "clusterTextType" === "counter" sets the number of clustered features.
     * "clusterTextType" === "text" sets the value of "clusterText" or "undefined".
@@ -82,7 +103,8 @@ class TextStyle extends StyleClass {
             stroke: new Stroke({
                 color: this.attributes.clusterTextStrokeColor,
                 width: this.attributes.clusterTextStrokeWidth
-            })
+            }),
+            rotation: this.getRotationValue(this.attributes.rotation, feature.getProperties())
         });
     }
 
@@ -112,7 +134,8 @@ class TextStyle extends StyleClass {
             stroke: new Stroke({
                 color: this.attributes.textStrokeColor,
                 width: this.attributes.textStrokeWidth
-            })
+            }),
+            rotation: this.getRotationValue(this.attributes.rotation, featureProperties)
         });
     }
 }
