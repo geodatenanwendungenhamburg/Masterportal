@@ -12,8 +12,24 @@
     - dependencies:
         - "axios": "^0.27.2",
         - "moment": "^2.29.1",
+- Added support for Node LTS version 18.
 
 ### Changed
+- The following packages have been updated:
+    - dependencies:
+        - core-js: 3.24.0 to 3.26.1
+    - devDependencies:
+        - @babel/core: 7.18.9 to 7.20.5
+        - @babel/plugin-transform-modules-commonjs: 7.18.6 to 7.19.6
+        - canvas: 2.9.3 to 2.10.2
+        - eslint: 8.20.0 to 8.28.0
+        - husky: 8.0.1 to 8.0.2
+        - jest: 28.1.3 to 29.3.1
+        - jest-environment-jsdom: 28.1.3 to 29.3.1
+        - jsdoc: 3.6.11 to 4.0.0
+        - sass: 1.54.0 to 1.56.1
+     peerDependencies:
+        - cesium: 1.95.0 to 1.99.0
 
 ### Deprecated
 
