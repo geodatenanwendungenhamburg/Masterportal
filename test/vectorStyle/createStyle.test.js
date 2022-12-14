@@ -22,14 +22,15 @@ const rules = [
             }
         },
         {
-            conditions: {
-                properties: {
-                    value: [0, 100]
-                }
-            },
             style: {
-                legendValue: "legendValueText",
-                circleStrokeColor: [255, 0, 0, 1]
+                legendValue: "LineStringLegend",
+                lineStrokeColor: [255, 0, 0, 1]
+            }
+        },
+        {
+            style: {
+                legendValue: "PolygonLegend",
+                polygonStrokeColor: [255, 0, 0, 255]
             }
         },
         {
@@ -50,6 +51,30 @@ const rules = [
             }
         }
     ],
+    multiLineStringRules = [{
+        style: {
+            legendValue: "legendValueText",
+            lineStrokeColor: [255, 255, 255, 1]
+        }
+    },
+    {
+        style: {
+            legendValue: "legendValueText",
+            lineStrokeColor: [255, 0, 0, 1]
+        }
+    }],
+    multiPolygonRules = [{
+        style: {
+            legendValue: "legendValueText",
+            polygonStrokeColor: [100, 100, 0, 1]
+        }
+    },
+    {
+        style: {
+            legendValue: "legendValueText",
+            polygonStrokeColor: [255, 0, 0, 1]
+        }
+    }],
     geojsonReader = new GeoJSON(),
     jsonFeatures = {
         "type": "FeatureCollection",
@@ -207,17 +232,17 @@ describe("getSimpleGeometryStyle", function () {
         expect(createStyle.getSimpleGeometryStyle("Point", jsonObjects[0], rules[0], false).getStyle().getImage().getStroke().getColor()).toEqual([255, 0, 0, 1]);
     });
     it("should return ol linestring style", function () {
-        expect(createStyle.getSimpleGeometryStyle("LineString", jsonObjects[0], rules[0], false)).toBeInstanceOf(LineStringStyle);
-        expect(typeof createStyle.getSimpleGeometryStyle("LineString", jsonObjects[0], rules[0], false).getStyle().getStroke().getColor()).toBe("object");
-        expect(createStyle.getSimpleGeometryStyle("LineString", jsonObjects[0], rules[0], false).getStyle().getStroke().getColor()).toEqual([100, 0, 0, 1]);
+        expect(createStyle.getSimpleGeometryStyle("LineString", jsonObjects[1], rules[1], false)).toBeInstanceOf(LineStringStyle);
+        expect(typeof createStyle.getSimpleGeometryStyle("LineString", jsonObjects[1], rules[1], false).getStyle().getStroke().getColor()).toBe("object");
+        expect(createStyle.getSimpleGeometryStyle("LineString", jsonObjects[1], rules[1], false).getStyle().getStroke().getColor()).toEqual([255, 0, 0, 1]);
     });
     it("should return ol polygon style", function () {
-        expect(createStyle.getSimpleGeometryStyle("Polygon", jsonObjects[0], rules[0], false)).toBeInstanceOf(PolygonStyle);
-        expect(typeof createStyle.getSimpleGeometryStyle("Polygon", jsonObjects[0], rules[0], false).getStyle().getStroke().getColor()).toBe("object");
-        expect(createStyle.getSimpleGeometryStyle("Polygon", jsonObjects[0], rules[0], false).getStyle().getStroke().getColor()).toEqual([100, 100, 0, 1]);
+        expect(createStyle.getSimpleGeometryStyle("Polygon", jsonObjects[2], rules[2], false)).toBeInstanceOf(PolygonStyle);
+        expect(typeof createStyle.getSimpleGeometryStyle("Polygon", jsonObjects[2], rules[2], false).getStyle().getStroke().getColor()).toBe("object");
+        expect(createStyle.getSimpleGeometryStyle("Polygon", jsonObjects[2], rules[2], false).getStyle().getStroke().getColor()).toEqual([255, 0, 0, 255]);
     });
     it("should return ol default style", function () {
-        expect(createStyle.getSimpleGeometryStyle("not exist", jsonObjects[0], rules[0], false)).toBeInstanceOf(Style);
+        expect(createStyle.getSimpleGeometryStyle("not exist", jsonObjects[0], null, false)).toBeInstanceOf(Style);
     });
 });
 
@@ -233,25 +258,25 @@ describe("getMultiGeometryStyle", function () {
         expect(createStyle.getMultiGeometryStyle("MultiPoint", jsonObjects[3], rules, false)[0].getStyle().getImage().getStroke().getColor()).toEqual([255, 0, 0, 1]);
     });
     it("should return style array for MultiLineString", function () {
-        expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], rules, false))).toBe(true);
-        expect(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], rules, false).length).toEqual(2);
+        expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], multiLineStringRules, false))).toBe(true);
+        expect(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], multiLineStringRules, false).length).toEqual(2);
     });
     it("should include ol stroke style", function () {
-        expect(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], rules, false)[0]).toBeInstanceOf(LineStringStyle);
-        expect(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], rules, false)[0].getStyle().getStroke()).toBeInstanceOf(Stroke);
-        expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], rules, false)[0].getStyle().getStroke().getColor())).toBe(true);
-        expect(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], rules, false)[0].getStyle().getStroke().getColor()).toEqual([100, 0, 0, 1]);
+        expect(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], multiLineStringRules, false)[0]).toBeInstanceOf(LineStringStyle);
+        expect(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], multiLineStringRules, false)[0].getStyle().getStroke()).toBeInstanceOf(Stroke);
+        expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], multiLineStringRules, false)[0].getStyle().getStroke().getColor())).toBe(true);
+        expect(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], multiLineStringRules, false)[0].getStyle().getStroke().getColor()).toEqual([255, 255, 255, 1]);
     });
     it("should return style array for MultiPolygon", function () {
-        expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], rules, false))).toBe(true);
-        expect(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], rules, false).length).toEqual(2);
+        expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, false))).toBe(true);
+        expect(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, false).length).toEqual(2);
     });
     it("should include ol polygon style", function () {
-        expect(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], rules, false)[0]).toBeInstanceOf(PolygonStyle);
-        expect(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], rules, false)[0].getStyle().getStroke()).toBeInstanceOf(Stroke);
-        expect(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], rules, false)[0].getStyle().getFill()).toBeInstanceOf(Fill);
-        expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], rules, false)[0].getStyle().getStroke().getColor())).toBe(true);
-        expect(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], rules, false)[0].getStyle().getStroke().getColor()).toEqual([100, 100, 0, 1]);
+        expect(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, false)[0]).toBeInstanceOf(PolygonStyle);
+        expect(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, false)[0].getStyle().getStroke()).toBeInstanceOf(Stroke);
+        expect(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, false)[0].getStyle().getFill()).toBeInstanceOf(Fill);
+        expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, false)[0].getStyle().getStroke().getColor())).toBe(true);
+        expect(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, false)[0].getStyle().getStroke().getColor()).toEqual([100, 100, 0, 1]);
     });
     it("should return style array for GeometryCollection", function () {
         expect(Array.isArray(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, false))).toBe(true);
@@ -259,11 +284,11 @@ describe("getMultiGeometryStyle", function () {
     });
     it("should include ol line and point style", function () {
         expect(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, false)[0]).toBeInstanceOf(PointStyle);
-        expect(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, false)[1]).toBeInstanceOf(LineStringStyle);
+        expect(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], multiLineStringRules, false)[1]).toBeInstanceOf(LineStringStyle);
         expect(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, false)[0].getStyle().getImage().getStroke()).toBeInstanceOf(Stroke);
         expect(Array.isArray(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, false)[0].getStyle().getImage().getStroke().getColor())).toBe(true);
         expect(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, false)[0].getStyle().getImage().getStroke().getColor()).toEqual([255, 0, 0, 1]);
-        expect(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, false)[1].getStyle().getStroke()).toBeInstanceOf(Stroke);
+        expect(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], multiLineStringRules, false)[1].getStyle().getStroke()).toBeInstanceOf(Stroke);
     });
     it("features with more geometries than rules (rules: 1, geometries: 2) should have style for all geometries - styleMultiGeomOnlyWithRule=false", function () {
         expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], rulesWithOneEntry, false))).toBe(true);
@@ -288,7 +313,7 @@ describe("getGeometryStyle", function () {
         expect(createStyle.getGeometryStyle(jsonObjects[0], rules, false).getStyle().getImage().getStroke().getColor()).toEqual([255, 0, 0, 1]);
     });
     it("should return default style if no rule is found", function () {
-        expect(Array.isArray(createStyle.getGeometryStyle(jsonObjects[0], [], false).getStyle().getImage().getFill().getColor())).toBe(true);
-        expect(createStyle.getGeometryStyle(jsonObjects[0], [], false).getStyle().getImage().getFill().getColor()).toEqual([10, 200, 100, 0.5]);
+        expect(Array.isArray(createStyle.getGeometryStyle(jsonObjects[0], [], false).getStyle().getStroke().getColor())).toBe(true);
+        expect(createStyle.getGeometryStyle(jsonObjects[0], [], false).getStyle().getStroke().getColor()).toEqual([0, 0, 0, 1]);
     });
 });
