@@ -6,7 +6,8 @@ import LineStringStyle from "./styles/styleLine";
 import CesiumStyle from "./styles/styleCesium";
 import {getRuleForIndex, getRulesForFeature} from "./lib/getRuleForIndex";
 
-const legendsOfAllStyles = [];
+const legendsOfAllStyles = [],
+    uniqueStyles = [];
 
 /**
  * Returns true if feature contains some kind of MultiGeometry
@@ -28,37 +29,23 @@ export function isMultiGeometry (geometryType) {
  */
 export function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsImgPathFromConfig) {
     const style = rule?.style,
-        legendValue = style ? style.legendValue : null;
+        legendValue = style ? style.legendValue : null,
+        alreadyExisitingStyle = uniqueStyles.find(element => element.featureStyle === style);
     let styleObject;
 
-    if (legendValue) {
-        feature.legendValue = legendValue;
-    }
+    feature.legendValue = legendValue ? legendValue : null;
 
-    if (geometryType === "Point") {
+    if (alreadyExisitingStyle) {
+        styleObject = alreadyExisitingStyle.featureStyleObject;
+    }
+    else if (geometryType === "Point") {
         styleObject = new PointStyle(feature, style, isClustered);
-        styleObject.initialize(feature, style, isClustered, wfsImgPathFromConfig);
-        styleObject.addLegendInfo("Point", styleObject, rule);
-        styleObject.legendValue = legendValue;
-        return styleObject;
     }
     else if (geometryType === "LineString") {
         styleObject = new LineStringStyle(feature, style, isClustered);
-        styleObject.initialize(feature, style, isClustered);
-        styleObject.addLegendInfo("LineString", styleObject, rule);
-        styleObject.legendValue = legendValue;
-        return styleObject;
-    }
-    else if (geometryType === "LinearRing") {
-        console.warn("Geometry type not implemented: " + geometryType);
-        return new Style();
     }
     else if (geometryType === "Polygon") {
         styleObject = new PolygonStyle(feature, style, isClustered);
-        styleObject.initialize(feature, style, isClustered);
-        styleObject.addLegendInfo("Polygon", styleObject, rule);
-        styleObject.legendValue = legendValue;
-        return styleObject;
     }
     else if (geometryType === "Cesium") {
         styleObject = new CesiumStyle(rule);
@@ -67,14 +54,20 @@ export function getSimpleGeometryStyle (geometryType, feature, rule, isClustered
         styleObject.legendValue = legendValue;
         return styleObject;
     }
-    else if (geometryType === "Circle") {
+    else if (geometryType === "LinearRing" || geometryType === "Circle") {
         // TODO(roehlipa): Wird dies noch implementiert? Beispiel für ein einfaches Stylings eines Kreises ist src/modules/tools/draw/utils/style/createDrawStyle.js im Masterportal
         console.warn("Geometry type not implemented: " + geometryType);
         return new Style();
     }
-
-    console.warn("Geometry type not implemented: " + geometryType);
-    return new Style();
+    else {
+        console.warn("Geometry type not implemented: " + geometryType);
+        return new Style();
+    }
+    uniqueStyles.push({featureStyle: style, featureStyleObject: styleObject});
+    styleObject.initialize(feature, style, isClustered, wfsImgPathFromConfig);
+    styleObject.addLegendInfo(geometryType, styleObject, rule);
+    styleObject.legendValue = legendValue;
+    return styleObject;
 }
 
 /**
