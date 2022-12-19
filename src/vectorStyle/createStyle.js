@@ -176,22 +176,29 @@ export function getLabelStyle (feature, style, isClustered) {
  * @returns {void}
  */
 function captureLegendFromFeature (styleId, legendInformation) {
-    if (!legendsOfAllStyles.find(element => element.id === styleId)) {
-        legendsOfAllStyles.push({id: styleId, legendInformation: []});
+    let legend = legendsOfAllStyles.find(element => element.id === styleId);
+
+    if (!legend) {
+        legend = {id: styleId, legendInformation: []};
+        legendsOfAllStyles.push(legend);
+
     }
     else if (styleId === "default") {
-        const defaultLegends = legendsOfAllStyles.find(element => element.id === styleId);
-
-        if (!defaultLegends.legendInformation.find(element => element.id === legendInformation.id)) {
-            defaultLegends.legendInformation.push(legendInformation);
+        if (!legend.legendInformation.find(element => element.id === legendInformation.id)) {
+            legend.legendInformation.push(legendInformation);
         }
     }
-    const found = legendsOfAllStyles.find(element => element.id === styleId);
 
-    if (found && !found.legendInformation.find(element => element.label === legendInformation.label)) {
-        found.legendInformation.push(legendInformation);
+    if (!legend.legendInformation.find(element => element.label === legendInformation.label)) {
+        legend.legendInformation.push(legendInformation);
     }
+
+    const event = new CustomEvent("legendCaptured");
+
+    event.id = legend.id;
+    this.dispatchEvent(event);
 }
+
 
 /**
      * Function is called from layer models for each feature.
@@ -224,6 +231,18 @@ export function createStyle (styleObject, feature, isClustered, wfsImgPathFromCo
     return styleObjectGeometry;
 }
 
-export function returnLegends () {
-    return legendsOfAllStyles;
+export async function returnLegendByStyleId (styleId) {
+    return new Promise(resolve => {
+        const legend = legendsOfAllStyles.find(element => element.id === styleId);
+
+        if (legend) {
+            resolve(legend);
+        }
+
+        this.addEventListener("legendCaptured", event => {
+            if (event.id === styleId) {
+                resolve(legendsOfAllStyles.find(element => element.id === event.id));
+            }
+        }, false);
+    });
 }
