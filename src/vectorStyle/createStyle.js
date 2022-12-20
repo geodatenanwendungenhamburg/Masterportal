@@ -8,6 +8,7 @@ import {getRuleForIndex, getRulesForFeature} from "./lib/getRuleForIndex";
 
 const legendsOfAllStyles = [],
     uniqueStyles = [];
+let legendInformationLength = 0;
 
 /**
  * Returns true if feature contains some kind of MultiGeometry
@@ -30,7 +31,7 @@ export function isMultiGeometry (geometryType) {
 export function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsImgPathFromConfig) {
     const style = rule?.style,
         legendValue = style ? style.legendValue : null,
-        alreadyExisitingStyle = uniqueStyles.find(element => element.featureStyle === style);
+        alreadyExisitingStyle = uniqueStyles.find(element => element.featureStyle === style && element.geometryType === geometryType);
     let styleObject;
 
     feature.legendValue = legendValue ? legendValue : null;
@@ -63,7 +64,7 @@ export function getSimpleGeometryStyle (geometryType, feature, rule, isClustered
         console.warn("Geometry type not implemented: " + geometryType);
         return new Style();
     }
-    uniqueStyles.push({featureStyle: style, featureStyleObject: styleObject});
+    uniqueStyles.push({featureStyle: style, featureStyleObject: styleObject, geometryType});
     styleObject.initialize(feature, style, isClustered, wfsImgPathFromConfig);
     styleObject.addLegendInfo(geometryType, styleObject, rule);
     styleObject.legendValue = legendValue;
@@ -181,24 +182,20 @@ function captureLegendFromFeature (styleId, legendInformation) {
     if (!legend) {
         legend = {id: styleId, legendInformation: []};
         legendsOfAllStyles.push(legend);
-
     }
-    else if (styleId === "default") {
-        if (!legend.legendInformation.find(element => element.id === legendInformation.id)) {
-            legend.legendInformation.push(legendInformation);
-        }
+    else if (styleId === "default" && legend.legendInformation !== legendInformation) {
+        legend.legendInformation = legendInformation;
+        legendInformationLength = legendInformation.length;
     }
+    else if (!legend.legendInformation.find(element => element.label === legendInformation[0].label)) {
+        legend.legendInformation.push(legendInformation[0]);
 
-    if (!legend.legendInformation.find(element => element.label === legendInformation.label)) {
-        legend.legendInformation.push(legendInformation);
+        const event = new CustomEvent("legendCaptured");
+
+        event.id = legend.id;
+        this.dispatchEvent(event);
     }
-
-    const event = new CustomEvent("legendCaptured");
-
-    event.id = legend.id;
-    this.dispatchEvent(event);
 }
-
 
 /**
      * Function is called from layer models for each feature.
@@ -214,7 +211,7 @@ export function createStyle (styleObject, feature, isClustered, wfsImgPathFromCo
         style = Array.isArray(rules) && rules.length > 0 ? rules[0].style : null,
         hasLabelField = style?.labelField,
         geometryStyle = getGeometryStyle(feature, rules, isClustered, wfsImgPathFromConfig),
-        legendInformation = Array.isArray(geometryStyle) ? geometryStyle[0].legendInfos[0] : geometryStyle.legendInfos[0],
+        legendInformation = Array.isArray(geometryStyle) ? geometryStyle[0].legendInfos : geometryStyle.legendInfos,
         styleObjectGeometry = Array.isArray(geometryStyle) ? geometryStyle[0].getStyle() : geometryStyle.getStyle();
 
     captureLegendFromFeature(styleObject.styleId, legendInformation);
@@ -235,12 +232,15 @@ export async function returnLegendByStyleId (styleId) {
     return new Promise(resolve => {
         const legend = legendsOfAllStyles.find(element => element.id === styleId);
 
-        if (legend) {
+        if (legend && (styleId.id !== "default" || legend.legendInformation.length === legendInformationLength)) {
             resolve(legend);
         }
 
         this.addEventListener("legendCaptured", event => {
-            if (event.id === styleId) {
+            if (event.id === styleId && event.id !== "default") {
+                resolve(legendsOfAllStyles.find(element => element.id === event.id));
+            }
+            else if (legend && legend.legendInformation.length === legendInformationLength) {
                 resolve(legendsOfAllStyles.find(element => element.id === event.id));
             }
         }, false);
