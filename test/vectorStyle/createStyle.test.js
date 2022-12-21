@@ -5,7 +5,6 @@ import PolygonStyle from "../../src/vectorStyle/styles/polygon/stylePolygon";
 import {Style, Stroke, Fill} from "ol/style.js";
 import {GeoJSON} from "ol/format.js";
 
-
 const rules = [
         {
             conditions: {
@@ -313,7 +312,7 @@ describe("getGeometryStyle", function () {
         expect(createStyle.getGeometryStyle(jsonObjects[0], rules, false).getStyle().getImage().getStroke().getColor()).toEqual([255, 0, 0, 1]);
     });
     it("should return default style if no rule is found", function () {
-        expect(Array.isArray(createStyle.getGeometryStyle(jsonObjects[0], [], false).getStyle().getStroke().getColor())).toBe(true);
-        expect(createStyle.getGeometryStyle(jsonObjects[0], [], false).getStyle().getStroke().getColor()).toEqual([0, 0, 0, 1]);
+        expect(Array.isArray(createStyle.getGeometryStyle(jsonObjects[0], [], false).getStyle().getImage().getStroke().getColor())).toBe(true);
+        expect(createStyle.getGeometryStyle(jsonObjects[0], [], false).getStyle().getImage().getStroke().getColor()).toEqual([0, 0, 0, 1]);
     });
 });
