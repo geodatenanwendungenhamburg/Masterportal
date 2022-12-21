@@ -1,6 +1,8 @@
 import StyleClass from "../style";
 import {createIconStyle} from "./stylePointIcon";
 import {createCircleStyle} from "./stylePointCircle";
+import {createRegularShapeStyle} from "./stylePointRegularShape";
+import {createIntervalPointStyle} from "./stylePointInterval";
 import {createNominalPointStyle} from "./stylePointNominal";
 import {Style} from "ol/style.js";
 import defaultStyle from "../../defaultStyle";
@@ -57,7 +59,10 @@ class PointStyle extends StyleClass {
             return isClustered ? createIconStyle(this.attributes, this.feature, isClustered) : createNominalPointStyle(this.attributes, this.feature, defaultStyle.point.imageName);
         }
         else if (type === "interval") {
-            return this.createIntervalPointStyle(this.feature, this.attributes);
+            return createIntervalPointStyle(this.feature, this.attributes);
+        }
+        else if (type === "regularshape") {
+            return createRegularShapeStyle(this.attributes);
         }
 
         return new Style();

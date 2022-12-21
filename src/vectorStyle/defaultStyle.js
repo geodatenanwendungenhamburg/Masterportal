@@ -53,7 +53,16 @@ const defaultColors = {
             circleBarCircleStrokeWidth: 1,
             circleBarLineStrokeColor: defaultColors.stroke,
             scalingAttribute: "",
-            rotation: 0
+            rotation: 0,
+            // for type regularShape
+            rsRadius: 10,
+            rsRadius2: undefined,
+            rsPoints: 3,
+            rsFillColor: [0, 153, 255, 1],
+            rsStrokeColor: [0, 0, 0, 1],
+            rsStrokeWidth: 5,
+            rsAngle: 0,
+            rsScale: undefined
         },
         line: {
             lineStrokeColor: defaultColors.stroke,
