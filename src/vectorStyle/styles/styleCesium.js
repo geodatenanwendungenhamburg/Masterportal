@@ -1,5 +1,5 @@
 import StyleClass from "./style";
-import defaultStyle from "../defaultStyle";
+import defaultStyle from "./defaultStyles";
 class CesiumStyle extends StyleClass {
     /**
      * @description Class to create ol.style.Style

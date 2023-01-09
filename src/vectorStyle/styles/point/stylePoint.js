@@ -5,7 +5,7 @@ import {createRegularShapeStyle} from "./stylePointRegularShape";
 import {createIntervalPointStyle} from "./stylePointInterval";
 import {createNominalPointStyle} from "./stylePointNominal";
 import {Style} from "ol/style.js";
-import defaultStyle from "../../defaultStyle";
+import defaultStyle from "../defaultStyles";
 
 class PointStyle extends StyleClass {
     /**

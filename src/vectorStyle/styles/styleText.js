@@ -2,7 +2,7 @@ import StyleClass from "./style";
 import {Text, Fill, Stroke} from "ol/style.js";
 import {mapAttributes} from "../../lib/attributeMapper";
 import {prepareValue, isObjectPath} from "../../lib/attributeMapper";
-import defaultStyle from "../defaultStyle";
+import defaultStyle from "./defaultStyles";
 
 class TextStyle extends StyleClass {
     /**

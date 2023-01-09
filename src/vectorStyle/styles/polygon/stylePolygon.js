@@ -1,6 +1,6 @@
 import StyleClass from "../style";
 import {Style, Fill, Stroke} from "ol/style.js";
-import defaultStyle from "../../defaultStyle";
+import defaultStyle from "../defaultStyles";
 import {drawHatch} from "./polygonStyleHatch";
 import {returnColor} from "../../lib/colorConvertions";
 

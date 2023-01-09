@@ -1,6 +1,6 @@
 import StyleClass from "./style";
 import {Style, Stroke} from "ol/style.js";
-import defaultStyle from "../defaultStyle";
+import defaultStyle from "./defaultStyles";
 
 class LineStringStyle extends StyleClass {
     /**

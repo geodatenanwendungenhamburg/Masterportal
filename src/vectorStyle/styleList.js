@@ -1,4 +1,4 @@
-import defaultStyle from "./defaultStyle";
+import defaultStyle from "./styles/defaultStyles";
 
 /**
 * styleList that stores all the vector styles contained in style.json.
