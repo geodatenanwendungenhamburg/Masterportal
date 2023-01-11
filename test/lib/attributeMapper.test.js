@@ -5,7 +5,7 @@ const props = {
     random_boolean: true,
     random_int: 12345,
     random_float: 1.23,
-    random_date: "2021-11-17 13:02:00",
+    random_date: "2021-11-17 13:02:00 UTC",
     random_datastreams: [
         {
             Observations: [
@@ -164,6 +164,20 @@ describe("src/utils/attributeMapper.js", () => {
 
             expect(mapAttributes(props, mappingObj)).toEqual({
                 date: "2021-11-17"
+            });
+        });
+        it("should map object with mapping object and type:date and format:DD-MM-YYYYf", () => {
+            const mappingObj = {
+                random_date: {
+                    name: "date",
+                    condition: "contains",
+                    type: "date",
+                    format: "DD-MM-YYYY"
+                }
+            };
+
+            expect(mapAttributes(props, mappingObj)).toEqual({
+                date: "17-11-2021"
             });
         });
         it("should map object with mapping object (random_int) and type:number", () => {

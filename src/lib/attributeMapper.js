@@ -129,14 +129,29 @@ function prepareValueFromObject (key, mappingObj, properties) {
         case "date": {
             date = new Date(String(preparedValue));
             if (!isNaN(date.getTime())) {
-                preparedValue = date.toLocaleString(navigator.language, {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit"
-                });
+                const year = date.getFullYear(),
+                    month = ("0" + (date.getMonth() + 1)).slice(-2),
+                    day = ("0" + date.getDate()).slice(-2);
+
+                if (format === "YYYY-MM-DDTHH:mm:ss.SSSZ") {
+                    const offset = date.getTimezoneOffset();
+
+                    let offsetHours = (offset / 60) % 24,
+                        offsetMinutes = offset % 60;
+
+                    offsetHours = offsetHours < 0 ? "+" + ("0" + Math.abs(offsetHours)).slice(-2) : "-" + ("0" + Math.abs(offsetHours)).slice(-2);
+                    offsetMinutes = offsetMinutes < 0 ? ":" + ("0" + Math.abs(offsetMinutes)).slice(-2) : ":" + ("0" + offsetMinutes).slice(-2);
+                    preparedValue = date.toISOString().slice(0, -1) + offsetHours + offsetMinutes;
+                }
+                else if (format === "YYYY-MM-DD") {
+                    preparedValue = year + "-" + month + "-" + day;
+                }
+                else if (format === "DD-MM-YYYY") {
+                    preparedValue = day + "-" + month + "-" + year;
+                }
+                else {
+                    console.error("The format must be 'YYYY-MM-DD' or 'DD-MM-YYYY', if the attribute is missing, ISO 8601 is used.");
+                }
             }
             break;
         }
