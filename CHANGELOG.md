@@ -11,7 +11,6 @@
 - The following packages have been added:
     - dependencies:
         - "axios": "^0.27.2",
-        - "moment": "^2.29.1",
 - Added support for Node LTS version 18.
 
 ### Changed

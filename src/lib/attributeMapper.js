@@ -1,5 +1,4 @@
 import {getValueFromObjectByPath} from "./getValueFromObjectByPath.js";
-import moment from "moment";
 import thousandsSeparator from "./thousandsSeparator";
 /**
  * checks if value starts with special prefix to determine if value is a object path
@@ -128,9 +127,16 @@ function prepareValueFromObject (key, mappingObj, properties) {
     }
     switch (type) {
         case "date": {
-            date = moment(String(preparedValue));
-            if (date.isValid()) {
-                preparedValue = date.format(format);
+            date = new Date(String(preparedValue));
+            if (!isNaN(date.getTime())) {
+                preparedValue = date.toLocaleString(navigator.language, {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit"
+                });
             }
             break;
         }
