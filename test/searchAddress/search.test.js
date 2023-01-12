@@ -33,7 +33,7 @@ jest.mock("../../src/searchAddress/searchGazetteer", () => {
 
 import {searchGazetteer as mockedSearchGazetteer} from "../../src/searchAddress/searchGazetteer";
 
-describe("searchAddress", function () {
+describe.only("searchAddress", function () {
     describe("search", function () {
         it("rejects if missing configuration of what to search for", function (done) {
             search("Pflugacker", {}).catch(e => {
@@ -77,15 +77,15 @@ describe("searchAddress", function () {
                 .then(results => {
                     // order of calls may vary, hence using expect.arrayContaining
                     const expected = [
-                        [types.ADDRESS_UNAFFIXED, ["Address", "7"], abortController],
-                        [types.ADDRESS_AFFIXED, ["Address", "7", "b"], abortController],
-                        [types.STREET, "Streetname", abortController],
-                        [types.STREET, "StreetnameAndHnrs", abortController],
-                        [types.HOUSE_NUMBERS_FOR_STREET, "Bargkoppelweg", abortController],
-                        [types.DISTRICT, "Districtname", abortController],
-                        [types.PARCEL, ["1234", "1234"], abortController],
-                        [types.PARCEL, ["1234", "5678"], abortController],
-                        [types.STREET_KEY, "A12345", abortController]
+                        [types.ADDRESS_UNAFFIXED, ["Address", "7"], abortController, undefined],
+                        [types.ADDRESS_AFFIXED, ["Address", "7", "b"], abortController, undefined],
+                        [types.STREET, "Streetname", abortController, true],
+                        [types.STREET, "StreetnameAndHnrs", abortController, true],
+                        [types.HOUSE_NUMBERS_FOR_STREET, "Bargkoppelweg", abortController, true],
+                        [types.DISTRICT, "Districtname", abortController, undefined],
+                        [types.PARCEL, ["1234", "1234"], abortController, undefined],
+                        [types.PARCEL, ["1234", "5678"], abortController, undefined],
+                        [types.STREET_KEY, "A12345", abortController, undefined]
                     ];
 
                     expect(results[0]).toHaveLength(1);

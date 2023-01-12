@@ -16,11 +16,12 @@ export function encode (v) {
  * @param {string} key internal name for query froms searchTypes
  * @param {(string[]|string)} v string for single-value queries, string[] for multi-value queries, strings in order of appearance in URL
  * @returns {string} URL query part like "&StoryQuery_ID=queryName&param=value"
+ * @param {boolean} searchStreetBeforeWord whether to put an star in front of the search for streets (full text search)
  * @ignore
  */
-export function getIdQuery (key, v) {
+export function getIdQuery (key, v, searchStreetBeforeWord = true) {
     return {
-        [searchTypes.STREET]: encodedValue => `&StoredQuery_ID=findeStrasse&strassenname=*${encodedValue}`,
+        [searchTypes.STREET]: encodedValue => searchStreetBeforeWord ? `&StoredQuery_ID=findeStrasse&strassenname=*${encodedValue}` : `&StoredQuery_ID=findeStrasse&strassenname=${encodedValue}`,
         [searchTypes.DISTRICT]: encodedValue => `&StoredQuery_ID=findeStadtteil&stadtteilname=${encodedValue}`,
         [searchTypes.PARCEL]: encodedValue => `&StoredQuery_ID=Flurstueck&gemarkung=${encodedValue[0]}&flurstuecksnummer=${encodedValue[1]}`,
         [searchTypes.STREET_KEY]: encodedValue => `&StoredQuery_ID=findeStrassenSchluessel&strassenschluessel=${encodedValue}`,
@@ -35,12 +36,13 @@ export function getIdQuery (key, v) {
  * @param {string} key internal name for query froms searchTypes
  * @param {(string[]|string)} value value to search for
  * @param {AbortController} abortController the controller to abort the search
+ * @param {boolean} searchStreetBeforeWord whether to put an star in front of the search for streets (full text search)
  * @returns {Promise<string>} xhr response text
  * @ignore
  */
-export function searchGazetteer (key, value, abortController) {
+export function searchGazetteer (key, value, abortController, searchStreetBeforeWord) {
     return new Promise((resolve, reject) => {
-        const url = getGazetteerUrl() + getIdQuery(key, value);
+        const url = getGazetteerUrl() + getIdQuery(key, value, searchStreetBeforeWord);
 
         fetch(url, {
             signal: abortController?.signal,
