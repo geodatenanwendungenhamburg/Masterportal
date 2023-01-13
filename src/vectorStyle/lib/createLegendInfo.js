@@ -6,7 +6,6 @@ import {getSimpleGeometryStyle, getMultiGeometryStyle} from "../createStyle";
  */
 export function createLegendInfo (geometryType) {
     const rules = this.get("rules");
-    // eslint-disable-next-line no-unused-vars
     let styleObject,
         simpleGeom;
 
@@ -14,15 +13,16 @@ export function createLegendInfo (geometryType) {
         if (geom === "MultiSurface") {
             simpleGeom = "Polygon";
             styleObject = getSimpleGeometryStyle(simpleGeom, "", rule, false);
+            return styleObject;
         }
         else if (geom.includes("Multi")) {
             simpleGeom = geom.replace("Multi", "");
             styleObject = getMultiGeometryStyle(simpleGeom, "", rule, false);
+            return styleObject;
         }
-        else {
-            simpleGeom = geom;
-            styleObject = getSimpleGeometryStyle(simpleGeom, "", rule, false);
-        }
-        // TODO: Was passiert hiermit? addLegendInfo(simpleGeom, styleObject, rule);
+
+        simpleGeom = geom;
+        styleObject = getSimpleGeometryStyle(simpleGeom, "", rule, false);
+        return styleObject;
     }));
 }

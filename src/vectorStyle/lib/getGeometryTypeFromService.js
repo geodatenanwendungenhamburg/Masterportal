@@ -1,4 +1,3 @@
-import axios from "axios";
 import {createLegendInfo} from "./createLegendInfo";
 
 /**
@@ -85,11 +84,11 @@ function getTypeAttributesFromSubelements (subElements = [], styleGeometryType =
 * @param   {string} version wfs version from layer
 * @param   {string} featureType wfs feature type from layer
 * @param   {string[] | string} styleGeometryType The configured geometry type of the layer
-* @param   {Boolean} useProxy Attribute to request the URL via a reverse proxy
+* @param   {boolean} isSecured true if wfs is secured
 * @param {function} [callback] - called with services after loaded; called with false and error on error
 * @returns {void}
 */
-export function getGeometryTypeFromWFS (wfsURL, version, featureType, styleGeometryType, useProxy, callback) {
+export function getGeometryTypeFromWFS (wfsURL, version, featureType, styleGeometryType, isSecured, callback) {
     const params = {
         "SERVICE": "WFS",
         "VERSION": version,
@@ -103,58 +102,18 @@ export function getGeometryTypeFromWFS (wfsURL, version, featureType, styleGeome
     url = url.slice(0, -1);
 
 
-    axios({
+    fetch(url, {
         method: "get",
-        url: url,
-        // headers: {"Content-Type'": "text/xml"},
-        responseType: "document"
-    }).then(response => {
-        const subElements = getSubelementsFromXML(response.data, featureType),
-            geometryTypes = getTypeAttributesFromSubelements(subElements, styleGeometryType);
-
-        createLegendInfo(geometryTypes);
-    }).catch(error => {
-        console.warn("The fetch of the data failed with the following error message: " + error);
-        return callback(error);
-    });
-}
-
-/**
- * Requests the DescribeFeatureType of the secured wfs layer and starts the function to parse the xml and creates the legend info
- * @param   {string} wfsURL url from layer
- * @param   {string} version wfs version from layer
- * @param   {string} featureType wfs feature type from layer
- * @param   {string[] | string} styleGeometryType The configured geometry type of the layer
- * @param {function} [callback] - called with services after loaded; called with false and error on error
- * @returns {void}
- */
-export function getGeometryTypeFromSecuredWFS (wfsURL, version, featureType, styleGeometryType, callback) {
-    const params = {
-        "SERVICE": "WFS",
-        "VERSION": version,
-        "REQUEST": "DescribeFeatureType"
-    };
-    let url = wfsURL + "?";
-
-    Object.keys(params).forEach(key => {
-        url += key + "=" + params[key] + "&";
-    });
-    url = url.slice(0, -1);
-
-    axios({
-        method: "GET",
-        url: url,
-        withCredentials: true,
+        withCredentials: isSecured,
         responseType: "text"
-    })
+    }).then(response => response.text())
         .then(responseAsString => new window.DOMParser().parseFromString(responseAsString, "text/xml"))
         .then(responseXML => {
             const subElements = getSubelementsFromXML(responseXML, featureType),
                 geometryTypes = getTypeAttributesFromSubelements(subElements, styleGeometryType);
 
             createLegendInfo(geometryTypes);
-        })
-        .catch(error => {
+        }).catch(error => {
             console.warn("The fetch of the data failed with the following error message: " + error);
             return callback(error);
         });
@@ -168,16 +127,10 @@ export function getGeometryTypeFromSecuredWFS (wfsURL, version, featureType, sty
  * @returns {void}
  */
 export function getGeometryTypeFromOAF (oafURL, collection, callback) {
-/**
- * @deprecated in the next major-release!
- * useProxy
- * getProxyUrl()
- */
     const url = oafURL + "/collections/" + collection + "/items?limit=1";
 
-    axios({
+    fetch(url, {
         method: "get",
-        url: url,
         headers: {
             accept: "application/geo+json"
         }

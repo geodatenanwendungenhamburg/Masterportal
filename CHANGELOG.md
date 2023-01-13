@@ -7,10 +7,6 @@
 ## Unreleased - in development
 ### Added
 - VectorStyle is now part of the masterportalApi.
-
-- The following packages have been added:
-    - dependencies:
-        - "axios": "^0.27.2",
 - Added support for Node LTS version 18.
 
 ### Changed

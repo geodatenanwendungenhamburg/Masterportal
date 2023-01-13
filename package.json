@@ -19,7 +19,6 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "axios": "^0.27.2",
     "core-js": "^3.26.1",
     "ol": "7.1.0",
     "olcs": "^2.13.1",
