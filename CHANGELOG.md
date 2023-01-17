@@ -8,6 +8,8 @@
 ### Added
 - VectorStyle is now part of the masterportalApi.
 - Added support for Node LTS version 18.
+- Add possibility to specify additional layerparams for a wmts layer, like opacity for example.
+- Add possibility to make a 3DTilset layer transparent/opaque.
 
 ### Changed
 - The following packages have been updated:
