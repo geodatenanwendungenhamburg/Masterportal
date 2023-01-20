@@ -10,6 +10,7 @@
 - Added support for Node LTS version 18.
 - Add possibility to specify additional layerparams for a wmts layer, like opacity for example.
 - Add possibility to make a 3DTilset layer transparent/opaque.
+- In the gazetteer search the prefix `*` can now be switched off with the attribute `searchStreetBeforeWord`
 
 ### Changed
 - The following packages have been updated:
