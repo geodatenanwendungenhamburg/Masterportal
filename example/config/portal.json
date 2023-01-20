@@ -29,7 +29,14 @@
   "layers": [
     {
       "id": "1001"
+    },
+    {
+      "id": "8712",
+      "name": "Schulinfosystem",
+      "styleId": "8712",
+      "typ": "WFS"
     }
   ],
-  "cesiumLib":"https://geoportal-hamburg.de/mastercode/cesium/1_99/Cesium.js"
+  "cesiumLib":"https://geoportal-hamburg.de/mastercode/cesium/1_99/Cesium.js",
+  "wfsImgPath": "https://geodienste.hamburg.de/lgv-config/img/"
 }

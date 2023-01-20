@@ -5,6 +5,8 @@ import {Style, Stroke, Fill, Icon} from "ol/style.js";
 import * as mpapi from "../src";
 import mapsAPI from "../src/maps/api.js";
 import rawLayerList from "../src/rawLayerList";
+import {initializeStyleList, returnStyleObject} from "../src/vectorStyle/styleList";
+import {createStyle} from "../src/vectorStyle/createStyle";
 
 import services from "./config/services.json";
 import portalConfig from "./config/portal.json";
@@ -31,7 +33,25 @@ const hamburgServicesUrl = "https://geodienste.hamburg.de/services-internet.json
     },
     config = {
         ...portalConfig,
-        layerConf: services
+        layerConf: services,
+        styleConf: "https://geodienste.hamburg.de/lgv-config/style_v3.json"
+    },
+    // eslint-disable-next-line func-style
+    getWfsStyleFunction = function () {
+        const styleId = "8712",
+            olLayer = window.mpapi.map.getLayers().getArray().find((element) => element.get("id") === "8712"),
+            source = olLayer.getSource(),
+            styleObject = returnStyleObject(styleId);
+        let isClusterFeature = false;
+
+        if (styleObject !== undefined) {
+            setTimeout(() => {
+                source.getFeatures().forEach(element => {
+                    isClusterFeature = false;
+                    element.setStyle(createStyle(styleObject, element, isClusterFeature, config.wfsImgPath));
+                });
+            }, 3000);
+        }
     };
 let map2D = null;
 
@@ -180,17 +200,17 @@ mpapi.rawLayerList.initializeLayerList(hamburgServicesUrl,
     });
 //*/
 
-/* ASYNCHRONOUS EXAMPLE 2: work with createMap callback
-document.getElementById("enable").style.display = "none";
-window.mpapi.map = mapsAPI.map.createMap({
-    ...portalConfig, layerConf: hamburgServicesUrl, layers: [
-        {id: "6357"},
-        {id: "453", transparency: 50}
-    ]}, "2D",
-{
-    callback: () => ["6074"].forEach(id => window.mpapi.map.addLayer(id))
-});
-//*/
+// ASYNCHRONOUS EXAMPLE 2: work with createMap callback
+// document.getElementById("enable").style.display = "none";
+// window.mpapi.map = mapsAPI.map.createMap({
+//     ...portalConfig, layerConf: hamburgServicesUrl, layers: [
+//         {id: "6357"},
+//         {id: "453", transparency: 50}
+//     ]}, "2D",
+// {
+//     callback: () => ["6074"].forEach(id => window.mpapi.map.addLayer(id))
+// });
+
 
 /* SEARCH FUNCTION EXAMPLE
 // You may e.g. copy this code to the browser's console to run a search.
@@ -237,4 +257,16 @@ map2D.getLayers().forEach(layer => {
 window.mpapi.map.addLayer("7001");
 window.mpapi.map.addLayer("7002");
 window.mpapi.map.addLayer("7003");
-// */
+*/
+
+/* VectorStyle example */
+// Example for using the vectorStyle that is now implemented in the masterportalAPI.
+// Hardcoded to show the school layer "8712" as a wfs.
+// For better visibility adding of the other layers, especially "5001", should be commented out.
+initializeStyleList({}, config, config.layers, undefined, (styleList, error) => {
+    if (error) {
+        console.error("Die Datei " + config.styleConf + " konnte nicht geladen werden!");
+    }
+    return styleList;
+});
+getWfsStyleFunction();
