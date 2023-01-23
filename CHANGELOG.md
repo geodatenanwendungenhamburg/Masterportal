@@ -15,6 +15,7 @@
 - The following packages have been updated:
     - dependencies:
         - core-js: 3.24.0 to 3.27.1
+        - proj4: 2.8.0 to 2.8.1
     - devDependencies:
         - @babel/core: 7.18.9 to 7.20.12
         - @babel/plugin-transform-modules-commonjs: 7.18.6 to 7.20.11
@@ -25,8 +26,6 @@
         - jest-environment-jsdom: 28.1.3 to 29.3.1
         - jsdoc: 3.6.11 to 4.0.0
         - sass: 1.54.0 to 1.57.1
-     peerDependencies:
-        - cesium: 1.95.0 to 1.99.0
 
 ### Deprecated
 
