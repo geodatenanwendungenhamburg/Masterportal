@@ -4,6 +4,15 @@
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
 
+## Unreleased - in development
+### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+
+---
+
 ## 2.12.0 - 2022-01-24
 ### Added
 - Added support for Node LTS version 18.
