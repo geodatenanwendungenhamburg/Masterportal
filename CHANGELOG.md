@@ -4,7 +4,7 @@
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
 
-## Unreleased - in development
+## 2.12.0 - 2022-01-24
 ### Added
 - Added support for Node LTS version 18.
 - Add possibility to specify additional layerparams for a wmts layer, like opacity for example.
@@ -26,12 +26,6 @@
         - jest-environment-jsdom: 28.1.3 to 29.3.1
         - jsdoc: 3.6.11 to 4.0.0
         - sass: 1.54.0 to 1.57.1
-
-### Deprecated
-
-### Removed
-
-### Fixed
 
 ---
 
