@@ -7,6 +7,7 @@
 ## Unreleased - in development
 ### Added
 ### Changed
+- GeoJSON now also register a featuresloadend function if the source is a cluster.
 ### Deprecated
 ### Removed
 ### Fixed

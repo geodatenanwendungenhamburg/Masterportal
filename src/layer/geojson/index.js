@@ -22,11 +22,11 @@ export function createLayerSource ({url, features, clusterDistance}, options) {
 
     source = createVectorSource(url || features, options.loadingStrategy, format);
 
-    if (clusterDistance) {
-        return createClusterVectorSource(source, clusterDistance, options.clusterGeometryFunction);
+    if (typeof clusterDistance === "number") {
+        source = createClusterVectorSource(source, clusterDistance, options.clusterGeometryFunction);
     }
 
-    source.once("featuresloadend", event => {
+    (typeof clusterDistance === "number" ? source.getSource() : source).once("featuresloadend", event => {
         if (typeof options.afterLoading === "function") {
             options.afterLoading(event?.features);
         }
