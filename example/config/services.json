@@ -124,6 +124,16 @@
     "featureNS": "https://registry.gdi-de.org/id/de.hh.up"
   },
   {
+    "id" : "1534",
+    "name" : "de.hh.up:verzeichnis oeffentlicher gruenanlagen",
+    "url" : "https://geodienste.hamburg.de/HH_WFS_Gruenplan",
+    "typ" : "WFS",
+    "featureType" : "verzeichnis_oeffentlicher_gruenanlagen",
+    "outputFormat" : "XML",
+    "version" : "1.1.0",
+    "featureNS" : "https://registry.gdi-de.org/id/de.hh.up"
+  },
+  {
     "id": "6001",
     "name": "ADV (EPSG:25832)",
     "url": "https://dev.adv-smart.de/tiles/smarttiles_de_UTM32_dev/{z}/{x}/{y}.pbf",

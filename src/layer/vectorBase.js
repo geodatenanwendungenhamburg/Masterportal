@@ -1,6 +1,7 @@
 
 import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
+import * as webgl from "../renderer/webgl";
 
 /**
  * Triggered by Layer to create a layerSource
@@ -8,9 +9,16 @@ import VectorSource from "ol/source/Vector.js";
  * @returns {void}
  */
 export function createLayerSource (attrs) {
-    return new VectorSource({
+    const source = new VectorSource({
         features: attrs.features
     });
+
+    // perform necessary feature operations if renderer is webgl
+    if (attrs.renderer === "webgl") {
+        webgl.afterLoading(source.getFeatures(), attrs.styleId, attrs.excludeTypesFromParsing);
+    }
+
+    return source;
 }
 
 /**
@@ -20,6 +28,11 @@ export function createLayerSource (attrs) {
  * @returns {void}
  */
 export function updateSource (layer, features) {
+    // perform necessary feature operations if renderer is webgl
+    if (layer.get("renderer") === "webgl") {
+        webgl.afterLoading(features, layer.get("styleId"), layer.get("excludeTypesFromParsing"));
+    }
+
     layer.getSource().clear(true);
     layer.getSource().addFeatures(features);
 }
@@ -32,6 +45,12 @@ export function updateSource (layer, features) {
 export function createLayer (attrs) {
     const source = this.createLayerSource(attrs);
 
+    if (attrs.renderer === "webgl") {
+        return webgl.createLayer({
+            ...attrs,
+            source
+        });
+    }
     return new VectorLayer({
         source: source,
         name: attrs.name,

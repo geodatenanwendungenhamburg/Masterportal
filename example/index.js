@@ -10,7 +10,8 @@ import {createStyle} from "../src/vectorStyle/createStyle";
 
 import services from "./config/services.json";
 import portalConfig from "./config/portal.json";
-import localGeoJSON from "./config/localGeoJSON.js";
+import localGeoJSON from "./config/localGeoJSON";
+import localGeoJSONPoints from "./config/localGeoJSONPoints";
 import load3DScriptModule from "../src/lib/load3DScript";
 
 function errorCallback (errorEvent) {
@@ -23,17 +24,22 @@ window.mpapi = {
     map2D: null,
     map: null
 };
-//* Fake service that holds client-side prepared geojson; also nice to test automatic transformation since data is in WGS 84
+//* Fake services that hold client-side prepared geojson; also nice to test automatic transformation since data is in WGS 84
 // eslint-disable-next-line no-unused-vars
 const hamburgServicesUrl = "https://geodienste.hamburg.de/services-internet.json",
-    localService = {
+    localServices = [{
         id: "2002",
         typ: "GeoJSON",
         features: localGeoJSON
     },
+    {
+        id: "2003",
+        typ: "GeoJSON",
+        features: localGeoJSONPoints
+    }],
     config = {
         ...portalConfig,
-        layerConf: services,
+        layerConf: [...services, ...localServices], // add local services
         styleConf: "https://geodienste.hamburg.de/lgv-config/style_v3.json"
     },
     // eslint-disable-next-line func-style
@@ -45,15 +51,28 @@ const hamburgServicesUrl = "https://geodienste.hamburg.de/services-internet.json
         let isClusterFeature = false;
 
         if (styleObject !== undefined) {
-            setTimeout(() => {
-                source.getFeatures().forEach(element => {
+            source.once("featuresloadend", event => {
+                event?.features.forEach(element => {
                     isClusterFeature = false;
                     element.setStyle(createStyle(styleObject, element, isClusterFeature, config.wfsImgPath));
                 });
-            }, 3000);
+            });
         }
     };
 let map2D = null;
+
+/* VectorStyle example */
+// Example for using the vectorStyle that is now implemented in the masterportalAPI.
+// Hardcoded to show the school layer "8712" as a wfs and "1534" as wfs with webgl renderer.
+// For better visibility adding of the other layers, especially "5001", should be commented out.
+// initialize StyleList before map is created for automated lookup of styleObject when creating webgl layer
+// application of regular canvas style happens after loading
+initializeStyleList({}, config, config.layers, undefined, (styleList, error) => {
+    if (error) {
+        console.error("Die Datei " + config.styleConf + " konnte nicht geladen werden!");
+    }
+    return styleList;
+});
 
 // */
 //* Cleans up map before it is re-rendered (happens on every save during dev mode)
@@ -119,8 +138,6 @@ document.getElementById("layer-visibility").addEventListener("click", function (
 });
 
 map2D = mapsAPI.map.createMap(config, "2D", {errorCallback});
-services.push(localService);
-// */
 
 //* geojson styling function call to override default styling and special wfs styling
 mpapi.geojson.setCustomStyles({
@@ -261,12 +278,6 @@ window.mpapi.map.addLayer("7003");
 
 /* VectorStyle example */
 // Example for using the vectorStyle that is now implemented in the masterportalAPI.
-// Hardcoded to show the school layer "8712" as a wfs.
-// For better visibility adding of the other layers, especially "5001", should be commented out.
-initializeStyleList({}, config, config.layers, undefined, (styleList, error) => {
-    if (error) {
-        console.error("Die Datei " + config.styleConf + " konnte nicht geladen werden!");
-    }
-    return styleList;
-});
+// Apply style to layer "8172"
+// mirrors behavior of Masterportal styling
 getWfsStyleFunction();

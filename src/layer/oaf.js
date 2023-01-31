@@ -4,6 +4,7 @@ import GeoJSON from "ol/format/GeoJSON.js";
 import {createVectorSource, createClusterVectorSource} from "./vector";
 import {onError, onLoad} from "../lib/wfsUtil";
 import {getParamsUrl} from "../lib/oafUtil";
+import * as webgl from "../renderer/webgl";
 
 /**
  * Layer specification as in services.json.
@@ -182,6 +183,12 @@ export function createLayerSource (rawLayer, options = {}) {
     const url = createUrl(rawLayer),
         source = getLayerSource(rawLayer, options, url);
 
+    if (options.renderer === "webgl") {
+        source.once("featuresloadend", event => {
+            webgl.afterLoading(event?.features, options.styleId, options.excludeTypesFromParsing);
+        });
+    }
+
     return source;
 }
 
@@ -194,11 +201,31 @@ export function createLayerSource (rawLayer, options = {}) {
  * @returns {ol.Layer} Layer that can be added to map.
  */
 export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {}) {
-    const source = createLayerSource(rawLayer, options),
-        layer = new VectorLayer(Object.assign({
-            source,
-            id: rawLayer.id
-        }, layerParams));
+    let layer, source;
+
+    // use WebGL render pipeline, if specified
+    if (layerParams.renderer === "webgl") {
+        source = createLayerSource(rawLayer, {
+            ...options,
+            renderer: layerParams.renderer,
+            styleId: layerParams.styleId,
+            excludeTypesFromParsing: layerParams.excludeTypesFromParsing
+        });
+        layer = webgl.createLayer({
+            ...rawLayer,
+            ...layerParams,
+            source
+        });
+
+        return layer;
+    }
+
+    // use default canvas renderer
+    source = createLayerSource(rawLayer, options);
+    layer = new VectorLayer(Object.assign({
+        source,
+        id: rawLayer.id
+    }, layerParams));
 
     if (options.style) {
         layer.setStyle(options.style);

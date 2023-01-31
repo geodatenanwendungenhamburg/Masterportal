@@ -1,6 +1,7 @@
 import VectorLayer from "ol/layer/Vector.js";
 import {bbox} from "ol/loadingstrategy.js";
 import {WFS} from "ol/format.js";
+import * as webgl from "../renderer/webgl";
 
 import {createVectorSource, createClusterVectorSource} from "./vector";
 import {getVersion, onError, onLoad} from "../lib/wfsUtil";
@@ -30,6 +31,13 @@ import {getVersion, onError, onLoad} from "../lib/wfsUtil";
  * @property {function} clusterGeometryFunction -  used in cluster source. Returns the geometry of the cluster, gets parameter feature
  * @property {function} style - style function to style the layer
  * @property {object} loadingParams - added as params to url
+ */
+
+/**
+ * @typedef {Object} layerParams
+ * @property {string} [renderer] - use default canvas or webgl renderer
+ * @property {string} [styleId] - the styleId of the layer
+ * @property {string[]} [excludeTypesFromParsing] - types that should not be parsed from strings, only necessary for webgl
  */
 
 /**
@@ -186,9 +194,13 @@ export function createLayerSource (rawLayer, options = {}) {
     if (options.beforeLoading) {
         source.once("featuresloadstart", () => options.beforeLoading());
     }
-
     if (rawLayer.clusterDistance) {
         return createClusterVectorSource(source, rawLayer.clusterDistance, options.clusterGeometryFunction);
+    }
+    if (options.renderer === "webgl") {
+        source.once("featuresloadend", event => {
+            webgl.afterLoading(event?.features, options.styleId, options.excludeTypesFromParsing);
+        });
     }
     return source;
 }
@@ -202,11 +214,31 @@ export function createLayerSource (rawLayer, options = {}) {
  * @returns {ol.Layer} Layer that can be added to map.
  */
 export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {}) {
-    const source = createLayerSource(rawLayer, options),
-        layer = new VectorLayer(Object.assign({
-            source,
-            id: rawLayer.id
-        }, layerParams));
+    let layer, source;
+
+    // use WebGL render pipeline, if specified
+    if (layerParams.renderer === "webgl") {
+        source = createLayerSource(rawLayer, {
+            ...options,
+            renderer: layerParams.renderer,
+            styleId: layerParams.styleId,
+            excludeTypesFromParsing: layerParams.excludeTypesFromParsing
+        });
+        layer = webgl.createLayer({
+            ...rawLayer,
+            ...layerParams,
+            source
+        });
+
+        return layer;
+    }
+
+    // use default canvas renderer
+    source = createLayerSource(rawLayer, options);
+    layer = new VectorLayer(Object.assign({
+        source,
+        id: rawLayer.id
+    }, layerParams));
 
     if (options.style) {
         layer.setStyle(options.style);

@@ -261,3 +261,11 @@ export function initializeStyleList (styleGetters, Config, layers, tools, callba
 export function returnStyleObject (layerId) {
     return styleList.find(styleObject => styleObject.styleId === layerId);
 }
+
+/**
+ * returns the current styleList, development purposes only
+ * @returns {object[]} the current styleList
+ */
+export function getStyleList () {
+    return styleList;
+}

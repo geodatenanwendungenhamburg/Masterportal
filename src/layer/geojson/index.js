@@ -1,7 +1,7 @@
 import VectorLayer from "ol/layer/Vector";
 import GeoJSON from "ol/format/GeoJSON.js";
 import style, {setCustomStyles} from "./style";
-
+import * as webgl from "../../renderer/webgl";
 
 import {createVectorSource, createClusterVectorSource} from "../vector";
 
@@ -9,10 +9,20 @@ import {createVectorSource, createClusterVectorSource} from "../vector";
 export {setCustomStyles};
 
 /**
+ * @typedef {Object} layerParams
+ * @property {string} [renderer] - use default canvas or webgl renderer
+ * @property {string} [styleId] - the styleId of the layer
+ * @property {string[]} [excludeTypesFromParsing] - types that should not be parsed from strings, only necessary for webgl
+ */
+
+/**
  * Creates the VectorSource for a GeoJSON layer. It will ensure each feature has the field id set to use with the other exported geojson functions.
  * @param {object} rawLayer - rawLayer as specified in services.json
  * @param {string} [rawLayer.url] - url to fetch geojson from; if no rawLayer.features given, this is required
  * @param {object} [rawLayer.features] - if features are transmitted via rawLayer, they will be used instead of requesting an URL
+ * @param {"default" | "webgl"} [rawLayer.renderer] - use default canvas or webgl renderer
+ * @param {string} [rawLayer.styleId] - the styleId of the layer, only necessary for webgl style pipeline
+ * @param {string[]} [rawLayer.excludeTypesFromParsing] - types that should not be parsed from strings, only necessary for webgl
  * @param {object} options - options of the geojson layer
  * @returns {ol.source.Vector} created VectorSource
  */
@@ -32,6 +42,18 @@ export function createLayerSource ({url, features, clusterDistance}, options) {
         }
     });
 
+    // perform necessary feature operations if renderer is webgl
+    if (options.renderer === "webgl") {
+        // if features were provided before source creation
+        if (features?.length > 0) {
+            webgl.afterLoading(source.getFeatures(), options.styleId, options.excludeTypesFromParsing);
+        }
+        // wait for loading
+        source.once("featuresloadend", event => {
+            webgl.afterLoading(event?.features, options.styleId, options.excludeTypesFromParsing);
+        });
+    }
+
     return source;
 }
 
@@ -45,9 +67,30 @@ export function createLayerSource ({url, features, clusterDistance}, options) {
  * @returns {ol.layer.Vector} Layer with id and source specified in rawLayer
  */
 export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {}) {
-    const layer = new VectorLayer(Object.assign({
+    let layer, source;
+
+    // use WebGL render pipeline, if specified
+    if (layerParams.renderer === "webgl") {
+        source = createLayerSource(rawLayer, {
+            ...options,
+            renderer: layerParams.renderer,
+            styleId: layerParams.styleId,
+            excludeTypesFromParsing: layerParams.excludeTypesFromParsing
+        });
+        layer = webgl.createLayer({
+            ...rawLayer,
+            ...layerParams,
+            source
+        });
+
+        return layer;
+    }
+
+    // use default canvas renderer
+    source = createLayerSource(rawLayer, options);
+    layer = new VectorLayer(Object.assign({
         id: rawLayer.id,
-        source: createLayerSource(rawLayer, options)
+        source
     }, layerParams));
 
     if (options.style) {
@@ -59,6 +102,7 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
     else {
         layer.setStyle(style);
     }
+
     return layer;
 }
 
@@ -70,6 +114,13 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
 export function updateSource (layer) {
     // openlayers named this "refresh", but it also means "reload" if an URL is set
     layer.getSource().refresh();
+
+    // perform necessary feature operations if renderer is webgl
+    if (layer.get("renderer") === "webgl") {
+        layer.getSource().once("featuresloadend", event => {
+            webgl.afterLoading(event?.features, layer.get("styleId"), layer.get("excludeTypesFromParsing"));
+        });
+    }
 }
 
 /**
