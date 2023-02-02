@@ -5,6 +5,7 @@
 
 
 ## Unreleased - in development
+- WebGL Render-Pipeline for all VectorLayer types can be called using {"renderer": "webgl"} in config.json
 ### Added
 - VectorStyle is now part of the masterportalApi.
 ### Changed
