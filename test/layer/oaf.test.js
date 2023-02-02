@@ -7,11 +7,19 @@ import defaults from "../../src/defaults";
 import GeoJSON from "ol/format/GeoJSON.js";
 import * as oaf from "../../src/layer/oaf";
 import {featureCollection} from "./resources/oafFeatures";
+import * as webgl from "../../src/renderer/webgl.js";
 
 jest.mock("../../src/rawLayerList.js", () => {
     const original = jest.requireActual("../../src/rawLayerList.js");
 
     original.initializeLayerList = jest.fn();
+    return original;
+});
+
+jest.mock("../../src/renderer/webgl.js", () => {
+    const original = jest.requireActual("../../src/renderer/webgl.js");
+
+    original.afterLoading = jest.fn();
     return original;
 });
 
@@ -106,6 +114,12 @@ describe("oaf.js", function () {
             expect(layer.getStyleFunction()).toEqual(styleFunction);
             expect(layer.get("name")).toEqual("name");
             expect(layer.get("layers")).toEqual("layer1, layer2");
+        });
+        it("creates a WebGLLayer, with param renderer \"webgl\"", function () {
+            const layer = oaf.createLayer({id: "id"}, {layerParams: {renderer: "webgl"}});
+
+            expect(layer.constructor.name).toEqual("LocalWebGLLayer");
+            expect(layer.getSource()).toBeInstanceOf(VectorSource);
         });
     });
     describe("createLayerSource", function () {
@@ -240,6 +254,22 @@ describe("oaf.js", function () {
                 expect(featuresFilterMock.mock.calls.length).toBe(1);
                 expect(afterLoadingMock.mock.calls.length).toBe(1);
             });
+        });
+        it("creates a vectorSource with an additional listener, when renderer is \"webgl\"", () => {
+            const
+                url = "https://url.de",
+                rawLayer = {
+                    id: "id",
+                    url: url,
+                    featureNS: "http://www.deegree.org/app",
+                    featureType: "krankenhaeuser_hh",
+                    version: "1.0.0"
+                },
+                source = oaf.createLayerSource(rawLayer, {renderer: "webgl"});
+
+            expect(source.getListeners("featuresloadend")).toHaveLength(1);
+            source.getListeners("featuresloadend")[0]({features: []});
+            expect(webgl.afterLoading).toHaveBeenCalled();
         });
     });
 });

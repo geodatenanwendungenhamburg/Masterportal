@@ -4,6 +4,14 @@ import Polygon from "ol/geom/Polygon";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector.js";
 import * as vectorBase from "../../src/layer/vectorBase";
+import * as webgl from "../../src/renderer/webgl.js";
+
+jest.mock("../../src/renderer/webgl.js", () => {
+    const original = jest.requireActual("../../src/renderer/webgl.js");
+
+    original.afterLoading = jest.fn();
+    return original;
+});
 
 describe("vectorBase.js", function () {
 
@@ -25,22 +33,34 @@ describe("vectorBase.js", function () {
 
             expect(source).toBeInstanceOf(VectorSource);
         });
+        it("creates a vectorSource with an additional listener, when renderer is \"webgl\"", () => {
+            vectorBase.createLayerSource({renderer: "webgl"});
+
+            expect(webgl.afterLoading).toHaveBeenCalled();
+        });
     });
 
     describe("createLayer", function () {
+        const attr = {
+            name: "Albus Percival Wulfric Brian Dumbledore",
+            typ: "VectorBase",
+            gfiAttributes: "ignore",
+            id: "Rawenclaw_01"
+        };
+
         it("creates a vector Base Layer", function () {
-            const attr = {
-                    name: "Albus Percival Wulfric Brian Dumbledore",
-                    typ: "VectorBase",
-                    gfiAttributes: "ignore",
-                    id: "Rawenclaw_01"
-                },
-                layer = vectorBase.createLayer(attr);
+            const layer = vectorBase.createLayer(attr);
 
             expect(layer).toBeInstanceOf(VectorLayer);
             expect(layer.get("name")).toEqual("Albus Percival Wulfric Brian Dumbledore");
             expect(layer.get("typ")).toEqual("VectorBase");
             expect(layer.get("id")).toEqual("Rawenclaw_01");
+        });
+        it("creates a WebGLLayer, with param renderer \"webgl\"", function () {
+            const layer = vectorBase.createLayer({...attr, renderer: "webgl"});
+
+            expect(layer.constructor.name).toEqual("LocalWebGLLayer");
+            expect(layer.getSource()).toBeInstanceOf(VectorSource);
         });
     });
 

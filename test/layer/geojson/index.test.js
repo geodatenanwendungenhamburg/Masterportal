@@ -3,8 +3,16 @@ import VectorSource from "ol/source/Vector.js";
 import Feature from "ol/Feature";
 import {Style, Icon} from "ol/style.js";
 import {geojson} from "../../../src";
+import * as webgl from "../../../src/renderer/webgl.js";
 
 const features = [new Feature(), new Feature()];
+
+jest.mock("../../../src/renderer/webgl.js", () => {
+    const original = jest.requireActual("../../../src/renderer/webgl.js");
+
+    original.afterLoading = jest.fn();
+    return original;
+});
 
 describe("geojson/index", function () {
     describe("createLayer", function () {
@@ -70,6 +78,12 @@ describe("geojson/index", function () {
             expect(layer.get("name")).toEqual("name");
             expect(layer.get("layers")).toEqual("layer1, layer2");
         });
+        it("creates a WebGLLayer, with param renderer \"webgl\"", function () {
+            const layer = geojson.createLayer({}, {layerParams: {renderer: "webgl"}});
+
+            expect(layer.constructor.name).toEqual("LocalWebGLLayer");
+            expect(layer.getSource()).toBeInstanceOf(VectorSource);
+        });
     });
 
     describe("createLayerSource", function () {
@@ -78,6 +92,15 @@ describe("geojson/index", function () {
 
             expect(source.getFormat()).toBeDefined();
             expect(source.getUrl()).toBeDefined();
+        });
+        it("creates a vectorSource with an additional listener, when renderer is \"webgl\"", () => {
+            const
+                rawLayer = {url: "example.com/geo.json"},
+                source = geojson.createLayerSource(rawLayer, {renderer: "webgl"});
+
+            expect(source.getListeners("featuresloadend")).toHaveLength(2);
+            source.getListeners("featuresloadend")[1]({features: []});
+            expect(webgl.afterLoading).toHaveBeenCalled();
         });
 
     });
