@@ -259,5 +259,5 @@ export function initializeStyleList (styleGetters, Config, layers, tools, callba
  * @returns {object} style object
  */
 export function returnStyleObject (layerId) {
-    return styleList.find(styleObject => styleObject.styleId === layerId);
+    return styleList?.find(styleObject => styleObject.styleId === layerId);
 }
