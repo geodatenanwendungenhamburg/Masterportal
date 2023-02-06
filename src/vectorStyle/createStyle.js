@@ -56,12 +56,11 @@ export function getSimpleGeometryStyle (geometryType, feature, rule, isClustered
         return styleObject;
     }
     else if (geometryType === "LinearRing" || geometryType === "Circle") {
-        // TODO(roehlipa): Wird dies noch implementiert? Beispiel für ein einfaches Stylings eines Kreises ist src/modules/tools/draw/utils/style/createDrawStyle.js im Masterportal
-        console.warn("Geometry type not implemented: " + geometryType);
+        console.warn("Geometry type not implemented: " + geometryType + "default style ist used for feature " + feature);
         return new Style();
     }
     else {
-        console.warn("Geometry type not implemented: " + geometryType);
+        console.warn("Geometry type not implemented: " + geometryType + "default style ist used for feature " + feature);
         return new Style();
     }
     uniqueStyles.push({featureStyle: style, featureStyleObject: styleObject, geometryType});
