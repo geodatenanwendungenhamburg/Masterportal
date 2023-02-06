@@ -45,12 +45,12 @@ const hamburgServicesUrl = "https://geodienste.hamburg.de/services-internet.json
         let isClusterFeature = false;
 
         if (styleObject !== undefined) {
-            setTimeout(() => {
-                source.getFeatures().forEach(element => {
+            source.on("featuresloadend", event => {
+                event.features.forEach(element => {
                     isClusterFeature = false;
                     element.setStyle(createStyle(styleObject, element, isClusterFeature, config.wfsImgPath));
                 });
-            }, 3000);
+            });
         }
     };
 let map2D = null;
@@ -200,17 +200,17 @@ mpapi.rawLayerList.initializeLayerList(hamburgServicesUrl,
     });
 //*/
 
-// ASYNCHRONOUS EXAMPLE 2: work with createMap callback
-// document.getElementById("enable").style.display = "none";
-// window.mpapi.map = mapsAPI.map.createMap({
-//     ...portalConfig, layerConf: hamburgServicesUrl, layers: [
-//         {id: "6357"},
-//         {id: "453", transparency: 50}
-//     ]}, "2D",
-// {
-//     callback: () => ["6074"].forEach(id => window.mpapi.map.addLayer(id))
-// });
-
+/* ASYNCHRONOUS EXAMPLE 2: work with createMap callback
+document.getElementById("enable").style.display = "none";
+window.mpapi.map = mapsAPI.map.createMap({
+    ...portalConfig, layerConf: hamburgServicesUrl, layers: [
+        {id: "6357"},
+        {id: "453", transparency: 50}
+    ]}, "2D",
+{
+    callback: () => ["6074"].forEach(id => window.mpapi.map.addLayer(id))
+});
+//*/
 
 /* SEARCH FUNCTION EXAMPLE
 // You may e.g. copy this code to the browser's console to run a search.
