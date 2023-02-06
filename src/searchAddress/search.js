@@ -142,9 +142,18 @@ export function search (searchstring, params, abortPreviousSearch = false) {
 
         if (searchAddress) {
             // assume pattern like "Streetname 41b", split to ["Streetname", "41", "b"]
-            const values = searchstring.split(/(\d+)/).map(s => s.trim()).filter(x => x),
-                // if neither two (no affix like b) or three (with affix like b) parts found, not enough (or too many) params for method - don't search
-                type = [false, false, searchTypes.ADDRESS_UNAFFIXED, searchTypes.ADDRESS_AFFIXED][values.length];
+            let values = searchstring.split(/(\d+)/).map(s => s.trim()).filter(x => x);
+
+            if (values.length > 3) {
+                const streetName = values[0],
+                    houseNum = values[1],
+                    appendix = searchstring.replace(values[0], "").replace(values[1], "").trim();
+
+                values = [streetName, houseNum, appendix];
+            }
+
+            // if neither two (no affix like b) or three (with affix like b) parts found, not enough (or too many) params for method - don't search
+            const type = [false, false, searchTypes.ADDRESS_UNAFFIXED, searchTypes.ADDRESS_AFFIXED][values.length];
 
             if (type) {
                 searches.push(searchAndParse(type, values));
