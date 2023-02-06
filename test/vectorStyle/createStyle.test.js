@@ -216,13 +216,19 @@ const wfsImgPathFromConfig = "/path/to/wfs/images",
                 "lineStrokeDashOffset": 20,
                 "lineStrokeWidth": 5,
                 "labelField": ""}}
-    ];
+    ],
+    warn = jest.spyOn(console, "warn").mockImplementation(() => {
+        null;
+    });
 
 let jsonObjects;
 
 
 beforeAll(function () {
     jsonObjects = geojsonReader.readFeatures(jsonFeatures);
+});
+afterAll(() => {
+    warn.mockReset();
 });
 
 describe("createStyle", () => {
