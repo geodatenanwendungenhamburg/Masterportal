@@ -20,13 +20,13 @@ export {setCustomStyles};
  * @param {object} rawLayer - rawLayer as specified in services.json
  * @param {string} [rawLayer.url] - url to fetch geojson from; if no rawLayer.features given, this is required
  * @param {object} [rawLayer.features] - if features are transmitted via rawLayer, they will be used instead of requesting an URL
- * @param {"default" | "webgl"} [rawLayer.renderer] - use default canvas or webgl renderer
+ * @param {"default" | "webgl" | undefined} [rawLayer.renderer] - use default canvas or webgl renderer
  * @param {string} [rawLayer.styleId] - the styleId of the layer, only necessary for webgl style pipeline
  * @param {string[]} [rawLayer.excludeTypesFromParsing] - types that should not be parsed from strings, only necessary for webgl
  * @param {object} options - options of the geojson layer
  * @returns {ol.source.Vector} created VectorSource
  */
-export function createLayerSource ({url, features, clusterDistance}, options) {
+export function createLayerSource ({url, features, clusterDistance, renderer, styleId, excludeTypesFromParsing}, options) {
     const format = new GeoJSON();
     let source = null;
 
@@ -43,14 +43,14 @@ export function createLayerSource ({url, features, clusterDistance}, options) {
     });
 
     // perform necessary feature operations if renderer is webgl
-    if (options.renderer === "webgl") {
+    if (renderer === "webgl") {
         // if features were provided before source creation
         if (features?.length > 0) {
-            webgl.afterLoading(source.getFeatures(), options.styleId, options.excludeTypesFromParsing);
+            webgl.afterLoading(source.getFeatures(), styleId, excludeTypesFromParsing);
         }
         // wait for loading
         source.once("featuresloadend", event => {
-            webgl.afterLoading(event?.features, options.styleId, options.excludeTypesFromParsing);
+            webgl.afterLoading(event?.features, styleId, excludeTypesFromParsing);
         });
     }
 
@@ -71,12 +71,12 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
 
     // use WebGL render pipeline, if specified
     if (layerParams.renderer === "webgl") {
-        source = createLayerSource(rawLayer, {
-            ...options,
+        source = createLayerSource({
+            ...rawLayer,
             renderer: layerParams.renderer,
             styleId: layerParams.styleId,
             excludeTypesFromParsing: layerParams.excludeTypesFromParsing
-        });
+        }, options);
         layer = webgl.createLayer({
             ...rawLayer,
             ...layerParams,

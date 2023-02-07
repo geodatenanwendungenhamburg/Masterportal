@@ -171,6 +171,9 @@ function createUrl (rawLayer) {
 /**
  * Creates an ol/source element for the rawLayer by OAF (XML or Geojson)
  * @param {rawLayer} rawLayer layer specification as in services.json
+ * @param {"default" | "webgl" | undefined} [rawLayer.renderer] - use default canvas or webgl renderer
+ * @param {string} [rawLayer.styleId] - the styleId of the layer, only necessary for webgl style pipeline
+ * @param {string[]} [rawLayer.excludeTypesFromParsing] - types that should not be parsed from strings, only necessary for webgl
  * @param {options} [options] additional options
  * {@link https://openlayers.org/en/latest/apidoc/module-ol_source_Vector-VectorSource.html failure/success see}
  * @returns {(ol.source.VectorSource|ol.source.Cluster)} VectorSource or Cluster, depending on whether clusterDistance is set.
@@ -183,9 +186,9 @@ export function createLayerSource (rawLayer, options = {}) {
     const url = createUrl(rawLayer),
         source = getLayerSource(rawLayer, options, url);
 
-    if (options.renderer === "webgl") {
+    if (rawLayer.renderer === "webgl") {
         source.once("featuresloadend", event => {
-            webgl.afterLoading(event?.features, options.styleId, options.excludeTypesFromParsing);
+            webgl.afterLoading(event?.features, rawLayer.styleId, rawLayer.excludeTypesFromParsing);
         });
     }
 
@@ -205,12 +208,12 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
 
     // use WebGL render pipeline, if specified
     if (layerParams.renderer === "webgl") {
-        source = createLayerSource(rawLayer, {
-            ...options,
+        source = createLayerSource({
+            ...rawLayer,
             renderer: layerParams.renderer,
             styleId: layerParams.styleId,
             excludeTypesFromParsing: layerParams.excludeTypesFromParsing
-        });
+        }, options);
         layer = webgl.createLayer({
             ...rawLayer,
             ...layerParams,
