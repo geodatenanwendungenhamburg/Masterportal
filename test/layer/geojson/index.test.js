@@ -96,7 +96,7 @@ describe("geojson/index", function () {
         it("creates a vectorSource with an additional listener, when renderer is \"webgl\"", () => {
             const
                 rawLayer = {url: "example.com/geo.json"},
-                source = geojson.createLayerSource(rawLayer, {renderer: "webgl"});
+                source = geojson.createLayerSource({...rawLayer, renderer: "webgl"});
 
             expect(source.getListeners("featuresloadend")).toHaveLength(2);
             source.getListeners("featuresloadend")[1]({features: []});

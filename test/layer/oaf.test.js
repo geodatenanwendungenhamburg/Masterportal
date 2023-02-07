@@ -265,7 +265,7 @@ describe("oaf.js", function () {
                     featureType: "krankenhaeuser_hh",
                     version: "1.0.0"
                 },
-                source = oaf.createLayerSource(rawLayer, {renderer: "webgl"});
+                source = oaf.createLayerSource({...rawLayer, renderer: "webgl"});
 
             expect(source.getListeners("featuresloadend")).toHaveLength(1);
             source.getListeners("featuresloadend")[0]({features: []});

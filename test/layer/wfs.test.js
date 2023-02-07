@@ -407,7 +407,7 @@ describe("wfs.js", function () {
                     featureType: "krankenhaeuser_hh",
                     version: "1.0.0"
                 },
-                source = wfs.createLayerSource(rawLayer, {renderer: "webgl"});
+                source = wfs.createLayerSource({...rawLayer, renderer: "webgl"});
 
             expect(source.getListeners("featuresloadend")).toHaveLength(1);
             source.getListeners("featuresloadend")[0]({features: []});
