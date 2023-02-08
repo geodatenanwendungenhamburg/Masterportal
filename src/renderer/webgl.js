@@ -59,7 +59,7 @@ export function getRenderFunctions () {
                     return feature.styleRule?.style.polygonStrokeWidth || 1;
                 },
                 opacity: (feature) => {
-                    return typeof feature.styleRule.style.polygonStrokeColor[3] === "number" ?
+                    return typeof feature.styleRule?.style.polygonStrokeColor[3] === "number" ?
                         feature.styleRule.style.polygonStrokeColor[3] : 1;
                 }
             }
@@ -80,7 +80,7 @@ export function getRenderFunctions () {
                     return feature.styleRule?.style.circleRadius || 20;
                 },
                 opacity: (feature) => {
-                    return typeof feature.styleRule.style.circleFillColor[3] === "number" ?
+                    return typeof feature.styleRule?.style.circleFillColor[3] === "number" ?
                         feature.styleRule.style.circleFillColor[3] : 1;
                 }
             }
