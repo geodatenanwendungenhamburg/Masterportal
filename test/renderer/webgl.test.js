@@ -147,24 +147,4 @@ describe("webgl.js", () => {
             });
         });
     });
-
-    // describe("isDisposed", () => {
-    //     it("isDisposed should return false if layer exists", () => {
-    //         const webglLayer = new WebGLLayer(layerAttrs);
-
-    //         expect(webglLayer.isDisposed()).to.be.false;
-    //     });
-    //     it("isDisposed should return true if layer doesnt exist", () => {
-    //         const webglLayer = new WebGLLayer(layerAttrs);
-
-    //         webglLayer.layer = undefined;
-    //         expect(webglLayer.isDisposed()).to.be.true;
-    //     });
-    //     it("isDisposed should return true if layer was disposed", () => {
-    //         const webglLayer = new WebGLLayer(layerAttrs);
-
-    //         webglLayer.layer.dispose();
-    //         expect(webglLayer.isDisposed()).to.be.true;
-    //     });
-    // });
 });
