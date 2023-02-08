@@ -131,6 +131,25 @@ describe("webgl.js", () => {
                 expect(renderFunctions.point.attributes.size($feature)).toEqual(styleRule.style.circleRadius);
                 expect(renderFunctions.point.attributes.opacity($feature)).toEqual(styleRule.style.circleFillColor[3]);
             });
+            it("should return default values if style is empty", () => {
+                const renderFunctions = webgl.getRenderFunctions();
+
+                styleObject = {
+                    rules: [{
+                        style: {}
+                    }]
+                };
+                $feature = feature.clone();
+                webgl.formatFeatureStyles($feature, styleObject);
+                expect(typeof renderFunctions.fill.attributes.color($feature)).toEqual("number");
+                expect(typeof renderFunctions.fill.attributes.opacity($feature)).toEqual("number");
+                expect(typeof renderFunctions.stroke.attributes.color($feature)).toEqual("number");
+                expect(typeof renderFunctions.stroke.attributes.width($feature)).toEqual("number");
+                expect(typeof renderFunctions.stroke.attributes.opacity($feature)).toEqual("number");
+                expect(typeof renderFunctions.point.attributes.color($feature)).toEqual("number");
+                expect(typeof renderFunctions.point.attributes.size($feature)).toEqual("number");
+                expect(typeof renderFunctions.point.attributes.opacity($feature)).toEqual("number");
+            });
             it("should return default values if no style rule is found", () => {
                 const renderFunctions = webgl.getRenderFunctions();
 
