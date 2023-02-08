@@ -56,11 +56,11 @@ export function getSimpleGeometryStyle (geometryType, feature, rule, isClustered
         return styleObject;
     }
     else if (geometryType === "LinearRing" || geometryType === "Circle") {
-        console.warn("Geometry type not implemented: " + geometryType + "default style ist used for feature " + feature);
+        console.warn("Geometry type not implemented: " + geometryType + " default style ist used for feature " + feature);
         return new Style();
     }
     else {
-        console.warn("Geometry type not implemented: " + geometryType + "default style ist used for feature " + feature);
+        console.warn("Geometry type not implemented: " + geometryType + " default style ist used for feature " + feature);
         return new Style();
     }
     uniqueStyles.push({featureStyle: style, featureStyleObject: styleObject, geometryType});
