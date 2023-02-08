@@ -37,16 +37,10 @@ export function getRenderFunctions () {
         fill: {
             attributes: {
                 color: (feature) => {
-                    if (!feature.styleRule) {
-                        return packColor("#006688");
-                    }
-                    return packColor(feature.styleRule.style.polygonFillColor);
+                    return packColor(feature.styleRule?.style.polygonFillColor || "#006688");
                 },
                 opacity: (feature) => {
-                    if (!feature.styleRule) {
-                        return 0.8;
-                    }
-                    return typeof feature.styleRule.style.polygonFillColor[3] === "number" ?
+                    return typeof feature.styleRule?.style.polygonFillColor[3] === "number" ?
                         feature.styleRule.style.polygonFillColor[3] : 1;
                 }
             }
@@ -59,21 +53,12 @@ export function getRenderFunctions () {
              */
             attributes: {
                 color: (feature) => {
-                    if (!feature.styleRule) {
-                        return packColor("#006688");
-                    }
-                    return packColor(feature.styleRule.style.polygonStrokeColor);
+                    return packColor(feature.styleRule?.style.polygonStrokeColor || "#006688");
                 },
                 width: (feature) => {
-                    if (!feature.styleRule) {
-                        return 1;
-                    }
-                    return feature.styleRule.style.polygonStrokeWidth;
+                    return feature.styleRule?.style.polygonStrokeWidth || 1;
                 },
                 opacity: (feature) => {
-                    if (!feature.styleRule) {
-                        return 1;
-                    }
                     return typeof feature.styleRule.style.polygonStrokeColor[3] === "number" ?
                         feature.styleRule.style.polygonStrokeColor[3] : 1;
                 }
@@ -89,21 +74,12 @@ export function getRenderFunctions () {
              */
             attributes: {
                 color: (feature) => {
-                    if (!feature.styleRule) {
-                        return packColor("#006688");
-                    }
-                    return packColor(feature.styleRule.style.circleFillColor);
+                    return packColor(feature.styleRule?.style.circleFillColor || "#006688");
                 },
                 size: (feature) => {
-                    if (!feature.styleRule) {
-                        return 20;
-                    }
-                    return feature.styleRule.style.circleRadius;
+                    return feature.styleRule?.style.circleRadius || 20;
                 },
                 opacity: (feature) => {
-                    if (!feature.styleRule) {
-                        return 0.8;
-                    }
                     return typeof feature.styleRule.style.circleFillColor[3] === "number" ?
                         feature.styleRule.style.circleFillColor[3] : 1;
                 }
@@ -215,7 +191,7 @@ export function afterLoading (features, styleId, excludeTypesFromParsing) {
         features.forEach(feature => {
             formatFeatureGeometry(feature); /** @deprecated will propbably not be necessary anymore in release version */
             formatFeatureStyles(feature, styleObject); /** @todo needs refactoring in release version  */
-            formatFeatureData(feature, excludeTypesFromParsing);
+            formatFeatureData(feature, excludeTypesFromParsing); /** Necessary since the WebGLPoints Style Syntax depends on data types (i.e. numbers not as strings) */
         });
     }
 }
