@@ -114,7 +114,6 @@ export function getGeometryTypeFromWFS (wfsURL, version, featureType, styleGeome
 
             createLegendInfo(geometryTypes);
         }).catch(error => {
-            console.warn("The fetch of the data failed with the following error message: " + error);
             return callback(error);
         });
 }
@@ -141,7 +140,6 @@ export function getGeometryTypeFromOAF (oafURL, collection, callback) {
             createLegendInfo([geometryType]);
         }
     }).catch(error => {
-        console.warn("The fetch of the data failed with the following error message: " + error);
         return callback(error);
     });
 }
