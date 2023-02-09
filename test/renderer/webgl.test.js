@@ -131,7 +131,7 @@ describe("webgl.js", () => {
                 expect(renderFunctions.point.attributes.size($feature)).toEqual(styleRule.style.circleRadius);
                 expect(renderFunctions.point.attributes.opacity($feature)).toEqual(styleRule.style.circleFillColor[3]);
             });
-            it("should return default values if style is empty", () => {
+            it("should return default values if style is empty, i.e. \"default\" style", () => {
                 const renderFunctions = webgl.getRenderFunctions();
 
                 styleObject = {
