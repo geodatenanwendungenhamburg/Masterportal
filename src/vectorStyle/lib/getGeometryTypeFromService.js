@@ -80,6 +80,7 @@ function getTypeAttributesFromSubelements (subElements = [], styleGeometryType =
 }
 /**
 * Requests the DescribeFeatureType of the wfs layer and starts the function to parse the xml and creates the legend info
+* @param   {object[]} rules styling rules from the styleObject
 * @param   {string} wfsURL url from layer
 * @param   {string} version wfs version from layer
 * @param   {string} featureType wfs feature type from layer
@@ -88,7 +89,7 @@ function getTypeAttributesFromSubelements (subElements = [], styleGeometryType =
 * @param {function} [callback] - called with services after loaded; called with false and error on error
 * @returns {void}
 */
-export function getGeometryTypeFromWFS (wfsURL, version, featureType, styleGeometryType, isSecured, callback) {
+export function getGeometryTypeFromWFS (rules, wfsURL, version, featureType, styleGeometryType, isSecured, callback) {
     const params = {
         "SERVICE": "WFS",
         "VERSION": version,
@@ -112,7 +113,7 @@ export function getGeometryTypeFromWFS (wfsURL, version, featureType, styleGeome
             const subElements = getSubelementsFromXML(responseXML, featureType),
                 geometryTypes = getTypeAttributesFromSubelements(subElements, styleGeometryType);
 
-            createLegendInfo(geometryTypes);
+            createLegendInfo(rules, geometryTypes);
         }).catch(error => {
             return callback(error);
         });
@@ -120,12 +121,13 @@ export function getGeometryTypeFromWFS (wfsURL, version, featureType, styleGeome
 
 /**
  * Requests the geometry type of the OAF collection and creates the legend info
+ * @param   {object[]} rules styling rules from the styleObject
  * @param   {string} oafURL url from layer
  * @param   {String} collection the collection name to fetch geometry type for
  * @param {function} [callback] - called with services after loaded; called with false and error on error
  * @returns {void}
  */
-export function getGeometryTypeFromOAF (oafURL, collection, callback) {
+export function getGeometryTypeFromOAF (rules, oafURL, collection, callback) {
     const url = oafURL + "/collections/" + collection + "/items?limit=1";
 
     fetch(url, {
@@ -137,7 +139,7 @@ export function getGeometryTypeFromOAF (oafURL, collection, callback) {
         const geometryType = response.data?.features[0]?.geometry?.type;
 
         if (geometryType) {
-            createLegendInfo([geometryType]);
+            createLegendInfo(rules, [geometryType]);
         }
     }).catch(error => {
         return callback(error);

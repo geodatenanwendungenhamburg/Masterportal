@@ -1,11 +1,11 @@
 import {getSimpleGeometryStyle, getMultiGeometryStyle} from "../createStyle";
 /**
  * Creates the style objects for the layer
+ * @param   {object[]} rules styling rules from the styleObject
  * @param   {string[]} geometryType Array of geometry types
  * @returns {void}
  */
-export function createLegendInfo (geometryType) {
-    const rules = this.get("rules");
+export function createLegendInfo (rules, geometryType) {
     let styleObject,
         simpleGeom;
 
