@@ -89,6 +89,7 @@ function getTypeAttributesFromSubelements (subElements = [], styleGeometryType =
 * @param {function} [callback] - called with services after loaded; called with false and error on error
 * @returns {void}
 */
+// eslint-disable-next-line max-params
 export function getGeometryTypeFromWFS (rules, wfsURL, version, featureType, styleGeometryType, isSecured, callback) {
     const params = {
         "SERVICE": "WFS",
