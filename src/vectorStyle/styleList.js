@@ -214,7 +214,7 @@ function parseStyles (data) {
  * @param {function} [callback] - called with services after loaded; called with false and error on error
  * @returns {undefined} nothing, add callback to receive styleList
  */
-export function initializeStyleList (styleGetters, Config, layers, tools, callback) {
+function initializeStyleList (styleGetters, Config, layers, tools, callback) {
     configuredLayers = layers;
     configuredTools = tools;
 
@@ -259,6 +259,11 @@ export function initializeStyleList (styleGetters, Config, layers, tools, callba
  * @param {string} layerId layerId
  * @returns {object} style object
  */
-export function returnStyleObject (layerId) {
+function returnStyleObject (layerId) {
     return styleList?.find(styleObject => styleObject.styleId === layerId);
 }
+
+export default {
+    initializeStyleList,
+    returnStyleObject
+};
