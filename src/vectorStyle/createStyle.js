@@ -15,7 +15,7 @@ let legendInformationLength = 0;
  * @param   {string}  geometryType     the geometry type to check
  * @returns {Boolean} is geometrytype a multiGeometry
  */
-export function isMultiGeometry (geometryType) {
+function isMultiGeometry (geometryType) {
     return geometryType === "MultiPoint" || geometryType === "MultiLineString" || geometryType === "MultiPolygon" || geometryType === "GeometryCollection" || geometryType === "Cesium";
 }
 
@@ -28,7 +28,7 @@ export function isMultiGeometry (geometryType) {
  * @param   {String} wfsImgPathFromConfig path to wfsImg from Config
  * @returns {ol/style/Style}    style is always returned
  */
-export function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsImgPathFromConfig) {
+function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsImgPathFromConfig) {
     const style = rule?.style,
         legendValue = style ? style.legendValue : null,
         alreadyExisitingStyle = uniqueStyles.find(element => element.featureStyle === style && element.geometryType === geometryType);
@@ -79,7 +79,7 @@ export function getSimpleGeometryStyle (geometryType, feature, rule, isClustered
  * @param   {String} wfsImgPathFromConfig path to wfsImg from Config
  * @returns {ol/style/Style[]}    style array of simple geometry styles is always returned
  */
-export function getMultiGeometryStyle (geometryType, feature, rules, isClustered, wfsImgPathFromConfig) {
+function getMultiGeometryStyle (geometryType, feature, rules, isClustered, wfsImgPathFromConfig) {
     const olStyle = [];
     let geometries = [];
 
@@ -135,7 +135,7 @@ export function getMultiGeometryStyle (geometryType, feature, rules, isClustered
  * @param   {String} wfsImgPathFromConfig path to wfsImg from Config
  * @returns {ol/style/Style}    style is always returned
  */
-export function getGeometryStyle (feature, rules, isClustered, wfsImgPathFromConfig) {
+function getGeometryStyle (feature, rules, isClustered, wfsImgPathFromConfig) {
     const geometryType = feature ? feature.getGeometry().getType() : "Cesium";
 
     // For simple geometries the first styling rule is used.
@@ -162,7 +162,7 @@ export function getGeometryStyle (feature, rules, isClustered, wfsImgPathFromCon
  * @param   {Boolean} isClustered Flag to show if feature is clustered.
  * @returns {ol/style/Text}    style is always returned
  */
-export function getLabelStyle (feature, style, isClustered) {
+function getLabelStyle (feature, style, isClustered) {
     const styleObject = new TextStyle(feature, style, isClustered);
 
     styleObject.initialize(feature, style, isClustered);
@@ -206,7 +206,7 @@ function captureLegendFromFeature (styleId, legendInformation) {
      * @param   {String} wfsImgPathFromConfig path to wfsImg from Config
      * @returns {ol/style/Style} style used in layer model
      */
-export function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
+function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
     const rules = getRulesForFeature(styleObject, feature),
         // Takes first rule in array for labeling so that is giving precedence to the order in the style.json
         style = Array.isArray(rules) && rules.length > 0 ? rules[0].style : null,
@@ -229,7 +229,7 @@ export function createStyle (styleObject, feature, isClustered, wfsImgPathFromCo
     return styleObjectGeometry;
 }
 
-export async function returnLegendByStyleId (styleId) {
+async function returnLegendByStyleId (styleId) {
     return new Promise(resolve => {
         const legend = legendsOfAllStyles.find(element => element.id === styleId);
 
@@ -247,3 +247,13 @@ export async function returnLegendByStyleId (styleId) {
         }, false);
     });
 }
+
+export default {
+    isMultiGeometry,
+    getSimpleGeometryStyle,
+    getMultiGeometryStyle,
+    getGeometryStyle,
+    getLabelStyle,
+    createStyle,
+    returnLegendByStyleId
+};
