@@ -90,7 +90,7 @@ function getTypeAttributesFromSubelements (subElements = [], styleGeometryType =
 * @returns {void}
 */
 // eslint-disable-next-line max-params
-export function getGeometryTypeFromWFS (rules, wfsURL, version, featureType, styleGeometryType, isSecured, callback) {
+function getGeometryTypeFromWFS (rules, wfsURL, version, featureType, styleGeometryType, isSecured, callback) {
     const params = {
         "SERVICE": "WFS",
         "VERSION": version,
@@ -128,7 +128,7 @@ export function getGeometryTypeFromWFS (rules, wfsURL, version, featureType, sty
  * @param {function} [callback] - called with services after loaded; called with false and error on error
  * @returns {void}
  */
-export function getGeometryTypeFromOAF (rules, oafURL, collection, callback) {
+function getGeometryTypeFromOAF (rules, oafURL, collection, callback) {
     const url = oafURL + "/collections/" + collection + "/items?limit=1";
 
     fetch(url, {
@@ -146,3 +146,8 @@ export function getGeometryTypeFromOAF (rules, oafURL, collection, callback) {
         return callback(error);
     });
 }
+
+export default {
+    getGeometryTypeFromWFS,
+    getGeometryTypeFromOAF
+};
