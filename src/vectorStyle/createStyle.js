@@ -237,7 +237,7 @@ async function returnLegendByStyleId (styleId) {
             resolve(legend);
         }
 
-        this.addEventListener("legendCaptured", event => {
+        resolve(this).addEventListener("legendCaptured", event => {
             if (event.id === styleId && event.id !== "default") {
                 resolve(legendsOfAllStyles.find(element => element.id === event.id));
             }
