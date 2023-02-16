@@ -3,6 +3,15 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased - in development
+### Added
+### Changed
+- GeoJSON now also register a featuresloadend function if the source is a cluster.
+### Deprecated
+### Removed
+### Fixed
+
+---
 
 ## 2.13.0 - 2022-02-16
 ### Changed
