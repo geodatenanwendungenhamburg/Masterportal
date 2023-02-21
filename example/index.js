@@ -5,8 +5,8 @@ import {Style, Stroke, Fill, Icon} from "ol/style.js";
 import * as mpapi from "../src";
 import mapsAPI from "../src/maps/api.js";
 import rawLayerList from "../src/rawLayerList";
-import {initializeStyleList, returnStyleObject} from "../src/vectorStyle/styleList";
-import {createStyle} from "../src/vectorStyle/createStyle";
+import styleList from "../src/vectorStyle/styleList";
+import createStyle from "../src/vectorStyle/createStyle";
 
 import services from "./config/services.json";
 import portalConfig from "./config/portal.json";
@@ -41,14 +41,14 @@ const hamburgServicesUrl = "https://geodienste.hamburg.de/services-internet.json
         const styleId = "8712",
             olLayer = window.mpapi.map.getLayers().getArray().find((element) => element.get("id") === "8712"),
             source = olLayer.getSource(),
-            styleObject = returnStyleObject(styleId);
+            styleObject = styleList.returnStyleObject(styleId);
         let isClusterFeature = false;
 
         if (styleObject !== undefined) {
             source.on("featuresloadend", event => {
                 event.features.forEach(element => {
                     isClusterFeature = false;
-                    element.setStyle(createStyle(styleObject, element, isClusterFeature, config.wfsImgPath));
+                    element.setStyle(createStyle.createStyle(styleObject, element, isClusterFeature, config.wfsImgPath));
                 });
             });
         }
@@ -263,10 +263,10 @@ window.mpapi.map.addLayer("7003");
 // Example for using the vectorStyle that is now implemented in the masterportalAPI.
 // Hardcoded to show the school layer "8712" as a wfs.
 // For better visibility adding of the other layers, especially "5001", should be commented out.
-initializeStyleList({}, config, config.layers, undefined, (styleList, error) => {
+styleList.initializeStyleList({}, config, config.layers, undefined, (initializedStyleList, error) => {
     if (error) {
         console.error("Die Datei " + config.styleConf + " konnte nicht geladen werden!");
     }
-    return styleList;
+    return initializedStyleList;
 });
 getWfsStyleFunction();
