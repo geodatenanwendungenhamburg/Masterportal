@@ -255,6 +255,17 @@ function initializeStyleList (styleGetters, Config, layers, tools, callback) {
 }
 
 /**
+ * adds a style to the style list
+ * @param {Array} jsonStyles Array of styles
+ * @returns  {void}
+ */
+function addToStyleList (jsonStyles) {
+    jsonStyles.forEach(style => {
+        styleList.push(style);
+    });
+}
+
+/**
  * Returns style object by styleId or by layerId
  * @param {string} layerId layerId
  * @returns {object} style object
@@ -265,5 +276,6 @@ function returnStyleObject (layerId) {
 
 export default {
     initializeStyleList,
+    addToStyleList,
     returnStyleObject
 };
