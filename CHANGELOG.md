@@ -5,8 +5,14 @@
 
 ## Unreleased - in development
 ### Added
+- The following packages have been installed:
+    - use-resize-observer: 9.1.0
 ### Changed
 - GeoJSON now also register a featuresloadend function if the source is a cluster.
+- The following packages have been updated:
+    - dependencies:
+        - ol: 7.1.0 to 7.2.2
+        
 ### Deprecated
 ### Removed
 ### Fixed
