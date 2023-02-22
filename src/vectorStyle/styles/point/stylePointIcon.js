@@ -24,7 +24,7 @@ export function getRotationValue (rotation, featureValues) {
 
 /**
 * Creates pointStyle as icon.
-* all features get same image.
+* All features get same image.
 * @see {@link https://community.cesium.com/t/cors-and-billboard-image/3920/2} crossOrigin: "anonymous", is necessary for the 3D mode.
 * @param {Object} attributes - The attributes from the icon
 * @param {Object} feature - The feature
@@ -44,8 +44,6 @@ export function createIconStyle (attributes, feature, isClustered) {
         iconOptions = {
             crossOrigin: "anonymous",
             src: src.startsWith("<svg") ? "data:image/svg+xml;charset=utf-8," + encodeURIComponent(src) : src,
-            width,
-            height,
             scale,
             anchor: [parseFloat(imageOffsetX), parseFloat(imageOffsetY)],
             imgSize: src.indexOf(".svg") > -1 ? [width, height] : ""
