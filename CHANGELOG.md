@@ -8,24 +8,27 @@
 - VectorStyle is now part of the masterportalApi.
 - The following packages have been installed:
     - use-resize-observer: 9.1.0
+
 ### Changed
 - The following packages have been updated:
     - dependencies:
         - ol: 7.1.0 to 7.2.2
-        
+
 ### Deprecated
+
 ### Removed
+
 ### Fixed
 
 ---
 
-## 2.13.0 - 2022-02-16
+## 2.13.0 - 2023-02-16
 ### Changed
 - GeoJSON now also register a featuresloadend function if the source is a cluster.
 
 ---
 
-## 2.12.0 - 2022-01-24
+## 2.12.0 - 2023-01-24
 ### Added
 - Added support for Node LTS version 18.
 - Add possibility to specify additional layerparams for a wmts layer, like opacity for example.
