@@ -3,7 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.14.0 - 2023-02-22
 ### Added
 - VectorStyle is now part of the masterportalApi.
 - The following packages have been installed:
@@ -13,12 +13,6 @@
 - The following packages have been updated:
     - dependencies:
         - ol: 7.1.0 to 7.2.2
-
-### Deprecated
-
-### Removed
-
-### Fixed
 
 ---
 
