@@ -230,14 +230,14 @@ function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
 }
 
 async function returnLegendByStyleId (styleId) {
-    return new Promise(resolve => {
+    return new Promise(function (resolve) {
         const legend = legendsOfAllStyles.find(element => element.id === styleId);
 
         if (legend && (styleId.id !== "default" || legend.legendInformation.length === legendInformationLength)) {
             resolve(legend);
         }
 
-        resolve(this).addEventListener("legendCaptured", event => {
+        this.addEventListener("legendCaptured", event => {
             if (event.id === styleId && event.id !== "default") {
                 resolve(legendsOfAllStyles.find(element => element.id === event.id));
             }
