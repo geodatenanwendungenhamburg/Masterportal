@@ -5,15 +5,7 @@ import * as webgl from "../../src/renderer/webgl";
 import WebGLPointsLayer from "ol/layer/WebGLPoints";
 import Layer from "ol/layer/Layer";
 import {packColor} from "ol/renderer/webgl/shaders";
-import * as styleList from "../../src/vectorStyle/styleList";
-
-
-// jest.mock("../../src/vectorStyle/styleList.js", () => {
-//     const original = jest.requireActual("../../src/vectorStyle/styleList.js");
-
-//     original.returnStyleObject = jest.fn(() => styleObject);
-//     return original;
-// });
+import styleList from "../../src/vectorStyle/styleList";
 
 describe("webgl.js", () => {
     let layerParams, rawLayer, styleRule, styleObject;
