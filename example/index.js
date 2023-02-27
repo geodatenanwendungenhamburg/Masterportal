@@ -51,13 +51,8 @@ const hamburgServicesUrl = "https://geodienste.hamburg.de/services-internet.json
         let isClusterFeature = false;
 
         if (styleObject !== undefined) {
-<<<<<<< HEAD
-            source.once("featuresloadend", event => {
-                event?.features.forEach(element => {
-=======
             source.on("featuresloadend", event => {
                 event.features.forEach(element => {
->>>>>>> master
                     isClusterFeature = false;
                     element.setStyle(createStyle.createStyle(styleObject, element, isClusterFeature, config.wfsImgPath));
                 });
@@ -72,11 +67,11 @@ let map2D = null;
 // For better visibility adding of the other layers, especially "5001", should be commented out.
 // initialize StyleList before map is created for automated lookup of styleObject when creating webgl layer
 // application of regular canvas style happens after loading
-initializeStyleList({}, config, config.layers, undefined, (styleList, error) => {
+styleList.initializeStyleList({}, config, config.layers, undefined, (currentStyleList, error) => {
     if (error) {
         console.error("Die Datei " + config.styleConf + " konnte nicht geladen werden!");
     }
-    return styleList;
+    return currentStyleList;
 });
 
 // */
@@ -283,17 +278,6 @@ window.mpapi.map.addLayer("7003");
 
 /* VectorStyle example */
 // Example for using the vectorStyle that is now implemented in the masterportalAPI.
-<<<<<<< HEAD
 // Apply style to layer "8172"
 // mirrors behavior of Masterportal styling
-=======
-// Hardcoded to show the school layer "8712" as a wfs.
-// For better visibility adding of the other layers, especially "5001", should be commented out.
-styleList.initializeStyleList({}, config, config.layers, undefined, (initializedStyleList, error) => {
-    if (error) {
-        console.error("Die Datei " + config.styleConf + " konnte nicht geladen werden!");
-    }
-    return initializedStyleList;
-});
->>>>>>> master
 getWfsStyleFunction();

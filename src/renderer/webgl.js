@@ -2,7 +2,7 @@ import WebGLPointsLayer from "ol/layer/WebGLPoints";
 import WebGLVectorLayerRenderer from "ol/renderer/webgl/VectorLayer";
 import VectorLayer from "ol/layer/Layer";
 import {packColor} from "ol/renderer/webgl/shaders";
-import {returnStyleObject} from "../vectorStyle/styleList";
+import styleList from "../vectorStyle/styleList";
 import {getRulesForFeature} from "../vectorStyle/lib/getRuleForIndex";
 
 /**
@@ -185,7 +185,7 @@ export function formatFeatureData (feature, excludeTypes = ["boolean"]) {
  * @returns {void}
  */
 export function afterLoading (features, styleId, excludeTypesFromParsing) {
-    const styleObject = returnStyleObject(styleId); // load styleModel to extract rules per feature
+    const styleObject = styleList.returnStyleObject(styleId); // load styleModel to extract rules per feature
 
     if (Array.isArray(features)) {
         features.forEach(feature => {
