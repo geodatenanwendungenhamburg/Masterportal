@@ -85,6 +85,9 @@ function getStyleIdForMapMarkerPoint () {
     if (mapMarkerPointStyleId) {
         styleId = mapMarkerPointStyleId;
     }
+    else {
+        styleId = "defaultMapMarkerPoint";
+    }
     return styleId;
 }
 
@@ -129,6 +132,9 @@ function getStyleIdForMapMarkerPolygon () {
 
     if (mapMarkerPolygonStyleId) {
         styleId = mapMarkerPolygonStyleId;
+    }
+    else {
+        styleId = "defaultMapMarkerPolygon";
     }
     return styleId;
 }
@@ -183,8 +189,6 @@ function parseStyles (data) {
         defaultStyle.defaultHighlightFeaturesPolygon,
         defaultStyle.defaultHighlightFeaturesLine);
 
-    // TODO(roehlipa): Funktionen liefern nur bedingt etwas zurück (wenn eine lokale Variable existiert)
-    //  ==> Es kann sich mMn der gesamte Funktionsaufruf gespart werden, indem man in dieser Funktion eine vorangehende if-Abfrage macht
     styleIds.push(getStyleIdsFromLayers(),
         getStyleIdForMapMarkerPoint(),
         getStyleIdForMapMarkerPolygon(),
@@ -203,7 +207,6 @@ function parseStyles (data) {
 /**
  * Initializes the style list with fetching the services.json.
  * [styleConf="https://geoportal-hamburg.de/lgv-config/style_v3.json"] - the URL to fetch the services from.
- * TODO(roehlipa): Keiner der Parameter wird innerhalb der Funktion tatsächlich als optional behandelt
  * @param {object} [styleGetters] - object with the needed getters from vue store
  * @param {object} [Config] - the Config.js object
  * @param {array} [layers] - an array with the configured layers
@@ -211,7 +214,7 @@ function parseStyles (data) {
  * @param {function} [callback] - called with services after loaded; called with false and error on error
  * @returns {undefined} nothing, add callback to receive styleList
  */
-export function initializeStyleList (styleGetters, Config, layers, tools, callback) {
+function initializeStyleList (styleGetters, Config, layers, tools, callback) {
     configuredLayers = layers;
     configuredTools = tools;
 
@@ -232,7 +235,6 @@ export function initializeStyleList (styleGetters, Config, layers, tools, callba
             status = target.status;
         let data;
 
-        // ok
         if (status === 200) {
             try {
                 data = JSON.parse(target.response);
@@ -243,7 +245,6 @@ export function initializeStyleList (styleGetters, Config, layers, tools, callba
             }
             styleList = parseStyles(data);
         }
-        // not found
         else if (status === 404) {
             console.error("An error occured when trying to fetch services from '" + styleConf + "':", 404);
             return callback(false, true);
@@ -254,18 +255,27 @@ export function initializeStyleList (styleGetters, Config, layers, tools, callba
 }
 
 /**
+ * adds a style to the style list
+ * @param {Array} jsonStyles Array of styles
+ * @returns  {void}
+ */
+function addToStyleList (jsonStyles) {
+    jsonStyles.forEach(style => {
+        styleList.push(style);
+    });
+}
+
+/**
  * Returns style object by styleId or by layerId
  * @param {string} layerId layerId
  * @returns {object} style object
  */
-export function returnStyleObject (layerId) {
-    return styleList.find(styleObject => styleObject.styleId === layerId);
+function returnStyleObject (layerId) {
+    return styleList?.find(styleObject => styleObject.styleId === layerId);
 }
 
-/**
- * returns the current styleList, development purposes only
- * @returns {object[]} the current styleList
- */
-export function getStyleList () {
-    return styleList;
-}
+export default {
+    initializeStyleList,
+    addToStyleList,
+    returnStyleObject
+};

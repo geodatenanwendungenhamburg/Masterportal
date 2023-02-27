@@ -118,6 +118,9 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
             provider = this.createProviderForStaticImageSource(source);
         }
         else if (source instanceof WMTS) {
+            if (typeof source.getUrls !== "function" || !Array.isArray(source.getUrls())) {
+                return null;
+            }
             provider = new Cesium.WebMapTileServiceImageryProvider({
                 url: source.getUrls()[0],
                 format: source.getFormat(),
