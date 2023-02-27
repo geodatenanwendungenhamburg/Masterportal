@@ -10,6 +10,7 @@ import * as vectorTile from "./layer/vectorTile";
 import * as oaf from "./layer/oaf";
 import * as terrain from "./layer/terrain";
 import * as entities from "./layer/entities";
+import * as webgl from "./renderer/webgl";
 import Tileset from "./layer/tileset";
 import * as layerLib from "./layer/lib";
 import {search, setGazetteerUrl} from "./searchAddress";
@@ -34,5 +35,6 @@ export {
     rawLayerList,
     ping,
     search,
-    crs
+    crs,
+    webgl
 };
