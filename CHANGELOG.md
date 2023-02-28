@@ -3,6 +3,19 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased - in development
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
+
 ## 2.15.0 - 2023-02-28
 ### Added
 - WebGL Render-Pipeline for all VectorLayer types can be called using {"renderer": "webgl"} in config.json
