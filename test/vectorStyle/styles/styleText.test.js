@@ -16,7 +16,8 @@ describe("styleText", () => {
             type: "icon",
             clusterType: "icon",
             legendValue: "Krankenhaus",
-            imageName: "krankenhaus.png"
+            imageName: "krankenhaus.png",
+            labelField: ""
         },
         isClustered = false,
         styleTextClass = new TextStyle(feature, style, isClustered);
