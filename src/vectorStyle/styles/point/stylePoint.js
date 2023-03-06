@@ -46,8 +46,12 @@ class PointStyle extends StyleClass {
      * @returns {ol/style} - The created style.
      */
     getStyle () {
-        const type = this.attributes.type.toLowerCase(),
-            isClustered = this.isClustered;
+        const isClustered = this.isClustered;
+        let type = this.attributes.type.toLowerCase();
+
+        if (isClustered && this.feature.get("features")?.length > 1) {
+            type = this.attributes.clusterType.toLowerCase();
+        }
 
         if (type === "icon") {
             return createIconStyle(this.attributes, this.feature, isClustered);

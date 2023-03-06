@@ -14,6 +14,7 @@
 
 ### Fixed
 - The `labelField` attribute is now evaluated correctly for a text style.
+- The styling for clustered features works now.
 
 ---
 
