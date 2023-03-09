@@ -3,6 +3,18 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased - in development
+###
+Added
+###
+Changed
+###
+Deprecated
+### Removed
+### Fixed
+
+---
+
 ## 2.15.1 - 2023-03-09
 ### Fixed
 - The `labelField` attribute is now evaluated correctly for a text style.
