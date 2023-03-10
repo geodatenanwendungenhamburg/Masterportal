@@ -12,7 +12,7 @@ Changed
 Deprecated
 ### Removed
 ### Fixed
-
+- Fix imports in createLegendInfo.js
 ---
 
 ## 2.15.1 - 2023-03-09
