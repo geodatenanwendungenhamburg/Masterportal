@@ -4,6 +4,7 @@ import GeoJSON from "ol/format/GeoJSON.js";
 import {createVectorSource, createClusterVectorSource} from "./vector";
 import {onError, onLoad} from "../lib/wfsUtil";
 import {getParamsUrl} from "../lib/oafUtil";
+import * as webgl from "../renderer/webgl";
 
 /**
  * Layer specification as in services.json.
@@ -170,6 +171,9 @@ function createUrl (rawLayer) {
 /**
  * Creates an ol/source element for the rawLayer by OAF (XML or Geojson)
  * @param {rawLayer} rawLayer layer specification as in services.json
+ * @param {"default" | "webgl" | undefined} [rawLayer.renderer] - use default canvas or webgl renderer
+ * @param {string} [rawLayer.styleId] - the styleId of the layer, only necessary for webgl style pipeline
+ * @param {string[]} [rawLayer.excludeTypesFromParsing] - types that should not be parsed from strings, only necessary for webgl
  * @param {options} [options] additional options
  * {@link https://openlayers.org/en/latest/apidoc/module-ol_source_Vector-VectorSource.html failure/success see}
  * @returns {(ol.source.VectorSource|ol.source.Cluster)} VectorSource or Cluster, depending on whether clusterDistance is set.
@@ -181,6 +185,12 @@ export function createLayerSource (rawLayer, options = {}) {
 
     const url = createUrl(rawLayer),
         source = getLayerSource(rawLayer, options, url);
+
+    if (rawLayer.renderer === "webgl") {
+        source.once("featuresloadend", event => {
+            webgl.afterLoading(event?.features, rawLayer.styleId, rawLayer.excludeTypesFromParsing);
+        });
+    }
 
     return source;
 }
@@ -194,11 +204,31 @@ export function createLayerSource (rawLayer, options = {}) {
  * @returns {ol.Layer} Layer that can be added to map.
  */
 export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {}) {
-    const source = createLayerSource(rawLayer, options),
-        layer = new VectorLayer(Object.assign({
-            source,
-            id: rawLayer.id
-        }, layerParams));
+    let layer, source;
+
+    // use WebGL render pipeline, if specified
+    if (layerParams.renderer === "webgl") {
+        source = createLayerSource({
+            ...rawLayer,
+            renderer: layerParams.renderer,
+            styleId: layerParams.styleId,
+            excludeTypesFromParsing: layerParams.excludeTypesFromParsing
+        }, options);
+        layer = webgl.createLayer({
+            ...rawLayer,
+            ...layerParams,
+            source
+        });
+
+        return layer;
+    }
+
+    // use default canvas renderer
+    source = createLayerSource(rawLayer, options);
+    layer = new VectorLayer(Object.assign({
+        source,
+        id: rawLayer.id
+    }, layerParams));
 
     if (options.style) {
         layer.setStyle(options.style);

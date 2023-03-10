@@ -84,12 +84,13 @@ function injectErrorCallback (layer, errorCallback) {
  * This function is available on all ol/Map instances.
  * @param {(string|ol/layer/Base)} layerOrId - if of layer to add to map
  * @param {object} [params] - optional parameter object
+ * @param {boolean} [params.layerParams={}] - additional layerParams specified in portalConfig
  * @param {boolean} [params.visibility=true] - whether added layer is initially visible
  * @param {Number} [params.transparency=0] - how visible the layer is initially
  * @param {Function} [params.errorCallback=console.error] - callback for layer source error events
  * @returns {?ol.Layer} added layer
  */
-function addLayer (layerOrId, params = {visibility: true, transparency: 0, errorCallback: console.error}) {
+function addLayer (layerOrId, params = {layerParams: {}, visibility: true, transparency: 0, errorCallback: console.error}) {
     const errorCallback = typeof params.errorCallback === "function"
         ? params.errorCallback
         : console.error;
@@ -108,7 +109,7 @@ function addLayer (layerOrId, params = {visibility: true, transparency: 0, error
             console.error("Layer with id '" + layerOrId + "' has unknown type '" + rawLayer.typ + "'. No layer added to map.");
             return null;
         }
-        layer = layerBuilder.createLayer(rawLayer, {}, {map: this});
+        layer = layerBuilder.createLayer(rawLayer, {layerParams: params.layerParams}, {map: this});
         layer.setVisible(typeof params.visibility === "boolean" ? params.visibility : true);
         layer.setOpacity(typeof params.transparency === "number" ? (100 - params.transparency) / 100 : 1);
         injectErrorCallback(layer, errorCallback);
@@ -169,7 +170,7 @@ export function createMap (config = defaults, {mapParams, callback, errorCallbac
     rawLayerList.initializeLayerList(config.layerConf, (param, error) => {
         getInitialLayers(config)
             .forEach(layer => {
-                map.addLayer(layer.id, {errorCallback});
+                map.addLayer(layer.id, {layerParams: layer, errorCallback});
             });
 
         if (typeof callback === "function") {

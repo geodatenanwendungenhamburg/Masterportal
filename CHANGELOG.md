@@ -4,20 +4,33 @@
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
 ## Unreleased - in development
-### Added
-
-### Changed
-
-### Deprecated
-
+###
+Added
+###
+Changed
+###
+Deprecated
 ### Removed
-
 ### Fixed
 
 ---
+
+## 2.15.1 - 2023-03-09
+### Fixed
+- The `labelField` attribute is now evaluated correctly for a text style.
+- The styling for clustered features works now.
+
+---
+
+## 2.15.0 - 2023-02-28
+### Added
+- WebGL Render-Pipeline for all VectorLayer types can be called using {"renderer": "webgl"} in config.json
+
+---
+
 ## 2.14.0 - 2023-02-22
 ### Added
-- VectorStyle is now part of the masterportalApi.
+- VectorStyle is now part of the masterportalAPI.
 - The following packages have been installed:
     - use-resize-observer: 9.1.0
 

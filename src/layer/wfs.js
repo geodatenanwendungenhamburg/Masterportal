@@ -1,6 +1,7 @@
 import VectorLayer from "ol/layer/Vector.js";
 import {bbox} from "ol/loadingstrategy.js";
 import {WFS} from "ol/format.js";
+import * as webgl from "../renderer/webgl";
 
 import {createVectorSource, createClusterVectorSource} from "./vector";
 import {getVersion, onError, onLoad} from "../lib/wfsUtil";
@@ -14,6 +15,9 @@ import {getVersion, onError, onLoad} from "../lib/wfsUtil";
  * @property {string} featureNS - the namespace URI used for features
  * @property {number} clusterDistance - pixel radius, within this radius, all features are "clustered" into one feature - if available, a cluster source is created.
  * @property {function} style - style function to style the layer if options.style is not set
+ * @property {string} [renderer] - use default canvas or webgl renderer
+ * @property {string} [styleId] - the styleId of the layer
+ * @property {string[]} [excludeTypesFromParsing] - types that should not be parsed from strings, only necessary for webgl
  */
 
 /**
@@ -95,7 +99,7 @@ function loadWFS (url, params, source, {onErrorFn, success, failure}, options) {
  * @param {string} filter xml resource as wfs filter
  * @param {string} url url to load features from
  * @param {ol.source.VectorSource} source the vector source
-* @param {object} errorAndSuccessFns functions to handle error and success
+ * @param {object} errorAndSuccessFns functions to handle error and success
  * @param {function} errorAndSuccessFns.onErrorFn  Calls options.onLoadingError and 'featuresloaderror' event will be fired by using failure callback.
  * @param {function} errorAndSuccessFns.success  callback: 'featuresloadend' event will be fired
  * @param {function} errorAndSuccessFns.failure failure callback to ol.VectorLayer, fires 'featuresloaderror' event
@@ -138,6 +142,9 @@ function createUrl (rawLayer, version, projection, bboxParam) {
  * Creates an ol/source element for the rawLayer by using a loader.
  * The 'featuresloadend' and 'featuresloaderror' events will be fired by using success and failure callbacks of the loader.
  * @param {rawLayer} rawLayer layer specification as in services.json
+ * @param {"default" | "webgl" | undefined} [rawLayer.renderer] - use default canvas or webgl renderer
+ * @param {string} [rawLayer.styleId] - the styleId of the layer, only necessary for webgl style pipeline
+ * @param {string[]} [rawLayer.excludeTypesFromParsing] - types that should not be parsed from strings, only necessary for webgl
  * @param {options} [options] additional options
  * {@link https://openlayers.org/en/latest/apidoc/module-ol_source_Vector-VectorSource.html failure/success see}
  * @returns {(ol.source.VectorSource|ol.source.Cluster)} VectorSource or Cluster, depending on whether clusterDistance is set.
@@ -186,9 +193,13 @@ export function createLayerSource (rawLayer, options = {}) {
     if (options.beforeLoading) {
         source.once("featuresloadstart", () => options.beforeLoading());
     }
-
     if (rawLayer.clusterDistance) {
         return createClusterVectorSource(source, rawLayer.clusterDistance, options.clusterGeometryFunction);
+    }
+    if (rawLayer.renderer === "webgl") {
+        source.once("featuresloadend", event => {
+            webgl.afterLoading(event?.features, rawLayer.styleId, rawLayer.excludeTypesFromParsing);
+        });
     }
     return source;
 }
@@ -202,11 +213,31 @@ export function createLayerSource (rawLayer, options = {}) {
  * @returns {ol.Layer} Layer that can be added to map.
  */
 export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {}) {
-    const source = createLayerSource(rawLayer, options),
-        layer = new VectorLayer(Object.assign({
-            source,
-            id: rawLayer.id
-        }, layerParams));
+    let layer, source;
+
+    // use WebGL render pipeline, if specified
+    if (layerParams.renderer === "webgl") {
+        source = createLayerSource({
+            ...rawLayer,
+            renderer: layerParams.renderer,
+            styleId: layerParams.styleId,
+            excludeTypesFromParsing: layerParams.excludeTypesFromParsing
+        }, options);
+        layer = webgl.createLayer({
+            ...rawLayer,
+            ...layerParams,
+            source
+        });
+
+        return layer;
+    }
+
+    // use default canvas renderer
+    source = createLayerSource(rawLayer, options);
+    layer = new VectorLayer(Object.assign({
+        source,
+        id: rawLayer.id
+    }, layerParams));
 
     if (options.style) {
         layer.setStyle(options.style);

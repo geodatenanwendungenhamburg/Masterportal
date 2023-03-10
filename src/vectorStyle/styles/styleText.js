@@ -38,7 +38,7 @@ class TextStyle extends StyleClass {
     getStyle () {
         const isClustered = this.isClustered,
             feature = this.feature,
-            labelField = this.labelField;
+            labelField = this.attributes.labelField;
 
         if (isClustered && feature.get("features")?.length > 1 && this.attributes.clusterTextType !== "none") {
             return this.createClusteredTextStyle();

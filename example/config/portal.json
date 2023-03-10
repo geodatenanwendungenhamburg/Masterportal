@@ -33,8 +33,47 @@
     {
       "id": "8712",
       "name": "Schulinfosystem",
+      "renderer": "default",
       "styleId": "8712",
       "typ": "WFS"
+    },
+    {
+      "id": "1534",
+      "renderer": "webgl",
+      "isPointLayer": false,
+      "styleId": "1534",
+      "typ": "WFS"
+    },
+    {
+      "id": "2003",
+      "renderer": "webgl",
+      "hitTolerance": 20,
+      "isPointLayer": true,
+      "style": {
+          "symbol": {
+              "symbolType": "circle",
+              "size": [
+                  "interpolate",
+                  ["linear"],
+                  ["get", "Total_votes"],
+                  0,
+                  6,
+                  18,
+                  24
+              ],
+              "color": [
+                  "interpolate",
+                  ["linear"],
+                  ["get", "compound"],
+                  -1,
+                  [240, 40, 30],
+                  1,
+                  [0, 200, 60]
+              ],
+              "opacity": 0.8,
+              "rotateWithView": true
+          }
+      }
     }
   ],
   "cesiumLib":"https://geoportal-hamburg.de/mastercode/cesium/1_99/Cesium.js",
