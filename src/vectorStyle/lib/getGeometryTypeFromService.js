@@ -86,11 +86,12 @@ function getTypeAttributesFromSubelements (subElements = [], styleGeometryType =
 * @param   {string} featureType wfs feature type from layer
 * @param   {string[] | string} styleGeometryType The configured geometry type of the layer
 * @param   {boolean} isSecured true if wfs is secured
+* @param   {String} wfsImgPath path to wfsImg from Config
 * @param {function} [callback] - called with services after loaded; called with false and error on error
 * @returns {void}
 */
 // eslint-disable-next-line max-params
-function getGeometryTypeFromWFS (rules, wfsURL, version, featureType, styleGeometryType, isSecured, callback) {
+function getGeometryTypeFromWFS (rules, wfsURL, version, featureType, styleGeometryType, isSecured, wfsImgPath, callback) {
     const params = {
         "SERVICE": "WFS",
         "VERSION": version,
@@ -114,7 +115,7 @@ function getGeometryTypeFromWFS (rules, wfsURL, version, featureType, styleGeome
             const subElements = getSubelementsFromXML(responseXML, featureType),
                 geometryTypes = getTypeAttributesFromSubelements(subElements, styleGeometryType);
 
-            createLegendInfo(rules, geometryTypes);
+            createLegendInfo(rules, geometryTypes, wfsImgPath);
         }).catch(error => {
             return callback(error);
         });
@@ -125,10 +126,11 @@ function getGeometryTypeFromWFS (rules, wfsURL, version, featureType, styleGeome
  * @param   {object[]} rules styling rules from the styleObject
  * @param   {string} oafURL url from layer
  * @param   {String} collection the collection name to fetch geometry type for
+ * @param   {String} wfsImgPath path to wfsImg from Config
  * @param {function} [callback] - called with services after loaded; called with false and error on error
  * @returns {void}
  */
-function getGeometryTypeFromOAF (rules, oafURL, collection, callback) {
+function getGeometryTypeFromOAF (rules, oafURL, collection, wfsImgPath, callback) {
     const url = oafURL + "/collections/" + collection + "/items?limit=1";
 
     fetch(url, {
@@ -140,7 +142,7 @@ function getGeometryTypeFromOAF (rules, oafURL, collection, callback) {
         const geometryType = response.data?.features[0]?.geometry?.type;
 
         if (geometryType) {
-            createLegendInfo(rules, [geometryType]);
+            createLegendInfo(rules, [geometryType], wfsImgPath);
         }
     }).catch(error => {
         return callback(error);
