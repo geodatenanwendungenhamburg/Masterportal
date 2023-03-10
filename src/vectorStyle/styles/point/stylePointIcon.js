@@ -52,7 +52,7 @@ export function createIconStyle (attributes, feature, isClustered) {
     if (!showCluster) {
         iconOptions.anchorXUnits = attributes.imageOffsetXUnit;
         iconOptions.anchorYUnits = attributes.imageOffsetYUnit;
-        iconOptions.rotation = getRotationValue(attributes.rotation, feature.getProperties());
+        iconOptions.rotation = feature ? getRotationValue(attributes.rotation, feature.getProperties()) : 0;
     }
 
     return new Style({
