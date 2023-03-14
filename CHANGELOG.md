@@ -3,14 +3,10 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-###
-Added
+## 2.15.2 - 2023-03-14
 ###
 Changed
-###
-Deprecated
-### Removed
+- Update parameters for getGeometryTypeFromService.getGeometryTypeFromWFS and getGeometryTypeFromService.getGeometryTypeFromOAF to pass wfsImgPath.
 ### Fixed
 - Fix imports in createLegendInfo.js
 ---
