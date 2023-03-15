@@ -6,6 +6,7 @@
 ## Unreleased - in development
 ### Added
 ### Changed
+- Added support for `npm` version ^9.1.3.
 - The following packages have been updated:
     - dependencies:
         - core-js: 3.27.1 to 3.29.1
