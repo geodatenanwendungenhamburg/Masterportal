@@ -4,24 +4,37 @@
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
 ## Unreleased - in development
-###
-Added
-###
-Changed
-###
-Deprecated
-### 
-Removed
-### 
-Fixed
+### Added
+### Changed
+- The following packages have been updated:
+    - dependencies:
+        - core-js: 3.27.1 to 3.29.1
+        - ol: 7.2.2 to 7.3.0
+        - proj4: 2.8.1 to 2.9.0
+    - devDependencies:
+        - @babel/core: 7.20.12 to 7.21.3
+        - @babel/plugin-transform-modules-commonjs: 7.20.11 to 7.21.2
+        - eslint: 8.31.0 to 8.36.0
+        - jest: 29.3.1 to 29.5.0
+        - jest-environment-jsdom: 29.3.1 to 29.5.0
+        - jsdoc: 4.0.0 to 4.0.2
+        - sass: 1.57.1 to 1.59.3
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
 ---
 
 ## 2.15.2 - 2023-03-14
-###
-Changed
+### Changed
 - Update parameters for getGeometryTypeFromService.getGeometryTypeFromWFS and getGeometryTypeFromService.getGeometryTypeFromOAF to pass wfsImgPath.
+
 ### Fixed
 - Fix imports in createLegendInfo.js
+
 ---
 
 ## 2.15.1 - 2023-03-09
