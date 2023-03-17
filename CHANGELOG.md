@@ -28,7 +28,7 @@
 ### Fixed
 
 - Issue Masterportal.#870: Features with `null` style were shown with default style. However, the default style is only supposed to be used for fallbacks; `null` style features must explicitly be invisible. This has been resolved.
-
+- Style of legend is now always not clustered.
 ---
 
 ## 2.15.2 - 2023-03-14

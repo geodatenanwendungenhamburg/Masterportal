@@ -242,23 +242,69 @@ describe("createStyle", () => {
 });
 
 describe("getSimpleGeometryStyle", function () {
-    it("should return ol point style", function () {
-        expect(createStyle.getSimpleGeometryStyle("Point", jsonObjects[0], rules[0], wfsImgPathFromConfig)).toBeInstanceOf(PointStyle);
-        expect(typeof createStyle.getSimpleGeometryStyle("Point", jsonObjects[0], rules[0], wfsImgPathFromConfig).getStyle().getImage().getStroke().getColor()).toBe("object");
-        expect(createStyle.getSimpleGeometryStyle("Point", jsonObjects[0], rules[0], wfsImgPathFromConfig).getStyle().getImage().getStroke().getColor()).toEqual([0, 0, 0, 1]);
+    let isClustered = false;
+
+    it("should return ol point style - not clustered", function () {
+        const styleObject = createStyle.getSimpleGeometryStyle("Point", jsonObjects[0], rules[0], isClustered, wfsImgPathFromConfig);
+
+        expect(styleObject).toBeInstanceOf(PointStyle);
+        expect(typeof styleObject.getStyle().getImage().getStroke().getColor()).toBe("object");
+        expect(styleObject.getStyle().getImage().getStroke().getColor()).toEqual([255, 0, 0, 1]);
+        expect(styleObject.getLegendInfos()[0].styleObject.circleStrokeColor).toEqual([255, 0, 0, 1]);
     });
-    it("should return ol linestring style", function () {
-        expect(createStyle.getSimpleGeometryStyle("LineString", jsonObjects[1], rules[1], wfsImgPathFromConfig)).toBeInstanceOf(LineStringStyle);
-        expect(typeof createStyle.getSimpleGeometryStyle("LineString", jsonObjects[1], rules[1], wfsImgPathFromConfig).getStyle().getStroke().getColor()).toBe("object");
-        expect(createStyle.getSimpleGeometryStyle("LineString", jsonObjects[1], rules[1], wfsImgPathFromConfig).getStyle().getStroke().getColor()).toEqual([255, 0, 0, 1]);
+    it("should return ol linestring style - not clustered", function () {
+        const styleObject = createStyle.getSimpleGeometryStyle("LineString", jsonObjects[1], rules[1], isClustered, wfsImgPathFromConfig);
+
+        expect(styleObject).toBeInstanceOf(LineStringStyle);
+        expect(typeof styleObject.getStyle().getStroke().getColor()).toBe("object");
+        expect(styleObject.getStyle().getStroke().getColor()).toEqual([255, 0, 0, 1]);
+        expect(styleObject.getLegendInfos()[0].styleObject.lineStrokeColor).toEqual([255, 0, 0, 1]);
     });
-    it("should return ol polygon style", function () {
-        expect(createStyle.getSimpleGeometryStyle("Polygon", jsonObjects[2], rules[2], wfsImgPathFromConfig)).toBeInstanceOf(PolygonStyle);
-        expect(typeof createStyle.getSimpleGeometryStyle("Polygon", jsonObjects[2], rules[2], wfsImgPathFromConfig).getStyle().getStroke().getColor()).toBe("object");
-        expect(createStyle.getSimpleGeometryStyle("Polygon", jsonObjects[2], rules[2], wfsImgPathFromConfig).getStyle().getStroke().getColor()).toEqual([255, 0, 0, 255]);
+    it("should return ol polygon style - not clustered", function () {
+        const styleObject = createStyle.getSimpleGeometryStyle("Polygon", jsonObjects[2], rules[2], isClustered, wfsImgPathFromConfig);
+
+        expect(styleObject).toBeInstanceOf(PolygonStyle);
+        expect(typeof styleObject.getStyle().getStroke().getColor()).toBe("object");
+        expect(styleObject.getStyle().getStroke().getColor()).toEqual([255, 0, 0, 255]);
+        expect(styleObject.getStyle().getFill().getColor()).toEqual([10, 200, 100, 0.5]);
+        expect(styleObject.getLegendInfos()[0].styleObject.polygonStrokeColor).toEqual([255, 0, 0, 255]);
+        expect(styleObject.getLegendInfos()[0].styleObject.polygonFillColor).toEqual([10, 200, 100, 0.5]);
     });
-    it("should return ol default style", function () {
-        expect(createStyle.getSimpleGeometryStyle("not exist", jsonObjects[0], null, wfsImgPathFromConfig)).toBeInstanceOf(Style);
+    it("should return ol default style - not clustered", function () {
+        expect(createStyle.getSimpleGeometryStyle("not exist", jsonObjects[0], null, isClustered, wfsImgPathFromConfig)).toBeInstanceOf(Style);
+    });
+
+    it("should return ol point style - clustered", function () {
+        isClustered = true;
+        const styleObject = createStyle.getSimpleGeometryStyle("Point", jsonObjects[0], rules[0], isClustered, wfsImgPathFromConfig);
+
+        expect(styleObject).toBeInstanceOf(PointStyle);
+        expect(typeof styleObject).toBe("object");
+        expect(styleObject.getStyle().getImage().getStroke().getColor()).toEqual([0, 0, 0, 1]);
+        expect(styleObject.getLegendInfos()[0].styleObject.circleStrokeColor).toEqual([255, 0, 0, 1]);
+    });
+    it("should return ol linestring style - clustered", function () {
+        isClustered = true;
+        const styleObject = createStyle.getSimpleGeometryStyle("LineString", jsonObjects[1], rules[1], isClustered, wfsImgPathFromConfig);
+
+        expect(styleObject).toBeInstanceOf(LineStringStyle);
+        expect(typeof styleObject.getStyle().getStroke().getColor()).toBe("object");
+        expect(styleObject.getStyle().getStroke().getColor()).toEqual([255, 0, 0, 1]);
+        expect(styleObject.getLegendInfos()[0].styleObject.lineStrokeColor).toEqual([255, 0, 0, 1]);
+    });
+    it("should return ol polygon style - clustered", function () {
+        isClustered = true;
+        const styleObject = createStyle.getSimpleGeometryStyle("Polygon", jsonObjects[2], rules[2], isClustered, wfsImgPathFromConfig);
+
+        expect(styleObject).toBeInstanceOf(PolygonStyle);
+        expect(typeof styleObject.getStyle().getStroke().getColor()).toBe("object");
+        expect(styleObject.getStyle().getStroke().getColor()).toEqual([255, 0, 0, 255]);
+        expect(styleObject.getLegendInfos()[0].styleObject.polygonStrokeColor).toEqual([255, 0, 0, 255]);
+        expect(styleObject.getLegendInfos()[0].styleObject.polygonFillColor).toEqual([10, 200, 100, 0.5]);
+    });
+    it("should return ol default style - clustered", function () {
+        isClustered = true;
+        expect(createStyle.getSimpleGeometryStyle("not exist", jsonObjects[0], null, isClustered, wfsImgPathFromConfig)).toBeInstanceOf(Style);
     });
 });
 

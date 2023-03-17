@@ -32,7 +32,8 @@ function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsIm
     const style = rule?.style,
         legendValue = style ? style.legendValue : null,
         alreadyExisitingStyle = uniqueStyles.find(element => element.featureStyle === style && element.geometryType === geometryType);
-    let styleObject;
+    let styleObject,
+        styleObjectForLegend = null;
 
     feature.legendValue = legendValue ? legendValue : null;
 
@@ -41,12 +42,21 @@ function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsIm
     }
     else if (geometryType === "Point") {
         styleObject = new PointStyle(feature, style, isClustered);
+        if (isClustered) {
+            styleObjectForLegend = new PointStyle(feature, style, false);
+        }
     }
     else if (geometryType === "LineString") {
         styleObject = new LineStringStyle(feature, style, isClustered);
+        if (isClustered) {
+            styleObjectForLegend = new LineStringStyle(feature, style, false);
+        }
     }
     else if (geometryType === "Polygon") {
         styleObject = new PolygonStyle(feature, style, isClustered);
+        if (isClustered) {
+            styleObjectForLegend = new PolygonStyle(feature, style, false);
+        }
     }
     else if (geometryType === "Cesium") {
         styleObject = new CesiumStyle(rule);
@@ -63,9 +73,14 @@ function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsIm
         console.warn("Geometry type not implemented: " + geometryType + " default style ist used for feature " + feature);
         return new Style();
     }
+
+    if (styleObjectForLegend !== null) {
+        styleObjectForLegend.initialize(feature, style, false, wfsImgPathFromConfig);
+        styleObjectForLegend.legendValue = legendValue;
+    }
     uniqueStyles.push({featureStyle: style, featureStyleObject: styleObject, geometryType});
     styleObject.initialize(feature, style, isClustered, wfsImgPathFromConfig);
-    styleObject.addLegendInfo(geometryType, styleObject, rule);
+    styleObject.addLegendInfo(geometryType, styleObjectForLegend === null ? styleObject : styleObjectForLegend, rule);
     styleObject.legendValue = legendValue;
     return styleObject;
 }
