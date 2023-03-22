@@ -328,8 +328,7 @@ describe("getGeometryStyle", function () {
         expect(Array.isArray(createStyle.getGeometryStyle(jsonObjects[0], rules, wfsImgPathFromConfig).getStyle().getImage().getStroke().getColor())).toBe(true);
         expect(createStyle.getGeometryStyle(jsonObjects[0], rules, wfsImgPathFromConfig).getStyle().getImage().getStroke().getColor()).toEqual([0, 0, 0, 1]);
     });
-    it("should return default style if no rule is found", function () {
-        expect(Array.isArray(createStyle.getGeometryStyle(jsonObjects[0], [], wfsImgPathFromConfig).getStyle().getImage().getStroke().getColor())).toBe(true);
-        expect(createStyle.getGeometryStyle(jsonObjects[0], [], wfsImgPathFromConfig).getStyle().getImage().getStroke().getColor()).toEqual([0, 0, 0, 1]);
+    it("should return null as style if no rule is found", function () {
+        expect(createStyle.getGeometryStyle(jsonObjects[0], [], wfsImgPathFromConfig).getStyle()).toBe(null);
     });
 });

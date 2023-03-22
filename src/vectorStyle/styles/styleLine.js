@@ -34,6 +34,10 @@ class LineStringStyle extends StyleClass {
      * @returns {ol/style/Style} - The created style.
      */
     getStyle () {
+        if (this.nullStyle) {
+            return null;
+        }
+
         return new Style({
             stroke: new Stroke({
                 lineCap: this.attributes.lineStrokeCap,

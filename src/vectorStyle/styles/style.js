@@ -14,6 +14,7 @@ class StyleClass {
         this.attributes = {};
         this.legendInfos = [];
         this.styleMultiGeomOnlyWithRule = false;
+        this.nullStyle = false;
     }
 
     /**
@@ -43,11 +44,15 @@ class StyleClass {
         // check if styles object is defined
         // if not, use defaults instead
         if (styles) {
+            this.nullStyle = false;
             Object.keys(styles).forEach(element => {
                 const value = styles[element];
 
                 this.attributes[element] = value;
             });
+        }
+        else {
+            this.nullStyle = true;
         }
     }
 

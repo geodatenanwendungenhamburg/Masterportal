@@ -46,6 +46,10 @@ class PointStyle extends StyleClass {
      * @returns {ol/style} - The created style.
      */
     getStyle () {
+        if (this.nullStyle) {
+            return null;
+        }
+
         const isClustered = this.isClustered;
         let type = this.attributes.type.toLowerCase();
 

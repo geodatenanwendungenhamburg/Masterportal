@@ -36,6 +36,10 @@ class PolygonStyle extends StyleClass {
      * @returns {ol/style} - The created style.
      */
     getStyle () {
+        if (this.nullStyle) {
+            return null;
+        }
+
         const polygonFillColor = this.attributes.polygonFillColor,
             polygonFillHatch = this.attributes.polygonFillHatch;
 
