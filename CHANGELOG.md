@@ -3,6 +3,19 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased - in development
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
+
 ## 2.16.0 - 2023-03-28
 ### Added
 - Added support for `npm` version ^9.1.3.
