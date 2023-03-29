@@ -18,7 +18,8 @@ let styleList,
     highlightFeaturesPolygonStyleId,
     highlightFeaturesLineStyleId,
     styleConf,
-    featureViaUrlLayers;
+    featureViaUrlLayers,
+    zoomToFeatureId;
 
 /**
  * Gathers the styleIds of the layers.
@@ -196,9 +197,10 @@ function parseStyles (data) {
         getStyleIdForHighlightFeaturesPolygon(),
         getStyleIdForHighlightFeaturesLine(),
         getStyleIdsFromTools(),
-        getFeatureViaURLStyles());
+        getFeatureViaURLStyles(),
+        zoomToFeatureId);
 
-    styleIds = styleIds.reduce((acc, val) => acc.concat(val), []);
+    styleIds = styleIds.reduce((acc, val) => acc.concat(val), []).filter(item => item);
     filteredData = dataWithDefaultValue.filter(styleObject => styleIds.includes(styleObject.styleId));
 
     return filteredData;
@@ -223,6 +225,7 @@ function initializeStyleList (styleGetters, Config, layers, tools, callback) {
     highlightFeaturesPointStyleId = styleGetters.highlightFeaturesPointStyleId;
     highlightFeaturesPolygonStyleId = styleGetters.highlightFeaturesPolygonStyleId;
     highlightFeaturesLineStyleId = styleGetters.highlightFeaturesLineStyleId;
+    zoomToFeatureId = styleGetters.zoomToFeatureId;
 
     styleConf = Config.styleConf;
     featureViaUrlLayers = Config.featureViaURL?.layers;
