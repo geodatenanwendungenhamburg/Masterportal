@@ -220,11 +220,14 @@ export function createNominalPointStyle (attributes, feature, defaultImageName) 
     if (styleScalingShape === "CIRCLESEGMENTS") {
         svgPath = createNominalCircleSegments(workingFeature, attributes);
         style = createSVGStyle(svgPath, 5);
+        style.type = "CIRCLESEGMENTS";
+        style.scalingAttribute = workingFeature.get(attributes.scalingAttribute);
     }
 
     // create style from svg and image
     if (imageName !== defaultImageName) {
         imageStyle = createIconStyle(attributes, feature);
+        imageStyle.type = "imageStyle";
         style = [style, imageStyle];
     }
 
