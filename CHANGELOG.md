@@ -7,7 +7,7 @@
 ### Added
 
 ### Changed
-
+- ol map default interactions and keyboardEventTarget can now be set by config parameters.
 ### Deprecated
 
 ### Removed
