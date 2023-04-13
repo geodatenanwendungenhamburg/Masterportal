@@ -150,7 +150,7 @@ export function createMap (config = defaults, {mapParams, callback, errorCallbac
     crs.registerProjections(config.namedProjections);
     setBackgroundImage(config);
     setGazetteerUrl(config.gazetteerUrl);
-    const selectedInteractions = config.mapInteractions.interactionModes ? config.mapInteractions.interactionModes : {dragPan: false, altShiftDragRotate: false, pinchRotate: false},
+    const selectedInteractions = config.mapInteractions?.interactionModes ? config.mapInteractions?.interactionModes : {dragPan: false, altShiftDragRotate: false, pinchRotate: false},
         map = new Map(Object.assign({
             target: config.target || defaults.target,
             interactions: olDefaultInteractions(selectedInteractions).extend([
@@ -162,7 +162,7 @@ export function createMap (config = defaults, {mapParams, callback, errorCallbac
             ]),
             controls: [],
             view: createMapView(config),
-            keyboardEventTarget: config.mapInteractions.keyboardEventTarget ? config.mapInteractions.keyboardEventTarget : false
+            keyboardEventTarget: config.mapInteractions?.keyboardEventTarget ? config.mapInteractions?.keyboardEventTarget : false
         }, mapParams));
 
     map.set("mapMode", "2D");
