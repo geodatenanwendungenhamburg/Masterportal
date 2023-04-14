@@ -4,7 +4,7 @@ import VectorTileSource from "ol/source/VectorTile";
 import OpenLayersTileGrid from "ol/tilegrid/TileGrid";
 import {extentFromProjection} from "ol/tilegrid";
 
-import {stylefunction} from "ol-mapbox-style";
+import {stylefunction, apply} from "ol-mapbox-style";
 
 import defaults from "../defaults";
 
@@ -161,13 +161,25 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
  * @param {ol.layer.VectorTile} layer - layer to style
  * @param {object} glStyle - MapBox style definition
  * @param {options} [styleParams={}] - Additional options for style specification
+ * @param {string} url - MapBox style url
  * @returns {void}
  */
-export function setStyle (layer, glStyle, {options = {}} = {}) {
-    stylefunction(layer, glStyle,
-        options.sourceId ? options.sourceId : Object.keys(glStyle.sources)[0],
-        options.resolutions,
-        options.spriteData,
-        options.spriteImageUrl,
-        options.getFonts);
+export function setStyle (layer, glStyle, {options = {}} = {}, url) {
+    Object.keys(glStyle.sources).forEach((key) => {
+        const glStyleSourceId = key;
+
+        if (glStyle.sources[key].type !== "vector" && glStyle.sources[key].type !== "geojson") {
+            const olMap = layer.get("map");
+
+            apply(olMap, url);
+        }
+        else {
+            stylefunction(layer, glStyle,
+                options.sourceId ? options.sourceId : glStyleSourceId,
+                options.resolutions,
+                options.spriteData,
+                options.spriteImageUrl,
+                options.getFonts);
+        }
+    });
 }

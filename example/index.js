@@ -262,7 +262,7 @@ fetch(vtStyleUrl)
     .then(style => {
         const vtLayer = window.mpapi.map.addLayer("6001");
 
-        mpapi.vectorTile.setStyle(vtLayer, style);
+        mpapi.vectorTile.setStyle(vtLayer, style, vtStyleUrl);
     });
 //*/
 
