@@ -5,7 +5,7 @@
 
 ## Unreleased - in development
 ### Added
-
+- Added functionality for mapbox style raster sources for vector tile layer.
 ### Changed
 - ol map default interactions and keyboardEventTarget can now be set by config parameters.
 ### Deprecated
