@@ -156,6 +156,9 @@ export function createMap (config = defaults, {mapParams, callback, errorCallbac
             interactions: olDefaultInteractions(selectedInteractions).extend([
                 new DragPan({
                     condition: function (event) {
+                        if (event.originalEvent.shiftKey) {
+                            return false;
+                        }
                         return (!event.originalEvent.pointerType || event.originalEvent.pointerType === "mouse") || (config.twoFingerPan && this.getPointerCount() === 2) || !config.twoFingerPan;
                     }
                 })
