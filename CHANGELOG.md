@@ -8,13 +8,15 @@
 - Added functionality for mapbox style raster sources for vector tile layer.
 ### Changed
 - ol map default interactions and keyboardEventTarget can now be set by config parameters.
+- The following packages have been updated:
+    - dependencies:
+        - xml2js: 0.4.23 to 0.5.0
 ### Deprecated
 
 ### Removed
 
 ### Fixed
-
----
+- CVE-2023-0842
 
 ## 2.16.0 - 2023-03-28
 ### Added
