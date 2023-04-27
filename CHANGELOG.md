@@ -3,20 +3,21 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.17.0 - 2023-04-27
 ### Added
 - Added functionality for mapbox style raster sources for vector tile layer.
+- Added possibility to use zoomToFeatureId in vectorStyle.
+
 ### Changed
 - ol map default interactions and keyboardEventTarget can now be set by config parameters.
 - The following packages have been updated:
     - dependencies:
         - xml2js: 0.4.23 to 0.5.0
-### Deprecated
 
-### Removed
+### Fix
+- Fix vectorStyle for circlesegments.
 
-### Fixed
-- CVE-2023-0842
+---
 
 ## 2.16.0 - 2023-03-28
 ### Added
