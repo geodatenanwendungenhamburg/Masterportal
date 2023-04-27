@@ -3,6 +3,19 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased - in development
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
+
 ## 2.17.0 - 2023-04-27
 ### Added
 - Added functionality for mapbox style raster sources for vector tile layer.
