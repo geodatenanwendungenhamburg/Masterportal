@@ -7,7 +7,7 @@ import TileWMS from "ol/source/TileWMS.js";
 import ImageWMS from "ol/source/ImageWMS.js";
 import WMTS from "ol/source/WMTS.js";
 import olcsAbstractSynchronizer from "olcs/AbstractSynchronizer.js";
-import olcsCore from "olcs/core.js";
+import {extentToRectangle, tileLayerToImageryLayer, updateCesiumLayerProperties} from "olcs/core.js";
 import {Tile, Image as ImageLayer} from "ol/layer.js";
 import {stableSort} from "ol/array.js";
 import {getBottomLeft, getBottomRight, getTopRight, getTopLeft} from "ol/extent.js";
@@ -162,7 +162,7 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
             const ext = olLayer.getExtent();
 
             if (ext && viewProj) {
-                options.rectangle = olcsCore.extentToRectangle(ext, viewProj);
+                options.rectangle = extentToRectangle(ext, viewProj);
                 const minMax = this.getMinMaxLevelFromTileGrid(tileGrid, ext, viewProj);
 
                 options.tileWidth = tileGrid.getTileSize(0)[0];
@@ -182,7 +182,7 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
      * @returns {Cesium.ImageryLayer} The imagery layer.
      */
     createImageryLayerForImageWMS (olLayer, viewProj) {
-        return olcsCore.tileLayerToImageryLayer(this.map, olLayer, viewProj);
+        return tileLayerToImageryLayer(this.map, olLayer, viewProj);
     }
 
     /**
@@ -298,13 +298,13 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
                     console.assert(cesiumObjects);
                     /* eslint-enable no-console */
                     for (let i = 0; i < cesiumObjects.length; ++i) {
-                        olcsCore.updateCesiumLayerProperties(olLayerWithParents, cesiumObjects[i]);
+                        updateCesiumLayerProperties(olLayerWithParents, cesiumObjects[i]);
                     }
                 }));
             });
 
             for (let i = 0; i < cesiumObjects.length; ++i) {
-                olcsCore.updateCesiumLayerProperties(olLayerWithParents, cesiumObjects[i]);
+                updateCesiumLayerProperties(olLayerWithParents, cesiumObjects[i]);
             }
 
             // there is no way to modify Cesium layer extent,
