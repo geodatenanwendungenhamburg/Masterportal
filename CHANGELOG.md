@@ -7,6 +7,19 @@
 ### Added
 
 ### Changed
+- The following packages have been updated:
+    - dependencies:
+        - core-js: 3.29.1 to 3.30.2
+        - olcs: 2.13.1 to 2.14.0
+    - devDependencies:
+        - @babel/core: 7.21.3 to 7.21.8
+        - @babel/plugin-transform-modules-commonjs: 7.21.2 to 7.21.5
+        - @parcel/transformer-sass: 2.6.0 to 2.8.3
+        - canvas: 2.11.0 to 2.11.2
+        - eslint: 8.36.0 to 8.40.0
+        - jest-canvas-mock: 2.4.0 to 2.5.0
+        - parcel: 2.6.0 to 2.8.3
+        - sass: 1.59.3 to 1.62.1
 
 ### Deprecated
 
