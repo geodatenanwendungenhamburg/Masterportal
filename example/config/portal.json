@@ -35,7 +35,8 @@
       "name": "Schulinfosystem",
       "renderer": "default",
       "styleId": "8712",
-      "typ": "WFS"
+      "typ": "WFS",
+      "altitudeMode": "clampToGround"
     },
     {
       "id": "1534",
