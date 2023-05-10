@@ -3,9 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### Added
-
+## 2.18.0 - 2023-05-10
 ### Changed
 - The following packages have been updated:
     - dependencies:
@@ -21,12 +19,6 @@
         - parcel: 2.6.0 to 2.8.3
         - sass: 1.59.3 to 1.62.1
 - The devDependency `buffer` ist downgrade from 6.0.3 to 5.7.1 because parcel requires a version 5
-
-### Deprecated
-
-### Removed
-
-### Fixed
 
 ---
 
