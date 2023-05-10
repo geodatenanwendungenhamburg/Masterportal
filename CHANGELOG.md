@@ -20,6 +20,7 @@
         - jest-canvas-mock: 2.4.0 to 2.5.0
         - parcel: 2.6.0 to 2.8.3
         - sass: 1.59.3 to 1.62.1
+- The devDependency `buffer` ist downgrade from 6.0.3 to 5.7.1 because parcel requires a version 5
 
 ### Deprecated
 
