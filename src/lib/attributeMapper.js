@@ -1,5 +1,6 @@
 import {getValueFromObjectByPath} from "./getValueFromObjectByPath.js";
 import thousandsSeparator from "./thousandsSeparator";
+import dayjs from "dayjs";
 /**
  * checks if value starts with special prefix to determine if value is a object path
  * @param   {string} value string to check
@@ -137,30 +138,21 @@ function prepareValueFromObject (key, mappingObj, properties) {
     switch (type) {
         case "date": {
             date = new Date(String(preparedValue));
-            if (!isNaN(date.getTime())) {
-                const year = date.getFullYear(),
-                    month = ("0" + (date.getMonth() + 1)).slice(-2),
-                    day = ("0" + date.getDate()).slice(-2);
+            if (format === "YYYY-MM-DDTHH:mm:ss.SSSZ") {
+                const offset = date.getTimezoneOffset();
 
-                if (format === "YYYY-MM-DDTHH:mm:ss.SSSZ") {
-                    const offset = date.getTimezoneOffset();
+                let offsetHours = (offset / 60) % 24,
+                    offsetMinutes = offset % 60;
 
-                    let offsetHours = (offset / 60) % 24,
-                        offsetMinutes = offset % 60;
-
-                    offsetHours = offsetHours < 0 ? "+" + ("0" + Math.abs(offsetHours)).slice(-2) : "-" + ("0" + Math.abs(offsetHours)).slice(-2);
-                    offsetMinutes = offsetMinutes < 0 ? ":" + ("0" + Math.abs(offsetMinutes)).slice(-2) : ":" + ("0" + offsetMinutes).slice(-2);
-                    preparedValue = date.toISOString().slice(0, -1) + offsetHours + offsetMinutes;
-                }
-                else if (format === "YYYY-MM-DD") {
-                    preparedValue = year + "-" + month + "-" + day;
-                }
-                else if (format === "DD-MM-YYYY") {
-                    preparedValue = day + "-" + month + "-" + year;
-                }
-                else {
-                    console.error("The format must be 'YYYY-MM-DD' or 'DD-MM-YYYY', if the attribute is missing, ISO 8601 is used.");
-                }
+                offsetHours = offsetHours < 0 ? "+" + ("0" + Math.abs(offsetHours)).slice(-2) : "-" + ("0" + Math.abs(offsetHours)).slice(-2);
+                offsetMinutes = offsetMinutes < 0 ? ":" + ("0" + Math.abs(offsetMinutes)).slice(-2) : ":" + ("0" + offsetMinutes).slice(-2);
+                preparedValue = date.toISOString().slice(0, -1) + offsetHours + offsetMinutes;
+            }
+            else if (!isNaN(date.getDay())) {
+                preparedValue = dayjs(String(preparedValue)).format(format);
+            }
+            else {
+                console.warn("If the attribute is missing, ISO 8601 is used.");
             }
             break;
         }

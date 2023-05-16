@@ -5,12 +5,20 @@
 
 ## Unreleased - in development
 ### Added
+- The following package has been added:
+    - dependencies:
+        - dayjs: "^1.11.7"
+
 ### Changed
 - AttributeMapper: Object keys are supported with dot notation.
 - WFS: hardcoded URL changed to dynamic url creation.
-- Issue Masterportal # 1021: extend vectorStyle in order to handle geometryCollections.
+- Issue Masterportal #1021: extend vectorStyle in order to handle geometryCollections.
+- Issue Masterportal #1022: attributeMapper supports additional time formats.
+
 ### Deprecated
+
 ### Removed
+
 ### Fixed
 
 ---
@@ -30,7 +38,7 @@
         - jest-canvas-mock: 2.4.0 to 2.5.0
         - parcel: 2.6.0 to 2.8.3
         - sass: 1.59.3 to 1.62.1
-- The devDependency `buffer` ist downgrade from 6.0.3 to 5.7.1 because parcel requires a version 5
+- The devDependency `buffer` ist downgrade from 6.0.3 to 5.7.1 because parcel requires a version 5.
 
 ---
 
