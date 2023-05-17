@@ -228,9 +228,16 @@ function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
         hasLabelField = style?.labelField,
         geometryStyle = getGeometryStyle(feature, rules, isClustered, wfsImgPathFromConfig),
         legendInformation = Array.isArray(geometryStyle) ? geometryStyle[0].legendInfos : geometryStyle.legendInfos,
-        styleObjectGeometry = Array.isArray(geometryStyle) ? geometryStyle[0].getStyle() : geometryStyle.getStyle();
+        styleObjectGeometry = Array.isArray(geometryStyle) ? geometryStyle.map(styleItem => styleItem.getStyle()) : geometryStyle.getStyle();
 
-    captureLegendFromFeature(styleObject.styleId, legendInformation);
+    if (geometryStyle.length > 1) {
+        for (const i in geometryStyle) {
+            captureLegendFromFeature(styleObject.styleId, geometryStyle[i].legendInfos);
+        }
+    }
+    else {
+        captureLegendFromFeature(styleObject.styleId, legendInformation);
+    }
 
     // label style is optional and depends on some fields
     if (isClustered || hasLabelField) {

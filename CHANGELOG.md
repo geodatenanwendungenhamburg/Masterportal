@@ -6,6 +6,7 @@
 ## Unreleased - in development
 ### Added
 ### Changed
+- Issue Masterportal # 1021: extend vectorStyle in order to handle geometryCollections.
 ### Deprecated
 ### Removed
 ### Fixed
