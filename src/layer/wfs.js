@@ -126,16 +126,22 @@ function loadWFSFilter (filter, url, source, {onErrorFn, success, failure}, opti
  * @returns {string} the url
  */
 function createUrl (rawLayer, version, projection, bboxParam) {
-    let url = `${rawLayer.url}?service=WFS&version=${version}&request=GetFeature&srsName=${projection.getCode()}${bboxParam}`;
+    const url = new URL(rawLayer.url);
+
+    url.searchParams.set("service", "WFS");
+    url.searchParams.set("version", version);
+    url.searchParams.set("request", "GetFeature");
+    url.searchParams.set("srsName", projection.getCode());
+    url.searchParams.set("service", "WFS");
 
     if (version === "1.0.0" || version === "1.1.0") {
-        url = `${url}&typeName=${rawLayer.featureType}`;
+        url.searchParams.set("typeName", rawLayer.featureType);
     }
     else if (version === "2.0.0") {
-        url = `${url}&typeNames=${rawLayer.featureType}`;
+        url.searchParams.set("typeNames", rawLayer.featureType);
     }
 
-    return url;
+    return `${url.toString()}${bboxParam}`;
 }
 
 /**
