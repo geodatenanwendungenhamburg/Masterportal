@@ -132,7 +132,6 @@ function createUrl (rawLayer, version, projection, bboxParam) {
     url.searchParams.set("version", version);
     url.searchParams.set("request", "GetFeature");
     url.searchParams.set("srsName", projection.getCode());
-    url.searchParams.set("service", "WFS");
 
     if (version === "1.0.0" || version === "1.1.0") {
         url.searchParams.set("typeName", rawLayer.featureType);
