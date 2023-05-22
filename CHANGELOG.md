@@ -6,6 +6,7 @@
 ## Unreleased - in development
 ### Added
 ### Changed
+- AttributeMapper: Object keys are supported with dot notation.
 - WFS: hardcoded URL changed to dynamic url creation.
 - Issue Masterportal # 1021: extend vectorStyle in order to handle geometryCollections.
 ### Deprecated

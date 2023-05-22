@@ -11,16 +11,25 @@ function isObjectPath (value) {
 /**
  * Returns the value of the given key. Also considers, that the key may be an object path.
  * @param {Object} properties properties.
- * @param {String} key Key to derive value from.
+ * @param {String} propertyKey Key to derive value from.
  * @returns {*} - Value from key.
  */
-function prepareValue (properties, key) {
-    const isPath = isObjectPath(key);
-    let value = properties[Object.keys(properties).find(propertiesKey => propertiesKey.toLowerCase() === key.toLowerCase())];
+function prepareValue (properties, propertyKey) {
+    Object.keys(properties).forEach((parentKey) => {
+        if (typeof properties[parentKey] === "object") {
+            Object.keys(properties[parentKey]).forEach((key) => {
+                properties[parentKey + "." + key] = properties[parentKey][key];
+            });
+        }
+    });
+
+    const isPath = isObjectPath(propertyKey);
+    let value = properties[Object.keys(properties).find(propertiesKey => propertiesKey.toLowerCase() === propertyKey.toLowerCase())];
 
     if (isPath) {
-        value = getValueFromObjectByPath(properties, key);
+        value = getValueFromObjectByPath(properties, propertyKey);
     }
+
     return value;
 }
 
