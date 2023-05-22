@@ -1,4 +1,4 @@
-import {mapAttributes, isObjectPath} from "../../src/lib/attributeMapper";
+import {mapAttributes, isObjectPath, prepareValue} from "../../src/lib/attributeMapper";
 
 const props = {
     random_text: "foobar",
@@ -285,6 +285,28 @@ describe("src/utils/attributeMapper.js", () => {
         });
         it("should return false for true", () => {
             expect(isObjectPath(true)).toBe(false);
+        });
+    });
+    describe("prepareValue", () => {
+        it("returns value from object by dot notation key", () => {
+            const properties = {
+                    address: {
+                        street: "Platz"
+                    }
+                },
+                testkey = "Address.Street";
+
+            expect(prepareValue(properties, testkey)).toEqual("Platz");
+        });
+        it("returns undefined from object by dot notation key if parentkey is not found", () => {
+            const properties = {
+                    address: {
+                        street: "Platz"
+                    }
+                },
+                testkey = "Location.Street";
+
+            expect(prepareValue(properties, testkey)).toBeUndefined();
         });
     });
 });

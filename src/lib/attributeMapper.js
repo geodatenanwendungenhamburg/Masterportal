@@ -16,7 +16,7 @@ function isObjectPath (value) {
  */
 function prepareValue (properties, propertyKey) {
     Object.keys(properties).forEach((parentKey) => {
-        if (typeof properties[parentKey] === "object") {
+        if (properties[parentKey] && typeof properties[parentKey] === "object") {
             Object.keys(properties[parentKey]).forEach((key) => {
                 properties[parentKey + "." + key] = properties[parentKey][key];
             });
