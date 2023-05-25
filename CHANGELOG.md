@@ -20,6 +20,7 @@
 ### Removed
 
 ### Fixed
+- Issue Masterportal # 1028: set cesium scene parameter recursively.
 
 ---
 

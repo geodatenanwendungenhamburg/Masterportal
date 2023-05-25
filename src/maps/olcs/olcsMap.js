@@ -9,6 +9,7 @@ import defaults from "../../defaults";
 let mapIdCounter = 0;
 
 /**
+ * Recursive function.
  * Sets the cesium default scene params.
  * @param {Cesium.scene} scene The cesium scene.
  * @param {Object} params Optional configuration parameters.
@@ -21,7 +22,7 @@ export function setCesiumSceneParams (scene, params) {
         if (typeof paramValue === "object") {
             Object.keys(paramValue).forEach(paramSubKey => {
                 if (paramSubKey !== "heading" && paramSubKey !== "tilt" && paramSubKey !== "altitude") {
-                    scene[paramKey][paramSubKey] = paramValue[paramSubKey];
+                    setCesiumSceneParams(scene[paramKey], paramValue);
                 }
             });
         }
