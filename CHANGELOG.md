@@ -3,7 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.19.0 - 2023-05-26
 ### Added
 - The following package has been added:
     - dependencies:
@@ -14,10 +14,6 @@
 - WFS: hardcoded URL changed to dynamic url creation.
 - Issue Masterportal #1021: extend vectorStyle in order to handle geometryCollections.
 - Issue Masterportal #1022: attributeMapper supports additional time formats.
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - Issue Masterportal # 1028: set cesium scene parameter recursively.
