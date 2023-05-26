@@ -12,7 +12,7 @@ import {get as getProjection} from "ol/proj";
  * @param {String} layerName layerName
  * @returns {void}
  */
-export function showErrorMessage (errorMessage, layerName) {
+function showErrorMessage (errorMessage, layerName) {
     console.error("content: Layer " + layerName + ": " + errorMessage);
 }
 
@@ -24,7 +24,7 @@ export function showErrorMessage (errorMessage, layerName) {
  * @param {Number} size The tileSize depending on the extent.
  * @returns {void}
  */
-export function generateArrays (resolutions, matrixIds, length, size) {
+function generateArrays (resolutions, matrixIds, length, size) {
     for (let i = 0; i < length; ++i) {
         resolutions[i] = size / Math.pow(2, i);
         matrixIds[i] = i;
@@ -37,7 +37,7 @@ export function generateArrays (resolutions, matrixIds, length, size) {
  * @throws {Error} on unexpected return
  * @returns {promise} promise resolves to parsed WMTS-GetCapabilities object
  */
-export function getWMTSCapabilities (url) {
+function getWMTSCapabilities (url) {
     return fetch(url)
         .then(response => {
             if (response && response.status === 200) {
@@ -55,7 +55,7 @@ export function getWMTSCapabilities (url) {
 * @param {WMTS} tileLayer layer object
 * @returns {void}
 */
-export function createLayerSourceByDefinitions (attrs, tileLayer) {
+function createLayerSourceByDefinitions (attrs, tileLayer) {
     const projection = getProjection(attrs.coordinateSystem),
         extent = projection.getExtent(),
         style = attrs.style,
@@ -108,7 +108,7 @@ export function createLayerSourceByDefinitions (attrs, tileLayer) {
 * @param {WMTS} tileLayer layer object
 * @returns {void}
 */
-export function createLayerSourceByCapabilities (attrs, tileLayer) {
+function createLayerSourceByCapabilities (attrs, tileLayer) {
     const layerIdentifier = attrs.layers,
         url = attrs.capabilitiesUrl,
         matrixSet = attrs.tileMatrixSet,
@@ -169,7 +169,7 @@ export function createLayerSourceByCapabilities (attrs, tileLayer) {
  * @param {object} layerParams - additional layer params
  * @returns {void}
  */
-export function createLayer (rawLayer, layerParams = {}) {
+function createLayer (rawLayer, layerParams = {}) {
     const tileLayer = new TileLayer(Object.assign({
         id: rawLayer.id,
         source: new WMTS({}),
@@ -192,4 +192,13 @@ export function createLayer (rawLayer, layerParams = {}) {
     }
 
     return tileLayer;
+}
+
+export default{
+    createLayer,
+    createLayerSourceByCapabilities,
+    createLayerSourceByDefinitions,
+    getWMTSCapabilities,
+    generateArrays,
+    showErrorMessage
 }
