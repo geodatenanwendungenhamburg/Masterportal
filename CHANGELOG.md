@@ -6,6 +6,7 @@
 ## Unreleased - in development
 ### Added
 ### Changed
+- Exports in src/layer/wmts.js changed to export default {} to provide  ES-Syntax.
 ### Deprecated
 ### Removed
 ### Fixed
