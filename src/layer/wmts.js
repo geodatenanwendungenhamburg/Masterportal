@@ -194,11 +194,11 @@ function createLayer (rawLayer, layerParams = {}) {
     return tileLayer;
 }
 
-export default{
+export default {
     createLayer,
     createLayerSourceByCapabilities,
     createLayerSourceByDefinitions,
     getWMTSCapabilities,
     generateArrays,
     showErrorMessage
-}
+};
