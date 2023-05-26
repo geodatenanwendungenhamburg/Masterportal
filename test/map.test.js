@@ -292,5 +292,68 @@ describe("map.js", function () {
             });
         });
     });
+    describe("setCesiumSceneParams", function () {
+        it("set the cesium scene parameter from config", function () {
+            global.Cesium = {};
+            global.Cesium.Color = {};
+            global.Cesium.Rectangle = {};
+            global.Cesium.Color.WHITE = {
+                "red": 1,
+                "green": 1,
+                "blue": 1,
+                "alpha": 1
+            };
+            global.Cesium.Rectangle.fromDegrees = function fromDegrees () {
+                return {
+                    "west": 0.18151424220741028,
+                    "south": 0.9107128036906411,
+                    "east": 0.1858775653373961,
+                    "north": 0.9138543963442309
+                };
+            };
+
+            const config = {
+                map2D: {
+                    getView: () => {
+                        return {
+                            getProjection: () => {
+                                return {getCode: () => "code"};
+                            }
+                        };
+                    },
+                    getViewport: () => {
+                        return {
+                            appendChild: jest.fn()
+                        };
+                    }
+                },
+                cesiumParameter: {
+                    globe: {
+                        showGroundAtmosphere: true,
+                        baseColor: global.Cesium.Color.WHITE,
+                        translucency: {
+                            frontFaceAlpha: 0.50,
+                            enabled: true,
+                            rectangle: global.Cesium.Rectangle.fromDegrees(10.40, 52.18, 10.65, 52.36)
+                        },
+                        undergroundColor: undefined
+                    }
+                },
+                cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
+            };
+
+            load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
+                const map3D = map.createMap(config, "3D");
+
+                expect(map3D.mapMode).toBe("3D");
+                expect(map3D.getCesiumScene().globe.showGroundAtmosphere).toBe(config.cameraParameter.globe.showGroundAtmosphere);
+                expect(map3D.getCesiumScene().globe.baseColor).toBe(config.cameraParameter.globe.baseColor);
+                expect(map3D.getCesiumScene().globe.translucency.frontFaceAlpha).toBe(config.cameraParameter.globe.translucency.frontFaceAlpha);
+                expect(map3D.getCesiumScene().globe.translucency.enabled).toBe(config.cameraParameter.globe.translucency.enabled);
+                expect(map3D.getCesiumScene().globe.translucency.rectangle).toBe(config.cameraParameter.globe.translucency.rectangle);
+                expect(map3D.getCesiumScene().globe.undergroundColor()).toBe(config.cameraParameter.globe.undergroundColor);
+            });
+        });
+    });
 
 });
