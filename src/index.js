@@ -2,7 +2,7 @@ import {createMapView} from "./maps/mapView";
 import crs from "./crs";
 import rawLayerList from "./rawLayerList";
 import * as wms from "./layer/wms";
-import * as wmts from "./layer/wmts";
+import wmts from "./layer/wmts";
 import * as wfs from "./layer/wfs";
 import * as geojson from "./layer/geojson";
 import * as vectorBase from "./layer/vectorBase";
