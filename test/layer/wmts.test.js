@@ -1,7 +1,7 @@
 import {get as getProjection} from "ol/proj";
 import {getWidth} from "ol/extent";
 
-import * as wmts from "../../src/layer/wmts";
+import wmts from "../../src/layer/wmts";
 
 describe("wmts.js", function () {
     describe("generateArrays", function () {
