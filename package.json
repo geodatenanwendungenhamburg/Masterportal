@@ -11,7 +11,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "jest .test.js --config ./jest.config.js --collectCoverage",
-    "test:trace": "node --trace-warnings node_modules/jest/bin/jest.js ./test/layer/wfs.test.js --config ./jest.config.js",
+    "test:trace": "node --trace-warnings node_modules/jest/bin/jest.js .test.js --config ./jest.config.js",
     "test:watch": "jest .test.js --config ./jest.config.js --watch",
     "example": "parcel example/index.html",
     "generate-jsdoc": "jsdoc ./src -r -d ./docs/ -R ./README.md -c jsdoc.json",

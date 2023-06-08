@@ -227,10 +227,22 @@ function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
         style = Array.isArray(rules) && rules.length > 0 ? rules[0].style : null,
         hasLabelField = style?.labelField,
         geometryStyle = getGeometryStyle(feature, rules, isClustered, wfsImgPathFromConfig),
-        legendInformation = Array.isArray(geometryStyle) ? geometryStyle[0].legendInfos : geometryStyle.legendInfos,
-        styleObjectGeometry = Array.isArray(geometryStyle) ? geometryStyle.map(styleItem => styleItem.getStyle()) : geometryStyle.getStyle();
+        legendInformation = Array.isArray(geometryStyle) ? geometryStyle[0].legendInfos : geometryStyle.legendInfos;
+    let styleObjectGeometry = null;
 
-    if (geometryStyle.length > 1) {
+    if (Array.isArray(geometryStyle)) {
+        styleObjectGeometry = [];
+        geometryStyle.forEach(styleItem => {
+            if (styleItem.getStyle() !== null) {
+                styleObjectGeometry.push(styleItem.getStyle());
+            }
+        });
+    }
+    else {
+        styleObjectGeometry = geometryStyle.getStyle();
+    }
+
+    if (Array.isArray(geometryStyle) && geometryStyle.length > 1) {
         for (const i in geometryStyle) {
             captureLegendFromFeature(styleObject.styleId, geometryStyle[i].legendInfos);
         }
@@ -238,7 +250,6 @@ function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
     else {
         captureLegendFromFeature(styleObject.styleId, legendInformation);
     }
-
     // label style is optional and depends on some fields
     if (isClustered || hasLabelField) {
         if (Array.isArray(styleObjectGeometry)) {

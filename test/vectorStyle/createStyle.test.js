@@ -239,6 +239,129 @@ describe("createStyle", () => {
 
         expect(style).toBeInstanceOf(Style);
     });
+
+    it("should return the correct style for a feature with geometry of type MultiLineString ", () => {
+        const stylingRules = [{
+                "conditions": {
+                    "sequence": [0, 0]
+                },
+                "style": {
+                    "lineStrokeColor": [0, 41, 255, 1],
+                    "lineStrokeDash": [10, 2000],
+                    "lineStrokeDashOffset": 0,
+                    "lineStrokeWidth": 4
+                }
+            }],
+            styleObject = {styleId: "styleId", styleMultiGeomOnlyWithRule: true, rules: stylingRules},
+            isClustered = false,
+            multiLineStringFeature = jsonObjects[4],
+            style = createStyle.createStyle(styleObject, multiLineStringFeature, isClustered, wfsImgPathFromConfig);
+
+        expect(style === null).toBe(false);
+        expect(style).toBeInstanceOf(Array);
+        style.forEach(aStyle => {
+            expect(aStyle).toBeInstanceOf(Style);
+        });
+    });
+
+    it("should return the correct style for a feature with geometry of type MultiPolygon ", () => {
+        const stylingRules = [{
+                "conditions": {
+                    "sequence": [0, 0]
+                },
+                "style": {
+                    "polygonStrokeColor": [
+                        161,
+                        113,
+                        14,
+                        1
+                    ],
+                    "polygonStrokeWidth": 0.2,
+                    "polygonFillColor": [
+                        161,
+                        113,
+                        14,
+                        1
+                    ]
+                }
+            }],
+            styleObject = {styleId: "styleId", styleMultiGeomOnlyWithRule: true, rules: stylingRules},
+            isClustered = false,
+            multiPolygonFeature = jsonObjects[5],
+            style = createStyle.createStyle(styleObject, multiPolygonFeature, isClustered, wfsImgPathFromConfig);
+
+        expect(style === null).toBe(false);
+        expect(style).toBeInstanceOf(Array);
+        style.forEach(aStyle => {
+            expect(aStyle).toBeInstanceOf(Style);
+        });
+    });
+
+    it("should return the correct style for a feature with geometry of type GeometryCollection ", () => {
+        const stylingRules = [{
+                "conditions": {
+                    "sequence": [0, 0]
+                },
+                "style": {
+                    "polygonStrokeColor": [
+                        161,
+                        113,
+                        14,
+                        1
+                    ],
+                    "polygonStrokeWidth": 0.2,
+                    "polygonFillColor": [
+                        161,
+                        113,
+                        14,
+                        1
+                    ]
+                }
+            }],
+            styleObject = {styleId: "styleId", styleMultiGeomOnlyWithRule: true, rules: stylingRules},
+            isClustered = false,
+            geometryCollectionFeature = jsonObjects[6],
+            style = createStyle.createStyle(styleObject, geometryCollectionFeature, isClustered, wfsImgPathFromConfig);
+
+        expect(style === null).toBe(false);
+        expect(style).toBeInstanceOf(Array);
+        style.forEach(aStyle => {
+            expect(aStyle).toBeInstanceOf(Style);
+        });
+    });
+
+    it("should return the correct style for a feature with geometry of type MultiPoint ", () => {
+        const stylingRules = [{
+                "conditions": {
+                    "sequence": [0, 0]
+                },
+                "style": {
+                    "circleRadius": 6,
+                    "circleStrokeColor": [
+                        24,
+                        116,
+                        205,
+                        1
+                    ],
+                    "circleFillColor": [
+                        135,
+                        206,
+                        250,
+                        1
+                    ]
+                }
+            }],
+            styleObject = {styleId: "styleId", styleMultiGeomOnlyWithRule: true, rules: stylingRules},
+            isClustered = false,
+            multiPointFeature = jsonObjects[3],
+            style = createStyle.createStyle(styleObject, multiPointFeature, isClustered, wfsImgPathFromConfig);
+
+        expect(style === null).toBe(false);
+        expect(style).toBeInstanceOf(Array);
+        style.forEach(aStyle => {
+            expect(aStyle).toBeInstanceOf(Style);
+        });
+    });
 });
 
 describe("getSimpleGeometryStyle", function () {

@@ -9,6 +9,7 @@
 ### Deprecated
 ### Removed
 ### Fixed
+- VectorStyle of multiple geometries with styling rules does not fail on not existing style.
 
 ---
 ## 2.19.1 - 2023-06-02
