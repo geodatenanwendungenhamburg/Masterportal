@@ -3,6 +3,12 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## v2.45.1 - 2024-05-14
+### Fixed
+- Fix sensor layer features not loaded after enlarging extent.
+
+---
+
 ## v2.45.0 - 2024-04-30
 ### Added
 - Modeler3D:
