@@ -2,6 +2,7 @@
 import ToolTemplate from "../../ToolTemplate.vue";
 import Import from "./Modeler3DImport.vue";
 import Draw from "./Modeler3DDraw.vue";
+import Filtering from "./Modeler3DFilter.vue";
 import EntityList from "./ui/EntityList.vue";
 import AccordionItem from "./ui/AccordionItem.vue";
 import {getComponent} from "../../../../utils/getComponent";
@@ -28,6 +29,7 @@ export default {
         ToolTemplate,
         Import,
         Draw,
+        Filtering,
         AccordionItem,
         EntityList
     },
@@ -68,6 +70,9 @@ export default {
          */
         optionsTabClasses () {
             return this.currentView === "" ? this.activeTabClass : this.defaultTabClass;
+        },
+        filterTabClasses () {
+            return this.currentView === "filtering" ? this.activeTabClass : this.defaultTabClass;
         },
         /**
          * Checks if it is possible to enter point of view (POV) mode.
@@ -1010,6 +1015,20 @@ export default {
                             :class="[optionsTabClasses, {'disabled': isDrawing}]"
                             @click.prevent="setCurrentView('')"
                         >{{ $t("modules.tools.modeler3D.nav.options") }}</a>
+                    </li>
+                    <li
+                        id="tool-modeler3D-filter"
+                        role="presentation"
+                        class="nav-item"
+                    >
+                        <a
+                            href="#"
+                            class="nav-link"
+                            :class="[filterTabClasses, {'disabled': isDrawing}]"
+                            @click.prevent="setCurrentView('filtering')"
+                        >
+                            {{ $t("modules.tools.modeler3D.nav.filterTitle") }}
+                        </a>
                     </li>
                 </ul>
                 <component
