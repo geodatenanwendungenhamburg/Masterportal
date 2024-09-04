@@ -85,5 +85,5 @@ platforms:
 releaseDate: '2024-08-07'
 roadmap: 'https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/'
 softwareType: standalone/web
-softwareVersion: 3.1.0
+softwareVersion: 3.2.0
 url: 'https://bitbucket.org/geowerkstatt-hamburg/masterportal.git'
