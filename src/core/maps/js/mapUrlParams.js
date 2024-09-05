@@ -207,10 +207,19 @@ function setMapMarker (params) {
             marker = marker?.split(",");
         }
     }
-
     marker = marker?.map(coord => parseFloat(coord, 10));
 
-    store.dispatch("Maps/placingPointMarker", projection ? crs.transformToMapProjection(mapCollection.getMap("2D"), projection, marker) : marker);
+    if (store.getters.styleListLoaded) {
+        store.dispatch("Maps/placingPointMarker", projection ? crs.transformToMapProjection(mapCollection.getMap("2D"), projection, marker) : marker);
+    }
+    else {
+        store.watch((state, getters) => getters.styleListLoaded, value => {
+            if (value) {
+                store.dispatch("Maps/placingPointMarker", projection ? crs.transformToMapProjection(mapCollection.getMap("2D"), projection, marker) : marker);
+            }
+        });
+    }
+
 }
 
 /**

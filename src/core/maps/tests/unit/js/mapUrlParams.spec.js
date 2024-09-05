@@ -11,15 +11,25 @@ import store from "../../../../../app-store";
 describe("src/core/maps/js/mapUrlParams.js", () => {
     let dispatchCalls = {},
         error,
-        map;
+        map,
+        origGetters,
+        styleListLoaded;
+
+    before(() => {
+        origGetters = store.getters;
+    });
 
     beforeEach(() => {
+        styleListLoaded = true;
         dispatchCalls = {};
 
         sinon.stub(console, "error").callsFake(error);
 
         store.dispatch = (arg1, arg2) => {
             dispatchCalls[arg1] = arg2 !== undefined ? arg2 : "called";
+        };
+        store.getters = {
+            styleListLoaded: sinon.stub().returns(styleListLoaded)
         };
 
         mapCollection.clear();
@@ -32,6 +42,7 @@ describe("src/core/maps/js/mapUrlParams.js", () => {
 
     afterEach(() => {
         sinon.restore();
+        store.getters = origGetters;
     });
 
     describe("setMapAttributes", () =>{
