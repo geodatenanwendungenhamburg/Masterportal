@@ -30,6 +30,10 @@ describe("src/core/layers/js/layerUrlParams.js", () => {
         };
     });
 
+    afterEach(() => {
+        sinon.restore();
+    });
+
     describe("setLayers", () =>{
         it("should replace the layers from the params", () => {
             const params = {
@@ -76,6 +80,46 @@ describe("src/core/layers/js/layerUrlParams.js", () => {
             expect(dispatchCalls.length).to.equals(2);
             expect(dispatchCalls[0].addOrReplaceLayer).to.deep.equals({
                 layerId: "452",
+                visibility: true,
+                transparency: "50",
+                showInLayerTree: true,
+                zIndex: 0
+            });
+            expect(dispatchCalls[1].addOrReplaceLayer).to.deep.equals({
+                layerId: "1711",
+                visibility: false,
+                transparency: "0",
+                showInLayerTree: true,
+                zIndex: 1
+            });
+        });
+        it("should replace the grouped layerId with all ids of group from the params", () => {
+            const params = {
+                "MAP/LAYERIDS": "717,1711",
+                TRANSPARENCY: "50,0",
+                VISIBILITY: "true,false"
+            };
+
+            store.getters = {
+                layerConfigsByAttributes: (attr) => {
+                    if (attr.baselayer) {
+                        return [
+                            {
+                                "id": "717-718-719"
+                            }
+                        ];
+                    }
+
+                    return [];
+
+
+                }
+            };
+
+            layerUrlParams.setLayerIds(params);
+            expect(dispatchCalls.length).to.equals(2);
+            expect(dispatchCalls[0].addOrReplaceLayer).to.deep.equals({
+                layerId: "717-718-719",
                 visibility: true,
                 transparency: "50",
                 showInLayerTree: true,

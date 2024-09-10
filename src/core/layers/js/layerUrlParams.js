@@ -45,6 +45,7 @@ function setLayers (params) {
 
 /**
  * Sets the layer ids.
+ * If an id of a grouped baselayer is contained, the id is replaced by id of the group.
  * @param {Object} params The found params.
  * @returns {void}
  */
@@ -52,13 +53,24 @@ function setLayerIds (params) {
     const layerIds = (params.LAYERIDS || params["MAP/LAYERIDS"])?.split(","),
         transparency = params.TRANSPARENCY?.split(","),
         visibility = params.VISIBILITY?.split(",").map(value => value !== "false"),
-        layers = layerIds.map((id, index) => {
-            return {
-                id: id,
-                visibility: visibility ? visibility[index] : true,
-                transparency: transparency ? transparency[index] : 0
-            };
-        });
+        groupLayerConfigs = store.getters.layerConfigsByAttributes({baselayer: true, typ: "GROUP"});
+    let layers = [];
+
+    [...layerIds].forEach((layerId, index) => {
+        const group = groupLayerConfigs.find(groupConfig => groupConfig.id.split("-").indexOf(layerId) > -1);
+
+        if (group) {
+            layerIds.splice(index, 1, group.id);
+        }
+    });
+
+    layers = layerIds.map((id, index) => {
+        return {
+            id: id,
+            visibility: visibility ? visibility[index] : true,
+            transparency: transparency ? transparency[index] : 0
+        };
+    });
 
     removeCurrentLayerFromLayerTree();
     addLayerToLayerTree(layers);
