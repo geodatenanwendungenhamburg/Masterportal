@@ -3,6 +3,15 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## 3.2.1 12.09.2024
+
+### Fixed
+- UrlParams: 
+        - mapMarker: Fixed map marker set by url parameter.
+        - layerIds: if a layerId in params is part of a baselayer group, the group is loaded.
+
+---
+
 ## 3.2.0 04.09.2024
 ### __Breaking Changes__
 
@@ -41,9 +50,6 @@
 - Login: Access Tokens are now revoked after logout
 - OAF-Layer: if parameter 'bbox' is not set, the 'bbox' in parameter 'datasets' is used. Fallback is maps extent.
 - Print: Fixed error messages when zooming after map printing is closed
-- UrlParams: 
-        - mapMarker: Fixed map marker set by url parameter.
-        - layerIds: if a layerId in params is part of a baselayer group, the group is loaded.
 
 ---
 
