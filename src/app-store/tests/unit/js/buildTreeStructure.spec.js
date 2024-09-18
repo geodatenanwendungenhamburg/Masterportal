@@ -22,6 +22,41 @@ describe("src/app-store/js/buildTreeStructure.js", () => {
                 "name": "Behörde"
             }
         ],
+        layers3D = {
+            "name": "3D Daten",
+            "type": "folder",
+            "elements": [
+                {
+                    "name": "3D-Basisdaten",
+                    "type": "folder",
+                    "elements": [
+                        {
+                            "id": "12883",
+                            "name": "Digitales Geländemodell (DGM)",
+                            "visibility": true
+                        },
+                        {
+                            "id": "12884",
+                            "name": "3D-Gebäudemodell (LoD2- DE)",
+                            "visibility": false
+                        }
+                    ]
+                }
+            ]
+        };
+
+    let layerList,
+        layerConfig;
+
+    before(() => {
+        const fs = require("fs");
+
+        layerList = fs.readFileSync("src/app-store/tests/unit/js/servicesMasterAuto.json", "utf8");
+        layerList = JSON.parse(layerList);
+
+    });
+
+    beforeEach(() => {
         layerConfig = {
             [treeBaselayersKey]: {
                 elements: [
@@ -53,14 +88,6 @@ describe("src/app-store/js/buildTreeStructure.js", () => {
                 ]
             }
         };
-    let layerList;
-
-    before(() => {
-        const fs = require("fs");
-
-        layerList = fs.readFileSync("src/app-store/tests/unit/js/servicesMasterAuto.json", "utf8");
-        layerList = JSON.parse(layerList);
-
     });
     afterEach(() => {
         sinon.restore();
@@ -165,6 +192,50 @@ describe("src/app-store/js/buildTreeStructure.js", () => {
             expect(layersInSecondFolders[1].id).to.be.equals("182");
             expect(layersInSecondFolders[1].parentId).to.be.equals(result.elements[1].id);
             expect(layersInSecondFolders[1].name).to.be.equals(layersInSecondFolders[1].datasets[0].md_name);
+        });
+
+        it("should return tree structured for active category containing 3D Layers", () => {
+            let result = null,
+                filteredResult = null;
+
+            sinon.stub(rawLayerList, "getLayerWhere").callsFake((searchAttributes) =>{
+                if (searchAttributes.id === "12883") {
+                    return {
+                        "id": "12883",
+                        "name": "Gelaende",
+                        "url": "https://daten-hamburg.de/gdi3d/datasource-data/Gelaende",
+                        "typ": "Terrain3D"
+                    };
+
+                }
+                if (searchAttributes.id === "12884") {
+                    return {
+                        "id": "12884",
+                        "name": "3D-Gebäudemodell (LoD2- DE)",
+                        "url": "https://daten-hamburg.de/gdi3d/datasource-data/LoD2",
+                        "typ": "TileSet3D"
+                    };
+                }
+                const keys = Object.keys(searchAttributes);
+
+                return layerList.find(entry => keys.every(key => entry[key] === searchAttributes[key])) || null;
+            });
+            layerConfig[treeSubjectsKey].elements.push(layers3D);
+
+            result = buildTreeStructure.build(layerList, layerConfig, categories[0]);
+            filteredResult = getNestedValues(result, "id").flat(Infinity);
+            expect(result).to.be.an("object");
+            expect(filteredResult.indexOf("452")).to.be.equals(-1);
+            expect(filteredResult.indexOf("453")).to.be.equals(-1);
+            expect(filteredResult.indexOf("12883")).not.to.be.equals(-1);
+            expect(filteredResult.indexOf("12884")).not.to.be.equals(-1);
+            expect(result.elements[0].name).to.be.equals("3D Daten");
+            expect(result.elements[0].elements).to.be.an("array").to.have.lengthOf(1);
+            expect(result.elements[0].elements[0].elements).to.be.an("array").to.have.lengthOf(2);
+            expect(result.elements[0].elements[0].elements[0].id).to.be.equals("12883");
+            expect(result.elements[0].elements[0].elements[1].id).to.be.equals("12884");
+            expect(result.elements[1].name).to.be.equals("Sonstiges");
+            expect(result.elements[2].name).to.be.equals("Umwelt und Klima");
         });
 
         it("should return tree structured for active category containing a wms-time layer", () => {

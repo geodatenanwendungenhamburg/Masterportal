@@ -23,7 +23,8 @@ function build (layerList, layerConfig, category, shownLayerConfs = []) {
         layersByMdName = {};
     let bgLayers = [],
         bgLayerIds = [],
-        subjectDataLayers = [];
+        subjectDataLayers = [],
+        layers3D = [];
 
     if (!category) {
         return layerList;
@@ -35,8 +36,26 @@ function build (layerList, layerConfig, category, shownLayerConfs = []) {
 
         if (layerConfig[treeSubjectsKey]) {
             subjectDataLayers = getNestedValues(layerConfig[treeSubjectsKey], "elements", true).flat(Infinity);
-            if (containsOnly3DLayer(subjectDataLayers)) {
+            layers3D = get3DLayers(subjectDataLayers);
+
+            if (layers3D.length > 0 && layers3D.length === subjectDataLayers.length) {
                 folder.elements = layerConfig[treeSubjectsKey].elements ? layerConfig[treeSubjectsKey].elements : layerConfig[treeSubjectsKey];
+            }
+            else if (layers3D.length > 0) {
+                layerConfig[treeSubjectsKey].elements.forEach(element => {
+                    const nestedLayers = getNestedValues(element, "elements", true).flat(Infinity);
+
+                    if (element.type === "folder" && containsOnly3DLayer(nestedLayers)) {
+                        folder.elements.push(element);
+                    }
+                    else {
+                        const config = layerList.find(layer => layer.id === element.id);
+
+                        if (config) {
+                            layerList.splice(layerList.indexOf(config), 1, Object.assign(element, config));
+                        }
+                    }
+                });
             }
             else {
                 subjectDataLayers = [];
@@ -139,6 +158,14 @@ function getId () {
  */
 function containsOnly3DLayer (layers) {
     return layers.every(conf => layerFactory.getLayerTypes3d().includes(rawLayerList.getLayerWhere({id: conf.id})?.typ.toUpperCase()));
+}
+/**
+ * Returns all 3D-layers with typ contained in layerFactory.getLayerTypes3d().
+ * @param {Array} layers containing layer configurations
+ * @returns {Array} all 3D-layers
+ */
+function get3DLayers (layers) {
+    return layers.filter(conf => layerFactory.getLayerTypes3d().includes(rawLayerList.getLayerWhere({id: conf.id})?.typ.toUpperCase()));
 }
 
 /**
