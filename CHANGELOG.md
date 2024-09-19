@@ -3,20 +3,23 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## 3.2.1 12.09.2024
+## 2024-09-19 v3.2.2
+
+### Fixed
+3D: `tree.type: auto` 3D layers can also be selected in the subject tree if additional layers are configured in config.json under `subjectlayer`.
+
+---
+
+## 2024-09-12 v3.2.1
 
 ### Fixed
 - UrlParams: 
         - mapMarker: Fixed map marker set by url parameter.
         - layerIds: if a layerId in params is part of a baselayer group, the group is loaded.
 
-AlertingItem: Fixed the position of closing button.
-3D: `tree.type: auto` 3D layers can also be selected in the subject tree if additional layers are configured in config.json under `subjectlayer`.
 ---
 
 ## 3.2.0 04.09.2024
-### __Breaking Changes__
-
 ### Added
 - WFST: Added buttons names for confirm and stop.
 - Alerting: Examples for the configuration of messages have been added to the alerting documentation.
@@ -37,10 +40,6 @@ AlertingItem: Fixed the position of closing button.
 - The following packages have been updated:
     - dependencies:
         - @masterportal/masterportalapi: 2.39.0 to 2.40.0
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - Filter:
