@@ -114,19 +114,60 @@ function mergeRawLayer (layerConf, rawLayer) {
 }
 
 /**
- * Merges layer configuration with ids property of type array.
+ * Merges layer configuration with ids property of type array and typ GROUP.
  * @param {Object} layerConf configuartion of layer like in the config.json with ids in an array
  * @returns {Object|undefined} the merged raw layer or undefined if layer cannot be merged
  */
 function mergeGroupedLayer (layerConf) {
     const ids = layerConf.id,
-        existingLayers = [],
+        existingLayers = checkIdArray(ids),
         maxScales = [],
-        minScales = [],
-        layers = [],
-        rawLayer = {...layerConf};
+        minScales = [];
+    let rawLayer = {};
 
-    layerConf.id = ids.join("-");
+    if (existingLayers.length !== ids.length || ids.length === 0) {
+        return layerConf;
+    }
+    existingLayers.forEach(object => object.maxScale ? maxScales.push(parseInt(object.maxScale, 10)) : null);
+    existingLayers.forEach(object => object.minScale ? minScales.push(parseInt(object.minScale, 10)) : null);
+    if (sameUrlAndTyp(existingLayers) && layerConf.typ === "SIMPLEGROUP") {
+        const childLayer = {...existingLayers[0]};
+
+        childLayer.layers = existingLayers.map(value => value.layers).toString();
+        setMinMaxScale(childLayer, maxScales, minScales);
+
+        rawLayer = Object.assign({}, childLayer, layerConf);
+        rawLayer.id = childLayer.id;
+        // named children, because api needs it for styling groups
+        rawLayer.children = [childLayer];
+        layerConf.typ = "GROUP";
+    }
+    else {
+        existingLayers.forEach(aLayer => {
+            if (layerConf.styleId) {
+                aLayer.styleId = layerConf.styleId;
+            }
+        });
+        rawLayer = {...layerConf};
+        rawLayer.id = ids.join("-");
+        // named children, because api needs it for styling groups
+        rawLayer.children = existingLayers;
+        setMinMaxScale(rawLayer, maxScales, minScales);
+    }
+    rawLayer.typ = "GROUP";
+    layerConf.id = rawLayer.id;
+
+    return rawLayer;
+}
+
+/**
+ * Checks for layers with given ids in rawlayerList and adds them to the existingLayers.
+ * @param {Array} ids to check
+ * @returns {Array} all layers with the given ids
+ */
+function checkIdArray (ids) {
+    const existingLayers = [];
+
     for (let index = 0; index < ids.length; index++) {
         const id = ids[index],
             layer = rawLayerList.getLayerWhere({id: splitId(id)});
@@ -135,35 +176,37 @@ function mergeGroupedLayer (layerConf) {
             existingLayers.push(layer);
         }
         else {
-            console.warn(`Layer with id:${id} and name:${layerConf.name} not found in services.json. The Layer with ids: ${ids} will not work correctly!`);
-            return layerConf;
+            console.warn(`Layer with id:${id} not found in services.json. The Layer with ids: ${ids} will not be displayed!`);
         }
     }
-    if (existingLayers.length !== ids.length || ids.length === 0) {
-        return layerConf;
-    }
-    existingLayers.forEach(aLayer => {
-        if (aLayer.layers) {
-            layers.push(aLayer.layers);
-        }
-        if (layerConf.styleId) {
-            aLayer.styleId = layerConf.styleId;
-        }
-        if (aLayer.maxScale) {
-            maxScales.push(parseInt(aLayer.maxScale, 10));
-        }
-        if (aLayer.minScale) {
-            minScales.push(parseInt(aLayer.minScale, 10));
-        }
-    });
-    rawLayer.id = ids.join("-");
-    rawLayer.typ = "GROUP";
-    rawLayer.layers = layers.join(",");
-    rawLayer.children = existingLayers;// named children, because api needs it for styling groups
-    rawLayer.maxScale = Math.max(...maxScales);
-    rawLayer.minScale = Math.min(...minScales);
+    return existingLayers;
+}
 
-    return rawLayer;
+/**
+ * Returns true, if all layers have same url and typ.
+ * @param {Array} layers, list of layers
+ * @returns {Boolean} true, if all layers have same url and typ
+ */
+function sameUrlAndTyp (layers) {
+    if (layers.length > 0) {
+        const url = layers[0].url,
+            typ = layers[0].typ;
+
+        return layers.every(layer => layer.url === url && layer.typ === typ);
+    }
+    return false;
+}
+
+/**
+ * Sets min- and maxScale at the given layer.
+ * @param {Object} layer to set min- and maxScale at
+ * @param {Array} maxScales list of maxScales
+ * @param {Array} minScales list of minScales
+ * @returns {void}
+ */
+function setMinMaxScale (layer, maxScales, minScales) {
+    layer.maxScale = Math.max(...maxScales);
+    layer.minScale = Math.min(...minScales);
 }
 
 /**

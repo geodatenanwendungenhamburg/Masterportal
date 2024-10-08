@@ -90,7 +90,8 @@ describe("src/app-store/js/getAndMergeRawLayer.js", () => {
             expect(warnSpy.notCalled).to.be.true;
         });
 
-        it("should return a merged raw layer, if ids are in an array", () => {
+
+        it("should return a merged raw layer, if ids are in an array - typ SIMPLEGROUP", () => {
             layerConfig = {
                 [treeBaselayersKey]: {
                     elements: [
@@ -100,6 +101,7 @@ describe("src/app-store/js/getAndMergeRawLayer.js", () => {
                                 "718",
                                 "719"
                             ],
+                            typ: "SIMPLEGROUP",
                             visibility: true,
                             name: "Geobasiskarten (farbig)",
                             type: "layer"
@@ -117,21 +119,27 @@ describe("src/app-store/js/getAndMergeRawLayer.js", () => {
                     name: "name717",
                     layers: "layer717",
                     maxScale: "10000",
-                    minScale: "10"
+                    minScale: "10",
+                    url: "url",
+                    typ: "WMS"
                 },
                 {
                     id: "718",
                     name: "name718",
                     layers: "layer718",
                     maxScale: "30000",
-                    minScale: "30"
+                    minScale: "30",
+                    url: "url",
+                    typ: "WMS"
                 },
                 {
                     id: "719",
                     name: "name719",
                     layers: "layer719",
                     maxScale: "20000",
-                    minScale: "20"
+                    minScale: "20",
+                    url: "url",
+                    typ: "WMS"
                 }
             ];
             let result = null;
@@ -145,7 +153,7 @@ describe("src/app-store/js/getAndMergeRawLayer.js", () => {
 
             expect(Array.isArray(result)).to.be.true;
             expect(result.length).to.be.equals(1);
-            expect(result[0].id).to.be.equals("717-718-719");
+            expect(result[0].id).to.be.equals("717");
             expect(result[0].name).to.be.equals("Geobasiskarten (farbig)");
             expect(result[0].layers).to.be.equals("layer717,layer718,layer719");
             expect(result[0].maxScale).to.be.equals(30000);
@@ -340,7 +348,6 @@ describe("src/app-store/js/getAndMergeRawLayer.js", () => {
             expect(result[0].typ).to.be.equals("GROUP");
             expect(result[0].maxScale).to.be.equals(20000);
             expect(result[0].minScale).to.be.equals(100);
-            expect(result[0].layers).to.be.equals("layerA,layerB,layer1731");
             expect(result[0].children).to.be.an("array");
             expect(result[0].children.length).to.be.equals(2);
             expect(result[0].children[0].id).to.be.equals("682");

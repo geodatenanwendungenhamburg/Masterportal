@@ -821,7 +821,7 @@
           ],
           "name": "Geobasiskarten (schwarz-grau)",
           "shortname": "Karte schwarz-grau",
-          "typ": "GROUP",
+          "typ": "SIMPLEGROUP",
           "visibility": false
         },
         {
@@ -945,6 +945,7 @@
         {
           "id": [ "20501", "20502", "20503", "20504" ],
           "name": "Gruppe Freizeitrouten und Radfernwege (4 WFS Layer)",
+          "typ": "GROUP",
           "styleId": "4515",
           "visibility": true,
           "showInLayerTree": true

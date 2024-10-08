@@ -4678,6 +4678,7 @@ Baselayer: Hierbei ist wichtig, dass die angegebenen ids dieselbe URL ansprechen
 ```json
  {
     "id": [ "20501", "20502", "20503", "20504" ],
+    "typ": "GROUP",
     "name": "Gruppe Freizeitrouten und Radfernwege",
     "styleId": "4515"
 }
