@@ -91,7 +91,7 @@ describe("src/app-store/js/getAndMergeRawLayer.js", () => {
         });
 
 
-        it("should return a merged raw layer, if ids are in an array - typ SIMPLEGROUP", () => {
+        it("should return a merged raw layer, if ids are in an array - NOT typ GROUP", () => {
             layerConfig = {
                 [treeBaselayersKey]: {
                     elements: [
@@ -101,7 +101,6 @@ describe("src/app-store/js/getAndMergeRawLayer.js", () => {
                                 "718",
                                 "719"
                             ],
-                            typ: "SIMPLEGROUP",
                             visibility: true,
                             name: "Geobasiskarten (farbig)",
                             type: "layer"
@@ -309,6 +308,7 @@ describe("src/app-store/js/getAndMergeRawLayer.js", () => {
                             elements: [
                                 {
                                     id: ["682", "1731"],
+                                    typ: "GROUP",
                                     name: "Kita und Krankenhäuser",
                                     styleId: "styleId"
                                 }
