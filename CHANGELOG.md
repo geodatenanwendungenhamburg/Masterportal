@@ -16,6 +16,7 @@
 
 ### Fixed
 - Reduced loading requests for layers defined as array of Ids (not of typ GROUP).
+- Print: Fix printing bug considering minScale and maxScale with layers defined as array of ids.
 
 ---
 
