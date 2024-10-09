@@ -115,6 +115,8 @@ function mergeRawLayer (layerConf, rawLayer) {
 
 /**
  * Merges layer configuration with layer defined as array of Ids with or without typ GROUP.
+ * If typ is GROUP, a grouped layer is created else the layer is replaced by the first layer of the group
+ * and gets the attribute 'layers' of all depending layers.
  * @param {Object} layerConf configuartion of layer like in the config.json with ids in an array
  * @returns {Object|undefined} the merged raw layer or undefined if layer cannot be merged
  */
@@ -141,20 +143,17 @@ function mergeGroupedLayer (layerConf) {
         // named children, because api needs it for styling groups
         rawLayer.children = existingLayers;
         setMinMaxScale(rawLayer, maxScales, minScales);
+        rawLayer.typ = "GROUP";
     }
     else if (sameUrlAndTyp(existingLayers)) {
-        const childLayer = {...existingLayers[0]};
-
-        childLayer.layers = existingLayers.map(value => value.layers).toString();
-        setMinMaxScale(childLayer, maxScales, minScales);
-
-        rawLayer = Object.assign({}, childLayer, layerConf);
-        rawLayer.id = childLayer.id;
-        // named children, because api needs it for styling groups
-        rawLayer.children = [childLayer];
-        layerConf.typ = "GROUP";
+        rawLayer = Object.assign({}, existingLayers[0], layerConf);
+        rawLayer.id = existingLayers[0].id;
+        rawLayer.layers = existingLayers.map(value => value.layers).toString();
+        setMinMaxScale(rawLayer, maxScales, minScales);
     }
-    rawLayer.typ = "GROUP";
+    else {
+        console.warn(`Layer '${layerConf.name}' with ids as array: [${layerConf.id}] cannot be created. All layers in the ids-array must habe same 'typ' and same 'url'.`);
+    }
     layerConf.id = rawLayer.id;
 
     return rawLayer;
