@@ -4579,9 +4579,9 @@ Neben diesen Attributen gibt es auch Typ-spezifische Attribute für die verschie
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
 |autoRefresh|nein|Integer||Automatischer Reload des Layers. Angabe in ms. Minimum ist 500.|false|
-|id|ja|String/String[]||Id des Layers. In der **[services.json](../Global-Config/services.json.md)** werden die ids aufgelöst und die notwendigen Informationen herangezogen. Bei Konfiguration eines Arrays von Ids wird ein Gruppenlayer erzeugt **[Group](#layerconfigelementslayersgroup)**|false|
 |capabilitiesUrl|nein|String||Wert aus **[services.json](../Global-Config/services.json.md)**. Capabilities URL des Dienstes|false
 |fitCapabilitiesExtent|nein|Boolean|false|Wert aus **[services.json](../Global-Config/services.json.md)**. Bei Aktivierung dieser Option und Vorhandensein einer Capabilities URL in der Konfiguration, passt die Anwendung die Kartenausdehnung automatisch an die Bounding-Box-Informationen an, die sie aus der GetCapabilities-Anfrage erhält."|false|
+|id|ja|String/String[]||Id des Layers. In der **[services.json](../Global-Config/services.json.md)** werden die Ids aufgelöst und die notwendigen Informationen herangezogen. Bei Konfiguration eines Arrays von Ids wird ein Layer erzeugt, der im Request den Parameter LAYERS mit einer komma-separierten Liste der Inhalte des Attributes `layers` der einzelnen Layer enthält. Die Einstellung von `minScale` und `maxScale` für jeden Layer muss in der `services.json` enthalten sein. Hierbei ist wichtig, dass die angegebenen ids dieselbe URL ansprechen, also den selben Dienst benutzen. Mit dem Sonderzeichen `.` als Suffix, kann eine LayerId mehrfach verwendet werden. Jede mit einem Suffix versehene LayerId erzeugt einen eigenen Eintrag im Themenbaum.|false|
 |isPointLayer|nein|Boolean|false|Anzeige, ob der (Vektor)-Layer nur aus Punkt-Features besteht (nur relevant für WebGL Rendering))|false|
 |name|nein|String||Name des Layers.|false|
 |preview|nein|**[preview](#layerconfigelementslayerspreview)**||Vorschau für baselayer vom Typ WMS, WMTS und VectorTile. WMS und WMTS: bei keiner Angabe, wird ein zentrierter Kartenausschnitt geladen.|false|
@@ -4616,6 +4616,38 @@ Neben diesen Attributen gibt es auch Typ-spezifische Attribute für die verschie
         {
             "id": ["123", "456", "789"],
             "name": "Mein Testlayer"
+        }
+    ]
+}
+```
+**Beispiel layerId 8712 mit Suffix**
+
+```json
+{
+"elements": [
+        {
+          "id": "8712.1",
+          "styleId": "8712.1",
+          "name": "Grundschulen",
+          "wfsFilter": "resources/xml/schulstandort.staatlich.5.grundschulen.xml"
+        },
+        {
+          "id": "8712.2",
+          "styleId": "8712.2",
+          "name": "Stadtteilschulen",
+          "wfsFilter": "resources/xml/schulstandort.staatlich.5.stadtteilschulen.xml",
+        },
+        {
+          "id": "8712.3",
+          "styleId": "8712.3",
+          "name": "Gymnasien",
+          "wfsFilter": "resources/xml/schulstandort.staatlich.5.gymnasien.xml"
+        },
+        {
+          "id": "8712.4",
+          "styleId": "8712.4",
+          "name": "Sonderschulen",
+          "wfsFilter": "resources/xml/schulstandort.staatlich.5.sonderschulen.xml"
         }
     ]
 }
@@ -4664,8 +4696,6 @@ Beim VectorTile-Layer wird ein abgelegtes Vorschaubild angezeigt, bei WMS- und W
 [inherits]: # (layerConfig.elements.layers)
 
 Es wird ein Gruppenlayer erzeugt, der alle Layer der angegeben ids enthält.
-Die Werte für minScale und maxScale werden aus allen Gruppen-Layer bestimmt.
-Baselayer: Hierbei ist wichtig, dass die angegebenen ids dieselbe URL ansprechen, also den selben Dienst benutzen.
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|

@@ -4586,7 +4586,7 @@ Besides these attributes, there are also type-specific attributes for the differ
 |autoRefresh|no|Integer||Automatically reload layer every `autoRefresh` ms. Minimum value is 500.|false|
 |capabilitiesUrl|no|String||**[services.json](../Global-Config/services.json.md)** value. Service's capabilities URL|false
 |fitCapabilitiesExtent|no|Boolean|false|**[services.json](../Global-Config/services.json.md)** value. When set to `true` and a `capabilitiesUrl` is specified in the configuration, the application will fit the map extent based on the bounding box information retrieved from the GetCapabilities document.|false|
-|id|yes|String/String[]||Layer ID(s). Resolved using the **[services.json](../Global-Config/services.json.md)** file. Please mind that the given IDs **MUST** refer to the same URL, that is, use the same service. When configuring an array of IDs, setting `minScale` and `maxScale` of each layer is required to be in the `services.json`. With the special character `.` as suffix, a LayerId can be used multiple times. Each LayerId marked with a suffix creates its own entry in the topic tree.|false|
+|id|yes|String/String[]||Id of the layer. The ids are resolved in **[services.json](../Global-Config/services.json.md)** and the necessary information is used. When configuring an array of Ids, a layer is created that contains the LAYERS parameter in the request with a comma-separated list of the contents of the `layers` attribute of the individual layers. Setting `minScale` and `maxScale` of each layer is required to be in the `services.json`. It is important here that the specified ids address the same URL, i.e. use the same service. With the special character `.` as suffix, a LayerId can be used multiple times. Each LayerId marked with a suffix creates its own entry in the topic tree.|false|
 |isPointLayer|no|Boolean|false|Whether the (vector) layer only consists of point features (only relevant for WebGL rendering)|false|
 |name|no|String||Layer name.|false|
 |preview|no|**[preview](#layerconfigelementslayerspreview)**||Preview for baselayers of type WMS, WMTS and VectorTile. WMS and WMTS: if not specified, a centered map section is loaded.|false|
@@ -4621,6 +4621,39 @@ Besides these attributes, there are also type-specific attributes for the differ
         {
             "id": ["123", "456", "789"],
             "name": "My test layer"
+        }
+    ]
+}
+```
+
+**Example layerId 8712 with suffix**
+
+```json
+{
+"elements": [
+        {
+          "id": "8712.1",
+          "styleId": "8712.1",
+          "name": "Grundschulen",
+          "wfsFilter": "resources/xml/schulstandort.staatlich.5.grundschulen.xml"
+        },
+        {
+          "id": "8712.2",
+          "styleId": "8712.2",
+          "name": "Stadtteilschulen",
+          "wfsFilter": "resources/xml/schulstandort.staatlich.5.stadtteilschulen.xml",
+        },
+        {
+          "id": "8712.3",
+          "styleId": "8712.3",
+          "name": "Gymnasien",
+          "wfsFilter": "resources/xml/schulstandort.staatlich.5.gymnasien.xml"
+        },
+        {
+          "id": "8712.4",
+          "styleId": "8712.4",
+          "name": "Sonderschulen",
+          "wfsFilter": "resources/xml/schulstandort.staatlich.5.sonderschulen.xml"
         }
     ]
 }
@@ -4670,8 +4703,6 @@ With the VectorTile layer a dropped preview image is displayed, with WMS and WMT
 [inherits]: # (layerConfig.elements.layers)
 
 A group layer is created that contains all layers of the specified ids.
-The values for minScale and maxScale are determined from all group layers.
-Baselayer: It is important here that the specified ids address the same URL, i.e. use the same service.
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
@@ -4684,6 +4715,7 @@ Baselayer: It is important here that the specified ids address the same URL, i.e
 ```json
  {
     "id": [ "20501", "20502", "20503", "20504" ],
+    "typ": "GROUP",
     "name": "Gruppe Freizeitrouten und Radfernwege",
     "styleId": "4515"
 }

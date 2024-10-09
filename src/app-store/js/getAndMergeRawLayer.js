@@ -130,19 +130,7 @@ function mergeGroupedLayer (layerConf) {
     }
     existingLayers.forEach(object => object.maxScale ? maxScales.push(parseInt(object.maxScale, 10)) : null);
     existingLayers.forEach(object => object.minScale ? minScales.push(parseInt(object.minScale, 10)) : null);
-    if (sameUrlAndTyp(existingLayers) && layerConf.typ === "SIMPLEGROUP") {
-        const childLayer = {...existingLayers[0]};
-
-        childLayer.layers = existingLayers.map(value => value.layers).toString();
-        setMinMaxScale(childLayer, maxScales, minScales);
-
-        rawLayer = Object.assign({}, childLayer, layerConf);
-        rawLayer.id = childLayer.id;
-        // named children, because api needs it for styling groups
-        rawLayer.children = [childLayer];
-        layerConf.typ = "GROUP";
-    }
-    else {
+    if (sameUrlAndTyp(existingLayers) && layerConf.typ === "GROUP") {
         existingLayers.forEach(aLayer => {
             if (layerConf.styleId) {
                 aLayer.styleId = layerConf.styleId;
@@ -153,6 +141,18 @@ function mergeGroupedLayer (layerConf) {
         // named children, because api needs it for styling groups
         rawLayer.children = existingLayers;
         setMinMaxScale(rawLayer, maxScales, minScales);
+    }
+    else {
+        const childLayer = {...existingLayers[0]};
+
+        childLayer.layers = existingLayers.map(value => value.layers).toString();
+        setMinMaxScale(childLayer, maxScales, minScales);
+
+        rawLayer = Object.assign({}, childLayer, layerConf);
+        rawLayer.id = childLayer.id;
+        // named children, because api needs it for styling groups
+        rawLayer.children = [childLayer];
+        layerConf.typ = "GROUP";
     }
     rawLayer.typ = "GROUP";
     layerConf.id = rawLayer.id;

@@ -3,6 +3,22 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased - in development
+### __Breaking Changes__
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+- Increased loading time of layers with an array of Ids (not of typ GROUP).
+
+---
+
 ## 2024-10-02 v3.3.0 (LTS)
 ### __Breaking Changes__
 
