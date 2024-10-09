@@ -15,7 +15,7 @@
 ### Removed
 
 ### Fixed
-- Increased loading time of layers with an array of Ids (not of typ GROUP).
+- Reduced loading requests for layers defined as array of Ids (not of typ GROUP).
 
 ---
 

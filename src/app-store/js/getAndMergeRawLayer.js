@@ -114,7 +114,7 @@ function mergeRawLayer (layerConf, rawLayer) {
 }
 
 /**
- * Merges layer configuration with ids property of type array and typ GROUP.
+ * Merges layer configuration with layer defined as array of Ids with or without typ GROUP.
  * @param {Object} layerConf configuartion of layer like in the config.json with ids in an array
  * @returns {Object|undefined} the merged raw layer or undefined if layer cannot be merged
  */
@@ -130,7 +130,7 @@ function mergeGroupedLayer (layerConf) {
     }
     existingLayers.forEach(object => object.maxScale ? maxScales.push(parseInt(object.maxScale, 10)) : null);
     existingLayers.forEach(object => object.minScale ? minScales.push(parseInt(object.minScale, 10)) : null);
-    if (sameUrlAndTyp(existingLayers) && layerConf.typ === "GROUP") {
+    if (layerConf.typ === "GROUP") {
         existingLayers.forEach(aLayer => {
             if (layerConf.styleId) {
                 aLayer.styleId = layerConf.styleId;
@@ -142,7 +142,7 @@ function mergeGroupedLayer (layerConf) {
         rawLayer.children = existingLayers;
         setMinMaxScale(rawLayer, maxScales, minScales);
     }
-    else {
+    else if (sameUrlAndTyp(existingLayers)) {
         const childLayer = {...existingLayers[0]};
 
         childLayer.layers = existingLayers.map(value => value.layers).toString();
