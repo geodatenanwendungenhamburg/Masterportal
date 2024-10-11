@@ -7,7 +7,8 @@
 ### __Breaking Changes__
 
 ### Added
-
+- PrintMap
+  - Send a new variable "sourceLinks" to jasperserver to display the sources shorter as href links in jasperreports.
 ### Changed
 
 ### Deprecated
