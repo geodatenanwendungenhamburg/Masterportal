@@ -105,12 +105,7 @@ function processLayer (layer) {
 export function setResolutions (layer) {
     if (layer.get("typ") === "GROUP") {
         layer.getLayerSource().forEach(childLayer => {
-            const opacity = (100 - layer.get("transparency")) / 100,
-                zIndex = layer.get("zIndex");
-
             setMinMaxResolution(childLayer, layer);
-            childLayer.getLayer().setOpacity(opacity);
-            childLayer.getLayer().setZIndex(zIndex);
         });
     }
     else {

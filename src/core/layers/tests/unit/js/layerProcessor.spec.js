@@ -195,18 +195,13 @@ describe("src/core/js/layers/layerProcessor.js", () => {
     it("GROUP: maxScale is not set at any layer - do nothing", () => {
         const setMaxResolutionSpy = sinon.spy(),
             setMinResolutionSpy = sinon.spy(),
-            setOpacitySpy = sinon.spy(),
-            setZIndexSpy = sinon.spy(),
             olLayer = {
                 setMaxResolution: setMaxResolutionSpy,
-                setMinResolution: setMinResolutionSpy,
-                setOpacity: setOpacitySpy,
-                setZIndex: setZIndexSpy
+                setMinResolution: setMinResolutionSpy
             },
             childLayer = {
                 attributes: {
                     typ: "WMS"
-
                 },
                 get: (value) => {
                     if (value === "maxScale") {
@@ -224,9 +219,7 @@ describe("src/core/js/layers/layerProcessor.js", () => {
             },
             layer = {
                 attributes: {
-                    typ: "GROUP",
-                    transparency: 50,
-                    zIndex: 1
+                    typ: "GROUP"
                 },
                 get: (value) => {
                     if (value === "typ") {
@@ -234,12 +227,6 @@ describe("src/core/js/layers/layerProcessor.js", () => {
                     }
                     if (value === "maxScale") {
                         return layer.attributes.maxScale;
-                    }
-                    if (value === "transparency") {
-                        return layer.attributes.transparency;
-                    }
-                    if (value === "zIndex") {
-                        return layer.attributes.zIndex;
                     }
                     return value;
                 },
@@ -252,21 +239,13 @@ describe("src/core/js/layers/layerProcessor.js", () => {
         setResolutions(layer);
         expect(setMaxResolutionSpy.notCalled).to.be.true;
         expect(setMinResolutionSpy.notCalled).to.be.true;
-        expect(setOpacitySpy.calledOnce).to.be.true;
-        expect(setOpacitySpy.firstCall.args[0]).to.equals(0.5);
-        expect(setZIndexSpy.calledOnce).to.be.true;
-        expect(setZIndexSpy.firstCall.args[0]).to.equals(1);
     });
     it("GROUP: maxScale and minScale is set at group layer and not at child layer", () => {
         const setMaxResolutionSpy = sinon.spy(),
             setMinResolutionSpy = sinon.spy(),
-            setOpacitySpy = sinon.spy(),
-            setZIndexSpy = sinon.spy(),
             olLayer = {
                 setMaxResolution: setMaxResolutionSpy,
-                setMinResolution: setMinResolutionSpy,
-                setOpacity: setOpacitySpy,
-                setZIndex: setZIndexSpy
+                setMinResolution: setMinResolutionSpy
             },
             childLayer = {
                 attributes: {
@@ -293,9 +272,7 @@ describe("src/core/js/layers/layerProcessor.js", () => {
                 attributes: {
                     typ: "GROUP",
                     maxScale: "50000",
-                    minScale: "0",
-                    transparency: 100,
-                    zIndex: 55
+                    minScale: "0"
                 },
                 get: (value) => {
                     if (value === "maxScale") {
@@ -306,12 +283,6 @@ describe("src/core/js/layers/layerProcessor.js", () => {
                     }
                     if (value === "typ") {
                         return groupLayer.attributes.typ;
-                    }
-                    if (value === "transparency") {
-                        return groupLayer.attributes.transparency;
-                    }
-                    if (value === "zIndex") {
-                        return groupLayer.attributes.zIndex;
                     }
                     return value;
                 },
@@ -326,21 +297,13 @@ describe("src/core/js/layers/layerProcessor.js", () => {
         expect(setMaxResolutionSpy.firstCall.args[0]).to.equals(505);
         expect(setMinResolutionSpy.calledOnce).to.be.true;
         expect(setMinResolutionSpy.firstCall.args[0]).to.equals(0);
-        expect(setOpacitySpy.calledOnce).to.be.true;
-        expect(setOpacitySpy.firstCall.args[0]).to.equals(0);
-        expect(setZIndexSpy.calledOnce).to.be.true;
-        expect(setZIndexSpy.firstCall.args[0]).to.equals(55);
     });
     it("GROUP: maxScale is set at group layer, minScale not --> shall be set to 0", () => {
         const setMaxResolutionSpy = sinon.spy(),
             setMinResolutionSpy = sinon.spy(),
-            setOpacitySpy = sinon.spy(),
-            setZIndexSpy = sinon.spy(),
             olLayer = {
                 setMaxResolution: setMaxResolutionSpy,
-                setMinResolution: setMinResolutionSpy,
-                setOpacity: setOpacitySpy,
-                setZIndex: setZIndexSpy
+                setMinResolution: setMinResolutionSpy
             },
             childLayer = {
                 attributes: {
@@ -366,9 +329,7 @@ describe("src/core/js/layers/layerProcessor.js", () => {
             groupLayer = {
                 attributes: {
                     maxScale: "50000",
-                    typ: "GROUP",
-                    transparency: 50,
-                    zIndex: 1
+                    typ: "GROUP"
                 },
                 get: (value) => {
                     if (value === "maxScale") {
@@ -379,12 +340,6 @@ describe("src/core/js/layers/layerProcessor.js", () => {
                     }
                     if (value === "typ") {
                         return groupLayer.attributes.typ;
-                    }
-                    if (value === "transparency") {
-                        return groupLayer.attributes.transparency;
-                    }
-                    if (value === "zIndex") {
-                        return groupLayer.attributes.zIndex;
                     }
                     return value;
                 },
@@ -399,9 +354,5 @@ describe("src/core/js/layers/layerProcessor.js", () => {
         expect(setMaxResolutionSpy.firstCall.args[0]).to.equals(505);
         expect(setMinResolutionSpy.calledOnce).to.be.true;
         expect(setMinResolutionSpy.firstCall.args[0]).to.equals(0);
-        expect(setOpacitySpy.calledOnce).to.be.true;
-        expect(setOpacitySpy.firstCall.args[0]).to.equals(0.5);
-        expect(setZIndexSpy.calledOnce).to.be.true;
-        expect(setZIndexSpy.firstCall.args[0]).to.equals(1);
     });
 });
