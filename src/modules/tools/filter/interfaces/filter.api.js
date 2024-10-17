@@ -78,8 +78,6 @@ export default class FilterApi {
                 typename: featureType,
                 namespace: featureNS,
                 srsName: openlayerFunctions.getMapProjection(),
-                featureNS: featureNS.substr(0, featureNS.lastIndexOf("/")),
-                featurePrefix: featureNS.substr(featureNS.lastIndexOf("/") + 1),
                 featureTypes: [featureType]
             };
         }

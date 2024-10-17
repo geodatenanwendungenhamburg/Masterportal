@@ -87,8 +87,6 @@ describe("src/modules/tools/filter/interfaces/filter.api.js", () => {
                         typename: "bar",
                         namespace: "foob/boof",
                         srsName: "foo",
-                        featureNS: "foob",
-                        featurePrefix: "boof",
                         featureTypes: ["bar"]
                     };
 
