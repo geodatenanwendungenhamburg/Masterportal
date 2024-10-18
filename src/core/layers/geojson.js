@@ -90,6 +90,17 @@ GeoJSONLayer.prototype.createLayer = function (attrs) {
                 }
             }.bind(this),
             afterLoading: function (features) {
+                const hasClusterSource = this.layer.getSource() instanceof Cluster;
+                let sourceFeatures;
+
+                if (hasClusterSource) {
+                    sourceFeatures = this.layer.getSource().getSource().getFeatures();
+
+                    // temporarily remove features from cluster source to avoid recomputing on feature geometry update (very slow)
+                    // which happens in prepareFeaturesFor3D
+                    this.layer.getSource().getSource().clear();
+
+                }
                 if (Array.isArray(features)) {
                     features.forEach((feature, idx) => {
                         if (typeof feature?.getId === "function" && typeof feature.getId() === "undefined") {
@@ -97,7 +108,14 @@ GeoJSONLayer.prototype.createLayer = function (attrs) {
                         }
                     });
                     this.prepareFeaturesFor3D(features);
+
                 }
+
+                if (hasClusterSource) {
+                    this.layer.getSource().getSource().addFeatures(sourceFeatures);
+                }
+
+
                 this.featuresLoaded(attrs.id, features);
                 if (this.get("isSelected") || attrs.isSelected) {
                     LoaderOverlay.hide();

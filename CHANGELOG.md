@@ -16,6 +16,7 @@
 ### Removed
 
 ### Fixed
+- Enhanced the loading performance of GeoJson Clusters including a high number of features (3000+)
 
 ---
 
