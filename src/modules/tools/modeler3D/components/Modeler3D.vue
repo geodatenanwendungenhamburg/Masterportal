@@ -979,58 +979,60 @@ export default {
                 v-if="active"
                 id="tool-modeler3D"
             >
-                <ul class="nav nav-tabs">
-                    <li
-                        id="tool-modeler3D-import"
-                        role="presentation"
-                        class="nav-item"
-                    >
-                        <a
-                            href="#"
-                            class="nav-link"
-                            :class="[importTabClasses, {'disabled': isDrawing}]"
-                            @click.prevent="setCurrentView('import'), povActive ? escapePedView(undefined) : ''"
-                        >{{ $t("modules.tools.modeler3D.nav.importTitle") }}</a>
-                    </li>
-                    <li
-                        id="tool-modeler3D-draw"
-                        role="presentation"
-                        class="nav-item"
-                    >
-                        <a
-                            href="#"
-                            class="nav-link"
-                            :class="[drawTabClasses, {'disabled': isDrawing}]"
-                            @click.prevent="setCurrentView('draw'), povActive ? escapePedView(undefined) : ''"
-                        >{{ $t("modules.tools.modeler3D.nav.drawTitle") }}</a>
-                    </li>
-                    <li
-                        id="tool-modeler3D-options"
-                        role="presentation"
-                        class="nav-item"
-                    >
-                        <a
-                            href="#"
-                            class="nav-link"
-                            :class="[optionsTabClasses, {'disabled': isDrawing}]"
-                            @click.prevent="setCurrentView('')"
-                        >{{ $t("modules.tools.modeler3D.nav.options") }}</a>
-                    </li>
-                    <li
-                        id="tool-modeler3D-filter"
-                        role="presentation"
-                        class="nav-item"
-                    >
-                        <a
-                            href="#"
-                            class="nav-link"
-                            :class="[filterTabClasses, {'disabled': isDrawing}]"
-                            @click.prevent="setCurrentView('filtering')"
+                <div class="nav-tabs-wrapper">
+                    <ul class="nav nav-tabs">
+                        <li
+                            id="tool-modeler3D-import"
+                            role="presentation"
+                            class="nav-item"
                         >
-                            {{ $t("modules.tools.modeler3D.nav.filterTitle") }}
-                        </a>
-                    </li>
-                </ul>
+                            <a
+                                href="#"
+                                class="nav-link"
+                                :class="[importTabClasses, {'disabled': isDrawing}]"
+                                @click.prevent="setCurrentView('import'), povActive ? escapePedView(undefined) : ''"
+                            >{{ $t("modules.tools.modeler3D.nav.importTitle") }}</a>
+                        </li>
+                        <li
+                            id="tool-modeler3D-draw"
+                            role="presentation"
+                            class="nav-item"
+                        >
+                            <a
+                                href="#"
+                                class="nav-link"
+                                :class="[drawTabClasses, {'disabled': isDrawing}]"
+                                @click.prevent="setCurrentView('draw'), povActive ? escapePedView(undefined) : ''"
+                            >{{ $t("modules.tools.modeler3D.nav.drawTitle") }}</a>
+                        </li>
+                        <li
+                            id="tool-modeler3D-filter"
+                            role="presentation"
+                            class="nav-item"
+                        >
+                            <a
+                                href="#"
+                                class="nav-link"
+                                :class="[filterTabClasses, {'disabled': isDrawing}]"
+                                @click.prevent="setCurrentView('filtering')"
+                            >
+                                {{ $t("modules.tools.modeler3D.nav.filterTitle") }}
+                            </a>
+                        </li>
+                        <li
+                            id="tool-modeler3D-options"
+                            role="presentation"
+                            class="nav-item"
+                        >
+                            <a
+                                href="#"
+                                class="nav-link"
+                                :class="[optionsTabClasses, {'disabled': isDrawing}]"
+                                @click.prevent="setCurrentView('')"
+                            >{{ $t("modules.tools.modeler3D.nav.options") }}</a>
+                        </li>
+                    </ul>
+                </div>
                 <component
                     :is="currentView"
                     v-if="currentView"
@@ -1188,5 +1190,11 @@ h2 {
 
 .nav-tabs {
     margin-bottom: 1em;
+}
+
+.nav-tabs-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
 }
 </style>
