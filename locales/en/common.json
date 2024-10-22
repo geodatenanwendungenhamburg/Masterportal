@@ -739,6 +739,29 @@
                         "rectangle": "15m x 20m x 20m (WxDxH) Rectangle"
                     }
                 },
+                "filter": {
+                    "captions": {
+                        "abortStyle": "Cancel",
+                        "addFilter": "Add Filter",
+                        "applyStyle": "Apply",
+                        "editFilter": "Edit Filter",
+                        "fillColor": "Fill Color",
+                        "filterList": "Filter List",
+                        "filterName": "Filter Name",
+                        "info": "Information",
+                        "introInfo": "You can color buildings by attributes to visualize their usage with the Filter & Style function.",
+                        "introInfo2": "To do this, select the desired layer and the attribute you want to visualize. Then you can adjust the color of the buildings.",
+                        "noFilter": "No filters available.",
+                        "optionsTitle": "Filter Options",
+                        "pvoCheck": "Color all values according to the PlanzeichenVO",
+                        "resetStyle": "Reset",
+                        "selectLayer": "Select Layer",
+                        "selectAttribute": "Select Attribute",
+                        "title": "Filter & Style Function",
+                        "styleSettingsTitle": "Color Settings",
+                        "value": "Value"
+                    }
+                },
                 "options": {
                     "captions": {
                         "enableFunction": "Enable/Disable Function",

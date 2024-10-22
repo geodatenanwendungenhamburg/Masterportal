@@ -6,6 +6,7 @@
  * @property {Boolean}      adaptToHeight - if true, adjust height automatically on position change
  * @property {Number}       coordinateEasting - the raw transformed easting coordinate displayed on the ui
  * @property {Number}       coordinateNorthing - the raw transformed northing coordinate displayed on the ui
+ * @property {String}       currentFilterId - id of the currently selected filter
  * @property {Object}       currentLayout - The current draw layout with all current values
  * @property {String}       currentModelId - id of the currently selected or added model
  * @property {Cartesian3}   currentModelPosition - position of the currently selected or added model
@@ -17,6 +18,7 @@
  * @property {Object[]}     drawnModels - a list of currently active drawn models
  * @property {String[]}     drawTypes - an array of supported draw types
  * @property {Number}       extrudedHeight height in meters for drawing model
+ * @property {Object[]}     filterList - a list of all filters
  * @property {String}       gmlIdPath - the GFI path to the gml Id
  * @property {Number}       height - the raw transformed height coordinate displayed on the ui
  * @property {Object[]}     hiddenObjects - array of hidden objects
@@ -31,6 +33,7 @@
  * @property {Boolean}      isDragging - if true, entity is being moved by mouse
  * @property {Boolean}      isDrawing- true if drawing is active
  * @property {Boolean}      isLoading- true if loading of imported model is active
+ * @property {Object[]}     layerList - a list of all layers
  * @property {String}       name - Module name
  * @property {String}       newFillColor - selected fill color for drawn entity
  * @property {String}       newStrokeColor - selected outline color for drawn entity
@@ -57,6 +60,7 @@ export default {
     adaptToHeight: true,
     coordinateEasting: 0,
     coordinateNorthing: 0,
+    currentFilterId: null,
     currentLayout: {
         fillColor: [255, 255, 255],
         fillTransparency: 0,
@@ -76,6 +80,7 @@ export default {
     drawRotation: 0,
     drawTypes: ["line", "polygon", "rectangle"],
     extrudedHeight: 20,
+    filterList: [],
     gmlIdPath: "gmlid",
     height: 0,
     hiddenObjects: [],
@@ -90,6 +95,7 @@ export default {
     isDragging: false,
     isDrawing: false,
     isLoading: false,
+    layerList: [],
     lineWidth: 2,
     newFillColor: "",
     newStrokeColor: "",

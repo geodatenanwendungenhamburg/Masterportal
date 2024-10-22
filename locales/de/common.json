@@ -739,6 +739,29 @@
                         "rectangle": "15m x 20m x 20m (BxTxH) Rechteck"
                     }
                 },
+                "filter": {
+                    "captions": {
+                        "abortStyle": "Abbrechen",
+                        "addFilter": "Filter hinzufügen",
+                        "applyStyle": "Anwenden",
+                        "editFilter": "Filter bearbeiten",
+                        "fillColor": "Füllfarbe",
+                        "filterList": "Filterliste",
+                        "filterName": "Filtername",
+                        "info": "Informationen",
+                        "introInfo": "Mit der Filter & Style Funktion können Sie Gebäude nach Attributen einfärben und so z.B. die Nutzung visualisieren.",
+                        "introInfo2": "Wählen Sie hierfür den gewünschten Layer und das Attribut aus, welches Sie visualisieren möchten. Anschließend können Sie die Farbe der Gebäude anpassen.",
+                        "noFilter": "Es sind keine Filter vorhanden.",
+                        "optionsTitle": "Filteroptionen",
+                        "pvoCheck": "Alle Werte gemäß der PlanzeichenVO einfärben",
+                        "resetStyle": "Zurücksetzen",
+                        "selectLayer": "Layerauswahl",
+                        "selectAttribute": "Attributauswahl",
+                        "title": "Filter & Stylefunktion",
+                        "styleSettingsTitle": "Farbeinstellungen",
+                        "value": "Wert"
+                    }
+                },
                 "options": {
                     "captions": {
                         "enableFunction": "Funktion de-/aktivieren",
@@ -753,7 +776,8 @@
                 "nav": {
                     "drawTitle": "Zeichnen",
                     "importTitle": "Importieren",
-                    "options": "Optionen"
+                    "options": "Optionen",
+                    "filterTitle": "Filter & Style"
                 },
                 "hiddenObjectsLabel": "Ausgeblendete Gebäude:",
                 "title": "3D Modeller"
