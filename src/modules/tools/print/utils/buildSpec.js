@@ -246,9 +246,10 @@ const BuildSpecModel = {
      * @param {Number} currentResolution Current map resolution
      * @param {Number} [dpi] The dpi to use instead of the dpi from store.
      * @param {Boolean} [scaleDoesNotMatter=false] - The layer should be build even if it is not visible in the current resolution.
+     * @param {Number|null} [mapScaleFactor=null] - The scale factor to use for the images of the features.
      * @returns {Object} - LayerObject for MapFish print.
      */
-    buildLayerType: async function (layer, currentResolution, dpi, scaleDoesNotMatter = false) {
+    buildLayerType: async function (layer, currentResolution, dpi, scaleDoesNotMatter = false, mapScaleFactor = null) {
         const extent = store.getters["Maps/getCurrentExtent"],
             layerMinRes = typeof layer?.get === "function" ? layer.get("minResolution") : false,
             layerMaxRes = typeof layer?.get === "function" ? layer.get("maxResolution") : false,
@@ -283,7 +284,7 @@ const BuildSpecModel = {
                 features = source.getFeaturesInExtent(extent);
 
                 if (features.length > 0) {
-                    returnLayer = this.buildVector(layer, features, extent);
+                    returnLayer = this.buildVector(layer, features, extent, mapScaleFactor);
                 }
             }
         }
@@ -473,14 +474,15 @@ const BuildSpecModel = {
      * @param {ol.layer.Vector} layer vector layer with vector source
      * @param {ol.feature[]} features vectorfeatures
      * @param {ol.extent} extent  Extent uses to filter the feature by extent.
+     * @param {Number|null} [mapScaleFactor=null] The scale factor for the map.
      * @returns {object} - geojson layer spec
      */
-    buildVector: function (layer, features, extent) {
+    buildVector: function (layer, features, extent, mapScaleFactor = null) {
         const geojsonList = [];
 
         return {
             type: "geojson",
-            style: this.buildStyle(layer, features, geojsonList, extent),
+            style: this.buildStyle(layer, features, geojsonList, extent, mapScaleFactor),
             geojson: geojsonList
         };
     },
@@ -491,9 +493,10 @@ const BuildSpecModel = {
      * @param {ol.feature[]} features Array of features.
      * @param {Object[]} geojsonList Array of geojsons.
      * @param {ol.extent} extent  Extent uses to filter the feature by extent.
+     * @param {Number|null} [mapScaleFactor=null] The scale factor to use for the icons.
      * @returns {Object} - style for mapfish print.
      */
-    buildStyle: function (layer, features, geojsonList, extent) {
+    buildStyle: function (layer, features, geojsonList, extent, mapScaleFactor = null) {
         const mapfishStyleObject = {
                 "version": "2"
             },
@@ -561,8 +564,8 @@ const BuildSpecModel = {
                             offsetStyle = styleObjectFromStyleList?.rules?.find(({style: {imageOffsetX, imageOffsetY}}) => imageOffsetX || imageOffsetY)?.style,
                             [posX, posY] = mapCollection.getMap("2D").getPixelFromCoordinate(coords),
                             [offsetX, offsetY] = [offsetStyle?.imageOffsetX ?? 0, offsetStyle?.imageOffsetY ?? 0],
-                            mapScaleFactor = store.state.Tools.Print.currentScale / store.state.Tools.Print.currentMapScale,
-                            transformedCoords = mapCollection.getMap("2D").getCoordinateFromPixel([posX - offsetX * mapScaleFactor, posY - offsetY * mapScaleFactor, 0]);
+                            currentMapScaleFactor = mapScaleFactor || store.state.Tools.Print.currentScale / store.state.Tools.Print.currentMapScale,
+                            transformedCoords = mapCollection.getMap("2D").getCoordinateFromPixel([posX - offsetX * currentMapScaleFactor, posY - offsetY * currentMapScaleFactor, 0]);
 
                         clonedFeature.getGeometry().setCoordinates(transformedCoords);
                     }
