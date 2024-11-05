@@ -7,8 +7,12 @@
 ### __Breaking Changes__
 
 ### Added
+- PrintMap: Send a new variable "sourceLinks" to jasperserver to display the sources shorter as href links in jasperreports.
 
 ### Changed
+- The following packages have been updated:
+    - dependencies:
+        - @masterportal/masterportalapi: 2.40.0 to 2.41.0
 
 ### Deprecated
 
