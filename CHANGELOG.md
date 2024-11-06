@@ -3,17 +3,11 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
+## v2.51.0 - 2024-11-06
 
 ### Added
 - PrintMap
   - Send a new variable "sourceLinks" to jasperserver to display the sources shorter as href links in jasperreports.
-### Changed
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - Enhanced the loading performance of GeoJson Clusters including a high number of features (3000+)
