@@ -12,6 +12,7 @@ import LayerInfoContactButton from "../../layerTree/components/LayerInfoContactB
  * @vue-computed {Boolean} showAdditionalMetaData - Shows if additional meta data should be displayed.
  * @vue-computed {Boolean} showCustomMetaData - Shows if custom meta data should be displayed.
  * @vue-computed {Boolean} showPublication - Shows if publication should be displayed.
+ * @vue-computed {Boolean} showRevision - Determines if the revision date should be displayed.
  * @vue-computed {Boolean} showPeriodicity - Shows if periodicity should be displayed.
  * @vue-computed {Boolean} showDownloadLinks - Shows if download lonks should be displayed.
  * @vue-computed {Boolean} showUrl - Shows if url should be displayed.
@@ -31,7 +32,9 @@ export default {
     },
     data () {
         return {
-            activeTab: "layerinfo-legend"
+            activeTab: "layerinfo-legend",
+            selectedOption: null,
+            dropdownOptions: []
         };
     },
     computed: {
@@ -73,19 +76,41 @@ export default {
             return this.downloadLinks !== null;
         },
         showUrl () {
-            return (this.layerInfo.url && this.layerInfo.typ !== "SensorThings" && this.showUrlGlobal === true) || (this.layerInfo.url && this.layerInfo.typ !== "SensorThings" && this.showUrlGlobal === undefined && this.layerInfo.urlIsVisible !== false);
+            if (this.layerInfo.typ === "GROUP" && Array.isArray(this.layerInfo.layers)) {
+                const selectedLayer = this.layerInfo.layers[this.selectedOption];
+
+                return selectedLayer?.url && this.showUrlGlobal !== false;
+            }
+            return this.layerInfo.url && this.layerInfo.typ !== "SensorThings" && this.showUrlGlobal !== false;
         },
         showAttachFile () {
-            return this.downloadLinks && this.downloadLinks.length > 1;
+            return this.downloadLinks?.length > 1;
         },
         layerUrl () {
-            return Array.isArray(this.layerInfo.url) ? this.layerInfo.url.map((url, i) => ({url, typ: this.layerInfo.typ?.[i]})).map(this.getGetCapabilitiesUrl) : this.getGetCapabilitiesUrl({url: this.layerInfo.url, typ: this.layerInfo.typ});
+            const layer = this.layerInfo;
+
+            if (layer.typ === "GROUP" && layer.layers) {
+                const selectedLayer = layer.layers[this.selectedOption];
+
+                return selectedLayer ? this.getGetCapabilitiesUrl(selectedLayer) : "";
+            }
+            return layer.url ? this.getGetCapabilitiesUrl(layer) : "";
         },
         legendURL  () {
             return this.layerInfo.legendURL;
         },
-        layerTyp  () {
-            return this.layerInfo.typ !== "GROUP" ? `${this.layerInfo.typ}-${this.$t("common:modules.layerInformation.addressSuffix")}` : this.$t("common:modules.layerInformation.addressSuffixes");
+        layerTyp () {
+            if (this.layerInfo.typ !== "GROUP") {
+                return `${this.layerInfo.typ}-${this.$t("common:modules.layerInformation.addressSuffix")}`;
+            }
+
+            const selectedLayer = this.layerInfo.layers[this.selectedOption];
+
+            if (selectedLayer && selectedLayer.type) {
+                return `${selectedLayer.type}-${this.$t("common:modules.layerInformation.addressSuffix")}`;
+            }
+
+            return this.$t("common:modules.layerInformation.addressSuffixes");
         },
         contact () {
             return this.pointOfContact || this.publisher || null;
@@ -102,8 +127,25 @@ export default {
         }
     },
 
+    watch: {
+        /**
+         * Watches changes to `selectedOption` and updates the layer's abstract information accordingly.
+         *
+         * @param {Number} newIndex - The newly selected layer index.
+         */
+        selectedOption (newIndex) {
+            const metaInfo = this.getMetaInfoForLayer(newIndex);
+
+            this.getAbstractInfo(metaInfo);
+        }
+    },
+
     created () {
         this.setConfigParams(this.configJs);
+
+        if (this.layerInfo.typ === "GROUP") {
+            this.createDropdownOptions();
+        }
     },
 
     mounted () {
@@ -121,12 +163,68 @@ export default {
     },
 
     methods: {
-        ...mapActions("Modules/LayerInformation", ["setConfigParams"]),
+        ...mapActions("Modules/LayerInformation", ["setConfigParams", "additionalSingleLayerInfo", "getAbstractInfo"]),
         ...mapActions("Modules/Legend", ["createLegendForLayerInfo"]),
-        ...mapMutations("Modules/LayerInformation", ["setMetaDataCatalogueId"]),
+        ...mapMutations("Modules/LayerInformation", ["setMetaDataCatalogueId", "setSelectedLayerIndex"]),
         ...mapMutations("Modules/Legend", ["setLayerInfoLegend"]),
         ...mapActions("Menu", ["changeCurrentComponent"]),
         isWebLink,
+
+        /**
+         * Creates the dropdown options from the layers and selects the first option.
+         * This method maps the `layerInfo.layers` array to create an array of dropdown options,
+         * where each option has a `value` (the index of the layer) and a `label` (the name of the layer).
+         * If any options are available, the first option is selected by default.
+         *
+         * @returns {void}
+         */
+        createDropdownOptions () {
+            this.dropdownOptions = this.layerInfo.layers.map((layer, index) => ({
+                value: index,
+                label: layer.name
+            }));
+
+            if (this.dropdownOptions.length > 0) {
+                this.selectedOption = this.dropdownOptions[0].value;
+            }
+        },
+
+        /**
+         * Handles the change of the selected layer from the dropdown.
+         * Updates the layer information displayed based on the selected layer.
+         *
+         * @param {Event} event - The change event from the dropdown.
+         * @returns {void}
+         */
+        handleDropdownChange (event) {
+            const selectedLayerIndex = event.target.value;
+
+            if (selectedLayerIndex !== -1) {
+                this.setSelectedLayerIndex(selectedLayerIndex);
+            }
+            else {
+                console.warn(`Layer not found: ${event.target.label}`);
+            }
+        },
+
+        /**
+         * Retrieves metadata information for a specified layer.
+         *
+         * @param {number} index - Index of the layer to fetch metadata for.
+         * @returns {Object} Metadata for the layer, including:
+         *   - {String} metaId - The metadata ID for the layer.
+         *   - {String} cswUrl - The CSW URL for the layer.
+         *   - {Object} customMetadata - Additional custom metadata for the layer.
+         *   - {Object} attributes - Attributes related to the layer.
+         */
+        getMetaInfoForLayer (index) {
+            return {
+                metaId: this.layerInfo.layers[index].metaID,
+                cswUrl: this.layerInfo.cswUrl,
+                customMetadata: this.layerInfo.customMetadata,
+                attributes: this.layerInfo.attributes
+            };
+        },
 
         /**
          * checks if the given tab name is currently active
@@ -179,7 +277,29 @@ export default {
         id="modules-layer-information"
     >
         <div
-            class="mb-2 abstract"
+            v-if="layerInfo.typ === 'GROUP'"
+            class="form-floating mb-3"
+        >
+            <select
+                id="layer-selection-dropdown"
+                v-model="selectedOption"
+                class="form-select"
+                @change="handleDropdownChange"
+            >
+                <option
+                    v-for="option in dropdownOptions"
+                    :key="option.value"
+                    :value="option.value"
+                >
+                    {{ option.label }}
+                </option>
+            </select>
+            <label
+                for="layer-selection-dropdown"
+            > {{ $t('common:modules.layerInformation.changeLayerInfo') }}</label>
+        </div>
+        <div
+            class="mb-2 abstract layer-info-text"
             v-html="abstractText"
         />
         <br>
@@ -318,6 +438,7 @@ export default {
                 <LegendSingleLayer
                     v-if="legendURL !== 'ignore'"
                     :legend-obj="layerInfoLegend"
+                    :selected-layer="selectedOption"
                 />
             </div>
             <div
@@ -360,38 +481,15 @@ export default {
                 :type="String('url')"
             >
                 <div
-                    v-if="Array.isArray(layerInfo.url)"
                     class="pt-5"
                 >
-                    <ul
-                        v-for="(layerInfoUrl, i) in layerInfo.url"
-                        :key="layerInfoUrl"
+                    <a
+                        v-if="typeof layerUrl === 'string' && layerUrl"
+                        :href="layerUrl"
+                        target="_blank"
                     >
-                        {{ layerInfo.layerNames[i] }}
-                        <li>
-                            <a
-                                :href="layerUrl"
-                                target="_blank"
-                            >
-                                {{ layerInfoUrl }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div
-                    v-else
-                    class="pt-5"
-                >
-                    <ul>
-                        <li>
-                            <a
-                                :href="layerUrl"
-                                target="_blank"
-                            >
-                                {{ layerInfo.url }}
-                            </a>
-                        </li>
-                    </ul>
+                        {{ layerUrl }}
+                    </a>
                 </div>
             </div>
         </div>
@@ -400,6 +498,22 @@ export default {
 
 <style lang="scss">
     @import "~variables";
+
+    .layer-info-text {
+        word-break: break-word;
+    }
+
+    #accordion-container-layer-info-contact {
+        .accordion-button {
+            color: $link-color;
+
+            transition: color 0.2s ease;
+
+            &:hover {
+                color: $link-hover-color;
+            }
+        }
+    }
 
     hr {
         margin: 15px 0 10px 0;

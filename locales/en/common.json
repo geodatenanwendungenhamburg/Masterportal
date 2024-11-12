@@ -579,7 +579,8 @@
       "pointOfContact": "Point of contact",
       "contactInfoMessage": "Write to the point of contact of the topic ",
       "mailSubject": "Request to dataset ",
-      "mailOriginHint": "This request was sent to you through the contact form on "
+      "mailOriginHint": "This request was sent to you through the contact form on ",
+      "changeLayerInfo": "Choose layer infotext: "
     },
     "layerPills": {
       "next": "Show next layers",

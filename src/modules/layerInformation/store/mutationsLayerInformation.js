@@ -15,50 +15,61 @@ export default {
      * @returns {void}
      */
     setLayerInfo (state, layerConf) {
-        let urls = layerConf?.url || layerConf?.capabilitiesUrl,
-            metaID = layerConf?.datasets?.length > 0 ? layerConf.datasets[0].md_id : null,
-            cswUrl = layerConf?.datasets?.length > 0 ? layerConf.datasets[0].csw_url : null,
-            customMetadata = layerConf?.datasets?.length > 0 ? layerConf.datasets[0].customMetadata : null,
-            attributes = layerConf?.datasets?.length > 0 ? layerConf.datasets[0].attributes : null,
-            showDocUrl = layerConf?.datasets?.length > 0 ? layerConf.datasets[0].show_doc_url : null;
-        const layerNames = [];
+        const metaID = layerConf?.datasets?.length > 0 ? layerConf.datasets[0].md_id : null,
+            url = layerConf?.url || layerConf?.capabilitiesUrl,
+            layers = [];
+
+        let cswUrl = layerConf?.datasets?.[0]?.csw_url ?? null,
+            customMetadata = layerConf?.datasets?.[0]?.customMetadata ?? null,
+            attributes = layerConf?.datasets?.[0]?.attributes ?? null,
+            showDocUrl = layerConf?.datasets?.[0]?.show_doc_url ?? null;
 
         if (layerConf?.typ === "GROUP") {
-            urls = [];
-            metaID = [];
             layerConf.children.forEach(child => {
-                urls.push(child.url || child.capabilitiesUrl);
-                layerNames.push(child.name);
+                const childUrl = child.url || child.capabilitiesUrl,
+                    dataset = child.datasets?.[0] || {},
+                    childMetaID = dataset.md_id || null,
+                    childCswUrl = dataset.csw_url || null,
+                    childCustomMetadata = dataset.customMetadata || null,
+                    childAttributes = dataset.attributes || null,
+                    childShowDocUrl = dataset.show_doc_url || null;
+
+                layers.push({
+                    name: child.name,
+                    type: child.typ,
+                    metaID: childMetaID,
+                    url: childUrl
+                });
+
                 if (child.datasets?.length > 0) {
-                    metaID.push(child.datasets[0].md_id);
                     if (!cswUrl) {
-                        cswUrl = child.datasets[0].csw_url;
+                        cswUrl = childCswUrl;
                     }
                     if (!customMetadata) {
-                        customMetadata = child.datasets[0].customMetadata;
+                        customMetadata = childCustomMetadata;
                     }
                     if (!attributes) {
-                        attributes = child.datasets[0].attributes;
+                        attributes = childAttributes;
                     }
                     if (!showDocUrl) {
-                        showDocUrl = child.datasets[0].show_doc_url;
+                        showDocUrl = childShowDocUrl;
                     }
                 }
             });
         }
         state.layerInfo = {
-            cswUrl: cswUrl,
+            cswUrl,
             id: layerConf?.id,
             layername: layerConf?.name,
-            layerNames: layerNames,
-            legendURL: layerConf?.legendURL,
-            metaID: metaID,
-            customMetadata: customMetadata,
-            attributes: attributes,
-            showDocUrl: showDocUrl,
+            showDocUrl,
             typ: layerConf?.typ,
-            url: urls,
-            urlIsVisible: layerConf?.urlIsVisible
+            ...customMetadata && {customMetadata},
+            ...attributes && {attributes},
+            ...metaID && {metaID},
+            ...layers.length > 0 && {layers},
+            ...layerConf?.legendURL && {legendURL: layerConf.legendURL},
+            ...url && {url},
+            ...layerConf?.urlIsVisible && {urlIsVisible: layerConf.urlIsVisible}
         };
     }
 };

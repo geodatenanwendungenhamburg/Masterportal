@@ -20,6 +20,7 @@
  * @property {Boolean} [legendAvailable=true] true, if legend is available
  * @property {String} [pointOfContact=""] point of contact information from metadata
  * @property {String} [publisher=""] publisher information from metadata
+ * @property {Number} [selectedLayerIndex=0] the index of the currently selected layer
  */
 export default {
     abstractText: "",
@@ -39,5 +40,6 @@ export default {
     type: "layerInformation",
     legendAvailable: true,
     pointOfContact: "",
-    publisher: ""
+    publisher: "",
+    selectedLayerIndex: 0
 };

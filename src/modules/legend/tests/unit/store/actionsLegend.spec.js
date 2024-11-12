@@ -494,7 +494,7 @@ describe("src/modules/legend/store/actionsLegend.js", () => {
         });
     });
 
-    it("prepareLegendForGroupLayer", async () => {
+    it("prepareLegendForGroupLayer should prepare legends for grouped layers", async () => {
         layer1 = {
             id: "1",
             createLegend: sinon.stub().returns(
@@ -511,20 +511,18 @@ describe("src/modules/legend/store/actionsLegend.js", () => {
                 })
             )
         };
-        const layerSource = [
-                layer1,
-                layer2
-            ],
-            getters = {
-                preparedLegend: ["getLegendGraphicRequest"]
-            };
 
-        sinon.stub(legendDraw, "prepare").returns({});
+        const layerSource = [layer1, layer2];
 
-        await prepareLegendForGroupLayer({commit, dispatch, getters}, layerSource);
+        dispatch = sinon.stub();
+        dispatch.withArgs("prepareLegend", ["legendUrl1"]).resolves(["cleanedLegend1"]);
+        dispatch.withArgs("prepareLegend", ["legendUrl2"]).resolves(["cleanedLegend2"]);
+
+        await prepareLegendForGroupLayer({commit, dispatch}, layerSource);
+
         expect(commit.calledOnce).to.be.true;
         expect(commit.firstCall.args[0]).to.be.equals("setPreparedLegend");
-        expect(commit.firstCall.args[1]).to.be.deep.equals(["getLegendGraphicRequest"]);
+        expect(commit.firstCall.args[1]).to.be.deep.equals([["cleanedLegend1"], ["cleanedLegend2"]]);
         expect(dispatch.calledTwice).to.be.true;
         expect(dispatch.firstCall.args[0]).to.be.equals("prepareLegend");
         expect(dispatch.firstCall.args[1]).to.be.deep.equals(["legendUrl1"]);

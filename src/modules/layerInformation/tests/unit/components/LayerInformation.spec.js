@@ -38,13 +38,20 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
                         namespaced: true,
                         LayerInformation: {
                             namespaced: true,
+                            state: {
+                                layerInfo: {
+                                    typ: ["WMS", "WFS", "GeoJSON"],
+                                    metaIdArray: [],
+                                    url: "https://wfs.example.org/?evil=1"
+                                }
+                            },
                             mutations: {
                                 setMetaDataCatalogueId: () => sinon.stub()
                             },
                             getters: {
                                 customText: () => sinon.stub(),
                                 title: () => "",
-                                layerInfo: () => ({"metaIdArray": [], "url": ["https://wms.example.org/", "https://wfs.example.org/?evil=1", "./local.geojson"], "typ": ["WMS", "WFS", "GeoJSON"], "layerNames": ["X-WMS", "X-WFS", ""]}),
+                                layerInfo: (state) => state.layerInfo,
                                 datePublication: () => null,
                                 downloadLinks: () => downloadLinks,
                                 periodicityKey: () => null,
@@ -59,7 +66,8 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
                                 dateRevision: sinon.stub()
                             },
                             actions: {
-                                setConfigParams: () => sinon.stub()
+                                setConfigParams: () => sinon.stub(),
+                                getAbstractInfo: () => sinon.stub()
                             }
                         },
                         Legend: {
@@ -121,7 +129,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
         expect(wrapper.find(".subtitle")).to.exist;
     });
 
-    it("should have a close button, active tab is 'layerinfo-legend'", async () => {
+    it("should have a close button, active tab is 'layerinfo-legend'", () => {
         downloadLinks = ["https://download.com"];
         const wrapper = mount(LayerInformationComponent, {
             global: {
@@ -135,7 +143,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
         expect(wrapper.findAll("li > a")[0].attributes().href).to.be.equals("#layerinfo-legend");
     });
 
-    it("if legendAvailable is false: 'LayerInfoDataDownload' is active tab", async () => {
+    it("if legendAvailable is false: 'LayerInfoDataDownload' is active tab", () => {
         legendAvailable = false;
         downloadLinks = ["https://download.com"];
         const wrapper = mount(LayerInformationComponent, {
@@ -149,7 +157,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
         expect(wrapper.findAll("li > a")[0].attributes().href).to.be.equals("#LayerInfoDataDownload");
     });
 
-    it("should check if dropdown for group layer to not exists", async () => {
+    it("should check if dropdown for group layer to not exists", () => {
         const wrapper = mount(LayerInformationComponent, {
             global: {
                 plugins: [store]
@@ -159,23 +167,18 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
         expect(wrapper.find("#changeLayerInfo").exists()).to.be.false;
     });
 
-    it("should generate correct urls", async () => {
+    it("should generate correct url", () => {
         const wrapper = mount(LayerInformationComponent, {
                 global: {
                     plugins: [store]
                 }
             }),
-            links = wrapper.findAll("div > ul > li > a");
+            link = wrapper.find("#url div.pt-5 a");
 
-        expect(links.length).to.be.equals(3);
-        links.forEach(link => {
-            expect(link.attributes("href")).to.include("https://wms.example.org/?SERVICE=WMS&REQUEST=GetCapabilities");
-            expect(link.attributes("href")).to.include("https://wfs.example.org/?evil=1&SERVICE=WFS&REQUEST=GetCapabilities");
-            expect(link.attributes("href")).to.include("https://self.example.org/portal/local.geojson?SERVICE=GeoJSON&REQUEST=GetCapabilities");
-        });
+        expect(link.attributes("href")).to.include("https://wfs.example.org/?evil=1&SERVICE=WMS%2CWFS%2CGeoJSON&REQUEST=GetCapabilities");
     });
 
-    it("should show point of contact accordion  using content from pointOfContact", async () => {
+    it("should show point of contact accordion  using content from pointOfContact", () => {
         pointOfContact = {
             "name": "Behörde ABC",
             "positionName": ["Metadaten-Verantwortlicher"],
@@ -197,7 +200,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
         expect(wrapper.find("#accordion-container-layer-info-contact").exists()).to.be.true;
     });
 
-    it("should not show point of contact accordion", async () => {
+    it("should not show point of contact accordion", () => {
         pointOfContact = "";
         publisher = "";
 
@@ -210,7 +213,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
         expect(wrapper.find("#accordion-container-layer-info-contact").exists()).to.be.false;
     });
 
-    it("should show point of contact accordion  using content from publisher", async () => {
+    it("should show point of contact accordion  using content from publisher", () => {
         pointOfContact = "";
         publisher = {
             "name": "Behörde ABC",
@@ -230,5 +233,139 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
         });
 
         expect(wrapper.find("#accordion-container-layer-info-contact").exists()).to.be.true;
+    });
+
+    it("should show zip code in one line with city", async () => {
+        pointOfContact = "";
+        publisher = {
+            "name": "Behörde ABC",
+            "positionName": ["Metadaten-Verantwortlicher"],
+            "street": "XYZ Straße 99",
+            "housenr": "",
+            "postalCode": "D-12345",
+            "city": "Hamburg",
+            "email": "test@gv.hamburg.de",
+            "country": "DEU"
+        };
+
+        const wrapper = mount(LayerInformationComponent, {
+            global: {
+                plugins: [store]
+            }
+        });
+
+        expect(wrapper.find("#accordion-container-layer-info-contact").html()).to.contains("D-12345 Hamburg");
+    });
+
+
+    it("should not show undefined for missing address information", () => {
+        pointOfContact = "";
+        publisher = {
+            "name": "Behörde ABC",
+            "email": "test@gv.hamburg.de"
+        };
+
+        const wrapper = mount(LayerInformationComponent, {
+            global: {
+                plugins: [store]
+            }
+        });
+
+        expect(wrapper.find("#accordion-container-layer-info-contact").html()).to.not.contains("undefined");
+    });
+
+    it("should show zip code in one line with city", async () => {
+        pointOfContact = "";
+        publisher = {
+            "name": "Behörde ABC",
+            "positionName": ["Metadaten-Verantwortlicher"],
+            "street": "XYZ Straße 99",
+            "housenr": "",
+            "postalCode": "D-12345",
+            "city": "Hamburg",
+            "email": "test@gv.hamburg.de",
+            "country": "DEU"
+        };
+
+        const wrapper = mount(LayerInformationComponent, {
+            global: {
+                plugins: [store]
+            }
+        });
+
+        expect(wrapper.find("#accordion-container-layer-info-contact").html()).to.contains("D-12345 Hamburg");
+    });
+
+
+    it("should not show undefined for missing address information", async () => {
+        pointOfContact = "";
+        publisher = {
+            "name": "Behörde ABC",
+            "email": "test@gv.hamburg.de"
+        };
+
+        const wrapper = mount(LayerInformationComponent, {
+            global: {
+                plugins: [store]
+            }
+        });
+
+        expect(wrapper.find("#accordion-container-layer-info-contact").html()).to.not.contains("undefined");
+    });
+
+    it("should show the dropdown when layerInfo.typ is 'GROUP'", () => {
+        store.state.Modules.LayerInformation.layerInfo = {
+            typ: "GROUP",
+            metaIdArray: ["sample-meta-id"],
+            layers: [
+                {name: "Layer 1", metaID: "test", type: "WFS", url: "#"},
+                {name: "Layer 2", metaID: "test", type: "SensorThings", url: "#"},
+                {name: "Layer 3", metaID: "test", type: "WMS", url: "#"}
+            ]
+        };
+
+        const wrapper = mount(LayerInformationComponent, {
+            global: {
+                plugins: [store]
+            }
+        });
+
+        expect(wrapper.find("#layer-selection-dropdown").exists()).to.be.true;
+    });
+
+    it("should not show the dropdown when layerInfo.typ is not 'GROUP'", () => {
+        store.state.Modules.LayerInformation.layerInfo.typ = "WMS";
+
+        const wrapper = mount(LayerInformationComponent, {
+            global: {
+                plugins: [store]
+            }
+        });
+
+        expect(wrapper.find("#layer-selection-dropdown").exists()).to.be.false;
+    });
+
+    it("should populate the dropdown with layer names from layerInfo", () => {
+        store.state.Modules.LayerInformation.layerInfo = {
+            typ: "GROUP",
+            metaIdArray: ["sample-meta-id"],
+            layers: [
+                {name: "Layer 1", metaID: "test", type: "WFS", url: "#"},
+                {name: "Layer 2", metaID: "test", type: "SensorThings", url: "#"},
+                {name: "Layer 3", metaID: "test", type: "WMS", url: "#"}
+            ]
+        };
+
+        const wrapper = mount(LayerInformationComponent, {
+                global: {
+                    plugins: [store]
+                }
+            }),
+            options = wrapper.findAll("#layer-selection-dropdown option");
+
+        expect(options.length).to.be.equals(3);
+        expect(options[0].text()).to.equal("Layer 1");
+        expect(options[1].text()).to.equal("Layer 2");
+        expect(options[2].text()).to.equal("Layer 3");
     });
 });

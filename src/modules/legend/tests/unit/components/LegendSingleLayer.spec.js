@@ -351,4 +351,149 @@ describe("src/modules/legend/components/LegendSingleLayer.vue", () => {
             expect(wrapper.findAll(".layer-legend > div:nth-child(1) img")[1].attributes().src).to.equal("some_string_interpreted_as_image1");
         });
     });
+    describe("filteredLegend", () => {
+        it("returns an empty array if legendObj or legendObj.legend is undefined", () => {
+            const propsData = {legendObj: undefined};
+
+            wrapper = shallowMount(LegendSingleLayerComponent, {
+                global: {plugins: [store]},
+                propsData
+            });
+
+            expect(wrapper.vm.filteredLegend).to.deep.equal([]);
+        });
+
+        it("returns all legend entries if selectedLayer is null and legend is not grouped", () => {
+            const propsData = {
+                legendObj: {
+                    legend: ["legend1", "legend2"]
+                },
+                selectedLayer: null
+            };
+
+            wrapper = shallowMount(LegendSingleLayerComponent, {
+                global: {plugins: [store]},
+                propsData
+            });
+
+            expect(wrapper.vm.filteredLegend).to.deep.equal(["legend1", "legend2"]);
+        });
+
+        it("returns the legend entry for the selected layer index when legend is not grouped", () => {
+            const propsData = {
+                legendObj: {
+                    legend: ["legend1", "legend2", "legend3"]
+                },
+                selectedLayer: 1
+            };
+
+            wrapper = shallowMount(LegendSingleLayerComponent, {
+                global: {plugins: [store]},
+                propsData
+            });
+
+            expect(wrapper.vm.filteredLegend).to.deep.equal(["legend2"]);
+        });
+
+        it("returns an empty array if selectedLayer index is out of bounds and legend is not grouped", () => {
+            const propsData = {
+                legendObj: {
+                    legend: ["legend1", "legend2"]
+                },
+                selectedLayer: 5
+            };
+
+            wrapper = shallowMount(LegendSingleLayerComponent, {
+                global: {plugins: [store]},
+                propsData
+            });
+
+            expect(wrapper.vm.filteredLegend).to.deep.equal([]);
+        });
+
+        it("returns a flattened legend array if selectedLayer is null and legend is grouped", () => {
+            const propsData = {
+                legendObj: {
+                    legend: [
+                        [
+                            {graphic: "https://example.com/group1-legend1.png", name: "Group 1 - Legend 1"},
+                            {graphic: "https://example.com/group1-legend2.png", name: "Group 1 - Legend 2"}
+                        ],
+                        [
+                            {graphic: "https://example.com/group2-legend1.png", name: "Group 2 - Legend 1"},
+                            {graphic: "https://example.com/group2-legend2.png", name: "Group 2 - Legend 2"}
+                        ],
+                        [
+                            "https://example.com/group3-legend1.png"
+                        ]
+                    ]
+                },
+                selectedLayer: null
+            };
+
+            wrapper = shallowMount(LegendSingleLayerComponent, {
+                global: {plugins: [store]},
+                propsData
+            });
+
+            expect(wrapper.vm.filteredLegend).to.deep.equal([
+                {graphic: "https://example.com/group1-legend1.png", name: "Group 1 - Legend 1"},
+                {graphic: "https://example.com/group1-legend2.png", name: "Group 1 - Legend 2"},
+                {graphic: "https://example.com/group2-legend1.png", name: "Group 2 - Legend 1"},
+                {graphic: "https://example.com/group2-legend2.png", name: "Group 2 - Legend 2"},
+                "https://example.com/group3-legend1.png"
+            ]);
+        });
+
+        it("returns legends for the specified group index when legend is grouped", () => {
+            const propsData = {
+                legendObj: {
+                    legend: [
+                        [
+                            {graphic: "https://example.com/group1-legend1.png", name: "Group 1 - Legend 1"},
+                            {graphic: "https://example.com/group1-legend2.png", name: "Group 1 - Legend 2"}
+                        ],
+                        [
+                            {graphic: "https://example.com/group2-legend1.png", name: "Group 2 - Legend 1"},
+                            {graphic: "https://example.com/group2-legend2.png", name: "Group 2 - Legend 2"}
+                        ],
+                        [
+                            "https://example.com/group3-legend1.png"
+                        ]
+                    ]
+                },
+                selectedLayer: 1
+            };
+
+            wrapper = shallowMount(LegendSingleLayerComponent, {
+                global: {plugins: [store]},
+                propsData
+            });
+
+            expect(wrapper.vm.filteredLegend).to.deep.equal([
+                {graphic: "https://example.com/group2-legend1.png", name: "Group 2 - Legend 1"},
+                {graphic: "https://example.com/group2-legend2.png", name: "Group 2 - Legend 2"}
+            ]);
+        });
+
+        it("returns an empty array if selectedLayer index is out of bounds and legend is grouped", () => {
+            const propsData = {
+                legendObj: {
+                    legend: [
+                        ["group1-legend1", "group1-legend2"],
+                        ["group2-legend1", "group2-legend2"]
+                    ]
+                },
+                selectedLayer: 5
+            };
+
+            wrapper = shallowMount(LegendSingleLayerComponent, {
+                global: {plugins: [store]},
+                propsData
+            });
+
+            expect(wrapper.vm.filteredLegend).to.deep.equal([]);
+        });
+    });
+
 });

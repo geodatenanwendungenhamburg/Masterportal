@@ -4,7 +4,7 @@ import testAction from "../../../../../../devtools/tests/VueTestUtils";
 import actions from "../../../store/actionsLayerInformation";
 import getCswRecordById from "../../../../../shared/js/api/getCswRecordById";
 
-const {startLayerInformation, additionalSingleLayerInfo, setMetadataURL} = actions;
+const {startLayerInformation, setMetadataURL} = actions;
 
 describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => {
     let getters = {},
@@ -142,21 +142,6 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
             expect(dispatch.thirdCall.args[0]).to.equal("setMetadataURL");
             expect(dispatch.thirdCall.args[1]).to.be.equals(layerConf.datasets[0].md_id);
             expect(dispatch.getCall(3).args[0]).to.equal("additionalSingleLayerInfo");
-        });
-
-        it("should initialize the other abstract layer infos", done => {
-            const state = {
-                layerInfo: {
-                    cswUrl: "https://metaver.de/csw",
-                    metaID: "73A344E9-CDB5-4A17-89C1-05E202989755"
-                }
-            };
-
-            // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done
-            testAction(additionalSingleLayerInfo, null, state, {}, [
-                {type: "getAbstractInfo", payload: {attributes: state.layerInfo.attributes, metaId: state.layerInfo.metaID, cswUrl: state.layerInfo.cswUrl, customMetadata: state.layerInfo.customMetadata}, dispatch: true}
-            ], {}, done);
-
         });
 
         it("should set the Meta Data URLs", done => {
@@ -323,6 +308,76 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
             expect(commit.callCount).to.be.equal(8);
             expect(commit.firstCall.args[0]).to.equal("setDownloadLinks");
             expect(commit.firstCall.args[1]).to.be.deep.equals(null);
+        });
+    });
+    describe("additionalSingleLayerInfo", () => {
+        it("should initialize the other abstract layer infos", () => {
+            const state = {
+                layerInfo: {
+                    cswUrl: "https://metaver.de/csw",
+                    metaID: "73A344E9-CDB5-4A17-89C1-05E202989755",
+                    attributes: {attr1: "value1"},
+                    customMetadata: {key: "value"}
+                }
+            };
+
+            actions.additionalSingleLayerInfo({dispatch, state});
+
+            expect(dispatch.callCount).to.be.equals(1);
+
+            expect(dispatch.firstCall.args[0]).to.equal("getAbstractInfo");
+            expect(dispatch.firstCall.args[1]).to.deep.equal({
+                metaId: state.layerInfo.metaID,
+                cswUrl: state.layerInfo.cswUrl,
+                attributes: state.layerInfo.attributes,
+                customMetadata: state.layerInfo.customMetadata
+            });
+        });
+
+        it("should dispatches 'getAbstractInfo' with correct payload for metaID array", () => {
+            const state = {
+                layerInfo: {
+                    metaID: ["id1", "id2", "id3"],
+                    cswUrl: "https://metaver.de/csw",
+                    customMetadata: {key: "value"},
+                    attributes: {attr1: "value1"}
+                },
+                selectedLayerIndex: 1
+            };
+
+            actions.additionalSingleLayerInfo({dispatch, state});
+
+            expect(dispatch.calledOnce).to.be.true;
+            expect(dispatch.firstCall.args[0]).to.equal("getAbstractInfo");
+            expect(dispatch.firstCall.args[1]).to.deep.equal({
+                metaId: "id2",
+                cswUrl: "https://metaver.de/csw",
+                customMetadata: {key: "value"},
+                attributes: {attr1: "value1"}
+            });
+        });
+
+        it("should default to the first metaID when selectedLayerIndex is out of bounds", () => {
+            const state = {
+                layerInfo: {
+                    metaID: ["id1", "id2", "id3"],
+                    cswUrl: "https://metaver.de/csw",
+                    customMetadata: {key: "value"},
+                    attributes: {attr1: "value1"}
+                },
+                selectedLayerIndex: 10
+            };
+
+            actions.additionalSingleLayerInfo({dispatch, state});
+
+            expect(dispatch.calledOnce).to.be.true;
+            expect(dispatch.firstCall.args[0]).to.equal("getAbstractInfo");
+            expect(dispatch.firstCall.args[1]).to.deep.equal({
+                metaId: "id1",
+                cswUrl: "https://metaver.de/csw",
+                customMetadata: {key: "value"},
+                attributes: {attr1: "value1"}
+            });
         });
     });
 });

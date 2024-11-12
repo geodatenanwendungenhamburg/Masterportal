@@ -579,7 +579,8 @@
       "pointOfContact": "Ansprechpartner",
       "contactInfoMessage": "Schreiben sie dem Ansprechpartner des Themas ",
       "mailSubject": "Anfrage zum Datensatz ",
-      "mailOriginHint": "Diese Anfrage wurde über das Kontaktformular unter der folgenden URL an Sie versandt"
+      "mailOriginHint": "Diese Anfrage wurde über das Kontaktformular unter der folgenden URL an Sie versandt",
+      "changeLayerInfo": "Information zur Ebene auswählen: "
     },
     "layerPills": {
       "next": "Nächsten Layer anzeigen",

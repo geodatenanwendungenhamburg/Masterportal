@@ -61,7 +61,6 @@ describe("src/modules/layerInformation/storemutationsLayerInformation.js", () =>
             expect(state.layerInfo.cswUrl).to.equals(layerConf.datasets[0].csw_url);
             expect(state.layerInfo.id).to.equals(layerConf.id);
             expect(state.layerInfo.layername).to.equals(layerConf.name);
-            expect(state.layerInfo.layerNames).to.deep.equals([]);
             expect(state.layerInfo.legendURL).to.equals(layerConf.legendURL);
             expect(state.layerInfo.metaID).to.equals(layerConf.datasets[0].md_id);
             expect(state.layerInfo.customMetadata).to.equals(undefined);
@@ -175,15 +174,22 @@ describe("src/modules/layerInformation/storemutationsLayerInformation.js", () =>
             expect(state.layerInfo.cswUrl).to.equals(layerConf.children[0].datasets[0].csw_url);
             expect(state.layerInfo.id).to.equals(layerConf.id);
             expect(state.layerInfo.layername).to.equals(layerConf.name);
-            expect(state.layerInfo.layerNames).to.deep.equals([layerConf.children[0].name, layerConf.children[1].name]);
             expect(state.layerInfo.legendURL).to.equals(layerConf.legendURL);
-            expect(state.layerInfo.metaID).to.deep.equals([layerConf.children[0].datasets[0].md_id, layerConf.children[1].datasets[0].md_id]);
+            expect(state.layerInfo.metaID).to.equals(undefined);
             expect(state.layerInfo.customMetadata).to.equals(undefined);
             expect(state.layerInfo.attributes).to.equals(undefined);
             expect(state.layerInfo.showDocUrl).to.equals(layerConf.children[0].datasets[0].show_doc_url);
             expect(state.layerInfo.typ).to.equals(layerConf.typ);
-            expect(state.layerInfo.url).to.deep.equals([layerConf.children[0].url, layerConf.children[1].url]);
+            expect(state.layerInfo.url).to.equals(undefined);
             expect(state.layerInfo.urlIsVisible).to.equals(undefined);
+            expect(state.layerInfo.layers).to.have.lengthOf(2);
+            expect(state.layerInfo.layers[0].name).to.equal(layerConf.children[0].name);
+            expect(state.layerInfo.layers[1].name).to.equal(layerConf.children[1].name);
+            expect(state.layerInfo.layers[0].type).to.equal(layerConf.children[0].typ);
+            expect(state.layerInfo.layers[1].type).to.equal(layerConf.children[1].typ);
+            expect(state.layerInfo.layers[1].metaID).to.equal(layerConf.children[1].datasets[0].md_id);
+            expect(state.layerInfo.layers[1].url).to.equal(layerConf.children[1].url);
+
         });
     });
 });

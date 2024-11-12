@@ -13,10 +13,54 @@ export default {
         legendObj: {
             type: Object && undefined,
             required: true
+        },
+        selectedLayer: {
+            type: Number,
+            required: false,
+            default: null
         }
     },
     computed: {
-        ...mapGetters("Modules/Legend", ["sldVersion"])
+        ...mapGetters("Modules/Legend", ["sldVersion"]),
+
+        /**
+         * Filters the legend object to return the appropriate legend entries based on the selected layer.
+         * If no legend object is available, an empty array is returned.
+         *
+         * @returns {Array} The filtered legend entries:
+         *   - Returns all legends grouped by layers if no layer is selected (`selectedLayer` is null or undefined).
+         *   - Returns the legend entries for the selected layer group if a valid `selectedLayer` index is specified.
+         *   - Returns an empty array if the `selectedLayer` index is out of bounds or no legend exists.
+         */
+        filteredLegend () {
+            if (!this.legendObj || !this.legendObj.legend || !Array.isArray(this.legendObj.legend)) {
+                return [];
+            }
+
+            const isGrouped = Array.isArray(this.legendObj.legend[0]);
+
+            if (!isGrouped) {
+                if (this.selectedLayer === null || this.selectedLayer === undefined) {
+                    return this.legendObj.legend;
+                }
+
+                if (this.selectedLayer >= 0 && this.selectedLayer < this.legendObj.legend.length) {
+                    return [this.legendObj.legend[this.selectedLayer]];
+                }
+
+                return [];
+            }
+
+            if (this.selectedLayer === null || this.selectedLayer === undefined) {
+                return this.legendObj.legend.flat();
+            }
+
+            if (this.selectedLayer >= 0 && this.selectedLayer < this.legendObj.legend.length) {
+                return this.legendObj.legend[this.selectedLayer];
+            }
+
+            return [];
+        }
     }
 };
 </script>
@@ -29,7 +73,7 @@ export default {
             v-if="legendObj && Object.keys(legendObj).length > 0"
         >
             <div
-                v-for="(legendPart, index) in legendObj.legend"
+                v-for="(legendPart, index) in filteredLegend"
                 :key="index"
                 class="mt-2 layer-legend-container"
             >
