@@ -579,9 +579,8 @@ const BuildSpecModel = {
 
                     stylingRules = this.getStylingRules(layer, clonedFeature, styleAttributes, style);
 
-                    if (stylingRules.includes(",")) {
-                        stylingRules = stylingRules.replace(/,/g, " AND ");
-                    }
+                    // Replace only commas between attributes, not within quotes
+                    stylingRules = stylingRules.replace(/,(?=(?:[^'"]*['"][^'"]*['"])*[^'"]*$)/g, " AND ");
 
                     stylingRulesSplit = stylingRules
                         .replaceAll("[", "")

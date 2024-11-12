@@ -85,7 +85,7 @@ describe("src/modules/tools/print/utils/buildSpec.buildStyle", function () {
             let mapfishStyleObject = null,
                 styleObject = null;
                 // stylingRule: bewirtschaftungsart='Parkschein, Bewohner mit Ausweis frei_0'
-            const stylingRule = "bewirtschaftungsart=" + polygonFeatures[0].values_.bewirtschaftungsart + "_0";
+                const stylingRule = "bewirtschaftungsart='" + polygonFeatures[0].values_.bewirtschaftungsart + "_0'";
 
             buildSpec.getStylingRules = () => stylingRule;
             buildSpec.getFeatureStyle = () => [style];
