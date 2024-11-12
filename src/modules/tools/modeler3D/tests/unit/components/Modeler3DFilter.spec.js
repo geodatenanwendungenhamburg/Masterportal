@@ -117,13 +117,15 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
 
         it('should render the filter list items', () => {
             store.commit('Tools/Modeler3D/setFilterList', [
-                { id: 0, name: 'Filter1' },
-                { id: 1, name: 'Filter2' }
+                {id: 0, layer: {name: "TestLayer1"}, name: "Filter1"},
+                {id: 1, layer: {name: "TestLayer1"}, name: "Filter2"},
+                {id: 2, layer: {name: "TestLayer2"}, name: "Filter3"},
+                {id: 3, layer: {name: "TestLayer2"}, name: "Filter4"}
             ]);
             wrapper = mount(Modeler3DFilterComponent, {store, localVue,});
 
             const filterListItems = wrapper.findAll('.list-group-item');
-            expect(filterListItems.length).to.equal(2);
+            expect(filterListItems.length).to.equal(4);
         });
     });
 
@@ -147,8 +149,7 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
 
             expect(wrapper.vm.filterList).to.have.lengthOf(1);
             expect(wrapper.vm.filterList[0]).to.include({
-                name: "Layer1 - Attribute1",
-
+                name: "Attribute1",
                 attribute: "Attribute1",
                 pvoStyleEnabled: false,
             });
@@ -373,17 +374,17 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
             const applyStyleStub = sinon.stub(wrapper.vm, "applyStyle");
 
             store.commit("Tools/Modeler3D/setFilterList", [
-                { id: 0, name: "filter1" },
-                { id: 1, name: "filter2" },
-                { id: 2, name: "filter3" },
+                {id: 0, layer: {name: "TestLayer1"}, name: "filter1"},
+                {id: 1, layer: {name: "TestLayer1"}, name: "filter2"},
+                {id: 2, layer: {name: "TestLayer1"}, name: "filter3"}
             ]);
 
             wrapper.vm.moveFilterUp(0);
 
             expect(wrapper.vm.filterList).to.deep.equal([
-                { id: 0, name: "filter2" },
-                { id: 1, name: "filter1" },
-                { id: 2, name: "filter3" },
+                {id: 1, layer: {name: "TestLayer1"}, name: "filter2"},
+                {id: 0, layer: {name: "TestLayer1"}, name: "filter1"},
+                {id: 2, layer: {name: "TestLayer1"}, name: "filter3"}
             ]);
             expect(applyStyleStub.calledOnce).to.be.true;
         });
@@ -392,17 +393,17 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
             const applyStyleStub = sinon.stub(wrapper.vm, "applyStyle");
 
             store.commit("Tools/Modeler3D/setFilterList", [
-                { id: 0, name: "filter1" },
-                { id: 1, name: "filter2" },
-                { id: 2, name: "filter3" },
+                {id: 0, layer: {name: "TestLayer1"}, name: "filter1"},
+                {id: 1, layer: {name: "TestLayer1"}, name: "filter2"},
+                {id: 2, layer: {name: "TestLayer1"}, name: "filter3"}
             ]);
 
             wrapper.vm.moveFilterDown(2);
 
             expect(wrapper.vm.filterList).to.deep.equal([
-                { id: 0, name: "filter1" },
-                { id: 1, name: "filter3" },
-                { id: 2, name: "filter2" },
+                {id: 0, layer: {name: "TestLayer1"}, name: "filter1"},
+                {id: 2, layer: {name: "TestLayer1"}, name: "filter3"},
+                {id: 1, layer: {name: "TestLayer1"}, name: "filter2"}
             ]);
             expect(applyStyleStub.calledOnce).to.be.true;
         });

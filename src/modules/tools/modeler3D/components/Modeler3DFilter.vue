@@ -35,11 +35,16 @@ export default {
         attributeValuesSorted () {
             return this.attributeValues.toSorted((a, b) => a.name.localeCompare(b.name));
         },
-        filterListAscending () {
-            return this.filterList.toSorted((a, b) => a.id - b.id);
-        },
-        filterListDescending () {
-            return this.filterList.toSorted((a, b) => b.id - a.id);
+        groupedFiltersByLayer () {
+            return this.filterList.reduce((groups, filter) => {
+                const layerName = filter.layer.name;
+
+                if (!groups[layerName]) {
+                    groups[layerName] = [];
+                }
+                groups[layerName].unshift(filter);
+                return groups;
+            }, {});
         }
     },
     created () {
@@ -63,7 +68,7 @@ export default {
             this.attributeValues.forEach(value => {
                 value.color = "#ffffff";
             });
-            this.filterName = this.selectedLayer.name + " - " + this.selectedAttribute;
+            this.filterName = this.selectedAttribute;
 
             this.filterList.push({
                 id: id,
@@ -147,7 +152,7 @@ export default {
          * Copies the color values from the attribute values to the current filter.
          */
         copyColorValues () {
-            this.filterList[this.currentFilterId].values = this.attributeValues.map(value => {
+            this.filterList.find(filter => filter.id === this.currentFilterId).values = this.attributeValues.map(value => {
                 return {
                     id: value.id,
                     name: value.name,
@@ -270,41 +275,67 @@ export default {
                 .filter(Boolean);
         },
         /**
-         * Moves a filter up in the filter list.
-         * - Swaps the filter with the one above it and updates their IDs.
-         * - Applies the new styles.
+         * Finds the group that contains the filter with the given ID.
+         * @param {number} id - The ID of the filter to find.
+         * @returns {Array} The group that contains the filter, or null if not found.
+         */
+        findGroupByFilterId (id) {
+            for (const group of Object.values(this.groupedFiltersByLayer)) {
+                if (group.some(filter => filter.id === id)) {
+                    return group;
+                }
+            }
+            return null;
+        },
+        /**
+         * Updates the filter list with the current grouped filters.
+         */
+        updateFilterList () {
+            const flattenedFilters = Object.values(this.groupedFiltersByLayer).flat();
+
+            this.setFilterList(flattenedFilters.reverse());
+            this.applyStyle();
+        },
+        /**
+         * Moves a filter up within its group in the filter list.
          * @param {number} id - The ID of the filter to move up.
          */
         moveFilterUp (id) {
-            if (id < this.filterList.length - 1) {
-                const temp = this.filterList[id + 1];
+            const group = this.findGroupByFilterId(id),
+                index = group ? group.findIndex(filter => filter.id === id) : -1;
 
-                this.filterList[id + 1] = this.filterList[id];
-                this.filterList[id] = temp;
+            if (!group || index === -1) {
+                return;
+            }
 
-                this.filterList[id + 1].id = id + 1;
-                this.filterList[id].id = id;
+            if (index > 0) {
+                const temp = group[index - 1];
 
-                this.applyStyle();
+                group[index - 1] = group[index];
+                group[index] = temp;
+
+                this.updateFilterList();
             }
         },
         /**
-         * Moves a filter down in the filter list.
-         * - Swaps the filter with the one below it and updates their IDs.
-         * - Applies the new styles.
+         * Moves a filter down within its group in the filter list.
          * @param {number} id - The ID of the filter to move down.
          */
         moveFilterDown (id) {
-            if (id > 0) {
-                const temp = this.filterList[id - 1];
+            const group = this.findGroupByFilterId(id),
+                index = group ? group.findIndex(filter => filter.id === id) : -1;
 
-                this.filterList[id - 1] = this.filterList[id];
-                this.filterList[id] = temp;
+            if (!group || index === -1) {
+                return;
+            }
 
-                this.filterList[id - 1].id = id - 1;
-                this.filterList[id].id = id;
+            if (index < group.length - 1) {
+                const temp = group[index + 1];
 
-                this.applyStyle();
+                group[index + 1] = group[index];
+                group[index] = temp;
+
+                this.updateFilterList();
             }
         },
         /**
@@ -339,25 +370,31 @@ export default {
         },
         /**
          * Handles the drop event for a filter.
-         * - Swaps the dragged filter with the dropped filter and updates their IDs.
+         * - Swaps the dragged filter with the dropped filter if within the same group.
          * - Resets the drag state and applies the new styles.
          * @param {Event} event - The drop event.
          * @param {number} id - The ID of the filter being dropped on.
          */
         onDrop (event, id) {
-            const draggedItem = this.filterList[this.draggedItemIndex],
-                droppedItem = this.filterList[id];
+            const draggedGroup = this.findGroupByFilterId(this.draggedItemIndex),
+                targetGroup = this.findGroupByFilterId(id);
 
-            this.filterList.splice(this.draggedItemIndex, 1);
-            this.filterList.splice(id, 0, draggedItem);
-            droppedItem.id = this.draggedItemIndex;
-            draggedItem.id = id;
+            if (draggedGroup === targetGroup) {
+                const draggedIndex = draggedGroup.findIndex(filter => filter.id === this.draggedItemIndex),
+                    targetIndex = targetGroup.findIndex(filter => filter.id === id),
+
+                    temp = draggedGroup[draggedIndex];
+
+                draggedGroup[draggedIndex] = targetGroup[targetIndex];
+                targetGroup[targetIndex] = temp;
+
+                this.updateFilterList();
+            }
 
             this.draggedItemIndex = null;
             this.dzIsDropHovering = null;
             this.dzIsHovering = false;
             this.dragCounter = 0;
-            this.applyStyle();
         }
     }
 };
@@ -574,89 +611,97 @@ export default {
                 >
                     {{ $t("modules.tools.modeler3D.filter.captions.noFilter") }}
                 </p>
-                <ul
-                    v-else
-                    class="list-group list-group-flush"
-                >
-                    <li
-                        v-for="(filter, index) in filterListDescending"
-                        :key="filter.id"
-                        class="list-group-item"
+                <div v-else>
+                    <div
+                        v-for="(filters, layerName) in groupedFiltersByLayer"
+                        :key="layerName"
+                        class="layer-group"
                     >
-                        <!-- eslint-disable-next-line vuejs-accessibility/mouse-events-have-key-events -->
-                        <a
-                            draggable="true"
-                            role="button"
-                            class="drag-item d-flex justify-content-between align-items-center"
-                            :class="{dzReady: dzIsHovering, dzHovering: dzIsDropHovering === filter.id}"
-                            tabindex="0"
-                            @dragstart="onDragStart($event, filter.id)"
-                            @dragover.prevent
-                            @dragenter.prevent="onDragEnter($event, filter.id)"
-                            @dragleave="onDragEnd"
-                            @drop.prevent="onDrop($event, filter.id)"
-                        >
-                            <!--
-                                The previous element does not provide a @focusin or @focus reaction as would
-                                be considered correct by the linting rule set. Since it's a drop-area for file
-                                dropping by mouse, the concept does not apply. Keyboard users may use the
-                                matching input fields.
-                            -->
-                            <div class="move-button-container d-flex flex-column justify-items-between align-items-center">
-                                <button
-                                    :aria-label="$t('common:modules.tools.modeler3D.filter.captions.moveFilterUp')"
-                                    class="btn-image btn-small d-flex align-items-center justify-items-center mb-auto"
-                                    :disabled="index === 0"
-                                    @click="moveFilterUp(filter.id)"
+                        <h5 class="small-heading">
+                            {{ layerName }}
+                        </h5>
+                        <ul class="list-group list-group-flush">
+                            <li
+                                v-for="(filter, index) in filters"
+                                :key="filter.id"
+                                class="list-group-item"
+                            >
+                                <!-- eslint-disable-next-line vuejs-accessibility/mouse-events-have-key-events -->
+                                <a
+                                    draggable="true"
+                                    role="button"
+                                    class="drag-item d-flex justify-content-between align-items-center"
+                                    :class="{dzReady: dzIsHovering, dzHovering: dzIsDropHovering === filter.id}"
+                                    tabindex="0"
+                                    @dragstart="onDragStart($event, filter.id)"
+                                    @dragover.prevent
+                                    @dragenter.prevent="onDragEnter($event, filter.id)"
+                                    @dragleave="onDragEnd"
+                                    @drop.prevent="onDrop($event, filter.id)"
                                 >
-                                    <i
-                                        class="bi bi-caret-up-fill"
-                                        role="img"
-                                    />
-                                </button>
-                                <button
-                                    :aria-label="$t('common:modules.tools.modeler3D.filter.captions.moveFilterDown')"
-                                    class="btn-image btn-small d-flex align-items-center justify-items-center mb-auto"
-                                    :disabled="index === filterListDescending.length - 1"
-                                    @click="moveFilterDown(filter.id)"
-                                >
-                                    <i
-                                        class="bi bi-caret-down-fill"
-                                        role="img"
-                                    />
-                                </button>
-                            </div>
-                            <span class="id-field">
-                                {{ index + 1 }}
-                            </span>
-                            <span>
-                                {{ filter.name }}
-                            </span>
-                            <div class="d-flex">
-                                <button
-                                    :aria-label="$t('common:modules.tools.modeler3D.filter.captions.editFilter')"
-                                    class="btn-image btn-blue d-flex align-items-center justify-items-center mb-auto"
-                                    @click="editFilter(filter)"
-                                >
-                                    <i
-                                        class="bi bi-pencil"
-                                        role="img"
-                                    />
-                                </button>
-                                <button
-                                    :aria-label="$t('common:modules.tools.modeler3D.filter.captions.removeFilter')"
-                                    class="btn-image btn-red d-flex align-items-center justify-items-center mb-auto"
-                                    @click="removeFilter(filter.id)"
-                                >
-                                    <i
-                                        class="bi bi-trash"
-                                        role="img"
-                                    />
-                                </button>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
+                                    <!--
+                                        The previous element does not provide a @focusin or @focus reaction as would
+                                        be considered correct by the linting rule set. Since it's a drop-area for file
+                                        dropping by mouse, the concept does not apply. Keyboard users may use the
+                                        matching input fields.
+                                    -->
+                                    <div class="move-button-container d-flex flex-column justify-items-between align-items-center">
+                                        <button
+                                            :aria-label="$t('common:modules.modeler3D.filter.captions.moveFilterUp')"
+                                            class="btn-image btn-small d-flex align-items-center justify-items-center mb-auto"
+                                            :disabled="index === 0"
+                                            @click="moveFilterUp(filter.id)"
+                                        >
+                                            <i
+                                                class="bi bi-caret-up-fill"
+                                                role="img"
+                                            />
+                                        </button>
+                                        <button
+                                            :aria-label="$t('common:modules.modeler3D.filter.captions.moveFilterDown')"
+                                            class="btn-image btn-small d-flex align-items-center justify-items-center mb-auto"
+                                            :disabled="index === filters.length - 1"
+                                            @click="moveFilterDown(filter.id)"
+                                        >
+                                            <i
+                                                class="bi bi-caret-down-fill"
+                                                role="img"
+                                            />
+                                        </button>
+                                    </div>
+                                    <span class="id-field">
+                                        {{ index + 1 }}
+                                    </span>
+                                    <span class="name-field">
+                                        {{ filter.name }}
+                                    </span>
+                                    <div class="d-flex">
+                                        <button
+                                            :aria-label="$t('common:modules.modeler3D.filter.captions.editFilter')"
+                                            class="btn-image btn-blue d-flex align-items-center justify-items-center mb-auto"
+                                            @click="editFilter(filter)"
+                                        >
+                                            <i
+                                                class="bi bi-pencil"
+                                                role="img"
+                                            />
+                                        </button>
+                                        <button
+                                            :aria-label="$t('common:modules.modeler3D.filter.captions.removeFilter')"
+                                            class="btn-image btn-red d-flex align-items-center justify-items-center mb-auto"
+                                            @click="removeFilter(filter.id)"
+                                        >
+                                            <i
+                                                class="bi bi-trash"
+                                                role="img"
+                                            />
+                                        </button>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </AccordionItem>
     </div>
@@ -670,6 +715,11 @@ export default {
     font-size: $font_size_big;
 }
 
+.small-heading {
+    font-size: $font_size_big;
+    font-weight: bold;
+}
+
 .colorPicker {
     width: 2.5em;
     height: 1.5em;
@@ -677,6 +727,10 @@ export default {
 
 .id-field {
     width: 10%;
+}
+
+.name-field {
+    width: 100%;
 }
 
 .move-button-container {
