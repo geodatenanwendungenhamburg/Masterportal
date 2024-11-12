@@ -205,8 +205,8 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
 
         it("should get unique id", () => {
             store.commit("Tools/Modeler3D/setFilterList", [
-                { id: 0 },
-                { id: 1 },
+                { id: 0, layer: {name: "TestLayer1"}, name: "filter1" },
+                { id: 1, layer: {name: "TestLayer1"}, name: "filter2" }
             ]);
 
             const uniqueId = wrapper.vm.getUniqueId();
@@ -242,7 +242,7 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
                 ],
             });
             store.commit("Tools/Modeler3D/setFilterList", [
-                { id: 0, values: [] },
+                { id: 0, values: [], layer: {name: "TestLayer1"}, name: "filter1" },
             ]);
             store.commit("Tools/Modeler3D/setCurrentFilterId", 0);
 
@@ -276,7 +276,7 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
             });
             store.commit("Tools/Modeler3D/setCurrentFilterId", 0);
             store.commit("Tools/Modeler3D/setFilterList", [
-                { id: 0, name: "Test Filter", values: [] },
+                { id: 0, name: "Test Filter", values: [], layer: {name: "TestLayer1"} },
             ]);
 
             wrapper.vm.applyStyle(true);
@@ -311,7 +311,7 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
             });
             store.commit("Tools/Modeler3D/setCurrentFilterId", 0);
             store.commit("Tools/Modeler3D/setFilterList", [
-                { id: 0, name: "Test Filter", values: [] },
+                { id: 0, name: "Test Filter", layer: {name: "TestLayer1"}, values: [] },
             ]);
             store.commit("Tools/Modeler3D/setLayerList", [
                 { layer: { name: "Gebäude LoD2", id: 1 }, stylingConfig: [] },
