@@ -14,8 +14,24 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
         wrapper,
         radioRequestStub,
         tilesets = [
-            { layer: { values: { name: "Layer1" } } },
-            { layer: { values: { name: "Layer2" } } },
+            {
+                layer: {
+                    values: { name: "Layer1" },
+                    tileset: Promise.resolve({
+                        style: "Styling",
+                        readyPromise: Promise.resolve(true),
+                    }),
+                },
+            },
+            {
+                layer: {
+                    values: { name: "Layer2" },
+                    tileset: Promise.resolve({
+                        style: "Styling",
+                        readyPromise: Promise.resolve(true),
+                    }),
+                },
+            },
         ];
 
     beforeEach(() => {
@@ -60,71 +76,75 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
     });
 
     describe("Modeler3DFilter.vue rendering", () => {
-        it('should render the modal', () => {
-            wrapper = mount(Modeler3DFilterComponent, {store, localVue,});
+        it("should render the modal", () => {
+            wrapper = mount(Modeler3DFilterComponent, { store, localVue });
 
-            expect(wrapper.find('#modeler3d-filter').exists()).to.be.true;
+            expect(wrapper.find("#modeler3d-filter").exists()).to.be.true;
         });
 
-        it('should render the filter name input', () => {
-            wrapper = mount(Modeler3DFilterComponent, {store, localVue,});
+        it("should render the filter name input", () => {
+            wrapper = mount(Modeler3DFilterComponent, { store, localVue });
 
-            const filterNameInput = wrapper.find('#filterName');
+            const filterNameInput = wrapper.find("#filterName");
             expect(filterNameInput.exists()).to.be.true;
-            expect(filterNameInput.attributes('type')).to.equal('text');
-            expect(filterNameInput.classes()).to.include('form-control');
+            expect(filterNameInput.attributes("type")).to.equal("text");
+            expect(filterNameInput.classes()).to.include("form-control");
         });
 
-        it('should render the PVO style checkbox', () => {
-            wrapper = mount(Modeler3DFilterComponent, {store, localVue,});
+        it("should render the PVO style checkbox", () => {
+            wrapper = mount(Modeler3DFilterComponent, { store, localVue });
 
-            const pvoStyleCheck = wrapper.find('#pvoStyleCheck');
+            const pvoStyleCheck = wrapper.find("#pvoStyleCheck");
             expect(pvoStyleCheck.exists()).to.be.true;
-            expect(pvoStyleCheck.attributes('type')).to.equal('checkbox');
-            expect(pvoStyleCheck.classes()).to.include('form-check-input');
+            expect(pvoStyleCheck.attributes("type")).to.equal("checkbox");
+            expect(pvoStyleCheck.classes()).to.include("form-check-input");
         });
 
-        it('should render the layer select dropdown', () => {
-            wrapper = mount(Modeler3DFilterComponent, {store, localVue,});
+        it("should render the layer select dropdown", () => {
+            wrapper = mount(Modeler3DFilterComponent, { store, localVue });
 
-            const layerSelect = wrapper.find('#layerSelect');
+            const layerSelect = wrapper.find("#layerSelect");
             expect(layerSelect.exists()).to.be.true;
-            expect(layerSelect.classes()).to.include('form-select');
+            expect(layerSelect.classes()).to.include("form-select");
         });
 
-        it('should render the attribute select dropdown', () => {
-            wrapper = mount(Modeler3DFilterComponent, {store, localVue,});
+        it("should render the attribute select dropdown", () => {
+            wrapper = mount(Modeler3DFilterComponent, { store, localVue });
 
-            const attributeSelect = wrapper.find('#attributeSelect');
+            const attributeSelect = wrapper.find("#attributeSelect");
             expect(attributeSelect.exists()).to.be.true;
-            expect(attributeSelect.classes()).to.include('form-select');
+            expect(attributeSelect.classes()).to.include("form-select");
         });
 
-        it('should render the add filter button', () => {
-            wrapper = mount(Modeler3DFilterComponent, {store, localVue,});
+        it("should render the add filter button", () => {
+            wrapper = mount(Modeler3DFilterComponent, { store, localVue });
 
-            const addFilterButton = wrapper.find('.btn.btn-primary.mt-2');
+            const addFilterButton = wrapper.find(".btn.btn-primary.mt-2");
             expect(addFilterButton.exists()).to.be.true;
-            expect(addFilterButton.text()).to.equal('modules.tools.modeler3D.filter.captions.addFilter');
+            expect(addFilterButton.text()).to.equal(
+                "modules.tools.modeler3D.filter.captions.addFilter"
+            );
         });
 
-        it('should render the filter list section', () => {
-            wrapper = mount(Modeler3DFilterComponent, {store, localVue,});
+        it("should render the filter list section", () => {
+            wrapper = mount(Modeler3DFilterComponent, { store, localVue });
 
-            const filterListSection = wrapper.findComponent('#filter-list-section');
+            const filterListSection = wrapper.findComponent(
+                "#filter-list-section"
+            );
             expect(filterListSection.exists()).to.be.true;
         });
 
-        it('should render the filter list items', () => {
-            store.commit('Tools/Modeler3D/setFilterList', [
-                {id: 0, layer: {name: "TestLayer1"}, name: "Filter1"},
-                {id: 1, layer: {name: "TestLayer1"}, name: "Filter2"},
-                {id: 2, layer: {name: "TestLayer2"}, name: "Filter3"},
-                {id: 3, layer: {name: "TestLayer2"}, name: "Filter4"}
+        it("should render the filter list items", () => {
+            store.commit("Tools/Modeler3D/setFilterList", [
+                { id: 0, layer: { name: "TestLayer1" }, name: "Filter1" },
+                { id: 1, layer: { name: "TestLayer1" }, name: "Filter2" },
+                { id: 2, layer: { name: "TestLayer2" }, name: "Filter3" },
+                { id: 3, layer: { name: "TestLayer2" }, name: "Filter4" },
             ]);
-            wrapper = mount(Modeler3DFilterComponent, {store, localVue,});
+            wrapper = mount(Modeler3DFilterComponent, { store, localVue });
 
-            const filterListItems = wrapper.findAll('.list-group-item');
+            const filterListItems = wrapper.findAll(".list-group-item");
             expect(filterListItems.length).to.equal(4);
         });
     });
@@ -160,19 +180,6 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
             expect(wrapper.vm.newFilter).to.be.true;
             expect(wrapper.vm.pvoStyleEnabled).to.be.false;
             expect(wrapper.vm.showModal).to.be.true;
-            expect(wrapper.vm.currentFilterId).to.equal(0);
-        });
-
-        it("should get attribute name from layer", () => {
-            const layer1 = { name: "Gebäude LoD2" };
-            const layer2 = { name: "Other Layer" };
-
-            expect(wrapper.vm.getAttributeNameFromLayer(layer1)).to.equal(
-                "Wertbezeichnung"
-            );
-            expect(wrapper.vm.getAttributeNameFromLayer(layer2)).to.equal(
-                "Gebaeudefunktion"
-            );
         });
 
         it("should edit a filter", () => {
@@ -203,17 +210,6 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
             expect(wrapper.vm.attributeValues[0].color).to.equal("#ffffff");
         });
 
-        it("should get unique id", () => {
-            store.commit("Tools/Modeler3D/setFilterList", [
-                { id: 0, layer: {name: "TestLayer1"}, name: "filter1" },
-                { id: 1, layer: {name: "TestLayer1"}, name: "filter2" }
-            ]);
-
-            const uniqueId = wrapper.vm.getUniqueId();
-
-            expect(uniqueId).to.equal(2);
-        });
-
         it("should change pvo style", () => {
             wrapper.setData({
                 attributeValues: [
@@ -242,7 +238,12 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
                 ],
             });
             store.commit("Tools/Modeler3D/setFilterList", [
-                { id: 0, values: [], layer: {name: "TestLayer1"}, name: "filter1" },
+                {
+                    id: 0,
+                    values: [],
+                    layer: { name: "TestLayer1" },
+                    name: "filter1",
+                },
             ]);
             store.commit("Tools/Modeler3D/setCurrentFilterId", 0);
 
@@ -276,7 +277,12 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
             });
             store.commit("Tools/Modeler3D/setCurrentFilterId", 0);
             store.commit("Tools/Modeler3D/setFilterList", [
-                { id: 0, name: "Test Filter", values: [], layer: {name: "TestLayer1"} },
+                {
+                    id: 0,
+                    name: "Test Filter",
+                    values: [],
+                    layer: { name: "TestLayer1" },
+                },
             ]);
 
             wrapper.vm.applyStyle(true);
@@ -311,7 +317,12 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
             });
             store.commit("Tools/Modeler3D/setCurrentFilterId", 0);
             store.commit("Tools/Modeler3D/setFilterList", [
-                { id: 0, name: "Test Filter", layer: {name: "TestLayer1"}, values: [] },
+                {
+                    id: 0,
+                    name: "Test Filter",
+                    layer: { name: "TestLayer1" },
+                    values: [],
+                },
             ]);
             store.commit("Tools/Modeler3D/setLayerList", [
                 { layer: { name: "Gebäude LoD2", id: 1 }, stylingConfig: [] },
@@ -330,6 +341,7 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
                 {
                     id: 0,
                     layer: { name: "Gebäude LoD2", id: 1 },
+                    attribute: "Wertbezeichnung",
                     name: "Test Filter",
                     values: [{ name: "attr1", color: "#000000" }],
                 },
@@ -353,6 +365,7 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
                 {
                     id: 0,
                     layer: { name: "Gebäude LoD2", id: 1 },
+                    attribute: "Wertbezeichnung",
                     name: "Test Filter",
                     values: [{ name: "attr1", color: "#000000" }],
                 },
@@ -374,17 +387,17 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
             const applyStyleStub = sinon.stub(wrapper.vm, "applyStyle");
 
             store.commit("Tools/Modeler3D/setFilterList", [
-                {id: 0, layer: {name: "TestLayer1"}, name: "filter1"},
-                {id: 1, layer: {name: "TestLayer1"}, name: "filter2"},
-                {id: 2, layer: {name: "TestLayer1"}, name: "filter3"}
+                { id: 0, layer: { name: "TestLayer1" }, name: "filter1" },
+                { id: 1, layer: { name: "TestLayer1" }, name: "filter2" },
+                { id: 2, layer: { name: "TestLayer1" }, name: "filter3" },
             ]);
 
             wrapper.vm.moveFilterUp(0);
 
             expect(wrapper.vm.filterList).to.deep.equal([
-                {id: 1, layer: {name: "TestLayer1"}, name: "filter2"},
-                {id: 0, layer: {name: "TestLayer1"}, name: "filter1"},
-                {id: 2, layer: {name: "TestLayer1"}, name: "filter3"}
+                { id: 1, layer: { name: "TestLayer1" }, name: "filter2" },
+                { id: 0, layer: { name: "TestLayer1" }, name: "filter1" },
+                { id: 2, layer: { name: "TestLayer1" }, name: "filter3" },
             ]);
             expect(applyStyleStub.calledOnce).to.be.true;
         });
@@ -393,17 +406,17 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
             const applyStyleStub = sinon.stub(wrapper.vm, "applyStyle");
 
             store.commit("Tools/Modeler3D/setFilterList", [
-                {id: 0, layer: {name: "TestLayer1"}, name: "filter1"},
-                {id: 1, layer: {name: "TestLayer1"}, name: "filter2"},
-                {id: 2, layer: {name: "TestLayer1"}, name: "filter3"}
+                { id: 0, layer: { name: "TestLayer1" }, name: "filter1" },
+                { id: 1, layer: { name: "TestLayer1" }, name: "filter2" },
+                { id: 2, layer: { name: "TestLayer1" }, name: "filter3" },
             ]);
 
             wrapper.vm.moveFilterDown(2);
 
             expect(wrapper.vm.filterList).to.deep.equal([
-                {id: 0, layer: {name: "TestLayer1"}, name: "filter1"},
-                {id: 2, layer: {name: "TestLayer1"}, name: "filter3"},
-                {id: 1, layer: {name: "TestLayer1"}, name: "filter2"}
+                { id: 0, layer: { name: "TestLayer1" }, name: "filter1" },
+                { id: 2, layer: { name: "TestLayer1" }, name: "filter3" },
+                { id: 1, layer: { name: "TestLayer1" }, name: "filter2" },
             ]);
             expect(applyStyleStub.calledOnce).to.be.true;
         });

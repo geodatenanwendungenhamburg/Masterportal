@@ -55,9 +55,12 @@
 
 export default {
     active: false,
+    allowedAttributes: ["Wertbezeichnung", "Gebaeudefunktion"],
     id: "modeler3D",
     activeShapePoints: [],
     adaptToHeight: true,
+    buildingFunctionURL: "https://repository.gdi-de.org/schemas/adv/citygml/Codelisten/BuildingFunctionTypeAdV.xml",
+    buildingSource: "ALKIS",
     coordinateEasting: 0,
     coordinateNorthing: 0,
     currentFilterId: null,
@@ -102,6 +105,11 @@ export default {
     opacity: 1,
     povActive: false,
     projections: [],
+    pvoColors: {
+        housing: "#ff0000",
+        commercial: "#666666",
+        public: "#44ff44"
+    },
     rectDepth: 0,
     rectWidth: 0,
     rotation: 0,

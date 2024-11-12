@@ -3184,6 +3184,10 @@ Diese Zeichnungen können exportiert und georeferenziert wieder in die Karte gel
 |gmlIdPath|nein|String|"gmlid"|Bestimmen Sie den Pfad der GML ID im GFI für Gebäude in 3D Layern.|false|
 |updateAllLayers|nein|Boolean|true|Bestimmen Sie, ob beim Ausblenden von Gebäuden, alle Layer aktualisiert werden sollen.|false|
 |highlightStyle|nein|**[highlightStyle](#markdown-header-portalconfigmenutoolmodeler3dhighlightstyle)**||Bestimmen Sie die Füllfarbe, Transparenz, Umrissfarbe und Umrissdicke.|false|
+|allowedAttributes|nein|String[]|["Wertbezeichnung", "Gebaeudefunktion"]|Bestimmen Sie welche GFI Attribute zum Filtern verwendet werden können.|false|
+|pvoColors|nein|**[pvoColors](#markdown-header-portalconfigmenutoolmodeler3dpvocolors)**||Bestimmen Sie die Farben der PlanzeichenVO|false|
+|buildingSource|nein|String|"ALKIS"|Bestimmen Sie die Quelle der Gebäudefunktionsdaten (aktuell nur ALKIS).|false|
+|buildingFunctionURL|nein|String|"https://repository.gdi-de.org/schemas/adv/citygml/Codelisten/BuildingFunctionTypeAdV.xml"|Bestimmen Sie die URL von welcher die Gebäudefunktionen bezogen werden sollen.|false|
 
 **Beispiel**
 
@@ -3196,7 +3200,15 @@ Diese Zeichnungen können exportiert und georeferenziert wieder in die Karte gel
         "highlightStyle": {
             "silhouetteColor": "#E20D0F",
             "silhouetteSize": 4
-        }
+        },
+        "allowedAttributes": ["Gebaeudefunktion", "Wertbezeichnung"],
+        "pvoColors": {
+            "housing": "#ff0000",
+            "commercial": "#666666",
+            "public": "#44ff44"
+        },
+        "buildingSource": "ALKIS",
+        "buildingFunctionURL": "https://repository.gdi-de.org/schemas/adv/citygml/Codelisten/BuildingFunctionTypeAdV.xml"
     }
 }
 ```
@@ -3215,6 +3227,26 @@ Diese Zeichnungen können exportiert und georeferenziert wieder in die Karte gel
     "highlightStyle": {
         "silhouetteColor": "#E20D0F",
         "silhouetteSize": 4
+    }
+}
+```
+
+##### Portalconfig.menu.tool.modeler3D.pvoColors
+
+|Name|Required|Type|Default|Description|Expert|
+|----|--------|----|-------|-----------|------|
+|housing|nein|String|"#ff0000"|Bestimmen Sie die PVO Farbe der Wohngebäude.|false|
+|commercial|nein|String|"#666666"|Bestimmen Sie die PVO Farbe der Gewerbegebäude.|false|
+|public|nein|String|"#44ff44"|Bestimmen Sie die PVO Farbe der öffentlichen Gebäude.|false|
+
+**Beispiel**
+
+```json
+{
+    "pvoColors": {
+        "housing": "#ff0000",
+        "commercial": "#666666",
+        "public": "#44ff44"
     }
 }
 ```

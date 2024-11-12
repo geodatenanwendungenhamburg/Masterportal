@@ -775,6 +775,7 @@
                 },
                 "nav": {
                     "drawTitle": "Draw",
+                    "filterTitle": "Filter & Style",
                     "importTitle": "Import",
                     "options": "Options"
                 },

@@ -775,9 +775,9 @@
                 },
                 "nav": {
                     "drawTitle": "Zeichnen",
+                    "filterTitle": "Filter & Style",
                     "importTitle": "Importieren",
-                    "options": "Optionen",
-                    "filterTitle": "Filter & Style"
+                    "options": "Optionen"
                 },
                 "hiddenObjectsLabel": "Ausgeblendete Gebäude:",
                 "title": "3D Modeller"

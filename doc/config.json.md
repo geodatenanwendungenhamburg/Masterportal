@@ -3242,6 +3242,10 @@ These drawings can be exported and loaded back georeferenced into the map.
 |gmlIdPath|no|String|"gmlid"|Specify the path to the GML ID in the GFI for buildings in 3D Layers.|false|
 |updateAllLayers|no|Boolean|true|Specify, if all layers should be updated, when buildings are hidden.|false|
 |highlightStyle|no|**[highlightStyle](#markdown-header-portalconfigmenutoolmodeler3dhighlightstyle)**||Specify the fill color, alpha, outline color and outline width for highlighting entities.|false|
+|allowedAttributes|no|String[]|["Wertbezeichnung", "Gebaeudefunktion"]|Define which attributes should be available for the filtering function.|false|
+|pvoColors|no|**[pvoColors](#markdown-header-portalconfigmenutoolmodeler3dpvocolors)**||Define the colors of the PlanzeichenVerordnung.|false|
+|buildingSource|no|String|"ALKIS"|Define the source of buildings (currently only ALKIS supported)|false|
+|buildingFunctionURL|no|String|"https://repository.gdi-de.org/schemas/adv/citygml/Codelisten/BuildingFunctionTypeAdV.xml"|Define the URL where the building types should be retrieved from.|false|
 
 **Example**
 
@@ -3254,7 +3258,15 @@ These drawings can be exported and loaded back georeferenced into the map.
         "highlightStyle": {
             "silhouetteColor": "#E20D0F",
             "silhouetteSize": 4
-        }
+        },
+        "allowedAttributes": ["Gebaeudefunktion", "Wertbezeichnung"],
+        "pvoColors": {
+            "housing": "#ff0000",
+            "commercial": "#666666",
+            "public": "#44ff44"
+        },
+        "buildingSource": "ALKIS",
+        "buildingFunctionURL": "https://repository.gdi-de.org/schemas/adv/citygml/Codelisten/BuildingFunctionTypeAdV.xml"
     }
 }
 ```
@@ -3273,6 +3285,26 @@ These drawings can be exported and loaded back georeferenced into the map.
     "highlightStyle": {
         "silhouetteColor": "#E20D0F",
         "silhouetteSize": 4
+    }
+}
+```
+
+##### Portalconfig.menu.tool.modeler3D.pvoColors
+
+|Name|Required|Type|Default|Description|Expert|
+|----|--------|----|-------|-----------|------|
+|housing|no|String|"#ff0000"|Define the pvo color of housing buildings.|false|
+|commercial|no|String|"#666666"|Define the pvo color of commercial buildings.|false|
+|public|no|String|"#44ff44"|Define the pvo color of public buildings.|false|
+
+**Beispiel**
+
+```json
+{
+    "pvoColors": {
+        "housing": "#ff0000",
+        "commercial": "#666666",
+        "public": "#44ff44"
     }
 }
 ```
