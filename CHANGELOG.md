@@ -43,6 +43,7 @@
 
 ### Fixed
 - draw: download a drawn circle as csv has now the correct epsg code from the map projection
+- Issue #1172: printing a layer with multiple style conditions doesn´t cause an error anymore.
 
 ---
 

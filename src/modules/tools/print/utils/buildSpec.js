@@ -508,7 +508,6 @@ const BuildSpecModel = {
         }
 
         features.forEach(feature => {
-        // features.slice(0, 20).forEach(feature => {
             const foundFeature = featuresInExtent.find(featureInExtent => featureInExtent.ol_uid === feature.ol_uid),
                 styles = this.getFeatureStyle(feature, layer),
                 styleAttributes = this.getStyleAttributes(layer, feature);
@@ -525,12 +524,10 @@ const BuildSpecModel = {
                 styleGeometryFunction;
 
             styles.forEach((style, index) => {
-
                 if (style !== null) {
-                    const styleObjectFromStyleList = styleList.returnStyleObject(layer.get("styleId"));
-
-                    let limiter = ",",
-                        styleFromStyleList = styleObjectFromStyleList ? createStyle.getGeometryStyle(feature, styleObjectFromStyleList.rules, false, Config.wfsImgPath) : undefined;
+                    const styleObjectFromStyleList = styleList.returnStyleObject(layer.get("styleId")),
+                        limiter = " AND ";
+                    let styleFromStyleList = styleObjectFromStyleList ? createStyle.getGeometryStyle(feature, styleObjectFromStyleList.rules, false, Config.wfsImgPath) : undefined;
 
                     if (Array.isArray(styleFromStyleList)) {
                         styleFromStyleList = styleFromStyleList[0];
@@ -579,11 +576,13 @@ const BuildSpecModel = {
                             this.checkPolygon(clonedFeature);
                         }
                     }
+
                     stylingRules = this.getStylingRules(layer, clonedFeature, styleAttributes, style);
-                    if (styleFromStyleList?.attributes?.labelField?.length > 0) {
-                        stylingRules = stylingRules.replaceAll(limiter, " AND ");
-                        limiter = " AND ";
+
+                    if (stylingRules.includes(",")) {
+                        stylingRules = stylingRules.replace(/,/g, " AND ");
                     }
+
                     stylingRulesSplit = stylingRules
                         .replaceAll("[", "")
                         .replaceAll("]", "")
