@@ -948,6 +948,7 @@
         "unknownProjection": "Result provided within a unknown coordinate system"
       },
       "placeholder": {
+        "searchFor": "Search for",
         "address": "Search for Address",
         "addressDistrict": "Search address, district",
         "addressHospitalBplan": "Search for Address/Hospital/B-Plan",

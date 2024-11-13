@@ -3,6 +3,22 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased - in development
+### __Breaking Changes__
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+- Searchbar: the search in search results shows results and no error occurs.
+
+---
+
 ## 2024-11-06 v3.4.0
 
 ### Added
