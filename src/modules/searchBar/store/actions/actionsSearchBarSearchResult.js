@@ -287,6 +287,7 @@ export default {
      * @returns {void}
      */
     startRouting: ({dispatch, rootGetters}, {coordinates, name}) => {
+        console.log("danach ist die linke Navigation kaputt");
         const menuSide = "secondaryMenu",
             menuExpanded = "Menu/expanded";
 

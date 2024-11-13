@@ -10,7 +10,8 @@ config.global.mocks.$t = key => key;
 describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
     let store,
         wrapper,
-        showInTree;
+        showInTree,
+        showAllResultsSearchInterfaceInstances;
 
     const searchResults = [
             {
@@ -48,21 +49,41 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
             results: {
                 0: searchResults[0],
                 1: searchResults[0],
-                availableCategories: ["example"],
-                categoryProvider: [
-                    "exampleSearch"
+                availableCategories: ["Straße"],
+                XcategoryProvider: [
+                    "gazetteer"
                 ],
+                categoryProvider: {
+                    "Straße": "gazetteer"
+                },
                 exampleCount: 1,
                 exampleIcon: "bi-signpost-2"
             },
             currentShowAllList: searchResults
-        },
-        setNavigationCurrentComponentBySideSpy = sinon.spy(),
-        setCurrentComponentBySideSpy = sinon.spy(),
-        setNavigationHistoryBySideSpy = sinon.spy();
+        };
+    let setNavigationCurrentComponentBySideSpy,
+        setPlaceholderSpy,
+        setCurrentAvailableCategoriesSpy,
+        setShowAllResultsSearchInterfaceInstancesSpy,
+        setCurrentComponentBySideSpy,
+        setNavigationHistoryBySideSpy;
+
+    before(() => {
+        i18next.init({
+            lng: "cimode",
+            debug: false
+        });
+    });
 
     beforeEach(() => {
         showInTree = false;
+        showAllResultsSearchInterfaceInstances = [];
+        setNavigationCurrentComponentBySideSpy = sinon.spy(),
+        setPlaceholderSpy = sinon.spy(),
+        setCurrentAvailableCategoriesSpy = sinon.spy(),
+        setShowAllResultsSearchInterfaceInstancesSpy = sinon.spy(),
+        setCurrentComponentBySideSpy = sinon.spy(),
+        setNavigationHistoryBySideSpy = sinon.spy();
         store = createStore({
             modules: {
                 Modules: {
@@ -82,13 +103,15 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
                                     return true;
                                 },
                                 showAllResults: () => showAllResults,
-                                showInTree: () => showInTree
+                                showInTree: () => showInTree,
+                                showAllResultsSearchInterfaceInstances: () => showAllResultsSearchInterfaceInstances
                             },
                             mutations: {
-                                setShowAllResultsSearchInterfaceInstances: sinon.stub(),
-                                setCurrentAvailableCategories: sinon.stub(),
+                                setShowAllResultsSearchInterfaceInstances: setShowAllResultsSearchInterfaceInstancesSpy,
+                                setCurrentAvailableCategories: setCurrentAvailableCategoriesSpy,
                                 setSearchResultsActive: sinon.stub(),
-                                setShowAllResults: sinon.stub()
+                                setShowAllResults: sinon.stub(),
+                                setPlaceholder: setPlaceholderSpy
                             }
                         }
                     }
@@ -155,7 +178,14 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
     });
 
     describe("test the method prepareShowAllResults", () => {
-        it("test the method prepareShowAllResults", async () => {
+        it("test the method prepareShowAllResults, showAllResultsSearchInterfaceInstances exists", async () => {
+            showAllResultsSearchInterfaceInstances.push(
+                {
+                    id: "gazetteer",
+                    searchCategory: "Straße"
+                }
+            );
+
             wrapper = await mount(SearchBarSuggestionListComponent, {
                 props: {
                     limitedSortedSearchResults
@@ -169,8 +199,62 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
             wrapper.vm.$nextTick();
 
             expect(setNavigationCurrentComponentBySideSpy.calledOnce).to.be.true;
+            expect(setNavigationCurrentComponentBySideSpy.firstCall.args[1]).to.be.deep.equals({
+                side: "mainMenu",
+                newComponent: {props: {name: "modules.searchBar.searchResults - Straße"}, type: "searchbar"}
+            });
+            expect(setPlaceholderSpy.calledOnce).to.be.true;
+            expect(setPlaceholderSpy.firstCall.args[1]).to.be.equals("modules.searchBar.placeholder.searchFor" + " " + "Straße");
             expect(setCurrentComponentBySideSpy.calledOnce).to.be.true;
             expect(setNavigationHistoryBySideSpy.calledOnce).to.be.true;
+            expect(setShowAllResultsSearchInterfaceInstancesSpy.notCalled).to.be.true;
+            expect(setCurrentAvailableCategoriesSpy.calledOnce).to.be.true;
+            expect(setCurrentAvailableCategoriesSpy.firstCall.args[1]).to.equal("Straße");
+
+            expect(wrapper.vm.searchResultsActive).to.be.true;
+            expect(wrapper.vm.currentShowAllList[0]).to.deep.equal(searchResults[0]);
+        });
+        it("test the method prepareShowAllResults, showAllResultsSearchInterfaceInstances not exists", async () => {
+            showAllResultsSearchInterfaceInstances.push(
+                {
+                    id: "elastic_0",
+                    searchCategory: "Thema"
+                }
+            );
+            const expected = [...showAllResultsSearchInterfaceInstances];
+
+            expected.push(
+                {
+                    id: "gazetteer",
+                    searchCategory: "Straße"
+                }
+            );
+
+            wrapper = await mount(SearchBarSuggestionListComponent, {
+                props: {
+                    limitedSortedSearchResults
+                },
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            await wrapper.vm.prepareShowAllResults("Straße");
+            wrapper.vm.$nextTick();
+
+            expect(setNavigationCurrentComponentBySideSpy.calledOnce).to.be.true;
+            expect(setNavigationCurrentComponentBySideSpy.firstCall.args[1]).to.be.deep.equals({
+                side: "mainMenu",
+                newComponent: {props: {name: "modules.searchBar.searchResults - Straße"}, type: "searchbar"}
+            });
+            expect(setPlaceholderSpy.calledOnce).to.be.true;
+            expect(setPlaceholderSpy.firstCall.args[1]).to.be.equals("modules.searchBar.placeholder.searchFor" + " " + "Straße");
+            expect(setCurrentComponentBySideSpy.calledOnce).to.be.true;
+            expect(setNavigationHistoryBySideSpy.calledOnce).to.be.true;
+            expect(setShowAllResultsSearchInterfaceInstancesSpy.calledOnce).to.be.true;
+            expect(setShowAllResultsSearchInterfaceInstancesSpy.firstCall.args[1]).to.be.deep.equals(expected);
+            expect(setCurrentAvailableCategoriesSpy.calledOnce).to.be.true;
+            expect(setCurrentAvailableCategoriesSpy.firstCall.args[1]).to.equal("Straße");
 
             expect(wrapper.vm.searchResultsActive).to.be.true;
             expect(wrapper.vm.currentShowAllList[0]).to.deep.equal(searchResults[0]);

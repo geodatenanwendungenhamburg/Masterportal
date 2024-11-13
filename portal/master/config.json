@@ -163,6 +163,7 @@
         "toolTip": "Landesbetrieb Geoinformation und Vermessung"
       },
       "searchBar": {
+        "placeholder": "common:modules.searchBar.placeholder.addressTopic",
         "searchInterfaces": [
           {
             "type": "elasticSearch",
@@ -352,15 +353,6 @@
                   "app:Name"
                 ],
 
-                "namespaces": "xmlns:app='http://www.deegree.org/app'"
-              },
-              {
-                "url": "https://geodienste.hamburg.de/HH_WFS_Stoerfallbetriebe",
-                "typeName": "app:stoerfallbetrieb",
-                "propertyNames": [
-                  "app:standort"
-                ],
-                "name": "common:modules.searchBar.specialWFS.hazardous",
                 "namespaces": "xmlns:app='http://www.deegree.org/app'"
               }
             ]
