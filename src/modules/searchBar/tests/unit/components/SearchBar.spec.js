@@ -4,7 +4,6 @@ import {expect} from "chai";
 import sinon from "sinon";
 
 import SearchBarComponent from "../../../components/SearchBar.vue";
-import {log} from "sinon/pkg/sinon.js";
 
 config.global.mocks.$t = key => key;
 
