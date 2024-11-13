@@ -11,7 +11,13 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
     let store,
         wrapper,
         showInTree,
-        showAllResultsSearchInterfaceInstances;
+        showAllResultsSearchInterfaceInstances,
+        setNavigationCurrentComponentBySideSpy,
+        setPlaceholderSpy,
+        setCurrentAvailableCategoriesSpy,
+        setShowAllResultsSearchInterfaceInstancesSpy,
+        setCurrentComponentBySideSpy,
+        setNavigationHistoryBySideSpy;
 
     const searchResults = [
             {
@@ -61,12 +67,6 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
             },
             currentShowAllList: searchResults
         };
-    let setNavigationCurrentComponentBySideSpy,
-        setPlaceholderSpy,
-        setCurrentAvailableCategoriesSpy,
-        setShowAllResultsSearchInterfaceInstancesSpy,
-        setCurrentComponentBySideSpy,
-        setNavigationHistoryBySideSpy;
 
     before(() => {
         i18next.init({
@@ -78,11 +78,11 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
     beforeEach(() => {
         showInTree = false;
         showAllResultsSearchInterfaceInstances = [];
-        setNavigationCurrentComponentBySideSpy = sinon.spy(),
-        setPlaceholderSpy = sinon.spy(),
-        setCurrentAvailableCategoriesSpy = sinon.spy(),
-        setShowAllResultsSearchInterfaceInstancesSpy = sinon.spy(),
-        setCurrentComponentBySideSpy = sinon.spy(),
+        setNavigationCurrentComponentBySideSpy = sinon.spy();
+        setPlaceholderSpy = sinon.spy();
+        setCurrentAvailableCategoriesSpy = sinon.spy();
+        setShowAllResultsSearchInterfaceInstancesSpy = sinon.spy();
+        setCurrentComponentBySideSpy = sinon.spy();
         setNavigationHistoryBySideSpy = sinon.spy();
         store = createStore({
             modules: {
@@ -204,7 +204,7 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
                 newComponent: {props: {name: "modules.searchBar.searchResults - Straße"}, type: "searchbar"}
             });
             expect(setPlaceholderSpy.calledOnce).to.be.true;
-            expect(setPlaceholderSpy.firstCall.args[1]).to.be.equals("modules.searchBar.placeholder.searchFor" + " " + "Straße");
+            expect(setPlaceholderSpy.firstCall.args[1]).to.be.equals("modules.searchBar.placeholder.searchFor Straße");
             expect(setCurrentComponentBySideSpy.calledOnce).to.be.true;
             expect(setNavigationHistoryBySideSpy.calledOnce).to.be.true;
             expect(setShowAllResultsSearchInterfaceInstancesSpy.notCalled).to.be.true;
@@ -248,7 +248,7 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
                 newComponent: {props: {name: "modules.searchBar.searchResults - Straße"}, type: "searchbar"}
             });
             expect(setPlaceholderSpy.calledOnce).to.be.true;
-            expect(setPlaceholderSpy.firstCall.args[1]).to.be.equals("modules.searchBar.placeholder.searchFor" + " " + "Straße");
+            expect(setPlaceholderSpy.firstCall.args[1]).to.be.equals("modules.searchBar.placeholder.searchFor Straße");
             expect(setCurrentComponentBySideSpy.calledOnce).to.be.true;
             expect(setNavigationHistoryBySideSpy.calledOnce).to.be.true;
             expect(setShowAllResultsSearchInterfaceInstancesSpy.calledOnce).to.be.true;
