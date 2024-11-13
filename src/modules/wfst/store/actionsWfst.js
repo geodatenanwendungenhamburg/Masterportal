@@ -95,7 +95,7 @@ const actions = {
             drawInteraction.on("drawend", (event) => {
                 sourceLayer.getSource().addFeature(event.feature);
                 drawLayer.getSource().clear();
-                const currentLayer =  layerCollection.getLayerById(currentLayerId),
+                const currentLayer = layerCollection.getLayerById(currentLayerId),
                     mapScale = rootGetters["Maps/scale"];
 
                 if ((currentLayer.minScale && mapScale < currentLayer.minScale) || (currentLayer.maxScale && mapScale > currentLayer.maxScale)) {
