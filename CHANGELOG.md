@@ -19,6 +19,7 @@
 ### Removed
 
 ### Fixed
+- Issue #1228: Filter-Module was not filtering any groupLayers and was throwing errors instead.
 
 ---
 

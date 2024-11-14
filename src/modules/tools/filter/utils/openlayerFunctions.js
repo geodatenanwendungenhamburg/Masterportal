@@ -3,6 +3,7 @@ import {intersects} from "ol/extent.js";
 import LayerGroup from "ol/layer/Group";
 import isObject from "../../../../utils/isObject";
 import uiStyle from "../../../../utils/uiStyle";
+import GroupedLayers from "../../../../core/layers/group";
 
 /**
  * Returns the map projection.
@@ -115,7 +116,15 @@ function getLayerByLayerId (layerId) {
  * @returns {void}
  */
 function showFeaturesByIds (layerId, ids) {
-    Radio.trigger("ModelList", "showFeaturesById", layerId, ids);
+    const layer = getLayerByLayerId(layerId);
+
+    if (layer instanceof GroupedLayers) {
+        layer.setZIndexForChilds(layer.layer.getZIndex());
+        layer.showFeaturesByIds(ids);
+    }
+    else {
+        Radio.trigger("ModelList", "showFeaturesById", layerId, ids);
+    }
 }
 
 /**

@@ -291,8 +291,19 @@ GroupedLayers.prototype.hideAllFeatures = function () {
 };
 /**
  * Get grouped layers as array.
- * @returns {Layer[]} array of Layers
+ * @returns {Layer[]} array of Layers.
  */
 GroupedLayers.prototype.getLayers = function () {
     return this.attributes.layerSource;
+};
+
+/**
+ * Sets the zIndex for the child layers.
+ * @param {Number} zIndex The zIndex.
+ * @returns {void}
+ */
+GroupedLayers.prototype.setZIndexForChilds = function (zIndex) {
+    this.attributes.layerSource.forEach(layer => {
+        layer.layer.setZIndex(zIndex);
+    });
 };
