@@ -876,6 +876,8 @@ export default {
                 }
                 input {
                     width: 90%;
+                    border: 1px solid #ccc;
+                    padding-left: 10px;
                 }
             }
             .until {
@@ -891,6 +893,7 @@ export default {
                 input {
                     width: 90%;
                     text-align: right;
+                    border: 1px solid #ccc;
                 }
             }
         }
