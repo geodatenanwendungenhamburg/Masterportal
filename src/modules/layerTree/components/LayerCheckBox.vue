@@ -164,6 +164,10 @@ export default {
                 }
             ]"
         />
+        <i
+            v-if="conf.isSecured"
+            class="bi-lock-fill pe-1"
+        />
         <span
             :class="['layer-tree-layer-label', 'mt-0 d-flex flex-column align-self-start', isBold ? 'font-bold' : '']"
             :for="'layer-tree-layer-checkbox-' + conf.id"
