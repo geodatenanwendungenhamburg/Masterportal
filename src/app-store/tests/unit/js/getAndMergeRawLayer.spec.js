@@ -160,6 +160,77 @@ describe("src/app-store/js/getAndMergeRawLayer.js", () => {
             expect(result[0].visibility).to.be.true;
         });
 
+        it("should return a merged raw layer with custom minScale and maxScale, if ids are in an array - NOT typ GROUP", () => {
+            layerConfig = {
+                [treeBaselayersKey]: {
+                    elements: [
+                        {
+                            id: [
+                                "717",
+                                "718",
+                                "719"
+                            ],
+                            minScale: "5000",
+                            maxScale: "50000",
+                            visibility: true,
+                            name: "Geobasiskarten (farbig)",
+                            type: "layer"
+                        }
+                    ]
+                }
+            };
+            const simpleLayerList = [
+                {
+                    id: "453",
+                    name: "layer453"
+                },
+                {
+                    id: "717",
+                    name: "name717",
+                    layers: "layer717",
+                    maxScale: "10000",
+                    minScale: "10",
+                    url: "url",
+                    typ: "WMS"
+                },
+                {
+                    id: "718",
+                    name: "name718",
+                    layers: "layer718",
+                    maxScale: "30000",
+                    minScale: "30",
+                    url: "url",
+                    typ: "WMS"
+                },
+                {
+                    id: "719",
+                    name: "name719",
+                    layers: "layer719",
+                    maxScale: "20000",
+                    minScale: "20",
+                    url: "url",
+                    typ: "WMS"
+                }
+            ];
+            let result = null;
+
+            sinon.stub(rawLayerList, "getLayerWhere").callsFake(function (searchAttributes) {
+                return simpleLayerList.find(entry => Object.keys(searchAttributes).every(key => entry[key] === searchAttributes[key])) || null;
+            });
+            sinon.stub(rawLayerList, "getLayerList").returns(simpleLayerList);
+
+            result = getAndMergeRawLayer(layerConfig[treeBaselayersKey].elements[0]);
+
+            expect(Array.isArray(result)).to.be.true;
+            expect(result.length).to.be.equals(1);
+            expect(result[0].id).to.be.equals("717");
+            expect(result[0].name).to.be.equals("Geobasiskarten (farbig)");
+            expect(result[0].layers).to.be.equals("layer717,layer718,layer719");
+            expect(result[0].maxScale).to.be.equals(50000);
+            expect(result[0].minScale).to.be.equals(5000);
+            expect(result[0].visibility).to.be.true;
+        });
+
         it("should respect layerIDsToStyle with more than one style", () => {
             const simpleLayerList = [
                     {

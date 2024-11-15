@@ -11,6 +11,7 @@
 ### Fixed
 - Fixed issue where the 3D view would not launch when button3d was configured under controls.expandable in config.json.
 - Issue #1121: For secured services that have the isSecured attribute, the lock icon is now displayed again.
+- Issue #1266: For layers whose ids are configured as an array, the visible range can now be restricted with `minScale` and `maxScale` in config.json.
 - Issue #1272: Prevents MDID layer IDs from being removed when setting layer IDs, when a shared link with both layer IDs and MDIDs is opened.
 - Searchbar: the search in search results shows results and no error occurs.
 - wfst: layers that are not in services.json are supported.

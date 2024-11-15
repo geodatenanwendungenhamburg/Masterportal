@@ -141,7 +141,7 @@ function mergeGroupedLayer (layerConf) {
                     const rawGroupedLayer = Object.assign({}, existingLayers[rawGroupedLayerIndex], groupedLayerConf);
 
                     if (!groupedLayerConf.maxScale && layerConf.maxScale) {
-                        setMinMaxScale(rawGroupedLayer, [layerConf.maxScale], [layerConf.minScale]);
+                        setMinMaxScale(rawGroupedLayer, [layerConf.maxScale], [layerConf.minScale], layerConf);
                     }
                     existingLayers.splice(rawGroupedLayerIndex, 1, rawGroupedLayer);
                 }
@@ -157,7 +157,7 @@ function mergeGroupedLayer (layerConf) {
                 }
             });
             collectMinMaxScales(existingLayers, maxScales, minScales);
-            setMinMaxScale(rawLayer, maxScales, minScales);
+            setMinMaxScale(rawLayer, maxScales, minScales, layerConf);
         }
         rawLayer.children = existingLayers;
     }
@@ -166,7 +166,7 @@ function mergeGroupedLayer (layerConf) {
         rawLayer = Object.assign({}, existingLayers[0], layerConf);
         rawLayer.id = existingLayers[0].id;
         rawLayer.layers = existingLayers.map(value => value.layers).toString();
-        setMinMaxScale(rawLayer, maxScales, minScales);
+        setMinMaxScale(rawLayer, maxScales, minScales, layerConf);
     }
     else {
         console.warn(`Layer '${layerConf.name}' with ids as array: [${layerConf.id}] cannot be created. All layers in the ids-array must habe same 'typ' and same 'url'.`);
@@ -229,11 +229,15 @@ function sameUrlAndTyp (layers) {
  * @param {Object} layer to set min- and maxScale at
  * @param {Array} maxScales list of maxScales
  * @param {Array} minScales list of minScales
+ * @param {Object} layerConf configuration of layer like in the config.json
  * @returns {void}
  */
-function setMinMaxScale (layer, maxScales, minScales) {
-    layer.maxScale = Math.max(...maxScales);
-    layer.minScale = Math.min(...minScales);
+function setMinMaxScale (layer, maxScales, minScales, layerConf) {
+    const layerConfMaxScale = parseInt(layerConf.maxScale, 10),
+        layerConfMinScale = parseInt(layerConf.minScale, 10);
+
+    layer.maxScale = !isNaN(layerConfMaxScale) ? layerConfMaxScale : Math.max(...maxScales);
+    layer.minScale = !isNaN(layerConfMinScale) ? layerConfMinScale : Math.min(...minScales);
 }
 
 /**
