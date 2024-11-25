@@ -17,7 +17,7 @@ export default {
         return {
             selectedLayer: {},
             selectedAttribute: "",
-            attributes: [], // Beispiele
+            attributes: [],
             layers: [],
             showModal: false,
             attributeValues: [],
