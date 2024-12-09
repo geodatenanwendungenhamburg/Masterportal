@@ -34,7 +34,7 @@ export default {
         ...mapGetters("Tools/Modeler3D", Object.keys(getters)),
 
         attributeValuesSorted () {
-            return this.attributeValues.toSorted((a, b) => a.name.localeCompare(b.name));
+            return [...this.attributeValues].sort((a, b) => a.name.localeCompare(b.name));
         },
         groupedFiltersByLayer () {
             return this.filterList.reduce((groups, filter) => {
