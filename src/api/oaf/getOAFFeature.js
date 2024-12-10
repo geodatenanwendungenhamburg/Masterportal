@@ -211,11 +211,32 @@ async function getUniqueValuesByScheme (baseUrl, collection, propertiesToGetValu
     return result;
 }
 
+/**
+ * Gets the temporal extent of a collection
+ * @param {String} baseUrl The base url of the dataset.
+ * @param {String} collection The collection name.
+ * @returns {Date[][]} An array of intervals, each defined by a start date and an end date. Undefined in case of an error.
+ */
+async function getTemporalExtent (baseUrl, collection) {
+    if (typeof baseUrl !== "string" || typeof collection !== "string") {
+        return undefined;
+    }
+
+    const response = await axios.get(`${baseUrl}/collections/${collection}`, {
+        params: {f: "json"}
+    });
+
+    return response?.data?.extent?.temporal?.interval?.map(
+        interval => interval.map(dateString => new Date(dateString))
+    );
+}
+
 export default {
     getOAFFeatureGet,
     readAllOAFToGeoJSON,
     oafRecursionHelper,
     getNextLinkFromFeatureCollection,
+    getTemporalExtent,
     getUniqueValuesFromCollection,
     getUniqueValuesByScheme
 };

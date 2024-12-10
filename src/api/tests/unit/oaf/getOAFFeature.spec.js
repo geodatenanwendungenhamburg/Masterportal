@@ -261,4 +261,35 @@ describe("src/api/oaf", () => {
             sinon.restore();
         });
     });
+
+    describe("getTemporalExtent", () => {
+
+        it("should return undefined in case of failure", async () => {
+            sinon.stub(axios, "get").resolves({status: 400});
+
+            expect(await getOAFFeature.getTemporalExtent()).to.be.undefined;
+
+            sinon.restore();
+        });
+
+        it("should return expected results", async () => {
+            sinon.stub(axios, "get").resolves({
+                data: {
+                    extent: {
+                        temporal: {
+                            interval: [
+                                ["2000", "2001"],
+                                ["2023", "2024"]
+                            ]
+                        }
+                    }
+                }
+            });
+
+            expect((await getOAFFeature.getTemporalExtent("", "")).map(i => i.map(d => d.getFullYear())))
+                .to.deep.equal([[2000, 2001], [2023, 2024]]);
+
+            sinon.restore();
+        })
+    })
 });
