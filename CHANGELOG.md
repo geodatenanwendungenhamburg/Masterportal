@@ -24,6 +24,7 @@
 ### Added
 - PrintMap: Send a new variable "sourceLinks" to jasperserver to display the sources shorter as href links in jasperreports.
 - Modeler3D: Added filter & style function to color specific buildings.
+- RemoteInterface: Added postMessage with current extent
 
 ### Changed
 - The following packages have been updated:

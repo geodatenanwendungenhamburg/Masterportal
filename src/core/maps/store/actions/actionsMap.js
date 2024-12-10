@@ -30,6 +30,7 @@ export default {
         mapView.on("change:center", function () {
             Radio.trigger("MapView", "changedCenter", mapView.getCenter());
             Radio.trigger("RemoteInterface", "postMessage", {"centerPosition": mapView.getCenter()});
+            Radio.trigger("RemoteInterface", "postMessage", {"currentExtent": mapView.calculateExtent()});
         });
 
         if (document.getElementById("map") !== null) {
