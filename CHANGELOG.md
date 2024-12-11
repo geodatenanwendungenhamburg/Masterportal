@@ -13,6 +13,7 @@
 - Issue #1121: For secured services that have the isSecured attribute, the lock icon is now displayed again.
 - Issue #1272: Prevents MDID layer IDs from being removed when setting layer IDs, when a shared link with both layer IDs and MDIDs is opened.
 - Searchbar: the search in search results shows results and no error occurs.
+- wfst: layers that are not in services.json are supported.
 
 ---
 
