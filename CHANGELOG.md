@@ -3,6 +3,16 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## 2024-12-11 v3.3.3 (LTS)
+
+### Added
+
+
+### Fixed
+- Fixed issue where the 3D view would not launch when button3d was configured under controls.expandable in config.json.
+
+---
+
 ## 2024-11-05 v3.3.2 (LTS)
 
 ### Added
