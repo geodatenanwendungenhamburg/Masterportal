@@ -26,7 +26,7 @@ const state = {
     resizableWindow: true,
     isVisibleInMenu: true,
     deactivateGFI: true,
-    selectedFeatures: undefined,
+    selectedFeatures: [],
     selectedFeaturesWithRenderInformation: [],
     selectInteraction: undefined,
     dragBoxInteraction: undefined,

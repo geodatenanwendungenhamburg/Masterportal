@@ -1,7 +1,8 @@
 <script>
 import {DragBox, Select} from "ol/interaction";
-import {never, platformModifierKeyOnly, touchOnly} from "ol/events/condition";
+import {platformModifierKeyOnly, touchOnly} from "ol/events/condition";
 import VectorSource from "ol/source/Vector.js";
+import {Style, Stroke, Fill, Circle as CircleStyle} from "ol/style";
 
 import ToolTemplate from "../../../../modules/tools/ToolTemplate.vue";
 import {mapActions, mapGetters, mapMutations} from "vuex";
@@ -16,6 +17,29 @@ export default {
     name: "SelectFeatures",
     components: {
         ToolTemplate
+    },
+    data () {
+        return {
+            selectedFeatureStyle: new Style({
+                image: new CircleStyle({
+                    radius: 7,
+                    fill: new Fill({
+                        color: "rgba(0, 153, 255, 0.5)"
+                    }),
+                    stroke: new Stroke({
+                        color: "rgba(0, 153, 255, 1)",
+                        width: 2
+                    })
+                }),
+                stroke: new Stroke({
+                    color: "rgba(0, 153, 255, 1)",
+                    width: 2
+                }),
+                fill: new Fill({
+                    color: "rgba(0, 153, 255, 0.3)"
+                })
+            })
+        };
     },
     computed: {
         ...mapGetters(["ignoredKeys", "mobile"]),
@@ -53,19 +77,33 @@ export default {
          */
         createInteractions: function () {
             const select = new Select({
-                // select works indirectly via DragBox results - never updates itself
-                    addCondition: never,
-                    removeCondition: never,
-                    toggleCondition: never,
-                    condition: never
+                    condition: (event) => event.originalEvent.ctrlKey && event.type === "pointerdown",
+                    style: null
                 }),
                 dragBox = new DragBox(this.mobile ? {condition: touchOnly} : {condition: platformModifierKeyOnly});
 
-            dragBox.on("boxstart", this.clearFeatures.bind(this));
             dragBox.on("boxend", this.setFeaturesFromDrag.bind(this));
 
+            select.on("select", (event) => {
+                this.setFeaturesFromClick(event.mapBrowserEvent);
+            });
             this.setSelectInteraction(select);
             this.setDragBoxInteraction(dragBox);
+        },
+
+        /**
+         * Removes a single feature from the selection.
+         * @param {Number} index - The index of the feature to remove.
+         * @param {Object} feature - The feature object to deselect.
+         * @returns {void}
+         */
+        removeFeature (index, feature) {
+            if (feature) {
+                feature.setStyle(null);
+
+                this.selectedFeatures.splice(index, 1);
+                this.selectedFeaturesWithRenderInformation.splice(index, 1);
+            }
         },
 
         /**
@@ -74,9 +112,9 @@ export default {
          */
         clearFeatures: function () {
             if (this.selectedFeatures) {
-                this.selectedFeatures.clear();
+                this.selectedFeatures.forEach(feature => feature.setStyle(null));
+                this.setSelectedFeatures([]);
             }
-            this.setSelectedFeatures(this.selectInteraction.getFeatures());
             this.setSelectedFeaturesWithRenderInformation([]);
         },
 
@@ -85,8 +123,8 @@ export default {
          * @returns {void}
          */
         addInteractions: function () {
-            this.addInteractionToMap(this.selectInteraction);
             this.addInteractionToMap(this.dragBoxInteraction);
+            this.addInteractionToMap(this.selectInteraction);
         },
 
         /**
@@ -94,8 +132,8 @@ export default {
          * @returns {void}
          */
         removeInteractions: function () {
-            this.removeInteractionFromMap(this.selectInteraction);
             this.removeInteractionFromMap(this.dragBoxInteraction);
+            this.removeInteractionFromMap(this.selectInteraction);
             this.selectedFeaturesWithRenderInformation.length = 0;
         },
 
@@ -109,24 +147,69 @@ export default {
             mapCollection.getMap("2D").getLayers()
                 .getArray()
                 .filter(layer => layer.get("visible") && layer.get("source") instanceof VectorSource)
-                .forEach(
-                    layer => {
-                        if (layer.get("typ") === "VectorTile" && layer.get("renderer") === "webgl") {
-                            const features = layer.get("source")?.getFeaturesInExtent(extent);
+                .forEach(layer => {
+                    if (layer.get("typ") === "VectorTile" && layer.get("renderer") === "webgl") {
+                        const features = layer.get("source")?.getFeaturesInExtent(extent);
 
-                            features.forEach(feature => {
+                        features.forEach(feature => {
+                            const featureId = feature.getId(),
+                                alreadySelected = this.selectedFeatures.some(f => f.getId() === featureId);
+
+                            if (!alreadySelected) {
+                                feature.setStyle(this.selectedFeatureStyle);
                                 this.prepareFeature(layer, feature);
-                            });
-                        }
-                        else {
-                            layer.get("source").forEachFeatureIntersectingExtent(
-                                extent,
-                                feature => this.prepareFeature(layer, feature)
-                            );
-                        }
+                            }
+                        });
                     }
-                );
+                    else {
+                        layer.get("source").forEachFeatureIntersectingExtent(
+                            extent,
+                            feature => {
+                                const featureId = feature.getId(),
+                                    alreadySelected = this.selectedFeatures.some(f => f.getId() === featureId);
+
+                                if (!alreadySelected) {
+                                    feature.setStyle(this.selectedFeatureStyle);
+                                    this.prepareFeature(layer, feature);
+                                }
+                            }
+                        );
+                    }
+                });
         },
+
+        /**
+         * Infers features from a click event and sets them to the selectedFeatures.
+         * @param {Object} event The click event
+         * @returns {void}
+         */
+        setFeaturesFromClick: function (event) {
+            const coordinate = event.coordinate,
+                pixel = mapCollection.getMap("2D").getPixelFromCoordinate(coordinate),
+                map = mapCollection.getMap("2D");
+
+            map.forEachFeatureAtPixel(pixel, (feature, layer) => {
+                if (!layer) {
+                    console.warn("No layer found for feature", feature);
+                    return true;
+                }
+
+                if (layer.get("visible") && layer.get("source") instanceof VectorSource) {
+                    const featureId = feature.getId(),
+                        alreadySelected = this.selectedFeatures.some(f => f.getId() === featureId);
+
+                    if (!alreadySelected) {
+                        feature.setStyle(this.selectedFeatureStyle);
+                        this.prepareFeature(layer, feature);
+                    }
+                }
+                else {
+                    console.warn("Layer not visible or not a vector source", layer);
+                }
+                return true;
+            });
+        },
+
 
         /**
          * Gets a feature or multiple features and forwards it/them to the pushFeatures Function.
@@ -138,9 +221,7 @@ export default {
         prepareFeature: function (layer, feature) {
             this.addSelectedFeature(feature);
             if (feature.get("features") === undefined) {
-                const item = feature;
-
-                this.pushFeatures(layer, item);
+                this.pushFeatures(layer, feature);
             }
             else {
                 feature.get("features").forEach(item => {
@@ -150,9 +231,24 @@ export default {
         },
 
         /**
-         * Pushes the given feature and its properties to the selectedFeaturesWithRenderInformation array.
-         * @param {module:ol/Layer} layer layer the feature belongs to (for gfi attributes)
-         * @param {module:ol/Feature} item feature to be pushed
+         * Adds a feature to the selected features if it is not already selected.
+         * @param {module:ol/Feature} feature - The feature to add.
+         * @returns {void}
+         */
+        addSelectedFeature: function (feature) {
+            const featureId = feature.getId();
+
+            if (this.selectedFeatures.some(f => f.getId() === featureId)) {
+                return;
+            }
+
+            this.selectedFeatures.push(feature);
+        },
+
+        /**
+         * Adds a feature with render information to the selected features.
+         * @param {Object} layer - The layer containing the feature.
+         * @param {module:ol/Feature} item - The feature to add.
          * @returns {void}
          */
         pushFeatures: function (layer, item) {
@@ -246,6 +342,10 @@ export default {
          * @returns {String} beautified key
          */
         beautifyKey: function (str) {
+            if (typeof str !== "string") {
+                console.warn("Invalid input for beautifyKey. Expected a string, got:", typeof str);
+                return "";
+            }
             return str
                 .split("_")
                 .map(item => item.substring(0, 1).toUpperCase() + item.substring(1))
@@ -258,6 +358,10 @@ export default {
          * @returns {String} beautified string
          */
         beautifyValue: function (str) {
+            if (typeof str !== "string") {
+                console.warn("Invalid input for beautifyValue. Expected a string, got:", typeof str);
+                return "";
+            }
             return str
                 .split("|")
                 .map(item => item.trim())
@@ -356,6 +460,15 @@ export default {
                     ref="select-features-tables"
                     class="select-features-tables"
                 >
+                    <div class="sticky-clear-container">
+                        <button
+                            class="btn btn-primary btn-sm"
+                            @click="clearFeatures"
+                        >
+                            {{ translate("common:modules.tools.selectFeatures.clearSelection") }}
+                        </button>
+                    </div>
+                    <br>
                     <template v-for="(selectedFeature, index) in selectedFeaturesWithRenderInformation">
                         <table
                             v-if="selectedFeature.properties.length > 0"
@@ -396,21 +509,26 @@ export default {
                                 </tr>
                             </tbody>
                         </table>
-                        <p
-                            v-else
-                            :key="index + 'z'"
+                        <div
+                            :key="index + '-actions'"
+                            class="feature-actions"
                         >
-                            {{ translate("common:modules.tools.selectFeatures.propertylessFeature") }}
-                        </p>
-                        <a
-                            :id="index + '-selectFeatures-feature'"
-                            :key="'a' + index"
-                            href="#"
-                            class="select-features-zoom-link"
-                            @click="featureZoom"
-                        >
-                            {{ translate("common:modules.tools.selectFeatures.zoomToFeature") }}
-                        </a>
+                            <a
+                                :id="index + '-selectFeatures-feature'"
+                                :key="'a' + index"
+                                href="#"
+                                class="select-features-zoom-link"
+                                @click="featureZoom"
+                            >
+                                {{ translate("common:modules.tools.selectFeatures.zoomToFeature") }}
+                            </a>
+                            <button
+                                class="btn btn-link btn-sm remove-feature-btn"
+                                @click="removeFeature(index, selectedFeature.item)"
+                            >
+                                {{ translate("common:modules.tools.selectFeatures.deselectFeature") }}
+                            </button>
+                        </div>
                         <hr
                             v-if="index !== selectedFeaturesWithRenderInformation.length - 1"
                             :key="'h' + index"
@@ -428,8 +546,33 @@ export default {
     max-height: 745px;
 }
 
-.select-features-tables p {
-    margin: 8px 0;
+.select-features-tables {
+    overflow-y: auto;
+    max-height: 600px;
+    position: relative;
+}
+
+.feature-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.remove-feature-btn {
+    color: red;
+    cursor: pointer;
+    font-size: 0.875rem;
+    margin-left: 10px;
+}
+
+.sticky-clear-container {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 10;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
 }
 
 td.featureName {
