@@ -5,9 +5,6 @@
 
 ## 2024-12-11 v3.3.3 (LTS)
 
-### Added
-
-
 ### Fixed
 - Fixed issue where the 3D view would not launch when button3d was configured under controls.expandable in config.json.
 - Issue #1121: For secured services that have the isSecured attribute, the lock icon is now displayed again.
