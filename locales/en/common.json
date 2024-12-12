@@ -798,8 +798,10 @@
             },
             "selectFeatures": {
                 "zoomToFeature": "Zoom to this feature",
-                "noFeatureChosen": "No feature chosen. Select features dragging a box around the features to choose.(Or holding down Ctrl+drag)",
-                "propertylessFeature": "Element without attributes"
+                "noFeatureChosen": "No features selected. Select features by holding the Ctrl key and dragging a box around the desired features, or add individual features by holding the Ctrl key and clicking with the left mouse button.",
+                "propertylessFeature": "Element without attributes",
+                "clearSelection": "Clear selection",
+                "deselectFeature": "Deselect feature"
             },
             "supplyCoord": {
                 "title": "Query Coordinates",

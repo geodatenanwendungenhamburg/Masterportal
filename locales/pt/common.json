@@ -512,8 +512,10 @@
             },
             "selectFeatures": {
                 "zoomToFeature": "Zoom a esta funcionalidade",
-                "noFeatureChosen": "Nenhuma funcionalidade seleccionada. Seleccione as funcionalidades segurando Ctrl e arrastando uma caixa em torno das funcionalidades.",
-                "propertylessFeature": "Elemento sem atributos"
+                "noFeatureChosen": "Não há elementos selecionados. Selecione caraterísticas mantendo premida a tecla Ctrl e arrastando uma caixa à volta das caraterísticas pretendidas, ou adicione caraterísticas individuais mantendo premida a tecla Ctrl e clicando com o botão esquerdo do rato.",
+                "propertylessFeature": "Elemento sem atributos",
+                "clearSelection": "Limpar seleção",
+                "deselectFeature": "Deselecionar funcionalidade"
             },
             "supplyCoord": {
                 "title": "Consultar coordenadas",

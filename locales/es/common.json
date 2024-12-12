@@ -521,8 +521,10 @@
             },
             "selectFeatures": {
                 "zoomToFeature": "Acercar el zomm a esta entidad",
-                "noFeatureChosen": "Ninguna entidad esta seleccionada. Seleccione las entidades manteniendo pulsada la tecla Ctrl y arrastrando un cuadro alrededor de las entidades a seleccionar.",
-                "propertylessFeature": "Elemento sin atributos"
+                "noFeatureChosen": "No hay características seleccionadas. Seleccione características manteniendo pulsada la tecla Ctrl y arrastrando un cuadro alrededor de las características deseadas, o añada características individuales manteniendo pulsada la tecla Ctrl y haciendo clic con el botón izquierdo del ratón.",
+                "propertylessFeature": "Elemento sin atributos",
+                "clearSelection":  "Borrar selección",
+                "deselectFeature": "Deseleccionar entidad"
             },
             "supplyCoord": {
                 "title": "Consulta las coordennadas",

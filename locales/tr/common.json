@@ -522,8 +522,10 @@
             },
             "selectFeatures": {
                 "zoomToFeature": "Lütfen bu özelliği büyütün",
-                "noFeatureChosen": "Özellikler seçilmedi. Bu için lütfen strg tuşuna basıp seçtiginiz özellikleri kutu içine alın.",
-                "propertylessFeature": "Özniteliksiz ögeler"
+                "noFeatureChosen": "Seçili özellik yok. Ctrl tuşunu basılı tutup istediğiniz özelliklerin etrafında bir kutu sürükleyerek özellikleri seçin veya Ctrl tuşunu basılı tutup farenin sol tuşuyla tıklayarak tek tek özellikler ekleyin.",
+                "propertylessFeature": "Özniteliksiz ögeler",
+                "clearSelection": "Seçimi temizle",
+                "deselectFeature": "Özelliği seçimden çıkar"
             },
             "supplyCoord": {
                 "title": "Koordinatlar sorgulaması",

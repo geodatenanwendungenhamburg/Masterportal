@@ -690,8 +690,10 @@
             },
             "selectFeatures": {
                 "zoomToFeature": "Zoom su questa voce",
-                "noFeatureChosen": "Nessuna voce selezionata. Selezionare le voci tenendo premuto il tasto Ctrl e trascinando una casella attorno alle voci da selezionare.",
-                "propertylessFeature": "Voce senza attributi"
+                "noFeatureChosen": "Nessuna caratteristica selezionata. Selezionare le caratteristiche tenendo premuto il tasto Ctrl e trascinando un riquadro attorno alle caratteristiche desiderate, oppure aggiungere singole caratteristiche tenendo premuto il tasto Ctrl e facendo clic con il pulsante sinistro del mouse.",
+                "propertylessFeature": "Voce senza attributi",
+                "clearSelection":  "Cancella la selezione",
+                "deselectFeature": "Deseleziona questa voce"
             },
             "supplyCoord": {
                 "title": "Richiedi coordinate",

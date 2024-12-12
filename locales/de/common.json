@@ -798,8 +798,10 @@
             },
             "selectFeatures": {
                 "zoomToFeature": "Auf dieses Feature zoomen",
-                "noFeatureChosen": "Keine Features ausgewählt. Wählen Sie Features durch Ziehen einer Box um die auszuwählenden Features bzw. Halten von Strg und Ziehen.",
-                "propertylessFeature": "Element ohne Attribute"
+                "noFeatureChosen": "Keine Features ausgewählt. Wählen Sie Features, indem Sie die Strg-Taste halten und eine Box um die gewünschten Features ziehen, oder fügen Sie einzelne Features durch Halten der Strg-Taste und Klicken mit der linken Maustaste hinzu.",
+                "propertylessFeature": "Element ohne Attribute",
+                "clearSelection": "Gesamtauswahl aufheben",
+                "deselectFeature": "Feature abwählen"
             },
             "supplyCoord": {
                 "title": "Koordinaten abfragen",

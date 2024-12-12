@@ -522,8 +522,10 @@
             },
             "selectFeatures": {
                 "zoomToFeature": "Auf dieses Feature zoomen",
-                "noFeatureChosen": "Keine Features ausgewählt. Wählen Sie Features durch Halten von Strg und Ziehen einer Box um die auszuwählenden Features.",
-                "propertylessFeature": "Element ohne Attribute"
+                "noFeatureChosen": "Keene Features utsöcht. Söök Föögsels ut, indem du de Strg-Taste hollst un en Box üm de gewünsten Features treckst, oder föög eenige Features dör dat Holten vun de Strg-Taste un greep mit den linken Mood to.",
+                "propertylessFeature": "Element ohne Attribute",
+                "clearSelection": "Auswahl opheben",
+                "deselectFeature": "Feature ut de Auswahl nähmen"
             },
             "supplyCoord": {
                 "title": "Koordinaten affragen",
