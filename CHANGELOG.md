@@ -15,6 +15,7 @@
 ### Removed
 
 ### Fixed
+- Issue #1282: Added click selection for `selectFeatures` and added UI components to delete all or single features from the selection.
 
 ---
 
