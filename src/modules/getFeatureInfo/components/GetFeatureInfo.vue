@@ -241,7 +241,6 @@ export default {
                     this.setUpdatedFeature(true);
                 }
                 else if (newFeatures === null) {
-                    this.resetMenu(this.menuSide);
                     this.setUpdatedFeature(false);
                 }
             },

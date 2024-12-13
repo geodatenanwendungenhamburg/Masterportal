@@ -26,14 +26,40 @@ export default {
     },
 
     /**
-     * Sets currently shown Component
-     * @param {Object} state current state
-     * @param {String} side secondary or main Menu
-     * @param {String} component Type of Component
-     * @returns {void}
+     * Sets the currently shown component in the navigation history and handles history cleanup.
+     *
+     * This function pushes the current component to the history stack, removes the unwanted
+     * 'getFeatureInfo' component with 'none' as the name, and checks for duplicate components
+     * in the history, removing the duplicate if found.
+     *
+     * @param {Object} state The current state object that contains navigation data.
+     * @param {Object} payload The payload object containing details for the new component.
+     * @param {String} payload.type The type of the new component to set as the current component.
+     * @param {String} payload.side Indicates the side (main or secondary) where the component is being set.
+     * @param {Object} payload.props The properties of the new component.
+     * @returns {void} This function does not return any value.
      */
     setCurrentComponent (state, {type, side, props}) {
-        state[side].navigation.history.push(state[side].navigation.currentComponent);
+        const history = state[side].navigation.history;
+
+        history.push(state[side].navigation.currentComponent);
+        if (history.length > 0) {
+            let lastComponent = history[history.length - 1];
+
+            if (lastComponent.type === "getFeatureInfo" && lastComponent.props?.name === "none") {
+                history.pop();
+
+                if (history.length > 1) {
+                    lastComponent = history[history.length - 1];
+                    if (
+                        lastComponent.type === type
+                    ) {
+                        history.pop();
+                    }
+                }
+            }
+        }
+
         state[side].navigation.currentComponent = {type: type, props: props};
         state[side].currentComponent = type;
     },

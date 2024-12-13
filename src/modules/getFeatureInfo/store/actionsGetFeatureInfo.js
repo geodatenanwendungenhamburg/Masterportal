@@ -139,9 +139,6 @@ export default {
                 if (allGfiFeatures.length > 0) {
                     commit("setGfiFeatures", allGfiFeatures);
                 }
-                else {
-                    commit("setGfiFeatures", null);
-                }
             })
             .catch(error => {
                 console.warn(error);
