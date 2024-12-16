@@ -47,15 +47,15 @@ pipelines:
                                 LOCAL_PATH: $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG
                                 DEBUG: 'true'
                          # TODO: enable, if version 3 shall be Latest
-                         - mv $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG $BITBUCKET_CLONE_DIR/Latest
-                         -   pipe: atlassian/ftp-deploy:0.7.0
-                             variables:
-                                 USER: $MKDOCS_FTP_NAME
-                                 PASSWORD: $MKDOCS_FTP_PW
-                                 SERVER: $MKDOCS_FTP_SERVER
-                                 REMOTE_PATH: '/doc/'
-                                 LOCAL_PATH: '$BITBUCKET_CLONE_DIR/Latest'
-                                 DEBUG: 'true'
+                        - mv $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG $BITBUCKET_CLONE_DIR/Latest
+                        -   pipe: atlassian/ftp-deploy:0.7.0
+                            variables:
+                                USER: $MKDOCS_FTP_NAME
+                                PASSWORD: $MKDOCS_FTP_PW
+                                SERVER: $MKDOCS_FTP_SERVER
+                                REMOTE_PATH: '/doc/'
+                                LOCAL_PATH: '$BITBUCKET_CLONE_DIR/Latest'
+                                DEBUG: 'true'
             -   step:
                     name: deploy on openCode
                     script:
