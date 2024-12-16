@@ -46,7 +46,7 @@ pipelines:
                                 REMOTE_PATH: '/doc/'
                                 LOCAL_PATH: $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG
                                 DEBUG: 'true'
-                         TODO: enable, if version 3 shall be Latest
+                         # TODO: enable, if version 3 shall be Latest
                          - mv $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG $BITBUCKET_CLONE_DIR/Latest
                          -   pipe: atlassian/ftp-deploy:0.7.0
                              variables:
