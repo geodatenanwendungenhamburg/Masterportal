@@ -47,7 +47,7 @@ export default {
         else if (props?.name !== currentProps?.name) {
             commit("setCurrentComponentProps", {side, props});
         }
-        if (type !== "getFeatureInfo" && type !== "searchbar" && type !== "layerSelection") {
+        if (type !== "getFeatureInfo" && type !== "searchBar" && type !== "layerSelection") {
             trackMatomo("Menu", "Menuitem clicked", i18next.t(props.name));
         }
     },
@@ -161,7 +161,7 @@ export default {
                 commit("switchToPreviousComponent", side);
                 commit("Modules/SearchBar/setShowInTree", false, {root: true});
             }
-            if (getters.currentComponent(side).type === "searchbar") {
+            if (getters.currentComponent(side).type === "searchBar") {
                 dispatch("Modules/SearchBar/updateSearchNavigation", side, {root: true});
                 commit("Modules/SearchBar/setPlaceholder", rootGetters["Modules/SearchBar/globalPlaceholder"], {root: true});
             }

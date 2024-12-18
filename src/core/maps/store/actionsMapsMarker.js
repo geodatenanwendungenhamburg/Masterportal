@@ -37,7 +37,7 @@ export default {
                     geometry: new Point(coordinates)
                 });
 
-            if (rootGetters["Menu/currentComponent"]("mainMenu").type !== "searchbar" && rootGetters["Modules/SearchBar/searchInput"] !== "") {
+            if (rootGetters["Menu/currentComponent"]("mainMenu").type !== "searchBar" && rootGetters["Modules/SearchBar/searchInput"] !== "") {
                 commit("Modules/SearchBar/setSearchInput", "", {root: true});
                 commit("Modules/SearchBar/setCurrentSearchInputValue", "", {root: true});
             }

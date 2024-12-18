@@ -85,7 +85,7 @@ const getters = {
             portalFooter: PortalFooter,
             print: PrintMap,
             routing: Routing,
-            searchbar: SearchBar,
+            searchBar: SearchBar,
             searchbarresultlist: SearchBarResultList,
             scaleSwitcher: ScaleSwitcher,
             selectFeatures: SelectFeatures,

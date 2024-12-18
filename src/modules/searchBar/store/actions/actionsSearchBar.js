@@ -32,7 +32,7 @@ export default {
         const type = rootGetters["Menu/currentComponent"](side).type;
 
         if (getters.showAllResults === true && side === getters.currentSide && getters.currentActionEvent === "") {
-            if (type !== "searchbar") {
+            if (type !== "searchBar") {
                 commit("setShowAllResults", false);
                 commit("Menu/switchToPreviousComponent", side, {root: true});
             }
@@ -64,7 +64,7 @@ export default {
         dispatch("Menu/clickedMenuElement", {
             name: "common:modules.searchBar.searchResultList",
             side: side,
-            type: "searchbar"
+            type: "searchBar"
         }, {root: true});
         commit("Menu/setCurrentComponent", {type: "layerSelection", side: side, props: []}, {root: true});
         commit("Menu/setCurrentComponentPropsName", {side: side, name: "common:modules.searchBar.searchResults"}, {root: true});
