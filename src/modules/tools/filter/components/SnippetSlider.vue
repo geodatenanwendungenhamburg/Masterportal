@@ -90,6 +90,11 @@ export default {
             required: false,
             default: undefined
         },
+        preventUniqueValueRequest: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
         fixedRules: {
             type: Array,
             required: false,
@@ -111,6 +116,11 @@ export default {
             type: Number,
             required: false,
             default: 0
+        },
+        searchInMapExtent: {
+            type: Boolean,
+            required: false,
+            default: false
         },
         visible: {
             type: Boolean,
@@ -235,37 +245,49 @@ export default {
         this.sliderMouseDown = false;
     },
     mounted () {
-        this.$nextTick(() => {
-            this.getInitialSliderMin(this.attrName, min => {
-                this.getInitialSliderMax(this.attrName, max => {
-                    this.initSlider(parseFloat(min), parseFloat(max));
-                    this.$nextTick(() => {
-                        if (this.isPrecheckedValid()) {
-                            this.emitCurrentRule([
-                                this.isPrecheckedHigherThanMin() ? this.prechecked[0] : this.currentSliderMin,
-                                this.isPrecheckedLowerThanMax() ? this.prechecked[1] : this.currentSliderMax], true);
-                            this.$emit("setSnippetPrechecked", this.visible ? this.snippetId : false);
-                        }
-                        else {
-                            this.$emit("setSnippetPrechecked", false);
-                        }
+        this.$emit("registerUniqueValueOnMove", this.snippetId, this.gatherAllValues);
+        this.gatherAllValues();
+    },
+    methods: {
+        translateKeyWithPlausibilityCheck,
+        /**
+         * Gathers all values for the slider.
+         * @returns {void}
+         */
+        gatherAllValues () {
+            if (this.preventUniqueValueRequest) {
+                this.setIsInitializing(false);
+                this.$emit("setSnippetPrechecked", false);
+                return;
+            }
+            this.$nextTick(() => {
+                this.getInitialSliderMin(this.attrName, min => {
+                    this.getInitialSliderMax(this.attrName, max => {
+                        this.initSlider(parseFloat(min), parseFloat(max));
+                        this.$nextTick(() => {
+                            if (this.isPrecheckedValid()) {
+                                this.emitCurrentRule([
+                                    this.isPrecheckedHigherThanMin() ? this.prechecked[0] : this.currentSliderMin,
+                                    this.isPrecheckedLowerThanMax() ? this.prechecked[1] : this.currentSliderMax], true);
+                                this.$emit("setSnippetPrechecked", this.visible ? this.snippetId : false);
+                            }
+                            else {
+                                this.$emit("setSnippetPrechecked", false);
+                            }
+                            this.setIsInitializing(false);
+                        });
+                    }, error => {
                         this.setIsInitializing(false);
+                        this.$emit("setSnippetPrechecked", false);
+                        console.error(error);
                     });
                 }, error => {
                     this.setIsInitializing(false);
                     this.$emit("setSnippetPrechecked", false);
                     console.error(error);
                 });
-            }, error => {
-                this.setIsInitializing(false);
-                this.$emit("setSnippetPrechecked", false);
-                console.error(error);
             });
-        });
-    },
-    methods: {
-        translateKeyWithPlausibilityCheck,
-
+        },
         /**
          * Receives the initial min and max by props or api.
          * @param {String} attrName The attrName to get the value from.

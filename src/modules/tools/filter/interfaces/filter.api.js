@@ -194,8 +194,11 @@ export default class FilterApi {
      * @param {Boolean} [minOnly=false] if only min is of interest
      * @param {Boolean} [maxOnly=false] if only max is of interest
      * @param {Boolean} [isDate=false] if only from date or dateRange
-     * @param {Object[]} rules the rules to restrict the request
-     * @param {Number} filterId the filterId
+     * @param {Object} options additional options
+     * @param {Object[]} options.rules the rules to restrict the request
+     * @param {String} options.format the date format
+     * @param {Number} options.filterId the filterId
+     * @param {Object} options.commands the commands
      * @returns {void}
      */
     getMinMax (attrName, onsuccess, onerror, minOnly, maxOnly, isDate, {rules, filterId, format, commands}) {
@@ -218,7 +221,7 @@ export default class FilterApi {
                 onerror(new Error("FilterApi.getMinMax: The connector should be an object and have a function getMinMax."));
             }
         }
-        else if (!Array.isArray(FilterApi.waitingList[cacheKey])) {
+        else if (!Array.isArray(FilterApi.waitingList[cacheKey]) || (this.service.extern && commands.searchInMapExtent)) {
             FilterApi.waitingList[cacheKey] = [];
             FilterApi.waitingList[cacheKey].push({onsuccess, onerror});
             connector.getMinMax(this.service, attrName, result => {
@@ -262,7 +265,7 @@ export default class FilterApi {
                 attrName,
                 filterId].join("."));
 
-        if (Object.prototype.hasOwnProperty.call(FilterApi.cache, cacheKey)) {
+        if (Object.prototype.hasOwnProperty.call(FilterApi.cache, cacheKey) && !(this.service.extern && commands.searchInMapExtent)) {
             if (typeof onsuccess === "function") {
                 onsuccess(FilterApi.cache[cacheKey]);
             }
@@ -272,7 +275,7 @@ export default class FilterApi {
                 onerror(new Error("FilterApi.getUniqueValues: The connector should be an object and have a function getUniqueValues."));
             }
         }
-        else if (!Array.isArray(FilterApi.waitingList[cacheKey])) {
+        else if (!Array.isArray(FilterApi.waitingList[cacheKey]) || (this.service.extern && commands.searchInMapExtent)) {
             FilterApi.waitingList[cacheKey] = [];
             FilterApi.waitingList[cacheKey].push({onsuccess, onerror});
             connector.getUniqueValues(this.service, attrName, result => {

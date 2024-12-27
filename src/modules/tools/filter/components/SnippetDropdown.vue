@@ -133,6 +133,11 @@ export default {
             required: false,
             default: undefined
         },
+        preventUniqueValueRequest: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
         renderIcons: {
             type: [String, Object],
             required: false,
@@ -151,6 +156,11 @@ export default {
             default: 0
         },
         showAllValues: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        searchInMapExtent: {
             type: Boolean,
             required: false,
             default: false
@@ -354,6 +364,7 @@ export default {
     },
     mounted () {
         this.initializeIcons();
+        this.$emit("registerUniqueValueOnMove", this.snippetId, this.gatherUniqueValues);
         if (!this.visible) {
             this.dropdownValue = Array.isArray(this.prechecked) ? this.prechecked : [];
             this.dropdownSelected = this.getInitialDropdownSelected(this.prechecked, this.dropdownValue, this.multiselect);
@@ -375,32 +386,7 @@ export default {
             });
         }
         else if (this.api && this.autoInit !== false) {
-            this.$nextTick(() => {
-                this.api.getUniqueValues(this.attrName, list => {
-                    this.$nextTick(() => {
-                        this.dropdownValue = this.splitListWithDelimiter(list, this.delimiter);
-                        this.dropdownSelected = this.getInitialDropdownSelected(this.prechecked, this.dropdownValue, this.multiselect);
-                        this.$nextTick(() => {
-                            this.isInitializing = false;
-                            this.disable = false;
-                            this.isLoading = false;
-                            this.emitSnippetPrechecked(this.prechecked, this.snippetId, this.visible);
-                            if (this.showAllValues && this.prechecked === "all") {
-                                this.allValues = this.dropdownSelected;
-                            }
-                        });
-                    });
-                }, error => {
-                    this.disable = false;
-                    this.isLoading = false;
-                    this.isInitializing = false;
-                    this.emitSnippetPrechecked();
-                    console.warn(error);
-                }, {rules: this.fixedRules, filterId: this.filterId, commands: {
-                    filterGeometry: this.filterGeometry,
-                    geometryName: this.filterGeometryName
-                }});
-            });
+            this.gatherUniqueValues();
         }
         else {
             this.dropdownValue = [];
@@ -429,6 +415,48 @@ export default {
          */
         emitSnippetPrechecked (prechecked, snippetId, visible) {
             this.$emit("setSnippetPrechecked", visible && (Array.isArray(prechecked) && prechecked.length || prechecked === "all") ? snippetId : false);
+        },
+        /**
+         * Gathers the unique values.
+         * @returns {void}
+         */
+        gatherUniqueValues () {
+            if (this.preventUniqueValueRequest) {
+                this.isInitializing = false;
+                this.disable = false;
+                this.isLoading = false;
+                return;
+            }
+            this.$nextTick(() => {
+                this.isInitializing = true;
+                this.disable = true;
+                this.isLoading = true;
+                this.api.getUniqueValues(this.attrName, list => {
+                    this.$nextTick(() => {
+                        this.dropdownValue = this.splitListWithDelimiter(list, this.delimiter);
+                        this.dropdownSelected = this.getInitialDropdownSelected(this.prechecked, this.dropdownValue, this.multiselect);
+                        this.$nextTick(() => {
+                            this.isInitializing = false;
+                            this.disable = false;
+                            this.isLoading = false;
+                            this.emitSnippetPrechecked(this.prechecked, this.snippetId, this.visible);
+                            if (this.showAllValues && this.prechecked === "all") {
+                                this.allValues = this.dropdownSelected;
+                            }
+                        });
+                    });
+                }, error => {
+                    this.disable = false;
+                    this.isLoading = false;
+                    this.isInitializing = false;
+                    this.emitSnippetPrechecked();
+                    console.warn(error);
+                }, {rules: this.fixedRules, filterId: this.filterId, commands: {
+                    filterGeometry: this.filterGeometry,
+                    geometryName: this.filterGeometryName,
+                    searchInMapExtent: this.searchInMapExtent
+                }});
+            });
         },
         /**
          * Returns the selected values based on prechecked.

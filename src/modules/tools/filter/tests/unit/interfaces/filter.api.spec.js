@@ -509,6 +509,29 @@ describe("src/modules/tools/filter/interfaces/filter.api.js", () => {
                 }, undefined, false, false, false, {});
                 sinon.restore();
             });
+            it("should call onsuccess function and return the expected value, if service is extern and searchInMapExtent is true.", async () => {
+                const filterApi = new FilterApi(0),
+                    connector = {
+                        getMinMax: (service, attrName, success) => {
+                            success("foo");
+                        }
+                    },
+                    expected = "foo";
+
+                sinon.stub(filterApi, "getInterfaceByService").returns(connector);
+                hash.sha1 = sinon.stub().returns(["fow", "bar"].join("."));
+                filterApi.setService({extern: true});
+                FilterApi.cache = {};
+                FilterApi.waitingList["fow.bar"] = [];
+
+                filterApi.getMinMax("attr", result => {
+                    expect(result).to.be.equal(expected);
+                    expect(FilterApi.cache).to.deep.equal({
+                        "fow.bar": "foo"
+                    });
+                }, undefined, false, false, false, {commands: {searchInMapExtent: true}});
+                sinon.restore();
+            });
             it("should push object with onsuccess and onerror if waitinglist with key is already an array", () => {
                 /**
                  * Test function

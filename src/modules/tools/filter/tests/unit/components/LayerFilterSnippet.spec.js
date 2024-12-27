@@ -36,7 +36,8 @@ describe("src/modules/tools/filter/components/LayerFilterSnippet.vue", () => {
                         type: "something external"
                     }
                 },
-                mapHandler
+                mapHandler,
+                layerSelectorVisible: false
             },
             localVue
         });
@@ -150,6 +151,34 @@ describe("src/modules/tools/filter/components/LayerFilterSnippet.vue", () => {
             wrapper.vm.deleteRule(0);
             await wrapper.vm.$nextTick();
             expect(wrapper.emitted().updateRules).to.be.an("array").with.lengthOf(1);
+        });
+        it("should set the prechecked to initialPrechecked value", async () => {
+            const localWrapper = shallowMount(LayerFilterSnippet, {
+                propsData: {
+                    layerConfig: {
+                        service: {
+                            type: "something external"
+                        },
+                        snippets: [{
+                            operator: "EQ",
+                            snippetId: 0,
+                            title: "Bezirk",
+                            type: "dropdown",
+                            value: ["Altona"],
+                            prechecked: ["Altona"]
+                        }]
+                    },
+                    mapHandler
+                },
+                localVue
+            });
+
+            localWrapper.vm.snippets[0].initialPrechecked = localWrapper.vm.snippets[0].prechecked;
+            localWrapper.vm.snippets[0].prechecked = undefined;
+            localWrapper.vm.deleteRule(0);
+            await localWrapper.vm.$nextTick();
+            expect(localWrapper.vm.snippets[0].prechecked).to.deep.equal(["Altona"]);
+            localWrapper.destroy();
         });
     });
     describe("deleteAllRules", () => {
@@ -670,6 +699,38 @@ describe("src/modules/tools/filter/components/LayerFilterSnippet.vue", () => {
             expect(wrapper.vm.checkOutOfZoomLevel(10, 18, 7)).to.be.true;
             expect(wrapper.vm.checkOutOfZoomLevel(10, undefined, 7)).to.be.true;
             expect(wrapper.vm.checkOutOfZoomLevel(undefined, 16, 17)).to.be.true;
+        });
+    });
+    describe("updateSnippetUniqueValues", () => {
+        it("should not call any listener if outOfZoom is true", async () => {
+            let foo = false;
+
+            wrapper.setData({
+                uniqueValuesOnMoveListeners: {
+                    0: () => {
+                        foo = true;
+                    }
+                },
+                outOfZoom: true
+            });
+            wrapper.vm.updateSnippetUniqueValues();
+            await wrapper.vm.$nextTick();
+            expect(foo).to.be.false;
+        });
+        it("should call any listener if outOfZoom is false", async () => {
+            let foo = false;
+
+            wrapper.setData({
+                uniqueValuesOnMoveListeners: {
+                    0: () => {
+                        foo = true;
+                    }
+                },
+                outOfZoom: false
+            });
+            wrapper.vm.updateSnippetUniqueValues();
+            await wrapper.vm.$nextTick();
+            expect(foo).to.be.true;
         });
     });
 });
