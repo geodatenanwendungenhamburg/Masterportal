@@ -73,7 +73,7 @@ export default {
             :key="index"
         >
             <div class="font-bold mt-3">
-                <span>{{ legendObj.name }}</span>
+                <span>{{ $t(legendObj.name) }}</span>
             </div>
             <LegendSingleLayer
                 :id="generateId(legendObj.name)"

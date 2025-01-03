@@ -228,12 +228,12 @@ export default {
                     data-bs-toggle="tooltip"
                     data-bs-placement="bottom"
                     data-bs-custom-class="custom-tooltip"
-                    :title="layer.name"
+                    :title="$t(layer.name)"
                     :class="layer.datasets ? 'nav-link-hover' : ''"
                     @click="showLayerInformationInMenu(layer)"
                     @keydown="showLayerInformationInMenu(layer)"
                 >
-                    {{ layer.name }}
+                    {{ $t(layer.name) }}
                 </button>
                 <IconButton
                     :aria="$t('common:modules.layerPills.remove')"

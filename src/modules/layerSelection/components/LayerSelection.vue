@@ -294,13 +294,13 @@ export default {
                                     @click="navigateStepsBack(index)"
                                     @keypress="navigateStepsBack(index)"
                                 >
-                                    <h6 class="mp-menu-navigation-link bold">{{ lastFolderName === "root" ? $t("common:modules.layerSelection.datalayer") : lastFolderName }}</h6>
+                                    <h6 class="mp-menu-navigation-link bold">{{ lastFolderName === "root" ? $t("common:modules.layerSelection.datalayer") : $t(lastFolderName) }}</h6>
                                 </a>
                                 <h6
                                     v-else
                                     class="mp-menu-navigation-link bold no-link"
                                 >
-                                    {{ lastFolderName }}
+                                    {{ $t(lastFolderName) }}
                                 </h6>
                             </li>
                         </ol>

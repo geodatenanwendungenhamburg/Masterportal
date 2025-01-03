@@ -6,6 +6,7 @@
 ## 2024-12-12 v3.3.3 (LTS)
 
 ### Fixed
+- Issue #1106: Layer names, folder names and breadcrumbs are translated.
 - Issue #1301: CustomMenuElement now also works in secondaryMenu.
 - Issue #1305, Issue #1327: fixed searchbar navigation, if used action-buttons.
 - Issue #1309: fixed translation of periodicity.
