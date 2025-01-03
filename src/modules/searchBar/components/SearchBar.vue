@@ -150,6 +150,9 @@ export default {
                     this.$refs?.searchInput.blur();
                     if (newVal === "root") {
                         this.setSearchResultsActive(false);
+                        this.setShowAllResults(false);
+                        this.setShowSearchResultsInTree(false);
+                        this.setCurrentActionEvent("");
                         this.navigateBack(this.currentSide);
                     }
                 }
@@ -211,6 +214,9 @@ export default {
         ...mapMutations("Modules/SearchBar", [
             "setGlobalPlaceholder",
             "addSuggestionItem",
+            "setCurrentActionEvent",
+            "setShowAllResults",
+            "setShowSearchResultsInTree",
             "setSearchInput",
             "setSearchResultsActive",
             "setSearchSuggestions",
@@ -220,7 +226,6 @@ export default {
             "switchToRoot",
             "switchToPreviousComponent",
             "setCurrentComponentBySide",
-            "setNavigationHistoryBySide",
             "setCurrentComponentPropsName"
         ]),
         /**
@@ -252,6 +257,9 @@ export default {
         checkCurrentComponent (currentComponentType) {
             if (currentComponentType === "root") {
                 this.clickAction();
+                if (this.searchInputValue.length >= this.minCharacters) {
+                    this.startSearch();
+                }
             }
             else if (currentComponentType === "layerSelection") {
                 if (this.searchInputValue?.length === 0) {
@@ -308,7 +316,7 @@ export default {
                 :disabled="!searchActivated"
                 :aria-label="$t(placeholder)"
                 type="button"
-                @click="zoomToAndMarkSearchResult(searchInputValue), startSearch(currentComponentSide)"
+                @click="zoomToAndMarkSearchResult(searchInputValue), checkCurrentComponent(currentComponentSide)"
             >
                 <i
                     class="bi-search"

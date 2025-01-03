@@ -37,6 +37,8 @@ module.exports = function () {
     return merge.smart({
         mode: "development",
         devtool: "cheap-module-eval-source-map",
+        // change to eval to debug ts-files in chrome developer tools
+        // devtool: "eval",
         devServer: {
             headers: {
                 "Access-Control-Allow-Origin": "*"

@@ -141,7 +141,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
                                 minCharacters: () => 3,
                                 placeholder: () => "",
                                 configPaths: () => "",
-                                showInTree: () => showInTree,
+                                showSearchResultsInTree: () => showInTree,
                                 type: () => ""
 
                             },

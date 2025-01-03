@@ -139,8 +139,7 @@ export default {
     },
 
     /**
-     * Properly deactivates an element if it is not a folder
-     * removes its entry from the navigation and handles search navigation case.
+     * Navigates back and removes last entry from the navigation and handles search navigation case.
      * @param {Object} param store context
      * @param {Object} param.commit the commit
      * @param {Object} param.dispatch the dispatch
@@ -151,7 +150,7 @@ export default {
      * @returns {void}
      */
     navigateBack ({commit, dispatch, getters, state, rootGetters}, side) {
-        const searchValue = rootGetters["Modules/SearchBar/searchInput"];
+        const actionEvent = rootGetters["Modules/SearchBar/currentActionEvent"];
 
         nextTick(() => {
             if (getters.currentComponent(side).type === state.currentMouseMapInteractionsComponent && getters.currentComponent(side).type !== state.defaultComponent) {
@@ -159,48 +158,81 @@ export default {
             }
             if (rootGetters["Modules/SearchBar/showAllResults"] === false || rootGetters["Modules/SearchBar/currentSide"] !== side) {
                 commit("switchToPreviousComponent", side);
-                commit("Modules/SearchBar/setShowInTree", false, {root: true});
             }
             if (getters.currentComponent(side).type === "searchBar") {
-                dispatch("Modules/SearchBar/updateSearchNavigation", side, {root: true});
+                if (rootGetters["Modules/SearchBar/showAllResults"] === true && rootGetters["Modules/SearchBar/currentSide"] === side && actionEvent === "") {
+                    dispatch("resetSearchbarNavigation", {side: side});
+                }
                 commit("Modules/SearchBar/setPlaceholder", rootGetters["Modules/SearchBar/globalPlaceholder"], {root: true});
             }
-            dispatch("handleActionButtons", {side: side, searchValue: searchValue});
+            if (getters.currentComponent(side).type === "layerSelection") {
+                dispatch("navigateSearchbarInLayerSelection", {side: side});
+            }
+            if (actionEvent !== "" && rootGetters["Modules/SearchBar/currentSide"] === side) {
+                dispatch("navigateSearchbarActionEventNotInLayerSelection", {side: side});
+            }
+            if (getters.currentComponent(side).type === "layerInformation") {
+                commit("switchToPreviousComponent", side);
+            }
         });
     },
 
     /**
-     * Handles the behaviour of menu navigation in action button context
+     * Sets navigation history to root and adapts searchBar state.
+     * @param {Object} param store context
+     * @param {Object} param.commit the commit
+     * @param {String} side Side on which the navigation action occurred.
+     * @returns {void}
+     */
+    resetSearchbarNavigation ({commit}, {side}) {
+        commit("Modules/SearchBar/setShowAllResults", false, {root: true});
+        commit("Menu/setCurrentComponentPropsName", {side: side, name: "common:modules.searchBar.searchResultList"}, {root: true});
+        commit("Menu/setNavigationHistoryBySide", {side: side, newHistory: [{type: "root", props: []}]}, {root: true});
+    },
+
+    /**
+     * Sets state of searchBar if current action event is filled and searcgbar does not contain layerSelection.
+     * Resets current action event.
+     * @param {Object} param store context
+     * @param {Object} param.commit the commit
+     * @param {Object} param.rootGetters the rootGetters
+     * @param {String} side Side on which the navigation action occurred.
+     * @returns {void}
+     */
+    navigateSearchbarActionEventNotInLayerSelection ({commit, dispatch, rootGetters}, {side}) {
+        const actionEvent = rootGetters["Modules/SearchBar/currentActionEvent"];
+
+        commit("Modules/SearchBar/setShowSearchResultsInTree", false, {root: true});
+        if (actionEvent !== "showInTree" && actionEvent !== "showLayerInfo") {
+            dispatch("resetSearchbarNavigation", {side: side});
+        }
+        else {
+            commit("Modules/SearchBar/setShowAllResults", true, {root: true});
+        }
+        commit("Modules/SearchBar/setCurrentActionEvent", "", {root: true});
+    },
+
+    /**
+     * Sets state of searchBar and navigates back in layerSelection depending on current navigation.
+     * Switches to previous component.
      * @param {Object} param store context
      * @param {Object} param.commit the commit
      * @param {Object} param.dispatch the dispatch
      * @param {Object} param.getters the getters
-     * @param {Object} param.rootGetters the rootGetters
      * @param {String} side Side on which the navigation action occurred.
-     * @param {String} searchValue value of the last search input.
      * @returns {void}
      */
-    handleActionButtons ({commit, dispatch, getters, rootGetters}, {side, searchValue}) {
-        const currentSearchInput = searchValue;
-
-        if (getters.currentComponent(side).type === "layerSelection") {
-            dispatch("Modules/SearchBar/updateSearchNavigation", side, {root: true});
-
-            if (rootGetters["Modules/SearchBar/searchInput"] !== "") {
-                commit("Modules/SearchBar/setSearchInput", "", {root: true});
-                commit("Modules/SearchBar/setCurrentSearchInputValue", "", {root: true});
-                dispatch("navigateBack", side);
-            }
+    navigateSearchbarInLayerSelection ({commit, dispatch, getters}, {side}) {
+        commit("Modules/SearchBar/setShowAllResults", false, {root: true});
+        if (getters.navigationHistory(side)[1]?.type === "layerSelection" && getters.navigationHistory(side)[2]?.type === "layerSelection") {
+            commit("Modules/SearchBar/setShowSearchResultsInTree", true, {root: true});
         }
-
-        if (getters.currentComponent(side).type === "layerInformation") {
-            commit("switchToPreviousComponent", side);
+        else {
+            commit("Modules/SearchBar/setSearchResultsActive", false, {root: true});
+            commit("Modules/SearchBar/setShowSearchResultsInTree", false, {root: true});
+            dispatch("Modules/LayerSelection/navigateBack", null, {root: true});
         }
-        if (getters.navigationHistory(side)[1]?.type === "searchBar" && getters.navigationHistory(side)[2]?.type === "searchBar") {
-            dispatch("Modules/SearchBar/updateSearchNavigation", side, {root: true});
-            commit("Modules/SearchBar/setSearchInput", currentSearchInput, {root: true});
-        }
-
+        commit("switchToPreviousComponent", side);
     },
 
     /**
@@ -218,9 +250,8 @@ export default {
         if (getters.currentComponent(side).type === state.currentMouseMapInteractionsComponent && getters.currentComponent(side).type !== state.defaultComponent) {
             dispatch("changeCurrentMouseMapInteractionsComponent", {type: state.defaultComponent, side});
         }
-
         if (rootGetters["Modules/SearchBar/currentSide"] === side) {
-            dispatch("Modules/SearchBar/updateSearchNavigation", side, {root: true});
+            commit("Menu/switchToPreviousComponent", side, {root: true});
         }
         commit("switchToRoot", side);
     },

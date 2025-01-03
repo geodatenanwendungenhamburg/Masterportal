@@ -21,7 +21,10 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
         searchBarMutationsSpy,
         searchInputValue,
         setGlobalPlaceholderSpy,
-        setSearchResultsActiveSpy;
+        setSearchResultsActiveSpy,
+        setShowAllResultsSpy,
+        setShowSearchResultsInTreeSpy,
+        setCurrentActionEventSpy;
 
 
     beforeEach(() => {
@@ -69,10 +72,15 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
 
         setGlobalPlaceholderSpy = sinon.spy();
         setSearchResultsActiveSpy = sinon.spy();
+        setShowAllResultsSpy = sinon.spy();
+        setShowSearchResultsInTreeSpy = sinon.spy();
+        setCurrentActionEventSpy = sinon.spy();
         searchBarMutationsSpy = {
             addSuggestionItem: sinon.stub(),
             setSearchInput: sinon.stub(),
-            setShowAllResults: sinon.stub(),
+            setShowAllResults: setShowAllResultsSpy,
+            setShowSearchResultsInTree: setShowSearchResultsInTreeSpy,
+            setCurrentActionEvent: setCurrentActionEventSpy,
             setCurrentSide: sinon.stub(),
             setSearchResultsActive: setSearchResultsActiveSpy,
             setSearchSuggestions: sinon.stub(),
@@ -428,6 +436,10 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
             wrapper.vm.$options.watch.currentComponentSide.handler.call(wrapper.vm, "layerSelection");
             expect(setGlobalPlaceholderSpy.calledOnce).to.be.true;
             expect(setGlobalPlaceholderSpy.firstCall.args[1]).to.equal("common:modules.searchBar.search");
+            expect(setShowAllResultsSpy.notCalled).to.be.true;
+            expect(setShowSearchResultsInTreeSpy.notCalled).to.be.true;
+            expect(setCurrentActionEventSpy.notCalled).to.be.true;
+            expect(setSearchResultsActiveSpy.notCalled).to.be.true;
 
         });
         it("currentComponentSide root, addLayerButtonSearchActive is true", async () => {
@@ -442,6 +454,12 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
             expect(menuActionsSpy.navigateBack.called).to.be.true;
             expect(setGlobalPlaceholderSpy.calledOnce).to.be.true;
             expect(setGlobalPlaceholderSpy.firstCall.args[1]).to.equal("ABC");
+            expect(setShowAllResultsSpy.calledOnce).to.be.true;
+            expect(setShowAllResultsSpy.firstCall.args[1]).to.be.false;
+            expect(setShowSearchResultsInTreeSpy.calledOnce).to.be.true;
+            expect(setShowSearchResultsInTreeSpy.firstCall.args[1]).to.be.false;
+            expect(setCurrentActionEventSpy.calledOnce).to.be.true;
+            expect(setCurrentActionEventSpy.firstCall.args[1]).to.be.equals("");
         });
     });
 });

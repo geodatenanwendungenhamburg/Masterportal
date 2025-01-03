@@ -6,6 +6,13 @@
 ## 2024-12-12 v3.3.3 (LTS)
 
 ### Fixed
+- Issue #1305, Issue #1327: fixed searchbar navigation, if used action-buttons.
+
+---
+
+## 2024-12-12 v3.3.3 (LTS)
+
+### Fixed
 - Fixed issue where the 3D view would not launch when button3d was configured under controls.expandable in config.json.
 - Issue #1121: For secured services that have the isSecured attribute, the lock icon is now displayed again.
 - Issue #1266: For layers whose ids are configured as an array, the visible range can now be restricted with `minScale` and `maxScale` in config.json.

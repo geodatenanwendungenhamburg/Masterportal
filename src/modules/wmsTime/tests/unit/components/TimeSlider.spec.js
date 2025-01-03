@@ -28,6 +28,7 @@ describe("src/modules/wmsTime/components/TimeSlider.vue", () => {
                                 minWidth: () => {
                                     return winWidth > 800;
                                 },
+                                defaultValue: sinon.stub(),
                                 timeSlider: () => {
                                     return {
                                         active: timeSliderActive,

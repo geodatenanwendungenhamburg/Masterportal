@@ -103,7 +103,7 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
                                     return true;
                                 },
                                 showAllResults: () => showAllResults,
-                                showInTree: () => showInTree,
+                                showSearchResultsInTree: () => showInTree,
                                 showAllResultsSearchInterfaceInstances: () => showAllResultsSearchInterfaceInstances
                             },
                             mutations: {
@@ -201,7 +201,7 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
             expect(setNavigationCurrentComponentBySideSpy.calledOnce).to.be.true;
             expect(setNavigationCurrentComponentBySideSpy.firstCall.args[1]).to.be.deep.equals({
                 side: "mainMenu",
-                newComponent: {props: {name: "modules.searchBar.searchResults - Straße"}, type: "searchbar"}
+                newComponent: {props: {name: "modules.searchBar.searchResults - Straße"}, type: "searchBar"}
             });
             expect(setPlaceholderSpy.calledOnce).to.be.true;
             expect(setPlaceholderSpy.firstCall.args[1]).to.be.equals("modules.searchBar.placeholder.searchFor Straße");
@@ -245,7 +245,7 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
             expect(setNavigationCurrentComponentBySideSpy.calledOnce).to.be.true;
             expect(setNavigationCurrentComponentBySideSpy.firstCall.args[1]).to.be.deep.equals({
                 side: "mainMenu",
-                newComponent: {props: {name: "modules.searchBar.searchResults - Straße"}, type: "searchbar"}
+                newComponent: {props: {name: "modules.searchBar.searchResults - Straße"}, type: "searchBar"}
             });
             expect(setPlaceholderSpy.calledOnce).to.be.true;
             expect(setPlaceholderSpy.firstCall.args[1]).to.be.equals("modules.searchBar.placeholder.searchFor Straße");

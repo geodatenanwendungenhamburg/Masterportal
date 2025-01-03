@@ -221,11 +221,9 @@ describe("src/modules/searchBar/store/actions/actionsSearchBarSearchResult.spec.
     });
 
     describe("showInTree", () => {
-        const typeLayerSelection = {type: "layerSelection", props: {name: "common:modules.layerSelection.name"}};
 
         it("should call showLayer for a layer", async () => {
-            const layerId = "123",
-                payload = {side: "mainMenu", newHistory: [{type: "root", props: []}, typeLayerSelection]};
+            const layerId = "123";
 
             dispatch = sinon.stub().resolves({id: layerId});
             await actions.showInTree({commit, dispatch}, {layerId});
@@ -239,16 +237,13 @@ describe("src/modules/searchBar/store/actions/actionsSearchBarSearchResult.spec.
             expect(dispatch.thirdCall.args[1]).to.be.deep.equals({
                 layerId: "123"
             });
-            expect(commit.callCount).to.be.equals(2);
-            expect(commit.firstCall.args[0]).to.equals("setShowInTree");
+            expect(commit.callCount).to.be.equals(1);
+            expect(commit.firstCall.args[0]).to.equals("setShowSearchResultsInTree");
             expect(commit.firstCall.args[1]).to.be.equals(true);
-            expect(commit.secondCall.args[0]).to.equals("Menu/setNavigationHistoryBySide");
-            expect(commit.secondCall.args[1]).to.be.deep.equals(payload);
         });
 
         it("should call showLayer for a folder", async () => {
-            const layerId = "folder-1",
-                payload = {side: "mainMenu", newHistory: [{type: "root", props: []}, typeLayerSelection]};
+            const layerId = "folder-1";
 
             dispatch = sinon.stub().resolves({id: layerId,
                 elements: [
@@ -267,19 +262,16 @@ describe("src/modules/searchBar/store/actions/actionsSearchBarSearchResult.spec.
             expect(dispatch.thirdCall.args[1]).to.be.deep.equals({
                 layerId: "123"
             });
-            expect(commit.callCount).to.be.equals(3);
-            expect(commit.firstCall.args[0]).to.equals("setShowInTree");
+            expect(commit.callCount).to.be.equals(2);
+            expect(commit.firstCall.args[0]).to.equals("setShowSearchResultsInTree");
             expect(commit.firstCall.args[1]).to.be.equals(true);
-            expect(commit.secondCall.args[0]).to.equals("Menu/setNavigationHistoryBySide");
-            expect(commit.secondCall.args[1]).to.be.deep.equals(payload);
-            expect(commit.thirdCall.args[0]).to.equals("Modules/LayerSelection/setHighlightLayerId");
-            expect(commit.thirdCall.args[1]).to.be.deep.equals(null);
+            expect(commit.secondCall.args[0]).to.equals("Modules/LayerSelection/setHighlightLayerId");
+            expect(commit.secondCall.args[1]).to.be.deep.equals(null);
         });
 
         it("should warn and show alert if layerConfig does not exist", async () => {
             const layerId = "123",
-                warnSpy = sinon.spy(),
-                payload = {side: "mainMenu", newHistory: [{type: "root", props: []}, typeLayerSelection]};
+                warnSpy = sinon.spy();
 
             sinon.stub(console, "warn").callsFake(warnSpy);
             dispatch = sinon.stub().resolves(undefined);
@@ -296,11 +288,9 @@ describe("src/modules/searchBar/store/actions/actionsSearchBarSearchResult.spec.
                 category: "info",
                 content: i18next.t("common:modules.searchBar.layerResultNotShown")
             });
-            expect(commit.callCount).to.be.equals(2);
-            expect(commit.firstCall.args[0]).to.equals("setShowInTree");
+            expect(commit.callCount).to.be.equals(1);
+            expect(commit.firstCall.args[0]).to.equals("setShowSearchResultsInTree");
             expect(commit.firstCall.args[1]).to.be.equals(true);
-            expect(commit.secondCall.args[0]).to.equals("Menu/setNavigationHistoryBySide");
-            expect(commit.secondCall.args[1]).to.be.deep.equals(payload);
         });
 
     });

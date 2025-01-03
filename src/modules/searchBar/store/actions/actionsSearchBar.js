@@ -22,44 +22,15 @@ export default {
     },
     /**
      * Handles the switch from the single result view to the search overview and updates the menu navigation values.
-     * @param {Object} param.getters the getters
-     * @param {Object} param.commit the commit
-     * @param {Object} param.rootGetters the rootGetters
-     * @param {Object} side the menu side of the search
-     * @returns {void}
-     */
-    updateSearchNavigation: ({getters, commit, rootGetters}, side) => {
-        const type = rootGetters["Menu/currentComponent"](side).type;
-
-        if (getters.showAllResults === true && side === getters.currentSide && getters.currentActionEvent === "") {
-            if (type !== "searchBar") {
-                commit("setShowAllResults", false);
-                commit("Menu/switchToPreviousComponent", side, {root: true});
-            }
-            else {
-                commit("setShowAllResults", false);
-                commit("Menu/setCurrentComponentPropsName", {side: side, name: "common:modules.searchBar.searchResultList"}, {root: true});
-                commit("Menu/setNavigationHistoryBySide", {side: side, newHistory: [{type: "root", props: []}]}, {root: true});
-            }
-        }
-        if (side !== getters.currentSide) {
-            commit("Menu/switchToPreviousComponent", side, {root: true});
-        }
-        if (getters.currentSearchInputValue !== "" && getters.currentSearchInputValue !== undefined && getters.currentActionEvent !== "") {
-            commit("Modules/SearchBar/setShowAllResults", true, {root: true});
-            commit("Modules/SearchBar/setSearchInput", getters.currentSearchInputValue, {root: true});
-            commit("Modules/SearchBar/setCurrentSearchInputValue", "", {root: true});
-            commit("Modules/SearchBar/setCurrentActionEvent", "", {root: true});
-        }
-    },
-    /**
-     * Handles the switch from the single result view to the search overview and updates the menu navigation values.
      * @param {Object} param.dispatch the dispatch
      * @param {Object} param.commit the commit
      * @param {Object} side the menu side of the search
      * @returns {void}
      */
     startLayerSelectionSearch: ({dispatch, commit}, side) => {
+        const typeLayerSelection = {type: "layerSelection", props: {name: "common:modules.layerSelection.addSubject"}},
+            typeLayerSelectionSearchResults = {type: "layerSelection", props: {name: "common:modules.searchBar.searchResultList"}};
+
         commit("setShowAllResults", true);
         dispatch("Menu/clickedMenuElement", {
             name: "common:modules.searchBar.searchResultList",
@@ -68,7 +39,7 @@ export default {
         }, {root: true});
         commit("Menu/setCurrentComponent", {type: "layerSelection", side: side, props: []}, {root: true});
         commit("Menu/setCurrentComponentPropsName", {side: side, name: "common:modules.searchBar.searchResults"}, {root: true});
-        commit("Menu/setNavigationHistoryBySide", {side: side, newHistory: [{type: "root", props: []}, {type: "layerSelection", props: {name: "common:modules.layerSelection.name"}}, {type: "layerSelection", props: {name: "common:modules.layerSelection.name"}}]}, {root: true});
+        commit("Menu/setNavigationHistoryBySide", {side: side, newHistory: [{type: "root", props: []}, typeLayerSelection, typeLayerSelectionSearchResults]}, {root: true});
     },
     /**
      * Checks for addlayer search configuration (instance and topic)

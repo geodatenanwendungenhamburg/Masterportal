@@ -197,11 +197,9 @@ export default {
      * @returns {void}
      */
     showInTree: async ({commit, dispatch}, {layerId, source}) => {
-        const layerConfig = await dispatch("retrieveLayerConfig", {layerId, source}),
-            typeLayerSelection = {type: "layerSelection", props: {name: "common:modules.layerSelection.name"}};
+        const layerConfig = await dispatch("retrieveLayerConfig", {layerId, source});
 
-        commit("setShowInTree", true);
-        commit("Menu/setNavigationHistoryBySide", {side: "mainMenu", newHistory: [{type: "root", props: []}, typeLayerSelection]}, {root: true});
+        commit("setShowSearchResultsInTree", true);
         dispatch("Menu/changeCurrentComponent", {type: "layerSelection", side: "mainMenu", props: {name: "common:modules.layerSelection.name"}}, {root: true});
         if (layerId.includes("folder-")) {
             const folderChildId = layerConfig.elements[0]?.id;
