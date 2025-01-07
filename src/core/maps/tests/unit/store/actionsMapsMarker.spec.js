@@ -32,7 +32,7 @@ describe("src/core/maps/store/actionsMapsMarker.js", () => {
         rootGetters = {
             "Menu/currentComponent": () =>{
                 return {
-                    type: "searchbar"
+                    type: "searchBar"
                 };
             },
             "Modules/SearchBar/searchInput": ""
