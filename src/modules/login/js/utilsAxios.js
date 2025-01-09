@@ -37,7 +37,7 @@ function addInterceptor (token, interceptorUrlRegex) {
 
     window.fetch = async (...args) => {
         const [resource] = args;
-        let [config] = args;
+        let [, config] = args;
 
         if (interceptorUrlRegex && resource?.match(interceptorUrlRegex)) {
             config = {
