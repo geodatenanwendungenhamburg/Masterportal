@@ -1,6 +1,7 @@
 import layerFactory from "./layerFactory";
 import layerCollection from "./layerCollection";
 import store from "../../../app-store";
+import {toRaw} from "vue";
 
 /**
  * Starts the creation of the layer in the layer factory
@@ -55,7 +56,6 @@ export function processLayerConfig (layerConfig, mapMode) {
             updateLayerAttributes(layer, layerConf);
         }
         else if (layerConf.visibility === true) {
-            Object.assign(layerConf, {showInLayerTree: true}); // a visible layer is always show in layer tree
             layer = layerFactory.createLayer(layerConf, mapMode);
             processLayer(layer, mapMode);
         }
@@ -79,8 +79,8 @@ export function processLayerConfig (layerConfig, mapMode) {
  * @returns {void}
  */
 export function updateLayerAttributes (layer, layerConf) {
-    layer.updateLayerValues(layerConf);
-    Object.assign(layer.attributes, layerConf);
+    layer.updateLayerValues(toRaw(layerConf));
+    Object.assign(layer.attributes, toRaw(layerConf));
 }
 
 /**

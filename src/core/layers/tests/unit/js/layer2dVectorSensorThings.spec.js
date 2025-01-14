@@ -15,9 +15,12 @@ import {Circle, Style} from "ol/style.js";
 import Layer2dVectorSensorThings from "../../../js/layer2dVectorSensorThings";
 
 describe("src/core/js/layers/layer2dVectorSensorThings.js", () => {
-    let attributes,
+    let origDispatch,
+        attributes,
         errorStub,
         sensorThingsLayer,
+        toggleSubscriptionsOnMapChangesSpy,
+        createMqttConnectionToSensorThingsSpy,
         warnStub;
 
     before(() => {
@@ -42,6 +45,7 @@ describe("src/core/js/layers/layer2dVectorSensorThings.js", () => {
         };
 
         mapCollection.addMap(map, "2D");
+        origDispatch = store.dispatch;
     });
 
     beforeEach(() => {
@@ -49,15 +53,18 @@ describe("src/core/js/layers/layer2dVectorSensorThings.js", () => {
         errorStub = sinon.stub();
         sinon.stub(console, "warn").callsFake(warnStub);
         sinon.stub(console, "error").callsFake(errorStub);
-        sinon.stub(Layer2dVectorSensorThings.prototype, "createMqttConnectionToSensorThings").callsFake(sinon.stub());
+        // sinon.stub(Layer2dVectorSensorThings.prototype, "createMqttConnectionToSensorThings").callsFake(sinon.stub());
         sinon.stub(Layer2dVectorSensorThings.prototype, "callSensorThingsAPI").callsFake(sinon.stub());
-        sinon.stub(Layer2dVectorSensorThings.prototype, "initializeSensorThings").callsFake(sinon.stub());
+        // sinon.stub(Layer2dVectorSensorThings.prototype, "initializeSensorThings").callsFake(sinon.stub());
+        toggleSubscriptionsOnMapChangesSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "toggleSubscriptionsOnMapChanges");
+        createMqttConnectionToSensorThingsSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "createMqttConnectionToSensorThings");
         attributes = {
             id: "id",
             name: "sensorThingsTestLayer",
             typ: "SensorThings",
             url: "https://url.de",
-            version: "1.1"
+            version: "1.1",
+            maxScaleForHistoricalFeatures: 1000
         };
 
         crs.registerProjections();
@@ -66,12 +73,17 @@ describe("src/core/js/layers/layer2dVectorSensorThings.js", () => {
             rules: []
         };
 
+        store.getters = {
+            "Maps/scale": 2000
+        };
+
         sinon.stub(styleList, "returnStyleObject").returns(styleObj);
         sensorThingsLayer = new Layer2dVectorSensorThings(attributes);
     });
 
     afterEach(() => {
         sinon.restore();
+        store.dispatch = origDispatch;
     });
 
     describe("createLayer", () => {
@@ -142,6 +154,232 @@ describe("src/core/js/layers/layer2dVectorSensorThings.js", () => {
         it("should return the options that includes the correct keys", () => {
             expect(Object.keys(sensorThingsLayer.getOptions(attributes))).to.deep.equals(options);
         });
+    });
+
+    describe("startSubscription", () => {
+
+        it("startSubscription calls initializeConnection", () => {
+            const dispatchCalls = {},
+                features = [],
+                initializeConnectionSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "initializeConnection"),
+                startSubscriptionUpdatingSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "startSubscriptionUpdating");
+            let sensorLayer = null;
+
+            store.dispatch = sinon.stub().callsFake((action, payload) => {
+                dispatchCalls[action] = payload;
+            });
+            attributes.loadThingsOnlyInCurrentExtent = false;
+            sensorLayer = new Layer2dVectorSensorThings(attributes);
+            sensorLayer.startSubscription(features);
+
+            expect(sensorLayer.isSubscribed).to.be.true;
+            expect(initializeConnectionSpy.calledOnce).to.be.true;
+            expect(startSubscriptionUpdatingSpy.notCalled).to.be.true;
+        });
+
+        it("startSubscription not calls initializeConnection - loadThingsOnlyInCurrentExtent is false", () => {
+            const dispatchCalls = {},
+                features = [{id: "id"}],
+                initializeConnectionSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "initializeConnection"),
+                startSubscriptionUpdatingSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "startSubscriptionUpdating");
+
+            store.dispatch = sinon.stub().callsFake((action, payload) => {
+                dispatchCalls[action] = payload;
+            });
+            attributes.loadThingsOnlyInCurrentExtent = false;
+            sensorThingsLayer.startSubscription(features);
+
+            expect(sensorThingsLayer.isSubscribed).to.be.true;
+            expect(initializeConnectionSpy.notCalled).to.be.true;
+            expect(startSubscriptionUpdatingSpy.calledOnce).to.be.true;
+        });
+
+        it("startSubscription not calls initializeConnection - loadThingsOnlyInCurrentExtent is false, but features are loaded", () => {
+            const dispatchCalls = {},
+                features = [{id: "id"}],
+                initializeConnectionSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "initializeConnection"),
+                startSubscriptionUpdatingSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "startSubscriptionUpdating");
+
+            store.dispatch = sinon.stub().callsFake((action, payload) => {
+                dispatchCalls[action] = payload;
+            });
+            attributes.loadThingsOnlyInCurrentExtent = false;
+            sensorThingsLayer.startSubscription(features);
+
+            expect(sensorThingsLayer.isSubscribed).to.be.true;
+            expect(initializeConnectionSpy.notCalled).to.be.true;
+            expect(startSubscriptionUpdatingSpy.calledOnce).to.be.true;
+        });
+
+        it("startSubscription not calls initializeConnection - loadThingsOnlyInCurrentExtent is true", () => {
+            const dispatchCalls = {},
+                initializeConnectionSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "initializeConnection"),
+                startSubscriptionUpdatingSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "startSubscriptionUpdating");
+            let sensorLayer = null;
+
+            store.dispatch = sinon.stub().callsFake((action, payload) => {
+                dispatchCalls[action] = payload;
+            });
+            attributes.loadThingsOnlyInCurrentExtent = true;
+            sensorLayer = new Layer2dVectorSensorThings(attributes);
+            sensorLayer.startSubscription();
+
+            expect(sensorLayer.isSubscribed).to.be.true;
+            expect(initializeConnectionSpy.notCalled).to.be.true;
+            expect(startSubscriptionUpdatingSpy.calledOnce).to.be.true;
+        });
+
+
+    });
+
+    describe("startSubscriptionUpdating", () => {
+
+        it("startSubscriptionUpdating - enableContinuousRequest is false", () => {
+            const dispatchCalls = {},
+                updateSubscriptionSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "updateSubscription");
+
+            store.dispatch = sinon.stub().callsFake((action, payload) => {
+                dispatchCalls[action] = payload;
+            });
+            sensorThingsLayer.startSubscriptionUpdating();
+
+            expect(updateSubscriptionSpy.calledOnce).to.be.true;
+            expect(dispatchCalls["Maps/registerListener"]).not.to.be.undefined;
+            expect(dispatchCalls["Maps/registerListener"].type).to.be.equals("moveend");
+            expect(sensorThingsLayer.keepUpdating).to.be.true;
+        });
+
+        it("startSubscriptionUpdating - enableContinuousRequest is true", () => {
+            const dispatchCalls = {},
+                updateSubscriptionSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "updateSubscription"),
+                startIntervalUpdateSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "startIntervalUpdate");
+            let sensorLayer = null;
+
+            store.dispatch = sinon.stub().callsFake((action, payload) => {
+                dispatchCalls[action] = payload;
+            });
+            attributes.enableContinuousRequest = true;
+            sensorLayer = new Layer2dVectorSensorThings(attributes);
+
+            sensorLayer.startSubscriptionUpdating();
+
+            expect(updateSubscriptionSpy.calledOnce).to.be.true;
+            expect(dispatchCalls["Maps/registerListener"]).not.to.be.undefined;
+            expect(dispatchCalls["Maps/registerListener"].type).to.be.equals("moveend");
+            expect(sensorLayer.keepUpdating).to.be.true;
+            expect(startIntervalUpdateSpy.calledOnce).to.be.true;
+        });
+
+
+    });
+
+    describe("stopSubscription", () => {
+
+        it("stopSubscription shall dispatch Maps/unregisterListener and unsubscribeFromSensorThings", () => {
+            const dispatchCalls = {},
+                unsubscribeFromSensorThingsSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "unsubscribeFromSensorThings");
+
+            store.dispatch = sinon.stub().callsFake((action, payload) => {
+                dispatchCalls[action] = payload;
+            });
+            sensorThingsLayer.stopSubscription();
+
+            expect(sensorThingsLayer.isSubscribed).to.be.false;
+            expect(dispatchCalls["Maps/unregisterListener"]).not.to.be.undefined;
+            expect(dispatchCalls["Maps/unregisterListener"].type).to.be.equals("moveend");
+            expect(unsubscribeFromSensorThingsSpy.calledOnce).to.be.true;
+            expect(sensorThingsLayer.keepUpdating).to.be.false;
+        });
+
+    });
+
+    describe("updateLayerValues", () => {
+        let values,
+            startSubscriptionSpy,
+            stopSubscriptionSpy,
+            setOpacitySpy,
+            setVisibleSpy,
+            setZIndexSpy;
+
+        beforeEach(() => {
+            setOpacitySpy = sinon.spy();
+            setVisibleSpy = sinon.spy();
+            setZIndexSpy = sinon.spy();
+            const olLayer = {
+                setOpacity: setOpacitySpy,
+                setVisible: setVisibleSpy,
+                setZIndex: setZIndexSpy
+            };
+
+            sinon.stub(Layer2dVectorSensorThings.prototype, "getLayer").returns(olLayer);
+            startSubscriptionSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "startSubscription");
+            stopSubscriptionSpy = sinon.stub(Layer2dVectorSensorThings.prototype, "stopSubscription");
+
+            values = {
+                visibility: true,
+                transparency: 50,
+                zIndex: 2
+            };
+        });
+
+        it("start subscription - layer is visible and isSubscribed is false", () => {
+            sensorThingsLayer.updateLayerValues(values);
+
+            expect(startSubscriptionSpy.calledOnce).to.be.true;
+            expect(setOpacitySpy.calledOnce).to.be.true;
+            expect(setOpacitySpy.args[0][0]).to.equal(50 / 100);
+            expect(setVisibleSpy.calledOnce).to.be.true;
+            expect(setVisibleSpy.args[0][0]).to.be.true;
+            expect(setZIndexSpy.calledOnce).to.be.true;
+            expect(setZIndexSpy.args[0][0]).to.equal(2);
+            expect(stopSubscriptionSpy.notCalled).to.be.true;
+        });
+
+        it("stop subscription - layer is not visible and isSubscribed is true", () => {
+            values.visibility = false;
+            sensorThingsLayer.isSubscribed = true;
+
+            sensorThingsLayer.updateLayerValues(values);
+
+            expect(stopSubscriptionSpy.calledOnce).to.be.true;
+            expect(setOpacitySpy.calledOnce).to.be.true;
+            expect(setOpacitySpy.args[0][0]).to.equal(50 / 100);
+            expect(setVisibleSpy.calledOnce).to.be.true;
+            expect(setVisibleSpy.args[0][0]).to.be.false;
+            expect(setZIndexSpy.calledOnce).to.be.true;
+            expect(setZIndexSpy.args[0][0]).to.equal(2);
+            expect(startSubscriptionSpy.notCalled).to.be.true;
+        });
+
+        it("do nothing concerning subscription - layers visibility did not change", () => {
+            sensorThingsLayer.get = (key) => {
+                if (key === "visibility") {
+                    return true;
+                }
+                return sensorThingsLayer.attributes[key];
+            };
+            sensorThingsLayer.updateLayerValues(values);
+
+            expect(startSubscriptionSpy.notCalled).to.be.true;
+            expect(setOpacitySpy.calledOnce).to.be.true;
+            expect(setOpacitySpy.args[0][0]).to.equal(50 / 100);
+            expect(setVisibleSpy.calledOnce).to.be.true;
+            expect(setVisibleSpy.args[0][0]).to.be.true;
+            expect(setZIndexSpy.calledOnce).to.be.true;
+            expect(setZIndexSpy.args[0][0]).to.equal(2);
+            expect(stopSubscriptionSpy.notCalled).to.be.true;
+        });
+    });
+
+    describe("initializeSensorThings", () => {
+
+        it("initializeSensorThings is called on creating layer - sets isSubscribed to false and showHistoricalFeatures to false", () => {
+            expect(sensorThingsLayer.isSubscribed).to.be.false;
+            expect(sensorThingsLayer.showHistoricalFeatures).to.be.false;
+            expect(toggleSubscriptionsOnMapChangesSpy.calledOnce).to.be.true;
+            expect(createMqttConnectionToSensorThingsSpy.calledOnce).to.be.true;
+        });
+
     });
 
     describe("getStyleFunction", () => {

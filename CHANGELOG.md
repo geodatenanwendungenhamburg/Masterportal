@@ -17,6 +17,7 @@
 - LayerInformation: Added LayerInfo for each layer within a GROUP layer.
 - Login-Module: Fix interceptor for login-secured services.
 - Addons: Added missing import on loading javascript addons.
+- SensorThings-Layer: problem with not visible features after move of map was solved.
 
 ---
 

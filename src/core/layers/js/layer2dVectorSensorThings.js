@@ -43,11 +43,9 @@ export default function Layer2dVectorSensorThings (attributes) {
         showNoDataValue: true,
         noDataValue: "no data",
         loadThingsOnlyInCurrentExtent: false,
-        isSubscribed: false,
         mqttRh: 2,
         mqttQos: 2,
         mqttOptions: {},
-        moveLayerRevisible: false,
         datastreamAttributes: [
             "@iot.id",
             "@iot.selfLink",
@@ -73,6 +71,8 @@ export default function Layer2dVectorSensorThings (attributes) {
 
     this.attributes = Object.assign(defaultAttributes, attributes);
     this.styleRule = [];
+    // showHistoricalFeatures must be set before initializeSensorThings
+    this.showHistoricalFeatures = true;
     Layer2dVector.call(this, this.attributes);
     this.initializeSensorThings();
 
@@ -80,7 +80,7 @@ export default function Layer2dVectorSensorThings (attributes) {
     this.keepUpdating = false;
     this.moveLayerRevisible = "";
     this.subscribedDataStreamIds = {};
-    this.showHistoricalFeatures = true;
+    this.isSubscribed = false;
     this.locationUpdating = {};
     this.eventKeys = {};
     this.lastScale = null;
@@ -169,18 +169,19 @@ Layer2dVectorSensorThings.prototype.createVectorLayer = function (rawLayer = {},
  * @returns {void}
  */
 Layer2dVectorSensorThings.prototype.updateLayerValues = function (values) {
-    const state = this.getStateOfSTALayer(values.visibility, this.get("isSubscribed"));
+    if (this.get("visibility") !== values.visibility) {
+        const state = this.getStateOfSTALayer(values.visibility, this.isSubscribed);
 
+        if (state === true) {
+            this.startSubscription(this.getLayerSource().getFeatures());
+        }
+        else if (state === false) {
+            this.stopSubscription();
+        }
+    }
     this.getLayer()?.setOpacity((100 - values.transparency) / 100);
     this.getLayer()?.setVisible(values.visibility);
     this.getLayer()?.setZIndex(values.zIndex);
-
-    if (state === true) {
-        this.startSubscription(this.getLayerSource().getFeatures());
-    }
-    else if (state === false) {
-        this.stopSubscription();
-    }
 };
 
 /**
@@ -261,6 +262,7 @@ Layer2dVectorSensorThings.prototype.createStyle = function (attrs) {
  * @returns {void}
  * */
 Layer2dVectorSensorThings.prototype.initializeSensorThings = function () {
+    this.isSubscribed = false;
     try {
         this.createMqttConnectionToSensorThings(this.get("url"), this.get("mqttOptions"), this.get("timezone"), this.get("showNoDataValue"), this.get("noDataValue"));
     }
@@ -268,11 +270,6 @@ Layer2dVectorSensorThings.prototype.initializeSensorThings = function () {
         console.error("Connecting to mqtt-broker failed. Won't receive live updates. Reason:", err);
     }
     this.toggleSubscriptionsOnMapChanges();
-
-    store.watch((_, getters) => getters.visibleSubjectDataLayerConfigs, layerConfigs => {
-        this.toggleSubscriptionsOnMapChanges(layerConfigs);
-    }, {deep: true});
-
     if (store.getters["Maps/scale"] > this.get("maxScaleForHistoricalFeatures")) {
         this.showHistoricalFeatures = false;
     }
@@ -1156,7 +1153,7 @@ Layer2dVectorSensorThings.prototype.aggregateDataStreamPhenomenonTime = function
  * @returns {void}
  */
 Layer2dVectorSensorThings.prototype.toggleSubscriptionsOnMapChanges = function () {
-    const state = this.getStateOfSTALayer(this.getLayer().getVisible(), this.get("isSubscribed"));
+    const state = this.getStateOfSTALayer(this.getLayer().getVisible(), this.isSubscribed);
 
     if (state === true) {
         this.startSubscription(this.getLayer().getSource().getFeatures());
@@ -1178,8 +1175,8 @@ Layer2dVectorSensorThings.prototype.stopSubscription = function () {
         version = this.get("version"),
         mqttClient = this.mqttClient;
 
-    this.set("isSubscribed", false);
-    store.dispatch("Maps/unregisterListener", {type: "moveend", listener: this.updateSubscription.bind(this)});
+    this.isSubscribed = false;
+    store.dispatch("Maps/unregisterListener", {type: "moveend", listener: this.updateSubscription.bind(this), keyForBoundFunctions: this.updateSubscription.toString() + this.attributes.id});
     this.unsubscribeFromSensorThings([], subscriptionTopics, version, mqttClient);
     clearInterval(this.intervallRequest);
     this.keepUpdating = false;
@@ -1236,29 +1233,32 @@ Layer2dVectorSensorThings.prototype.getStateOfSTALayer = function (visibility, i
 };
 
 /**
- * Starts mqtt subscriptions based on the layers state.
+ * Starts mqtt subscriptions. If not features given, the connection is initilized.
  * @param {ol/Feature[]} features all features of the Layer
  * @returns {void}
  */
 Layer2dVectorSensorThings.prototype.startSubscription = function (features) {
-    this.set("isSubscribed", true);
+    this.isSubscribed = true;
     if (!this.get("loadThingsOnlyInCurrentExtent") && Array.isArray(features) && !features.length) {
         this.initializeConnection(function () {
-            this.updateSubscription();
-            store.dispatch("Maps/registerListener", {type: "moveend", listener: this.updateSubscription.bind(this)});
-            this.keepUpdating = true;
-            if (this.get("enableContinuousRequest")) {
-                this.startIntervalUpdate(typeof this.get("factor") === "number" ? this.get("factor") * 1000 : undefined);
-            }
+            this.startSubscriptionUpdating();
         }.bind(this));
     }
     else {
-        this.updateSubscription();
-        store.dispatch("Maps/registerListener", {type: "moveend", listener: this.updateSubscription.bind(this)});
-        this.keepUpdating = true;
-        if (this.get("enableContinuousRequest")) {
-            this.startIntervalUpdate(typeof this.get("factor") === "number" ? this.get("factor") * 1000 : undefined);
-        }
+        this.startSubscriptionUpdating();
+    }
+};
+
+/**
+ * Starts the update process of subscriptions and registers moveend listener at map.
+ * @returns {void}
+ */
+Layer2dVectorSensorThings.prototype.startSubscriptionUpdating = function () {
+    this.updateSubscription();
+    store.dispatch("Maps/registerListener", {type: "moveend", listener: this.updateSubscription.bind(this), keyForBoundFunctions: this.updateSubscription.toString() + this.attributes.id});
+    this.keepUpdating = true;
+    if (this.get("enableContinuousRequest")) {
+        this.startIntervalUpdate(typeof this.get("factor") === "number" ? this.get("factor") * 1000 : undefined);
     }
 };
 

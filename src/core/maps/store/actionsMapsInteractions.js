@@ -37,12 +37,15 @@ export default {
      * @param {Function} payload.listener The listener function.
      * @param {String | Function} payload.listenerType Type of the listener. Possible are: "function", "commit" and "dispatch".
      * @param {Boolean} payload.root listener is dispatched or commited with root:true, if listenerType is 'dispatch' or 'commit' and root is true
+     * @param {String} payload.keyForBoundFunctions if listener is a function and has bound this, toString creates everyTime same String as key. Use keyForBoundFunctions to provide a unique key.
      * @returns {void}
      */
-    registerListener ({commit, dispatch}, {type, listener, listenerType = "function", root = false}) {
+    registerListener ({commit, dispatch}, {type, listener, listenerType = "function", root = false, keyForBoundFunctions}) {
+        const listenerKey = keyForBoundFunctions ? keyForBoundFunctions : String(listener);
+
         registeredActions[type] = registeredActions[type] || {};
         registeredActions[type][listenerType] = registeredActions[type][listenerType] || {};
-        registeredActions[type][listenerType][String(listener)] = evt => {
+        registeredActions[type][listenerType][listenerKey] = evt => {
             if (listenerType === "function") {
                 listener(evt);
             }
@@ -54,7 +57,7 @@ export default {
             }
         };
 
-        mapCollection.getMap("2D").on(type, registeredActions[type][listenerType][listener]);
+        mapCollection.getMap("2D").on(type, registeredActions[type][listenerType][listenerKey]);
     },
 
 
@@ -151,13 +154,16 @@ export default {
      * @param {String} payload.type The event type or array of event types.
      * @param {Function} payload.listener The listener function.
      * @param {String | Function} payload.listenerType Type of the listener. Possible are: "function", "commit" and "dispatch".
+     * @param {String} payload.keyForBoundFunctions if listener is a function and has bound this, toString creates everyTime same String as key. Use keyForBoundFunctions to provide a unique key.
      * @returns {void}
      */
-    unregisterListener (context, {type, listener, listenerType = "function"}) {
+    unregisterListener (context, {type, listener, listenerType = "function", keyForBoundFunctions}) {
         if (typeof type === "string") {
-            if (registeredActions[type] && registeredActions[type][listenerType] && registeredActions[type][listenerType][String(listener)]) {
-                mapCollection.getMap("2D").un(type, registeredActions[type][listenerType][String(listener)]);
-                registeredActions[type][listenerType][String(listener)] = null;
+            const listenerKey = keyForBoundFunctions ? keyForBoundFunctions : String(listener);
+
+            if (registeredActions[type] && registeredActions[type][listenerType] && registeredActions[type][listenerType][listenerKey]) {
+                mapCollection.getMap("2D").un(type, registeredActions[type][listenerType][listenerKey]);
+                registeredActions[type][listenerType][listenerKey] = null;
             }
         }
         else {
