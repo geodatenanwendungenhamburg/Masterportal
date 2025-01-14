@@ -6,6 +6,7 @@
 ## 2024-12-12 v3.3.3 (LTS)
 
 ### Fixed
+- Issue #1301: CustomMenuElement now also works in secondaryMenu.
 - Issue #1305, Issue #1327: fixed searchbar navigation, if used action-buttons.
 - Issue #1309: fixed translation of periodicity.
 - Issue #1316: fixed issue where currentComponent in the secondary menu would close when clicking on the map.

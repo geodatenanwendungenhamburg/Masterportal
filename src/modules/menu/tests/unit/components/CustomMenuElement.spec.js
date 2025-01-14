@@ -103,4 +103,18 @@ describe("src/modules/menu/components/CustomMenuElement.vue", () => {
         expect(wrapper.find(".custom-menu-element").exists()).to.be.true;
         expect(errorSpy.calledOnce).to.be.true;
     });
+    it("renders only a div if no htmlContent or pathToContent is given into secondary menu", () => {
+        side = "secondaryMenu";
+
+        wrapper = mount(CustomMenuElement,
+            {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {side}
+            });
+
+        expect(wrapper.find(".custom-menu-element").exists()).to.be.true;
+        expect(wrapper.vm.side).to.be.equals(side);
+    });
 });
