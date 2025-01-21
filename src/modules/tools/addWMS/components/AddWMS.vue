@@ -96,7 +96,8 @@ export default {
          * @returns {void}
          */
         importLayers: function () {
-            const url = this.$el.querySelector("#wmsUrl").value.trim();
+            const serviceUrl = this.$el.querySelector("#wmsUrl").value.trim(),
+                url = this.getUrl(serviceUrl);
 
             this.invalidUrl = false;
             if (url === "") {
@@ -110,7 +111,7 @@ export default {
             LoaderOverlay.show();
             axios({
                 timeout: 4000,
-                url: url + "?request=GetCapabilities&service=WMS"
+                url: url
             })
                 .then(response => response.data)
                 .then((data) => {
@@ -162,6 +163,52 @@ export default {
                     LoaderOverlay.hide();
                     this.displayErrorMessage();
                 });
+        },
+
+        /**
+         * Creates the url with the given params and checks if it is valid
+         * @param {String} serviceUrl inserted url by user
+         * @returns {String} the url.href
+        */
+        getUrl: function (serviceUrl) {
+            let url;
+
+            this.invalidUrl = false;
+            try {
+                url = new URL(serviceUrl);
+            }
+            catch (e) {
+                this.invalidUrl = true;
+                this.displayErrorMessage();
+            }
+            if (url.href.includes("http:")) {
+                this.addSingleAlert({
+                    content: this.$t("common:modules.addWMS.errorHttpsMessage"),
+                    category: "error",
+                    title: this.$t("common:modules.addWMS.errorTitle")});
+            }
+            else {
+                this.deleteParams(url, ["request", "service"]);
+                url.searchParams.set("request", "GetCapabilities");
+                url.searchParams.set("service", "WMS");
+            }
+            return url.href;
+        },
+
+        /**
+         * Removes a list of parameters from an url case-insensitive.
+         * @param {URL} url - the url to change
+         * @param {String[]} params - the url parameter to remove
+         * @returns {void}
+         */
+        deleteParams (url, params) {
+            params.forEach(param => {
+                const key = Array.from(url.searchParams.keys()).find(k => k.toLowerCase() === param);
+
+                if (key) {
+                    url.searchParams.delete(key);
+                }
+            });
         },
 
         /**
