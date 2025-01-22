@@ -12,6 +12,7 @@
 - Issue #1309: fixed translation of periodicity.
 - Issue #1316: fixed issue where currentComponent in the secondary menu would close when clicking on the map.
 - LayerInformation: Added LayerInfo for each layer within a GROUP layer.
+- Login-Module: Fix interceptor for login-secured services.
 
 ---
 
