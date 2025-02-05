@@ -276,7 +276,7 @@ Layer2dRasterWmsTimeLayer.prototype.prepareTime = function (attrs) {
     return this.requestCapabilities(attrs.url, attrs.version, attrs.layers)
         .then(xmlCapabilities => {
             const {dimension, extent} = this.retrieveTimeData(xmlCapabilities, attrs.layers, time),
-                timeSource = dimension || extent;
+                timeSource = extent ? extent : dimension;
 
             if (!timeSource) {
                 throw Error(i18next.t("common:modules.core.modelList.layer.wms.invalidTimeLayer", {id: this.id}));
