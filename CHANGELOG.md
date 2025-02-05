@@ -17,6 +17,7 @@
 ### Fixed
 - Issue #1282: Added click selection for `selectFeatures` and added UI components to delete all or single features from the selection.
 - Issue #1218: Fixed the missing bbox in request for filter module if the param `searchInMapExtent` and `extern` is true.
+- PrintMap: Heatmap layers are now included in the print.
 
 ---
 

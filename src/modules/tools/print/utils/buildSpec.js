@@ -4,7 +4,7 @@ import CircleStyle from "ol/style/Circle";
 import Icon from "ol/style/Icon";
 import Feature from "ol/Feature.js";
 import {GeoJSON} from "ol/format.js";
-import {Group, Image, Tile, Vector} from "ol/layer.js";
+import {Group, Image, Tile, Vector, Heatmap} from "ol/layer.js";
 import store from "../../../../app-store/index";
 import isObject from "../../../../utils/isObject";
 import differenceJS from "../../../../utils/differenceJS";
@@ -20,6 +20,8 @@ import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
 import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle";
 import {getRulesForFeature} from "@masterportal/masterportalapi/src/vectorStyle/lib/getRuleForIndex";
 import StaticImageSource from "ol/source/ImageStatic.js";
+import Map from "ol/Map";
+import View from "ol/View";
 
 const BuildSpecModel = {
     defaults: {
@@ -281,11 +283,23 @@ const BuildSpecModel = {
                 returnLayer = this.getDrawLayerInfo(layer, extent);
             }
             else if (layer instanceof Vector) {
-                features = source.getFeaturesInExtent(extent);
+                const maskExtent = getLastPrintedExtent();
+
+                features = source.getFeaturesInExtent(maskExtent);
 
                 if (features.length > 0) {
-                    returnLayer = this.buildVector(layer, features, extent, mapScaleFactor);
+                    returnLayer = this.buildVector(layer, features, maskExtent, mapScaleFactor);
                 }
+            }
+            else if (layer instanceof Heatmap) {
+                await this.buildHeatmapPng(layer).then(heatmapImage => {
+                    returnLayer = {
+                        type: "image",
+                        opacity: 1,
+                        baseURL: heatmapImage.imageUrl,
+                        extent: heatmapImage.heatmapExtent
+                    };
+                });
             }
         }
 
@@ -1655,6 +1669,93 @@ const BuildSpecModel = {
      */
     setVisibleLayerIds: function (value) {
         this.defaults.visibleLayerIds = value;
+    },
+
+    /**
+     * Returns a png image of a heatmap layer
+     * @param {ol.layer.Heatmap} layer - heatmap layer
+     * @returns {Object} - image spec
+     */
+    buildHeatmapPng: async function (layer) {
+        return new Promise((resolve, reject) => {
+            // Create a temporary hidden div to attach the map (ensures OpenLayers initializes it correctly)
+            const tempDiv = document.createElement("div"),
+                mapSize = store.getters["Maps/size"],
+                mapView = store.getters["Maps/getView"],
+                printZoomLevel = mapView.getProperties().options.find(option => {
+                    checkScale = store.state.Tools.Print.isScaleSelectedManually
+                        ? store.state.Tools.Print.currentScale
+                        : store.state.Tools.Print.optimalScale;
+                    return option.scale === checkScale;
+                }),
+                heatmapView = new View(mapView.getProperties()),
+                pixelRatio = window.devicePixelRatio || 1;
+
+
+            // OpenLayers adjusts rendering based on window.devicePixelRatio, which can cause unexpected behavior at different resolutions.
+            // Set explicit canvas scaling to prevent distortion
+            heatmapView.setResolution(heatmapView.getResolution() / pixelRatio);
+
+            tempDiv.style.position = "absolute";
+            tempDiv.style.top = "-9999px"; // Hide off-screen
+
+            heatmapView.setZoom(printZoomLevel.zoomLevel);
+
+            // If the print scale is different from the current map scale the print area may be outside of the
+            // current map extent. Therefore we increase the size of the temporary map for the heatmap.
+            if (store.state.Tools.Print.currentScale !== store.state.Tools.Print.currentMapScale) {
+                tempDiv.style.width = (mapSize[0] + 100) + "px";
+                tempDiv.style.height = (mapSize[1] + 100) + "px";
+            }
+            else {
+                tempDiv.style.width = (mapSize[0] + 1000) + "px";
+                tempDiv.style.height = (mapSize[1] + 1000) + "px";
+            }
+
+            document.body.appendChild(tempDiv); // Add to DOM
+
+            // Create a new map instance
+            // eslint-disable-next-line one-var
+            const heatmapMap = new Map({
+                target: tempDiv, // Attach to temporary DOM element
+                layers: [layer], // Only the heatmap layer
+                view: heatmapView
+            });
+
+            // Ensure rendering is complete
+            heatmapMap.once("postrender", () => {
+
+                setTimeout(() => {
+                    try {
+                        heatmapMap.renderSync(); // Force a render
+
+                        // Locate the canvas in the viewport
+                        const canvas = heatmapMap.getViewport().querySelector("canvas");
+
+                        if (!canvas) {
+                            reject("Canvas not found. Ensure WebGL is enabled and heatmapLayer is added.");
+                            return;
+                        }
+
+                        // eslint-disable-next-line one-var
+                        const imageUrl = canvas.toDataURL("image/png"); // Convert to base64 image
+
+                        document.body.removeChild(tempDiv); // Cleanup
+                        resolve({
+                            imageUrl,
+                            heatmapExtent: heatmapView.calculateExtent()
+                        });
+
+                        heatmapMap.setTarget(null); // Detach the map from the DOM
+                        heatmapMap.dispose(); // Free OpenLayers resources
+                    }
+                    catch (error) {
+                        document.body.removeChild(tempDiv); // Cleanup
+                        reject("Error exporting heatmap: " + error.message);
+                    }
+                }, 500); // Small delay to allow rendering
+            });
+        });
     }
 };
 
