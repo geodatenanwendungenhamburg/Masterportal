@@ -298,7 +298,7 @@ Layer2dRasterWmsTimeLayer.prototype.prepareTime = function (attrs) {
         })
         .catch(error => {
             this.removeLayer(attrs.id);
-            // Entferne Layer vollständig aus dem Projekt
+            // remove layer from project completely
             layerCollection.removeLayerById(attrs.id);
 
             console.error(i18next.t("common:modules.core.modelList.layer.wms.errorTimeLayer", {error, id: attrs.id}));
