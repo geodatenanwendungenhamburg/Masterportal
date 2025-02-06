@@ -14,7 +14,6 @@ export default {
         if (!this.isLoggedIn()) {
             this.openLoginWindow();
         }
-        setInterval(() => this.isLoggedIn(), 10_000);
     },
     methods: {
         ...mapMutations("Modules/Login", ["setActive", "setIcon"]),
