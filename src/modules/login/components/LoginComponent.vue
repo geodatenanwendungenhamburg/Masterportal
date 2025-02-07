@@ -13,8 +13,6 @@ export default {
     mounted () {
         if (!this.isLoggedIn()) {
             this.openLoginWindow();
-        }else{
-            this.updateLoginComponentProps();
         }
     },
     methods: {
@@ -98,22 +96,10 @@ export default {
          */
         logoutButton (reload = false) {
             this.logout();
-            this.updateLoginComponentProps();
 
             if (reload) {
                 this.reloadWindow();
             }
-        },
-
-        /**
-         * Updates the login component props in the menu
-         * @returns {void}
-         */
-        updateLoginComponentProps () {
-            const componentName = this.loggedIn ? "common:modules.login.logout" : "common:modules.login.login";
-            const componentDescription = this.loggedIn ? "common:modules.login.descriptionLoggedIn" : "common:modules.login.description";
-            this.setCurrentComponentPropsName({side: "secondaryMenu", name: componentName});
-            this.setCurrentComponentPropsDescription({side: "secondaryMenu", description: componentDescription});
         }
     }
 };
