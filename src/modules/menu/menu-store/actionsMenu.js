@@ -13,13 +13,10 @@ export default {
     updateLoginMenuProps ({commit, rootGetters}) {
         const isLoggedIn = rootGetters["Modules/Login/loggedIn"],
             iconType = isLoggedIn ? rootGetters["Modules/Login/iconLogged"] : rootGetters["Modules/Login/iconLogin"],
-            componentName = isLoggedIn ? "common:modules.login.logout" : "common:modules.login.login",
-            componentDescription = isLoggedIn ? "common:modules.login.descriptionLoggedIn" : "common:modules.login.description";
+            componentName = isLoggedIn ? "common:modules.login.logout" : "common:modules.login.login";
 
         commit("Modules/Login/setIcon", iconType, {root: true});
         commit("Modules/Login/setName", componentName, {root: true});
-        commit("setCurrentComponentPropsName", {side: "secondaryMenu", name: componentName});
-        commit("setCurrentComponentPropsDescription", {side: "secondaryMenu", description: componentDescription});
     },
 
     /**

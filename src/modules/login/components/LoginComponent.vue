@@ -17,6 +17,7 @@ export default {
     },
     methods: {
         ...mapMutations("Modules/Login", ["setActive", "setIcon"]),
+        ...mapMutations("Menu", ["setCurrentComponentPropsName", "setCurrentComponentPropsDescription"]),
         ...mapActions("Modules/Login", [
             "initialize",
             "logout",
@@ -49,7 +50,7 @@ export default {
          */
         isLoggedIn () {
             this.checkLoggedIn();
-            this.updateLoginMenuProps();
+            this.updateLoginComponentProps();
             return this.loggedIn;
         },
 
@@ -96,12 +97,22 @@ export default {
          */
         logoutButton (reload = false) {
             this.logout();
-
-            this.updateLoginMenuProps();
+            this.updateLoginComponentProps();
 
             if (reload) {
                 this.reloadWindow();
             }
+        },
+
+        /**
+         * Updates the login component props in the menu
+         * @returns {void}
+         */
+        updateLoginComponentProps () {
+            const componentName = this.loggedIn ? "common:modules.login.logout" : "common:modules.login.login";
+            const componentDescription = this.loggedIn ? "common:modules.login.descriptionLoggedIn" : "common:modules.login.description";
+            this.setCurrentComponentPropsName({side: "secondaryMenu", name: componentName});
+            this.setCurrentComponentPropsDescription({side: "secondaryMenu", description: componentDescription});
         }
     }
 };
