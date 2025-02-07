@@ -3,6 +3,10 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## 2025-02-07 v3.4.0
+### Fixed
+- Fix OIDC Token Auto-Refresh After Initial Login
+
 ## 2024-11-06 v3.4.0
 
 ### Added
