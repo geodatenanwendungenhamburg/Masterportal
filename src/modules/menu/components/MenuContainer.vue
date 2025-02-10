@@ -92,7 +92,23 @@ export default {
         }
     },
     created () {
-        this.mergeMenuState({menu: this.menuFromConfig(this.side), side: this.side});
+        const menuConfig = this.menuFromConfig(this.side);
+
+        if (menuConfig?.sections && menuConfig.sections[0]) {
+            const seen = new Set();
+
+            menuConfig.sections[0] = menuConfig.sections[0].filter(section => {
+                if (!section.type) {
+                    return true;
+                }
+                if (seen.has(section.type)) {
+                    return false;
+                }
+                seen.add(section.type);
+                return true;
+            });
+        }
+        this.mergeMenuState({menu: menuConfig, side: this.side});
         if (this.isMobile) {
             this.collapseMenues();
             this.setCurrentMenuWidth({side: this.side, width: "100%"});
