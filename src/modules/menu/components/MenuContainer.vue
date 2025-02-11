@@ -95,18 +95,7 @@ export default {
         const menuConfig = this.menuFromConfig(this.side);
 
         if (menuConfig?.sections && menuConfig.sections[0]) {
-            const seen = new Set();
-
-            menuConfig.sections[0] = menuConfig.sections[0].filter(section => {
-                if (!section.type) {
-                    return true;
-                }
-                if (seen.has(section.type)) {
-                    return false;
-                }
-                seen.add(section.type);
-                return true;
-            });
+            menuConfig.sections[0] = this.removeDuplicateMenuEntries(menuConfig.sections[0]);
         }
         this.mergeMenuState({menu: menuConfig, side: this.side});
         if (this.isMobile) {
@@ -130,6 +119,20 @@ export default {
                 name: "common:modules.searchBar.searchResultList",
                 side: this.side,
                 type: "searchBar"
+            });
+        },
+        removeDuplicateMenuEntries (sections) {
+            const seen = new Set();
+
+            return sections.filter(section => {
+                if (!section.type) {
+                    return true;
+                }
+                if (seen.has(section.type)) {
+                    return false;
+                }
+                seen.add(section.type);
+                return true;
             });
         }
     }
