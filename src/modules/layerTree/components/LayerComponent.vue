@@ -5,6 +5,7 @@ import thousandsSeparator from "../../../shared/js/utils/thousandsSeparator";
 import LayerCheckBox from "./LayerCheckBox.vue";
 import LayerComponentIconFilter from "./LayerComponentIconFilter.vue";
 import LayerComponentIconInfo from "./LayerComponentIconInfo.vue";
+import LayerComponentIconCustom from "./LayerComponentIconCustom.vue";
 import LayerComponentIconSubMenu from "./LayerComponentIconSubMenu.vue";
 import LayerComponentSubMenu from "./LayerComponentSubMenu.vue";
 import layerCollection from "../../../core/layers/js/layerCollection";
@@ -21,6 +22,7 @@ export default {
         LayerCheckBox,
         LayerComponentIconFilter,
         LayerComponentIconInfo,
+        LayerComponentIconCustom,
         LayerComponentIconSubMenu,
         LayerComponentSubMenu
     },
@@ -125,6 +127,9 @@ export default {
                 class="d-flex"
             >
                 <LayerComponentIconFilter
+                    :layer-conf="conf"
+                />
+                <LayerComponentIconCustom
                     :layer-conf="conf"
                 />
                 <LayerComponentIconSubMenu
