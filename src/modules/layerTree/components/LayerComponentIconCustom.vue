@@ -30,6 +30,7 @@ export default {
     methods: {
         ...mapActions("Menu", ["changeCurrentComponent", "toggleMenu"]),
         ...mapActions("Modules/Alerting", ["addSingleAlert"]),
+        ...mapActions("Modules/LayerInformation", ["startLayerInformation"]),
 
         /**
          * Executes the configured action for the custom icon
@@ -44,16 +45,9 @@ export default {
             const [module, action] = execute.action.split("/");
 
             // Handle menu actions
-            if (module === "Menu") {
-                this.changeCurrentComponent({
-                    type: execute.payload.type,
-                    side: execute.payload.side || "secondaryMenu",
-                    props: execute.payload.props || {}
-                });
-
-                if (!this.expanded(execute.payload.side || "secondaryMenu")) {
-                    this.toggleMenu(execute.payload.side || "secondaryMenu");
-                }
+            if (module === "Modules" && action === "LayerInformation/startLayerInformation") {
+                // Pass the entire layer configuration to startLayerInformation
+                this.startLayerInformation(this.layerConf);
             }
             // Handle alerting actions
             else if (module === "Alerting") {

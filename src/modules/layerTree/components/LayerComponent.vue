@@ -129,15 +129,15 @@ export default {
                 <LayerComponentIconFilter
                     :layer-conf="conf"
                 />
-                <LayerComponentIconCustom
-                    :layer-conf="conf"
-                />
                 <LayerComponentIconSubMenu
                     v-if="isLayerTree()"
                     :layer-conf="conf"
                 />
                 <LayerComponentIconInfo
                     :is-layer-tree="isLayerTree()"
+                    :layer-conf="conf"
+                />
+                <LayerComponentIconCustom
                     :layer-conf="conf"
                 />
             </div>
