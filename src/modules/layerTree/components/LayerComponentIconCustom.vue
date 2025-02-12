@@ -45,15 +45,17 @@ export default {
             const [module, action] = execute.action.split("/");
 
             // Handle menu actions
-            if (module === "Modules" && action === "LayerInformation/startLayerInformation") {
-                // Pass the entire layer configuration to startLayerInformation
-                this.startLayerInformation(this.layerConf);
+            if (module === "Menu") {
+                this.changeCurrentComponent(execute.payload);
+
+                if (!this.expanded(execute.payload.side)) {
+                    this.toggleMenu(execute.payload.side);
+                }
             }
             // Handle alerting actions
             else if (module === "Alerting") {
                 this.addSingleAlert(execute.payload);
             }
-            // Add more action types here as needed
         }
     }
 };
