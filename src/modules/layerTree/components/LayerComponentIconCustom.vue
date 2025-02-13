@@ -1,6 +1,7 @@
 <script>
-import {mapGetters, mapActions} from "vuex";
+import {mapGetters} from "vuex";
 import IconButton from "../../../shared/modules/buttons/components/IconButton.vue";
+import store from "../../../app-store/index.js";
 
 /**
  * Represents a custom icon button for a layer in the layertree.
@@ -28,8 +29,6 @@ export default {
         }
     },
     methods: {
-        ...mapActions("Menu", ["toggleMenu", "changeCurrentComponent"]),
-
         /**
          * Executes the configured action for the custom icon
          * @returns {void}
@@ -40,17 +39,16 @@ export default {
                 return;
             }
 
-            const [module, action] = execute.action.split("/");
-            console.log("called execute: ", module);
-            // Handle menu actions
-            if (module === "Menu") {
-                console.log("execute action:", execute);
-                this.toggleMenu("secondaryMenu");
-                this.changeCurrentComponent({
-                    type: execute.payload.type || execute.payload,
-                    side: "secondaryMenu",
-                    props: execute.payload.props || {}
-                });
+            try {
+                if (execute.payload?.side) {
+                    // If payload has a side property, ensure menu is expanded
+                    store.dispatch("Menu/setExpandedBySide", { side: execute.payload.side, expanded: true });
+                }
+                // Dispatch the action
+                store.dispatch(execute.action, execute.payload);
+            }
+            catch (error) {
+                console.error(`Failed to execute action ${execute.action}:`, error);
             }
         }
     }
