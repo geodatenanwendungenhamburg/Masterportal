@@ -28,9 +28,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions("Menu", ["changeCurrentComponent", "toggleMenu"]),
-        ...mapActions("Modules/Alerting", ["addSingleAlert"]),
-        ...mapActions("Modules/LayerInformation", ["startLayerInformation"]),
+        ...mapMutations("Menu", ["setExpandedBySide", "setCurrentComponent"]),
 
         /**
          * Executes the configured action for the custom icon
