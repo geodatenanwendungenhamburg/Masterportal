@@ -1,5 +1,5 @@
 <script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import {mapGetters, mapActions} from "vuex";
 import IconButton from "../../../shared/modules/buttons/components/IconButton.vue";
 
 /**
@@ -28,7 +28,7 @@ export default {
         }
     },
     methods: {
-        ...mapMutations("Menu", ["setExpandedBySide", "setCurrentComponent"]),
+        ...mapActions("Menu", ["toggleMenu", "changeCurrentComponent"]),
 
         /**
          * Executes the configured action for the custom icon
@@ -44,10 +44,13 @@ export default {
             console.log("called execute: ", module);
             // Handle menu actions
             if (module === "Menu") {
-                console.log("execute action:");
-                console.log(execute);
-                this.setExpandedBySide({ side: "secondaryMenu", expanded: true });
-                this.setCurrentComponent(execute.payload);
+                console.log("execute action:", execute);
+                this.toggleMenu("secondaryMenu");
+                this.changeCurrentComponent({
+                    type: execute.payload.type || execute.payload,
+                    side: "secondaryMenu",
+                    props: execute.payload.props || {}
+                });
             }
         }
     }
