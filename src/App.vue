@@ -69,6 +69,11 @@ export default {
         new Tooltip(document.body, {
             selector: "[data-bs-toggle='tooltip']"
         });
+
+        // Start periodic check if user token is still valid
+        setInterval(() => {
+            this.checkLoggedIn();
+        }, 10_000);
     },
     unmounted () {
         window.removeEventListener("resize", this.onResize());
@@ -86,6 +91,7 @@ export default {
             "loadRestServicesJson",
             "loadServicesJson"
         ]),
+        ...mapActions("Modules/Login", ["checkLoggedIn"]),
 
         /**
          * Sets global variables.
