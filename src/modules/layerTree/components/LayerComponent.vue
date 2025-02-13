@@ -138,6 +138,7 @@ export default {
                     :layer-conf="conf"
                 />
                 <LayerComponentIconCustom
+                    v-if="isLayerTree()"
                     :layer-conf="conf"
                 />
             </div>

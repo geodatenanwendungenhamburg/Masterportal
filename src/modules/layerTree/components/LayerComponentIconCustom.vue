@@ -43,9 +43,11 @@ export default {
             }
 
             const [module, action] = execute.action.split("/");
-
+            console.log("called execute: ", module);
             // Handle menu actions
             if (module === "Menu") {
+                console.log("execute action:");
+                console.log(execute);
                 this.setExpandedBySide({ side: "secondaryMenu", expanded: "true" });
                 this.setCurrentComponent(execute.payload);
             }
@@ -56,7 +58,7 @@ export default {
 
 <template lang="html">
     <div
-        v-if="customIconConfig.type === 'customLayerIcon' && layerConf.visibility"
+        v-if="customIconConfig.type === 'customLayerIcon'"
     >
         <IconButton
             :class-array="['btn-light']"
