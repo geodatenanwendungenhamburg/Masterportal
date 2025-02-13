@@ -46,15 +46,8 @@ export default {
 
             // Handle menu actions
             if (module === "Menu") {
-                this.changeCurrentComponent(execute.payload);
-
-                if (!this.expanded(execute.payload.side)) {
-                    this.toggleMenu(execute.payload.side);
-                }
-            }
-            // Handle alerting actions
-            else if (module === "Alerting") {
-                this.addSingleAlert(execute.payload);
+                this.setExpandedBySide({ side: "secondaryMenu", expanded: "true" });
+                this.setCurrentComponent(execute.payload);
             }
         }
     }
@@ -63,7 +56,7 @@ export default {
 
 <template lang="html">
     <div
-        v-if="customIconConfig.type === 'customLayerIcon'"
+        v-if="customIconConfig.type === 'customLayerIcon' && layerConf.visibility"
     >
         <IconButton
             :class-array="['btn-light']"
