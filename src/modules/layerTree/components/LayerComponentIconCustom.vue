@@ -1,5 +1,5 @@
 <script>
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 import IconButton from "../../../shared/modules/buttons/components/IconButton.vue";
 
 /**
@@ -46,7 +46,7 @@ export default {
             if (module === "Menu") {
                 console.log("execute action:");
                 console.log(execute);
-                this.setExpandedBySide({ side: "secondaryMenu", expanded: "true" });
+                this.setExpandedBySide({ side: "secondaryMenu", expanded: true });
                 this.setCurrentComponent(execute.payload);
             }
         }
