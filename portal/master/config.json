@@ -105,7 +105,7 @@
         "fxaa": true,
         "globe": {
           "enableLighting": true,
-          "maximumScreenSpaceError": 2,
+          "maximumScreenSpaceError": 25,
           "tileCacheSize": 20
         }
       },

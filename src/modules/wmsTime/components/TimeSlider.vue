@@ -53,10 +53,13 @@ export default {
                 this.playing = false;
             }
 
-            const layer = layerCollection.getLayerById(this.layerId),
-                targetTime = this.timeRange[this.sliderValue];
+            const layer = layerCollection.getLayerById(this.layerId);
+            let targetTime = this.timeRange[this.sliderValue];
 
-            if (layer) {
+            if (!targetTime) {
+                targetTime = this.defaultValue;
+            }
+            if (layer && this.defaultValue) {
                 layer.updateTime(this.layerId, targetTime);
                 if (this.layerSwiperActive) {
                     this.updateMap();
