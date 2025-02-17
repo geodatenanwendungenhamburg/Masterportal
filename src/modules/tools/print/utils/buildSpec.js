@@ -283,7 +283,7 @@ const BuildSpecModel = {
                 returnLayer = this.getDrawLayerInfo(layer, extent);
             }
             else if (layer instanceof Vector) {
-                const maskExtent = getLastPrintedExtent();
+                const maskExtent = layer.getSource().getExtent();
 
                 features = source.getFeaturesInExtent(maskExtent);
 
