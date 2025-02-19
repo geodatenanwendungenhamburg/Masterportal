@@ -35,6 +35,7 @@ export default {
          */
         executeCustomAction () {
             const execute = this.customIconConfig.execute;
+
             if (!execute) {
                 return;
             }
@@ -42,7 +43,7 @@ export default {
             try {
                 if (execute.payload?.side) {
                     // If payload has a side property, ensure menu is expanded
-                    store.commit("Menu/setExpandedBySide", { side: execute.payload.side, expanded: true });
+                    store.commit("Menu/setExpandedBySide", {side: execute.payload.side, expanded: true});
                 }
                 // Dispatch the action
                 store.dispatch(execute.action, execute.payload);
