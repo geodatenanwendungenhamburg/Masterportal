@@ -41,7 +41,11 @@ function addInterceptor (token, interceptorUrlRegex) {
         if (interceptorUrlRegex && resource?.match(interceptorUrlRegex)) {
             config = {
                 ...originalConfig,
-                headers: {"Authorization": `Bearer ${token}`}
+                credentials: "include",
+                headers: {
+                    ...originalConfig?.headers,
+                    "Authorization": `Bearer ${token}`
+                }
             };
         }
 
