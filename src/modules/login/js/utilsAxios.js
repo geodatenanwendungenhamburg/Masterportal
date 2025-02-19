@@ -14,6 +14,7 @@ function addInterceptor (token, interceptorUrlRegex) {
 
             if (!configUrl?.startsWith("http") || (interceptorUrlRegex && configUrl?.match(interceptorUrlRegex))) {
                 config.headers.Authorization = `Bearer ${token}`;
+                config.withCredentials = true;
             }
             return config;
         },
@@ -28,6 +29,7 @@ function addInterceptor (token, interceptorUrlRegex) {
 
             if (interceptorUrlRegex && this.responseURL?.match(interceptorUrlRegex)) {
                 this.setRequestHeader("Authorization", `Bearer ${token}`);
+                this.withCredentials = true;
             }
             return opened;
         };
