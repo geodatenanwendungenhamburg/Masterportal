@@ -11,7 +11,8 @@
 - ShareView: Deleted import of BorisState as it caused a compiler error when addons are not integrated. Replaced it with a string instead.
 - WMS-Time: 
     - GFIFeature is now called every time the time slider is used, ensuring the selected time is always displayed in the feature.
-    - Updated to ensure WMS-Time Layer compatibility with version 1.3.0. 
+    - Updated to ensure WMS-Time Layer compatibility with version 1.3.0.
+    - Fixed issue where dragging the slider while comparing two time instances updated both sliders instead of only the active one.
 
 
 ## 2025-02-21 v3.3.4 (LTS)
