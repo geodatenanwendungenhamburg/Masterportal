@@ -91,8 +91,8 @@ export default {
      * @returns {void}
      */
     collectGfiFeatures ({getters, commit, dispatch, rootGetters}) {
-        let clickCoordinate = rootGetters["Maps/clickCoordinate"];
-        const resolution = rootGetters["Maps/resolution"],
+        const clickCoordinate = rootGetters["Maps/clickCoordinate"],
+            resolution = rootGetters["Maps/resolution"],
             projection = rootGetters["Maps/projection"],
             gfiFeaturesAtPixel = getters.gfiFeaturesAtPixel,
             gfiWmsLayerList = getVisibleWmsLayersAtResolution(resolution, rootGetters.visibleSubjectDataLayerConfigs).filter(layer => {
@@ -104,19 +104,6 @@ export default {
                 INFO_FORMAT: layer.get("infoFormat"),
                 FEATURE_COUNT: layer.get("featureCount")
             };
-
-            if (!clickCoordinate) {
-                console.warn("⚠️ Kein Click-Coordinate gefunden, verwende Kartenmitte.");
-                const mapView = rootGetters["Maps/view"];
-
-                if (mapView) {
-                    clickCoordinate = mapView.getCenter(); // OpenLayers View Center
-                }
-                else {
-                    clickCoordinate = [0, 0]; // Standard-Koordinate als letzter Fallback
-                }
-            }
-
             let url = layer.getSource().getFeatureInfoUrl(clickCoordinate, resolution, projection, gfiParams);
 
             // this part is needed if a Url contains a style which seems to mess up the getFeatureInfo call
@@ -126,9 +113,7 @@ export default {
                 url = newUrl;
             }
 
-            return getWmsFeaturesByMimeType(layer, url).then(features => {
-                return features;
-            });
+            return getWmsFeaturesByMimeType(layer, url);
         }))
             .then(gfiFeatures => {
                 const clickPixel = rootGetters["Maps/clickPixel"],
