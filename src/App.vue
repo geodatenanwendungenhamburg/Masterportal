@@ -69,8 +69,6 @@ export default {
         new Tooltip(document.body, {
             selector: "[data-bs-toggle='tooltip']"
         });
-        // eslint-disable-next-line no-console
-        console.log("New Version deployed 3.7.1");
         // Start periodic check if user token is still valid
         setInterval(() => {
             this.checkLoggedIn();
