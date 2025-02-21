@@ -3,7 +3,7 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## 2024-12-12 v3.3.3 (LTS)
+## 2025-02-21 v3.3.4 (LTS)
 
 ### Fixed
 - Issue #1106: Layer names, folder names and breadcrumbs are translated.
