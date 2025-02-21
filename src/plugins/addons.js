@@ -2,6 +2,7 @@
 import store from "../app-store";
 import main from "../main";
 import {defineComponent} from "vue";
+import {upperFirst} from "../shared/js/utils/changeCase";
 
 const allAddons = typeof VUE_ADDONS !== "undefined" ? VUE_ADDONS : {};
 
