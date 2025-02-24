@@ -32,9 +32,6 @@ export default {
         },
         selectedTime () {
             return this.timeRange[this.sliderValue];
-        },
-        localTimeRange () {
-            return [...this.timeRange];
         }
     },
     watch: {
