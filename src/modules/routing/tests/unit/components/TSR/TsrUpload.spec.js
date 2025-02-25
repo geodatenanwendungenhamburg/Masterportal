@@ -106,7 +106,7 @@ describe("src/modules/routing/components/TSR/TsrUpload.vue", () => {
             plugins: [store]
         }});
 
-        expect(wrapper.find(".drop-area").exists()).to.be.true;
+        expect(wrapper.find("#fileUpload").exists()).to.be.true;
     });
 
     it("splits csv", () => {
@@ -118,18 +118,6 @@ describe("src/modules/routing/components/TSR/TsrUpload.vue", () => {
             csvSplit = wrapper.vm.splitCsv(csv);
 
         expect(csvSplit.length).to.equal(4);
-    });
-
-    it("starts file input", () => {
-        const spy = sinon.spy(TsrUpload.methods, "startFileInput");
-
-        wrapper = shallowMount(TsrUpload, {global: {
-            plugins: [store]
-        }});
-
-        wrapper.find("#btn-file-input").trigger("click");
-
-        expect(spy.calledOnce).to.be.true;
     });
 
     it("validates correct file", async () => {

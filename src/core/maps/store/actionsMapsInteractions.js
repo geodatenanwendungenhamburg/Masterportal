@@ -44,6 +44,10 @@ export default {
     registerListener ({commit, dispatch}, {type, listener, listenerType = "function", root = false, keyForBoundFunctions}) {
         const listenerKey = keyForBoundFunctions ? keyForBoundFunctions : String(listener);
 
+        if (listenerKey === "function () { [native code] }") {
+            console.warn("Wrong use of 'registerListener' at map for listenerType = 'function', which uses .bind(this): provide 'keyForBoundFunctions'!");
+        }
+
         registeredActions[type] = registeredActions[type] || {};
         registeredActions[type][listenerType] = registeredActions[type][listenerType] || {};
         registeredActions[type][listenerType][listenerKey] = evt => {

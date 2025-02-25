@@ -591,7 +591,8 @@
       "pt": "Português",
       "ru": "Русский",
       "tr": "Türkçe",
-      "ua": "Українська"
+      "ua": "Українська",
+      "nl": "Nederlands"
     },
     "layerClusterToggler": {
       "description": "Aktivieren Sie mehrere Themen mit einem Knopfdruck",

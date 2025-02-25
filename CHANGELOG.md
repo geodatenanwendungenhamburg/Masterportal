@@ -7,14 +7,26 @@
 ### __Breaking Changes__
 
 ### Added
+- i18next: added Nederlands language.
 
 ### Changed
+- The following packages have been updated:
+    - dependencies:
+        - @masterportal/mpconfigparser: 1.4.0 to 2.0.0
+- Map: added a warning in console, if a listener is added to map for a function that binds this and no special key is provided.
+- Routing: TsrUpload and RoutingBatchProcessing now use sharedComponent FileUpload for uploading files.
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+- Alerting: Fixed bug, alerts now show everytime on pageload when alert.once is set to false.
+- Issue #1320: Fixed long url when sharing a view with open search bar.
+- Issue #1340: fixed duplicate menu entries in the mobile version.
+- Issue #1357: Fixed unauthorized errors by restoring credentials: include in utilsAxios to ensure cookies with login information are properly attached to requests.
+- layer3dTileset: Fixed the default maximumScreenSpaceError value to be a number and increased it for better performance. 
+- ShareView: Deleted import of BorisState as it caused a compiler error when addons are not integrated. Replaced it with a string instead.
 
 ---
 
@@ -38,6 +50,7 @@
 - CustomMenuElement:
     - Added configuration support for 2D/3D viewpoints.
     - Added the possibility to add layers to the map and displays them in layerTree.
+- WMS-Time: Updated to ensure WMS-Time Layer compatibility with version 1.3.0. 
 
 ### Changed
 - SearchBar: Added reset button to searchbar, so that the reset is shown and working in all browsers.
@@ -54,6 +67,7 @@
 
 ### Fixed
 - Issue #1106: Layer names, folder names and breadcrumbs are translated.
+- Issue #1250: Loading the layer is accelerated.
 - Issue #1301: CustomMenuElement now also works in secondaryMenu.
 - Issue #1306: Layer names containing HTML-tags are rendered as HTML in Layer Tree.
 - Issue #1312: AddWMS: All layers of the added WMS layers are now added in a folder structure in the layerSelection.

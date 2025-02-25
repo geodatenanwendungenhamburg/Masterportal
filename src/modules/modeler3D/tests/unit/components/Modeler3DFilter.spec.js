@@ -151,14 +151,10 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
                 {id: 2, layer: {name: "TestLayer2"}, name: "Filter3"},
                 {id: 3, layer: {name: "TestLayer2"}, name: "Filter4"}
             ]);
+            store.commit("Modules/Modeler3D/setFilterGroupOrder", ["TestLayer1", "TestLayer2"]);
             wrapper = mount(Modeler3DFilterComponent, {
                 global: {
                     plugins: [store]
-                },
-                data () {
-                    return {
-                        groupOrder: ["TestLayer1", "TestLayer2"]
-                    };
                 }
             });
 

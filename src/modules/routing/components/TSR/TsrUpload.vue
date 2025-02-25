@@ -1,14 +1,17 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
+import FileUpload from "../../../../shared/modules/inputs/components/FileUpload.vue";
 
 /**
  * TsrUpload
  * @module modules/TsrUpload
  * @vue-prop {Boolean} csvHeaders - Shows if csvHeaders is on or off
- * @vue-computed {String} dropZoneAdditionalClass - Gets the class for the file drop element
  */
 export default {
     name: "TsrUpload",
+    components: {
+        FileUpload
+    },
     props: {
         csvHeaders: Boolean
     },
@@ -17,20 +20,13 @@ export default {
         return {
             tsrWaypoints: [],
             dataIsValid: false,
-            dzIsDropHovering: false
+            dzIsDropHovering: false,
+            fileUploaded: false
         };
     },
     computed: {
         ...mapGetters("Modules/Routing/TSR", ["waypoints", "settings"]),
-        ...mapGetters("Modules/Routing", ["taskHandler", "tsrSettings"]),
-
-        /**
-         * Gets the class for the file drop element
-         * @returns {String} class to display
-         */
-        dropZoneAdditionalClass: function () {
-            return this.dzIsDropHovering ? "dzReady" : "";
-        }
+        ...mapGetters("Modules/Routing", ["taskHandler", "tsrSettings"])
     },
     methods: {
         ...mapMutations("Modules/Routing/TSR", ["IsLoadingTSR"]),
@@ -104,6 +100,7 @@ export default {
                                         title: this.$t("common:modules.routing.tsr.upload.successTitle"),
                                         content: this.$t("common:modules.routing.tsr.upload.successInfo")
                                     });
+                                    this.fileUploaded = true;
                                 }
                                 else {
                                     this.addSingleAlert({
@@ -143,22 +140,6 @@ export default {
             const content = csvFileContent.replace(/[\r]/g, "").trim();
 
             return content.split("\n");
-        },
-        /**
-         * Get Index of waypoint to be displayed in list.
-         * @param {Integer} idx Waypoint index in upload list
-         * @param {Array} tsrWaypoints TSR waypoints
-         * @returns {String} newIdx new index to be displayed in interface
-         */
-        getIdx (idx, tsrWaypoints) {
-            if (idx === 0) {
-                return "S) ";
-            }
-            else if (idx === tsrWaypoints.length - 1) {
-                return "Z) ";
-            }
-            return `${idx + 1}) `;
-
         },
         /**
          * Transform points from csv file to ol waypoints and add to waypoints array.
@@ -297,27 +278,7 @@ export default {
         isNumber (num) {
             return !isNaN(num) && typeof num === "number";
         },
-        /**
-         * Called when user starts dragging a file over the upload container
-         * @returns {void}
-         */
-        onDZDragenter () {
-            this.dzIsDropHovering = true;
-        },
-        /**
-         * Called when user stops dragging a file over the upload container
-         * @returns {void}
-         */
-        onDZDragend () {
-            this.dzIsDropHovering = false;
-        },
-        /**
-         * Called when user drops a file in the upload container
-         * @param {HTMLInputEvent} e event with the files
-         * @returns {void}
-         */
         onDrop (e) {
-            this.dzIsDropHovering = false;
             if (e.dataTransfer.files !== undefined) {
                 this.addFiles(e.dataTransfer.files);
             }
@@ -327,44 +288,13 @@ export default {
 </script>
 
 <template>
-    <div class="d-flex justify-content-center">
-        <div
-            class="vh-center-outer-wrapper drop-area-fake mb-2"
-            :class="dropZoneAdditionalClass"
-        >
-            <div
-                class="vh-center-inner-wrapper"
-            >
-                <p
-                    class="caption"
-                >
-                    {{ $t('common:modules.routing.batchProcessing.placeFile') }}
-                </p>
-            </div>
-
-            <div
-                class="drop-area"
-                role="presentation"
-                @drop.prevent="onDrop($event)"
-                @dragover.prevent
-                @dragenter.prevent="onDZDragenter()"
-                @dragleave="onDZDragend()"
-            />
-        </div>
-    </div>
-    <div class="divider">
-        {{ $t('common:modules.routing.tsr.upload.divider') }}
-    </div>
-    <div class="d-flex justify-content-center">
-        <button
-            id="btn-file-input"
-            class="btn btn-primary"
-            type="button"
-            @click="startFileInput()"
-        >
-            <i class="bi bi-upload" />
-            {{ $t('common:modules.routing.tsr.upload.header') }}
-        </button>
+    <div class="justify-content-center">
+        <FileUpload
+            :id="'fileUpload'"
+            :keydown="(e) => triggerClickOnFileInput(e)"
+            :change="(e) => onInputChange(e)"
+            :drop="(e) => onDrop(e)"
+        />
     </div>
 
     <label
@@ -384,74 +314,4 @@ export default {
 <style lang="scss" scoped>
 @import "~variables";
 
-.drop-area-fake {
-    background-color: $white;
-    border-radius: 12px;
-    border: 2px dashed $accent_disabled;
-    padding:24px;
-    transition: background 0.25s, border-color 0.25s;
-    min-width: 80%;
-
-    &.dzReady {
-        background-color:$accent_hover;
-        border-color:transparent;
-        p.caption {
-            color: $white;
-        }
-    }
-
-    p.caption {
-        margin:0;
-        text-align:center;
-        transition: color 0.35s;
-        font-family: $font_family_accent;
-        font-size: $font-size-lg;
-        color: $accent_disabled;
-    }
-}
-
-.drop-area {
-    position:absolute;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    z-index:10;
-}
-
-.vh-center-outer-wrapper {
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    text-align:center;
-    position:relative;
-    &:before {
-        content:'';
-        display:inline-block;
-        height:100%;
-        vertical-align:middle;
-        margin-right:-0.25rem;
-    }
-}
-
-.vh-center-inner-wrapper {
-    text-align:left;
-    display:inline-block;
-    vertical-align:middle;
-    position:relative;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-}
-
-.divider::before, .divider::after {
-  content: '';
-  height: 1px;
-  background-color: silver;
-  flex-grow: 1;
-  margin: 20px;
-}
 </style>

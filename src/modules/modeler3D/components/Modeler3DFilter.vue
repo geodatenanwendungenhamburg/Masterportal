@@ -47,14 +47,14 @@ export default {
             dzIsDropHovering: null,
             dzIsHovering: false,
             dragCounter: 0,
-            filterName: "",
-            groupOrder: []
+            filterName: ""
         };
     },
     computed: {
         ...mapGetters(["visibleSubjectDataLayerConfigs", "allLayerConfigs"]),
         ...mapGetters("Modules/Modeler3D", [
             "currentFilterId",
+            "filterGroupOrder",
             "filterList",
             "layerList",
             "buildingFunctionURL",
@@ -78,7 +78,7 @@ export default {
         },
         sortedGroupedFilters () {
             const groupedFilters = this.groupedFiltersByLayer,
-                orderedGroups = this.groupOrder,
+                orderedGroups = this.filterGroupOrder,
                 sortedGroups = {};
 
             orderedGroups.forEach(group => {
@@ -191,8 +191,8 @@ export default {
                 pvoStyleEnabled: false
             });
 
-            if (!this.groupOrder.includes(this.selectedLayer.name)) {
-                this.groupOrder.push(this.selectedLayer.name);
+            if (!this.filterGroupOrder.includes(this.selectedLayer.name)) {
+                this.filterGroupOrder.push(this.selectedLayer.name);
             }
 
             this.setCurrentFilterId(id);

@@ -44,7 +44,8 @@ const Config = {
             pt: "Português",
             ru: "Русский",
             tr: "Türkçe",
-            ua: "Українська"
+            ua: "Українська",
+            nl: "Nederlands"
         },
         fallbackLanguage: "de",
         changeLanguageOnStartWhen: ["querystring", "localStorage", "htmlTag"]

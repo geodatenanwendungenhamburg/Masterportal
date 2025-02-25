@@ -17,7 +17,7 @@ import layerCollection from "./layerCollection";
 export default function Layer3dTileset (attributes) {
     const defaultAttributes = {
         cesium3DTilesetDefaults: {
-            maximumScreenSpaceError: "6"
+            maximumScreenSpaceError: 25
         },
         transparency: 0
     };

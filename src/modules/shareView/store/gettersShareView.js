@@ -1,5 +1,7 @@
 import {generateSimpleGetters} from "../../../shared/js/utils/generators";
 import shareViewState from "./stateShareView";
+import stateSearchBar from "../../searchBar/store/stateSearchBar";
+import layerSelectionState from "../../layerSelection/store/stateLayerSelection";
 
 /**
  * Checks if the attributes can be converted to a string. if not, an error message is displayed and the attributes are removed from the params.
@@ -29,18 +31,15 @@ const simpleGetters = {
     url (state, getters, rootState, rootGetters) {
         const layerParams = rootGetters.layerUrlParams,
             mapParams = rootGetters["Maps/urlParams"],
-            menuParams = rootGetters["Menu/urlParams"];
+            menuParams = rootGetters["Menu/urlParams"],
+            componentTypes = [shareViewState.type, layerSelectionState.type, stateSearchBar.type, "borisComponent"];
         let shareUrl = location.origin + location.pathname + "?";
 
-        if (menuParams.main.currentComponent === "shareView" || menuParams.main.currentComponent === "layerSelection") {
+        if (componentTypes.includes(menuParams.main.currentComponent)) {
             menuParams.main.currentComponent = "root";
             delete menuParams.main.attributes;
-            if (menuParams.secondary.currentComponent === "borisComponent") {
-                menuParams.secondary.currentComponent = "root";
-                delete menuParams.secondary.attributes;
-            }
         }
-        else if (menuParams.secondary.currentComponent === "shareView") {
+        if (componentTypes.includes(menuParams.secondary.currentComponent)) {
             menuParams.secondary.currentComponent = "root";
             delete menuParams.secondary.attributes;
         }

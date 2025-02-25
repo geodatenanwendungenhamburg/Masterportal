@@ -240,8 +240,20 @@ export default {
         layerContainer = getNestedValues(state.layerConfig, "elements", true).flat(Infinity);
         if (state.portalConfig?.tree?.type === "auto") {
             dispatch("processTreeTypeAuto", layerContainer);
+            dispatch("updateLayerConfigs", layerContainer);
         }
         else {
+            getters.allLayerConfigsByParentKey(treeSubjectsKey).map(attributes => {
+                if (attributes.baselayer !== true) {
+                    const rawLayers = getAndMergeRawLayer(attributes, !getters.showLayerAddButton, state.portalConfig?.tree?.layerIDsToStyle);
+
+                    if (rawLayers.length > 1) {
+                        replacer.replaceInNestedValues(state.layerConfig, "elements", rawLayers, {key: "id", value: attributes.id, replaceObject: attributes.id});
+                    }
+                    return Object.assign(attributes, rawLayers[0]);
+                }
+                return attributes;
+            });
             const allLayerConfigsStructured = getters.allLayerConfigsStructured(),
                 folders = allLayerConfigsStructured.filter(conf => conf.type === "folder");
 
@@ -250,8 +262,8 @@ export default {
             }
 
             buildTreeStructure.setIdsAtFolders(folders);
+            dispatch("updateLayerConfigs", layerContainer.filter(conf => conf.baselayer === true || conf.visibility === true || conf.showInLayerTree));
         }
-        dispatch("updateLayerConfigs", layerContainer);
     },
 
     /**

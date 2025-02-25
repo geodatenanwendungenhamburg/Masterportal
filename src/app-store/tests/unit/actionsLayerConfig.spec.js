@@ -73,7 +73,8 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                     kategorie_inspire: ["kein INSPIRE-Thema"],
                     kategorie_organisation: "Landesbetrieb Straßen, Brücken und Gewässer"
                 }],
-                zIndex: 4
+                zIndex: 4,
+                showInLayerTree: true
             },
             {
                 id: "451",
@@ -148,7 +149,8 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                     visibility: true
                 },
                 {
-                    id: "10220"
+                    id: "10220",
+                    showInLayerTree: true
                 }
             ]
         };
@@ -187,7 +189,8 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                                     id: "folder_3",
                                     elements: [
                                         {
-                                            id: "1103"
+                                            id: "1103",
+                                            visibility: true
                                         }
                                     ]
                                 },
@@ -197,7 +200,8 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                             ]
                         },
                         {
-                            id: "10220"
+                            id: "10220",
+                            showInLayerTree: true
                         },
                         {
                             id: "451"
@@ -434,6 +438,13 @@ describe("src/app-store/actionsLayerConfig.js", () => {
     });
 
     describe("extendLayers", () => {
+        beforeEach(() => {
+            getters = {
+                allLayerConfigs: [],
+                allLayerConfigsByParentKey: () => [],
+                allLayerConfigsStructured: () => []
+            };
+        });
         it("extend layers for simple tree", () => {
             state.layerConfig = layerConfig;
             actions.extendLayers({dispatch, getters, state});
@@ -444,9 +455,8 @@ describe("src/app-store/actionsLayerConfig.js", () => {
             expect(dispatch.secondCall.args[0]).to.equals("updateLayerConfigs");
             expect(dispatch.secondCall.args[1]).to.deep.equals([
                 {id: "453", visibility: true},
-                {id: "452"},
                 {id: "1132", name: "100 Jahre Stadtgruen POIs", visibility: true},
-                {id: "10220"}
+                {id: "10220", showInLayerTree: true}
             ]
             );
         });
@@ -465,17 +475,21 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                     visibility: true,
                     name: "Geobasiskarten (farbig)"
                 },
-                {id: "453"},
-                {id: "1103"},
-                {id: "10220"},
-                {id: "10220"},
-                {id: "451"}
+                {
+                    id: "1103",
+                    visibility: true
+                },
+                {
+                    id: "10220",
+                    showInLayerTree: true
+                }
             ]);
         });
 
         it("extend layers for special configuration with folders", () => {
             getters = {
-                allLayerConfigsStructured: () => []
+                allLayerConfigsStructured: () => [],
+                allLayerConfigsByParentKey: () => []
             };
             layerConfig = {
                 [treeSubjectsKey]: {
@@ -502,7 +516,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                                         },
                                         {
                                             id: "718",
-                                            visibility: true
+                                            showInLayerTree: true
                                         },
                                         {
                                             id: "719"
@@ -513,7 +527,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                                             elements: [
                                                 {
                                                     id: "1103",
-                                                    visibility: true
+                                                    showInLayerTree: true
                                                 }
                                             ]
                                         }
@@ -535,11 +549,9 @@ describe("src/app-store/actionsLayerConfig.js", () => {
             expect(dispatch.secondCall.args[0]).to.equals("updateLayerConfigs");
             expect(dispatch.secondCall.args[1]).to.deep.equals([
                 {id: "1132", name: "100 Jahre Stadtgruen POIs", visibility: true},
-                {id: "10220"},
                 {id: "717", visibility: true},
-                {id: "718", visibility: true},
-                {id: "719"},
-                {id: "1103", visibility: true}
+                {id: "718", showInLayerTree: true},
+                {id: "1103", showInLayerTree: true}
 
             ]);
         });
@@ -682,7 +694,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 expect(state.layerConfig[treeSubjectsKey]?.elements[0].id).to.be.equals("1132");
                 expect(Object.keys(state.layerConfig[treeSubjectsKey]?.elements[0]).length).to.be.equals(3);
                 expect(state.layerConfig[treeSubjectsKey]?.elements[1].id).to.be.equals("10220");
-                expect(Object.keys(state.layerConfig[treeSubjectsKey]?.elements[1]).length).to.be.equals(1);
+                expect(Object.keys(state.layerConfig[treeSubjectsKey]?.elements[1]).length).to.be.equals(2);
                 expect(determineZIndexSpy.calledOnce).to.be.true;
 
                 expect(dispatch.calledOnce).to.be.true;
@@ -727,7 +739,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 expect(state.layerConfig[treeSubjectsKey]?.elements[0].id).to.be.equals("1132");
                 expect(Object.keys(state.layerConfig[treeSubjectsKey]?.elements[0]).length).to.be.equals(3);
                 expect(state.layerConfig[treeSubjectsKey]?.elements[1].id).to.be.equals("10220");
-                expect(Object.keys(state.layerConfig[treeSubjectsKey]?.elements[1]).length).to.be.equals(1);
+                expect(Object.keys(state.layerConfig[treeSubjectsKey]?.elements[1]).length).to.be.equals(2);
                 expect(determineZIndexSpy.calledOnce).to.be.true;
 
                 expect(dispatch.calledOnce).to.be.true;

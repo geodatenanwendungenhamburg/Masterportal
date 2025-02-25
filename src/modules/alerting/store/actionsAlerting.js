@@ -66,7 +66,7 @@ export default {
         const storageKey = state.localStorageDisplayedAlertsKey;
 
         state.alerts.forEach(singleAlert => {
-            if (!singleAlert.mustBeConfirmed && singleAlert.initialConfirmed !== false && singleAlert.initial !== undefined) {
+            if (!singleAlert.mustBeConfirmed && singleAlert.initialConfirmed !== false && singleAlert.initial !== undefined && singleAlert.once === true) {
                 commit("addToDisplayedAlerts", singleAlert);
                 commit("removeFromAlerts", singleAlert);
             }

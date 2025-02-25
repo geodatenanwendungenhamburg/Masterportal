@@ -275,17 +275,18 @@ Layer2dRasterWmsTimeLayer.prototype.prepareTime = function (attrs) {
 
     return this.requestCapabilities(attrs.url, attrs.version, attrs.layers)
         .then(xmlCapabilities => {
-            const {dimension, extent} = this.retrieveTimeData(xmlCapabilities, attrs.layers, time);
+            const {dimension, extent} = this.retrieveTimeData(xmlCapabilities, attrs.layers, time),
+                timeSource = extent ? extent : dimension;
 
-            if (!dimension || !extent) {
+            if (!timeSource) {
                 throw Error(i18next.t("common:modules.core.modelList.layer.wms.invalidTimeLayer", {id: this.id}));
             }
-            else if (dimension.units !== "ISO8601") {
+            else if (dimension && dimension.units !== "ISO8601") {
                 throw Error(`WMS-T layer ${this.id} specifies time dimension in unit ${dimension.units}. Only ISO8601 is supported.`);
             }
             else {
-                const {step, timeRange} = this.extractExtentValues(extent),
-                    defaultValue = this.determineDefault(timeRange, extent.default, time.default),
+                const {step, timeRange} = this.extractExtentValues(timeSource),
+                    defaultValue = this.determineDefault(timeRange, timeSource.default, time.default),
                     timeData = {defaultValue, step, timeRange};
 
                 attrs.time = {...time, ...timeData};
@@ -311,9 +312,15 @@ Layer2dRasterWmsTimeLayer.prototype.prepareTime = function (attrs) {
  */
 Layer2dRasterWmsTimeLayer.prototype.removeLayer = function (layerId) {
     // If the swiper is active, two WMS-T are currently active
-    if (store.getters["Modules/WmsTime/layerSwiper"].active) {
+    if (store.getters["Modules/WmsTime/timeSlider"].active) {
         if (!layerId.endsWith(store.getters["Modules/WmsTime/layerAppendix"])) {
-            this.setIsSelected(true);
+            store.dispatch("replaceByIdInLayerConfig", {layerConfigs: [{
+                id: layerId,
+                layer: {
+                    visibility: true,
+                    showInLayerTree: true
+                }
+            }]});
         }
         store.dispatch("Modules/WmsTime/toggleSwiper", layerId);
     }

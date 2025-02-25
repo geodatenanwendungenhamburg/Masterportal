@@ -132,3 +132,18 @@ pipelines:
                         - source .venv/bin/activate
                         - pip install -r devtools/docsValidation/python-dependencies.txt
                         - devtools/docsValidation/docsValidation.sh
+        mkdocs to bitbucket download:
+            - variables:
+                - name: BITBUCKET_TAG
+                  description: tag to publish docs for, e.g. v3.1.0
+            -   step:
+                    name: create mkdocs
+                    image: python:3.8
+                    caches:
+                        - pip
+                    script:
+                        - apt-get update && apt-get install zip
+                        - pip install -r devtools/docsValidation/python-dependencies.txt
+                        - mike deploy $BITBUCKET_TAG
+                        - zip -r masterportal_docs.zip /opt/atlassian/pipelines/agent/build/site
+                        - curl -X POST --user "$bbapi_name:$bbapi_key" "https://api.bitbucket.org/2.0/repositories/geowerkstatt-hamburg/masterportal/downloads/" --form files=@"masterportal_docs.zip" --verbose;

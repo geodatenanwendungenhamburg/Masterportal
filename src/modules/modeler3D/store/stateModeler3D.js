@@ -21,6 +21,7 @@
  * @property {Object[]}     drawnModels - a list of currently active drawn models
  * @property {String[]}     drawTypes - an array of supported draw types
  * @property {Number}       extrudedHeight height in meters for drawing model
+ * @property {String[]}     filterGroupOrder - an array of filter names needed to display the filters persistently
  * @property {Object[]}     filterList - a list of all filters
  * @property {String}       gmlIdPath - the GFI path to the gml Id
  * @property {Number}       height - the raw transformed height coordinate displayed on the ui
@@ -99,6 +100,7 @@ export default {
     drawRotation: 0,
     drawTypes: ["rectangle", "line", "polygon"],
     extrudedHeight: 20,
+    filterGroupOrder: [],
     filterList: [],
     gmlIdPath: "gmlid",
     height: 0,

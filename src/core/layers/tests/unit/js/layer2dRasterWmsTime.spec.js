@@ -157,6 +157,21 @@ describe("src/core/js/layers/layer2dRasterWmsTime.js", () => {
             expect(result).to.be.equals("2023-09-16");
         });
     });
+    it("extractExtentValues if they are in dimension", function () {
+        const wmsTimeLayer = new Layer2dRasterWmsTime(attributes),
+            dimension = {
+                name: "time",
+                units: "ISO8601",
+                value: "2006/2018/P2Y"
+            };
+
+        expect(wmsTimeLayer.extractExtentValues(dimension)).deep.equals({
+            timeRange: ["2006", "2008", "2010", "2012", "2014", "2016", "2018"],
+            step: {
+                year: "2"
+            }
+        });
+    });
     describe("createTimeRange", () => {
         it("create an array with the time range", function () {
             const wmsTimeLayer = new Layer2dRasterWmsTime(attributes),

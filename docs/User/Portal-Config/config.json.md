@@ -1589,38 +1589,38 @@ The following events exist. Which events can be configured can be found in the d
 
 #### portalConfig.menu.sections {data-toc-label='Sections'}
 
-[type:about]: # (portalConfig.menu.sections.modules)
-[type:addWMS]: # (portalConfig.menu.sections.modules)
-[type:bufferAnalysis]: # (portalConfig.menu.sections.modules)
-[type:contact]: # (portalConfig.menu.sections.modules)
-[type:compareFeatures]: # (portalConfig.menu.sections.modules)
-[type:compareMaps]: # (portalConfig.menu.sections.modules)
-[type:coordToolkit]: # (portalConfig.menu.sections.modules)
-[type:copyrightConstraints]: # (portalConfig.menu.sections.modules)
-[type:customMenuElement]: # (portalConfig.menu.sections.modules)
-[type:draw]: # (portalConfig.menu.sections.modules)
-[type:featureLister]: # (portalConfig.menu.sections.modules)
-[type:fileImport]: # (portalConfig.menu.sections.modules)
-[type:filter]: # (portalConfig.menu.sections.modules)
-[type:language]: # (portalConfig.menu.sections.modules)
-[type:layerClusterToggler]: # (portalConfig.menu.sections.modules)
-[type:layerSlider]: # (portalConfig.menu.sections.modules)
-[type:login]: # (portalConfig.menu.sections.modules)
-[type:measure]: # (portalConfig.menu.sections.modules)
-[type:modeler3D]: # (portalConfig.menu.sections.modules)
-[type:news]: # (portalConfig.menu.sections.modules)
-[type:openConfig]: # (portalConfig.menu.sections.modules)
-[type:print]: # (portalConfig.menu.sections.modules)
-[type:routing]: # (portalConfig.menu.sections.modules)
-[type:scaleSwitcher]: # (portalConfig.menu.sections.modules)
-[type:selectFeatures]: # (portalConfig.menu.sections.modules)
-[type:shadow]: # (portalConfig.menu.sections.modules)
-[type:statisticDashboard]: # (portalConfig.menu.sections.modules)
-[type:shareView]: # (portalConfig.menu.sections.modules)
-[type:statisticDashboard]: # (portalConfig.menu.sections.modules)
-[type:styleVT]: # (portalConfig.menu.sections.modules)
-[type:wfsSearch]: # (portalConfig.menu.sections.modules)
-[type:wfst]: # (portalConfig.menu.sections.modules)
+[type:about]: # (portalConfig.menu.sections.modules.about)
+[type:addWMS]: # (portalConfig.menu.sections.modules.addWMS)
+[type:bufferAnalysis]: # (portalConfig.menu.sections.modules.bufferAnalysis)
+[type:contact]: # (portalConfig.menu.sections.modules.contact)
+[type:compareFeatures]: # (portalConfig.menu.sections.modules.compareFeatures)
+[type:compareMaps]: # (portalConfig.menu.sections.modules.compareMaps)
+[type:coordToolkit]: # (portalConfig.menu.sections.modules.coordToolkit)
+[type:copyrightConstraints]: # (portalConfig.menu.sections.modules.copyrightConstraints)
+[type:customMenuElement]: # (portalConfig.menu.sections.modules.customMenuElement)
+[type:draw]: # (portalConfig.menu.sections.modules.draw)
+[type:featureLister]: # (portalConfig.menu.sections.modules.featureLister)
+[type:fileImport]: # (portalConfig.menu.sections.modules.fileImport)
+[type:filter]: # (portalConfig.menu.sections.modules.filter)
+[type:language]: # (portalConfig.menu.sections.modules.language)
+[type:layerClusterToggler]: # (portalConfig.menu.sections.modules.layerClusterToggler)
+[type:layerSlider]: # (portalConfig.menu.sections.modules.layerSlider)
+[type:login]: # (portalConfig.menu.sections.modules.login)
+[type:measure]: # (portalConfig.menu.sections.modules.measure)
+[type:modeler3D]: # (portalConfig.menu.sections.modules.modeler3D)
+[type:news]: # (portalConfig.menu.sections.modules.news)
+[type:openConfig]: # (portalConfig.menu.sections.modules.openConfig)
+[type:print]: # (portalConfig.menu.sections.modules.print)
+[type:routing]: # (portalConfig.menu.sections.modules.routing)
+[type:scaleSwitcher]: # (portalConfig.menu.sections.modules.scaleSwitcher)
+[type:selectFeatures]: # (portalConfig.menu.sections.modules.selectFeatures)
+[type:shadow]: # (portalConfig.menu.sections.modules.shadow)
+[type:statisticDashboard]: # (portalConfig.menu.sections.modules.statisticDashboard)
+[type:shareView]: # (portalConfig.menu.sections.modules.shareView)
+[type:statisticDashboard]: # (portalConfig.menu.sections.modules.statisticDashboard)
+[type:styleVT]: # (portalConfig.menu.sections.modules.styleVT)
+[type:wfsSearch]: # (portalConfig.menu.sections.modules.wfsSearch)
+[type:wfst]: # (portalConfig.menu.sections.modules.wfst)
 
 Modules can be divided into sections. In the menu, sections are divided with a horizontal line.
 
@@ -1644,7 +1644,7 @@ Modules can be divided into sections. In the menu, sections are divided with a h
 |layerSlider|no|**[layerSlider](#portalconfigmenusectionsmoduleslayerslider)**||The layerSlider module allows showing arbitrary services in order. This can e.g. be used to show aerial footage from multiple years in succession.|false|
 |login|no|**[login](#portalconfigmenusectionsmoduleslogin)**||Configuration of login with an OIDC server.|false|
 |measure|no|**[measure](#portalconfigmenusectionsmodulesmeasure)**||Allows measuring areas and distances in the units m/km/nm resp. m²/ha/km².|false|
-|measure|no|**[modeler3D](#portalconfigmenusectionsmodulesmodeler3D)**||Allows importing 3D models in .gltf, .dae, .obj formats and drawing extrudable 3D polygons.|false|
+|modeler3D|no|**[modeler3D](#portalconfigmenusectionsmodulesmodeler3D)**||Allows importing 3D models in .gltf, .dae, .obj formats and drawing extrudable 3D polygons.|false|
 |news|no|**[news](#portalconfigmenusectionsmodulesnews)**||This module shows all messages from the newsFeedPortalAlerts.json and the config.json of the current portal regardless of the "read" status.|false|
 |openConfig|no|**[openConfig](#portalconfigmenusectionsmodulesopenconfig)**||ith this module a configuration file (config.json) can be reloaded at runtime. The modules and map are adapted to the new configuration.|false|
 |print|no|**[print](#portalconfigmenusectionsmodulesprint)**||Printing module that can be used to export the map's current view as PDF.|false|
@@ -1684,11 +1684,11 @@ This module displays specific portal information like description, Masterportal 
 |----|-------------|---|-------|------------|------|
 |icon|no|String|"bi-info-circle"|Icon that is shown in front of the module-name in the menu. For selection see **[Bootstrap Icons](https://icons.getbootstrap.com/)**|false|
 |name|no|String|"common:modules.about.name"|Name of the module in the menu.|false|
-|type|no|String|"about"|The type of the module. Defines which module is configured.|false|
+|type|yes|String|"about"|The type of the module. Defines which module is configured.|false|
 |abstractText|no|String|""|Description of the portal|false|
 |contact|no|String|null|Metadata contact information|false|
 |cswUrl|no|String|""|Metadata URL|false|
-|logo|no|Boolean/String|true|"../../src/assets/img/Logo_Masterportal.svg"|Path to the logo. With `false` the logo is hidden.|false|
+|logo|no|Boolean/String|"../../src/assets/img/Logo_Masterportal.svg"|Path to the logo. With `false` the logo is hidden.|false|
 |logoLink|no|String|"https://masterportal.org"|Link that opens in a new tab when you click on the logo.|false|
 |logoText|no|String|"Masterportallogo"|Alternative text that is displayed if the logo cannot be displayed.|false|
 |metaDataCatalogueId|no|String|"2"|Id of the metadata service|false|
@@ -1950,7 +1950,7 @@ Coordinates tool: to display the height above sea level in addition to the 2 dim
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
-|explanations|no|[]||Array of declarations from which a list is created.|false|
+|explanations|no|String[]||Array of declarations from which a list is created.|false|
 |title|no|string||Heading for the explanations of the coordinate reference systems.|false|
 
 ***
@@ -2025,7 +2025,7 @@ CustomMenuElement Module `execute` options.
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
 |action|yes|String||Name and, if applicable, path of the action to be executed.|true|
-|payload|no|**[Payload](#datatypespayload)**||Payload that is transferred to the action.|true|
+|payload|no|**[Payload](#datatypespayload)**/[viewpointActivation](#portalconfigmenusectionsmodulescustommenuelementexecuteviewpointactivation)||Payload that is transferred to the action.|true|
 
 **Example**
 
@@ -2042,14 +2042,14 @@ CustomMenuElement Module `execute` options.
 
 The `Maps/activateViewpoint` action configures and activates a specific viewpoint on a map. It requires the `execute` object to include the following payload:
 
-|Name|Required|Type|Description|Expert|
-|----|--------|----|-----------|------|
-|layerIds|no|Array|List of IDs for the map layers to activate.|true|
-|heading|no|Number|The direction the map is facing, in radians.|true|
-|tilt|no|Number|Tilt angle of the map view, in radians.|true|
-|altitude|no|Number|Camera altitude in meters above ground.|true|
-|center|no|Array|[X, Y] coordinates of the center in the map's spatial reference system.|true|
-|zoom|no|Number|Zoom level of the map view.|true|
+|Name|Required|Type|Default|Description|Expert|
+|----|--------|----|-------|-----------|------|
+|layerIds|no|String[]||List of IDs for the map layers to activate.|true|
+|heading|no|Number||The direction the map is facing, in radians.|true|
+|tilt|no|Number||Tilt angle of the map view, in radians.|true|
+|altitude|no|Number||Camera altitude in meters above ground.|true|
+|center|no|Number[]||[X, Y] coordinates of the center in the map's spatial reference system.|true|
+|zoom|no|Number||Zoom level of the map view.|true|
 
 **Example:**
 ```json
@@ -2926,7 +2926,7 @@ These drawings can be exported and loaded back georeferenced into the map.
 |pvoColors|no|**[pvoColors](#markdown-header-portalConfigmenusectionsmodulesmodeler3dpvocolors)**||Define the colors of the PlanzeichenVerordnung.|false|
 |buildingSource|no|String|"ALKIS"|Define the source of buildings (currently only ALKIS supported)|false|
 |buildingFunctionURL|no|String|"https://repository.gdi-de.org/schemas/adv/citygml/Codelisten/BuildingFunctionTypeAdV.xml"|Define the URL where the building types should be retrieved from.|false|
-|type|no|String|"modeler3D"|The type of the module. Defines which module is configured.|false|
+|type|yes|String|"modeler3D"|The type of the module. Defines which module is configured.|false|
 
 **Example**
 
@@ -2952,7 +2952,7 @@ These drawings can be exported and loaded back georeferenced into the map.
 
 ***
 
-###### portalConfig.menu.sections.modules.modeler3D.highlightStyle
+###### portalConfig.menu.sections.modules.modeler3D.highlightStyle  {data-toc-label='highlightStyle'}
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
@@ -2972,7 +2972,7 @@ These drawings can be exported and loaded back georeferenced into the map.
 
 ***
 
-###### portalConfig.menu.sections.modules.modeler3D.pvoColors
+###### portalConfig.menu.sections.modules.modeler3D.pvoColors {data-toc-label='pvoColors'}
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
@@ -3110,7 +3110,7 @@ Print module, configurable for 2 print services: *High Resolution PlotService* a
 
 ***
 
-###### portalConfig.menu.sections.modules.print.additionalLayers
+###### portalConfig.menu.sections.modules.print.additionalLayers {data-toc-label='Print additionalLayers'}
 List of Layers that can be added to the print document.
 
 |Name|Required|Type|Default|Description|Expert|
@@ -3148,10 +3148,9 @@ List of layouts and formats that filters the response from the print service in 
 
 ***
 
-#### Portalconfig.menu.sections.modules.compareFeatures
-{data-toc-label='Compare Features'}
+#### portalConfig.menu.sections.modules.compareFeatures {data-toc-label='Compare Features'}
 
-[inherits]: # (Portalconfig.menu.sections.modules)
+[inherits]: # (portalConfig.menu.sections.modules)
 
 This tool allows comparing vector features which are provided by WFS(❗) services.
 
@@ -3568,7 +3567,7 @@ Routing-tool isochrones options.
 ```
 ***
 
-#### portalConfig.menu.sections.modules.routing.tsrSettings
+#### portalConfig.menu.sections.modules.routing.tsrSettings {data-toc-label='TSR Settings'}
 
 [type:StyleRoute]: # (Datatypes.StyleRoute)
 
@@ -3739,7 +3738,7 @@ The shadow tool provides a UI element to define a point in time by using sliders
 
 ###### portalConfig.menu.sections.modules.shadow.shadowTime {data-toc-label='Shadow Time'}
 |Name|Required|Type|Default|Description|Expert|
-|----|--------|----|-------|-----------|
+|----|--------|----|-------|-----------|------|
 |month|no|String||month|false|
 |day|no|String||day|false|
 |hour|no|String||hour|false|
@@ -4583,7 +4582,7 @@ Configuration of the addLayerButton to select layers.
 ```
 
 ***
-#### portalConfig.tree.addLayerButton.searchBar
+#### portalConfig.tree.addLayerButton.searchBar {data-toc-label='Searchbar in Topic Tree'}
 A topic search is enabled within the configured SearchInterface and SearchCategory.
 
 |Name|Required|Type|Default|Description|Expert|
@@ -4612,7 +4611,7 @@ A topic search is enabled within the configured SearchInterface and SearchCatego
 ```
 
 ***
-#### portalConfig.tree.addLayerButton.searchBar.searchInterfaceInstances
+#### portalConfig.tree.addLayerButton.searchBar.searchInterfaceInstances {data-toc-label='Searchinterface Instances'}
 List of search interfaces from the searchbar that are to be used here.
 The search only works with interfaces that perform a topic search.
 
@@ -4998,9 +4997,10 @@ With the VectorTile layer a dropped preview image is displayed, with WMS and WMT
 
 ***
 
-##### layerConfig.elements.layers.Group {data-toc-label='Group'}
+#### layerConfig.elements.layers.Group {data-toc-label='Group'}
 
 [inherits]: # (layerConfig.elements.layers)
+[type:children]: # (layerConfig.elements.layers)
 
 A group layer is created that contains all layers of the specified ids.
 
@@ -5008,7 +5008,7 @@ A group layer is created that contains all layers of the specified ids.
 |----|--------|----|-------|-----------|------|
 |id|yes|String[]||Ids of the layers to be grouped, these must be contained in the **[services.json](../Global-Config/services.json.md)**. They can have different types (field `typ`).|false|
 |typ|yes|String|"GROUP"|Sets the layer typ to GROUP, which can group layers.|false|
-|children|no|Object[]||Attributes on the grouped layers can be overwritten in `children`. Exception: `visibility` is not overwritten. All ids in the id array must have an equivalent in the `children`.|false|
+|children|no|**[children](#layerconfigelementslayers)**[]||Attributes on the grouped layers can be overwritten in `children`. Exception: `visibility` is not overwritten. All ids in the id array must have an equivalent in the `children`.|false|
 
 
 **Example without children**
@@ -5953,6 +5953,10 @@ Example of a chart snippet. Queries the features from the configured "service" a
 ***
 
 #### Datatypes.Snippets.Children {data-toc-label='Children'}
+
+[type:LocaleCompareParams]: # (Datatypes.Snippets.LocaleCompareParams)
+[type:Service]: # (Datatypes.Snippets.Service)
+
 Child snippet configuration.
 The child snippets are configured in the same way as "normal" snippets.
 See [the snippet datatype](#datatypessnippets) for more information.
@@ -6094,13 +6098,15 @@ The configuration depends on the type of service.
 
 #### Datatypes.Snippets.ChartConfig {data-toc-label='ChartConfig'}
 
+[type:object]: # (Datatypes.Snippets.ChartConfig.Object)
+
 An object that describes a chart. Click **[here](https://www.chartjs.org/docs/latest/configuration/)** for more information.
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
-|data|yes|Object||The data. For more Information click **[here](https://www.chartjs.org/docs/latest/general/data-structures.html)**|false|
-|options|yes|Object||Options for creating the diagram.|false|
-|plugins|yes|Array||Inline plugins can be included in this array. It is an alternative way of adding plugins for single chart (vs registering the plugin globally). More about plugins in the **[developers section](https://www.chartjs.org/docs/latest/developers/plugins.html)**.|false|
+|data|yes|**[object](#datatypessnippetschartconfigobject)**||The data. For more Information click **[here](https://www.chartjs.org/docs/latest/general/data-structures.html)**|false|
+|options|yes|**[object](#datatypessnippetschartconfigobject)**||Options for creating the diagram.|false|
+|plugins|yes|enum[]||Inline plugins can be included in this array. It is an alternative way of adding plugins for single chart (vs registering the plugin globally). More about plugins in the **[developers section](https://www.chartjs.org/docs/latest/developers/plugins.html)**.|false|
 |type|yes|String||Chart type determines the main type of the chart.|false|
 
 **Example**
@@ -6119,6 +6125,15 @@ The top level structure of Chart.js configuration:
 ```
 
 ***
+
+##### Datatypes.Snippets.ChartConfig.Object {data-toc-label='ChartConfig Object'}
+
+|Name|Required|Type|Default|Description|Expert|
+|----|--------|----|-------|-----------|------|
+|foo|no|String||bar|false|
+
+***
+
 
 #### Datatypes.Snippets.LocaleCompareParams {data-toc-label='LocaleCompareParams'}
 
@@ -6682,11 +6697,15 @@ A selectable option for a queryable parameter.
 
 ***
 
-## Datatypes.ResultList {data-toc-label='ResultList'}
+### Datatypes.ResultList {data-toc-label='ResultList'}
 Settings for the output of the found features in the result list.
 By specifying `showAll` all attributes of the found features are displayed in their original form.
 By using an object, a key of the object must represent one of the attributes of the feature,
 and the corresponding value defines the textual output of that attribute.
+
+|Name|Required|Type|Default|Description|Expert|
+|----|--------|----|-------|-----------|------|
+|resultList|yes|String||May contain "showAll" or an object.|false|
 
 **Examples**:
 

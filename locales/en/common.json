@@ -592,7 +592,8 @@
       "pt": "Português",
       "ru": "Русский",
       "tr": "Türkçe",
-      "ua": "Українська"
+      "ua": "Українська",
+      "nl": "Nederlands"
     },
     "layerClusterToggler": {
       "description": "Activate multiple themes with one button click",
