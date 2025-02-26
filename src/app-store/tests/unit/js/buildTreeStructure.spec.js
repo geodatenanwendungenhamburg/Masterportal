@@ -3,6 +3,7 @@ import buildTreeStructure from "../../../js/buildTreeStructure.js";
 import {getAndMergeRawLayer, getAndMergeAllRawLayers} from "../../../js/getAndMergeRawLayer.js";
 import getNestedValues from "../../../../shared/js/utils/getNestedValues";
 import {treeBaselayersKey, treeSubjectsKey} from "../../../../shared/js/utils/constants";
+import {uniqueId} from "../../../../shared/js/utils/uniqueId.js";
 import {expect} from "chai";
 import sinon from "sinon";
 
@@ -519,6 +520,58 @@ describe("src/app-store/js/buildTreeStructure.js", () => {
             expect(folderConfig.elements[0].elements[3].parentId).to.be.equals(folderConfig.elements[0].id);
             expect(folderConfig.elements[0].elements[3].elements[0].id).to.be.equals("1103");
             expect(folderConfig.elements[0].elements[3].elements[0].parentId).to.be.equals(folderConfig.elements[0].elements[3].id);
+        });
+        it("should call getId once per folder", () => {
+            let previousId = 0,
+                nextId = 0;
+            const folderConfig = {
+                "name": "1",
+                "type": "folder",
+                "elements": [
+                    {
+                        "name": "1.1",
+                        "type": "folder",
+                        "elements": [
+                            {
+                                "name": "1.1.1",
+                                "type": "folder"
+                            },
+                            {
+                                "name": "1.1.2",
+                                "type": "folder"
+                            },
+                            {
+                                "name": "1.1.3",
+                                "type": "folder"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "1.2",
+                        "type": "folder",
+                        "elements": [
+                            {
+                                "name": "1.2.1",
+                                "type": "folder"
+                            },
+                            {
+                                "name": "1.2.2",
+                                "type": "folder"
+                            },
+                            {
+                                "name": "1.2.3",
+                                "type": "folder"
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            previousId = parseInt(uniqueId(""), 10);
+            sinon.stub(rawLayerList, "getLayerList").returns(layerList);
+            buildTreeStructure.setIdsAtFolders([folderConfig]);
+            nextId = parseInt(uniqueId(""), 10);
+            expect(nextId - previousId).to.be.equals(10);
         });
     });
 
