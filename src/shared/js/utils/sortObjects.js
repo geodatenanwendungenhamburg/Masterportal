@@ -49,4 +49,29 @@ export function getNestedElement (searchElement, nestedAttribute) {
     return isNaN(parseInt(nestedElement, 10)) ? nestedElement : parseInt(nestedElement, 10);
 }
 
+/**
+ * Sorts an array of objects by their `layerSequence` property in ascending order.
+ * Objects without a `layerSequence` property are moved to the end of the array.
+ *
+ * @param {Array<Object>} objects - The array of objects to sort.
+ *                                  Each object can optionally contain a `layerSequence` property.
+ * @return {void} This function modifies the input array in place and does not return a value.
+ */
+export function sortByLayerSequence (objects) {
+    objects.sort((a, b) => {
+        if (!("layerSequence" in a)) {
+            return 1;
+        }
+        if (!("layerSequence" in b)) {
+            return -1;
+        }
+
+        if (a.layerSequence !== b.layerSequence) {
+            return a.layerSequence - b.layerSequence;
+        }
+
+        return 0;
+    });
+}
+
 export default {sortObjects, getNestedElement};

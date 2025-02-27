@@ -3,7 +3,7 @@ import draggable from "vuedraggable";
 import {mapActions, mapGetters, mapMutations} from "vuex";
 
 import Layer from "./LayerComponent.vue";
-import {sortObjects} from "../../../shared/js/utils/sortObjects";
+import {sortObjects, sortByLayerSequence} from "../../../shared/js/utils/sortObjects";
 
 /**
  * Representation of a node in layertree containing folders or layers.
@@ -19,7 +19,8 @@ export default {
     },
     data () {
         return {
-            isOpen: false
+            isOpen: false,
+            sortedByLayerSequence: false
         };
     },
     computed: {
@@ -45,6 +46,10 @@ export default {
                 }
                 sortObjects(sortedLayerConfig, "zIndex", "desc");
 
+                if (!this.sortedByLayerSequence && sortedLayerConfig.some(conf => "layerSequence" in conf)) {
+                    sortByLayerSequence(sortedLayerConfig);
+                }
+
                 return sortedLayerConfig;
             },
             /**
@@ -54,6 +59,8 @@ export default {
              */
             set (changedLayerConfig) {
                 let configLength = changedLayerConfig.length;
+
+                this.sortedByLayerSequence = true;
 
                 changedLayerConfig.forEach(conf => {
                     conf.zIndex = --configLength;

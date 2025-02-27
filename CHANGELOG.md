@@ -20,6 +20,7 @@
     - Fixed issue where dragging the slider while comparing two time instances updated both sliders instead of only the active one.
 -  Menu: Navigating back from layerinformation to the previous menu item add subject.
 - Loading the layer is accelerated by fixing generation of folder ids.
+- LayerTree, LayerSelection: Introduced an alternative sorting function for layers utilizing the `layerSequence` prop.
 
 
 ## 2025-02-21 v3.3.4 (LTS)

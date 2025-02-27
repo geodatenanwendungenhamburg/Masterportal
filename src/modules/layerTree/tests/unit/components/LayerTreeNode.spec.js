@@ -197,6 +197,44 @@ describe("src/modules/layerTree/components/LayerTreeNode.vue", () => {
         sinon.restore();
     });
 
+    describe("computed", () => {
+        describe("sortedLayerConfig", () => {
+            it("should sort by layerSequence when layerSequence is present", () => {
+                layersBG = [];
+                subjectDataLayers = [
+                    {id: "1", zIndex: 3, layerSequence: 2, showInLayerTree: true},
+                    {id: "2", zIndex: 2, layerSequence: 1, showInLayerTree: true},
+                    {id: "3", zIndex: 1, layerSequence: 3, showInLayerTree: true}
+                ];
+                addLayerButton.active = false; // Use allLayerConfigs
+
+                wrapper = mount(LayerTreeNode, {
+                    global: {
+                        plugins: [store]
+                    }
+                });
+
+                expect(wrapper.vm.sortedLayerConfig.map(layer => layer.id)).to.deep.equal(["2", "1", "3"]);
+            });
+
+            it("should sort by zIndex when layerSequence is not present", () => {
+                layersBG = [];
+                subjectDataLayers = [
+                    {id: "B", zIndex: 2, showInLayerTree: true},
+                    {id: "A", zIndex: 1, showInLayerTree: true}
+                ];
+                addLayerButton.active = false;
+
+                wrapper = mount(LayerTreeNode, {
+                    global: {
+                        plugins: [store]
+                    }
+                });
+
+                expect(wrapper.vm.sortedLayerConfig.map(layer => layer.id)).to.deep.equal(["B", "A"]);
+            });
+        });
+    });
 
     it("renders a simple layer", () => {
         wrapper = mount(LayerTreeNode, {

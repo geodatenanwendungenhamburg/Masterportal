@@ -92,4 +92,50 @@ describe("src/modules/layerSelection/components/LayerSelectionTreeNode.vue", () 
         expect(wrapper.findAll("layer-stub").length).to.be.equals(1);
     });
 
+    describe("methods", () => {
+        beforeEach(() => {
+            const folderConfig = {
+                name: "Folder",
+                type: "folder",
+                elements: [
+                    {id: "1", name: "Layer 1", layerSequence: 2},
+                    {id: "2", name: "Layer 2", layerSequence: 1},
+                    {id: "3", name: "Layer 3"}
+                ]
+            };
+
+            propsData = {
+                conf: folderConfig,
+                showSelectAllCheckBox: false,
+                selectAllConfigs: []
+            };
+
+            wrapper = shallowMount(LayerSelectionTreeNode, {
+                global: {
+                    plugins: [store]
+                },
+                propsData
+            });
+
+            wrapper.vm.folderClicked();
+        });
+        it("folderClicked - emits showNode with the folder name and the folder elements", () => {
+            expect(wrapper.emitted().showNode).to.have.lengthOf(1);
+            expect(wrapper.emitted().showNode[0]).to.deep.equal([
+                "Folder",
+                [
+                    {id: "2", name: "Layer 2", layerSequence: 1},
+                    {id: "1", name: "Layer 1", layerSequence: 2},
+                    {id: "3", name: "Layer 3"}
+                ]
+            ]);
+        });
+        it("folderClicked - sorts elements by layerSequence, if layerSequence is present", () => {
+            expect(wrapper.vm.conf.elements).to.deep.equal([
+                {id: "2", name: "Layer 2", layerSequence: 1},
+                {id: "1", name: "Layer 1", layerSequence: 2},
+                {id: "3", name: "Layer 3"}
+            ]);
+        });
+    });
 });
