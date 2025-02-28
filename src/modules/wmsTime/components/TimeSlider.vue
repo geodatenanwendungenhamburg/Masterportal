@@ -71,12 +71,6 @@ export default {
         ...mapActions("Modules/LayerSwiper", ["updateMap"]),
         ...mapActions("Modules/WmsTime", ["toggleSwiper"]),
         ...mapMutations("Modules/WmsTime", ["setTimeSliderPlaying", "setTimeSliderDefaultValue"]),
-        setSliderValue (value, id) {
-            if (this.layerId !== id) {
-                return;
-            }
-            this.sliderValue = Number(value);
-        },
         updateSlider (event) {
             if (this.$refs.timeSliderInput !== event.target) {
                 return;
