@@ -6,6 +6,7 @@ import Layer from "./layer";
 import {boundingExtent} from "ol/extent";
 import crs from "@masterportal/masterportalapi/src/crs";
 import handleAxiosResponse from "../../../shared/js/utils/handleAxiosResponse";
+import {Group as LayerGroup} from "ol/layer.js";
 
 /**
  * Creates a 2d layer.
@@ -80,6 +81,11 @@ Layer2d.prototype.updateLayerValues = function (attributes) {
     this.getLayer()?.setOpacity((100 - attributes.transparency) / 100);
     this.getLayer()?.setVisible(attributes.visibility);
     this.getLayer()?.setZIndex(attributes.zIndex);
+    if (this.getLayer() instanceof LayerGroup) {
+        this.getLayer().getLayers().getArray().forEach(layer => {
+            layer.setZIndex(attributes.zIndex);
+        });
+    }
     this.controlAutoRefresh(attributes);
 
     if (attributes.fitCapabilitiesExtent && attributes.visibility && !attributes.encompassingBoundingBox) {
