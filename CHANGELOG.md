@@ -13,6 +13,7 @@
     - GFIFeature is now called every time the time slider is used, ensuring the selected time is always displayed in the feature.
     - Updated to ensure WMS-Time Layer compatibility with version 1.3.0.
     - Fixed issue where dragging the slider while comparing two time instances updated both sliders instead of only the active one.
+-  Menu: Navigating back from layerinformation to the previous menu item add subject.
 
 
 ## 2025-02-21 v3.3.4 (LTS)

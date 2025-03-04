@@ -156,7 +156,7 @@ export default {
             if (getters.currentComponent(side).type === state.currentMouseMapInteractionsComponent && getters.currentComponent(side).type !== state.defaultComponent) {
                 dispatch("changeCurrentMouseMapInteractionsComponent", {type: state.defaultComponent, side});
             }
-            if (rootGetters["Modules/SearchBar/showAllResults"] === false || rootGetters["Modules/SearchBar/currentSide"] !== side) {
+            if (getters.currentComponent(side).type !== "layerInformation" && rootGetters["Modules/SearchBar/showAllResults"] === false || rootGetters["Modules/SearchBar/currentSide"] !== side) {
                 commit("switchToPreviousComponent", side);
             }
             if (getters.currentComponent(side).type === "searchBar") {

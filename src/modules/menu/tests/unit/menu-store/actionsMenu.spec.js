@@ -459,6 +459,32 @@ describe("src/modules/menu/menu-store/actionsMenu.js", () => {
                 expect(dispatch.firstCall.args[1]).to.deep.equals({side});
             });
         });
+        it("should switchToPreviousComponent if current component is layerInformation - with action event and showAllResults is false", async () => {
+            side = "mainMenu";
+            rootGetters = {
+                "Modules/SearchBar/showAllResults": false,
+                "Modules/SearchBar/currentSide": "mainMenu",
+                "Modules/SearchBar/currentActionEvent": "showLayerInfo"
+            };
+            getters = {
+                currentComponent: () => {
+                    return {
+                        type: "layerInformation"
+                    };
+                }
+            };
+
+            actions.navigateBack({commit, dispatch, getters, state, rootGetters}, side);
+
+            await nextTick(() => {
+                expect(commit.calledOnce).to.be.true;
+                expect(commit.firstCall.args[0]).to.equal("switchToPreviousComponent");
+                expect(commit.firstCall.args[1]).to.equal(side);
+                expect(dispatch.calledOnce).to.be.true;
+                expect(dispatch.firstCall.args[0]).to.equal("navigateSearchbarActionEventNotInLayerSelection");
+                expect(dispatch.firstCall.args[1]).to.deep.equals({side});
+            });
+        });
     });
     describe("navigateSearchbarActionEventNotInLayerSelection", () => {
         const side = "mainMenu";
