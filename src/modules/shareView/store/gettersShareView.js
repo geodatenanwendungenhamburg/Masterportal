@@ -50,7 +50,6 @@ const simpleGetters = {
         shareUrl.searchParams.set("MENU", JSON.stringify(menuParams));
         shareUrl.searchParams.set("LAYERS", JSON.stringify(layerParams));
 
-
         // Add existing URL parameters if there are any
         if (location.search) {
             const existingParams = new URLSearchParams(location.search);
