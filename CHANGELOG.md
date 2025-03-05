@@ -3,8 +3,7 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
+## 2025-03-05 v3.8.0
 
 ### Added
 - i18next: added Nederlands language.
@@ -16,10 +15,6 @@
 - Map: added a warning in console, if a listener is added to map for a function that binds this and no special key is provided.
 - Routing: TsrUpload, OpenConfig and RoutingBatchProcessing now use sharedComponent FileUpload for uploading files.
 - OpenConfig: Now uses sharedComponent FileUpload.
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - Alerting: Fixed bug, alerts now show everytime on pageload when alert.once is set to false.
