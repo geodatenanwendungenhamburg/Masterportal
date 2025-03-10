@@ -190,7 +190,7 @@ describe("src/modules/shareView/components/ShareView.vue", () => {
                 originalLocation = global.location,
                 state = {},
                 getters = {},
-                expectedURL = "https://self.example.org/portal/?MAP=mapValue&MENU=%7B%22main%22%3A%7B%22currentComponent%22%3A%22root%22%7D%2C%22secondary%22%3A%7B%22currentComponent%22%3A%22root%22%7D%7D&LAYERS=%22LAYER%3DlayerValue%22&ADDONPARAM=addonValue";
+                expectedURL = "https://self.example.org/portal/?MAP=mapValue&MENU={\"main\":{\"currentComponent\":\"root\"},\"secondary\":{\"currentComponent\":\"root\"}}&LAYERS=\"LAYER=layerValue\"&ADDONPARAM=addonValue";
 
             global.location = {
                 ...originalLocation,
@@ -222,7 +222,7 @@ describe("src/modules/shareView/components/ShareView.vue", () => {
                 originalLocation = global.location,
                 state = {},
                 getters = {},
-                expectedURL = "https://self.example.org/portal/?MAP=mapValue&MENU=%7B%22main%22%3A%7B%22currentComponent%22%3A%22root%22%7D%2C%22secondary%22%3A%7B%22currentComponent%22%3A%22root%22%7D%7D&LAYERS=%22LAYER%3DlayerValue%22&ADDONPARAM=addonValue";
+                expectedURL = "https://self.example.org/portal/?MAP=mapValue&MENU={\"main\":{\"currentComponent\":\"root\"},\"secondary\":{\"currentComponent\":\"root\"}}&LAYERS=\"LAYER=layerValue\"&ADDONPARAM=addonValue";
 
             global.location = {
                 ...originalLocation,
