@@ -51,7 +51,18 @@ const simpleGetters = {
         shareUrl = `${shareUrl}&MENU=${JSON.stringify(menuParams)}`;
         shareUrl = `${shareUrl}&LAYERS=${JSON.stringify(layerParams)}`;
 
-        return shareUrl;
+        // Add existing URL parameters if there are any
+        if (location.search) {
+            const existingParams = new URLSearchParams(location.search);
+
+            existingParams?.forEach((value, key) => {
+                if (!Array.from(shareUrl.searchParams.keys()).some(k => k.toLowerCase() === key.toLowerCase())) {
+                    shareUrl.searchParams.set(key, value);
+                }
+            });
+        }
+
+        return shareUrl.origin + shareUrl.pathname + "?" + Array.from(shareUrl.searchParams).map(searchParam => searchParam[0] + "=" + searchParam[1]).join("&");
     }
 };
 
