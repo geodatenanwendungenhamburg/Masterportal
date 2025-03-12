@@ -103,8 +103,13 @@ export default {
         let metadata;
 
         commit("setDownloadLinks", null);
-        if (metaInfo.cswUrl !== null && typeof metaInfo.metaId !== "undefined") {
-            metadata = await getCswRecordById.getRecordById(metaInfo.cswUrl, metaInfo.metaId);
+        if (metaInfo.cswUrl && typeof metaInfo.metaId !== "undefined") {
+            try {
+                metadata = await getCswRecordById.getRecordById(metaInfo.cswUrl, metaInfo.metaId);
+            }
+            catch (error) {
+                console.error(i18next.t("common:modules.layerInformation.noMetadataLoadedConsole"));
+            }
         }
         // use default csw_url from rest-services.json if csw_url not stated in the specific service
         else if (Config.cswId !== null && typeof Config.cswId !== "undefined") {

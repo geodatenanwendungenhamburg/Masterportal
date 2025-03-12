@@ -3,6 +3,12 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## 2025-02-21 v3.3.5 (LTS)
+
+### Fixed
+- LayerInformation: Fixed an issue with no metadata, when cswUrl was undefined, rather than null.
+
+
 ## 2025-02-21 v3.3.4 (LTS)
 
 ### Fixed
