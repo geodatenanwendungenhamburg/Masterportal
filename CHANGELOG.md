@@ -7,6 +7,7 @@
 ### __Breaking Changes__
 
 ### Added
+- New submenu district.
 
 ### Changed
 
