@@ -292,7 +292,15 @@ const BuildSpecModel = {
                 }
             }
             else if (layer instanceof Heatmap) {
-                await this.buildHeatmapPng(layer).then(heatmapImage => {
+
+                await this.buildHeatmapPng(layer).then(async (heatmap) => {
+
+                    let heatmapImage = heatmap;
+
+                    if (heatmapImage.imageUrl === "empty") {
+                        heatmapImage = await this.buildHeatmapPng(layer);
+                    }
+
                     returnLayer = {
                         type: "image",
                         opacity: 1,
@@ -1704,8 +1712,8 @@ const BuildSpecModel = {
             // If the print scale is different from the current map scale the print area may be outside of the
             // current map extent. Therefore we increase the size of the temporary map for the heatmap.
             if (store.state.Tools.Print.currentScale !== store.state.Tools.Print.currentMapScale) {
-                tempDiv.style.width = (mapSize[0] + 100) + "px";
-                tempDiv.style.height = (mapSize[1] + 100) + "px";
+                tempDiv.style.width = (mapSize[0] % 2 === 0 ? mapSize[0] + 600 : mapSize[0] + 601) + "px";
+                tempDiv.style.height = (mapSize[1] % 2 === 0 ? mapSize[1] + 600 : mapSize[1] + 601) + "px";
             }
             else {
                 tempDiv.style.width = (mapSize[0] + 1000) + "px";
@@ -1719,28 +1727,23 @@ const BuildSpecModel = {
             const heatmapMap = new Map({
                 target: tempDiv, // Attach to temporary DOM element
                 layers: [layer], // Only the heatmap layer
-                view: heatmapView
+                view: heatmapView,
+                renderer: "canvas"
             });
 
             // Ensure rendering is complete
             heatmapMap.once("postrender", () => {
 
-                setTimeout(() => {
+                setTimeout(async () => {
                     try {
                         heatmapMap.renderSync(); // Force a render
 
                         // Locate the canvas in the viewport
-                        const canvas = heatmapMap.getViewport().querySelector("canvas");
-
-                        if (!canvas) {
-                            reject("Canvas not found. Ensure WebGL is enabled and heatmapLayer is added.");
-                            return;
-                        }
-
-                        // eslint-disable-next-line one-var
-                        const imageUrl = canvas.toDataURL("image/png"); // Convert to base64 image
+                        const canvas = heatmapMap.getViewport().querySelector("canvas"),
+                            imageUrl = await this.getBase64FromWebGLCanvas(canvas, heatmapMap);
 
                         document.body.removeChild(tempDiv); // Cleanup
+
                         resolve({
                             imageUrl,
                             heatmapExtent: heatmapView.calculateExtent()
@@ -1748,13 +1751,67 @@ const BuildSpecModel = {
 
                         heatmapMap.setTarget(null); // Detach the map from the DOM
                         heatmapMap.dispose(); // Free OpenLayers resources
+
                     }
                     catch (error) {
                         document.body.removeChild(tempDiv); // Cleanup
                         reject("Error exporting heatmap: " + error.message);
                     }
-                }, 500); // Small delay to allow rendering
+                }, 1000); // Small delay to allow rendering
             });
+        });
+    },
+
+    /**
+     * Checks if a canvas with a heatmap is emtpy
+     * @param {WebGLRenderingContext} gl - The WebGL rendering context obtained from the canvas.
+     * @param {HTMLCanvasElement} canvas - The canvas element used to create the WebGL context.
+     * @returns {Boolean} - Returns true if all pixels in the given canvas are empty.
+     */
+    isCanvasEmpty: function (gl, canvas) {
+        // You can use WebGL APIs to capture the content, e.g., gl.readPixels
+        const width = canvas.width,
+            height = canvas.height,
+            pixels = new Uint8Array(4 * width * height); // Array to hold pixel data
+
+        gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+
+        // check for empty pixels
+        // Since each pixel has 4 values (R, G, B, A), the array length is 4 * width * height.
+        // index % 4 === 3 identifies the alpha channel (A) of each pixel.
+        // If index % 4 === 3 → It’s an alpha value → Check if value === 0 (fully transparent).
+        // Otherwise (index % 4 !== 3 → It’s R, G, or B) → Also check if value === 0 (black or transparent).
+        return pixels.every((value, index) => index % 4 === 3 ? value === 0 : value === 0);
+    },
+
+    /**
+     * Generates a base64 image from a given canvas
+     * @param {HTMLCanvasElement} canvas - The canvas element containing the heatmap.
+     * @returns {String} A Base64-encoded image string (data URL).
+     */
+    getBase64FromWebGLCanvas: function (canvas) {
+        const gl = canvas.getContext("webgl");
+
+        if (!gl) {
+            console.error("WebGL not supported.");
+            return null;
+        }
+
+        return new Promise((resolve) => {
+
+            if (this.isCanvasEmpty(gl, canvas)) {
+                resolve("empty");
+            }
+            else {
+
+                const base64Image = canvas.toDataURL("image/png"); // Convert to base64 image
+
+                resolve(base64Image);
+            }
+
+            return null;
+        }).catch((err) => {
+            console.error(err);
         });
     }
 };
