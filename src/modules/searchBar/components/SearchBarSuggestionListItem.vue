@@ -28,8 +28,8 @@ export default {
             <button
                 type="button"
                 class="btn btn-light d-flex"
-                :title="searchSuggestion.toolTip ? searchSuggestion.toolTip : searchSuggestion.name"
-                :aria-label="searchSuggestion.toolTip ? searchSuggestion.toolTip : searchSuggestion.name"
+                :title="searchSuggestion.toolTip ? $t(searchSuggestion.toolTip) : $t(searchSuggestion.name)"
+                :aria-label="searchSuggestion.toolTip ? $t(searchSuggestion.toolTip) : $t(searchSuggestion.name)"
                 @click="activateActions({searchResult: searchSuggestion, actionType: 'onClick'})"
                 @keydown.enter="activateActions({searchResult: searchSuggestion, actionType: 'onClick'})"
                 @mouseover="activateActions({searchResult: searchSuggestion, actionType: 'onHover'})"

@@ -25,7 +25,7 @@ export default {
                 dispatch("showInTree", {layerId: searchResult.id});
             }
             else {
-                commit("setSearchInput", searchResult.name);
+                commit("setSearchInput", i18next.t(searchResult.name));
             }
         }
     },

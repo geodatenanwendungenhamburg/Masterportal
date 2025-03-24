@@ -77,22 +77,23 @@ SearchInterfaceTopicTree.prototype.searchInLayers = function (layerConfigs, sear
     const foundLayers = [];
 
     layerConfigs.forEach(layer => {
-
         if (store.getters["Maps/mode"] === "3D" || !layerFactory.getLayerTypes3d().includes(layer?.typ?.toUpperCase())) {
             const datasets = layer.datasets;
             let searchString = "",
                 datasetsExist = false;
 
             if (this.searchType === "metadata" && Array.isArray(datasets) && datasets.length > 0 && typeof datasets[0].md_name === "string") {
-                searchString = layer.datasets[0].md_name.replace(/ /g, "");
+                searchString = i18next.t(layer.datasets[0].md_name.replace(/ /g, ""));
             }
             else if (typeof layer.name === "string") {
-                searchString = layer.name.replace(/ /g, "");
+                searchString = i18next.t(layer.name).replace(/ /g, "");
             }
             if (Array.isArray(datasets) && datasets.length > 0 && typeof datasets[0].md_name === "string") {
                 datasetsExist = true;
             }
-
+            if (this.toolTip === "path") {
+                layer.layerPath = this.getPath(layer);
+            }
             if (searchString.search(searchInputRegExp) !== -1) {
                 foundLayers.push(this.normalizeLayerResult(layer, datasetsExist));
             }

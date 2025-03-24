@@ -148,7 +148,7 @@ export default {
         :id="'layer-checkbox-' + escapeId(conf.id)"
         :disabled="disabled"
         class="btn d-flex w-100 layer-tree-layer-title pe-2 p-1 btn-light"
-        :title="conf.shortname ? $t(conf.shortname) : $t(conf.name)"
+        :title="$t(layerName)"
         @click="clicked()"
         @keydown.enter="clicked()"
     >
@@ -172,7 +172,7 @@ export default {
             :class="['layer-tree-layer-label', 'mt-0 d-flex flex-column align-self-start', isBold ? 'font-bold' : '']"
             :for="'layer-tree-layer-checkbox-' + conf.id"
             tabindex="0"
-            :aria-label="$t(conf.name)"
+            :aria-label="$t(layerName)"
         >
             <span
                 v-if="conf.shortname"
