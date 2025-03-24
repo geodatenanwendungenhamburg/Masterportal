@@ -438,12 +438,18 @@ export default {
          * @returns {String} The layer id for overviewMap.
          */
         getOverviewmapLayerId () {
-            const defaultLayerId = this.visibleLayerList[0].values_.id,
-                visibleLayerId = this.visibleLayerList.filter(id => id.values_.id === this.overviewmapLayerId).map(val => val.values_.id).toString();
+            if (!this.visibleLayerList.filter(layer => layer.values_.typ === "WMS").length) {
+                return undefined;
+            }
+
+            const visibleWMSLayerList = this.visibleLayerList.filter(layer => layer.values_.typ === "WMS"),
+                defaultLayerId = visibleWMSLayerList[0].values_.id,
+                visibleLayerId = visibleWMSLayerList.filter(id => id.values_.id === this.overviewmapLayerId).map(val => val.values_.id).toString();
 
             if (this.overviewmapLayerId !== undefined && visibleLayerId !== "") {
                 return visibleLayerId;
             }
+
             return defaultLayerId;
         },
         /**
@@ -461,8 +467,10 @@ export default {
             nameList.forEach(name => {
                 if (this.hasLayoutAttribute(layout, name)) {
                     if (name === "overviewMap") {
+                        const overviewMapLayer = this.getLayerById({layerId: this.getOverviewmapLayerId()});
+
                         layoutAttributes[name] = {
-                            "layers": [BuildSpec.buildTileWms(this.getLayerById({layerId: this.getOverviewmapLayerId()}), this.dpiForPdf)]
+                            "layers": overviewMapLayer ? [BuildSpec.buildTileWms(overviewMapLayer, this.dpiForPdf)] : ""
                         };
                     }
                     else if (name === "source") {

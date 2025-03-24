@@ -378,7 +378,8 @@ describe("src/modules/tools/Print/components/PrintMap.vue", () => {
             wrapper = mount(PrintComponent, {store, localVue});
             const layerVisible = [{
                 values_: {
-                    id: "19968"
+                    id: "19968",
+                    typ: "WMS"
                 }
             }];
 
@@ -392,7 +393,8 @@ describe("src/modules/tools/Print/components/PrintMap.vue", () => {
             wrapper = mount(PrintComponent, {store, localVue});
             const layerVisible = [{
                 values_: {
-                    id: "19969"
+                    id: "19969",
+                    typ: "WMS"
                 }
             }];
 
@@ -406,7 +408,8 @@ describe("src/modules/tools/Print/components/PrintMap.vue", () => {
             wrapper = mount(PrintComponent, {store, localVue});
             const layerVisible = [{
                 values_: {
-                    id: "19969"
+                    id: "19969",
+                    typ: "WMS"
                 }
             }];
 
