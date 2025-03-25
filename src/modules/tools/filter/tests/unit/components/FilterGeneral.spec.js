@@ -71,7 +71,7 @@ describe("src/modules/tools/filter/components/FilterGeneral.vue", () => {
 
     it("should render element with question class", async () => {
         wrapper.vm.setActive(true);
-        wrapper.vm.setQuestionLink("https://bitbucket.org/geowerkstatt-hamburg/addons/src/dev/cosi/manuals/005filter.md");
+        wrapper.vm.setQuestionLink("https://bitbucket.org/geowerkstatt-hamburg/addons/src/dev_version_2/cosi/manuals/005filter.md");
         await wrapper.vm.$nextTick();
 
         expect(wrapper.find(".question").exists()).to.be.true;

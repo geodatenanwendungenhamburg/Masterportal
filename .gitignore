@@ -53,7 +53,7 @@ devtools/securedServices.js
 lintfixed.html
 npm-debug.log
 
-# ignore all dev portals except the four standard portals
+# ignore all dev_version_2 portals except the four standard portals
 /portal/*
 !/portal/basic
 !/portal/master

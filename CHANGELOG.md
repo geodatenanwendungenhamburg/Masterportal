@@ -413,7 +413,7 @@
 
 ### Changed
 - The script "npm run build" has been extended. The user can now specify the name of an addon that is excluded from bundle.
-- The roadmap dates have been updated. See [Readme](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/README.md).
+- The roadmap dates have been updated. See [Readme](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_version_2/README.md).
 - Highlighting features via URL:
     - now accepts multiple feature ids, seperated with commas.
     - Zooms the map, so that all highlighted features are visible.
@@ -594,7 +594,7 @@
     - Add: new parameter "filterOnMove" in layer configuration to enable if the layer should be filtered dynamically after the map moves.
     - Add: interface for VectorTiles. Enables filtering for VectorTiles.
 - Documentation gitWorkflow:
-    - A guide for rebasing feature branches with remote has been added. See [Branches and workflow](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/latest/dev/gitWorkflow.md)
+    - A guide for rebasing feature branches with remote has been added. See [Branches and workflow](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/latest/dev_version_2/gitWorkflow.md)
 - ScaleLine: Added the possibility to select the map scale via a selection in the footer.
 - Print:
     - Add new configuration paramter 'layoutOrder' for print service 'plotservice' to define the order of the layouts in the dropdown.
@@ -635,7 +635,7 @@
 - The Virtual City Planner tool (virtualcityPLANNER) has been removed
 
 ### Added
-- GFI: nested object values can now be addressed from "gfiAttributes" by dot notation. See [services.json](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/services.json.md#markdown-header-gfi_attributes) .
+- GFI: nested object values can now be addressed from "gfiAttributes" by dot notation. See [services.json](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_version_2/doc/services.json.md#markdown-header-gfi_attributes) .
 - PortalFooter
     - configuration for mobileFooterInfoToggler has been implemented
     - the icon (arrow) to toggle information is only visible if it is configured
@@ -687,7 +687,7 @@
 
 ## v2.33.0 - 2023-05-03
 ### Added
-- New Rotation control of the map. If map interaction `altShiftDragRotate` is activated the map can be rotated with `shift+alt+drag`. See [mapInteractions](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/config.js.md#markdown-header-mapInteractions) and [rotate control](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/config.json.md#markdown-header-portalconfigcontrolsrotation)
+- New Rotation control of the map. If map interaction `altShiftDragRotate` is activated the map can be rotated with `shift+alt+drag`. See [mapInteractions](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_version_2/doc/config.js.md#markdown-header-mapInteractions) and [rotate control](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_version_2/doc/config.json.md#markdown-header-portalconfigcontrolsrotation)
 - Issue #874: add keyboardEventTarget possibility to ol map configuration
 - Issue #882: add map rotation configuration and control
 - Filter: can be manipulated from URL with parameters
@@ -870,7 +870,7 @@
 
 ## v2.29.0 - 2023-01-04
 ### __Breaking Changes__
-- Addon `obliqueViewer` was renamed to `vcOblique`. Please check and update portal configuration files if necessary. See [documentation](https://bitbucket.org/geowerkstatt-hamburg/addons/src/dev/vcOblique/doc/config.json.md)
+- Addon `obliqueViewer` was renamed to `vcOblique`. Please check and update portal configuration files if necessary. See [documentation](https://bitbucket.org/geowerkstatt-hamburg/addons/src/dev_version_2/vcOblique/doc/config.json.md)
 
 ### Added
 - StyleModel:
@@ -1048,7 +1048,7 @@
 
 ## v2.26.0 - 2022-10-05
 ### __Breaking Changes__
-The control `buttonOblique` was removed. From now, the new addon [obliqueViewer](https://bitbucket.org/geowerkstatt-hamburg/addons/src/dev/obliqueViewer/) allows to configure oblique viewer. Further details: [obliqueViewer documentation](https://bitbucket.org/geowerkstatt-hamburg/addons/src/dev/obliqueViewer/doc/config.json.md)
+The control `buttonOblique` was removed. From now, the new addon [obliqueViewer](https://bitbucket.org/geowerkstatt-hamburg/addons/src/dev_version_2/obliqueViewer/) allows to configure oblique viewer. Further details: [obliqueViewer documentation](https://bitbucket.org/geowerkstatt-hamburg/addons/src/dev_version_2/obliqueViewer/doc/config.json.md)
 ### Added
 - Draw-Tool:
     - if there are attributes set on the feature of drawn layer, after clicking on the feature, the attributes will be shown in standard gfi theme.
@@ -1254,7 +1254,7 @@ The control `buttonOblique` was removed. From now, the new addon [obliqueViewer]
     - A new attribute clearAll for clearing all the filtered results after clicking button "Reset All"
 - Api/highlightFeaturesByAttribute URL mechanism to query WFS data by parameters and configuration
 - WfsSearch: A `multiSelect` mode has been added where multiple search results can be selected and viewn on the map.
-- A new type of addons can be loaded: pure javascript-files with locale-files. See https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/addOnsVue.md
+- A new type of addons can be loaded: pure javascript-files with locale-files. See https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_version_2/doc/addOnsVue.md
 - The elasticsearch now sends `layerIDsToIgnore` (as `id`) and `metaIDsToIgnore` (as `datasets.md_id`) to the service as well. These associated layers are filtered out of the response from Elastic.
 - LayerSelector module:
     - Module to configure interactions with the layertree and the map, executed on a defined event.
@@ -1315,7 +1315,7 @@ The control `buttonOblique` was removed. From now, the new addon [obliqueViewer]
 The Bootstrap package was upgraded from 3.4.1 to 5.1.3. Masterportal developments with minor versions than Bootstrap 5.1.3 are no longer supported.
 
 Please check if your own developments e.g. addons are affected and you have to make adaptions to the new bootstrap version.
-Also the configuration of e.g. tools and controls in config.json has changed ("icon" instead of "glyphicon") and have to be updated. See [documentation](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/config.json.md)
+Also the configuration of e.g. tools and controls in config.json has changed ("icon" instead of "glyphicon") and have to be updated. See [documentation](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_version_2/doc/config.json.md)
 
 The upgrade included following necessary changes:
 
@@ -1444,7 +1444,7 @@ Issue #764: Using parameters in WfsSearch as defined in [Filter Encoding Impleme
 - Searchbar: Added a `showGeographicIdentifier` attribute to be able to use the `geographicIdentifier` to display the gazetteer search result.
 - Added new layer type OAF (OGCApiFeatures)
 - Added "application/json" as supported WMS *GetFeatureInfo* response format
-- Added the possibility to load controls as addons, see [description](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/addOnsVue.md).
+- Added the possibility to load controls as addons, see [description](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_version_2/doc/addOnsVue.md).
 - Issue #744: It is now possible to assign each feature its own label when printing.
 
 ### Changed

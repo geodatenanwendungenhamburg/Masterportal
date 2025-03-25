@@ -1,6 +1,6 @@
 # Masterportal
 
-The Masterportal is a tool-kit to create geo web applications based on [OpenLayers](https://openlayers.org), [Vue.js](https://vuejs.org/) and [Backbone.js](https://backbonejs.org). The Masterportal is Open Source Software published under the [MIT License](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/License.txt).
+The Masterportal is a tool-kit to create geo web applications based on [OpenLayers](https://openlayers.org), [Vue.js](https://vuejs.org/) and [Backbone.js](https://backbonejs.org). The Masterportal is Open Source Software published under the [MIT License](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_version_2/License.txt).
 
 The Masterportal is a project by [Geowerkstatt Hamburg](https://www.hamburg.de/geowerkstatt/).
 
@@ -20,9 +20,9 @@ Our further Roadmap is to work hard on [Version 3](https://bitbucket.org/geowerk
 ## User section
 
 * [Download](https://bitbucket.org/geowerkstatt-hamburg/masterportal/downloads/)
-* [Quick start for users](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/setup.md)
-* [Remote interface](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/remoteInterface.md)
-* [User documentation](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/doc.md)
+* [Quick start for users](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_version_2/doc/setup.md)
+* [Remote interface](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_version_2/doc/remoteInterface.md)
+* [User documentation](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_version_2/doc/doc.md)
 * [User documentation online](https://www.masterportal.org/dokumentation.html)
 * [Community board (User forum and issue tracker)](https://trello.com/c/qajdXkMa/110-willkommen)
 
@@ -32,7 +32,7 @@ Our further Roadmap is to work hard on [Version 3](https://bitbucket.org/geowerk
 ### Contributing
 * Contributors to the Masterportal are expected to act respectfully toward others in accordance with the [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) for open source projects.
 * Follow our [Developer documentation](doc/devdoc.md)
-* First steps in the code: [Tutorial 01: Creating a new module (Scale switcher)](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/vueTutorial.md)
+* First steps in the code: [Tutorial 01: Creating a new module (Scale switcher)](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_version_2/doc/vueTutorial.md)
 
 #### Pull requests
 * Your pull request must have:
