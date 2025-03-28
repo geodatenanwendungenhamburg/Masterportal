@@ -42,7 +42,8 @@ export default {
                 id: layerName,
                 name: layerName,
                 source: new VectorSource(),
-                alwaysOnTop: alwaysOnTop
+                alwaysOnTop: alwaysOnTop,
+                zIndex: alwaysOnTop === true ? 9999999 : undefined
             });
 
             // @TODO use the existing method

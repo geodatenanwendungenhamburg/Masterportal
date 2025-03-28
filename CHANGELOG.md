@@ -5,6 +5,10 @@
 
 ## Unreleased - in development
 
+## 2025-02-07
+### Fixed
+- Updating menu item name from Login to Logout after a user is logged in and visa versa.
+
 ### __Breaking Changes__
 
 ### Added

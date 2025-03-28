@@ -1,5 +1,5 @@
 <script>
-import {mapMutations, mapGetters, mapActions} from "vuex";
+import {mapGetters, mapActions} from "vuex";
 import {translateKeyWithPlausibilityCheck} from "../../../shared/js/utils/translateKeyWithPlausibilityCheck.js";
 
 export default {
@@ -16,15 +16,12 @@ export default {
         }
     },
     methods: {
-        ...mapMutations("Modules/Login", ["setActive", "setIcon"]),
-        ...mapMutations("Menu", ["setCurrentComponentPropsName", "setCurrentComponentPropsDescription"]),
         ...mapActions("Modules/Login", [
             "initialize",
             "logout",
             "checkLoggedIn",
             "getAuthCodeUrl"
         ]),
-        ...mapActions("Menu", ["updateLoginMenuProps"]),
         translateKeyWithPlausibilityCheck,
 
         /**

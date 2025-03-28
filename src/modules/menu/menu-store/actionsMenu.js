@@ -4,22 +4,6 @@ import {trackMatomo} from "../../../plugins/matomo";
 
 export default {
     /**
-     * Updates menu properties based on login status
-     * @param {Object} param store context
-     * @param {Object} param.commit the commit
-     * @param {Object} param.rootGetters the rootGetters
-     * @returns {void}
-     */
-    updateLoginMenuProps ({commit, rootGetters}) {
-        const isLoggedIn = rootGetters["Modules/Login/loggedIn"],
-            iconType = isLoggedIn ? rootGetters["Modules/Login/iconLogged"] : rootGetters["Modules/Login/iconLogin"],
-            componentName = isLoggedIn ? "common:modules.login.logout" : "common:modules.login.login";
-
-        commit("Modules/Login/setIcon", iconType, {root: true});
-        commit("Modules/Login/setName", componentName, {root: true});
-    },
-
-    /**
      * Activates the current component in the menu by side.
      * @param {Object} param store context
      * @param {Object} param.commit the commit
