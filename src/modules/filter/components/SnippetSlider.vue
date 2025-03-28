@@ -124,6 +124,11 @@ export default {
             required: false,
             default: undefined
         },
+        preventUniqueValueRequest: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
         fixedRules: {
             type: Array,
             required: false,
@@ -141,6 +146,11 @@ export default {
             required: false,
             default: 800
         },
+        searchInMapExtent: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
         snippetId: {
             type: Number,
             required: false,
@@ -152,7 +162,7 @@ export default {
             default: true
         }
     },
-    emits: ["changeRule", "deleteRule", "disableFilterButton", "enableFilterButton", "setSnippetPrechecked"],
+    emits: ["changeRule", "deleteRule", "disableFilterButton", "enableFilterButton", "registerUniqueValueOnMove", "setSnippetPrechecked"],
     data () {
         return {
             disable: true,
@@ -267,7 +277,23 @@ export default {
         this.sliderMouseDown = false;
     },
     mounted () {
-        this.$nextTick(() => {
+        this.$emit("registerUniqueValueOnMove", this.snippetId, this.gatherAllValues);
+        this.gatherAllValues();
+    },
+    methods: {
+        ...mapActions("Alerting", ["addSingleAlert"]),
+        translateKeyWithPlausibilityCheck,
+
+        /**
+         * Gathers all values for the slider.
+         * @returns {void}
+         */
+        gatherAllValues () {
+            if (this.preventUniqueValueRequest) {
+                this.setIsInitializing(false);
+                this.$emit("setSnippetPrechecked", false);
+                return;
+            }
             this.$nextTick(() => {
                 this.getInitialSliderMin(this.attrName, min => {
                     this.getInitialSliderMax(this.attrName, max => {
@@ -295,12 +321,7 @@ export default {
                     console.error(error);
                 });
             });
-        });
-    },
-    methods: {
-        ...mapActions("Alerting", ["addSingleAlert"]),
-        translateKeyWithPlausibilityCheck,
-
+        },
         /**
          * Receives the initial min and max by props or api.
          * @param {String} attrName The attrName to get the value from.
@@ -335,7 +356,8 @@ export default {
                 false,
                 {rules: this.fixedRules, filterId: this.filterId, commands: {
                     filterGeometry: this.filterGeometry,
-                    geometryName: this.filterGeometryName
+                    geometryName: this.filterGeometryName,
+                    searchInMapExtent: this.searchInMapExtent
                 }}
             );
         },
@@ -373,7 +395,8 @@ export default {
                 false,
                 {rules: this.fixedRules, filterId: this.filterId, commands: {
                     filterGeometry: this.filterGeometry,
-                    geometryName: this.filterGeometryName
+                    geometryName: this.filterGeometryName,
+                    searchInMapExtent: this.searchInMapExtent
                 }}
             );
         },

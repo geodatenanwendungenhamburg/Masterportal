@@ -109,6 +109,7 @@
       "loadingWait": "Bitte warten Sie, das Tool lädt die Vergleichskarten",
       "name": "Karten vergleichen",
       "reset": "Zurücksetzen",
+      "sameLayerSelected": "Es wurde der selbe Layer zweimal ausgewählt. Die Auswahl wurde zurückgesetzt.",
       "secondLayer": "Zweiter Layer",
       "selectLayerOneFirst": "Bitte wählen Sie zuerst den ersten Layer",
       "splitDirection": "Ausrichtung: ",
@@ -437,7 +438,8 @@
         "sliderRange": {
           "max": "Slider max für {{param}}",
           "min": "Slider min für {{param}}"
-        }
+        },
+        "toolInfo": "Werkzeuginformationen (Link in neuem Tab öffnen)"
       },
       "button": {
         "confirm": "Bestätigen",
@@ -610,6 +612,7 @@
       "legend": "Legende",
       "name": "Informationen und Legende",
       "noMetadataLoaded": "Es konnten keine Metadaten geladen werden!",
+      "noMetadataLoadedConsole": "Die Metadaten für diesen Layer konnten nicht abgerufen werden. Dies deutet auf ein Problem mit der eingebundenen services.json hin.",
       "periodicityTitle": "Datenaktualisierung",
       "publicationCreation": "Publikation / Erstellung",
       "pointOfContact": "Ansprechpartner",
@@ -697,7 +700,8 @@
     "menu": {
       "ariaLabelClose": "$t(menu.name) schließen",
       "ariaLabelOpen": "$t(menu.name) öffnen",
-      "name": "Menü"
+      "name": "Menü",
+      "widthUrlParamError": "Der Url-Parameter zur Einstellung der Breite des Menüs ist fehlerhaft und konnte nicht angewendet werden. Bitte wählen sie einen Wert zwischen 5 und 90."
     },
     "modalItem": {
       "close": "Fenster schließen"
@@ -902,7 +906,8 @@
         "UNPAVEDROADS": "Unbefestigte Straßen",
         "MIXEDTRAFFIC": "Mischverkehr Tempo 50",
         "COBBLESTONE": "Kopfsteinpflaster",
-        "NARROWWAYS": "Engstellen"
+        "NARROWWAYS": "Engstellen",
+        "BORDERS": "Grenzen"
       },
       "batchProcessing": {
         "cancel": "Stapelverarbeitung abbrechen",
@@ -1096,7 +1101,8 @@
         "addressDistrict": "Suche Adresse, Stadtteil",
         "addressHospitalBplan": "Suche nach Adresse/Krankenhaus/B-Plan",
         "addressTopic": "Suche Adresse, Stadtteil, Thema",
-        "addressTopicParcel": "Suche Adresse, Stadtteil, Thema, Flurstück"
+        "addressTopicParcel": "Suche Adresse, Stadtteil, Thema, Flurstück",
+        "startWithAddress": "Hier mit Adresse starten!"
       },
       "showAllResults": "alle Ergebnisse anzeigen",
       "searchResults": "Suchergebnisse",
@@ -1115,7 +1121,8 @@
         "parcel": "Flurstück",
         "street": "Straße",
         "subject": "Thema",
-        "topic": "Thema (Fachdaten)"
+        "topic": "Thema (Fachdaten)",
+        "topicBaselayer": "Thema (Hintergrundkarten)"
       },
       "specialWFS": {
         "ongoing": "im Verfahren",
@@ -1287,6 +1294,12 @@
         "onlyNumbersAllowed": "Das Eingabefeld erlaubt nur Zahlen.",
         "requiredPropertiesNotSet": "Bitte geben Sie einen validen Wert für die verpflichtenden Felder {{properties}} ein."
       },
+      "mandatoryInputError": {
+                    "text": "Normale Textzeichen und Sonderzeichen wie , . / \\ [ ] Leerzeichen und deutsche Zeichen ö ä ü Ö Ä Ü ß und nicht nur Zahlen sind erforderlich.",
+                    "number": "Zahl, Teilzahl oder negative Zahl ist erforderlich.",
+                    "date": "Das vollständige Datum ist erforderlich.",
+                    "datetime-local": "Vollständiges Datum und Uhrzeit sind erforderlich."
+                },
       "form": {
         "discard": "Verwerfen",
         "save": "Speichern"
@@ -1301,6 +1314,7 @@
       "layerSelectLabel": "Aktueller Layer:",
       "name": "WFS-T Tool",
       "polygonHint": "Halten Sie die Strg-Taste und bewegen Sie die Maus mit gedrückter Maustaste, um ein Polygon zu bewegen.",
+      "fieldRequired": "Pflichtfeld",
       "transaction": {
         "error": {
           "axios": "Das Speichern bzw. Löschen der Geometrie und ihrer Parameter ist leider fehlgeschlagen. Bitte wenden Sie sich an Ihren Administrator.",

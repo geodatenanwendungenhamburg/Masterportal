@@ -39,6 +39,16 @@ describe("src/modules/filter/components/FilterList.vue", () => {
     });
 
     it("should render filter title disabled true if multiLayerSelector is false", async () => {
+        wrapper = shallowMount(FilterList, {
+            propsData: {
+                filters: [{filterId: 0, title: "i am a filter"}, {filterId: 1, title: "i am a filter"}],
+                multiLayerSelector: false
+            },
+            global: {
+                plugins: [store]
+            }
+        });
+
         await wrapper.setProps({
             selectedLayers: [{
                 filterId: 0

@@ -556,5 +556,53 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
             expect(filtered[1]).to.deep.equals(layerBG_2);
             expect(filtered[2]).to.deep.equals(layerBG_3);
         });
+
+        it("toggleShowAllCheckbox: should deactivate 'Show All' checkbox if parent folder has" +
+            " 'deactivateShowAllCheckbox' set to true", async () => {
+            wrapper = shallowMount(LayerSelectionComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            const mockLayer = {
+                id: "100",
+                name: "Test Layer",
+                typ: "WMS",
+                type: "layer",
+                parentId: "folder1"
+            };
+
+            store.getters.folderById = sinon.stub().returns({deactivateShowAllCheckbox: true});
+
+            wrapper.vm.toggleShowAllCheckbox(mockLayer);
+            await wrapper.vm.$nextTick();
+
+            expect(wrapper.vm.deactivateShowAllCheckbox).to.be.true;
+        });
+
+        it("toggleShowAllCheckbox: should not deactivate 'Show All' checkbox if parent folder does not have" +
+            " 'deactivateShowAllCheckbox' set", async () => {
+            wrapper = shallowMount(LayerSelectionComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            const mockLayer = {
+                id: "101",
+                name: "Test Layer 2",
+                typ: "WMS",
+                type: "layer",
+                parentId: "folder2"
+            };
+
+            store.getters.folderById = sinon.stub().returns({deactivateShowAllCheckbox: false});
+
+            wrapper.vm.toggleShowAllCheckbox(mockLayer);
+            await wrapper.vm.$nextTick();
+
+            expect(wrapper.vm.deactivateShowAllCheckbox).to.be.false;
+        });
     });
 });

@@ -160,7 +160,8 @@ export default {
             isLoading: false,
             outOfZoom: false,
             gfiFirstActive: false,
-            visibleSnippet: false
+            visibleSnippet: false,
+            uniqueValuesOnMoveListeners: {}
         };
     },
     computed: {
@@ -245,13 +246,15 @@ export default {
             });
         },
         filterGeometry () {
-            if (this.isLayerFilterSelected === true) {
+            if (this.isLayerFilterSelected === true || typeof this.isLayerFilterSelected === "function" && this.isLayerFilterSelected(this.layerConfig.filterId)) {
                 this.handleActiveStrategy();
             }
         },
         outOfZoom: {
             handler (val) {
-                this.setIsLoading(!val);
+                if (!val) {
+                    this.setIsLoading(val);
+                }
             },
             immediate: true
         }
@@ -317,10 +320,16 @@ export default {
          */
         onMounted () {
             this.setIsLoading(false);
+            if (typeof this.layerConfig.minZoom === "number" || typeof this.layerConfig.maxZoom === "number") {
+                this.checkZoomLevel(this.layerConfig.minZoom, this.layerConfig.maxZoom);
+            }
             compileSnippets(this.layerConfig.snippets, this.api, FilterApi, snippets => {
                 this.snippets = snippets;
+                this.snippets.forEach(snippet => {
+                    snippet.initialPrechecked = snippet.prechecked;
+                });
                 this.setSnippetValueByState(this.filterRules);
-                if (this.layerSelectorVisible && this.layerConfig.filterOnOpen && this.layerConfig.strategy === "active") {
+                if (this.layerSelectorVisible && this.layerConfig.filterOnOpen && this.layerConfig.strategy === "active" && !this.outOfZoom) {
                     this.$nextTick(() => {
                         this.$nextTick(() => {
                             this.$nextTick(() => {
@@ -340,9 +349,6 @@ export default {
                 && this.isLayerFilterSelected === true) {
                 this.handleActiveStrategy();
             }
-            if (typeof this.layerConfig.minZoom === "number" || typeof this.layerConfig.maxZoom === "number") {
-                this.checkZoomLevel(this.layerConfig.minZoom, this.layerConfig.maxZoom);
-            }
             if (this.layerConfig.filterOnMove === true && !this.openMultipleAccordeons && this.layerConfig?.strategy === "active") {
                 this.$watch("$store.state.Tools.Gfi.gfiFeatures", (newVal, oldVal) => {
                     if (Array.isArray(oldVal) && !oldVal.length) {
@@ -358,7 +364,7 @@ export default {
                     listener: evt => this.updateSnippets(evt)
                 });
                 this.$nextTick(() => {
-                    if (!this.outOfZoom) {
+                    if (!this.outOfZoom && !this.isExtern()) {
                         this.isLockedHandleActiveStrategy = false;
                         this.handleActiveStrategy();
                     }
@@ -519,7 +525,7 @@ export default {
             // Please use the true or false check otherwise the fuzzy logic (true, false, undefined) wouldn't work anymore
             const rules = reset === true ? [] : false,
                 adjust = reset !== true,
-                alterMap = reset !== false,
+                alterMap = reset !== false && !this.outOfZoom,
                 onfinish = reset === true ? () => this.handleActiveStrategy(snippetId, false) : false;
 
             this.filter(snippetId, filterAnswer => {
@@ -589,6 +595,9 @@ export default {
                 snippetId,
                 rule: false
             });
+            if (isObject(this.snippets[snippetId])) {
+                this.snippets[snippetId].prechecked = this.snippets[snippetId].initialPrechecked;
+            }
             this.deleteRulesOfChildren(this.getSnippetById(snippetId));
             this.deleteRulesOfParallelSnippets(this.getSnippetById(snippetId));
             if (this.isStrategyActive() || this.isParentSnippet(snippetId)) {
@@ -650,6 +659,10 @@ export default {
 
             this.$emit("deleteAllRules", {
                 filterId: this.layerConfig.filterId
+            });
+
+            this.snippets.forEach(snippet => {
+                snippet.prechecked = snippet.initialPrechecked;
             });
 
             if (this.isStrategyActive()) {
@@ -906,12 +919,43 @@ export default {
             this.isLoading = value;
         },
         /**
+         * Adds a listener for given snippetId.
+         * This listener will be triggered on move if it is configured. The
+         * listeners are used to get the unique values for if the searchInMapExtern value is true
+         * and extern is true as well.
+         * @param {Number} snippetId The snippet id.
+         * @param {Function} listener The listener to register.
+         * @returns {void}
+         */
+        addToUniqueValuesOnMoveListeners (snippetId, listener) {
+            this.uniqueValuesOnMoveListeners[snippetId] = listener;
+        },
+        /**
+         * Triggers the uniqueValues onmove listeners to update the unique values.
+         * The listeners are used to get the unique values for if the searchInMapExtern value is true.
+         * @returns {void}
+         */
+        updateSnippetUniqueValues () {
+            if (this.outOfZoom) {
+                return;
+            }
+            Object.values(this.uniqueValuesOnMoveListeners).forEach(listener => {
+                listener();
+            });
+        },
+        /**
          * Update the snippets with adjustment
          * @param {Object} evt - Openlayers MapEvent.
          * @returns {void}
          */
         updateSnippets (evt) {
             if (this.gfiFirstActive) {
+                return;
+            }
+            if (!this.mapHandler.isLayerActivated(this.layerConfig.filterId)) {
+                if (this.layerConfig.filterOnMove && (evt.type === "moveend")) {
+                    this.updateSnippetUniqueValues();
+                }
                 return;
             }
             if (evt.type === "moveend" && !evt.map.loaded_) {
@@ -1228,8 +1272,10 @@ export default {
                         :operator="snippet.operator"
                         :placeholder="snippet.placeholder"
                         :prechecked="snippet.prechecked"
+                        :prevent-unique-value-request="isStrategyActive && outOfZoom"
                         :render-icons="snippet.renderIcons"
                         :fixed-rules="fixedRules"
+                        :search-in-map-extent="getSearchInMapExtent()"
                         :snippet-id="snippet.snippetId"
                         :show-all-values="snippet.showAllValues"
                         :value="snippet.value"
@@ -1240,6 +1286,7 @@ export default {
                         :filter-geometry-name="layerConfig.geometryName"
                         @change-rule="changeRule"
                         @delete-rule="deleteRule"
+                        @registerUniqueValueOnMove="addToUniqueValuesOnMoveListeners"
                         @set-snippet-prechecked="setSnippetPrechecked"
                     />
                 </div>
@@ -1257,6 +1304,7 @@ export default {
                         :operator="snippet.operator"
                         :placeholder="snippet.placeholder"
                         :prechecked="snippet.prechecked"
+                        :search-in-map-extent="getSearchInMapExtent()"
                         :snippet-id="snippet.snippetId"
                         :visible="snippet.visible"
                         @change-rule="changeRule"
@@ -1347,7 +1395,9 @@ export default {
                         :operator-for-attr-name="snippet.operatorForAttrName"
                         :operator="snippet.operator"
                         :prechecked="snippet.prechecked"
+                        :prevent-unique-value-request="isStrategyActive && outOfZoom"
                         :fixed-rules="fixedRules"
+                        :search-in-map-extent="getSearchInMapExtent()"
                         :snippet-id="snippet.snippetId"
                         :timeout-slider="getTimeoutSlider(snippet)"
                         :timeout-input="getTimeoutInput(snippet)"
@@ -1356,6 +1406,7 @@ export default {
                         :filter-geometry-name="layerConfig.geometryName"
                         @change-rule="changeRule"
                         @delete-rule="deleteRule"
+                        @registerUniqueValueOnMove="addToUniqueValuesOnMoveListeners"
                         @set-snippet-prechecked="setSnippetPrechecked"
                     />
                 </div>
@@ -1376,7 +1427,9 @@ export default {
                         :title="getTitle(snippet, layerConfig.layerId)"
                         :min-value="snippet.minValue"
                         :prechecked="snippet.prechecked"
+                        :prevent-unique-value-request="isStrategyActive && outOfZoom"
                         :fixed-rules="fixedRules"
+                        :search-in-map-extent="getSearchInMapExtent()"
                         :snippet-id="snippet.snippetId"
                         :timeout-slider="getTimeoutSlider(snippet)"
                         :timeout-input="getTimeoutInput(snippet)"
@@ -1391,6 +1444,7 @@ export default {
                         @set-snippet-prechecked="setSnippetPrechecked"
                         @disable-filter-button="disableFilterButton"
                         @enable-filter-button="enableFilterButton"
+                        @registerUniqueValueOnMove="addToUniqueValuesOnMoveListeners"
                     />
                 </div>
                 <div

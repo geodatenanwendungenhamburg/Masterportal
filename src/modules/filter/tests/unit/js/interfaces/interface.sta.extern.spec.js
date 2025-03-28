@@ -128,4 +128,96 @@ describe("src/modules/filter/interfaces/utils/interface.sta.extern.js", () => {
             expect(interfaceStaExtern.getMinMaxFromUniqueValue(list, true, true)).to.deep.equal(expected);
         });
     });
+
+    describe("buildSensorThingsUrl", () => {
+        it("should return an url as string for a specific input", () => {
+            const testUrl = "https://www.example.com:1234/foo/bar",
+                testVersion = "1.1",
+                testUrlParams = {
+                    "baz": 1234,
+                    "qux": "foobar"
+                },
+                expectedOutput = "https://www.example.com:1234/foo/bar/v1.1/Things?$baz=1234&$qux=foobar";
+
+            expect(interfaceStaExtern.buildSensorThingsUrl(testUrl, testVersion, testUrlParams)).to.equal(expectedOutput);
+        });
+
+        it("should return an url with datastreams as root", () => {
+            const testUrl = "https://www.example.com:1234/foo/bar",
+                testVersion = "1.1",
+                testUrlParams = {
+                    "filter": "fi",
+                    "expand": "ex",
+                    "root": "Datastreams"
+                },
+                expectedOutput = "https://www.example.com:1234/foo/bar/v1.1/Datastreams?$filter=fi&$expand=ex";
+
+            expect(interfaceStaExtern.buildSensorThingsUrl(testUrl, testVersion, testUrlParams)).to.equal(expectedOutput);
+        });
+
+        it("should return an url as string for a specific input including nested urlParams", () => {
+            const testUrl = "https://www.example.com:1234/foo/bar",
+                testVersion = "1.1",
+                testUrlParams = {
+                    "baz": 1234,
+                    "qux": [
+                        "subParamA",
+                        "subParamB",
+                        "subParamC"
+                    ]
+                },
+                expectedOutput = "https://www.example.com:1234/foo/bar/v1.1/Things?$baz=1234&$qux=subParamA,subParamB,subParamC";
+
+            expect(interfaceStaExtern.buildSensorThingsUrl(testUrl, testVersion, testUrlParams)).to.equal(expectedOutput);
+        });
+
+        it("should return an url without query if no params as object are given", () => {
+            const testUrl = "https://www.example.com:1234/foo/bar",
+                testVersion = "1.1",
+                expectedOutput = "https://www.example.com:1234/foo/bar/v1.1/Things?";
+
+            expect(interfaceStaExtern.buildSensorThingsUrl(testUrl, testVersion, false)).to.equal(expectedOutput);
+            expect(interfaceStaExtern.buildSensorThingsUrl(testUrl, testVersion, undefined)).to.equal(expectedOutput);
+            expect(interfaceStaExtern.buildSensorThingsUrl(testUrl, testVersion, null)).to.equal(expectedOutput);
+            expect(interfaceStaExtern.buildSensorThingsUrl(testUrl, testVersion, "baz")).to.equal(expectedOutput);
+            expect(interfaceStaExtern.buildSensorThingsUrl(testUrl, testVersion, 12345)).to.equal(expectedOutput);
+            expect(interfaceStaExtern.buildSensorThingsUrl(testUrl, testVersion, [])).to.equal(expectedOutput);
+            expect(interfaceStaExtern.buildSensorThingsUrl(testUrl, testVersion, {})).to.equal(expectedOutput);
+        });
+
+        it("should eat any url possible without checking its target or syntax", () => {
+            const testUrlParams = {
+                "foo": "bar"
+            };
+
+            expect(interfaceStaExtern.buildSensorThingsUrl("", "1.1", testUrlParams)).to.equal("/v1.1/Things?$foo=bar");
+            expect(interfaceStaExtern.buildSensorThingsUrl("http://", "1.1", testUrlParams)).to.equal("http:///v1.1/Things?$foo=bar");
+            expect(interfaceStaExtern.buildSensorThingsUrl("wfs://baz", "1.1", testUrlParams)).to.equal("wfs://baz/v1.1/Things?$foo=bar");
+            expect(interfaceStaExtern.buildSensorThingsUrl("foobar://baz////", "1.1", testUrlParams)).to.equal("foobar://baz/////v1.1/Things?$foo=bar");
+        });
+
+        it("should take any version as string unchecked", () => {
+            expect(interfaceStaExtern.buildSensorThingsUrl("", "1.1", false)).to.equal("/v1.1/Things?");
+            expect(interfaceStaExtern.buildSensorThingsUrl("", "foo", false)).to.equal("/vfoo/Things?");
+            expect(interfaceStaExtern.buildSensorThingsUrl("", "foo.bar.baz", false)).to.equal("/vfoo.bar.baz/Things?");
+        });
+
+        it("should take any version as number fixed to one decimal number", () => {
+            expect(interfaceStaExtern.buildSensorThingsUrl("", 0.5, false)).to.equal("/v0.5/Things?");
+            expect(interfaceStaExtern.buildSensorThingsUrl("", 0.55, false)).to.equal("/v0.6/Things?");
+            expect(interfaceStaExtern.buildSensorThingsUrl("", 0.00000001, false)).to.equal("/v0.0/Things?");
+            expect(interfaceStaExtern.buildSensorThingsUrl("", 999999.9999999, false)).to.equal("/v1000000.0/Things?");
+        });
+
+        it("should stringify any given parameter for url and version - no matter what", () => {
+            const testUrlParams = {
+                "foo": "bar"
+            };
+
+            expect(interfaceStaExtern.buildSensorThingsUrl(undefined, undefined, testUrlParams)).to.equal("undefined/vundefined/Things?$foo=bar");
+            expect(interfaceStaExtern.buildSensorThingsUrl(null, null, testUrlParams)).to.equal("null/vnull/Things?$foo=bar");
+            expect(interfaceStaExtern.buildSensorThingsUrl([], [], testUrlParams)).to.equal("/v/Things?$foo=bar");
+            expect(interfaceStaExtern.buildSensorThingsUrl({}, {}, testUrlParams)).to.equal("[object Object]/v[object Object]/Things?$foo=bar");
+        });
+    });
 });

@@ -202,6 +202,38 @@ describe("src/modules/shareView/components/ShareView.vue", () => {
             expect(ShareView.getters.url(state, getters, {}, rootGetters)).to.equal(expectedURL);
             global.location = originalLocation;
         });
+        it("ignore existing basic URL parameters in the share URL", () => {
+            const mockLayerUrlParams = "LAYER=layerValue",
+                mockMapUrlParams = "MAP=mapValue",
+                mockMenuUrlParams = {
+                    main: {
+                        currentComponent: "root"
+                    },
+                    secondary: {
+                        currentComponent: "root"
+                    }
+                },
+                mockExistingParams = "MAP=oldMapValue&LAYERS=oldLayerValue&MENU=oldMenuValue&ADDONPARAM=addonValue",
+                rootGetters = {
+                    layerUrlParams: mockLayerUrlParams,
+                    "Maps/urlParams": mockMapUrlParams,
+                    "Menu/urlParams": mockMenuUrlParams
+                },
+                originalLocation = global.location,
+                state = {},
+                getters = {},
+                expectedURL = "https://self.example.org/portal/?MAP=mapValue&MENU={\"main\":{\"currentComponent\":\"root\"},\"secondary\":{\"currentComponent\":\"root\"}}&LAYERS=\"LAYER=layerValue\"&ADDONPARAM=addonValue";
+
+            global.location = {
+                ...originalLocation,
+                origin: "https://self.example.org",
+                pathname: "/portal/",
+                search: mockExistingParams
+            };
+
+            expect(ShareView.getters.url(state, getters, {}, rootGetters)).to.equal(expectedURL);
+            global.location = originalLocation;
+        });
     });
 
 });

@@ -172,7 +172,7 @@ export default {
             if (getters.currentComponent(side).type === state.currentMouseMapInteractionsComponent && getters.currentComponent(side).type !== state.defaultComponent) {
                 dispatch("changeCurrentMouseMapInteractionsComponent", {type: state.defaultComponent, side});
             }
-            if (rootGetters["Modules/SearchBar/showAllResults"] === false || rootGetters["Modules/SearchBar/currentSide"] !== side) {
+            if (getters.currentComponent(side).type !== "layerInformation" && rootGetters["Modules/SearchBar/showAllResults"] === false || rootGetters["Modules/SearchBar/currentSide"] !== side) {
                 commit("switchToPreviousComponent", side);
             }
             if (getters.currentComponent(side).type === "searchBar") {
@@ -292,6 +292,17 @@ export default {
             if (rootGetters.isMobile && state.mainMenu.expanded) {
                 commit("setExpandedBySide", {expanded: false, side: "mainMenu"});
             }
+            const footer = document.getElementById("module-portal-footer"),
+                layerPills = document.getElementById("layer-pills");
+
+            if (state.secondaryMenu.expanded) {
+                if (layerPills) {
+                    layerPills.style.display = "";
+                }
+                if (footer) {
+                    footer.style.display = "";
+                }
+            }
             commit("setExpandedBySide", {expanded: !state.secondaryMenu.expanded, side});
         }
     },
@@ -316,6 +327,24 @@ export default {
         }
         else {
             Object.assign(this.state.Modules[type], attributes);
+        }
+    },
+    /**
+     * Sets current MenuWidth
+     * @param {Object} param store context
+     * @param {Object} param.commit the commit
+     * @param {String} type secondary or main Menu
+     * @param {String} attributes attributes object with width value
+     * @returns {void}
+     */
+    setCurrentMenuWidth ({commit}, {type, attributes}) {
+        if (attributes.width <= 90 && attributes.width >= 5) {
+            const wString = attributes.width + "%";
+
+            commit("setCurrentMenuWidth", {side: type, width: wString});
+        }
+        else {
+            console.error(i18next.t("common:modules.menu.widthUrlParamError"));
         }
     }
 };

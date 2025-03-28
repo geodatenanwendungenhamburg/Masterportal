@@ -1379,10 +1379,16 @@ const BuildSpecModel = {
                 legendObj.legendType = "svgAndPng";
             }
             else if (graphic.indexOf("<svg") !== -1) {
-                legendObj.color = this.getFillColorFromSVG(graphic);
-                this.getFillStrokeFromSVG(graphic, legendObj);
-                legendObj.legendType = "geometry";
                 legendObj.geometryType = this.getGeometryTypeFromSVG(graphic);
+                if (legendObj.geometryType === "lineString") {
+                    legendObj.svg = decodeURIComponent(graphic).split("data:image/svg+xml;charset=utf-8,")[1];
+                }
+                else {
+                    legendObj.color = this.getFillColorFromSVG(graphic);
+                    this.getFillStrokeFromSVG(graphic, legendObj);
+                }
+                legendObj.legendType = "geometry";
+
             }
             else if (graphic.toUpperCase().includes("GETLEGENDGRAPHIC")) {
                 legendObj.legendType = "wmsGetLegendGraphic";
@@ -1513,6 +1519,9 @@ const BuildSpecModel = {
         }
         if (svgString.includes("<polygon")) {
             geometryType = "polygon";
+        }
+        if (svgString.includes("<path")) {
+            geometryType = "lineString";
         }
         return geometryType;
     },

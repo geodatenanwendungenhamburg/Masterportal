@@ -116,12 +116,11 @@ export default {
         <div
             v-if="supportedTransparency"
             :id="'layer-component-icon-sub-menu-transparency-container-' + layerConf.id"
-            class="d-flex align-items-center transparency-container"
+            class="d-flex transparency-container"
         >
             <i class="bi-droplet-half" />
             <label
                 :for="'layer-component-sub-menu-transparency-input-' + layerConf.id"
-                class="me-2"
             >
                 {{ $t("common:modules.layerTree.iconTransparency") + ":" }}
             </label>
@@ -134,6 +133,7 @@ export default {
                 :max="100"
                 :step="1"
                 :interaction="$event => updateTransparency({layerConf, transparency: parseInt($event.target.value, 10)})"
+                :show-markers="true"
             />
         </div>
         <div class="remove-layer-container">
@@ -170,10 +170,23 @@ export default {
 
         .transparency-container {
             min-height: 2.5rem;
+            align-items: center;
+
+            &:has(.markers) {
+                align-items: baseline;
+
+                label {
+                    margin-right: .75rem;
+                }
+            }
 
             i {
                 padding-right: 1rem;
                 padding-left: 1rem;
+            }
+
+            label {
+                margin-right: .5rem;
             }
 
             .transparency-input {

@@ -77,8 +77,6 @@ describe("src/modules/filter/interfaces/filter.api.js", () => {
                         isSecured: undefined,
                         namespace: "foob/boof",
                         srsName: "foo",
-                        featureNS: "foob",
-                        featurePrefix: "boof",
                         featureTypes: ["bar"]
                     };
 
@@ -106,28 +104,12 @@ describe("src/modules/filter/interfaces/filter.api.js", () => {
                         isSecured: undefined,
                         namespace: "foob/boof",
                         srsName: "foo",
-                        featureNS: "foob",
-                        featurePrefix: "boof",
                         featureTypes: ["bar"]
                     };
 
                 openlayerFunctions.getMapProjection = sinon.stub().returns("foo");
                 filterApi.setServiceByLayerModel(0, layerModel, false);
                 expect(filterApi.service).to.deep.equal(expected);
-                sinon.restore();
-            });
-            it("featurePrefix should be empty if namespace have no slash", () => {
-                const filterApi = new FilterApi(0),
-                    layerModel = {
-                        typ: "WFS",
-                        featureNS: "foob",
-                        url: "foo",
-                        featureType: "bar"
-                    };
-
-                openlayerFunctions.getMapProjection = sinon.stub().returns("foo");
-                filterApi.setServiceByLayerModel(0, layerModel, false);
-                expect(filterApi.service.featurePrefix).to.be.equals("");
                 sinon.restore();
             });
             it("should set the service for oaf", () => {
@@ -510,6 +492,28 @@ describe("src/modules/filter/interfaces/filter.api.js", () => {
                 filterApi.getUniqueValues("attr", result => {
                     expect(result).to.be.deep.equal(expected);
                 }, undefined, {});
+                sinon.restore();
+            });
+            it("should call onsuccess function and return the expected value, if service is extern and searchInMapExtent is true.", async () => {
+                const filterApi = new FilterApi(0),
+                    connector = {
+                        getMinMax: (service, attrName, success) => {
+                            success("foo");
+                        }
+                    },
+                    expected = "foo";
+
+                sinon.stub(filterApi, "getInterfaceByService").returns(connector);
+                hash.sha1 = sinon.stub().returns(["fow", "bar"].join("."));
+                filterApi.setService({extern: true});
+                FilterApi.cache = {};
+                FilterApi.waitingList["fow.bar"] = [];
+                filterApi.getMinMax("attr", result => {
+                    expect(result).to.be.equal(expected);
+                    expect(FilterApi.cache).to.deep.equal({
+                        "fow.bar": "foo"
+                    });
+                }, undefined, false, false, false, {commands: {searchInMapExtent: true}});
                 sinon.restore();
             });
             it("should push object with onsuccess and onerror if waitinglist with key is already an array", () => {

@@ -8,11 +8,12 @@ import processUrlParams from "../../../shared/js/utils/processUrlParams";
  * Here the urlParams for the maps are processed.
  *
  * Examples:
- * - https://localhost:9001/portal/master/?featureviaurl=[%7B%22layerId%22:%2242%22,%22features%22:[%7B%22coordinates%22:[10,53.5],%22label%22:%22TestPunkt%22%7D]%7D]
+ * - https://localhost:9001/portal/master/?featureviaurl=[{"layerId":"42","features":[{"coordinates":[10,53.5],"label":"TestPunkt"}]}]
  * - https://localhost:9001/portal/master/?highlightfeature=1711,DE.HH.UP_GESUNDHEIT_KRANKENHAEUSER_2
  * - https://localhost:9001/portal/master/?highlightFeaturesByAttribute=123&wfsId=8712&attributeName=bezirk&attributeValue=Altona&attributeQuery=IsLike
- * - https://localhost:9001/portal/master/?MAPS={%22center%22:[571278.4429867676,5938534.397334521],%22mode%22:%222D%22,%22zoom%22:7}
- * - https://localhost:9001/portal/master/?MAPS={%22center%22:[571278.4429867676,5938534.397334521],%22mode%22:%223D%22,%22zoom%22:7,%22altitude%22:127,%22heading%22:-1.2502079000000208,%22tilt%22:45}
+ * - https://localhost:9001/portal/master/?MAPS={"center":[571278.4429867676,5938534.397334521],"mode":"2D","zoom":7}
+ * - https://localhost:9001/portal/master/?MAPS={"center":[571278.4429867676,5938534.397334521],"mode":"3D","zoom":7,"altitude":127,"heading":-1.2502079000000208,"tilt":45}
+ * - https://localhost:9001/portal/master/?MAPS={"center":[566052.8033758092,5934047.425113484],"mode":"3D","zoom":6,"lon":9.998038825236218,"lat":53.547413802000875,"height":752.2291730177016,"heading":350.604574930956,"pitch":-60.68774191413812}
  * - https://localhost:9001/portal/master/?marker=565874,5934140
  * - https://localhost:9001/portal/master/?ZOOMTOFEATUREID=18,26
  * - https://localhost:9001/portal/master/?zoomtogeometry=bergedorf
@@ -25,7 +26,7 @@ import processUrlParams from "../../../shared/js/utils/processUrlParams";
  * - https://localhost:9001/portal/master/?Map/center=[553925,5931898]
  * - https://localhost:9001/portal/master/?mapMode=3d
  * - https://localhost:9001/portal/master/?MAP/MAPMODE=3d
- * - https://localhost:9001/portal/master/?MAPMARKER=[565874,%205934140]
+ * - https://localhost:9001/portal/master/?MAPMARKER=[565874,5934140]
  * - https://localhost:9001/portal/master/?Map/projection=EPSG:31467&Map/center=[3565836,5945355]
  * - https://localhost:9001/portal/master/?projection=EPSG:31467&marker=3565836,5945355
  * - https://localhost:9001/portal/master/?zoomtogeometry=altona
@@ -34,6 +35,100 @@ import processUrlParams from "../../../shared/js/utils/processUrlParams";
  * - https://localhost:9001/portal/master/?zoomToExtent=510000,5850000,625000,6000000
  * - https://localhost:9001/portal/master/?MAP/ZOOMTOFEATUREID=18,26
  * - https://localhost:9001/portal/master/?featureid=18,26
+ */
+
+/**
+ * URL Parameters for Map Configuration & Interaction
+ * --------------------------------------------------
+ * This section documents the supported URL parameters used to control and interact with the map.
+ * Both modern and legacy formats are processed. Modern usage is preferred for consistency and flexibility.
+ *
+ * =========================
+ * Modern URL Parameters
+ * =========================
+ * These are recommended for new implementations. All complex map state is passed via a JSON object
+ * in the `MAPS` parameter. Values should be URL-encoded but shown decoded here for clarity.
+ *
+ * Examples:
+ *
+ * 1. Add features to map dynamically:
+ *    https://localhost:9001/portal/master/?featureviaurl=[{"layerId":"42","features":[{"coordinates":[10,53.5],"label":"TestPunkt"}]}]
+ *
+ * 2. Highlight a feature by ID (The layer with the specified ID (here: 1711) must be initially visible for the feature to be highlighted.):
+ *    https://localhost:9001/portal/master/?highlightfeature=1711,DE.HH.UP_GESUNDHEIT_KRANKENHAEUSER_2
+ *
+ * 3. Highlight features by attribute query:
+ *    https://localhost:9001/portal/master/?highlightFeaturesByAttribute=123&wfsId=8712&attributeName=bezirk&attributeValue=Altona&attributeQuery=IsLike
+ *
+ * 4. Set map center, mode, and zoom (2D):
+ *    https://localhost:9001/portal/master/?MAPS={"center":[571278.44,5938534.39],"mode":"2D","zoom":7}
+ *
+ * 5. Set camera parameters (3D mode, basic):
+ *    https://localhost:9001/portal/master/?MAPS={"center":[571278.44,5938534.39],"mode":"3D","zoom":7,"altitude":127,"heading":-1.25,"tilt":45}
+ *
+ * 6. Set 3D camera with lon/lat, pitch, and heading:
+ *    https://localhost:9001/portal/master/?MAPS={"center":[566052.80,5934047.42],"mode":"3D","zoom":6,"lon":9.9980,"lat":53.5474,"height":752.23,"heading":350.60,"pitch":-60.68}
+ *
+ * 7. Set marker on the map:
+ *    https://localhost:9001/portal/master/?marker=565874,5934140
+ *
+ * 8. Zoom to specific feature ID(s):
+ *    https://localhost:9001/portal/master/?ZOOMTOFEATUREID=18,26
+ *
+ * --------------------------------------------------
+ * Note: When passing JSON in URL (e.g., MAPS), ensure it is properly URL-encoded.
+ * Most browsers will automatically decode when navigating, but encoding is required for consistency.
+ *
+ *
+ * =========================
+ * Legacy URL Parameters
+ * =========================
+ * These formats are still supported for backward compatibility but should be avoided for new features.
+ * Functionality is equivalent to modern URLs but lacks flexibility and standardization.
+ *
+ * Examples:
+ *
+ * 1. Set map mode and camera (3D):
+ *    https://localhost:9001/portal/master/?map=3d&altitude=127&heading=-1.25&tilt=45
+ *
+ * 2. Highlight feature:
+ *    https://localhost:9001/portal/master/?Map/highlightfeature=1711,DE.HH.UP_GESUNDHEIT_KRANKENHAEUSER_2
+ *
+ * 3. Zoom to geometry by name:
+ *    https://localhost:9001/portal/master/?bezirk=bergedorf
+ *    https://localhost:9001/portal/master/?zoomtogeometry=altona
+ *
+ * 4. Set map center (string or array):
+ *    https://localhost:9001/portal/master/?center=553925,5931898
+ *    https://localhost:9001/portal/master/?center=[553925,5931898]
+ *    https://localhost:9001/portal/master/?Map/center=[553925,5931898]
+ *
+ * 5. Switch map mode:
+ *    https://localhost:9001/portal/master/?mapMode=3d
+ *    https://localhost:9001/portal/master/?MAP/MAPMODE=3d
+ *
+ * 6. Set map marker:
+ *    https://localhost:9001/portal/master/?MAPMARKER=[565874,5934140]
+ *
+ * 7. Set projection and center/marker:
+ *    https://localhost:9001/portal/master/?Map/projection=EPSG:31467&Map/center=[3565836,5945355]
+ *    https://localhost:9001/portal/master/?projection=EPSG:31467&marker=3565836,5945355
+ *
+ * 8. Set zoom level:
+ *    https://localhost:9001/portal/master/?zoomlevel=0
+ *
+ * 9. Zoom to extent (WGS84 and projected):
+ *    https://localhost:9001/portal/master/?ZOOMTOEXTENT=10.0822,53.6458,10.1781,53.8003&PROJECTION=EPSG:4326
+ *    https://localhost:9001/portal/master/?zoomToExtent=510000,5850000,625000,6000000
+ *
+ * 10. Zoom to feature ID(s):
+ *     https://localhost:9001/portal/master/?MAP/ZOOMTOFEATUREID=18,26
+ *     https://localhost:9001/portal/master/?featureid=18,26
+ *
+ *
+ * --------------------------------------------------
+ * Note: Legacy parameters may vary in capitalization and structure (e.g., "Map/", "MAP/").
+ * The app handles normalization internally, but standardized usage is encouraged going forward.
  */
 
 const mapUrlParams = {
@@ -47,7 +142,6 @@ const mapUrlParams = {
         ZOOMTOGEOMETRY: zoomToFeatures
     },
     legacyMapUrlParams = {
-        ALTITUDE: setCamera,
         "API/HIGHLIGHTFEATURESBYATTRIBUTE": highlightFeaturesByAttributes,
         ATTRIBUTENAME: highlightFeaturesByAttributes,
         ATTRIBUTEQUERY: highlightFeaturesByAttributes,
@@ -55,7 +149,6 @@ const mapUrlParams = {
         BEZIRK: zoomToFeatures,
         CENTER: zoomToCoordinates,
         FEATUREID: zoomToFeatures,
-        HEADING: setCamera,
         MAP: setMode,
         MAPMARKER: setMapMarker,
         MAPMODE: setMode,
@@ -68,9 +161,11 @@ const mapUrlParams = {
         "MAP/ZOOMTOFEATUREID": zoomToFeatures,
         "MAP/ZOOMTOGEOMETRY": zoomToFeatures,
         PROJECTION: processProjection,
-        TILT: setCamera,
         WFSID: highlightFeaturesByAttributes,
-        ZOOMLEVEL: zoomToCoordinates
+        ZOOMLEVEL: zoomToCoordinates,
+        HEADING: setCamera,
+        TILT: setCamera,
+        ALTITUDE: setCamera
     };
 
 /**
@@ -178,16 +273,43 @@ function processProjection (params) {
 }
 
 /**
- * Sets the camera params.
- * @param {Object} params The found params.
+ * Sets the camera parameters in the store or the Cesium map.
+ * @param {Object} param The store context.
+ * @param {Object} param.rootGetters The root getters of the store.
+ * @param {Object} cameraParams The camera parameters.
+ * @param {number} [cameraParams.altitude] The camera altitude parameter.
+ * @param {number} [cameraParams.heading] The camera heading parameter.
+ * @param {number} [cameraParams.tilt] The camera tilt parameter.
+ * @param {number} [cameraParams.pitch] The camera pitch parameter.
+ * @param {number} [cameraParams.cameraPosition] The camera position (latitude, longitude, height).
  * @returns {void}
  */
 function setCamera (params) {
-    store.dispatch("Maps/setCamera", {
-        altitude: params.ALTITUDE,
-        heading: -params.HEADING,
-        tilt: params.TILT
-    });
+    const cameraSettings = {};
+
+    if (params.LON !== undefined && params.LAT !== undefined && params.HEIGHT !== undefined) {
+        cameraSettings.cameraPosition = [params.LON, params.LAT, params.HEIGHT];
+    }
+
+    if (params.HEADING !== undefined) {
+        cameraSettings.heading = params.HEADING;
+    }
+
+    if (params.PITCH !== undefined) {
+        cameraSettings.pitch = params.PITCH;
+    }
+
+    if (params.ALTITUDE !== undefined) {
+        cameraSettings.altitude = params.ALTITUDE;
+    }
+
+    if (params.TILT !== undefined) {
+        cameraSettings.tilt = params.TILT;
+    }
+
+    if (Object.keys(cameraSettings).length > 0) {
+        store.dispatch("Maps/setCamera", cameraSettings);
+    }
 }
 
 /**

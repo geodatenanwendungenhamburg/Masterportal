@@ -55,6 +55,41 @@ export default class InterfaceStaExtern {
     }
 
     /**
+    * Builds the SensorThings url.
+    * @param {String} url The url to the service.
+    * @param {String} version The version from the service.
+    * @param {Object} urlParams The url parameters.
+    * @returns {String} Url to request the sensorThings with.
+    */
+    buildSensorThingsUrl (url, version, urlParams) {
+        const root = urlParams?.root || "Things",
+            versionAsString = typeof version === "number" ? version.toFixed(1) : version;
+        let query = "";
+
+        if (isObject(urlParams)) {
+            for (const key in urlParams) {
+                if (key === "root") {
+                    continue;
+                }
+                else if (query !== "") {
+                    query += "&";
+                }
+
+                if (Array.isArray(urlParams[key])) {
+                    if (urlParams[key].length) {
+                        query += "$" + key + "=" + urlParams[key].join(",");
+                    }
+                }
+                else {
+                    query += "$" + key + "=" + urlParams[key];
+                }
+            }
+        }
+
+        return `${url}/v${versionAsString}/${root}?${query}`;
+    }
+
+    /**
      * Gets a list of unique values (unsorted) of the given service and attrName.
      * @param {Object} service The service to call, identical to filterQuestion.service.
      * @param {String} attrName The attribute to receive unique values from.
@@ -79,11 +114,11 @@ export default class InterfaceStaExtern {
         if (this.allFetchedProperties[filterId] === false) {
             this.allFetchedProperties[filterId] = true;
             const layerModel = openlayerFunctions.getLayerByLayerId(service?.layerId),
-                baseUrl = layerModel.get("url"),
-                version = layerModel.get("version"),
-                urlParameter = layerModel.get("urlParameter"),
+                baseUrl = layerModel.url,
+                version = layerModel.version,
+                urlParameter = layerModel.urlParameter,
                 rootNode = urlParameter?.root,
-                url = layerModel.buildSensorThingsUrl(baseUrl, version, urlParameter);
+                url = this.buildSensorThingsUrl(baseUrl, version, urlParameter);
 
             fetchAllStaProperties(url, rootNode, (allProperties, observationType) => {
                 this.allFetchedProperties[filterId] = allProperties;

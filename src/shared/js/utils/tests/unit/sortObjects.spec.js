@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {sortObjects, getNestedElement} from "../../sortObjects.js";
+import {sortObjects, getNestedElement, sortByLayerSequence} from "../../sortObjects.js";
 
 describe("src/shared/js/utils/sortObjects.js", () => {
     const objects = [
@@ -171,6 +171,68 @@ describe("src/shared/js/utils/sortObjects.js", () => {
 
             expect(getNestedElement(searchElement, nestedAttribute)).to.be.a("string");
             expect(getNestedElement(searchElement, nestedAttribute)).equals("");
+        });
+    });
+    describe("sortByLayerSequence", () => {
+        const layers = [
+            {
+                name: "a",
+                layerSequence: 2
+            },
+            {
+                name: "b",
+                layerSequence: 1
+            },
+            {
+                name: "c"
+            },
+            {
+                name: "d",
+                layerSequence: 3
+            },
+            {
+                name: "e"
+            }
+        ];
+
+        it("should sort objects by layerSequence in ascending order", () => {
+            const clonedLayers = [...layers];
+
+            sortByLayerSequence(clonedLayers);
+            expect(clonedLayers).to.be.an("array");
+            expect(clonedLayers).to.have.deep.members([
+                {name: "b", layerSequence: 1},
+                {name: "a", layerSequence: 2},
+                {name: "d", layerSequence: 3},
+                {name: "c"},
+                {name: "e"}
+            ]);
+        });
+        it("should place objects without layerSequence at the end", () => {
+            const clonedLayers = [...layers];
+
+            sortByLayerSequence(clonedLayers);
+            expect(clonedLayers).to.be.an("array");
+            expect(clonedLayers[3].name).to.equal("c");
+            expect(clonedLayers[4].name).to.equal("e");
+        });
+        it("should keep the relative order of objects with layerSequence", () => {
+            const newLayers = [
+                {name: "a", layerSequence: 2},
+                {name: "b", layerSequence: 1},
+                {name: "c", layerSequence: 2},
+                {name: "d", layerSequence: 3}
+            ];
+
+            sortByLayerSequence(newLayers);
+            expect(newLayers).to.be.an("array");
+            expect(newLayers).to.have.deep.members([
+                {name: "b", layerSequence: 1},
+                {name: "a", layerSequence: 2},
+                {name: "c", layerSequence: 2},
+                {name: "d", layerSequence: 3}
+            ]);
+            expect(newLayers[1].name).to.equal("a");
         });
     });
 });

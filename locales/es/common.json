@@ -81,6 +81,7 @@
       "loadingWait": "Por favor, espere, la herramienta está cargando los mapas de comparación",
       "name": "Comparar mapas",
       "reset": "Restablecer",
+      "sameLayerSelected": "Se ha seleccionado dos veces la misma capa. La selección se ha restablecido.",
       "secondLayer": "Segunda capa",
       "selectLayerOneFirst": "Por favor, seleccione primero la primera capa",
       "splitDirection": "Dirección: ",

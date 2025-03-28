@@ -1,6 +1,6 @@
 # config.json 3.0
 
-The *config.json* file contains all configuration of the portal interface. It controls which elements are placed where on the menu bar, how the map is to be centered initially, and which layers are to be loaded. See **[this file for an example](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/portal/basic/config.json)**.
+The *config.json* file contains all configuration of the portal interface. It controls which elements are placed where on the menu bar, how the map is to be centered initially, and which layers are to be loaded. See **[this file for an example](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/portal/basic/config.json)**.
 The configuration is separated into two sections, **[portalConfig](#portalconfig)** and **[layerConfig](#layerconfig)**
 
 **Example**
@@ -802,7 +802,7 @@ Defines the initial map view and a background shown when no layer or map is sele
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
-|backgroundImage|no|String|"https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/doc/config.json.md#portalconfigmapview"|Path to an alternative background image.|false|
+|backgroundImage|no|String|"https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/config.json.md#portalconfigmapview"|Path to an alternative background image.|false|
 |epsg|no|String|"EPSG:25832"|Coordinate reference system EPSG code. The code must be defined as a `namedProjection`.|false|
 |extent|no|**[Extent](#datatypesextent)**|[510000.0, 5850000.0, 625000.4, 6000000.0]|Map extent - map may not be moved outside these boundaries.|false|
 |mapInteractions|nein|**[mapInteractions](#portalconfigmapmapviewmapinteractions)**||Overrides the ol map interactions. Provides further configuration possibilities for control behaviour and keyboardEventTarget.|false|
@@ -1512,6 +1512,7 @@ Searching all topic selection tree layers.
 |resultEvents|no|**[resultEvents](#portalconfigmenusearchbarsearchinterfacesresultevents)**|{"onClick": ["activateLayerInTopicTree"], "buttons": ["showInTree", "showLayerInfo"]}|Actions that are executed when an interaction, such as hover or click, is performed with a result list item. The following events are possible: "activateLayerInTopicTree", "showInTree", "showLayerInfo".|false|
 |searchInterfaceId|no|String|"topicTree"|Id, which is used to link to the searchbar in the topic search.|false|
 |searchType|no|String|""|Decides whether the metadata or the name of a layer should be searched. Possible value: "metadata". The default value is unset so the name will be searched.|false|
+|toolTip|no|String|""|If `path` is specified here, the path to the topic/folder found is displayed in the tooltip of the search hit. The name is displayed by default.|false|
 |type|yes|String|"topicTree"|Search interface type. Defines which search interface is configured.|false|
 
 **Example**
@@ -2514,6 +2515,8 @@ The filter tool offers a range of options to filter vector data from WFS, OAF, G
 |linkText|no|String|""|Link text at the bottom containing a url link to the current filter setting, or empty string if no such link should be displayed. Requires "saveTo": "url"|false|
 |type|no|String|"filter"|The type of the module. Defines which module is configured.|false|
 |closeGfi|no|Boolean|false|If it is true and a gfi window is open, the gfi window could be closed after new filtering.|false|
+|questionLink|no|String|""|The URL for the tool information button (questionmark)|false|
+|closeDropdownOnSelect|no|Boolean|true|Enable/disable closing dropdown list after selecting an option.|false|
 
 **Example**
 
@@ -2524,10 +2527,12 @@ The following example uses only a layer id to generate the filter automatically.
     "type": "filter",
     "icon": "bi-funnel-fill",
     "layerSelectorVisible": false,
+    "closeDropdownOnSelect": true,
     "geometrySelectorOptions": {
         "visible": true
     },
     "closeGfi": false,
+    "questionLink": "https://bitbucket.org/geowerkstatt-hamburg/addons/src/dev/cosi/manuals/005filter.md",
     "layerGroups":
     [
         {
@@ -2642,7 +2647,7 @@ An object to define a layer to filter with.
 |minZoom|no|Number||The minimum zoom level for current filter, if current zoom level is smaller than the minimum zoom level, the current filter will be deactivated.|false|
 |paging|no|Number|1000|The filter will load features into the map in chunks. Paging is the chunk size. If the chunk size is set too low, the filtering will be slowed down. Set the chunk size too high, the loading of the chunk will slow the filtering down. Try it out to find your fastes setup.|false|
 |resetLayer|no|Boolean|false|If true it will change the reset button to a button which resets the whole layer and ignores the prechecked values. Will be ignored if `clearAll` is set to `true`. Furthermore, the parameter should not be configured in conjunction with a low `paging` number, otherwise the complete layer will be displayed on the map only very slowly and delayed when resetting.|false|
-|searchInMapExtent|no|Boolean|false|Set to `true` to activate a generic checkbox, where you can set the filtering to `only filter in current browser extent`. If the extent checkbox is checked, automatic zooming is disabled. Make sure to set **[loadingStrategy](#layerconfigelementslayersvector)** to `all` to avoid weird effects when zooming out after filtering in extent.|false|
+|searchInMapExtent|no|Boolean|false|Set to `true` to activate a generic checkbox, where you can set the filtering to `only filter in current browser extent`. If the extent checkbox is checked, automatic zooming is disabled. Make sure to set **[loadingStrategy](#layerconfigelementslayersvector)** to `all` to avoid weird effects when zooming out after filtering in extent. It should also be noted that with `external`:`true` the bbox is not sent with the snippet types `date` and `dateRange`.|false|
 |searchInMapExtentInfo|no|Boolean|true|A little icon is shown right hand side of the checkbox. Clicking the icon, a standard description is shown. Set to `false` to disable this feature. Set to a individual text to use an own description or use a translation key.|false|
 |searchInMapExtentPreselected|no|Boolean|false|The checkbox for filtering in the browser extent is initially selected if `searchInMapExtentPreselected`: `true` is set.|false|
 |searchInMapExtentProactive|no|Boolean|true|The checkbox for filtering in the browser extent triggers direct filtering in the current browser extent under `strategy`: `active`. This can be disabled by setting `searchInMapExtentProactive`: `false`.|false|
@@ -3737,6 +3742,7 @@ The shadow tool provides a UI element to define a point in time by using sliders
 ***
 
 ###### portalConfig.menu.sections.modules.shadow.shadowTime {data-toc-label='Shadow Time'}
+
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
 |month|no|String||month|false|
@@ -4469,6 +4475,7 @@ Possibility to make settings for the topic selection tree.
 |hideDatalayerHeader|no|Boolean|false|Set to true to hide the datalayer headline.|false|
 |datalayerHeaderText|no|String||Alternativ datalayer headline. If set, a none empty string is required. An empty string will output the default i18n string/ translation.|false|
 |subMenuContactButton|no|Boolean|true|Defines if the button to open the contact form with layer specific parameters is shown|false|
+|allowBaselayerDrag|no|Boolean|true|Determines whether base layers can be moved over data layers.|false|
 
 **Example type auto**
 
@@ -4796,6 +4803,7 @@ Layers or folders are defined here. Folders can in turn contain **[elements](#la
 |name|no|String|""|Layer or folder name. Can contain HTML tags that will only be rendered in layer tree. |false|
 |shortname|no|String|""|shortened layer or folder name. If configured it will be displayed in layer tree instead of `name`. |false|
 |type|no|String|"layer"|Type of the element: "layer" or "folder"|false|
+|deactivateShowAllCheckbox|no|Boolean|false|Deactivates the "Show All" Checkbox, when the type is a folder|false|
 
 **Example baselayer**
 
@@ -4842,6 +4850,7 @@ Layers or folders are defined here. Folders can in turn contain **[elements](#la
                 {
                 "name": "Folder level 2",
                 "type": "folder",
+                "deactivateShowAllCheckbox": true,
                 "elements": [
                         {
                             "id": "2431"
@@ -6059,6 +6068,7 @@ An object that describes a service for a snippet. All service types that the fil
 The configuration depends on the type of service.
 
 **WFS**
+
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
 |collection|yes|String||The collection that will be loaded. Only for OAF|false|

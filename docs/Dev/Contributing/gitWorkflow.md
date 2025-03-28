@@ -9,8 +9,8 @@
 
 ## Branches and workflow
 
-* The development of new features and bug fixing usually takes place on features branches based on the `dev_vue` branch. We use the **[Gitflow Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows#gitflow-workflow)**.
-* The development branch is named `dev_vue`.
+* The development of new features and bug fixing usually takes place on features branches based on the `dev` branch. We use the **[Gitflow Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows#gitflow-workflow)**.
+* The development branch is named `dev`.
 * Use verbs for commits: **add**/**remove**/**update**/**refactor**/**fix**/**config**/**hotfix**. Commit messages should be in English and speaking.
 * Branches are deleted after merging.
 
@@ -21,9 +21,9 @@ Further reading: [merge vs. rebase](https://www.atlassian.com/git/tutorials/merg
 Below is a guide for rebasing:
 
 
-#### Rebase a checked out feature branch with remote dev_vue
+#### Rebase a checked out feature branch with remote dev
 ```BASH
-git pull --rebase origin dev_vue
+git pull --rebase origin dev
 ```
 
 #### Repeat following steps until rebasing is completed:
@@ -90,16 +90,16 @@ git push
 
 ## Forks
 
-* **External developers** are not team members and do not receive write permission to the repository. Please **[fork](https://bitbucket.org/geowerkstatt-hamburg/masterportal/fork)** the `dev_vue` branch for your development.
-* Commit and push to your fork. From the fork, a pull request targeting the `dev_vue` branch may be opened.
-* Please also fix bugs targeting the `dev_vue` branch
+* **External developers** are not team members and do not receive write permission to the repository. Please **[fork](https://bitbucket.org/geowerkstatt-hamburg/masterportal/fork)** the `dev` branch for your development.
+* Commit and push to your fork. From the fork, a pull request targeting the `dev` branch may be opened.
+* Please also fix bugs targeting the `dev` branch
     - Please indicate in the pull request if the bug should be published as a hotfix.. Please note our **[hints regarding versioning](versioning.md)**.
     - Team members take care of transferring the required code.
     - We use **[cherry-picking](https://git-scm.com/docs/git-cherry-pick)** to apply **hotfix** commits. This is simpler when **hotfix** commits contain the hotfix and nothing else. Please note our **[coding conventions](codingConventions.md)** regarding this.
 
 ## Pull Requests
 
-* Commits pushed to branches may only reach the `dev_vue` branch via pull requests.
+* Commits pushed to branches may only reach the `dev` branch via pull requests.
 * **External developers** set their PR's reviewer to **[geowerkstatt](https://bitbucket.org/geowerkstatt)**. This is a technical user that will note the team members.
 * The review is done by at least one team member. The reviewer checks the pull request based on the Definition of Done. Errors or comments may be added directly to the code or as comments within the pull request.
 * A pull request passing all checks is approved. The approving team member merges the pull request for **external developers**.

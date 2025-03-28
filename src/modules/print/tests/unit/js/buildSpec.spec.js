@@ -395,6 +395,24 @@ describe("src/modules/print/js/buildSpec", function () {
                 label: "name_WMS"
             }]);
         });
+        it("should return prepared legend for a linestring geometry with svg style", function () {
+            const legend = [
+                {
+                    graphic: "data:image/svg+xml;charset=utf-8,<svg height='35' width='35' version='1.1' xmlns='http://www.w3.org/2000/svg'><path d='M 05 30 L 30 05' stroke='rgb(0, 0, 0)' stroke-opacity='1' stroke-width='4' stroke-dasharray='20 10' fill='none'/></svg>",
+                    name: "name_lineString_json"
+                }];
+
+            expect(buildSpec.prepareLegendAttributes(legend)).to.deep.equal([
+                {
+                    legendType: "geometry",
+                    geometryType: "lineString",
+                    imageUrl: "",
+                    color: "",
+                    label: "name_lineString_json",
+                    svg: "<svg height='35' width='35' version='1.1' xmlns='http://www.w3.org/2000/svg'><path d='M 05 30 L 30 05' stroke='rgb(0, 0, 0)' stroke-opacity='1' stroke-width='4' stroke-dasharray='20 10' fill='none'/></svg>"
+                }
+            ]);
+        });
     });
 
     describe("prepareGfiAttributes", function () {
@@ -1495,6 +1513,18 @@ describe("src/modules/print/js/buildSpec", function () {
                 opacity: 1,
                 type: "image"
             });
+        });
+    });
+    describe("getGeometryTypeFromSVG", function () {
+        it("should return gemetry type polygon for a svg polygon style", function () {
+            const graphic = "data:image/svg+xml;charset=utf-8,<svg height='35' width='35' version='1.1' xmlns='http://www.w3.org/2000/svg'><polygon points='5,5 30,5 30,30 5,30' style='fill:rgb(10, 200, 0);fill-opacity:0.2;stroke:rgb(0, 0, 0);stroke-opacity:1;stroke-width:1;'/></svg>";
+
+            expect(buildSpec.getGeometryTypeFromSVG(graphic)).to.deep.equal("polygon");
+        });
+        it("should return gemetry type lineString for a svg polygon style", function () {
+            const graphic = "data:image/svg+xml;charset=utf-8,<svg height='35' width='35' version='1.1' xmlns='http://www.w3.org/2000/svg'><path d='M 05 30 L 30 05' stroke='rgb(0, 0, 0)' stroke-opacity='1' stroke-width='4' stroke-dasharray='20 10' fill='none'/></svg>";
+
+            expect(buildSpec.getGeometryTypeFromSVG(graphic)).to.deep.equal("lineString");
         });
     });
 });

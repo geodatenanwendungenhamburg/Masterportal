@@ -44,6 +44,12 @@ export default {
         ...mapGetters("Maps", ["mode"])
     },
     watch: {
+        mode () {
+            this.removeIncompleteDrawing();
+            this.removeDrawInteraction();
+            this.createDrawInteraction();
+            this.setFocusToFirstControl();
+        },
         /**
          * Recreates draw interaction on geometry type update.
          * @returns {void}
@@ -147,7 +153,7 @@ export default {
                     :value="geometryValue"
                 >
                     {{ is3DMode()
-                        ? selectedGeometry
+                        ? "3D"
                         : $t("common:modules.measure." +
                             (geometryValue === "LineString" ? "stretch" : "area"))
                     }}
@@ -163,6 +169,7 @@ export default {
                 id="measure-tool-unit-select"
                 ref="measure-tool-unit-select"
                 class="form-select"
+                :disabled="is3DMode()"
                 aria-label="..."
                 :value="selectedGeometry === 'LineString' ? selectedLineStringUnit : selectedPolygonUnit"
                 @change="setSelectedUnit($event.target.value)"

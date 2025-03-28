@@ -26,13 +26,14 @@ export default {
         return {
             selectAllConfId: -1,
             selectAllConfigs: [],
-            activeCategory: null
+            activeCategory: null,
+            deactivateShowAllCheckbox: false
         };
     },
     computed: {
         ...mapGetters("Modules/SearchBar", ["addLayerButtonSearchActive", "currentSide", "showAllResults", "showSearchResultsInTree"]),
         ...mapGetters("Maps", ["mode"]),
-        ...mapGetters(["activeOrFirstCategory", "allCategories", "portalConfig"]),
+        ...mapGetters(["activeOrFirstCategory", "allCategories", "portalConfig", "folderById"]),
         ...mapGetters("Modules/LayerSelection", ["visible", "subjectDataLayerConfs", "baselayerConfs", "lastFolderNames", "layerInfoVisible", "highlightLayerId"]),
         categorySwitcher () {
             return this.portalConfig?.tree?.categories;
@@ -147,6 +148,7 @@ export default {
                 if (this.isControlledBySelectAll(conf) && this.selectAllConfId === -1) {
                     this.selectAllConfigs = this.subjectDataLayerConfs.filter(config => this.isControlledBySelectAll(config));
                     this.selectAllConfId = conf.id;
+                    this.toggleShowAllCheckbox(conf);
                 }
             });
         },
@@ -175,6 +177,19 @@ export default {
                 return this.baselayerConfs.filter(conf => !layerFactory.getLayerTypesNotVisibleIn3d().includes(conf.typ?.toUpperCase()));
             }
             return this.baselayerConfs;
+        },
+
+        /**
+         * Toggles the state of the show-all checkbox based on the configuration provided.
+         * @param {Object} conf The configuration object containing necessary properties.
+         * @return {void}
+         */
+        toggleShowAllCheckbox (conf) {
+            if (conf.parentId) {
+                const lastFolder = this.folderById(conf.parentId);
+
+                this.deactivateShowAllCheckbox = lastFolder.deactivateShowAllCheckbox === true;
+            }
         }
     }
 };
@@ -314,7 +329,7 @@ export default {
                     >
                         <LayerSelectionTreeNode
                             :conf="conf"
-                            :show-select-all-check-box="selectAllConfId === conf.id"
+                            :show-select-all-check-box="selectAllConfId === conf.id && !deactivateShowAllCheckbox"
                             :select-all-configs="selectAllConfigs"
                             @show-node="folderClicked"
                         />

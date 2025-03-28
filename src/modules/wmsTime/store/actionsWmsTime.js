@@ -124,7 +124,10 @@ export default {
             commit("Modules/LayerSwiper/setLayerSwiperTargetLayer", layerCollection.getLayerById(secondId), {root: true});
         }
         else {
-
+            state.targetLayer?.getLayer().un("prerender", renderEvent => dispatch("drawLayer", renderEvent));
+            state.targetLayer?.getLayer().un("postrender", ({context}) => {
+                context.restore();
+            });
             // If the button of the "original" window is clicked, it is assumed, that the time value selected in the added window is desired to be further displayed.
             if (!id.endsWith(state.layerAppendix)) {
                 const {TIME} = layer.getLayerSource().params_,

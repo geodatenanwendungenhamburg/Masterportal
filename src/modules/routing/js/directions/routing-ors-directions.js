@@ -40,6 +40,8 @@ function routingOrsPreference (preference, speedProfile) {
  * @param {String} [params.preference] to request the directions with
  * @param {Object} [params.avoidPolygons] areas to avoid when requesting directions
  * @param {Boolean} [params.instructions] if the instructions should be requested
+ * @param {Boolean} [params.elevation] if elevation data should be considered
+ * @param {Boolean} [params.avoidBorders] if borders should be avoided
  * @returns {RoutingDirections} routingDirections
  */
 async function fetchRoutingOrsDirections ({
@@ -51,7 +53,8 @@ async function fetchRoutingOrsDirections ({
     preference,
     avoidPolygons,
     instructions,
-    elevation
+    elevation,
+    avoidBorders
 }) {
     const url = getRoutingDirectionsSettingsUrl(speedProfile);
     let result = null,
@@ -71,7 +74,8 @@ async function fetchRoutingOrsDirections ({
             language: language,
             options: {
                 ...avoidSpeedProfileOptions.length > 0 && {avoid_features: avoidSpeedProfileOptions.map(o => routingOrsAvoidOption(o.id, speedProfile))},
-                avoid_polygons: avoidPolygons
+                avoid_polygons: avoidPolygons,
+                ...avoidBorders && {avoid_borders: "all"}
             },
             preference: routingOrsPreference(preference, speedProfile),
             units: "m",

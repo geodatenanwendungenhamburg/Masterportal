@@ -84,7 +84,7 @@ describe("src/core/js/layers/layer2dVectorTile.js", () => {
         crs.registerProjections();
     });
 
-    after(() => {
+    afterEach(() => {
         sinon.restore();
     });
 
@@ -398,9 +398,7 @@ describe("src/core/js/layers/layer2dVectorTile.js", () => {
         }
 
         it("retrieves json from url, checks it, and sets id to layer and model", function (done) {
-            global.fetch = sinon.spy(() => new Promise(r => r({
-                json: () => new Promise(ir => ir(validStyle))
-            })));
+            sinon.stub(axios, "get").resolves(Promise.resolve(validStyle));
 
             const {setStyleByDefinition} = Layer2dVectorTile.prototype,
                 context = makeContext(done);
@@ -410,9 +408,7 @@ describe("src/core/js/layers/layer2dVectorTile.js", () => {
         });
 
         it("rejects invalid json", function (done) {
-            global.fetch = sinon.spy(() => new Promise(r => r({
-                json: () => new Promise(ir => ir(invalidStyle))
-            })));
+            sinon.stub(axios, "get").resolves(Promise.resolve(invalidStyle));
 
             const {setStyleByDefinition} = Layer2dVectorTile.prototype,
                 context = makeContext(done);

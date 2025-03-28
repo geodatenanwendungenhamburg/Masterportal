@@ -1,12 +1,15 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
-
+import FileUpload from "../../../shared/modules/inputs/components/FileUpload.vue";
 /**
  * Module to load a config.json to runtime.
  * @module modules/OpenConfig
  */
 export default {
     name: "OpenConfig",
+    components: {
+        FileUpload
+    },
     computed: {
         ...mapGetters("Modules/OpenConfig", ["icon"])
     },
@@ -25,21 +28,12 @@ export default {
          */
         setFocusToFirstControl () {
             this.$nextTick(() => {
-                if (this.$refs["file-upload-label"]) {
-                    this.$refs["file-upload-label"].focus();
+                const fileUploadComponent = this.$refs["file-upload"];
+
+                if (fileUploadComponent && fileUploadComponent.$refs["upload-input-file"]) {
+                    fileUploadComponent.$refs["upload-input-file"].focus();
                 }
             });
-        },
-
-        /**
-         * Triggers the file input.
-         * @param {Event} event The keyboard event.
-         * @returns {void}
-         */
-        triggerClickOnFileInput (event) {
-            if (event.which === 32 || event.which === 13) {
-                this.$refs["file-upload-input"].click();
-            }
         },
 
         /**
@@ -47,6 +41,7 @@ export default {
          * @param {Event} event The file input event.
          * @returns {void}
          */
+
         loadFile (event) {
             const targetFile = event.target.files[0];
 
@@ -56,11 +51,47 @@ export default {
                 reader.onload = (evt) => {
                     this.processConfigJsonOnload(evt);
                     this.addSingleAlert({
-                        category: "succes",
+                        category: "success",
                         content: this.$t("common:modules.openConfig.loadFileSuccess", {targetFileName: targetFile?.name})
                     });
                 };
                 reader.readAsText(event.target.files[0]);
+            }
+            else {
+                this.addSingleAlert({
+                    category: "error",
+                    content: this.$t("common:modules.openConfig.loadFileFailed", {targetFileName: targetFile?.name, targetFileFormat: targetFile?.name.split(".")[1]})
+                });
+            }
+        },
+        /**
+         * Handles the drop event
+         * @param {Event} event The drop event.
+         * @returns {void}
+         */
+        handleDrop (event) {
+            event.preventDefault();
+            const targetFile = event.dataTransfer.files[0];
+
+            if (targetFile && targetFile.type === "application/json") {
+                const reader = new FileReader();
+
+                reader.onload = (evt) => {
+                    this.processConfigJsonOnload(evt);
+                    this.addSingleAlert({
+                        category: "success",
+                        content: this.$t("common:modules.openConfig.loadFileSuccess", {targetFileName: targetFile.name})
+                    });
+                };
+
+                reader.onerror = () => {
+                    this.addSingleAlert({
+                        category: "error",
+                        content: this.$t("common:modules.openConfig.loadFileFailed", {targetFileName: targetFile.name})
+                    });
+                };
+
+                reader.readAsText(targetFile);
             }
             else {
                 this.addSingleAlert({
@@ -80,29 +111,15 @@ export default {
         </p>
         <div
             id="open-config-input-button"
-            class="d-flex justify-content-center"
+            class="row d-flex mb-1"
         >
-            <button
-                class="btn-transparent"
-                @keydown="triggerClickOnFileInput"
-            >
-                <label
-                    ref="file-upload-label"
-                    class="btn btn-secondary btn-icon"
-                >
-                    <input
-                        ref="file-upload-input"
-                        type="file"
-                        @change="loadFile"
-                    >
-                    <span
-                        aria-hidden="true"
-                    >
-                        <i :class="icon" />
-                    </span>
-                    {{ $t("common:modules.openConfig.openFile") }}
-                </label>
-            </button>
+            <FileUpload
+                id="file-upload"
+                ref="file-upload"
+                :keydown="setFocusToFirstControl"
+                :change="loadFile"
+                :drop="handleDrop"
+            />
         </div>
     </div>
 </template>

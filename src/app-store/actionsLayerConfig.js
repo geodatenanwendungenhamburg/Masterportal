@@ -237,22 +237,21 @@ export default {
         let layerContainer = [];
 
         dispatch("addBaselayerAttribute");
-        layerContainer = getNestedValues(state.layerConfig, "elements", true).flat(Infinity);
         if (state.portalConfig?.tree?.type === "auto") {
+            layerContainer = getNestedValues(state.layerConfig, "elements", true).flat(Infinity);
             dispatch("processTreeTypeAuto", layerContainer);
             dispatch("updateLayerConfigs", layerContainer);
         }
         else {
             getters.allLayerConfigsByParentKey(treeSubjectsKey).map(attributes => {
-                if (attributes.baselayer !== true) {
-                    const rawLayers = getAndMergeRawLayer(attributes, !getters.showLayerAddButton, state.portalConfig?.tree?.layerIDsToStyle);
+                const rawLayers = getAndMergeRawLayer(attributes, !getters.showLayerAddButton, state.portalConfig?.tree?.layerIDsToStyle);
 
-                    if (rawLayers.length > 1) {
-                        replacer.replaceInNestedValues(state.layerConfig, "elements", rawLayers, {key: "id", value: attributes.id, replaceObject: attributes.id});
-                    }
-                    return Object.assign(attributes, rawLayers[0]);
+                if (rawLayers.length > 1) {
+                    // this is the case if config parameter tree.layerIDsToStyle results in more than on new created layers
+                    // --> replaces the originally config in config.json with the new created and styled configs
+                    replacer.replaceInNestedValues(state.layerConfig, "elements", rawLayers, {key: "id", value: attributes.id, replaceObject: attributes.id});
                 }
-                return attributes;
+                return Object.assign(attributes, rawLayers[0]);
             });
             const allLayerConfigsStructured = getters.allLayerConfigsStructured(),
                 folders = allLayerConfigsStructured.filter(conf => conf.type === "folder");
@@ -262,7 +261,14 @@ export default {
             }
 
             buildTreeStructure.setIdsAtFolders(folders);
-            dispatch("updateLayerConfigs", layerContainer.filter(conf => conf.baselayer === true || conf.visibility === true || conf.showInLayerTree));
+            // fill layerContainer after state.layerConfig changed
+            layerContainer = getNestedValues(state.layerConfig, "elements", true).flat(Infinity);
+            if (getters.showLayerAddButton) {
+                dispatch("updateLayerConfigs", layerContainer.filter(conf => conf.baselayer === true || conf.visibility === true || conf.showInLayerTree));
+            }
+            else {
+                dispatch("updateLayerConfigs", layerContainer);
+            }
         }
     },
 
@@ -339,7 +345,8 @@ export default {
             const rawLayers = getAndMergeRawLayer(layerConf, !getters.showLayerAddButton, state.portalConfig?.tree?.layerIDsToStyle);
 
             if (rawLayers.length > 1) {
-                // this is the case if config parameter tree.layerIDsToStyle results in new created layers (layerIDsToStyle.styles contains more than one entry)
+            // this is the case if config parameter tree.layerIDsToStyle results in more than on new created layers
+            // --> replaces the originally config in config.json with the new created and styled configs
                 replacer.replaceInNestedValues(state.layerConfig, "elements", rawLayers, {key: "id", value: layerConf.id, replaceObject: layerConf.id});
             }
 

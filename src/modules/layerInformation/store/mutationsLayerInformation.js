@@ -69,7 +69,7 @@ export default {
             ...layers.length > 0 && {layers},
             ...layerConf?.legendURL && {legendURL: layerConf.legendURL},
             ...url && {url},
-            ...layerConf?.urlIsVisible && {urlIsVisible: layerConf.urlIsVisible}
+            ...(layerConf?.urlIsVisible !== undefined) && {urlIsVisible: layerConf?.urlIsVisible}
         };
     }
 };

@@ -7,7 +7,7 @@ categories:
   - geographic-information-systems
 description:
   de:
-    apiDocumentation: 'https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/README.md'
+    apiDocumentation: 'https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/README.md'
     documentation: 'https://www.masterportal.org/dokumentation'
     features:
       - OGC-konform
@@ -20,7 +20,7 @@ description:
     genericName: 'Masterportal '
     localisedName: Masterportal
     longDescription: |2
-       Das Masterportal ist ein flexibler Baukasten für Geoportale im Web. In Hamburg kommt das Masterportal immer dann zum Einsatz, wenn webbasierte Kartenanwendungen benötigt werden – als eigenständige Anwendung oder als Teil einer E-Government-Lösung. Auch in anderen Städten und Kreisen wird das [++Masterportal++] eingesetzt und in einer Kooperation von mehr als 30 Partnern aus der Verwaltung weiterentwickelt. Das Masterportal ist Open-Source-Software. Es ist unter der [++MIT-Lizenz++](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/License.txt) veröffentlicht.
+       Das Masterportal ist ein flexibler Baukasten für Geoportale im Web. In Hamburg kommt das Masterportal immer dann zum Einsatz, wenn webbasierte Kartenanwendungen benötigt werden – als eigenständige Anwendung oder als Teil einer E-Government-Lösung. Auch in anderen Städten und Kreisen wird das [++Masterportal++] eingesetzt und in einer Kooperation von mehr als 30 Partnern aus der Verwaltung weiterentwickelt. Das Masterportal ist Open-Source-Software. Es ist unter der [++MIT-Lizenz++](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/License.txt) veröffentlicht.
     shortDescription: ' Das Masterportal ist ein flexibler Baukasten für Geoportale im Web.'
 developmentStatus: stable
 intendedAudience:
@@ -84,7 +84,7 @@ name: Masterportal
 platforms:
   - web
 releaseDate: '2025-02-05'
-roadmap: 'https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/'
+roadmap: 'https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/'
 softwareType: standalone/web
 softwareVersion: 3.7.0
 url: 'https://bitbucket.org/geowerkstatt-hamburg/masterportal.git'

@@ -106,7 +106,8 @@ describe("src/modules/routing/js/directions/routing-ors-directions.js", () => {
                     optimization: "TIME",
                     avoidSpeedProfileOptions: [],
                     preference: "RECOMMENDED",
-                    transformCoordinates: true
+                    transformCoordinates: true,
+                    avoidBorders: true
                 }),
                 expectedResult = new RoutingIsochrones([
                     6.577318,
@@ -165,7 +166,8 @@ describe("src/modules/routing/js/directions/routing-ors-directions.js", () => {
                     optimization: "TIME",
                     avoidSpeedProfileOptions: [],
                     preference: "RECOMMENDED",
-                    transformCoordinates: true
+                    transformCoordinates: true,
+                    avoidBorders: false
                 });
                 // should not reach here
                 expect(true).to.be.false;

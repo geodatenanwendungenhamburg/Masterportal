@@ -81,6 +81,7 @@
       "loadingWait": "Lütfen bekleyin, araç karşılaştırma haritalarını yüklüyor",
       "name": "Haritaları Karşılaştır",
       "reset": "Sıfırla",
+      "sameLayerSelected": "Aynı katman iki kez seçildi. Seçim sıfırlandı.",
       "secondLayer": "İkinci Katman",
       "selectLayerOneFirst": "Lütfen önce birinci katmanı seçin",
       "splitDirection": "Yön: ",

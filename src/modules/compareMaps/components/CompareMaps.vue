@@ -19,10 +19,12 @@ export default {
         ...mapGetters(["visibleLayerConfigs"]),
         ...mapGetters("Modules/CompareMaps", [
             "layerNames",
-            "initialBaseLayer",
             "selectedLayer1Id",
             "selectedLayer2Id"
-        ])
+        ]),
+        selectionLayers () {
+            return this.visibleLayers.filter(layer => layer.id !== this.selectedLayer1Id);
+        }
     },
     watch: {
         /**
@@ -84,14 +86,16 @@ export default {
         splitDirection (newValue) {
             if (newValue) {
                 this.setLayerSwiperSplitDirection(newValue);
+                this.spinnerActive = true;
                 this.updateMap();
+                this.spinnerActive = false;
             }
         }
     },
     mounted () {
-        this.initialize();
         this.setActive(true);
         this.updateVisibleLayers(this.visibleLayerConfigs);
+        this.setLayerSwiperSplitDirection(this.splitDirection);
 
         mapCollection.getMap("2D").on("moveend", this.handleMapMove);
     },
@@ -102,11 +106,14 @@ export default {
     },
     methods: {
         ...mapActions("Modules/LayerSelection", ["changeVisibility"]),
+        ...mapActions("Alerting", ["addSingleAlert"]),
         ...mapMutations("Modules/LayerSwiper", {
             setLayerSwiperActive: "setActive",
             setLayerSwiperSourceLayer: "setLayerSwiperSourceLayer",
             setLayerSwiperTargetLayer: "setLayerSwiperTargetLayer",
-            setLayerSwiperSplitDirection: "setSplitDirection"
+            setLayerSwiperSplitDirection: "setSplitDirection",
+            setLayerSwiperValueY: "setLayerSwiperValueY",
+            setLayerSwiperValueX: "setLayerSwiperValueX"
         }),
         ...mapActions("Modules/LayerSwiper", ["updateMap"]),
         ...mapMutations("Modules/CompareMaps", Object.keys(mutations)),
@@ -131,7 +138,6 @@ export default {
          * @returns {void}
          */
         resetSelection () {
-            this.changeVisibility({layerId: this.initialBaseLayer.id, value: true});
 
             this.selectedLayer1 = null;
             this.selectedLayer2 = null;
@@ -140,6 +146,10 @@ export default {
             this.setLayerSwiperActive(false);
             this.setLayerSwiperSourceLayer(null);
             this.setLayerSwiperTargetLayer(null);
+            this.setLayerSwiperValueX(null);
+            this.setLayerSwiperValueY(null);
+
+            this.updateMap();
         },
         /**
          * Handle map move event to trigger spinner and layer updates
@@ -148,7 +158,6 @@ export default {
         handleMapMove () {
             if (this.selectedLayer2) {
                 this.setLayerSwiperActive(false);
-                this.spinnerActive = true;
                 this.handleLoadend();
             }
         },
@@ -157,11 +166,17 @@ export default {
          * @returns {void}
          */
         handleLoadend () {
+            if (this.selectedLayer1Id === this.selectedLayer2Id) {
+                this.selectedLayer2Id = "";
+                this.selectedLayer2 = null;
+                return;
+            }
+            this.spinnerActive = true;
             this.updateMap();
             mapCollection.getMap("2D").once("loadend", () => {
-                this.spinnerActive = false;
                 this.activateSwiper();
                 this.updateMap();
+                this.spinnerActive = false;
             });
         }
     }
@@ -246,7 +261,7 @@ export default {
                         :disabled="!selectedLayer1"
                     >
                         <option
-                            v-for="layer in visibleLayers"
+                            v-for="layer in selectionLayers"
                             :key="layer.name"
                             :value="layer"
                         >

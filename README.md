@@ -1,10 +1,10 @@
 # Masterportal
 
-The Masterportal is a tool-kit to create geo web applications based on [OpenLayers](https://openlayers.org), [Vue.js](https://vuejs.org/). The Masterportal is Open Source Software published under the [MIT License](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/License.txt).
+The Masterportal is a tool-kit to create geo web applications based on [OpenLayers](https://openlayers.org), [Vue.js](https://vuejs.org/) and [Cesium](https://cesium.com/platform/cesiumjs/) for 3D functionality. The Masterportal is Open Source Software published under the [MIT License](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/License.txt).
 
 The Masterportal is a project by [Geowerkstatt Hamburg](https://www.hamburg.de/geowerkstatt/).
 
-## MasterPortal 3.0.0
+## MasterPortal Version 3
 
 After more than two years of refactorings we can proudly present the new major Release Masterportal 3.0.0! We completely removed backbonejs and jquery, moved to vue3 and vuex4 and rewrote the application-core. We redesigned the UI to match all the different usecases and usergroups. We have nearly all modules and tools working but still some work to do. Features still to be added/moved to the new version are the following:
 
@@ -12,39 +12,33 @@ After more than two years of refactorings we can proudly present the new major R
 * Different AddOns
 * Theming
 * Touchtable-UI
-* Performance
-* etc.
+* ...
 
 To try out the new version just checkout this tag and run "npm install" and "npm start". You'll find working configs under "portal" as usual.
 
 Please be aware of the following:
 
-**We appreciate hints, feedback and communication of bugs! Please use the Issuetracker and tag your issue with "v3.0.0"**
+**We appreciate hints, feedback and communication of bugs! Please use the Issuetracker and tag your issue with "v3.x.x"**
 
 ## Roadmap
-Our further Roadmap is to work further on Masterportal Version 3. We will support and fix bugs for V2.x until end of 2024.
+Our further Roadmap is to work further on Masterportal Version 3. Support and bug fixing ended for V2.x in the end of 2024.
 ### Masterportal 3.x
-* 04.10.2023: Release MP 3.0 beta 1
-* 18.12.2023: Release MP 3.0 beta 2
-* 28.06.2024: Release MP 3.0 stable
-* 02.10.2024: Release MP 3.0 LTS (3.3.0)
+* 01.10.2025: New LTS Release MP (Including functionality based on v3.15.0)
 ### Masterportal Releases
 #### Monthly Releases
 We release a minor version on the first Wednesday of every month.
 ##### LTS
-LTS release status is "long-term support", which typically guarantees that critical bugs will be fixed for a total of 12 months.
-LTS versions are released annually on the first Wednesday in October.
-Current LTS Version: 3.3.0
-
+LTS release status is "long-term support", which typically guarantees that only critical bugs in functionality or security will be fixed for a total of 12 months and will be released in patch versions.
+New LTS minor versions (based on the current version 3 development branch) are released annually on the first Wednesday in October.
 ### Masterportal Release Schedule
 <p align="center">
   <img src="./docs/_media/Masterportal-TimeSchedule.svg" alt="Release plan"/>
 </p>
 
 ### Support for MP 2.x and MP 3.x
-* Pull requests for function enhancements in core modules in version 2 are going to be reviewed from product maintenance until 30.06.2024. (The deadline is indicative for now and should be understood as a guideline)
-* Our recommendation is to start new developments on Masterportal 3.x basis as soon as possible.
-* Bugs are going to be fixed for V2.x until 31.12.2024.
+* MP 2.x Version is since 31.12.2024 not longer officially supported.
+* Pull requests for function enhancements and new developments have to be on v3.x.x basis.
+
 
 ## User section
 
@@ -52,11 +46,14 @@ Current LTS Version: 3.3.0
 * [Quick start for users](./docs/Setup/setup.md)
 * [User documentation](./docs/User/About.md)
 * [User documentation online](https://www.masterportal.org/dokumentation)
-* [Community board (User forum and issue tracker)](https://trello.com/c/qajdXkMa/110-willkommen)
+* [Community board (User forum)](https://discourse.opencode.de/t/ueber-die-kategorie-masterportal-projekt-413/1691)
+* [Former Community board (User forum is closed - read only!)](https://trello.com/c/qajdXkMa/110-willkommen)
 
 ## Developer section
 ### Community
-* [Community board (Developer forum and issue tracker)](https://trello.com/c/qajdXkMa/110-willkommen)
+* [Issue tracker](https://bitbucket.org/geowerkstatt-hamburg/masterportal/issues?status=new&status=open&status=submitted&is_spam=!spam)
+* [Community board (User forum)](https://discourse.opencode.de/t/ueber-die-kategorie-masterportal-projekt-413/1691)
+* [Former Community board (User forum is closed - read only!)](https://trello.com/c/qajdXkMa/110-willkommen)
 ### Contributing
 * Contributors to the Masterportal are expected to act respectfully toward others in accordance with the [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) for open source projects.
 * Follow our [Developer documentation](./docs/Dev/About.md)

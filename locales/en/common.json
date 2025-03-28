@@ -109,6 +109,7 @@
       "loadingWait": "Please wait, the tool is loading the comparison maps",
       "name": "Compare Maps",
       "reset": "Reset",
+      "sameLayerSelected": "The same layer has been selected twice. The selection has been reset.",
       "secondLayer": "Second Layer",
       "selectLayerOneFirst": "Please select the first layer first",
       "splitDirection": "Direction: ",
@@ -438,7 +439,8 @@
         "sliderRange": {
           "max": "Slider max for {{param}}",
           "min": "Slider min for {{param}}"
-        }
+        },
+        "toolInfo": "Tool information (opens link in new tab)"
       },
       "button": {
         "confirm": "Confirm",
@@ -611,6 +613,7 @@
       "legend": "Legend",
       "name": "Information and legend",
       "noMetadataLoaded": "No metadata could be loaded!",
+      "noMetadataLoadedConsole": "Metadata for this layer could not be loaded. There seems to be a problem with the provided services.json.",
       "periodicityTitle": "Data update",
       "publicationCreation": "Publication / Creation",
       "pointOfContact": "Point of contact",
@@ -698,7 +701,8 @@
     "menu": {
       "ariaLabelClose": "Close $t(menu.name)",
       "ariaLabelOpen": "Open $t(menu.name)",
-      "name": "Menu"
+      "name": "Menu",
+      "widthUrlParamError": "The Url-Parameter to control the width of the menu has a wrong value. Please choose a value between 5 and 90."
     },
     "modalItem": {
       "close": "Close window"
@@ -900,7 +904,8 @@
         "UNPAVEDROADS": "Unpaved roads",
         "MIXEDTRAFFIC": "Mixed traffic Speed 50",
         "COBBLESTONE": "Cobblestone",
-        "NARROWWAYS": "Narrow ways"
+        "NARROWWAYS": "Narrow ways",
+        "BORDERS": "Borders"
       },
       "batchProcessing": {
         "cancel": "Cancel batch processing",
@@ -1094,7 +1099,8 @@
         "addressDistrict": "Search address, district",
         "addressHospitalBplan": "Search for Address/Hospital/B-Plan",
         "addressTopic": "Search address, district, topics",
-        "addressTopicParcel": "Search address, district, topics, parcel"
+        "addressTopicParcel": "Search address, district, topics, parcel",
+        "startWithAddress": "Start here with address!"
       },
       "actions": {
         "activateLayerInTopicTree": "Show layer in topic tree",
@@ -1124,7 +1130,8 @@
         "parcel": "parcel",
         "street": "street",
         "subject": "subject (external topics)",
-        "topic": "issues & topics"
+        "topic": "issues & topics",
+        "topicBaselayer": "Theme (baselayer)"
       },
       "specialWFS": {
         "ongoing": "in process",
@@ -1285,6 +1292,12 @@
         "onlyNumbersAllowed": "The input only allows numbers.",
         "requiredPropertiesNotSet": "Please enter a valid value for the required properties {{properties}}."
       },
+      "mandatoryInputError": {
+                    "text": "Regular text characters and special characters like , . / \\ [ ] space and German characters ö ä ü Ö Ä Ü ß and not only numbers are required",
+                    "number": "Number, partial number or negative number is required",
+                    "date": "Full date is required",
+                    "datetime-local": "Full date and hour is required"
+                },
       "form": {
         "discard": "Discard",
         "save": "Save"
@@ -1299,6 +1312,7 @@
       "layerSelectLabel": "Current layer:",
       "name": "WFS-T Tool",
       "polygonHint": "To move a polygon, hold down the Ctrl key and move your mouse while holding the mouse button down.",
+      "fieldRequired": "Field required",
       "transaction": {
         "error": {
           "axios": "$t(common:modules.wfst.transaction.error.genericFailedTransaction)",

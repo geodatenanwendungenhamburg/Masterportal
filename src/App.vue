@@ -57,6 +57,16 @@ export default {
                 initializeLayers(this.visibleLayerConfigs);
                 startProcessUrlParams();
                 this.initializeOther();
+
+                // Wait until next tick to ensure that the menu components is rendered
+                await this.$nextTick();
+
+                // Check if login module is available after configs are loaded
+                if (this.$store?.getters?.isModuleAvailable?.("login")) {
+                    // Start periodic check to verify if user token is still valid
+                    await this.setUpTokenRefreshInterval();
+                }
+
             }
         }
     },
@@ -69,10 +79,6 @@ export default {
         new Tooltip(document.body, {
             selector: "[data-bs-toggle='tooltip']"
         });
-        // Start periodic check if user token is still valid
-        setInterval(() => {
-            this.checkLoggedIn();
-        }, 10_000);
     },
     unmounted () {
         window.removeEventListener("resize", this.onResize());
@@ -90,7 +96,7 @@ export default {
             "loadRestServicesJson",
             "loadServicesJson"
         ]),
-        ...mapActions("Modules/Login", ["checkLoggedIn"]),
+        ...mapActions("Modules/Login", ["checkLoggedIn", "setUpTokenRefreshInterval"]),
 
         /**
          * Sets global variables.

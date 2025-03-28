@@ -32,7 +32,7 @@ describe("src/modules/modules/wfst/components/WfsTransaction.vue", () => {
             featureType: "wfstOne",
             gfiAttributes: "showAll",
             style: sinon.fake(),
-            isSelected: false,
+            isSelected: true,
             name: "Wfs-T one",
             url: "some.generic.url",
             version: "1.1.0",
@@ -113,7 +113,6 @@ describe("src/modules/modules/wfst/components/WfsTransaction.vue", () => {
                 visibleSubjectDataLayerConfigs: () => {
                     return allLayerConfigs;
                 }
-
             }
         });
     });
@@ -156,7 +155,7 @@ describe("src/modules/modules/wfst/components/WfsTransaction.vue", () => {
         });
         await wrapper.vm.$nextTick();
         expect(wrapper.find(".tool-wfs-transaction-layer-failure").exists()).to.be.true;
-        expect(wrapper.find(".tool-wfs-transaction-layer-failure").text()).to.equal("modules.wfst.error.allLayersNotSelected");
+        expect(wrapper.find(".tool-wfs-transaction-layer-failure").text()).to.equal("modules.tools.wfst.error.allLayersNotSelected");
     });
     it("renders a container including the failure message that the current layer has not been selected in the layer tree", async () => {
         exampleLayerOne.visibility = false;
@@ -164,7 +163,7 @@ describe("src/modules/modules/wfst/components/WfsTransaction.vue", () => {
         allLayerConfigs = [];
         store.commit("Modules/Wfst/setLayerIds", layerIds);
         store.commit("Modules/Wfst/setLayerInformation", [{...exampleLayerOne, visibility: false}, exampleLayerTwo]);
-        store.commit("Modules/Wfst/setFeatureProperties");
+        // store.commit("Modules/Wfst/setFeatureProperties");
 
 
         wrapper = shallowMount(WfsTransaction, {
@@ -178,7 +177,7 @@ describe("src/modules/modules/wfst/components/WfsTransaction.vue", () => {
         wrapper.vm.setLayerInformation = [{...exampleLayerOne, visibility: false}, exampleLayerTwo];
         await wrapper.vm.$nextTick();
         expect(wrapper.find(".tool-wfs-transaction-layer-failure").exists()).to.be.true;
-        expect(wrapper.find(".tool-wfs-transaction-layer-failure").text()).to.equal("modules.wfst.error.allLayersNotSelected");
+        expect(wrapper.find(".tool-wfs-transaction-layer-failure").text()).to.equal("modules.tools.wfst.error.allLayersNotSelected");
     });
     it("renders a form which includes a label and an input element for every gfi attribute of the layer", async () => {
         exampleLayerOne.visibility = true;

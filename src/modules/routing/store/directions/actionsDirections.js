@@ -83,7 +83,8 @@ export default {
 
         const directionSettings = await rootState.Modules.Routing.directionsSettings,
             {selectedAvoidSpeedProfileOptions} = getters,
-            avoidPolygons = await dispatch("getAvoidPolygonsWgs84");
+            avoidPolygons = await dispatch("getAvoidPolygonsWgs84"),
+            avoidBorders = selectedAvoidSpeedProfileOptions.find(o => o.id === "BORDERS");
 
         if (directionSettings.type === "ORS") {
             return fetchRoutingOrsDirections({
@@ -95,11 +96,12 @@ export default {
                     {root: true}
                 ),
                 speedProfile: state.settings.speedProfile,
-                avoidSpeedProfileOptions: selectedAvoidSpeedProfileOptions,
+                avoidSpeedProfileOptions: selectedAvoidSpeedProfileOptions.filter(o => o.id !== "BORDERS"),
                 preference: state.settings.preference,
                 avoidPolygons: avoidPolygons,
                 instructions: instructions,
-                elevation: state.settings.elevation
+                elevation: state.settings.elevation,
+                avoidBorders: avoidBorders
             });
         }
         throw new Error("fetchDirections Type is not configured correctly.");

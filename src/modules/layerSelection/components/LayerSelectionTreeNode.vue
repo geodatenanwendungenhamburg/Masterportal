@@ -4,6 +4,7 @@ import getNestedValues from "../../../shared/js/utils/getNestedValues";
 import Layer from "../../layerTree/components/LayerComponent.vue";
 import SelectAllCheckBox from "./SelectAllCheckBox.vue";
 import LightButton from "../../../shared/modules/buttons/components/LightButton.vue";
+import {sortByLayerSequence} from "../../../shared/js/utils/sortObjects";
 
 /**
  * Representation of a node in layertree containing folders or layers.
@@ -57,6 +58,10 @@ export default {
          */
         folderClicked () {
             if (this.conf.elements) {
+                if (this.conf.elements.some(conf => "layerSequence" in conf)) {
+                    sortByLayerSequence(this.conf.elements);
+                }
+
                 this.$emit("showNode", this.conf.name, this.conf.elements);
             }
         },

@@ -81,6 +81,7 @@
       "loadingWait": "Bitte warten Sie, dat Tool laadt de Vergleichskarten",
       "name": "Karten vergelieken",
       "reset": "Resetten",
+      "sameLayerSelected": "Dat is tweemal utwählt worrn. De Utwahl is torüchsett worrn.",
       "secondLayer": "Tweede Layer",
       "selectLayerOneFirst": "Bitte eerst den eersten Layer utsöken",
       "splitDirection": "Richtung: ",

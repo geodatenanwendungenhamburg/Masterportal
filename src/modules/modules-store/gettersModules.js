@@ -34,6 +34,7 @@ import NewsView from "../news/components/NewsView.vue";
 import OpenConfig from "../openConfig/components/OpenConfig.vue";
 import PortalFooter from "../portalFooter/components/PortalFooter.vue";
 import PrintMap from "../print/components/PrintMap.vue";
+import ResizeHandle from "../../shared/modules/resize/components/ResizeHandle.vue";
 import Routing from "../routing/components/RoutingTemplate.vue";
 import SearchBar from "../searchBar/components/SearchBar.vue";
 import ScaleSwitcher from "../scaleSwitcher/components/ScaleSwitcher.vue";
@@ -85,6 +86,7 @@ const getters = {
             openConfig: OpenConfig,
             portalFooter: PortalFooter,
             print: PrintMap,
+            resizeHandle: ResizeHandle,
             routing: Routing,
             searchBar: SearchBar,
             scaleSwitcher: ScaleSwitcher,

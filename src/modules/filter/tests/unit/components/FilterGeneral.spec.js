@@ -141,6 +141,25 @@ describe("src/modules/filter/components/FilterGeneral.vue", () => {
             expect(wrapper.findComponent(IconButton).exists()).to.be.false;
             wrapper.vm.setLayerSelectorVisible(true);
         });
+
+        it("should not render questionLink button by default", async () => {
+            const wrapper = shallowMount(FilterGeneral, {global: {
+                plugins: [store]
+            }});
+
+            expect(wrapper.findComponent("[icon='bi bi-question-circle']").exists()).to.be.false;
+        });
+
+        it("should render questionLink button if configured", async () => {
+            const wrapper = shallowMount(FilterGeneral, {global: {
+                plugins: [store]
+            }});
+
+            wrapper.vm.setQuestionLink("about:blank");
+            await wrapper.vm.$nextTick();
+
+            expect(wrapper.findComponent("[icon='bi bi-question-circle']").exists()).to.be.true;
+        });
     });
 
     describe("updateSelectedGroups", () => {

@@ -35,7 +35,7 @@ const state = {
     hasMouseMapInteractions: true,
     icon: "bi-arrows-angle-expand",
     supportedDevices: ["Desktop", "Mobile", "Table"],
-    supportedMapModes: ["2D"],
+    supportedMapModes: ["2D", "3D"],
     type: "measure",
 
     // tool-specific config.json parameters

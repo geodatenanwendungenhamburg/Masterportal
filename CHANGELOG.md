@@ -4,7 +4,60 @@
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
 ## Unreleased - in development
+
 ### __Breaking Changes__
+
+### Added
+- URL-Parameter: added url-Parameter to set the width of menu and secondary menu (menuwidth/secondarywidth).
+- New function getOAFFeature.getTemporalExtent for requesting the temporal extent of a collection.
+- Routing: option to avoid borders for directions and isochrones
+- Searchbar:
+    - Topic tree search can now output baselayer as search category.
+    - Topic tree search can be configured whether the path of the layer is displayed in the tooltip.
+- LayerTree: added checkMove function to validate dragged layer movement based on allowBaselayerDrag configuration.
+- WFST-Tool: Added WFS-T improvements
+  - correct transactionFeature properties order
+  - input validation
+  - gfiAttributes nested object handling
+- LayerSelection: added "deactivateShowAllCheckbox" configuration, to disable the "Show All Checkbox" inside folders.
+- LayerTree, LayerSelection: Introduced an alternative sorting function for layers utilizing the layerSequence prop.
+- SliderItem: Added markers functionality for visual indication of key points along the slider range.
+- Filter:
+  - Added parameter questionLink. Can be configured to open a URL with information about the tool.
+  - A new parameter "closeDropdownOnSelect" to enable/disable closing list after selecting an option in multiselect dropdown list.
+
+### Changed
+- Coding Conventions: updated.
+- Menus: Increased maximum width of menu and secondary menu to 95% of viewport.
+- secondary Menu: Increasing width of secondary Menu over 70% of viewport (50% for viewwidth < 1000px) now temporarily hides layerpills and footer to show the secondary Menu at a maximum width of 95% of viewport.
+- Filter: Parameters featureNS and featurePrefix removed from WFS-request due to redundancy and invalid values at specific layers.
+- dependencies:
+        - @masterportal/masterportalapi: 2.45.0 to 2.47.0 (This also raised ol to version 10.4.0 and @cesium/engine to version 15.0.0)
+- FullScreen: Using the FullScreen control in an iFrame keeps the current state (center, zoom, layers etc.) now.
+
+### Deprecated
+
+### Removed
+
+### Fixed
+- LayerInformation:
+  - empty contact accordion was shown, if metadata contains no contact.
+  - Fixed wrong or undefined metadata showing when current Layer has no metadata.
+  - Fixed an issue with no metadata, when cswUrl was undefined, rather than null.
+- Loading the layer is accelerated by fixing generation of folder ids
+- ShareView: duplicated url params are filtered.
+- Issue #1324: CompareMaps: always show loading spinner when loading and do not split maps after closing tool.
+- Issue #1348: BaselayerSwitcher: use preview settings from config.
+- Issue #1358: Topic tree search can now also be used in multiple languages via i18next.
+- layer2dVector: The style type "nominal" works on single features in clustered layers now.
+- layer3dTileset: Can change the cesium scene parameter depthTestAgainstTerrain to true if needed.
+- ShareView: Fixed sharing 3D map.
+- UrlParams: 3D params heading, tilt and altitude are evaluated correctly.
+- specialWfs search: Add hover/zoomTo support for linestring geometries.
+
+---
+
+## 2025-03-05 v3.8.0
 
 ### Added
 - i18next: added Nederlands language.
@@ -13,34 +66,64 @@
 - The following packages have been updated:
     - dependencies:
         - @masterportal/mpconfigparser: 1.4.0 to 2.0.0
+        - axios: 1.7.7 to 1.7.9
+        - chart.js: 4.4.4 to 4.4.8
+        - i18next: 23.15.1 to 24.2.2
+        - i18next-browser-languagedetector: 8.0.0 to 8.0.3
+        - i18next-http-backend: 2.6.1 to 2.7.3
+        - jsts: 2.11.3 to 2.12.1
+        - three: 0.168.0 to 0.173.0
+        - vue-multiselect: 3.0.0 to 3.2.0
+    - devDependencies:
+        - @eslint/js: 9.10.0 to 9.20.0
+        - @sinonjs/fake-timers: 13.0.1 to 14.0.0
+        - @stylistic/eslint-plugin-js: 2.8.0 to 2.13.0
+        - @vue/compiler-sfc: 3.5.4 to 3.5.13
+        - @vue/devtools-api: 6.6.4 to 7.7.2
+        - chai: 5.1.1 to 5.2.0
+        - esbuild-loader: 4.1.0 to 4.3.0
+        - eslint-plugin-jsdoc: 50.2.2 to 50.6.3
+        - eslint-plugin-vue: 9.28.0 to 9.32.0
+        - fs-extra: 11.2.0 to 11.3.0
+        - globals: 15.9.0 to 15.15.0
+        - husky: 9.0.11 to 9.1.7
+        - jsdoc: 4.0.3 to 4.0.4
+        - mocha: 10.7.3 to 10.8.2
+        - mochapack: 2.1.4 to 2.1.5
+        - sinon: 18.0.0 to 19.0.2
+        - zip-a-folder: 3.1.1 to 3.1.8
 - Map: added a warning in console, if a listener is added to map for a function that binds this and no special key is provided.
 - Routing: TsrUpload and RoutingBatchProcessing now use sharedComponent FileUpload for uploading files.
-
-### Deprecated
-
-### Removed
+- OpenConfig: Now uses sharedComponent FileUpload.
 
 ### Fixed
 - Alerting: Fixed bug, alerts now show everytime on pageload when alert.once is set to false.
+- Issue #1190: Print: legends for json layer with geometry type lineString can now be printed.
+- Issue #1218: Fixed the missing bbox in request for filter module if the param `searchInMapExtent` and `extern` is true.
+- Issue #1299: change of textsize and rm of padding in NewsView Component.
 - Issue #1320: Fixed long url when sharing a view with open search bar.
+- Issue #1331: Show group layers in right order.
+- Issue #1337: Fixed loading javascript addons missing import.
 - Issue #1340: fixed duplicate menu entries in the mobile version.
+- Issue #1355: Fixed the "urlIsVisible" attribute to properly take effect.
 - Issue #1357: Fixed unauthorized errors by restoring credentials: include in utilsAxios to ensure cookies with login information are properly attached to requests.
-- layer3dTileset: Fixed the default maximumScreenSpaceError value to be a number and increased it for better performance. 
+- layer3dTileset: Fixed the default maximumScreenSpaceError value to be a number and increased it for better performance.
+- Issue #1355: Fixed the "urlIsVisible" attribute to properly take effect.
 - ShareView: Deleted import of BorisState as it caused a compiler error when addons are not integrated. Replaced it with a string instead.
+- WMS-Time: GFIFeature is now called every time the time slider is used, ensuring the selected time is always displayed in the feature.
+- BaselayerSwitcher: Fixed scrolling issue on low-height browser, so that all elements can still be scrolled into view.
+- LayerTree: Corrected order of layers styled by `layerIDsToStyle`.
+- TimeSlider: Fixed issue where dragging the slider while comparing two time instances updated both sliders instead of only the active one.
+-  Menu: Navigating back from layerinformation to the previous menu item add subject.
 
 ---
 
-## 2025-02-07 v3.4.0
-
-### Added
-- updateLoginMenuProps: Method within actionsMenu to handle menu updates
+## 2025-02-07 v3.7.0
 
 ### Fixed
-- Updating menu item name from Login to Logout after a user is logged in and visa versa.
 - Fix OIDC Token Auto-Refresh After Initial Login
 
 ## 2025-02-05 v3.7.0
-### __Breaking Changes__
 
 ### Added
 - LayerTree: added a new parameter at layer `filterRefId` as an index of a configured filter Layer.
@@ -50,7 +133,7 @@
 - CustomMenuElement:
     - Added configuration support for 2D/3D viewpoints.
     - Added the possibility to add layers to the map and displays them in layerTree.
-- WMS-Time: Updated to ensure WMS-Time Layer compatibility with version 1.3.0. 
+- WMS-Time: Updated to ensure WMS-Time Layer compatibility with version 1.3.0.
 
 ### Changed
 - SearchBar: Added reset button to searchbar, so that the reset is shown and working in all browsers.
@@ -59,7 +142,6 @@
 - dependencies:
         - @masterportal/masterportalapi: 2.42.2 to 2.45.0 (This also raised ol to version 10.3.1 and @cesium/engine to 13.0.0)
 
-### Deprecated
 
 ### Removed
 - setupDev.md: Removed unneeded Python instructions.
@@ -75,7 +157,7 @@
 - Issue #1314: AddWMS: Added WMS are added in a folder structure in the layerSelection.
 - Issue #1320: Shortened shared link when topic tree or boris component are open in menu, resolving the 'Submitted URI too large' browser error.
 - Issue #1321: Grouped Layer: Child layer adopt the transparency from the config.json.
-- Issue #1325: 3D tileset layers can now be styled via style_v3.json, see also [style.json.md](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/docs/User/Global-Config/style.json.md).
+- Issue #1325: 3D tileset layers can now be styled via style_v3.json, see also [style.json.md](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/docs/User/Global-Config/style.json.md).
 - Issue #1334: LayerSelection: Alphabetical sorting only takes place with tree type auto.
 - Issue #1336: CompareFeatures: The star in GFI is only shown, if module compareFeatures ist available.
 - Issue #1338: AddWMS: The infoFormat is now read from the capabilities. `application/vnd.ogc.gml` is preferred, because OL cannot handle the prefixes from the MapServer for the infoFormat `text/xml`
@@ -122,17 +204,6 @@ Geobasiskarten: Removed old layers Geobasiskarten (farbig, graublau, schwarzgrau
 - Portal Master: Fixed error in console by updating layer id.
 
 ---
-## 2024-12-12 v3.3.3 (LTS)
-
-### Fixed
-- Fixed issue where the 3D view would not launch when button3d was configured under controls.expandable in config.json.
-- Issue #1121: For secured services that have the isSecured attribute, the lock icon is now displayed again.
-- Issue #1266: For layers whose ids are configured as an array, the visible range can now be restricted with `minScale` and `maxScale` in config.json.
-- Issue #1272: Prevents MDID layer IDs from being removed when setting layer IDs, when a shared link with both layer IDs and MDIDs is opened.
-- Searchbar: the search in search results shows results and no error occurs.
-- wfst: layers that are not in services.json are supported.
-
----
 
 ## 2024-12-05 v3.5.1
 
@@ -143,10 +214,10 @@ Geobasiskarten: Removed old layers Geobasiskarten (farbig, graublau, schwarzgrau
 ---
 
 ## 2024-12-04 v3.5.0
-### __Breaking Changes__
 
 ### Added
 - Measure-Tool: Added config parameter color for the measured lines and polygons.
+- Measure-Tool: Now available in 3D mode (migrated from v2)
 - Menu: new config parameter showHeaderIcon to show the icon of the current component in the menu header.
 - WMS features with geometry can be highlighted with polygon marker.
 
@@ -156,7 +227,6 @@ Geobasiskarten: Removed old layers Geobasiskarten (farbig, graublau, schwarzgrau
         - @masterportal/masterportalapi: 2.41.0 to 2.42.1 (This also raised ol to version 10.2.1 and @cesium/engine to 12.0.1)
 - WMS gfi responses with mimeType json/application are parsed as GeoJSON.
 
-### Deprecated
 
 ### Removed
 - Issue #1300: Migrator: The following attributes are removed from the search interface bkg when migrating, as they have no effect: `minCharacters`, `suggestCount`, `suggestServiceId`, `zoomLevel`, `zoomToResultOnClick` and `zoomToResultOnHover`.
@@ -210,7 +280,7 @@ Geobasiskarten: Removed old layers Geobasiskarten (farbig, graublau, schwarzgrau
     - Added checkbox to determine if routes stay visible after closing the routing tool
     - HGV-Routing with additional restrictions
     - Travelling Salesman Routing (TSR) with VROOM
-- Login: Documentation was added to [config.js](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/doc/config.js.md).
+- Login: Documentation was added to [config.js](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/config.js.md).
 - Filter supports secure WFS request.
 - ShareView: Added hashtag to shared link to share link correctly.
 - LayerInformation: Added last revision date to Layer Information.
@@ -228,7 +298,7 @@ Geobasiskarten: Removed old layers Geobasiskarten (farbig, graublau, schwarzgrau
 - Fixed the issue that the legend information was empty when an empty legend-object was passed to the legend component.
 - Corrected link for geodata infrastructure information pdf by GDI-DE.
 - Issue #1238: fixed `CQL_FILTER` URL parameter sending invalid `undefined` values.
-- Issue #1247: Grouped layer: added attribute `children` in config.json to overwrite attributes for single grouped layers, more see [Grouped layer](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/docs/Dev/groupedLayers.md).
+- Issue #1247: Grouped layer: added attribute `children` in config.json to overwrite attributes for single grouped layers, more see [Grouped layer](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/docs/Dev/groupedLayers.md).
 - Issue #1276: Duplicate icons StartModule in expandable ControlBar.
 - Issue #1286: i18next: Correct time patterns for missing key, converting 'HH.MM' to 'HH:MM'.
 - Issue #1294: PoiChoice: Fixed translation for "customPosition",  PoiOrientation: Fixed layout for the list of POI items.
@@ -247,7 +317,7 @@ Geobasiskarten: Removed old layers Geobasiskarten (farbig, graublau, schwarzgrau
 ## 2024-11-05 v3.3.2 (LTS)
 
 ### Added
-- Issue #1247: Grouped layer: added attribute children in config.json to overwrite attributes for single grouped layers, more see [Grouped layer](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/docs/groupedLayers.md).
+- Issue #1247: Grouped layer: added attribute children in config.json to overwrite attributes for single grouped layers, more see [Grouped layer](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/docs/groupedLayers.md).
 
 ### Fixed
 - Print: Group layers of different `typ` are printed.
@@ -385,7 +455,7 @@ Geobasiskarten: Removed old layers Geobasiskarten (farbig, graublau, schwarzgrau
     - Extended region filter
     - Button "All" for selecting all the regions and all in dropdown of districts and cities.
 - OAF: Added scheme request function in the api folder for the getOAFFeature file. This can be used for an easy and fast way to gather unique values.
-- ViewPoint: Migrated from dev to dev_vue.
+- ViewPoint: Migrated from dev to dev.
 - Matomo: Added Support for analytics via matomo.
 - Migrator: supports ids with suffix.
 - InputText: Added change event handler property and disabled property.
@@ -690,7 +760,7 @@ In certain circumstances this means that you have to update your portal files (i
 
 ### Added
 - Add roadmap information to the readme file.
-- Add documentation for the [config.js](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/doc/config.js.md) and [config.json](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/doc/config.json.md).
+- Add documentation for the [config.js](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/config.js.md) and [config.json](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/config.json.md).
 - Configurable searchBar for the layerselection.
 - To manage dependencies of dependencies "overrides" for cesium are added to package.json and create dummy packages for it.
 - New config.json parameter `sldVersion` for legend configuration to define a `Styled Layer Descriptor` for the GetLegendGraphic requests.
@@ -745,7 +815,7 @@ In certain circumstances this means that you have to update your portal files (i
 
 - SearchBar: styled the input field.
 - Print: styled loading button.
-- The roadmap dates have been updated. See [Readme](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/README.md).
+- The roadmap dates have been updated. See [Readme](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/README.md).
 - Layers are only displayed on the 2D-map, if layers attributes minScale and maxScale are in maps scale-range. The layer is grayed out in the topic tree if it is not displayed on the map.
 - Main Menu: added margin so scrollbar is visible on desktop.
 - Search results: layers can now be added/removed directly to/from the map by activating the checkbox. The add layer button has been removed.
@@ -759,7 +829,6 @@ In certain circumstances this means that you have to update your portal files (i
 - Layerinformation: different labels have been updated.
 - Migrated the tool `login` to MP3.0.0
 
-### Deprecated
 
 ### Removed
 - The following NPM packages have been removed:

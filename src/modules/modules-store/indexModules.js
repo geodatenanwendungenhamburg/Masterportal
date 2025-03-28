@@ -34,6 +34,7 @@ import News from "../news/store/indexNewsView";
 import OpenConfig from "../openConfig/store/indexOpenConfig";
 import PortalFooter from "../portalFooter/store/indexPortalFooter";
 import Print from "../print/store/indexPrint";
+import ResizeHandle from "../../shared/modules/resize/store/indexResizeHandle";
 import Routing from "../routing/store/indexRouting";
 import ScaleSwitcher from "../scaleSwitcher/store/indexScaleSwitcher";
 import SearchBar from "../searchBar/store/indexSearchBar";
@@ -83,6 +84,7 @@ export default {
         MouseHover: {...MouseHover},
         News: {...News},
         OpenConfig: {...OpenConfig},
+        ResizeHandle: {...ResizeHandle},
         Routing: {...Routing},
         PortalFooter: {...PortalFooter},
         Print: {...Print},

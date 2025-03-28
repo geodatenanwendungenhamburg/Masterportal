@@ -44,8 +44,8 @@ const actions = {
         if (!rootGetters["Modules/WmsTime/TimeSlider/playing"]) {
             await mapCollection.getMap(rootGetters["Maps/mode"]).render();
         }
-        state.targetLayer?.getLayer().once("prerender", renderEvent => dispatch("drawLayer", renderEvent));
-        state.targetLayer?.getLayer().once("postrender", ({context}) => {
+        state.targetLayer?.getLayer().on("prerender", renderEvent => dispatch("drawLayer", renderEvent));
+        state.targetLayer?.getLayer().on("postrender", ({context}) => {
             context.restore();
         });
 

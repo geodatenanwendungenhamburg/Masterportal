@@ -85,7 +85,8 @@ export default {
      */
     async fetchIsochrones ({state, dispatch, getters, rootState}, {wgs84Coords, transformCoordinates}) {
         const isoChroneSettings = rootState.Modules.Routing.isochronesSettings,
-            {selectedAvoidSpeedProfileOptions} = getters;
+            {selectedAvoidSpeedProfileOptions} = getters,
+            avoidBorders = selectedAvoidSpeedProfileOptions.find(o => o.id === "BORDERS");
 
         if (isoChroneSettings.type === "ORS") {
             return fetchRoutingOrsIsochrones({
@@ -97,8 +98,9 @@ export default {
                 ),
                 speedProfile: state.settings.speedProfile,
                 optimization: state.settings.isochronesMethodOption,
-                avoidSpeedProfileOptions: selectedAvoidSpeedProfileOptions,
-                transformCoordinates: transformCoordinates
+                avoidSpeedProfileOptions: selectedAvoidSpeedProfileOptions.filter(o => o.id !== "BORDERS"),
+                transformCoordinates: transformCoordinates,
+                avoidBorders: avoidBorders
             });
         }
 

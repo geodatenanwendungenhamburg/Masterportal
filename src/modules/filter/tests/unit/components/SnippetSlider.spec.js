@@ -85,6 +85,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
                 }),
                 sliderInput = wrapper.find(".slider-single");
 
+            await wrapper.vm.$nextTick();
             await sliderInput.setValue("30");
             expect(wrapper.find(".slider-single").element.value).to.equal("30");
             expect(wrapper.find(".input-single").element.value).to.equal("30");

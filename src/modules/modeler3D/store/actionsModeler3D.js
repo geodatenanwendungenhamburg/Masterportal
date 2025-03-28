@@ -4,6 +4,7 @@ import {convertColor} from "../../../shared/js/utils/convertColor";
 import blobHandler from "../js/blob";
 import {nextTick} from "vue";
 import {uniqueId} from "../../../shared/js/utils/uniqueId";
+import layerCollection from "../../../core/layers/js/layerCollection";
 
 /**
  * The actions for the modeler3D module.
@@ -134,7 +135,8 @@ export default {
             },
             clonedEntities = [...state.importedEntities],
             blobBuffer = await blobHandler.blobToBase64(blob);
-        let entity = null;
+        let entity = null,
+            orientationMatrix = null;
 
         if (position) {
             options.position = new Cesium.Cartesian3(position.x, position.y, position.z);
@@ -148,7 +150,7 @@ export default {
             blobType: blob?.type,
             fileName,
             entityId: entity.id,
-            rotation: state.rotation,
+            rotation: rotation ? rotation : state.rotation,
             scale: state.scale,
             position
         });
@@ -164,18 +166,24 @@ export default {
             name: fileName,
             show: true,
             edit: false,
-            heading: 0
+            heading: rotation ? rotation : 0
         });
 
         commit("setImportedModels", clonedModels);
         commit("setCurrentModelId", entity.id);
         nextTick(() => {
             if (typeof rotation === "number") {
+                orientationMatrix = Cesium.Transforms.headingPitchRollQuaternion(
+                    entity?.position?.getValue(),
+                    new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(50), 0, 0)
+                );
+                entity.orientation = orientationMatrix;
                 commit("setRotation", rotation);
             }
 
             if (typeof scale === "number") {
                 commit("setScale", scale);
+                entity.model.scale = scale;
             }
         });
 
@@ -691,5 +699,103 @@ export default {
         labelEntities.forEach(label => {
             entities.remove(label);
         });
+    },
+
+    /**
+     * Resets the state to the original status.
+     * Deletes all the entities.
+     * @param {Object} context - The context of the Vuex module.
+     * @returns {void}
+     */
+    resetAll ({commit, state}) {
+        const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
+            tileSetLayers = layerCollection.getLayers().filter(layer => layer.get("typ") === "TileSet3D");
+
+        entities.removeAll();
+        state.hiddenObjects.forEach(object => {
+            tileSetLayers.forEach(tileSetLayer => {
+                tileSetLayer.showObjects([object.name]);
+            });
+        });
+        commit("setDrawnModels", []);
+        commit("setImportedModels", []);
+        commit("setHiddenObjects", []);
+        commit("setHiddenObjectsWithLayerId", []);
+        commit("setClampToGround", true);
+        commit("setDimensions", true);
+        commit("setSelectedDrawType", "");
+        commit("setCurrentLayout", {
+            fillColor: [255, 255, 255],
+            fillTransparency: 0,
+            strokeColor: [0, 0, 0],
+            strokeWidth: 1,
+            extrudedHeight: 20
+        });
+        commit("setHideObjects", false);
+        commit("setPovActive", false);
+        commit("setScale", 1);
+        commit("setCurrentModelId", null);
+    },
+    /**
+     * Hides a list of given Objects.
+     * Commits setHiddenObjects, setHiddenObjectsWithLayerId.
+     * @param {Object} context - The context of the Vuex module.
+     * @param {Object[]} listOfObjects - A list of objects with the structure of {name: objectName/gmlId, layerId}
+     * @returns {void}
+     */
+    bulkHideObjects ({state, getters, commit}, listOfObjects) {
+        if (!Array.isArray(listOfObjects)) {
+            return;
+        }
+        const layerListWithGMLIdsAsValue = {},
+            updateAllLayers = getters.updateAllLayers,
+            hiddenObjectsWithLayerIdCopy = JSON.parse(JSON.stringify(state.hiddenObjectsWithLayerId)),
+            hiddenObjectsCopy = JSON.parse(JSON.stringify(state.hiddenObjects));
+
+        listOfObjects.forEach(({name, layerId}) => {
+            if (!layerListWithGMLIdsAsValue[layerId]) {
+                layerListWithGMLIdsAsValue[layerId] = [];
+            }
+            layerListWithGMLIdsAsValue[layerId].push(name);
+            hiddenObjectsCopy.push({name});
+            hiddenObjectsWithLayerIdCopy.push({name, layerId});
+        });
+        Object.entries(layerListWithGMLIdsAsValue).forEach(([layerId, gmlIds]) => {
+            const tileSetLayer = layerCollection.getLayerById(layerId);
+
+            if (!tileSetLayer) {
+                return;
+            }
+
+            tileSetLayer.layer.tileset?.then(tileset => {
+                if (tileset.tilesLoaded) {
+                    hideObjects(tileSetLayer, undefined, gmlIds, updateAllLayers);
+                    return;
+                }
+                const hideObjectsFunc = hideObjects;
+
+                tileset?.allTilesLoaded?.addEventListener(hideObjectsFunc.bind(null, tileSetLayer, gmlIds, updateAllLayers, () => {
+                    tileset.allTilesLoaded?.removeEventListener(hideObjectsFunc);
+                }));
+            });
+        });
+        commit("setHiddenObjects", hiddenObjectsCopy);
+        commit("setHiddenObjectsWithLayerId", hiddenObjectsWithLayerIdCopy);
     }
 };
+
+/**
+ * Helper listener function.
+ * @param {Cesium.Cesium3DTileset} tileSetLayer - The tileSetLayer.
+ * @param {String[]} gmlIds - List of gmlIds to hide on the map.
+ * @param {Boolean} updateAllLayers - Update all layers flag. See addToHiddenObjects function of the tileSetLayer object.
+ * @param {Function} onFinish - Function to call on finish.
+ * @returns {void}
+ */
+function hideObjects (tileSetLayer, gmlIds, updateAllLayers, onFinish) {
+    gmlIds.forEach(gmlId => {
+        tileSetLayer.addToHiddenObjects([gmlId], updateAllLayers);
+    });
+
+    onFinish();
+}

@@ -75,7 +75,7 @@ export default class InterfaceWfsExtern {
             this.getMinMaxPOST(service, attrName, onsuccess, onerror, minOnly, maxOnly, isDate, filterQuestion);
         }
         else {
-            this.getMinMaxGET(service, attrName, onsuccess, onerror, minOnly, maxOnly, isDate, axiosMock);
+            this.getMinMaxGET(service, attrName, onsuccess, onerror, filterQuestion.commands, minOnly, maxOnly, isDate, axiosMock);
         }
     }
 
@@ -122,7 +122,7 @@ export default class InterfaceWfsExtern {
                         this.waitingListForRequests[filterId].shift()();
                     }
                 }
-            }, onerror);
+            }, onerror, false, service.extern && commands.searchInMapExtent);
         }
         this.waitingListForRequests[filterId].push(() => {
             onsuccess(this.getMinMaxFromFeaturesByAttrName(this.allFetchedItems[filterId], attrName, isDate, format, minOnly, maxOnly));
@@ -205,21 +205,23 @@ export default class InterfaceWfsExtern {
      * @param {Object} service the service to call, identical to filterQuestion.service
      * @param {String} attrName the attribute to receive the min and max value from
      * @param {Function} onsuccess a function({min, max}) with the received value
-     * @param {Function} onerror a function(errorMsg)
+     * @param {Function} onerror a function(errorMsg),
+     * @param {Object} commands the commands from the snippets.
      * @param {Boolean} [minOnly=false] if only min is of interest
      * @param {Boolean} [maxOnly=false] if only max is of interest
      * @param {Boolean} [isDate=false] if only from date or dateRange
      * @param {Function|Boolean} [axiosMock=false] false to use axios, an object with get function(url, {params}) if mock is needed
      * @returns {void}
      */
-    getMinMaxGET (service, attrName, onsuccess, onerror, minOnly = false, maxOnly = false, isDate = false, axiosMock = false) {
+    getMinMaxGET (service, attrName, onsuccess, onerror, commands, minOnly = false, maxOnly = false, isDate = false, axiosMock = false) {
         const url = service?.url,
             params = {
                 service: "WFS",
                 version: "1.1.0",
                 request: "GetFeature",
                 typename: service?.typename,
-                propertyName: attrName
+                propertyName: attrName,
+                bbox: commands?.searchInMapExtent && typeof this.getCurrentExtent === "function" ? this.getCurrentExtent()?.join(",") : undefined
             },
             axiosObject = typeof axiosMock === "object" && axiosMock !== null ? axiosMock : axios,
             result = {};
@@ -275,6 +277,7 @@ export default class InterfaceWfsExtern {
      * @param {Object} filterQuestion an object of with keys: rules and filterId
      * @param {Object[]} filterQuestion.rules the rules
      * @param {Number} filterQuestion.filterId the filterId
+     * @param {Object} filterQuestion.commands the commands
      * @param {Function|Boolean} [axiosMock=false] false to use axios, an object with get function(url, {params}) if mock is needed
      * @returns {void}
      */
@@ -283,7 +286,7 @@ export default class InterfaceWfsExtern {
             this.getUniqueValueByPOST(service, attrName, onsuccess, onerror, filterQuestion);
         }
         else {
-            this.getUniqueValueByGET(service, attrName, onsuccess, onerror, axiosMock);
+            this.getUniqueValueByGET(service, attrName, onsuccess, onerror, filterQuestion.commands, axiosMock);
         }
     }
     /**
@@ -330,7 +333,7 @@ export default class InterfaceWfsExtern {
                         this.waitingListForRequests[filterId].shift()();
                     }
                 }
-            }, onerror);
+            }, onerror, false, service.extern && commands.searchInMapExtent);
         }
 
         this.waitingListForRequests[filterId].push(() => {
@@ -369,10 +372,11 @@ export default class InterfaceWfsExtern {
      * @param {String} attrName the attribute to receive unique value from
      * @param {Function} onsuccess a function([]) with the received unique value as Array of value
      * @param {Function} onerror a function(errorMsg)
+     * @param {Object} commands the commands from the snippet
      * @param {Function|Boolean} [axiosMock=false] false to use axios, an object with get function(url, {params}) if mock is needed
      * @returns {void}
      */
-    getUniqueValueByGET (service, attrName, onsuccess, onerror, axiosMock) {
+    getUniqueValueByGET (service, attrName, onsuccess, onerror, commands, axiosMock) {
         const url = service?.url,
             options = {
                 withCredentials: typeof service?.isSecured === "boolean" ? service.isSecured : false,
@@ -381,7 +385,8 @@ export default class InterfaceWfsExtern {
                     version: "1.1.0",
                     request: "GetFeature",
                     typename: service?.typename,
-                    propertyname: attrName
+                    propertyname: attrName,
+                    bbox: commands?.searchInMapExtent && typeof this.getCurrentExtent === "function" ? this.getCurrentExtent()?.join(",") : undefined
                 }
             },
             axiosObject = typeof axiosMock === "object" && axiosMock !== null ? axiosMock : axios;
@@ -458,10 +463,11 @@ export default class InterfaceWfsExtern {
      * @param {Function} onsuccess a function(filterAnswer)
      * @param {Function} onerror a function(errorMsg)
      * @param {Function|Boolean} [axiosMock=false] false to use axios, an object with get function(url, {params}) if mock is needed
+     * @param {Boolean} ignoreRules should ignore rules and just start a filter request without. Is used to get data only for the current extent if it is set to true in that case it should ignore the rules
      * @returns {void}
      */
-    filter (filterQuestion, onsuccess, onerror, axiosMock = false) {
-        const filter = Array.isArray(filterQuestion?.rules) && filterQuestion?.rules.length || filterQuestion.commands?.filterGeometry ? this.getFilter(filterQuestion.rules, filterQuestion.commands?.searchInMapExtent, filterQuestion.commands?.geometryName, filterQuestion.commands?.filterGeometry) : undefined,
+    filter (filterQuestion, onsuccess, onerror, axiosMock = false, ignoreRules = false) {
+        const filter = Array.isArray(filterQuestion?.rules) && filterQuestion?.rules.length || (filterQuestion.commands?.filterGeometry || filterQuestion.commands?.searchInMapExtent) ? this.getFilter(filterQuestion.rules, filterQuestion.commands?.searchInMapExtent, filterQuestion.commands?.geometryName, filterQuestion.commands?.filterGeometry, ignoreRules) : undefined,
             featureRequest = new WFS({"version": filterQuestion?.service?.version}).writeGetFeature({
                 srsName: filterQuestion?.service?.srsName,
                 featureNS: filterQuestion?.service?.featureNS,
@@ -701,34 +707,37 @@ export default class InterfaceWfsExtern {
      * @param {Boolean} searchInMapExtent a flag if the filter should apply only in current browser extent
      * @param {String} geometryName the attrName of the geometry
      * @param {Object} filterGeometry a geometry in which to filter
+     * @param {Boolean} ignoreRules should ignore rules and just start a filter request without. Is used to get data only for the current extent if it is set to true in that case it should ignore the rules
      * @returns {Object} an ol filter object to use with writeGetFeature method
      */
-    getFilter (rules, searchInMapExtent, geometryName, filterGeometry) {
+    getFilter (rules, searchInMapExtent, geometryName, filterGeometry, ignoreRules) {
         const args = [];
 
-        rules.forEach(rule => {
-            if (rule?.format && !this.isIso8601(rule?.format) && this.isRangeOperator(rule?.operator)) {
-                console.error("Time-related snippets (`date` and `dateRange`) can only be operated in `external` mode or as a fixed rule (`visible`: `false`) if their counterpart at the WFS service is in a correct time format (ISO8601: `YYYY-MM-DD`). Current format is `" + rule?.format + "`.");
-                return;
-            }
-            // Service may fail if start and end of a time based filter is the same, query for equal instead.
-            if (rule?.format && this.isIso8601(rule?.format) && this.isRangeOperator(rule?.operator) && (rule?.value[0] === rule?.value[1])) {
-                args.push(this.getRuleFilter(
-                    rule?.attrName,
-                    "EQ",
-                    rule?.value[0],
-                    equalToFilter
-                ));
-            }
-            else {
-                args.push(this.getRuleFilter(
-                    rule?.attrName,
-                    rule?.operator,
-                    rule?.value,
-                    this.getLogicalHandlerByOperator(rule?.operator, this.isIso8601(rule?.format))
-                ));
-            }
-        });
+        if (!ignoreRules) {
+            rules.forEach(rule => {
+                if (rule?.format && !this.isIso8601(rule?.format) && this.isRangeOperator(rule?.operator)) {
+                    console.error("Time-related snippets (`date` and `dateRange`) can only be operated in `external` mode or as a fixed rule (`visible`: `false`) if their counterpart at the WFS service is in a correct time format (ISO8601: `YYYY-MM-DD`). Current format is `" + rule?.format + "`.");
+                    return;
+                }
+                // Service may fail if start and end of a time based filter is the same, query for equal instead.
+                if (rule?.format && this.isIso8601(rule?.format) && this.isRangeOperator(rule?.operator) && (rule?.value[0] === rule?.value[1])) {
+                    args.push(this.getRuleFilter(
+                        rule?.attrName,
+                        "EQ",
+                        rule?.value[0],
+                        equalToFilter
+                    ));
+                }
+                else {
+                    args.push(this.getRuleFilter(
+                        rule?.attrName,
+                        rule?.operator,
+                        rule?.value,
+                        this.getLogicalHandlerByOperator(rule?.operator, this.isIso8601(rule?.format))
+                    ));
+                }
+            });
+        }
 
         if (typeof geometryName === "string" && isObject(filterGeometry)) {
             args.push(this.intersectsGeometryFilter(geometryName, filterGeometry));
@@ -736,8 +745,10 @@ export default class InterfaceWfsExtern {
         else if (searchInMapExtent && typeof geometryName === "string" && typeof this.getCurrentExtent === "function") {
             args.push(bboxFilter(geometryName, this.getCurrentExtent()));
         }
-
-        if (args.length === 1) {
+        if (args.length === 0) {
+            return undefined;
+        }
+        else if (args.length === 1) {
             return args[0];
         }
         return andFilter(...args);

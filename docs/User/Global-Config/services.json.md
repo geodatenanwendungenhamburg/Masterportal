@@ -39,7 +39,7 @@ A layer based on the OGC's [Web Map Service](https://www.ogc.org/standard/wms/) 
 |version|yes|String||Service version used for *GetMap* requests.|`"1.3.0"`|
 |isSecured|no|Boolean|false|Displays whether the layer belongs to a secured service. (**[see below](#secured-wms-services)**)|false|
 |authenticationUrl|no|String||Additional url called to trigger basic authentication in the browser.|"https://geodienste.hamburg.de/HH_WMS_DOP10?VERSION=1.3.0&SERVICE=WMS&REQUEST=GetCapabilities"|
-|layerSequence|no|Number||Number to determine the sequence of selected layers in tree.type 'custom'. A Layer with sequence number 1 is always the top layer, etc. By default, Baselayer get a sequence number > 1000 and Fachdaten layer get a sequence number < 1000.|`1`|
+|layerSequence|no|Number||Number to determine the sequence of selected layers in the layerTree and layerSelection. A Layer with sequence number 1 is always the top layer, etc.||
 |crs|yes|String||Layer's coordinate reference system|`"EPSG:3857"`|
 |preview|no|**[preview](#wms_wmts_vectortile_preview)**||Shows a preview of a baselayer in layer-selection and baselayer-switcher, even if not configured here. For WMS and WMTS layers, the image is fetched as a GetMap request. For VectorTile layers, an image is stored in the file system.||
 
@@ -1400,6 +1400,7 @@ With these confurations a url in the feature properties can be displayed either 
 | url                    | yes      | String                                                                                             |                     | Dienste URL                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `"https://geodienste.hamburg.de/buildings_lod2"` |
 | cesium3DTilesetOptions | no       | **[cesium3DTilesetOptions](https://cesiumjs.org/Cesium/Build/Documentation/Cesium3DTileset.html)** |                     | Cesium 3D tileset options directly forwarded to the cesium tileset object. E.g. `maximumScreenSpaceError` can be used for distance visibility.                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | useProxy               | no       | Boolean                                                                                            | `false`             | _Deprecated in the next major release. *[GDI-DE](https://www.gdi-de.org/en)* recommends setting CORS headers on the required services instead._ Only used for GFI requests. The request will contain the requested URL as path, with dots replaced by underscores.                                                                                                                                                                                                                                                                                                                                              | `false`                                          |
+|sceneOptions|no|Object||This can be used to change the depthTestAgainstTerrain parameter on the Cesium Scene. By default, this is set to false in the mpApi so that layers do not disappear under the terrain. However, this is desired for special layers such as 3D Mesh, as they would otherwise be covered by the surface. For this purpose, an object globe{depthTestAgainstTerrain: true} can be added to the layer, as in the example.|`false`|
 
 **Tileset example:**
 
@@ -1415,6 +1416,11 @@ With these confurations a url in the feature properties can be displayed either 
     "hiddenFeatures": ["id1", "id2"],
     "cesium3DTilesetOptions": {
         "maximumScreenSpaceError": 6
+    },
+    "sceneOptions": {
+        "globe": {
+            "depthTestAgainstTerrain": true
+        }
     },
     "datasets": [
         {

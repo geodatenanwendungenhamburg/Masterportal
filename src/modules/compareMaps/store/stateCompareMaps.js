@@ -23,7 +23,6 @@ const state = {
 
     active: false,
     layerNames: [],
-    initialBaseLayer: null,
     selectedLayer1Id: "",
     selectedLayer2Id: ""
 };

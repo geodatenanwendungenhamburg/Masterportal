@@ -11,8 +11,10 @@ const mutations = {
      * @param {(String|Number|Object)} Payload.value value
      * @returns {O} Interaction Button status
      */
-    setFeatureProperty ({featureProperties}, {key, value}) {
+    setFeatureProperty ({featureProperties}, {key, value, valid, required}) {
         featureProperties.find(property => property.key === key).value = value;
+        featureProperties.find(property => property.key === key).valid = valid;
+        featureProperties.find(property => property.key === key).required = required;
     }
 };
 

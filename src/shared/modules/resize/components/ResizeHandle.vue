@@ -1,4 +1,6 @@
 <script>
+import {mapMutations} from "vuex";
+
 // Signs for calculating the position after resize
 const handleSigns = {
     topLeft: [-1, -1],
@@ -80,6 +82,16 @@ export default {
         targetSelector: {
             type: String,
             default: "parentNode"
+        },
+        /**
+         * Defines which menu the resize handle belongs to.
+         */
+        side: {
+            type: String,
+            required: true,
+            validator (value) {
+                return value === "mainMenu" || value === "secondaryMenu";
+            }
         }
     },
     emits: ["endResizing", "leftScreen", "resizing", "startResizing"],
@@ -185,6 +197,8 @@ export default {
         }
     },
     methods: {
+        ...mapMutations("Modules/ResizeHandle", ["setMainMenuWidth", "setSecondaryMenuWidth"]),
+
         getTransformation (style) {
             return style.getPropertyValue("-webkit-transform") ||
                 style.getPropertyValue("-moz-transform") ||
@@ -331,8 +345,10 @@ export default {
             const containerWidth = document.getElementById("masterportal-container").offsetWidth,
                 containerHeight = document.getElementById("masterportal-container").offsetHeight;
 
+            let newWidth, newHeight;
+
             if (this.handlePosition !== "top" && this.handlePosition !== "bottom") {
-                let newWidth = this.initialDimensions.width + handleSigns[this.handlePosition][0] * this.deltaCursorPosition.x;
+                newWidth = this.initialDimensions.width + handleSigns[this.handlePosition][0] * this.deltaCursorPosition.x;
 
                 if (newWidth < containerWidth * this.minWidth) {
                     newWidth = containerWidth * this.minWidth;
@@ -343,7 +359,7 @@ export default {
                 this.handleElement.style.width = Math.round(newWidth) + "px";
             }
             if (this.handlePosition !== "left" && this.handlePosition !== "right") {
-                let newHeight = this.initialDimensions.height + handleSigns[this.handlePosition][1] * this.deltaCursorPosition.y;
+                newHeight = this.initialDimensions.height + handleSigns[this.handlePosition][1] * this.deltaCursorPosition.y;
 
                 if (newHeight < containerHeight * this.minHeight) {
                     newHeight = containerHeight * this.minHeight;
@@ -359,6 +375,14 @@ export default {
             if (this.handleElement.style.maxHeight !== "none") {
                 this.handleElement.style.maxHeight = "none";
             }
+
+            if (this.side === "mainMenu") {
+                this.setMainMenuWidth(newWidth);
+            }
+            else if (this.side === "secondaryMenu") {
+                this.setSecondaryMenuWidth(newWidth);
+            }
+
         },
         /**
          * When using the mousedown event, a ghost click is triggered.

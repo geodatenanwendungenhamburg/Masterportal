@@ -72,6 +72,13 @@ describe("src/modules/layerTree/components/LayerComponentSubMenu.vue", () => {
                                 name: () => "Contactname",
                                 type: () => "contact"
                             }
+                        },
+                        ResizeHandle: {
+                            namespaced: true,
+                            getters: {
+                                mainMenuWidth: () => 0,
+                                secondaryMenuWidth: () => 0
+                            }
                         }
                     }
                 },
@@ -171,7 +178,6 @@ describe("src/modules/layerTree/components/LayerComponentSubMenu.vue", () => {
         expect(removeLayerSpy.calledOnce).to.be.true;
         expect(removeLayerSpy.firstCall.args[1]).to.deep.equals(layer);
     });
-
     it("renders the transparency", () => {
         wrapper = mount(LayerComponentSubMenu, {
             global: {
@@ -183,7 +189,7 @@ describe("src/modules/layerTree/components/LayerComponentSubMenu.vue", () => {
         expect(wrapper.find("#layer-component-icon-sub-menu-transparency-container-" + propsData.layerConf.id).exists()).to.be.true;
         expect(wrapper.find(".transparency-container > i").classes()).to.includes("bi-droplet-half");
         expect(wrapper.find(".transparency-container > label").exists()).to.be.true;
-        expect(wrapper.find(".transparency-container > input").exists()).to.be.true;
+        expect(wrapper.find(".transparency-container input").exists()).to.be.true;
     });
 
     it("set value to input field", () => {
@@ -196,7 +202,7 @@ describe("src/modules/layerTree/components/LayerComponentSubMenu.vue", () => {
             propsData: propsData
         });
 
-        input = wrapper.find(".transparency-container > input");
+        input = wrapper.find(".transparency-container input");
         input.setValue(50);
 
         expect(input.element.value).to.equals("50");

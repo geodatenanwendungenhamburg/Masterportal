@@ -189,7 +189,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
             "email": "test@gv.hamburg.de",
             "country": "DEU"
         };
-        publisher = "";
+        publisher = null;
 
         const wrapper = mount(LayerInformationComponent, {
             global: {
@@ -201,8 +201,8 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
     });
 
     it("should not show point of contact accordion", () => {
-        pointOfContact = "";
-        publisher = "";
+        pointOfContact = null;
+        publisher = null;
 
         const wrapper = mount(LayerInformationComponent, {
             global: {
@@ -214,7 +214,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
     });
 
     it("should show point of contact accordion  using content from publisher", () => {
-        pointOfContact = "";
+        pointOfContact = null;
         publisher = {
             "name": "Behörde ABC",
             "positionName": ["Metadaten-Verantwortlicher"],
@@ -236,7 +236,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
     });
 
     it("should show zip code in one line with city", async () => {
-        pointOfContact = "";
+        pointOfContact = null;
         publisher = {
             "name": "Behörde ABC",
             "positionName": ["Metadaten-Verantwortlicher"],
@@ -259,7 +259,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
 
 
     it("should not show undefined for missing address information", () => {
-        pointOfContact = "";
+        pointOfContact = null;
         publisher = {
             "name": "Behörde ABC",
             "email": "test@gv.hamburg.de"
@@ -275,7 +275,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
     });
 
     it("should show zip code in one line with city", async () => {
-        pointOfContact = "";
+        pointOfContact = null;
         publisher = {
             "name": "Behörde ABC",
             "positionName": ["Metadaten-Verantwortlicher"],
@@ -298,7 +298,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
 
 
     it("should not show undefined for missing address information", async () => {
-        pointOfContact = "";
+        pointOfContact = null;
         publisher = {
             "name": "Behörde ABC",
             "email": "test@gv.hamburg.de"

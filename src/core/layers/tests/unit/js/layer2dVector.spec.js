@@ -370,6 +370,33 @@ describe("src/core/js/layers/layer2dVector.js", () => {
             expect(createStyleSpy.notCalled).to.be.true;
         });
 
+        it("feature cluster with one feature should not be styled as cluster", function () {
+            store.getters = {
+                styleListLoaded: true
+            };
+            attributes.styleId = "styleId";
+
+            const createStyleSpy = sinon.spy(createStyle, "createStyle"),
+                feature = {
+                    getGeometry: () => {
+                        return {
+                            getExtent: () => [0, 0],
+                            getType: () => "Point"
+                        };
+                    },
+                    get: () => [{
+                        id: "1"
+                    }],
+                    setStyle: (style) => style
+                },
+                layer = new Layer2dVector(attributes);
+
+            layer.attributes.style(feature);
+
+            expect(createStyleSpy.calledOnce).to.be.true;
+            expect(createStyleSpy.firstCall.args[2]).to.be.false;
+        });
+
         it("createStyle shall return a function", function () {
             let layer2d = null,
                 styleFunction = null;

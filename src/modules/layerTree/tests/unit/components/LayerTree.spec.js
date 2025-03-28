@@ -155,6 +155,13 @@ describe("src/modules/layerTree/components/LayerTree.vue", () => {
                                 name: () => "Contactname",
                                 type: () => "contact"
                             }
+                        },
+                        ResizeHandle: {
+                            namespaced: true,
+                            getters: {
+                                mainMenuWidth: () => 0,
+                                secondaryMenuWidth: () => 0
+                            }
                         }
                     }
                 }

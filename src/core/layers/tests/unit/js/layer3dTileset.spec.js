@@ -11,12 +11,14 @@ describe("src/core/js/layers/layer3dTileset.js", () => {
         fromUrlSpy,
         warn,
         origGetters,
+        origDispatch,
         style;
 
     before(() => {
         warn = sinon.spy();
         sinon.stub(console, "warn").callsFake(warn);
         origGetters = store.getters;
+        origDispatch = store.dispatch;
     });
 
     beforeEach(() => {
@@ -48,6 +50,7 @@ describe("src/core/js/layers/layer3dTileset.js", () => {
         sinon.restore();
         global.Cesium = null;
         store.getters = origGetters;
+        store.dispatch = origDispatch;
     });
 
     describe("createLayer", () => {
@@ -278,6 +281,85 @@ describe("src/core/js/layers/layer3dTileset.js", () => {
             tilesetLayer.setOpacity(0);
             expect(setOpacitySpy.calledOnce).to.be.true;
             expect(setOpacitySpy.firstCall.args[0]).to.be.equals(1);
+        });
+    });
+    describe("setCesiumSceneOptions", function () {
+        it("setCesiumSceneOptions updates the scene option depthTestAgainstTerrain of the cesium map to true", function () {
+            attributes.visibility = true;
+            const tilesetLayer = new Layer3dTileset(attributes),
+                dispatchCalls = {},
+                sceneOptions = {
+                    globe: {
+                        depthTestAgainstTerrain: false
+                    }
+                },
+                map = {
+                    getCesiumScene: () => {
+                        return {
+                            globe: {
+                                depthTestAgainstTerrain: true
+                            }
+                        };
+                    }
+                },
+                replaceByIdInLayerConfig = {
+                    layerConfigs: [{
+                        id: attributes.id,
+                        layer: {
+                            id: attributes.id,
+                            defaultDepthTestAgainstTerrain: {
+                                globe: {
+                                    depthTestAgainstTerrain: true
+                                }
+                            }
+                        }
+                    }]
+                };
+
+            store.dispatch = (action, payload) => {
+                dispatchCalls[action] = payload;
+            };
+            tilesetLayer.setCesiumSceneOptions(sceneOptions, map);
+            expect(dispatchCalls.replaceByIdInLayerConfig).to.deep.equal(replaceByIdInLayerConfig);
+        });
+        it("setCesiumSceneOptions updates the scene option depthTestAgainstTerrain of the cesium map to false and resets the defaultDepthTestAgainstTerrrain to undefined", function () {
+            attributes.visibility = true;
+            attributes.defaultDepthTestAgainstTerrain = {
+                globe: {
+                    depthTestAgainstTerrain: true
+                }
+            };
+            const tilesetLayer = new Layer3dTileset(attributes),
+                dispatchCalls = {},
+                sceneOptions = {
+                    globe: {
+                        depthTestAgainstTerrain: false
+                    }
+                },
+                map = {
+                    getCesiumScene: () => {
+                        return {
+                            globe: {
+                                depthTestAgainstTerrain: false
+                            }
+                        };
+                    }
+                },
+                replaceByIdInLayerConfig = {
+                    layerConfigs: [{
+                        id: attributes.id,
+                        layer: {
+                            id: attributes.id,
+                            defaultDepthTestAgainstTerrain: undefined
+                        }
+                    }]
+                };
+
+            store.dispatch = (action, payload) => {
+                dispatchCalls[action] = payload;
+            };
+            tilesetLayer.setCesiumSceneOptions(sceneOptions, map);
+            expect(dispatchCalls.replaceByIdInLayerConfig).to.deep.equal(replaceByIdInLayerConfig);
         });
     });
     describe("featureExists", function () {

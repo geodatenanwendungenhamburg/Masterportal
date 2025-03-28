@@ -87,7 +87,8 @@ export default {
             <button
                 class="btn d-flex w-100 pe-2 p-1 btn-light search-bar-result-list-topic-tree-item-title"
 
-                :title="searchResult.name"
+                :title="searchResult.toolTip ? $t(searchResult.toolTip) : $t(searchResult.name)"
+                :aria-label="searchResult.toolTip ? $t(searchResult.toolTip) : $t(searchResult.name)"
                 @click="addOrRemoveLayer"
                 @keydown.enter="addOrRemoveLayer"
             >

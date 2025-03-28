@@ -34,8 +34,8 @@ describe("actions", () => {
             valueX: 100,
             currentTimeSliderObject: {keyboardMovement: 5},
             active: true,
-            targetLayer: {getLayer: () => ({once: sinon.stub()})},
-            sourceLayer: {getLayer: () => ({once: sinon.stub()})}
+            targetLayer: {getLayer: () => ({once: sinon.stub(), on: sinon.stub(), un: sinon.stub()})},
+            sourceLayer: {getLayer: () => ({once: sinon.stub(), on: sinon.stub(), un: sinon.stub()})}
         };
         rootGetters = {
             "Modules/WmsTime/TimeSlider/playing": false,

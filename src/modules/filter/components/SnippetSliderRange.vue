@@ -121,10 +121,20 @@ export default {
             required: false,
             default: undefined
         },
+        preventUniqueValueRequest: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
         snippetId: {
             type: Number,
             required: false,
             default: 0
+        },
+        searchInMapExtent: {
+            type: Boolean,
+            required: false,
+            default: false
         },
         timeoutInput: {
             type: Number,
@@ -152,7 +162,7 @@ export default {
             default: true
         }
     },
-    emits: ["changeRule", "deleteRule", "disableFilterButton", "enableFilterButton", "setSnippetPrechecked"],
+    emits: ["changeRule", "deleteRule", "disableFilterButton", "enableFilterButton", "registerUniqueValueOnMove", "setSnippetPrechecked"],
     data () {
         return {
             inputFrom: 0,
@@ -298,7 +308,22 @@ export default {
         ];
     },
     mounted () {
-        this.$nextTick(() => {
+        this.$emit("registerUniqueValueOnMove", this.snippetId, this.gatherAllValues);
+        this.gatherAllValues();
+    },
+    methods: {
+        translateKeyWithPlausibilityCheck,
+
+        /**
+         * Gathers all values for the slider.
+         * @returns {void}
+         */
+        gatherAllValues () {
+            if (this.preventUniqueValueRequest) {
+                this.setIsInitializing(false);
+                this.$emit("setSnippetPrechecked", false);
+                return;
+            }
             this.$nextTick(() => {
                 this.getInitialSliderMin(this.getAttrNameFrom(), min => {
                     this.getInitialSliderMax(this.getAttrNameUntil(), max => {
@@ -326,11 +351,7 @@ export default {
                     console.error(error);
                 });
             });
-        });
-    },
-    methods: {
-        translateKeyWithPlausibilityCheck,
-
+        },
         /**
          * Initializes the slider with the given min/max value.
          * @param {Number} min The min value.
@@ -383,7 +404,8 @@ export default {
                 false,
                 {rules: this.fixedRules, filterId: this.filterId, commands: {
                     filterGeometry: this.filterGeometry,
-                    geometryName: this.filterGeometryName
+                    geometryName: this.filterGeometryName,
+                    searchInMapExtent: this.searchInMapExtent
                 }}
             );
         },
@@ -421,7 +443,8 @@ export default {
                 false,
                 {rules: this.fixedRules, filterId: this.filterId, commands: {
                     filterGeometry: this.filterGeometry,
-                    geometryName: this.filterGeometryName
+                    geometryName: this.filterGeometryName,
+                    searchInMapExtent: this.searchInMapExtent
                 }}
             );
         },
@@ -870,10 +893,7 @@ export default {
 
         .titleWrapper {
             position: relative;
-            height: 16px;
             .title {
-                position: absolute;
-                left: 0;
                 padding-right: 15px;
             }
             .info {

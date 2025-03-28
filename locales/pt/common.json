@@ -81,6 +81,7 @@
       "loadingWait": "Por favor, aguarde, a ferramenta está carregando os mapas de comparação",
       "name": "Comparar Mapas",
       "reset": "Redefinir",
+      "sameLayerSelected": "A mesma camada foi selecionada duas vezes. A seleção foi reposta.",
       "secondLayer": "Segunda camada",
       "selectLayerOneFirst": "Por favor, selecione primeiro a primeira camada",
       "splitDirection": "Direção: ",

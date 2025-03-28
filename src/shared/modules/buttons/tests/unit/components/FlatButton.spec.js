@@ -1,53 +1,65 @@
-import sinon from "sinon";
-import {config, mount} from "@vue/test-utils";
+import {config, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import FlatButton from "../../../components/FlatButton.vue";
+import sinon from "sinon";
 
 config.global.mocks.$t = key => key;
 
 describe("src/shared/components/FlatButton.vue", () => {
-    let interactionSpy,
-        wrapper,
-        button,
-        icon;
 
-    const text = "My super nice Button",
-        iconString = "bi-list",
-        spinnerClass = ".spinner-border";
+    const factory = {
+        getShallowMount: (props = {}) => {
+            return shallowMount(FlatButton, {
+                props: {
+                    text: "The cool flat button",
+                    ...props
+                }
+            });
+        }
+    };
 
+    it("should render the component with the required/default props", () => {
+        const wrapper = factory.getShallowMount();
 
-    beforeEach(() => {
-        interactionSpy = sinon.spy();
+        expect(wrapper.exists()).to.be.true;
+        expect(wrapper.text()).to.be.equal("The cool flat button");
+        expect(wrapper.classes()).to.eql(["flat-button", "btn", "btn-secondary", "d-flex", "align-items-center", "mb-3"]);
+        expect(wrapper.attributes("type")).to.equal("button");
+        expect(wrapper.findComponent({name: "spinner-item-stub"}).exists()).to.be.false;
+        expect(wrapper.find("i").exists()).to.be.false;
     });
 
-    afterEach(sinon.restore);
 
-    it("should render a button with an icon and trigger the given interaction on click", () => {
-        wrapper = mount(FlatButton, {
-            props: {text, interaction: interactionSpy, icon: iconString}
-        });
-        button = wrapper.find("button");
-        icon = button.find("i");
+    it("should render the component with an icon", () => {
+        const wrapper = factory.getShallowMount({icon: "bi-list"}),
+            iconWrapper = wrapper.find("i");
 
-        expect(button.exists()).to.be.true;
-        expect(button.classes()).to.eql(["flat-button", "btn", "btn-secondary", "d-flex", "align-items-center", "mb-3"]);
-        expect(button.attributes("type")).to.equal("button");
-        expect(button.text()).to.equal(text);
-        expect(icon.exists()).to.be.true;
-        expect(icon.classes()).to.eql([iconString]);
-        expect(icon.attributes("role")).to.equal("img");
+        expect(iconWrapper.exists()).to.be.true;
+        expect(iconWrapper.classes()).to.eql(["bi-list"]);
+        expect(iconWrapper.attributes("role")).to.equal("img");
+    });
 
-        button.trigger("click");
+    it("should render the component without an icon if icon is passed but the spinner is set to true", () => {
+        const wrapper = factory.getShallowMount({icon: "bi-list", spinnerTrigger: true}),
+            iconWrapper = wrapper.find("i");
+
+        expect(iconWrapper.exists()).to.be.false;
+    });
+
+    it("should render the spinner component if spinner is set to true", () => {
+        const wrapper = factory.getShallowMount({spinnerTrigger: true}),
+            spinnerWrapper = wrapper.findComponent({name: "spinner-item-stub"});
+
+        expect(spinnerWrapper.exists()).to.be.false;
+    });
+
+    it("should call the passed interaction on click", async () => {
+        const interactionSpy = sinon.spy(),
+            wrapper = factory.getShallowMount({interaction: interactionSpy});
+
+        await wrapper.trigger("click");
 
         expect(interactionSpy.calledOnce).to.be.true;
-    });
-    it("should render a spinner and no icon if spinnerTrigger is true", () => {
-        wrapper = mount(FlatButton, {
-            props: {text, interaction: interactionSpy, icon: iconString, spinnerTrigger: true}
-        });
-        button = wrapper.find("button");
-        icon = button.find("i");
-        expect(icon.exists()).to.be.false;
-        expect(wrapper.find(spinnerClass).exists()).to.be.true;
+        sinon.restore;
     });
 });

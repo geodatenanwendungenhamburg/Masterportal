@@ -7,7 +7,7 @@ git clone https://fmlgv@bitbucket.org/geowerkstatt-hamburg/masterportal.git
 
 2. Auschecken des aktuellen Masterportal 3.0.0 Entwicklungsbranches per Git.
 ```json
-git checkout dev_vue
+git checkout dev
 ```
 3. Eine Hilfe zur Benutzung wird ausgegeben, wenn der Parameter help angegeben ist.
 ```json

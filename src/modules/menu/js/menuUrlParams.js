@@ -11,10 +11,14 @@ import processUrlParams from "../../../shared/js/utils/processUrlParams";
  * - https://localhost:9001/portal/master/?isinitopen=draw
  * - https://localhost:9001/portal/master/?isinitopen=fileimport
  * - https://localhost:9001/portal/master/?STARTUPMODUL=fileimport
+ * - https://localhost:9001/portal/master/?secondaryWidth=77&mainWidth=20
+ * - https://localhost:9001/portal/master/?mainWidth=20
  */
 
 const menuUrlParams = {
-        MENU: setAttributesToComponent
+        MENU: setAttributesToComponent,
+        MAINWIDTH: setMenuWidth,
+        SECONDARYWIDTH: setSecondaryMenuWidth
     },
     legacyMenuUrlParams = {
         ISINITOPEN: isInitOpen,
@@ -146,11 +150,36 @@ function findElement (elements, searchType) {
     return currentComponent;
 }
 
+
+/**
+ * Set Menu width
+ * @param {Object} params The found params.
+ * @returns {void}
+ */
+function setMenuWidth (params) {
+    if (params.MAINWIDTH) {
+        store.dispatch("Menu/setCurrentMenuWidth", {type: "mainMenu", attributes: {width: params.MAINWIDTH}}, {root: true});
+    }
+}
+
+/**
+ * Set secondary Menu width
+ * @param {Object} params The found params.
+ * @returns {void}
+ */
+function setSecondaryMenuWidth (params) {
+    if (params.SECONDARYWIDTH) {
+        store.dispatch("Menu/setCurrentMenuWidth", {type: "secondaryMenu", attributes: {width: params.SECONDARYWIDTH}}, {root: true});
+    }
+}
+
 export default {
     processMenuUrlParams,
     setAttributesToComponent,
     isInitOpen,
     getCurrentComponent,
     findInSections,
-    findElement
+    findElement,
+    setMenuWidth,
+    setSecondaryMenuWidth
 };

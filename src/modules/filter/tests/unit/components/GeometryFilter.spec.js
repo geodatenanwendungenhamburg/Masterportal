@@ -15,6 +15,8 @@ describe("src/modules/filter/components/GeometryFilter.vue", () => {
         sandbox,
         store;
 
+    const stubChangeCurrentMouseMapInteractionsComponent = sinon.stub();
+
     beforeEach(() => {
         sandbox = sinon.createSandbox();
         store = createStore({
@@ -34,7 +36,7 @@ describe("src/modules/filter/components/GeometryFilter.vue", () => {
                         currentMouseMapInteractionsComponent: sinon.stub()
                     },
                     actions: {
-                        changeCurrentMouseMapInteractionsComponent: sinon.stub()
+                        changeCurrentMouseMapInteractionsComponent: stubChangeCurrentMouseMapInteractionsComponent
                     }
                 },
                 Modules: {
@@ -133,6 +135,15 @@ describe("src/modules/filter/components/GeometryFilter.vue", () => {
             await radioInput.setChecked();
             await wrapper.find("select").findAll("option").at(3).setSelected();
             expect(wrapper.vm.draw.type_).to.be.equal("LineString");
+        });
+    });
+
+    describe("Watcher", () => {
+        it("should call the action changeCurrentMouseMapInteractionsComponent without property 'side' if 'isActive is false", async () => {
+            await wrapper.setData({isActive: true});
+            await wrapper.setData({isActive: false});
+
+            expect(stubChangeCurrentMouseMapInteractionsComponent.getCall(-1).args[1]).to.not.have.property("side");
         });
     });
 

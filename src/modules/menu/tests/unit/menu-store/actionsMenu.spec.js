@@ -459,6 +459,32 @@ describe("src/modules/menu/menu-store/actionsMenu.js", () => {
                 expect(dispatch.firstCall.args[1]).to.deep.equals({side});
             });
         });
+        it("should switchToPreviousComponent if current component is layerInformation - with action event and showAllResults is false", async () => {
+            side = "mainMenu";
+            rootGetters = {
+                "Modules/SearchBar/showAllResults": false,
+                "Modules/SearchBar/currentSide": "mainMenu",
+                "Modules/SearchBar/currentActionEvent": "showLayerInfo"
+            };
+            getters = {
+                currentComponent: () => {
+                    return {
+                        type: "layerInformation"
+                    };
+                }
+            };
+
+            actions.navigateBack({commit, dispatch, getters, state, rootGetters}, side);
+
+            await nextTick(() => {
+                expect(commit.calledOnce).to.be.true;
+                expect(commit.firstCall.args[0]).to.equal("switchToPreviousComponent");
+                expect(commit.firstCall.args[1]).to.equal(side);
+                expect(dispatch.calledOnce).to.be.true;
+                expect(dispatch.firstCall.args[0]).to.equal("navigateSearchbarActionEventNotInLayerSelection");
+                expect(dispatch.firstCall.args[1]).to.deep.equals({side});
+            });
+        });
     });
     describe("navigateSearchbarActionEventNotInLayerSelection", () => {
         const side = "mainMenu";
@@ -716,6 +742,30 @@ describe("src/modules/menu/menu-store/actionsMenu.js", () => {
                 expect(commit.firstCall.args[0]).to.equal("switchToRoot");
                 expect(commit.firstCall.args[1]).to.equal(side);
             });
+        });
+        it("should change width of menu if urlParams are used", () => {
+            const params = {
+                    MENUWIDTH: 20
+                },
+                s = params.MENUWIDTH + "%";
+
+            actions.setCurrentMenuWidth({commit}, {type: "mainMenu", attributes: {width: params.MENUWIDTH}});
+
+            expect(commit.calledOnce).to.be.true;
+            expect(commit.firstCall.args[0]).to.equal("setCurrentMenuWidth");
+            expect(commit.firstCall.args[1]).to.deep.equal({side: "mainMenu", width: s});
+        });
+        it("should change width of secondary menu if urlParams are used", () => {
+            const params = {
+                    SECONDARYWIDTH: 12
+                },
+                s = params.SECONDARYWIDTH + "%";
+
+            actions.setCurrentMenuWidth({commit}, {type: "secondaryMenu", attributes: {width: params.SECONDARYWIDTH}});
+
+            expect(commit.calledOnce).to.be.true;
+            expect(commit.firstCall.args[0]).to.equal("setCurrentMenuWidth");
+            expect(commit.firstCall.args[1]).to.deep.equal({side: "secondaryMenu", width: s});
         });
     });
 });

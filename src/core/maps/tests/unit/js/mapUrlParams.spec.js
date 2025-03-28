@@ -53,12 +53,7 @@ describe("src/core/maps/js/mapUrlParams.js", () => {
 
             mapUrlParams.setMapAttributes(params);
 
-            expect(Object.keys(dispatchCalls).length).to.equals(3);
-            expect(dispatchCalls["Maps/setCamera"]).to.deep.equals({
-                altitude: undefined,
-                heading: NaN,
-                tilt: undefined
-            });
+            expect(Object.keys(dispatchCalls).length).to.equals(2);
             expect(dispatchCalls["Maps/changeMapMode"]).to.equals("2D");
             expect(dispatchCalls["Maps/zoomToCoordinates"]).to.deep.equals({
                 center: [571278.4429867676, 5938534.397334521],
@@ -69,15 +64,16 @@ describe("src/core/maps/js/mapUrlParams.js", () => {
 
         it("should set map attributes for 3D map", () => {
             const params = {
-                MAPS: "{\"center\":[571278.4429867676,5938534.397334521],\"mode\":\"3D\",\"zoom\":7,\"altitude\":127,\"heading\":1.2502079000000208,\"tilt\":45}"
+                MAPS: "{\"center\":[571278.4429867676,5938534.397334521],\"mode\":\"3D\",\"zoom\":7,\"lon\":9.995288974019063,\"lat\":53.5491480329747,\"height\":127,\"heading\":39.32450638783048,\"tilt\":45,\"pitch\":-26.41925850850149}"
             };
 
             mapUrlParams.setMapAttributes(params);
 
             expect(Object.keys(dispatchCalls).length).to.equals(3);
             expect(dispatchCalls["Maps/setCamera"]).to.deep.equals({
-                altitude: 127,
-                heading: -1.2502079000000208,
+                cameraPosition: [9.995288974019063, 53.5491480329747, 127],
+                heading: 39.32450638783048,
+                pitch: -26.41925850850149,
                 tilt: 45
             });
             expect(dispatchCalls["Maps/changeMapMode"]).to.equals("3D");
@@ -352,18 +348,20 @@ describe("src/core/maps/js/mapUrlParams.js", () => {
     describe("setCamera", () => {
         it("should set camera params for 3D map", () => {
             const params = {
-                ALTITUDE: "127",
                 HEADING: "1.2502079000000208",
-                TILT: "45"
+                HEIGHT: "4.9842239334478915",
+                LAT: "350.9317023265801",
+                LON: "53.54768388818006",
+                PITCH: "-44.123107210079226"
             };
 
             mapUrlParams.setCamera(params);
 
             expect(Object.keys(dispatchCalls).length).to.equals(1);
             expect(dispatchCalls["Maps/setCamera"]).to.deep.equals({
-                altitude: "127",
-                heading: -1.2502079000000208,
-                tilt: "45"
+                cameraPosition: ["53.54768388818006", "350.9317023265801", "4.9842239334478915"],
+                heading: "1.2502079000000208",
+                pitch: "-44.123107210079226"
             });
         });
     });

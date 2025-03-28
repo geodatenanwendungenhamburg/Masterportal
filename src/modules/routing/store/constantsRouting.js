@@ -9,7 +9,8 @@ const speedProfileOptions = [
         {id: "HIGHWAYS", availableProfiles: ["CAR", "HGV"]},
         {id: "TOLLWAYS", availableProfiles: ["CAR", "HGV"]},
         {id: "FERRIES", availableProfiles: ["CAR", "HGV", "CYCLING", "FOOT", "WHEELCHAIR"]},
-        {id: "STEPS", availableProfiles: ["CYCLING", "FOOT", "WHEELCHAIR"]}
+        {id: "STEPS", availableProfiles: ["CYCLING", "FOOT", "WHEELCHAIR"]},
+        {id: "BORDERS", availableProfiles: ["CAR", "HGV"]}
     ],
     routingToolOptions = [
         {id: "DIRECTIONS", component: DirectionsItem},

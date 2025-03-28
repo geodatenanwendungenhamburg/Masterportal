@@ -48,6 +48,61 @@ function getWKTGeom (content, geometryType = "POLYGON") {
             }
         });
     }
+    else if (type === "LINESTRING") {
+        wkt = type + "(";
+        geometry.forEach(function (element, index, list) {
+            if (Array.isArray(element)) {
+                element?.forEach(function (coord, index2, list2) {
+                    if (index2 % 2 === 0) {
+                        wkt += coord + " ";
+                    }
+                    else if (index2 === list2.length - 1) {
+                        wkt += coord + ")";
+                    }
+                    else {
+                        wkt += coord + ", ";
+                    }
+                });
+                if (index === list.length - 1) {
+                    wkt += ")";
+                }
+                else {
+                    wkt += ",(";
+                }
+            }
+            else if (index % 2 === 0) {
+                wkt += element + " ";
+            }
+            else if (index === list.length - 1) {
+                wkt += element + ")";
+            }
+            else {
+                wkt += element + ", ";
+            }
+        });
+    }
+    else if (type === "MULTILINESTRING") {
+        wkt = type + "((";
+        geometry.forEach(function (line, index) {
+            line.forEach(function (coord, index2, list2) {
+                if (index2 % 2 === 0) {
+                    wkt += coord + " ";
+                }
+                else if (index2 === list2.length - 1) {
+                    wkt += coord;
+                }
+                else {
+                    wkt += coord + ", ";
+                }
+            });
+            if (index === geometry.length - 1) {
+                wkt += "))";
+            }
+            else {
+                wkt += "),(";
+            }
+        });
+    }
     else if (type === "POINT") {
         wkt = type + "(";
         if (geometry[1] !== undefined) {
@@ -117,6 +172,10 @@ function getWKTGeom (content, geometryType = "POLYGON") {
         });
         regExp = new RegExp(", \\)\\?\\(", "g");
         wkt = wkt.replace(regExp, "),(");
+    }
+    else {
+        console.warn(`Unsupported geometry type ${type}`);
+        return null;
     }
     return format.readFeature(wkt);
 }

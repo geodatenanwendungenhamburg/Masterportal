@@ -90,7 +90,7 @@ export default {
 <template lang="html">
     <footer
         id="module-portal-footer"
-        class="portal-footer d-flex px-2 py-1"
+        class="portal-footer px-2 py-1"
     >
         <a
             v-if="aboutModuleSide"
@@ -149,6 +149,7 @@ export default {
         pointer-events: auto;
         position: relative;
         width: 100%;
+        display: flex;
 
         a[target=_blank]{
             color: $secondary;

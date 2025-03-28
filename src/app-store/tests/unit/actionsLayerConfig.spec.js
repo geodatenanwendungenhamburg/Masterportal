@@ -455,6 +455,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
             expect(dispatch.secondCall.args[0]).to.equals("updateLayerConfigs");
             expect(dispatch.secondCall.args[1]).to.deep.equals([
                 {id: "453", visibility: true},
+                {id: "452"},
                 {id: "1132", name: "100 Jahre Stadtgruen POIs", visibility: true},
                 {id: "10220", showInLayerTree: true}
             ]
@@ -463,6 +464,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
 
         it("extend layer configs for custom tree", () => {
             state.layerConfig = layerConfigCustom;
+            getters.showLayerAddButton = true;
             actions.extendLayers({dispatch, getters, state});
 
             expect(dispatch.callCount).to.be.equals(2);
@@ -489,7 +491,8 @@ describe("src/app-store/actionsLayerConfig.js", () => {
         it("extend layers for special configuration with folders", () => {
             getters = {
                 allLayerConfigsStructured: () => [],
-                allLayerConfigsByParentKey: () => []
+                allLayerConfigsByParentKey: () => [],
+                showLayerAddButton: true
             };
             layerConfig = {
                 [treeSubjectsKey]: {

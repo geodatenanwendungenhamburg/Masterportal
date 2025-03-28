@@ -31,6 +31,8 @@
  * @property {String} linkText - link text of the url link to current filter state or empty string if no such link should be rendered
  * @property {Boolean} closeGfi - If it is true, the open gfi window will be closed after new filtering.
  * @property {Boolean} preventAdjust - If it is true, the snippet will not be adjusted.
+ * @property {String} questionLink - The url of the question link.
+ * @property {Boolean} closeDropdownOnSelect - if true, the dropdown list will be closed after choosing option on the multiselect dropdown.
  */
 
 const state = {
@@ -64,7 +66,9 @@ const state = {
     closeGfi: false,
     preventAdjust: false,
     linkText: "",
-    initialStartupReset: false
+    initialStartupReset: false,
+    questionLink: "",
+    closeDropdownOnSelect: true
 };
 
 export default state;

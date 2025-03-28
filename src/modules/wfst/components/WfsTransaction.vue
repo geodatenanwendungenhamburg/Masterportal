@@ -26,7 +26,10 @@ export default {
             "selectedInteraction",
             "showConfirmModal",
             "showInteractionsButtons",
-            "transactionProcessing"
+            "transactionProcessing",
+            "isFormDisabled",
+            "active",
+            "deactivateGFI"
         ]),
         ...mapGetters(["allLayerConfigs", "visibleSubjectDataLayerConfigs"])
     },
@@ -47,7 +50,7 @@ export default {
     },
     methods: {
         ...mapMutations("Modules/Wfst", ["setTransactionProcessing", "setCurrentLayerIndex", "setLayerInformation", "setShowConfirmModal"]),
-        ...mapActions("Modules/Wfst", ["prepareInteraction", "reset", "save", "setFeatureProperty", "setFeatureProperties", "sendTransaction"]),
+        ...mapActions("Modules/Wfst", ["prepareInteraction", "reset", "save", "setActive", "setFeatureProperty", "setFeatureProperties", "updateFeatureProperty", "sendTransaction"]),
         /**
          * Initializes all layers stored in state's layerIds.
          * @returns {void}
@@ -100,6 +103,30 @@ export default {
                 return "datetime-local";
             }
             return "";
+        },
+        getDecimalStep (type, value) {
+            if (type === "decimal" && value) {
+                const fractionalPartLength = value.toString().split(",")?.[1]?.length || value.toString().split(".")?.[1]?.length;
+
+                if (fractionalPartLength) {
+                    switch (fractionalPartLength) {
+                        case 1: return "0.1";
+                        case 2: return "0.01";
+                        default: return "0.001";
+                    }
+                }
+                return "1";
+            }
+            return null;
+        },
+        formatDecimalValue (type, value) {
+            if (type === "decimal" && value) {
+                if (value.includes(".") || value.includes(",")) {
+                    return value.replace(",", ".");
+                }
+                return value + ".0";
+            }
+            return value;
         }
     }
 };
@@ -166,6 +193,12 @@ export default {
                     >
                         {{ $t("common:modules.wfst.polygonHint") }}
                     </p>
+                    <p
+                        v-if="featureProperties.find(prop => prop.required)"
+                        class="mb-2"
+                    >
+                        <span><span class="form-label-info"> - </span>{{ $t("common:modules.tools.wfst.fieldRequired") }}</span>
+                    </p>
                     <form id="tool-wfs-transaction-form">
                         <template v-for="property of featureProperties">
                             <template v-if="property.type !== 'geometry'">
@@ -173,6 +206,7 @@ export default {
                                     :key="`${property.key}-label`"
                                     :for="`tool-wfs-transaction-form-input-${property.key}`"
                                     class="form-label"
+                                    :class="{'form-label__required': property.required && getInputType(property.type) !== 'checkbox'}"
                                 >
                                     {{ $t(property.label) }}
                                 </label>
@@ -183,17 +217,31 @@ export default {
                                     :type="getInputType(property.type)"
                                     :checked="['true', true].includes(property.value) ? true : false"
                                     class="form-control-checkbox"
-                                    @input="event => setFeatureProperty({key: property.key, type: getInputType(property.type), value: event.target.checked})"
+                                    @input="event => updateFeatureProperty({
+                                        key: property.key,
+                                        type: getInputType(property.type),
+                                        value: event.target.checked
+                                    })"
                                 >
                                 <input
                                     v-else
                                     :id="`tool-wfs-transaction-form-input-${property.key}`"
                                     :key="`${property.key}-input`"
-                                    class="form-control"
+                                    :class="{
+                                        'form-control__valid': property.valid === true,
+                                        'form-control__invalid': property.valid === false
+                                    }"
+                                    :step="property.type === 'decimal' ? getDecimalStep(property.type, property.value) : null"
+                                    :title="property.required && !property.valid ? $t(`common:modules.tools.wfst.mandatoryInputError.${getInputType(property.type)}`): ''"
                                     :type="getInputType(property.type)"
                                     :required="property.required"
                                     :value="property.value"
-                                    @input="event => setFeatureProperty({key: property.key, type: getInputType(property.type), value: event.target.value})"
+                                    @input="event => updateFeatureProperty({
+                                        key: property.key,
+                                        type: getInputType(property.type),
+                                        value: property.type === 'decimal' ? formatDecimalValue(property.type, event.target.value) : event.target.value,
+                                        required: property.required
+                                    })"
                                 >
                             </template>
                         </template>
@@ -205,6 +253,7 @@ export default {
                             />
                             <LightButton
                                 :interaction="save"
+                                :disabled="isFormDisabled"
                                 text="common:modules.wfst.form.save"
                                 type="button"
                                 class="form-button"
@@ -343,6 +392,17 @@ h3 {
             align-self: center;
             margin: 0;
         }
+        .form-control.form-control__valid {
+            border: 1px solid green;
+        }
+        .form-control.form-control__invalid {
+            border: 1px solid red;
+        }
+    }
+    .form-label__required::after,
+    .form-label-info::before {
+        content: "*";
+        color: red;
     }
 
     .tool-wfs-transaction-form-buttons {

@@ -432,6 +432,7 @@ export default {
                     entity.polygon.hierarchy = new Cesium.PolygonHierarchy(rotatedPositions);
                 }
                 else {
+                    modelFromState.rotation = this.rotation;
                     entity.orientation = orientationMatrix;
                 }
             }
@@ -459,7 +460,7 @@ export default {
          * @returns {void}
          */
         resetImportedModels (importedEntities, adjustedValue, currentModelId, type) {
-            if (!importedEntities.length || typeof adjustedValue !== "number" || typeof currentModelId !== "number" || typeof type !== "string") {
+            if (!importedEntities.length || typeof adjustedValue !== "number" || typeof currentModelId === "undefined" || typeof type !== "string") {
                 return;
             }
 
@@ -470,7 +471,6 @@ export default {
                     entity[type] = adjustedValue;
                 }
             });
-
             this.setImportedEntities(clonedImportedEntities);
         }
     }

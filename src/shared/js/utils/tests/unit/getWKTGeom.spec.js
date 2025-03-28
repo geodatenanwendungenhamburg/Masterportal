@@ -179,4 +179,58 @@ describe("src/shared/js/utils/getWKTGeom.js", () => {
             ]
         ]);
     });
+
+    it("should return a feature with geometryType and LINESTRING coordinates", () => {
+        const content = {
+            geometryType: "LINESTRING",
+            coordinate: [
+                10, 10,
+                20, 20,
+                30, 10,
+                40, 20,
+                50, 10
+            ]
+        };
+
+        expect(WKTUtil.getWKTGeom(content)).is.not.undefined;
+        expect(WKTUtil.getWKTGeom(content).getGeometry()).is.not.undefined;
+        expect(WKTUtil.getWKTGeom(content).getGeometry().getCoordinates()).to.deep.equal([
+            [10, 10],
+            [20, 20],
+            [30, 10],
+            [40, 20],
+            [50, 10]
+        ]);
+    });
+
+    it("should return a feature with geometryType and MULTILINESTRING coordinates", () => {
+        const content = {
+            geometryType: "MULTILINESTRING",
+            coordinate: [[
+                10, 10,
+                20, 20,
+                30, 10,
+                40, 20,
+                50, 10
+            ], [
+                60, 10,
+                70, 20,
+                80, 10
+            ]]
+        };
+
+        expect(WKTUtil.getWKTGeom(content)).is.not.undefined;
+        expect(WKTUtil.getWKTGeom(content).getGeometry()).is.not.undefined;
+        expect(WKTUtil.getWKTGeom(content).getGeometry().getCoordinates()).to.deep.equal([[
+            [10, 10],
+            [20, 20],
+            [30, 10],
+            [40, 20],
+            [50, 10]
+        ], [
+            [60, 10],
+            [70, 20],
+            [80, 10]
+        ]]);
+    });
 });

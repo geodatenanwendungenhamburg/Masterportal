@@ -369,5 +369,8 @@ Layer2dRasterWmsTimeLayer.prototype.setIsVisibleInMap = function (newValue) {
 Layer2dRasterWmsTimeLayer.prototype.updateTime = function (id, newValue) {
     if (id === this.get("id")) {
         this.getLayerSource().updateParams({"TIME": newValue});
+        if (store.getters["Modules/GetFeatureInfo/visible"] === true) {
+            store.dispatch("Modules/GetFeatureInfo/collectGfiFeatures");
+        }
     }
 };

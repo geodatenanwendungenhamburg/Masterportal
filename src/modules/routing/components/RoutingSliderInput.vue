@@ -76,6 +76,7 @@ export default {
             :step="step"
             :disabled="disabled"
             :interaction="$event=> $emit('input', Number($event.target.value))"
+            :show-markers="true"
         />
     </div>
 </template>

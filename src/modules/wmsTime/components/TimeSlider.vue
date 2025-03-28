@@ -75,11 +75,11 @@ export default {
         ...mapActions("Modules/LayerSwiper", ["updateMap"]),
         ...mapActions("Modules/WmsTime", ["toggleSwiper"]),
         ...mapMutations("Modules/WmsTime", ["setTimeSliderPlaying", "setTimeSliderDefaultValue"]),
-        setSliderValue (value) {
-            this.sliderValue = Number(value);
-            if (!this.playing && this.timeRange[this.sliderValue]) {
-                this.setTimeSliderDefaultValue(this.timeRange[this.sliderValue]);
+        updateSlider (event) {
+            if (this.$refs.timeSliderInput !== event.target) {
+                return;
             }
+            this.sliderValue = Number(event.target.value);
         },
         animate () {
             const index = this.nextIndex();
@@ -179,6 +179,7 @@ export default {
         >
             <input
                 :id="'timeSlider-input-range-' + layerId"
+                ref="timeSliderInput"
                 type="range"
                 class="timeSlider-input-range-label-input form-range"
                 :value="sliderValue"
@@ -186,7 +187,7 @@ export default {
                 :max="sliderOptionCount"
                 :step="1"
                 :aria-label="$t('common:modules.wmsTime.timeSlider.inputRangeLabel')"
-                @input="setSliderValue($event.target.value)"
+                @input="updateSlider($event)"
             >
             {{ selectedTime }}
         </label>

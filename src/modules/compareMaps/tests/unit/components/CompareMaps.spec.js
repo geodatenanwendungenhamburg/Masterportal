@@ -9,7 +9,7 @@ import mutations from "../../../store/mutationsCompareMaps";
 config.global.mocks.$t = key => key;
 
 describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
-    let store, initializeSpy, rootCommitSpy, wrapper, map;
+    let store, rootCommitSpy, wrapper, map;
 
     beforeEach(() => {
         map = {
@@ -22,7 +22,6 @@ describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
 
         mapCollection.clear();
         mapCollection.addMap(map, "2D");
-        initializeSpy = sinon.spy();
         rootCommitSpy = sinon.spy();
 
         store = createStore({
@@ -32,9 +31,6 @@ describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
                     modules: {
                         CompareMaps: {
                             namespaced: true,
-                            actions: {
-                                initialize: initializeSpy
-                            },
                             mutations: {
                                 ...mutations
                             },
@@ -53,7 +49,10 @@ describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
                             mutations: {
                                 setActive: sinon.spy(),
                                 setLayerSwiperSourceLayer: sinon.spy(),
-                                setLayerSwiperTargetLayer: sinon.spy()
+                                setLayerSwiperTargetLayer: sinon.spy(),
+                                setSplitDirection: sinon.spy(),
+                                setLayerSwiperValueY: sinon.spy(),
+                                setLayerSwiperValueX: sinon.spy()
                             }
                         },
                         LayerSelection: {
@@ -97,7 +96,7 @@ describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
         expect(wrapper.find("#compare-maps").exists()).to.be.true;
     });
 
-    it("initializes the component and sets active", async () => {
+    it("sets tool active", async () => {
         wrapper = shallowMount(CompareMaps, {
             global: {
                 plugins: [store]
@@ -106,7 +105,6 @@ describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
 
         await wrapper.vm.$nextTick();
 
-        expect(initializeSpy.calledOnce).to.be.true;
         expect(wrapper.vm.splitDirection).to.equal("vertical");
     });
 

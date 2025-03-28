@@ -12,6 +12,13 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
         commit,
         dispatch;
 
+    before(() => {
+        i18next.init({
+            lng: "cimode",
+            debug: false
+        });
+    });
+
     beforeEach(() => {
         dispatch = sinon.spy();
         commit = sinon.spy();
@@ -381,6 +388,48 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
                 customMetadata: {key: "value"},
                 attributes: {attr1: "value1"}
             });
+        });
+        it("should throw an error but still fill abstract info on bad metaInformation", async () => {
+            const state = {
+                    layerInfo: {
+                        cswUrl: ""
+                    }
+                },
+                metaInfo = {
+                    attributes: "",
+                    cswUrl: "e",
+                    customMetadata: "",
+                    metaId: ""
+                },
+                consoleError = console.error;
+
+            console.error = sinon.spy();
+            sinon.stub(getCswRecordById, "getRecordById").throws();
+
+            await actions.getAbstractInfo({commit, dispatch, state, rootGetters}, metaInfo);
+
+            expect(console.error.getCall(0).args[0]).to.equal("modules.layerInformation.noMetadataLoadedConsole");
+            expect(commit.callCount).to.be.equal(9);
+            expect(commit.firstCall.args[0]).to.equal("setDownloadLinks");
+            expect(commit.firstCall.args[1]).to.be.deep.equals(null);
+            expect(commit.secondCall.args[0]).to.equal("setTitle");
+            expect(commit.secondCall.args[1]).to.be.deep.equals("");
+            expect(commit.getCall(2).args[0]).to.equal("setPeriodicityKey");
+            expect(commit.getCall(2).args[1]).to.be.deep.equals("");
+            expect(commit.getCall(3).args[0]).to.equal("setDatePublication");
+            expect(commit.getCall(3).args[1]).to.be.deep.equals("");
+            expect(commit.getCall(4).args[0]).to.equal("setAbstractText");
+            expect(commit.getCall(4).args[1]).to.be.deep.equals("modules.layerInformation.noMetadataLoaded");
+            expect(commit.getCall(5).args[0]).to.equal("setNoMetadataLoaded");
+            expect(commit.getCall(5).args[1]).to.be.deep.equals("modules.layerInformation.noMetadataLoaded");
+            expect(commit.getCall(6).args[0]).to.equal("setPointOfContact");
+            expect(commit.getCall(6).args[1]).to.be.deep.equals("");
+            expect(commit.getCall(7).args[0]).to.equal("setPublisher");
+            expect(commit.getCall(7).args[1]).to.be.deep.equals("");
+            expect(commit.getCall(8).args[0]).to.equal("setDateRevision");
+            expect(commit.getCall(8).args[1]).to.be.deep.equals("");
+
+            console.error = consoleError;
         });
     });
 });

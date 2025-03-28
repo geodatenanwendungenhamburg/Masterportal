@@ -42,6 +42,7 @@ function routingOrsOptimizationMultiplicator (optimization) {
  * @param {String} [params.optimization] which optimization to request
  * @param {Array<{id: String}>} [params.avoidSpeedProfileOptions] which options to avoid
  * @param {Boolean} [params.transformCoordinates] if the coordinates should be transformed to local projection
+ * @param {Boolean} [params.avoidBorders] if borders should be avoided
  * @returns {RoutingIsochrones} routingIsochrones
  */
 async function fetchRoutingOrsIsochrones ({
@@ -50,7 +51,8 @@ async function fetchRoutingOrsIsochrones ({
     speedProfile,
     optimization,
     avoidSpeedProfileOptions,
-    transformCoordinates
+    transformCoordinates,
+    avoidBorders
 }) {
     const url = getRoutingIsochronesSettingsUrl(speedProfile),
         rangeValue = optimization === "TIME" ? state.Isochrones.settings.timeValue : state.Isochrones.settings.distanceValue,
@@ -74,7 +76,8 @@ async function fetchRoutingOrsIsochrones ({
             // 30Min * 60 Sek || 30km * 1000m // maximum distance
             range: [range],
             options: {
-                ...avoidSpeedProfileOptions.length > 0 && {avoid_features: avoidSpeedProfileOptions.map(o => routingOrsAvoidOption(o.id))}
+                ...avoidSpeedProfileOptions.length > 0 && {avoid_features: avoidSpeedProfileOptions.map(o => routingOrsAvoidOption(o.id))},
+                ...avoidBorders && {avoid_borders: "all"}
             },
             area_units: "m",
             units: "m"

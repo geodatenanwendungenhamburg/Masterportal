@@ -1,6 +1,6 @@
 # config.json 3.0
 
-Die *config.json* enthält die gesamte Konfiguration der Portal-Oberfläche. In ihr wird geregelt welche Elemente sich wo in der Menüleiste befinden, worauf die Karte zentriert werden soll und welche Layer geladen werden sollen. Hier geht es zu einem **[Beispiel](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/portal/basic/config.json)**.
+Die *config.json* enthält die gesamte Konfiguration der Portal-Oberfläche. In ihr wird geregelt welche Elemente sich wo in der Menüleiste befinden, worauf die Karte zentriert werden soll und welche Layer geladen werden sollen. Hier geht es zu einem **[Beispiel](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/portal/basic/config.json)**.
 Die config.json besteht aus der **[portalConfig](#portalconfig)** und der **[layerConfig](#layerconfig)**
 
 **Beispiel**
@@ -804,7 +804,7 @@ Mit verschiedenen Parametern wird die Startansicht der Karte konfiguriert und de
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
-|backgroundImage|nein|String|"https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev_vue/doc/config.json.md#portalconfigmapview"|Pfad zum alternativen Hintergrund angeben.|false|
+|backgroundImage|nein|String|"https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/config.json.md#portalconfigmapview"|Pfad zum alternativen Hintergrund angeben.|false|
 |epsg|nein|String|"EPSG:25832"|Der EPSG-Code der Projektion der Karte. Der EPSG-Code muss als namedProjection definiert sein.|false|
 |extent|nein|**[Extent](#datatypesextent)**|[510000.0, 5850000.0, 625000.4, 6000000.0]|Der Map-Extent.|false|
 |mapInteractions|nein|**[mapInteractions](#portalconfigmapmapviewmapinteractions)**||Überschreibt die ol map Interaktionen. Bietet weitere Konfigurationsmöglichkeiten für Steuerungsverhalten und keyboardEventTarget.|false|
@@ -1514,6 +1514,7 @@ Alle Layer, die im Themenbaum des Portals sind, werden durchsucht.
 |resultEvents|nein|**[resultEvents](#portalconfigmenusearchbarsearchinterfacesresultevents)**|{"onClick": ["activateLayerInTopicTree"], "buttons": ["showInTree", "showLayerInfo"]}|Aktionen, die ausgeführt werden, wenn eine Interaktion, z. B. ein Hover oder ein Klick, mit einem Element der Ergebnisliste erfolgt. Folgende events sind möglich: "activateLayerInTopicTree", "showInTree", "showLayerInfo".|false|
 |searchInterfaceId|nein|String|"topicTree"|Id, die zur Verknüpfung mit der searchbar in der Themensuche dient.|false|
 |searchType|nein|String|""|Entscheidet, ob die Metadaten oder der Name eines Layers durchsucht werden soll. Möglicher Wert: "metadata". Default ist es nicht gesetzt, sodass der Name durchsucht wird.|false|
+|toolTip|nein|String|""|Wenn hier `path` angegeben wird, wird im Tooltip der Suchtreffer der Pfad zum gefundenen Thema/Ordner angezeigt. Per Default wird der Name angezeigt.|false|
 |type|ja|String|"topicTree"|Type der Such-Schnittstelle. Definiert welche Such-Schnittstelle konfiguriert ist.|false|
 
 **Beispiel**
@@ -2513,6 +2514,8 @@ Das Filterwerkzeug bietet eine Reihe von Optionen zum Filtern von Vektordaten au
 |linkText|no|String|""|Linktext für URL-Link zur aktuellen Filtereinstellung, oder leerer String wenn kein solcher Link angezeigt werden soll. Erfordert "saveTo": "url"|false|
 |type|nein|String|"filter"|Der type des Moduls. Definiert welches Modul konfiguriert ist.|false|
 |closeGfi|nein|Boolean|false|Wenn closeGfi auf `true` gesetzt ist und ein GFI-Fenster geöffnet ist, wird das GFI-Fenster nach neue Filterung geschlossen.|false|
+|questionLink|nein|String|""|Die URL für den Werkzeuginfo-Button (Fragezeichen)|false|
+|closeDropdownOnSelect|nein|Boolean|true|Aktivieren/Deaktivieren des Schließens der Dropdownliste nach Auswahl einer Option.|false|
 
 **Beispiel**
 
@@ -2523,10 +2526,12 @@ Beispiel für die Konfiguration eines Filters mit einem einzigen Layer. Der Laye
     "type": "filter",
     "icon": "bi-funnel-fill",
     "layerSelectorVisible": false,
+    "closeDropdownOnSelect": true,
     "geometrySelectorOptions": {
         "visible": true
     },
     "closeGfi": false,
+    "questionLink": "https://bitbucket.org/geowerkstatt-hamburg/addons/src/dev/cosi/manuals/005filter.md",
     "layerGroups":
     [
         {
@@ -2641,7 +2646,7 @@ Die Konfiguration eines Layers.
 |minZoom|nein|Number||Die minimale Zoomstufe. Wenn die aktuelle Zoomstufe kleiner als `minZoom` ist, wird der aktuelle Filter deaktiviert.|false|
 |paging|nein|Number|1000|Der Filter lädt Features Stück für Stück in die Map. Dies ermöglicht einen Ladebalken, der die Usability bei großen Datenmengen verbessert. Das Paging ist die Stück-Größe. Bei zu gering eingestellter Größe wird das Filtern ausgebremst. Bei zu groß eingestellter Größe steigt die Verzögerung der Anzeige in der Karte. Der beste Wert kann nur von Fall zu Fall durch Ausprobieren ermittelt werden.|false|
 |resetLayer|nein|Boolean|false|Auf `true` setzen, damit der Zurücksetzenknopf als reset für den ganzen Layer fungieren soll und damit auch die `prechecked` Werte ignoriert. Wird ignoriert sollte `clearAll` auf `true` gesetzt sein. Des Weiteren sollte der Parameter nicht in Verbindung mit einer niedrigen `paging` Zahl konfiguriert werden, da ansonsten beim Zurücksetzen der komplette Layer nur sehr langsam und verzögert auf der Karte angezeigt wird.|false|
-|searchInMapExtent|nein|Boolean|false|Wenn auf `true` eingestellt, wird automatisch eine generische Checkbox erzeugt, mit der die Filterung auf den Browser-Extent beschränkt werden kann. Ist die Checkbox angehakt, ist das automatische Zoomen ausgeschaltet. Bitte unbedingt **[loadingStrategy](#layerconfigelementslayersvector)** auf `all` setzen, da es sonst zu ungewollten Effekten kommt, wenn nach dem Filtern herausgezoomt wird.|false|
+|searchInMapExtent|nein|Boolean|false|Wenn auf `true` eingestellt, wird automatisch eine generische Checkbox erzeugt, mit der die Filterung auf den Browser-Extent beschränkt werden kann. Ist die Checkbox angehakt, ist das automatische Zoomen ausgeschaltet. Bitte unbedingt **[loadingStrategy](#layerconfigelementslayersvector)** auf `all` setzen, da es sonst zu ungewollten Effekten kommt, wenn nach dem Filtern herausgezoomt wird. Außerdem sollte beachtet werden, dass bei `extern`:`true` die bbox nicht bei den Snippet-Typ `date` und `dateRange` mitgeschickt wird.|false|
 |searchInMapExtentInfo|nein|Boolean|true|Rechts von der Checkbox wird ein Info-Symbol angezeigt, bei Klick wird eine Standard-Beschreibung eingeblendet. Auf `false` stellen, wenn es nicht angezeigt werden soll. Kann auch als String mit einem eigenen Info-Text eingestellt werden oder als Übersetzungs-Key.|false|
 |searchInMapExtentPreselected|nein|Boolean|false|Die Checkbox zum Filtern im Browser-Extent ist initial ausgewählt wenn `searchInMapExtentPreselected`: `true` eingestellt ist.|false|
 |searchInMapExtentProactive|nein|Boolean|true|Die Checkbox zum Filtern im Browser-Extent löst unter `strategy`: `active` eine direkte Filterung im aktuellen Browser-Extent aus. Dies kann durch Einstellen von `searchInMapExtentProactive`: `false` abgeschaltet werden.|false|
@@ -4461,6 +4466,7 @@ Möglichkeit, um Einstellungen für den Themenbaum vorzunehmen.
 |hideDatalayerHeader|nein|Boolean|false|Auf true setzen, um die Überschrift für datalayer auszublenden.|false|
 |datalayerHeaderText|nein|String||Alternative Überschrift für datalayer. Wenn gesetzt, ist eine nicht leere Zeichenkette erforderlich. Eine leere Zeichenfolge ("") gibt die Standard i18n-Zeichenfolge/ Übersetzung aus.|false|
 |subMenuContactButton|nein|Boolean|true|Legt fest, ob der Button zum Öffnen des Kontaktformulars mit layerspezifischen Paramentern im LayerSubMenu eingestellt ist|false|
+|allowBaselayerDrag|nein|Boolean|true|Legt fest, ob Baselayer über Datalayer geschoben werden können.|false|
 
 **Beispiel type auto**
 
@@ -4788,6 +4794,7 @@ Hier werden Layer oder Ordner definiert. Ordner können **[elements](#layerconfi
 |name|nein|String|""|Name des Layers oder Ordners. Kann HTLM enthalten, welches nur im Layerbaum dargestellt wird. |false|
 |shortname|nein|String|""|Verkürzter Name des Layers oder Ordners. Falls konfiguriert wird er im Layerbaum anstelle von `name` angezeigt. |false|
 |type|nein|String|"layer"|Typ des Elements: "layer" für Layer oder "folder" für Ordner|false|
+|deactivateShowAllCheckbox|nein|Boolean|false|Deaktiviert die "Alle hinzufügen" Checkbox, wenn der Type ein `folder` ist|false|
 
 **Beispiel baselayer**
 
@@ -4834,6 +4841,7 @@ Hier werden Layer oder Ordner definiert. Ordner können **[elements](#layerconfi
                 {
                 "name": "Ordner Ebene 2",
                 "type": "folder",
+                "deactivateShowAllCheckbox": true,
                 "elements": [
                         {
                             "id": "2431"
@@ -6051,6 +6059,7 @@ Ein Objekt das einen Service für ein Snippet beschreibt. Alle Servicetypen, die
 Die Konfiguration hängt vom Typ des Services ab.
 
 **WFS**
+
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
 |collection|ja|String||Die Collection die geladen wird. Nur bei OAF.|false|

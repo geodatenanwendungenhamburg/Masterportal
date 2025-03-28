@@ -25,7 +25,8 @@ describe("src/modules/layerTree/components/LayerTreeNode.vue", () => {
         addLayerButton,
         treeType,
         removeLayerSpy,
-        setRemoveOnSpillSpy;
+        setRemoveOnSpillSpy,
+        allowBaselayerDrag;
 
     beforeEach(() => {
         mapMode = "2D";
@@ -34,6 +35,7 @@ describe("src/modules/layerTree/components/LayerTreeNode.vue", () => {
         addLayerButton = {
             active: false
         };
+        allowBaselayerDrag = false;
         treeType = "";
         layer2D_1 = {
             id: "1",
@@ -155,6 +157,13 @@ describe("src/modules/layerTree/components/LayerTreeNode.vue", () => {
                                 name: () => "Contactname",
                                 type: () => "contact"
                             }
+                        },
+                        ResizeHandle: {
+                            namespaced: true,
+                            getters: {
+                                mainMenuWidth: () => 0,
+                                secondaryMenuWidth: () => 0
+                            }
                         }
                     }
                 },
@@ -183,7 +192,8 @@ describe("src/modules/layerTree/components/LayerTreeNode.vue", () => {
                     return {
                         tree: {
                             type: treeType,
-                            addLayerButton: addLayerButton
+                            addLayerButton: addLayerButton,
+                            allowBaselayerDrag: allowBaselayerDrag
                         }
                     };
                 },
@@ -197,6 +207,44 @@ describe("src/modules/layerTree/components/LayerTreeNode.vue", () => {
         sinon.restore();
     });
 
+    describe("computed", () => {
+        describe("sortedLayerConfig", () => {
+            it("should sort by layerSequence when layerSequence is present", () => {
+                layersBG = [];
+                subjectDataLayers = [
+                    {id: "1", zIndex: 3, layerSequence: 2, showInLayerTree: true},
+                    {id: "2", zIndex: 2, layerSequence: 1, showInLayerTree: true},
+                    {id: "3", zIndex: 1, layerSequence: 3, showInLayerTree: true}
+                ];
+                addLayerButton.active = false; // Use allLayerConfigs
+
+                wrapper = mount(LayerTreeNode, {
+                    global: {
+                        plugins: [store]
+                    }
+                });
+
+                expect(wrapper.vm.sortedLayerConfig.map(layer => layer.id)).to.deep.equal(["2", "1", "3"]);
+            });
+
+            it("should sort by zIndex when layerSequence is not present", () => {
+                layersBG = [];
+                subjectDataLayers = [
+                    {id: "B", zIndex: 2, showInLayerTree: true},
+                    {id: "A", zIndex: 1, showInLayerTree: true}
+                ];
+                addLayerButton.active = false;
+
+                wrapper = mount(LayerTreeNode, {
+                    global: {
+                        plugins: [store]
+                    }
+                });
+
+                expect(wrapper.vm.sortedLayerConfig.map(layer => layer.id)).to.deep.equal(["B", "A"]);
+            });
+        });
+    });
 
     it("renders a simple layer", () => {
         wrapper = mount(LayerTreeNode, {
@@ -287,6 +335,132 @@ describe("src/modules/layerTree/components/LayerTreeNode.vue", () => {
             wrapper.vm.removeLayerOnSpill({oldIndex: 1});
             expect(removeLayerSpy.calledOnce).to.be.true;
             expect(setRemoveOnSpillSpy.notCalled).to.be.true;
+        });
+        it("checkMove - should always allow moving base layer over base layer", () => {
+            const checkMoveSpy = sinon.spy(wrapper.vm, "checkMove"),
+                draggedLayer = {id: "1", baselayer: true},
+                targetLayer = {id: "2", baselayer: true},
+                event = {
+                    draggedContext: {element: draggedLayer},
+                    relatedContext: {element: targetLayer}
+                },
+                result = wrapper.vm.checkMove(event);
+
+            expect(result).to.be.true;
+            expect(checkMoveSpy.calledOnce).to.be.true;
+        });
+        it("checkMove - should not allow dragging base layer over non-base layer, when allowBaselayerDrag is false", () => {
+            const checkMoveSpy = sinon.spy(wrapper.vm, "checkMove"),
+                draggedLayer = {id: "1", baselayer: true},
+                targetLayer = {id: "2", baselayer: false},
+                event = {
+                    draggedContext: {element: draggedLayer},
+                    relatedContext: {element: targetLayer}
+                },
+                result = wrapper.vm.checkMove(event);
+
+            expect(result).to.be.false;
+            expect(checkMoveSpy.calledOnce).to.be.true;
+        });
+        it("checkMove - should allow dragging non-base layer over base layer, when allowBaselayerDrag is true", () => {
+            allowBaselayerDrag = true;
+
+            store = createStore({
+                modules: {
+                    Modules: {
+                        namespaced: true,
+                        modules: {
+                            namespaced: true,
+                            LayerTreeNode,
+                            LayerInformation: {
+                                namespaced: true,
+                                getters: {
+                                    icon: sinon.stub(),
+                                    pointOfContact: () => "ABC Kontakt",
+                                    publisher: () => ""
+                                }
+                            },
+                            LayerTree: {
+                                namespaced: true,
+                                getters: {
+                                    delay: () => 500,
+                                    delayOnTouchOnly: () => true,
+                                    removeOnSpill: () => true,
+                                    touchStartThreshold: () => 3
+                                },
+                                actions: {
+                                    removeLayer: removeLayerSpy
+                                },
+                                mutations: {
+                                    setRemoveOnSpill: setRemoveOnSpillSpy
+                                }
+                            },
+                            LayerSelection: {
+                                namespaced: true,
+                                getters: {
+                                    highlightLayerId: sinon.stub()
+                                }
+                            },
+                            Contact: {
+                                namespaced: true,
+                                getters: {
+                                    name: () => "Contactname",
+                                    type: () => "contact"
+                                }
+                            },
+                            ResizeHandle: {
+                                namespaced: true,
+                                getters: {
+                                    mainMenuWidth: () => 0,
+                                    secondaryMenuWidth: () => 0
+                                }
+                            }
+                        }
+                    },
+                    Maps: {
+                        namespaced: true,
+                        getters: {
+                            mode: () => mapMode
+                        }
+                    }
+                },
+                getters: {
+                    isModuleAvailable: () => () => true,
+                    allLayerConfigs: () => layersBG.concat(subjectDataLayers),
+                    layerConfig: () => ({
+                        [treeSubjectsKey]: {elements: subjectDataLayers},
+                        [treeBaselayersKey]: {elements: layersBG}
+                    }),
+                    layerConfigsByAttributes: () => () => [],
+                    portalConfig: () => ({
+                        tree: {
+                            type: treeType,
+                            addLayerButton: addLayerButton,
+                            allowBaselayerDrag: allowBaselayerDrag // Now set to true
+                        }
+                    }),
+                    showLayerAddButton: () => addLayerButton.active,
+                    showFolderPath: () => true
+                }
+            });
+
+            wrapper = mount(LayerTreeNode, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            const checkMoveSpy = sinon.spy(wrapper.vm, "checkMove"),
+                draggedLayer = {id: "1", baselayer: false},
+                targetLayer = {id: "2", baselayer: true},
+                event = {
+                    draggedContext: {element: draggedLayer},
+                    relatedContext: {element: targetLayer}
+                },
+                result = wrapper.vm.checkMove(event);
+
+            expect(result).to.be.true;
+            expect(checkMoveSpy.calledOnce).to.be.true;
         });
     });
 });

@@ -114,6 +114,7 @@ export default {
 
             delete attributes.masterportal_attributes;
             delete attributes.geometries;
+            delete attributes.source;
 
             if (isObject(attributes)) {
                 keyList.forEach(key => {
@@ -157,6 +158,7 @@ export default {
 
                     delete attributes.masterportal_attributes;
                     delete attributes.geometry;
+                    delete attributes.source;
 
                     if (Object.keys(attributes).length) {
                         this.$emit("updateAttributesKeyList", Object.keys(attributes));
@@ -176,12 +178,11 @@ export default {
             this.attributes = [];
             const attributes = Object.assign({}, this.selectedFeature.getProperties());
 
-
             if (isObject(attributes)) {
                 Object.entries(attributes).forEach(([key, value]) => {
                     const attr = {key, value};
 
-                    if (key !== "geometry" && key !== "masterportal_attributes") {
+                    if (key !== "geometry" && key !== "masterportal_attributes" && key !== "source") {
                         this.attributes.push(attr);
                     }
                 });

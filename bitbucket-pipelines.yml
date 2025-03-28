@@ -62,7 +62,7 @@ pipelines:
                         - git fetch --all --tags
                         - git checkout tags/$BITBUCKET_TAG
                         - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git $BITBUCKET_TAG
-                        - git clone --single-branch --branch dev_vue https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
+                        - git clone --single-branch --branch dev https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
                         - cd masterportal
                         - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git -f
     custom: # Pipelines that are triggered manually
@@ -86,7 +86,7 @@ pipelines:
                         - echo 'deply to opencode:'$BITBUCKET_TAG
                         - git checkout tags/$BITBUCKET_TAG
                         - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git $BITBUCKET_TAG
-                        - git clone --single-branch --branch dev_vue https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
+                        - git clone --single-branch --branch dev https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
                         - cd masterportal
                         - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git -f
         mkdocs to masterportal.org:

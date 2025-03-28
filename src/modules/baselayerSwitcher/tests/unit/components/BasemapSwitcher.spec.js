@@ -4,6 +4,7 @@ import BaselayerSwitcherComponent from "../../../components/BaselayerSwitcher.vu
 import BaselayerSwitcher from "../../../store/indexBaselayerSwitcher";
 import {expect} from "chai";
 import sinon from "sinon";
+import LayerPreview from "../../../../../shared/modules/layerPreview/components/LayerPreview.vue";
 
 config.global.mocks.$t = key => key;
 
@@ -117,7 +118,7 @@ describe("src/modules/BaselayerSwitcher.vue", () => {
 
             expect(wrapper.find("#baselayer-switcher").exists()).to.be.true;
             expect(wrapper.find("#bs-expanded").exists()).to.be.true;
-            expect(wrapper.findAll("#bs-expanded").length).to.equal(store.state.Modules.BaselayerSwitcher.baselayerIds.length);
+            expect(wrapper.findAll("#bs-expanded").length).to.equal(store.state.Modules.BaselayerSwitcher.baselayers.length);
         });
 
         it("baselayerId of layer with highest zIndex is shown as preview", () => {
@@ -129,7 +130,7 @@ describe("src/modules/BaselayerSwitcher.vue", () => {
             });
 
             expect(wrapper.find("#baselayer-switcher").exists()).to.be.true;
-            expect(wrapper.find("#layer-tree-layer-preview-" + store.state.Modules.BaselayerSwitcher.topBaselayerId).exists()).to.be.true;
+            expect(wrapper.find("#layer-tree-layer-preview-" + store.state.Modules.BaselayerSwitcher.topBaselayer.id).exists()).to.be.true;
         });
         it("placeholder is shown as preview", () => {
             store.commit("setVisibleBaselayerConfigs", []);
@@ -163,7 +164,7 @@ describe("src/modules/BaselayerSwitcher.vue", () => {
                 }});
 
             wrapper.vm.$options.watch.visibleBaselayerConfigs.handler.call(wrapper.vm, newValue, oldValue);
-            expect(store.state.Modules.BaselayerSwitcher.topBaselayerId).to.equal("WMTS");
+            expect(store.state.Modules.BaselayerSwitcher.topBaselayer.id).to.equal("WMTS");
         });
         it("visibleBaselayerConfigs with no selected baselayer", () => {
             const newValue = [],
@@ -176,7 +177,7 @@ describe("src/modules/BaselayerSwitcher.vue", () => {
             });
 
             wrapper.vm.$options.watch.visibleBaselayerConfigs.handler.call(wrapper.vm, newValue, oldValue);
-            expect(store.state.Modules.BaselayerSwitcher.topBaselayerId).to.equal(null);
+            expect(store.state.Modules.BaselayerSwitcher.topBaselayer).to.equal(null);
         });
     });
 
@@ -197,9 +198,25 @@ describe("src/modules/BaselayerSwitcher.vue", () => {
                 }
             });
 
-            expect(store.state.Modules.BaselayerSwitcher.baselayerIds).to.deep.equal(["Karte1", "Karte2", "Karte4"]);
-            expect(store.state.Modules.BaselayerSwitcher.topBaselayerId).to.deep.equal("Karte3");
+            expect(store.state.Modules.BaselayerSwitcher.baselayers.map(layer => layer.id)).to.deep.equal(["Karte1", "Karte2", "Karte4"]);
+            expect(store.state.Modules.BaselayerSwitcher.topBaselayer.id).to.deep.equal("Karte3");
+        });
+        it("send config preview settings to layerPreview", () => {
+            baselayerConfigs = [
+                {id: "Karte1", name: "EOC Basemap", visibility: false, baselayer: true, showInLayerTree: true, preview: {zoomLevel: 6, center: "566245.97,5938894.79"}},
+                {id: "Karte3", name: "Geobasiskarten (HamburgDE)", visibility: true, baselayer: true, showInLayerTree: true, preview: {zoomLevel: 6, center: "566245.97,5938894.79"}}
+            ];
+            visibleBaselayerConfigs = [
+                {id: "Karte3", name: "Geobasiskarten (HamburgDE)", visibility: true, baselayer: true, showInLayerTree: true, preview: {zoomLevel: 6, center: "566245.97,5938894.79"}}
+            ];
+            wrapper = shallowMount(BaselayerSwitcherComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
 
+            expect(wrapper.getComponent(LayerPreview).vm.center).to.deep.equal("566245.97,5938894.79");
+            expect(wrapper.getComponent(LayerPreview).vm.zoomLevel).to.deep.equal(6);
         });
     });
 
@@ -213,10 +230,10 @@ describe("src/modules/BaselayerSwitcher.vue", () => {
                 }
             });
 
-            wrapper.vm.switchActiveBaselayer(layerId);
+            wrapper.vm.switchActiveBaselayer(vectorTileLayer);
 
             expect(BaselayerSwitcher.actions.updateLayerVisibilityAndZIndex.calledOnce).to.equal(true);
-            expect(store.state.Modules.BaselayerSwitcher.topBaselayerId).to.deep.equal(layerId);
+            expect(store.state.Modules.BaselayerSwitcher.topBaselayer.id).to.deep.equal(layerId);
             expect(store.state.Modules.BaselayerSwitcher.activatedExpandable).to.equal(false);
         });
         it("old layer stays visible", () => {
@@ -228,10 +245,10 @@ describe("src/modules/BaselayerSwitcher.vue", () => {
                 }
             });
 
-            wrapper.vm.switchActiveBaselayer(layerId);
+            wrapper.vm.switchActiveBaselayer(vectorTileLayer);
 
             expect(BaselayerSwitcher.actions.updateLayerVisibilityAndZIndex.calledOnce).to.equal(true);
-            expect(store.state.Modules.BaselayerSwitcher.topBaselayerId).to.deep.equal(layerId);
+            expect(store.state.Modules.BaselayerSwitcher.topBaselayer.id).to.deep.equal(layerId);
             expect(store.state.Modules.BaselayerSwitcher.activatedExpandable).to.equal(false);
             expect(layer_453.visibility).to.equal(true);
         });
@@ -246,10 +263,10 @@ describe("src/modules/BaselayerSwitcher.vue", () => {
                 }
             });
 
-            wrapper.vm.switchActiveBaselayer(layerId);
+            wrapper.vm.switchActiveBaselayer(vectorTileLayer);
 
             expect(BaselayerSwitcher.actions.updateLayerVisibilityAndZIndex.calledOnce).to.equal(true);
-            expect(store.state.Modules.BaselayerSwitcher.topBaselayerId).to.deep.equal(layerId);
+            expect(store.state.Modules.BaselayerSwitcher.topBaselayer.id).to.deep.equal(layerId);
             expect(store.state.Modules.BaselayerSwitcher.activatedExpandable).to.equal(false);
             expect(layer_453.visibility).to.equal(false);
         });

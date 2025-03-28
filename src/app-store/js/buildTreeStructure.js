@@ -158,13 +158,9 @@ function setIdsAtSubFolders (folder) {
     folder.elements?.forEach(element => {
         if (element.type === "folder") {
             element.id = getId();
+            setIdsAtSubFolders(element);
         }
         element.parentId = folder.id;
-        if (folder.elements) {
-            folder.elements.forEach(subElement => {
-                setIdsAtSubFolders(subElement);
-            });
-        }
     });
 }
 /**

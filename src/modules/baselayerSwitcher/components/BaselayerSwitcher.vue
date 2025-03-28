@@ -17,17 +17,17 @@ export default {
         ...mapGetters("Modules/BaselayerSwitcher", [
             "active",
             "activatedExpandable",
-            "baselayerIds",
+            "baselayers",
             "configPaths",
             "singleBaseLayer",
-            "topBaselayerId",
+            "topBaselayer",
             "type"
         ])
     },
     watch: {
         visibleBaselayerConfigs: {
             handler (newVal) {
-                const baselayerConfigIds = Object.values(this.allBaselayerConfigs).map(layer => layer.id),
+                const baselayerConfigs = Object.values(this.allBaselayerConfigs),
                     zIndex = [];
                 let maxZIndex = null,
                     topLayer = null;
@@ -40,19 +40,19 @@ export default {
                 topLayer = newVal.filter(layer =>layer.zIndex === maxZIndex);
 
                 if (topLayer[0]?.id !== undefined) {
-                    const baselayerIds = [];
+                    const baselayers = [];
 
-                    baselayerConfigIds.forEach((layerId) => {
-                        if (layerId !== topLayer[0].id) {
-                            baselayerIds.push(layerId);
+                    baselayerConfigs.forEach((layer) => {
+                        if (layer.id !== topLayer[0].id) {
+                            baselayers.push(layer);
                         }
                     });
-                    this.setTopBaselayerId(topLayer[0].id);
-                    this.setBaselayerIds(baselayerIds);
+                    this.setTopBaselayer(topLayer[0]);
+                    this.setBaselayers(baselayers);
                 }
                 else {
-                    this.setTopBaselayerId(null);
-                    this.setBaselayerIds(baselayerConfigIds);
+                    this.setTopBaselayer(null);
+                    this.setBaselayers(baselayerConfigs);
                 }
                 this.setActivatedExpandable(false);
             },
@@ -61,7 +61,7 @@ export default {
     },
     created () {
         this.initializeModule({configPaths: this.configPaths, type: this.type});
-        const baselayerConfigIds = [],
+        const baselayerConfigs = [],
             baselayers = this.layerConfigsByAttributes({
                 baselayer: true,
                 showInLayerTree: true
@@ -79,23 +79,23 @@ export default {
             max = Math.max(...zIndex);
             layerWithMaxZIndex = baselayers.filter(layer => layer.zIndex === max);
 
-            if (layerWithMaxZIndex[0]?.id) {
-                this.setTopBaselayerId(layerWithMaxZIndex[0]?.id);
+            if (layerWithMaxZIndex[0]) {
+                this.setTopBaselayer(layerWithMaxZIndex[0]);
             }
         }
         else if (baselayers.length === 0) {
-            this.setTopBaselayerId(null);
+            this.setTopBaselayer(null);
         }
         else {
-            this.setTopBaselayerId(baselayers[0]?.id);
+            this.setTopBaselayer(baselayers[0]);
         }
 
         Object.values(this.allBaselayerConfigs).forEach(layer => {
-            if (layer.id !== this.topBaselayerId) {
-                baselayerConfigIds.push(layer.id);
+            if (layer.id !== this.topBaselayer?.id) {
+                baselayerConfigs.push(layer);
             }
         });
-        this.setBaselayerIds(baselayerConfigIds);
+        this.setBaselayers(baselayerConfigs);
 
         document.addEventListener("click", event => {
             const baselayerSwitcher = document.getElementById("baselayer-switcher"),
@@ -109,36 +109,35 @@ export default {
     methods: {
         ...mapMutations("Modules/BaselayerSwitcher", [
             "setActivatedExpandable",
-            "setBaselayerIds",
-            "setTopBaselayerId"
+            "setBaselayers",
+            "setTopBaselayer"
         ]),
-        ...mapMutations(["setBaselayerVisibility"]),
         ...mapActions(["initializeModule"]),
         ...mapActions("Modules/BaselayerSwitcher", ["updateLayerVisibilityAndZIndex"]),
 
 
-        switchActiveBaselayer (layerId) {
-            this.updateLayerVisibilityAndZIndex(layerId);
+        switchActiveBaselayer (layer) {
+            this.updateLayerVisibilityAndZIndex(layer.id);
 
-            const selectableBackroundLayerIds = this.baselayerIds,
-                index = selectableBackroundLayerIds.map(id => {
-                    return id;
-                }).indexOf(layerId);
+            const selectableBackroundLayers = this.baselayers,
+                index = selectableBackroundLayers.map(backgroundLayer => {
+                    return backgroundLayer.id;
+                }).indexOf(layer.id);
 
-            selectableBackroundLayerIds.splice(index, 1);
-            if (this.topBaselayerId !== null) {
-                selectableBackroundLayerIds.push(this.topBaselayerId);
+            selectableBackroundLayers.splice(index, 1);
+            if (this.topBaselayer !== null) {
+                selectableBackroundLayers.push(this.topBaselayer);
                 if (this.singleBaseLayer) {
                     this.layerConfigsByAttributes({
-                        id: this.topBaselayerId
-                    }).forEach(layer => {
-                        layer.visibility = false;
+                        id: this.topBaselayer.id
+                    }).forEach(toplayer => {
+                        toplayer.visibility = false;
                     });
                 }
             }
-            this.setBaselayerIds(selectableBackroundLayerIds);
+            this.setBaselayers(selectableBackroundLayers);
 
-            this.setTopBaselayerId(layerId);
+            this.setTopBaselayer(layer);
             this.setActivatedExpandable(false);
         }
     }
@@ -148,30 +147,35 @@ export default {
 
 <template>
     <div
-        v-if="baselayerIds.length > 0 && active"
+        v-if="baselayers.length > 0 && active"
         id="baselayer-switcher"
         class="btn-group-vertical my-5 btn-group-background-switcher shadow"
         role="group"
     >
         <ul>
             <li
-                v-for="(layerId) in baselayerIds"
-                :key="layerId"
+                v-for="(layer) in baselayers"
+                :key="layer.id"
             >
                 <button
                     v-if="activatedExpandable === true"
                     id="bs-expanded"
                     class="btn btn-light preview"
-                    @click="switchActiveBaselayer(layerId)"
+                    @click="switchActiveBaselayer(layer)"
                 >
                     <LayerPreview
-                        :id="'layer-tree-layer-preview-' + layerId"
-                        :layer-id="layerId"
+                        :id="'layer-tree-layer-preview-' + layer.id"
+                        :layer-id="layer.id"
+                        :center="layer.preview?.center"
+                        :zoom-level="layer.preview?.zoomLevel"
+                        :radius="layer.preview?.radius"
+                        :checkable="layer.preview?.checkable"
+                        :custom-class="layer.preview?.customClass"
                     />
                 </button>
             </li>
             <button
-                v-if="topBaselayerId === null"
+                v-if="topBaselayer === null"
                 id="bs-placeholder"
                 class="btn btn-light preview top placeholder-button"
                 @click="setActivatedExpandable(!activatedExpandable)"
@@ -185,8 +189,13 @@ export default {
                 @click="setActivatedExpandable(!activatedExpandable)"
             >
                 <LayerPreview
-                    :id="'layer-tree-layer-preview-' + topBaselayerId"
-                    :layer-id="topBaselayerId"
+                    :id="'layer-tree-layer-preview-' + topBaselayer.id"
+                    :layer-id="topBaselayer.id"
+                    :center="topBaselayer.preview?.center"
+                    :zoom-level="topBaselayer.preview?.zoomLevel"
+                    :radius="topBaselayer.preview?.radius"
+                    :checkable="topBaselayer.preview?.checkable"
+                    :custom-class="topBaselayer.preview?.customClass"
                 />
             </button>
         </ul>
@@ -197,6 +206,7 @@ export default {
     @import "~variables";
 
     #baselayer-switcher {
+        display: block;
         pointer-events: all;
         max-height: 80vh;
         overflow: scroll;

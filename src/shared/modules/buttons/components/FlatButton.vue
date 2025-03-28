@@ -5,9 +5,20 @@ export default {
     name: "FlatButton",
     components: {SpinnerItem},
     props: {
-        text: {
+        customclass: {
             type: String,
-            required: true
+            default: null,
+            required: false
+        },
+        disabled: {
+            type: Boolean,
+            default: null,
+            required: false
+        },
+        icon: {
+            type: String,
+            default: null,
+            required: false
         },
         interaction: {
             type: Function,
@@ -16,9 +27,9 @@ export default {
                 return true;
             }
         },
-        icon: {
-            type: String,
-            default: null,
+        secondary: {
+            type: Boolean,
+            default: false,
             required: false
         },
         spinnerTrigger: {
@@ -26,20 +37,14 @@ export default {
             default: false,
             required: false
         },
+        text: {
+            type: String,
+            required: true
+        },
         type: {
             type: String,
             required: false,
             default: "button"
-        },
-        customclass: {
-            type: String,
-            default: null,
-            required: false
-        },
-        secondary: {
-            type: Boolean,
-            default: false,
-            required: false
         }
     }
 };
@@ -54,6 +59,7 @@ export default {
         ]"
         :type="type"
         :aria-label="text"
+        :disabled="disabled"
         @click="interaction"
         @keydown.enter="interaction"
     >

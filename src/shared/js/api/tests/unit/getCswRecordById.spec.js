@@ -171,4 +171,10 @@ describe("src/js/api/getCswRecordById.js", () => {
             expect(getCswRecordById.parseConstraints(jsonWithResourceConstraints)).to.be.an("object").that.have.property("use").that.is.an("array").to.have.lengthOf(3);
         });
     });
+
+    describe("parseContactByRole", () => {
+        it("publisher should be null if not set in metadata", () => {
+            expect(getCswRecordById.getMetadata(jsonWithMD_DataIdentification).getPublisher()).to.be.null;
+        });
+    });
 });

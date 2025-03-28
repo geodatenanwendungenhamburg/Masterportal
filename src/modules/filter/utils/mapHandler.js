@@ -184,7 +184,7 @@ export default class MapHandler {
             nextTick(() => {
                 layerModel = layerCollection.getLayerById(layerConfig.id);
                 layerSource = typeof layerModel?.layer?.getSource()?.getSource === "function" && layerConfig.clusterDistance > 0 ? layerModel.layer.getSource().getSource() : layerModel?.layer?.getSource();
-                (layerConfig.typ === "SensorThings" ? layerModel : layerSource).once("featuresloadend", () => {
+                layerSource.once("featuresloadend", () => {
                     if (typeof onActivated === "function") {
                         onActivated();
                     }

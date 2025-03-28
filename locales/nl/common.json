@@ -107,6 +107,7 @@
         "loadingWait": "Een ogenblik geduld terwijl de tool de vergelijkingskaarten laadt",
         "name": "Vergelijk kaarten",
         "reset": "Opnieuw instellen",
+        "sameLayerSelected": "Dezelfde laag is twee keer geselecteerd. De selectie is opnieuw ingesteld.",
         "secondLayer": "Tweede laag",
         "selectLayerOneFirst": "Selecteer eerst de eerste laag",
         "splitDirection": "Oriëntatie: ",

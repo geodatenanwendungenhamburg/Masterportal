@@ -5,6 +5,7 @@ import store from "../../../../../app-store";
 import proj4 from "proj4";
 import blobHandler from "../../../js/blob";
 import {nextTick} from "vue";
+import layerCollection from "../../../../../core/layers/js/layerCollection";
 
 describe("Actions", () => {
     let entity,
@@ -156,7 +157,9 @@ describe("Actions", () => {
                 });
             },
             Transforms: {
-                eastNorthUpToFixedFrame: () => ({x: 10, y: 20, z: 30})
+                eastNorthUpToFixedFrame: () => ({x: 10, y: 20, z: 30}),
+                headingPitchRollQuaternion: sinon.stub()
+
             },
             Entity: class {
                 /**
@@ -190,6 +193,14 @@ describe("Actions", () => {
             Math: {
                 toDegrees: () => 9.99455657887449,
                 toRadians: () => 0.97
+            },
+            HeadingPitchRoll: class {
+                /**
+                 * Temp constructor
+                 */
+                constructor () {
+                    return {};
+                }
             }
         };
 
@@ -1293,6 +1304,115 @@ describe("Actions", () => {
             await actions.createEntity({commit, state: localTestState}, {blob, fileName, rotation: 10, scale: 2});
             await nextTick();
             expect(commit.getCalls().find(call => call.firstArg === "setIsLoading").lastArg).to.be.false;
+        });
+    });
+    describe.skip("bulkHideObjects", () => {
+        it("should not call mutation", async () => {
+            const commit = sinon.spy(),
+                localTestState = {
+                    hiddenObjectsWithLayerId: [
+                        {
+                            name: "foo",
+                            layerId: 1
+                        },
+                        {
+                            name: "bar",
+                            layerId: 1
+                        }
+                    ],
+                    hiddenObjects: [
+                        {name: "foo"},
+                        {name: "bar"}
+                    ]
+                },
+                localTestGetter = {
+                    updateAllLayers: false
+                };
+
+            await actions.bulkHideObjects({state: localTestState, getters: localTestGetter, commit}, undefined);
+            await nextTick();
+            expect(commit.called).to.be.false;
+        });
+        it("should call commit with expecteed array if an empty array is given", async () => {
+            const commit = sinon.spy(),
+                localTestState = {
+                    hiddenObjectsWithLayerId: [
+                        {
+                            name: "foo",
+                            layerId: 1
+                        },
+                        {
+                            name: "bar",
+                            layerId: 1
+                        }
+                    ],
+                    hiddenObjects: [
+                        {name: "foo"},
+                        {name: "bar"}
+                    ]
+                },
+                localTestGetter = {
+                    updateAllLayers: false
+                };
+
+            await actions.bulkHideObjects({state: localTestState, getters: localTestGetter, commit}, []);
+            await nextTick();
+            expect(commit.getCall(0).args[1]).to.eql(localTestState.hiddenObjects);
+            expect(commit.getCall(1).args[1]).to.eql(localTestState.hiddenObjectsWithLayerId);
+        });
+        it("should call commit with expected array", async () => {
+            sinon.stub(layerCollection, "getLayerById").returns({
+                layer: {
+                    tileset: Promise.resolve({})
+                }
+            });
+            const commit = sinon.spy(),
+                localTestState = {
+                    hiddenObjectsWithLayerId: [
+                        {
+                            name: "foo",
+                            layerId: 1
+                        },
+                        {
+                            name: "bar",
+                            layerId: 1
+                        }
+                    ],
+                    hiddenObjects: [
+                        {name: "foo"},
+                        {name: "bar"}
+                    ]
+                },
+                localTestGetter = {
+                    updateAllLayers: false
+                };
+
+            await actions.bulkHideObjects({state: localTestState, getters: localTestGetter, commit}, [
+                {
+                    name: "foow",
+                    layerId: 1
+                }
+            ]);
+            await nextTick();
+            expect(commit.getCall(0).args[1]).to.eql([
+                {name: "foo"},
+                {name: "bar"},
+                {name: "foow"}
+            ]);
+            expect(commit.getCall(1).args[1]).to.eql([
+                {
+                    name: "foo",
+                    layerId: 1
+                },
+                {
+                    name: "bar",
+                    layerId: 1
+                },
+                {
+                    name: "foow",
+                    layerId: 1
+                }
+            ]);
         });
     });
 });

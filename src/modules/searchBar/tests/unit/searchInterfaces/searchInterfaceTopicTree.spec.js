@@ -179,6 +179,58 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceTopicTree.js", (
                 ]);
             });
         });
+        it("should show the path in the tooltip", () => {
+            const SearchInterfaceToolTip = new SearchInterfaceTopicTree({toolTip: "path"}),
+                searchInput = "Überschwemmungsgebiete",
+                layerConfigs = [
+                    {
+                        id: "1",
+                        name: "Überschwemmungsgebiete",
+                        typ: "WMS",
+                        datasets: [{
+                            md_name: "Überschwemmungsgebiete (alkis)"
+                        }]
+                    },
+                    {
+                        id: "2",
+                        name: "Krankenhäuser",
+                        typ: "WMS"
+                    },
+                    {
+                        id: "3",
+                        name: "Überschwemmungsgebiete 3D",
+                        typ: "TILESET3D"
+                    }
+                ],
+                searchInputRegExp = SearchInterfaceToolTip.createRegExp(searchInput);
+
+            sinon.stub(SearchInterfaceToolTip, "getPath").returns("Emissionen/Überschwemmungsgebiete");
+
+            expect(SearchInterfaceToolTip.searchInLayers(layerConfigs, searchInputRegExp)).to.deep.equals([
+                {
+                    category: "modules.searchBar.type.topic",
+                    events: {
+                        onClick: {
+                            activateLayerInTopicTree: {
+                                layerId: "1"
+                            }
+                        },
+                        buttons: {
+                            showInTree: {
+                                layerId: "1"
+                            },
+                            showLayerInfo: {
+                                layerId: "1"
+                            }
+                        }
+                    },
+                    icon: "bi-stack",
+                    id: "1",
+                    name: "Überschwemmungsgebiete",
+                    toolTip: "Emissionen/Überschwemmungsgebiete"
+                }
+            ]);
+        });
     });
 
     describe("normalizeLayerResult", () => {
@@ -277,7 +329,63 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceTopicTree.js", (
                     },
                     icon: "bi-folder",
                     id: "this ID is awesome",
-                    name: "Überschwemmungsgebiete"
+                    name: "Überschwemmungsgebiete",
+                    toolTip: "Überschwemmungsgebiete"
+                }
+            ]);
+        });
+        it("should show the path in the folder tooltip", () => {
+            const SearchInterfaceToolTip = new SearchInterfaceTopicTree({toolTip: "path"}),
+                searchInput = "Überschwemmungsgebiete",
+                layerConfigs = {
+                    subjectlayer: {
+                        elements: [
+                            {
+                                id: "100",
+                                name: "Krankenhäuser",
+                                typ: "WMS"
+                            },
+                            {
+                                name: "folder first",
+                                type: "folder",
+                                id: "this ID is not awesome",
+                                elements: [
+                                    {
+                                        name: "Überschwemmungsgebiete",
+                                        type: "folder",
+                                        id: "this ID is awesome",
+                                        elements: [
+                                            {
+                                                id: "1",
+                                                name: "Überschwemmungsgebiete",
+                                                typ: "WMS",
+                                                datasets: [{
+                                                    md_name: "Überschwemmungsgebiete (alkis)"
+                                                }]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                searchInputRegExp = SearchInterfaceToolTip.createRegExp(searchInput);
+
+            sinon.stub(SearchInterfaceToolTip, "getPath").returns("folder first/Überschwemmungsgebiete");
+
+            expect(SearchInterfaceToolTip.searchInFolders(layerConfigs, searchInputRegExp)).to.deep.equals([
+                {
+                    category: "modules.searchBar.type.folder",
+                    events: {
+                        onClick: {
+                        },
+                        buttons: {}
+                    },
+                    icon: "bi-folder",
+                    id: "this ID is awesome",
+                    name: "Überschwemmungsgebiete",
+                    toolTip: "folder first/Überschwemmungsgebiete"
                 }
             ]);
         });
@@ -353,7 +461,8 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceTopicTree.js", (
                     },
                     icon: "bi-folder",
                     id: "best ID ever",
-                    name: "Überschwemmungsgebiete"
+                    name: "Überschwemmungsgebiete",
+                    toolTip: "Überschwemmungsgebiete"
                 }
             );
         });
@@ -452,9 +561,78 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceTopicTree.js", (
                     },
                     icon: "bi-folder",
                     id: "klara",
-                    name: "Überschwemmungsgebiete"
+                    name: "Überschwemmungsgebiete",
+                    toolTip: "Überschwemmungsgebiete"
                 }
             ]);
+        });
+    });
+    describe("getPath", () => {
+        it("should return the path in the layertree of the given layer", () => {
+            sinon.stub(SearchInterface1, "getNamesOfParentFolder").returns(["Überschwemmungsgebiete", "Emissionen"]);
+            const layer = {
+                id: "1",
+                name: "Überschwemmungsgebiete",
+                typ: "WMS",
+                datasets: [{
+                    md_name: "Überschwemmungsgebiete (alkis)"
+                }]
+            };
+
+            expect(SearchInterface1.getPath(layer)).to.deep.equals("Emissionen/Überschwemmungsgebiete");
+        });
+    });
+    describe("getNamesOfParentFolder", () => {
+        it("should return the names of the parent folders", () => {
+            const folders = [
+                {
+                    name: "folder first",
+                    type: "folder",
+                    id: "folder1",
+                    elements: [
+                        {
+                            name: "folder second",
+                            type: "folder",
+                            id: "folder2",
+                            parentId: "folder1",
+                            elements: [
+                                {
+                                    id: "1",
+                                    name: "Überschwemmungsgebiete",
+                                    typ: "WMS",
+                                    datasets: [{
+                                        md_name: "Überschwemmungsgebiete (alkis)"
+                                    }]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: "folder second",
+                    type: "folder",
+                    id: "folder2",
+                    parentId: "folder1",
+                    elements: [
+                        {
+                            id: "1",
+                            name: "Überschwemmungsgebiete",
+                            typ: "WMS",
+                            datasets: [{
+                                md_name: "Überschwemmungsgebiete (alkis)"
+                            }]
+                        }
+                    ]
+                }
+            ];
+
+            store.getters = {
+                folderById: (parentId) => {
+                    return folders.find(folder => folder.id === parentId);
+                }
+            };
+
+            expect(SearchInterface1.getNamesOfParentFolder("folder2", ["Überschwemmungsgebiete"])).to.deep.equals(["Überschwemmungsgebiete", "folder second", "folder first"]);
         });
     });
 });

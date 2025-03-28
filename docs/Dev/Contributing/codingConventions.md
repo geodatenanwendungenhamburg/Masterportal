@@ -22,7 +22,8 @@ All the following rules must hold.
 * A.1.2 The code works on the mobile view of the browsers mentioned in A.1.1.
 * A.1.3 The linter is active.
 * A.1.4 The linter detects no errors.
-* A.1.5 Files are encoded `UTF-8`.
+* A.1.5 Use of eslint-disable should be avoided.
+* A.1.6 Files are encoded `UTF-8`.
 
 ---
 
@@ -47,6 +48,7 @@ All the following rules must hold.
 * A.3.8 No style changes may happen via JavaScript.
 * A.3.9 All styles have a module dependant ID as prefix or are written in `scoped` mode.
 * A.3.10 No inline styles exist.
+* A.3.11 Elements from the shared folder should be used. For example buttons, to ensure consistency in style for new development.
 
 ---
 
@@ -54,6 +56,7 @@ All the following rules must hold.
 
 * A.4.1 The documentation is written in English.
 * A.4.2 The documentation build via `npm run buildJsDoc` does not throw an error.
+* A.4.3 JSDoc should be written according to the guidelines described in docs/Dev/jsdoc.md.
 
 ---
 
@@ -223,5 +226,12 @@ The code is written as readable and understandable as possible. The goal is not 
 * B.6.3 Only display errors when relevant to the user and the user's current work step.
 * B.6.4 When communicating an error to the user, include what went wrong, why it went wrong, and what can be done to resolve the situation. If the user has no option to rectify the situation, reconsider whether the error needs to be communicated at all.
 * B.6.5 For technical details use `console.error()` or `console.warn()` and print information in English for your fellow developers.
+
+---
+
+#### B.7 Internationalization (i18n)
+
+* B.7.1 Avoid using hardcoded text. Instead, use i18n keys to improve multilingualism and maintainability.
+* B.7.2 Ensure all text in the UI is translatable via locale files.
 
 ---

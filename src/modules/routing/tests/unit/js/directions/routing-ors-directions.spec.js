@@ -139,7 +139,8 @@ describe("src/modules/routing/js/directions/routing-ors-directions.js", () => {
                     preference: "RECOMMENDED",
                     avoidPolygons: [],
                     instructions: true,
-                    elevation: false
+                    elevation: false,
+                    avoidBorders: true
                 }),
                 expectedResult = new RoutingDirections({
                     bbox: [10.213668, 51.384521, 10.216961, 51.385604],
@@ -295,7 +296,8 @@ describe("src/modules/routing/js/directions/routing-ors-directions.js", () => {
                     preference: "RECOMMENDED",
                     avoidPolygons: [],
                     instructions: true,
-                    elevation: true
+                    elevation: true,
+                    avoidBorders: false
                 }),
                 expectedResult = new RoutingDirections({
                     bbox: [10.213668, 51.384521, 10.216961, 51.385604],
@@ -408,7 +410,8 @@ describe("src/modules/routing/js/directions/routing-ors-directions.js", () => {
                     avoidSpeedProfileOptions: [],
                     preference: "RECOMMENDED",
                     avoidPolygons: [],
-                    instructions: true
+                    instructions: true,
+                    avoidBorders: false
                 });
                 // should not reach here
                 expect(true).to.be.false;
@@ -439,7 +442,8 @@ describe("src/modules/routing/js/directions/routing-ors-directions.js", () => {
                     avoidSpeedProfileOptions: [],
                     preference: "RECOMMENDED",
                     avoidPolygons: [],
-                    instructions: true
+                    instructions: true,
+                    avoidBorders: false
                 });
                 // should not reach here
                 expect(true).to.be.false;

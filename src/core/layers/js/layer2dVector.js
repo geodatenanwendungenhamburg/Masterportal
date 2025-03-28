@@ -206,13 +206,13 @@ Layer2dVector.prototype.createStyle = async function (attrs) {
 
     if (styleObject !== undefined) {
         /**
-         * Returns style function to style fature.
+         * Returns style function to style feature.
          * @param {ol.Feature} feature the feature to style
-         * @returns {Function} style function to style fature
+         * @returns {Function} style function to style feature
          */
         const style = (feature) => {
             const feat = feature !== undefined ? feature : this,
-                isClusterFeature = typeof feat.get("features") === "function" || typeof feat.get("features") === "object" && Boolean(feat.get("features"));
+                isClusterFeature = typeof feat.get("features") === "function" || typeof feat.get("features") === "object" && Boolean(feat.get("features").length > 1);
 
             return createStyle.createStyle(styleObject, feat, isClusterFeature, Config.wfsImgPath);
         };

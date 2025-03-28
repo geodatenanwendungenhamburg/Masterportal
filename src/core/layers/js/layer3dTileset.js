@@ -1,4 +1,5 @@
 import {Tileset} from "@masterportal/masterportalapi/src";
+import api from "@masterportal/masterportalapi/src/maps/api";
 import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
 import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle";
 import store from "../../../app-store";
@@ -56,6 +57,41 @@ Layer3dTileset.prototype.createLayer = function (attributes) {
 Layer3dTileset.prototype.setOpacity = function (transparency = 0) {
     this.getLayer()?.setOpacity((100 - transparency) / 100);
 };
+/**
+ * Calls masterportalAPI's olcs map to set scene options for the globe depthTestAgainstTerrain parameter.
+ * When set to false, this prevents the map from disappearing under the white surface of Cesium in 3D Mesh layers.
+ * The sceneOptions must contain a globe object with the depthTestAgainstTerrain parameter.
+ * @param {Object} sceneOptions The options for the cesium scene.
+ * @param {Cesium} map The 3d map.
+ * @returns {void}
+ */
+Layer3dTileset.prototype.setCesiumSceneOptions = function (sceneOptions, map) {
+    if (!this.attributes?.defaultDepthTestAgainstTerrain && map.getCesiumScene().globe.depthTestAgainstTerrain !== sceneOptions.globe?.depthTestAgainstTerrain) {
+        this.attributes.defaultDepthTestAgainstTerrain = {globe: {depthTestAgainstTerrain: map.getCesiumScene().globe.depthTestAgainstTerrain}};
+        store.dispatch("replaceByIdInLayerConfig", {
+            layerConfigs: [{
+                id: this.attributes.id,
+                layer: {
+                    id: this.attributes.id,
+                    defaultDepthTestAgainstTerrain: {globe: {depthTestAgainstTerrain: map.getCesiumScene().globe.depthTestAgainstTerrain}}
+                }
+            }]
+        }, {root: true});
+        api.map.olcsMap.setCesiumSceneParams(map.getCesiumScene(), sceneOptions);
+    }
+    else if (this.attributes?.defaultDepthTestAgainstTerrain?.globe?.depthTestAgainstTerrain !== map.getCesiumScene().globe?.depthTestAgainstTerrain) {
+        api.map.olcsMap.setCesiumSceneParams(map.getCesiumScene(), this.attributes.defaultDepthTestAgainstTerrain);
+        store.dispatch("replaceByIdInLayerConfig", {
+            layerConfigs: [{
+                id: this.attributes.id,
+                layer: {
+                    id: this.attributes.id,
+                    defaultDepthTestAgainstTerrain: undefined
+                }
+            }]
+        }, {root: true});
+    }
+};
 
 /**
  * Calls masterportalAPI's tilset-layer to set this layer visible.
@@ -69,6 +105,9 @@ Layer3dTileset.prototype.setVisible = function (visibility, map) {
     // this.setFeatureVisibilityLastUpdated(Date.now());
     if (visibility) {
         this.createLegend();
+    }
+    if (this.attributes.sceneOptions) {
+        this.setCesiumSceneOptions(this.attributes.sceneOptions, mapCollection.getMap("3D"));
     }
     if (visibility === false && this.attributes.hiddenFeatures) {
         this.showObjects(this.attributes.hiddenFeatures);

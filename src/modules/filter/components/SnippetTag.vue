@@ -75,22 +75,25 @@ export default {
     .snippetTagContainer {
         margin: 0 0 2px 2px;
         float: left;
-    }
-    .snippetTagContainer button {
-        padding: 5px 6px;
-        font-size: $font-size-base;
-        color: $white;
-        background-color: rgba(0, 0, 0, 0.5);
-        border: none;
-    }
-    .snippetTagContainer button:hover {
-        opacity: 1;
-        background-color: $light_blue;
-        color: $light_grey;
-        cursor: pointer;
-    }
-    .snippetTagContainer .snippetTagLabel {
-        font-size: $font-size-sm;
+
+        .snippetTagLabel {
+            font-size: $font-size-sm;
+        }
+
+        button {
+            padding: 5px 6px;
+            font-size: $font-size-base;
+            color: $white;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+
+            &:hover {
+                opacity: 1;
+                background-color: $light_blue;
+                color: $dark_blue;
+                cursor: pointer;
+            }
+        }
     }
     .snippetTagContainer .snippetTagValue {
         padding-right: 5px;

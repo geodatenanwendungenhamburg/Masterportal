@@ -146,6 +146,38 @@ describe("src/modules/filter/components/LayerFilterSnippet.vue", () => {
             await wrapper.vm.$nextTick();
             expect(wrapper.emitted().updateRules).to.be.an("array").with.lengthOf(1);
         });
+        it("should set the prechecked to initialPrechecked value", async () => {
+            const localWrapper = shallowMount(LayerFilterSnippet, {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {
+                    layerConfig: {
+                        service: {
+                            type: "something external"
+                        },
+                        snippets: [{
+                            operator: "EQ",
+                            snippetId: 0,
+                            title: "Bezirk",
+                            type: "dropdown",
+                            value: ["Altona"],
+                            prechecked: ["Altona"]
+                        }]
+                    },
+                    layerSelectorVisible: false,
+                    mapHandler
+                }
+            });
+
+            await localWrapper.vm.$nextTick();
+            localWrapper.vm.snippets[0].initialPrechecked = localWrapper.vm.snippets[0].prechecked;
+            localWrapper.vm.snippets[0].prechecked = undefined;
+            localWrapper.vm.deleteRule(0);
+            await localWrapper.vm.$nextTick();
+            expect(localWrapper.vm.snippets[0].prechecked).to.deep.equal(["Altona"]);
+            localWrapper.unmount();
+        });
     });
 
     describe("deleteRulesOfParallelSnippets", () => {
@@ -673,6 +705,39 @@ describe("src/modules/filter/components/LayerFilterSnippet.vue", () => {
         });
         it("should return true if the given array has child snippets", () => {
             expect(wrapper.vm.hasChildSnippets([{children: "foo"}])).to.be.true;
+        });
+    });
+
+    describe("updateSnippetUniqueValues", () => {
+        it("should not call any listener if outOfZoom is true", async () => {
+            let foo = false;
+
+            wrapper.setData({
+                uniqueValuesOnMoveListeners: {
+                    0: () => {
+                        foo = true;
+                    }
+                },
+                outOfZoom: true
+            });
+            wrapper.vm.updateSnippetUniqueValues();
+            await wrapper.vm.$nextTick();
+            expect(foo).to.be.false;
+        });
+        it("should call any listener if outOfZoom is false", async () => {
+            let foo = false;
+
+            wrapper.setData({
+                uniqueValuesOnMoveListeners: {
+                    0: () => {
+                        foo = true;
+                    }
+                },
+                outOfZoom: false
+            });
+            wrapper.vm.updateSnippetUniqueValues();
+            await wrapper.vm.$nextTick();
+            expect(foo).to.be.true;
         });
     });
 });

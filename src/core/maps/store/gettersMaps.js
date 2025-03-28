@@ -73,6 +73,11 @@ const getters = {
      */
     projectionCode: state => state.projection?.getCode(),
 
+    /**
+     * Generates URL parameters based on the current state.
+     * @param {Object} state - The Vuex state.
+     * @returns {String} URL-encoded map parameters.
+     */
     urlParams: state => {
         const params = {
             center: state.center,
@@ -81,12 +86,14 @@ const getters = {
         };
 
         if (params.mode === "3D") {
+            const camera = mapCollection.getMap("3D")?.getCesiumScene()?.camera,
+                position = Cesium.Cartographic.fromCartesian(camera.positionWC);
 
-            const camera = mapCollection.getMap("3D")?.getCesiumScene()?.camera;
-
-            params.heading = camera.heading;
-            params.tilt = camera.pitch;
-            params.altitude = Cesium.Cartographic.fromCartesian(camera.position).height;
+            params.lon = Cesium.Math.toDegrees(position.longitude);
+            params.lat = Cesium.Math.toDegrees(position.latitude);
+            params.height = position.height;
+            params.heading = Cesium.Math.toDegrees(camera.heading);
+            params.pitch = Cesium.Math.toDegrees(camera.pitch);
         }
 
         return `MAPS=${JSON.stringify(params)}`;
