@@ -98,7 +98,7 @@ export default {
             if (reload) {
                 setTimeout(() => {
                     this.reloadWindow();
-                }, 100);
+                }, 1000);
             }
         }
     }
