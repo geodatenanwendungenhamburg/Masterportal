@@ -94,8 +94,11 @@ export default {
         logoutButton (reload = false) {
             this.logout();
 
+            // Add a small delay before reloading to ensure cookies are properly cleared
             if (reload) {
-                this.reloadWindow();
+                setTimeout(() => {
+                    this.reloadWindow();
+                }, 100);
             }
         }
     }

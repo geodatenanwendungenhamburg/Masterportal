@@ -45,20 +45,35 @@ export default {
             oidcClientId = Config?.login?.oidcClientId,
             oidcRevocationEndpoint = Config?.login?.oidcRevocationEndpoint;
 
+        // Erase cookies and local storage items
         OIDC.eraseCookies();
 
+        // Reset all login-related state
         commit("setLoggedIn", false);
         commit("setAccessToken", undefined);
         commit("setRefreshToken", undefined);
         commit("setScreenName", undefined);
         commit("setUsername", undefined);
         commit("setEmail", undefined);
+        commit("setIcon", "bi-door-open");
+        commit("setName", "common:modules.login.login");
 
+        // Revoke tokens if a revocation endpoint is configured
         if (oidcRevocationEndpoint && token) {
-            OIDC.revokeToken(oidcRevocationEndpoint, oidcClientId, token);
+            try {
+                OIDC.revokeToken(oidcRevocationEndpoint, oidcClientId, token);
+            }
+            catch (error) {
+                console.error("Error revoking access token:", error);
+            }
         }
         if (oidcRevocationEndpoint && refreshToken) {
-            OIDC.revokeToken(oidcRevocationEndpoint, oidcClientId, refreshToken);
+            try {
+                OIDC.revokeToken(oidcRevocationEndpoint, oidcClientId, refreshToken);
+            }
+            catch (error) {
+                console.error("Error revoking refresh token:", error);
+            }
         }
     },
 
@@ -77,16 +92,30 @@ export default {
         commit("setIcon", loggedIn ? "bi-door-closed" : "bi-door-open");
         commit("setName", loggedIn ? "common:modules.login.logout" : "common:modules.login.login");
 
+        // If no token is present, ensure we're in a logged out state
+        if (!token) {
+            commit("setLoggedIn", false);
+            commit("setAccessToken", undefined);
+            commit("setRefreshToken", undefined);
+            commit("setScreenName", undefined);
+            commit("setUsername", undefined);
+            commit("setEmail", undefined);
+            return false;
+        }
+
         commit("setAccessToken", token);
         commit("setRefreshToken", refreshToken);
 
+        // Check if token is expired
         if (OIDC.getTokenExpiry(token) < 1) {
             await dispatch("logout");
             return false;
         }
 
+        // Renew token if necessary
         await OIDC.renewTokenIfNecessary(token, refreshToken, config);
 
+        // Update login state
         commit("setLoggedIn", loggedIn);
         commit("setScreenName", Cookie.get("name"));
         commit("setUsername", Cookie.get("username"));
