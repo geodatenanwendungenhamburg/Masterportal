@@ -1,5 +1,5 @@
 <script>
-import {mapMutations, mapGetters, mapActions} from "vuex";
+import {mapGetters, mapActions} from "vuex";
 import {translateKeyWithPlausibilityCheck} from "../../../shared/js/utils/translateKeyWithPlausibilityCheck.js";
 
 export default {
@@ -14,11 +14,8 @@ export default {
         if (!this.isLoggedIn()) {
             this.openLoginWindow();
         }
-        setInterval(() => this.isLoggedIn(), 10_000);
     },
     methods: {
-        ...mapMutations("Menu", ["setCurrentComponentPropsName", "setCurrentComponentPropsDescription"]),
-        ...mapMutations("Modules/Login", ["setActive", "setIcon"]),
         ...mapActions("Modules/Login", [
             "initialize",
             "logout",
@@ -50,7 +47,6 @@ export default {
          */
         isLoggedIn () {
             this.checkLoggedIn();
-            this.setLoginProps();
             return this.loggedIn;
         },
 
@@ -98,26 +94,9 @@ export default {
         logoutButton (reload = false) {
             this.logout();
 
-            this.setLoginProps();
-
             if (reload) {
                 this.reloadWindow();
             }
-        },
-
-
-        /**
-         * Sets the icon, name and description according to the login status.
-         * @return {void}
-         */
-        setLoginProps () {
-            const iconType = this.loggedIn ? this.iconLogged : this.iconLogin,
-                componentName = this.loggedIn ? "common:modules.login.logout" : "common:modules.login.login",
-                componentDescription = this.loggedIn ? "common:modules.login.descriptionLoggedIn" : "common:modules.login.description";
-
-            this.setIcon(iconType);
-            this.setCurrentComponentPropsName({side: "secondaryMenu", name: componentName});
-            this.setCurrentComponentPropsDescription({side: "secondaryMenu", description: componentDescription});
         }
     }
 };

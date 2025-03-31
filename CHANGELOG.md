@@ -5,6 +5,10 @@
 
 ## Unreleased - in development
 
+## 2025-02-07
+### Fixed
+- Updating menu item name from Login to Logout after a user is logged in and visa versa.
+
 ### __Breaking Changes__
 
 ### Added
@@ -118,6 +122,11 @@
 -  Menu: Navigating back from layerinformation to the previous menu item add subject.
 
 ---
+
+## 2025-02-07 v3.7.0
+
+### Fixed
+- Fix OIDC Token Auto-Refresh After Initial Login
 
 ## 2025-02-05 v3.7.0
 
