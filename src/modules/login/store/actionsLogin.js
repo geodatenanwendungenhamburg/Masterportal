@@ -94,12 +94,7 @@ export default {
 
         // If no token is present, ensure we're in a logged out state
         if (!token) {
-            commit("setLoggedIn", false);
-            commit("setAccessToken", undefined);
-            commit("setRefreshToken", undefined);
-            commit("setScreenName", undefined);
-            commit("setUsername", undefined);
-            commit("setEmail", undefined);
+            await dispatch("logout");
             return false;
         }
 
