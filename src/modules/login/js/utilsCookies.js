@@ -56,12 +56,17 @@ export function get (name) {
  * @param {string} name - The name of the cookie to delete
  */
 export function erase (name) {
-    pastDate.setTime(pastDate.getTime() - (24 * 60 * 60 * 1000)); // Set to yesterday
 
     // Create expired date in the past
     const pastDate = new Date(),
-        expires = "; expires=" + pastDate.toUTCString(),
         domain = window.location.hostname;
+
+    pastDate.setTime(pastDate.getTime() - (24 * 60 * 60 * 1000)); // Set to yesterday
+
+    // Ignore eslint rule to ensure code readability
+    // eslint-disable-next-line one-var
+    const expires = "; expires=" + pastDate.toUTCString();
+
 
     // Delete cookie without domain
     document.cookie = name + "=" + expires + "; Path=/; SameSite=None; Secure";
