@@ -239,31 +239,11 @@ function setCookies (token, id_token, expires_in, refresh_token) {
 }
 
 /**
- * Erases all cookies and local storage items related to authentication
+ * Erases all cookies
  * @returns {void}
  */
 function eraseCookies () {
-    // Erase all cookies
-    Cookie.eraseAll([
-        "token",
-        "expires_in",
-        "id_token",
-        "refresh_token",
-        "name",
-        "username",
-        "email",
-        "expiry"
-    ]);
-
-    // Clear PKCE-related items from localStorage/sessionStorage
-    if (useSessionStorage) {
-        window.sessionStorage.removeItem("pkce_state");
-        window.sessionStorage.removeItem("code_verifier");
-    }
-    else {
-        window.localStorage.removeItem("pkce_state");
-        window.localStorage.removeItem("code_verifier");
-    }
+    Cookie.eraseAll(["token", "expires_in", "id_token", "refresh_token", "name", "username", "email", "expiry"]);
 }
 
 /**
