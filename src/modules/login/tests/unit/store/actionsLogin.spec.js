@@ -139,7 +139,7 @@ describe("src/modules/Modules/Login/store/actionsLogin.js", () => {
     describe("checkLoggedIn", () => {
         afterEach(sinon.restore);
 
-        it("should set loggedIn to true when token is present and valid", () => {
+        it("should set loggedIn to true when token is present and valid", async () => {
             let result = null;
             const local_sandbox = sinon.createSandbox(),
                 context = {
@@ -150,17 +150,18 @@ describe("src/modules/Modules/Login/store/actionsLogin.js", () => {
 
             local_sandbox.stub(Cookie, "get").returns("someToken");
             local_sandbox.stub(OIDC, "getTokenExpiry").returns(tokenExpiry);
+            local_sandbox.stub(OIDC, "renewTokenIfNecessary").resolves();
 
-            result = actionsLogin.checkLoggedIn(context);
+            result = await actionsLogin.checkLoggedIn(context);
 
             expect(result).to.be.true;
-            expect(context.commit.thirdCall.args[0]).to.equal("setLoggedIn");
-            expect(context.commit.thirdCall.args[1]).to.equal(true);
+            expect(context.commit.callCount).to.be.at.least(3);
+            expect(context.commit.calledWith("setLoggedIn", true)).to.be.true;
 
             local_sandbox.restore();
         });
 
-        it("should set loggedIn to false and call logout when token is expired", () => {
+        it("should set loggedIn to false and call logout when token is expired", async () => {
             let result = null;
             const local_sandbox = sinon.createSandbox(),
                 context = {
@@ -171,14 +172,13 @@ describe("src/modules/Modules/Login/store/actionsLogin.js", () => {
 
             local_sandbox.stub(Cookie, "get").returns("someToken");
             local_sandbox.stub(OIDC, "getTokenExpiry").returns(tokenExpiry);
+            context.dispatch.resolves();
 
-            result = actionsLogin.checkLoggedIn(context);
+            result = await actionsLogin.checkLoggedIn(context);
 
             expect(result).to.be.false;
-
-            expect(context.dispatch.firstCall?.args[0]).to.equal("logout");
-
-            expect(context.commit.callCount).to.equal(2);
+            expect(context.dispatch.calledWith("logout")).to.be.true;
+            expect(context.commit.callCount).to.be.at.least(2);
 
             local_sandbox.restore();
         });

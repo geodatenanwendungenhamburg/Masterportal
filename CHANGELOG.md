@@ -5,10 +5,6 @@
 
 ## Unreleased - in development
 
-## 2025-02-07
-### Fixed
-- Updating menu item name from Login to Logout after a user is logged in and visa versa.
-
 ### __Breaking Changes__
 
 ### Added
@@ -37,6 +33,7 @@
 - Filter: Parameters featureNS and featurePrefix removed from WFS-request due to redundancy and invalid values at specific layers.
 - dependencies:
         - @masterportal/masterportalapi: 2.45.0 to 2.47.0 (This also raised ol to version 10.4.0 and @cesium/engine to version 15.0.0)
+        - @masterportal/masterportalapi: 2.47.0 to 2.48.0
 - FullScreen: Using the FullScreen control in an iFrame keeps the current state (center, zoom, layers etc.) now.
 
 ### Deprecated
@@ -58,6 +55,7 @@
 - ShareView: Fixed sharing 3D map.
 - UrlParams: 3D params heading, tilt and altitude are evaluated correctly.
 - specialWfs search: Add hover/zoomTo support for linestring geometries.
+- Issue #1352: Updating menu item name from Login to Logout after a user is logged in and visa versa.
 - Searchbar: Fixed a bug where the searchbar would focus itself on mounting, scrolling the parent page if embedded in an iframe.
 
 ---
