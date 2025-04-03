@@ -4,21 +4,37 @@
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
 ## Unreleased - in development
-
 ### __Breaking Changes__
+
+### Added
+
+### Changed
+- getFeatureInfo: gfi now works on BaseLayers as well as SubjectLayers.
+
+### Deprecated
+
+### Removed
+
+### Fixed
+- Issue #1352: Updating menu item name from Login to Logout after a user is logged in and visa versa.
+- Fix OIDC Token Auto-Refresh After Initial Login
+
+---
+
+## 2025-04-02 v3.9.0
 
 ### Added
 - URL-Parameter: added url-Parameter to set the width of menu and secondary menu (menuwidth/secondarywidth).
 - New function getOAFFeature.getTemporalExtent for requesting the temporal extent of a collection.
-- Routing: option to avoid borders for directions and isochrones
+- Routing: option to avoid borders for directions and isochrones.
 - Searchbar:
     - Topic tree search can now output baselayer as search category.
     - Topic tree search can be configured whether the path of the layer is displayed in the tooltip.
 - LayerTree: added checkMove function to validate dragged layer movement based on allowBaselayerDrag configuration.
-- WFST-Tool: Added WFS-T improvements
-  - correct transactionFeature properties order
-  - input validation
-  - gfiAttributes nested object handling
+- WFST-Tool:
+  - Correct transactionFeature properties order.
+  - Input validation.
+  - gfiAttributes nested object handling.
 - LayerSelection: added "deactivateShowAllCheckbox" configuration, to disable the "Show All Checkbox" inside folders.
 - LayerTree, LayerSelection: Introduced an alternative sorting function for layers utilizing the layerSequence prop.
 - SliderItem: Added markers functionality for visual indication of key points along the slider range.
@@ -36,17 +52,13 @@
         - @masterportal/masterportalapi: 2.47.0 to 2.48.0
 - FullScreen: Using the FullScreen control in an iFrame keeps the current state (center, zoom, layers etc.) now.
 
-### Deprecated
-
-### Removed
-
 ### Fixed
 - LayerInformation:
-  - empty contact accordion was shown, if metadata contains no contact.
+  - Empty contact accordion was shown, if metadata contains no contact.
   - Fixed wrong or undefined metadata showing when current Layer has no metadata.
   - Fixed an issue with no metadata, when cswUrl was undefined, rather than null.
-- Loading the layer is accelerated by fixing generation of folder ids
-- ShareView: duplicated url params are filtered.
+- Loading the layer is accelerated by fixing generation of folder ids.
+- ShareView: Duplicated url params are filtered.
 - Issue #1324: CompareMaps: always show loading spinner when loading and do not split maps after closing tool.
 - Issue #1348: BaselayerSwitcher: use preview settings from config.
 - Issue #1358: Topic tree search can now also be used in multiple languages via i18next.
@@ -55,7 +67,6 @@
 - ShareView: Fixed sharing 3D map.
 - UrlParams: 3D params heading, tilt and altitude are evaluated correctly.
 - specialWfs search: Add hover/zoomTo support for linestring geometries.
-- Issue #1352: Updating menu item name from Login to Logout after a user is logged in and visa versa.
 - Searchbar: Fixed a bug where the searchbar would focus itself on mounting, scrolling the parent page if embedded in an iframe.
 
 ---
@@ -120,11 +131,6 @@
 -  Menu: Navigating back from layerinformation to the previous menu item add subject.
 
 ---
-
-## 2025-02-07 v3.7.0
-
-### Fixed
-- Fix OIDC Token Auto-Refresh After Initial Login
 
 ## 2025-02-05 v3.7.0
 
