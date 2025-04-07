@@ -25,6 +25,11 @@ export default function handleAxiosResponse (response, callContext) {
         console.warn(`${callContext}, handleAxiosResponse:`, response);
         throw Error(errorMessage);
     }
+    else if (typeof response.data === String && response.data && response.data.includes("RequestNotAllowed") && callContext.includes("requestGfi")) {
+        const errorMessage = `${callContext}, handleAxiosResponse: The request is not allowed`;
+
+        throw Error(errorMessage);
+    }
 
     return response.data;
 }
