@@ -309,44 +309,37 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
     });
 
     describe("markerAndZoom", () => {
-        let pointFeatures,
-            polygonFeatures;
+        let pointGeometry,
+            polygonGeometry;
 
         beforeEach(() => {
-            pointFeatures = [
+            pointGeometry =
                 {
-                    getGeometry: () => {
-                        return {
-                            getCoordinates: () => [568366.068, 5941065.428]
-                        };
-                    }
-                }
-            ];
-            polygonFeatures = [
+
+                    getCoordinates: () => [568366.068, 5941065.428]
+
+                };
+            polygonGeometry =
                 {
-                    getGeometry: () => {
-                        return {
-                            getCoordinates: () => [
-                                [456881.4, 5341325.7, 0],
-                                [456905.5, 5341311.3, 0],
-                                [456931.2, 5341295.9, 0],
-                                [456932.3, 5341295.6, 0],
-                                [456936.2, 5341294.5, 0],
-                                [456940, 5341301.7, 0],
-                                [456943.2, 5341308, 0],
-                                [456946.6, 5341314.5, 0],
-                                [456949.4, 5341319.9, 0],
-                                [456929.5, 5341329.8, 0],
-                                [456914, 5341337.5, 0],
-                                [456893, 5341347.9, 0],
-                                [456882.2, 5341327.1, 0],
-                                [456881.4, 5341325.7, 0]
-                            ],
-                            getExtent: () => [456881.4, 5341294.5, 456949.4, 5341347.9]
-                        };
-                    }
-                }
-            ];
+                    getCoordinates: () => [
+                        [456881.4, 5341325.7, 0],
+                        [456905.5, 5341311.3, 0],
+                        [456931.2, 5341295.9, 0],
+                        [456932.3, 5341295.6, 0],
+                        [456936.2, 5341294.5, 0],
+                        [456940, 5341301.7, 0],
+                        [456943.2, 5341308, 0],
+                        [456946.6, 5341314.5, 0],
+                        [456949.4, 5341319.9, 0],
+                        [456929.5, 5341329.8, 0],
+                        [456914, 5341337.5, 0],
+                        [456893, 5341347.9, 0],
+                        [456882.2, 5341327.1, 0],
+                        [456881.4, 5341325.7, 0]
+                    ],
+                    getExtent: () => [456881.4, 5341294.5, 456949.4, 5341347.9]
+
+                };
         });
 
         it("should start action placingPointMarker, if the feature has a point geometry", async () => {
@@ -356,7 +349,7 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
                 }
             });
 
-            await wrapper.vm.markerAndZoom(pointFeatures);
+            wrapper.vm.markerAndZoom(pointGeometry);
             expect(placingPointMarkerSpy.calledOnce).to.be.true;
             expect(setCenterSpy.calledOnce).to.be.true;
             expect(setZoomSpy.calledOnce).to.be.true;
@@ -372,10 +365,10 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
                 }
             });
 
-            await wrapper.vm.markerAndZoom(polygonFeatures);
+            await wrapper.vm.markerAndZoom(polygonGeometry);
             expect(placingPolygonMarkerSpy.calledOnce).to.be.true;
             expect(zoomToExtentSpy.calledOnce).to.be.true;
-            expect(placingPolygonMarkerSpy.firstCall.args[1]).to.deep.equals(polygonFeatures[0]);
+            expect(placingPolygonMarkerSpy.firstCall.args[1]).to.deep.equals(polygonGeometry);
             expect(zoomToExtentSpy.firstCall.args[1]).to.deep.equals({
                 extent: [456881.4, 5341294.5, 456949.4, 5341347.9]
             });
