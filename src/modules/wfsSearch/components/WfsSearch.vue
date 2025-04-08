@@ -42,6 +42,11 @@ export default {
             default: false
         }
     },
+    data () {
+        return {
+            showNoResultMessage: false
+        };
+    },
     computed: {
         ...mapGetters("Modules/WfsSearch", [
             "name",
@@ -90,6 +95,7 @@ export default {
                     }, {});
                 return tableHeaders;
             }
+            this.setShowResultList(false);
             return null;
         },
         resultsForTable () {
@@ -157,6 +163,7 @@ export default {
          * @returns {void}
          */
         resetUI () {
+            this.showNoResultMessage = false;
             const inputFields = document.getElementsByClassName("module-wfsSearch-field-input");
 
             for (const input of inputFields) {
@@ -171,8 +178,13 @@ export default {
          * @returns {Promise<void>} The returned promise isn't used any further as it resolves to nothing.
          */
         async search () {
+            this.showNoResultMessage = false;
             this.setSearched(true);
             const features = await requestProvider.searchFeatures(this.$store, this.currentInstance, this.service);
+
+            if (features.length === 0) {
+                this.showNoResultMessage = true;
+            }
 
             this.setResults([]);
             features.forEach(feature => {
@@ -183,19 +195,17 @@ export default {
                 this.setShowResultList(true);
             }
             else if (features.length > 0) {
-                this.markerAndZoom(features);
+                this.markerAndZoom(features[0].getGeometry());
             }
         },
 
         /**
-         * Sets a point or polygon marker for a feature and zoom to it.
-         * @param {ol/Feature[]} features The feature with coordinates.
+         * Sets a point or polygon marker for a feature geometry and zoom to it.
+         * @param {ol/geom/Geometry} geometry The geometry of a ol feature with coordinates.
          * @returns {void}
          */
-        async markerAndZoom (features) {
-            const feature = await features[0],
-                geometry = feature.getGeometry(),
-                coordinates = geometry.getCoordinates();
+        markerAndZoom (geometry) {
+            const coordinates = geometry.getCoordinates();
 
             if (coordinates.length === 2 && !Array.isArray(coordinates[0])) {
                 this.placingPointMarker(coordinates);
@@ -203,9 +213,14 @@ export default {
                 this.setZoom(this.zoomLevelProp || this.zoomLevel);
             }
             else {
-                this.placingPolygonMarker(feature);
+                this.placingPolygonMarker(geometry);
                 this.zoomToExtent({extent: geometry.getExtent()});
             }
+        },
+        returnGeometryFromRow (row) {
+            const geometry = row.geometry || row.geom || null;
+
+            return geometry;
         }
     }
 };
@@ -306,10 +321,16 @@ export default {
                 :id="'resultTable'"
                 :data="tableData"
                 :sortable="true"
+                select-mode="row"
+                :run-select-row-on-mount="false"
                 table-class="tableHeight"
+                @rowSelected="row => {
+                    const geometry = returnGeometryFromRow(row);
+                    if (geometry) markerAndZoom(geometry);
+                }"
             />
         </div>
-        <div v-else-if="showResultList && results.length === 0">
+        <div v-else-if="showNoResultMessage">
             {{ $t("common:modules.wfsSearch.noResults") }}
         </div>
     </div>
