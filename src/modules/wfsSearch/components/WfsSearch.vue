@@ -44,7 +44,7 @@ export default {
     },
     data () {
         return {
-            showNoResultMessage: false
+            noResultsFound: false
         };
     },
     computed: {
@@ -163,7 +163,7 @@ export default {
          * @returns {void}
          */
         resetUI () {
-            this.showNoResultMessage = false;
+            this.noResultsFound = false;
             const inputFields = document.getElementsByClassName("module-wfsSearch-field-input");
 
             for (const input of inputFields) {
@@ -178,12 +178,12 @@ export default {
          * @returns {Promise<void>} The returned promise isn't used any further as it resolves to nothing.
          */
         async search () {
-            this.showNoResultMessage = false;
+            this.noResultsFound = false;
             this.setSearched(true);
             const features = await requestProvider.searchFeatures(this.$store, this.currentInstance, this.service);
 
             if (features.length === 0) {
-                this.showNoResultMessage = true;
+                this.noResultsFound = true;
             }
 
             this.setResults([]);
@@ -330,7 +330,7 @@ export default {
                 }"
             />
         </div>
-        <div v-else-if="showNoResultMessage">
+        <div v-else-if="noResultsFound">
             {{ $t("common:modules.wfsSearch.noResults") }}
         </div>
     </div>
