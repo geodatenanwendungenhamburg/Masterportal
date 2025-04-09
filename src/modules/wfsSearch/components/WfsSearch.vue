@@ -217,6 +217,11 @@ export default {
                 this.zoomToExtent({extent: geometry.getExtent()});
             }
         },
+        /**
+         * Retracts the geometry from the row object.
+         * @param {Object} row row object from the table.
+         * * @returns {ol/geom/Geometry} The geometry of the row.
+         */
         returnGeometryFromRow (row) {
             const geometry = row.geometry || row.geom || null;
 
