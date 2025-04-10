@@ -8,7 +8,7 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceSpecialWfs.js", 
         checkConfigSpy;
     const searchResults = [
         {
-            geometry: ["565931.982", "5935196.323", "565869.067", "5935016.323"],
+            geometry: [["565931.982", "5935196.323", "565869.067", "5935016.323"]],
             geometryType: "MultiPolygon",
             icon: "bi-house-fill",
             identifier: "Rotherbaum37",
@@ -40,42 +40,42 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceSpecialWfs.js", 
 
     describe("normalizeResults", () => {
         it("should normalize a search result", () => {
-            expect(SearchInterface1.normalizeResults(searchResults)).to.deep.equals([
-                {
-                    category: "modules.searchBar.specialWFS.ongoing",
-                    events: {
-                        onClick: {
-                            highlightFeature: {
-                                hit: {
-                                    coordinate: [[565931.982, 5935196.323, 565869.067, 5935016.323]],
-                                    geometryType: "MultiPolygon"
-                                }
-                            },
-                            setMarker: {
-                                coordinates: [565931.982, 5935196.323, 565869.067, 5935016.323]
-                            },
-                            zoomToResult: {
-                                coordinates: [565931.982, 5935196.323, 565869.067, 5935016.323]
-                            }
-                        },
-                        onHover: {
-                            highlightFeature: {
-                                hit: {
-                                    coordinate: [[565931.982, 5935196.323, 565869.067, 5935016.323]],
-                                    geometryType: "MultiPolygon"
-                                }
-                            },
-                            setMarker: {
-                                coordinates: [565931.982, 5935196.323, 565869.067, 5935016.323]
-                            }
+            const normalizeResults = SearchInterface1.normalizeResults(searchResults)[0];
+
+            expect(normalizeResults.category).to.equal("modules.searchBar.specialWFS.ongoing");
+            expect(normalizeResults.icon).to.equal("bi-house-fill");
+            expect(normalizeResults.id).to.equal("SpecialWFS1");
+            expect(normalizeResults.name).to.equal("Rotherbaum37");
+            expect(normalizeResults.toolTip).to.equal("Rotherbaum37");
+            expect(normalizeResults.events).to.deep.equals({
+                onClick: {
+                    highlightFeature: {
+                        hit: {
+                            coordinate: [["565931.982", "5935196.323", "565869.067", "5935016.323"]],
+                            geometryType: "MultiPolygon"
                         }
                     },
-                    icon: "bi-house-fill",
-                    id: "SpecialWFS1",
-                    name: "Rotherbaum37",
-                    toolTip: "Rotherbaum37"
+                    setMarker: {
+                        coordinates: ["565931.982", "5935196.323", "565869.067", "5935016.323"],
+                        geometryType: "MultiPolygon"
+                    },
+                    zoomToResult: {
+                        coordinates: ["565931.982", "5935196.323", "565869.067", "5935016.323"]
+                    }
+                },
+                onHover: {
+                    highlightFeature: {
+                        hit: {
+                            coordinate: [["565931.982", "5935196.323", "565869.067", "5935016.323"]],
+                            geometryType: "MultiPolygon"
+                        }
+                    },
+                    setMarker: {
+                        coordinates: ["565931.982", "5935196.323", "565869.067", "5935016.323"],
+                        geometryType: "MultiPolygon"
+                    }
                 }
-            ]);
+            });
         });
     });
 
@@ -121,7 +121,7 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceSpecialWfs.js", 
 
             expect(SearchInterface1.getInteriorAndExteriorPolygonMembers(xmlData.getElementsByTagNameNS("*", "Polygon"))).to.deep.equals(
                 [
-                    [565762.142, 5936207.082, 565898.316, 5936207.367]
+                    ["565762.142", "5936207.082", "565898.316", "5936207.367"]
                 ]
             );
         });
@@ -134,15 +134,16 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceSpecialWfs.js", 
                 {
                     highlightFeature: {
                         hit: {
-                            coordinate: [[565931.982, 5935196.323, 565869.067, 5935016.323]],
+                            coordinate: [["565931.982", "5935196.323", "565869.067", "5935016.323"]],
                             geometryType: "MultiPolygon"
                         }
                     },
                     setMarker: {
-                        coordinates: [565931.982, 5935196.323, 565869.067, 5935016.323]
+                        coordinates: ["565931.982", "5935196.323", "565869.067", "5935016.323"],
+                        geometryType: "MultiPolygon"
                     },
                     zoomToResult: {
-                        coordinates: [565931.982, 5935196.323, 565869.067, 5935016.323]
+                        coordinates: ["565931.982", "5935196.323", "565869.067", "5935016.323"]
                     }
                 }
             );

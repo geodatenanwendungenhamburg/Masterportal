@@ -317,6 +317,15 @@
           },
           {
             "type": "specialWfs",
+            "resultEvents": {
+              "onClick": [
+                "zoomToResult",
+                "highlightFeature"
+              ],
+              "onHover": [
+                "setMarker"
+              ]
+            },
             "definitions": [
               {
                 "url": "https://geodienste.hamburg.de/HH_WFS_Krankenhaeuser",

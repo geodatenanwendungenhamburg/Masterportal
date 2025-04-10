@@ -5,6 +5,7 @@ import wmsGFIUtil from "../../../../shared/js/utils/getWmsFeaturesByMimeType";
 import {rawLayerList} from "@masterportal/masterportalapi/src";
 import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
 import {trackMatomo} from "../../../../plugins/matomo";
+import mapMarker from "../../../../core/maps/js/mapMarker";
 
 
 /**
@@ -115,12 +116,31 @@ export default {
      * @param {Object} payload.hit The search result, must contain properties 'coordinate' as Array and 'geometryType'.
      * @returns {void}
      */
-    highlightFeature: ({dispatch}, {hit}) => {
-        let feature = WKTUtil.getWKTGeom(hit);
+    highlightFeature: ({getters, dispatch}, {hit}) => {
+        let feature,
+            mapMarkerLayer;
+
+        if (!Array.isArray(hit.coordinate[0])) {
+            hit.geometryType = hit.geometryType.toUpperCase().replace("MULTI", "");
+        }
+
+        feature = WKTUtil.getWKTGeom(hit, hit.geometryType.toUpperCase());
 
         feature = feature?.getGeometry().getType() !== "MultiPolygon" ? feature : feature?.getGeometry();
 
-        dispatch("Maps/placingPolygonMarker", feature, {root: true});
+        if (hit.geometryType === "Point" || hit.geometryType === "MultiPoint") {
+            dispatch("Maps/placingPointMarker", feature, {root: true});
+            mapMarkerLayer = mapMarker.getMapmarkerLayerById("marker_point_layer");
+        }
+        else {
+            dispatch("Maps/placingPolygonMarker", feature, {root: true});
+            mapMarkerLayer = mapMarker.getMapmarkerLayerById("marker_polygon_layer");
+        }
+        const extent = mapMarkerLayer.getSource().getExtent();
+
+        if (markerHelper.extentIsValid(extent)) {
+            dispatch("Maps/zoomToExtent", {extent: extent, options: {maxZoom: getters.zoomLevel}}, {root: true});
+        }
     },
 
     /**
@@ -152,9 +172,9 @@ export default {
      * @param {Object} payload.layer The dedicated layer.
      * @returns {void}
      */
-    setMarker: ({dispatch, rootGetters}, {coordinates, feature, layer}) => {
+    setMarker: ({dispatch, rootGetters}, {coordinates, feature, geometryType, layer}) => {
         const numberCoordinates = coordinates?.map(coordinate => parseFloat(coordinate, 10)),
-            geomType = feature?.getGeometry()?.getType();
+            geomType = feature ? feature?.getGeometry()?.getType() : geometryType;
         let coordinateForMarker = geomType === "GeometryCollection" ? markerHelper.getFirstPointCoordinates(feature, numberCoordinates) : numberCoordinates;
 
         if (layer && geomType === "MultiPolygon") {
@@ -176,12 +196,17 @@ export default {
             highlightObject.styleId = layer.get("styleId");
             dispatch("Maps/highlightFeature", highlightObject, {root: true});
         }
-        if (feature && geomType === "Polygon" || geomType === "MultiPolygon") {
+        if (feature && (geomType === "Polygon" || geomType === "MultiPolygon")) {
             const isPointInsidePolygon = markerHelper.checkIsCoordInsidePolygon(feature, coordinateForMarker);
 
             if (!isPointInsidePolygon) {
                 coordinateForMarker = markerHelper.getRandomCoordinate(feature.getGeometry().getCoordinates());
             }
+        }
+        else if (!feature && (geomType === "Polygon" || geomType === "MultiPolygon")) {
+            const polygonFeature = WKTUtil.getWKTGeom([numberCoordinates], geometryType.toUpperCase());
+
+            coordinateForMarker = polygonFeature.getGeometry().getFirstCoordinate();
         }
         dispatch("Maps/placingPointMarker", coordinateForMarker, {root: true});
     },

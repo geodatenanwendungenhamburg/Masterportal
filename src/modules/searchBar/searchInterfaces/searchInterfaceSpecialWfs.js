@@ -236,31 +236,36 @@ SearchInterfaceSpecialWfs.prototype.getInteriorAndExteriorPolygonMembers = funct
         coordinateArray = [];
 
     for (let i = 0; i < lengthIndex; i++) {
-        const posListPolygonMembers = polygonMembers[i].getElementsByTagNameNS("*", "posList");
+        const coords = [],
+            polygonsWithInteriors = [],
+            interiorCoords = [];
+        let posListPolygonMembers, exterior, interior, exteriorCoord;
 
-        for (const key in Object.keys(posListPolygonMembers)) {
-            const posPolygonMembers = posListPolygonMembers[key].getElementsByTagNameNS("*", "pos");
+        posListPolygonMembers = polygonMembers[i].getElementsByTagNameNS("*", "posList");
 
-            if (posPolygonMembers.length > 0) {
-                Array.from(posPolygonMembers).forEach(posElement => {
+        // polygon with interior polygons
+        // make sure that the exterior coordinates are always at the first position in the array
+        if (posListPolygonMembers.length > 1) {
+            posListPolygonMembers = [];
+            exterior = polygonMembers[i].getElementsByTagNameNS("*", "exterior");
+            exteriorCoord = exterior[0].getElementsByTagNameNS("*", "posList")[0].textContent;
+            polygonsWithInteriors.push(Object.values(exteriorCoord.replace(/\s\s+/g, " ").split(" ")));
 
-                    for (const posKey in Object.keys(posElement)) {
-                        const coordinatesText = posElement[posKey].textContent,
-                            coords = coordinatesText.trim().split(" ").map(Number);
-
-                        coords.forEach(coordArray => coordinateArray.push(coordArray));
-                    }
-                });
+            interior = polygonMembers[i].getElementsByTagNameNS("*", "interior");
+            for (const key in Object.keys(interior)) {
+                interiorCoords.push(interior[key].getElementsByTagNameNS("*", "posList")[0].textContent);
             }
-            else {
-                const coordinatesText = posListPolygonMembers[key].textContent,
-                    coords = coordinatesText.trim().split(" ").map(Number);
-
-                coords.forEach(coordArray => coordinateArray.push(coordArray));
+            interiorCoords.forEach(coord => polygonsWithInteriors.push(Object.values(coord.replace(/\s\s+/g, " ").split(" "))));
+            coordinateArray.push(polygonsWithInteriors);
+        }
+        else {
+            for (const key in Object.keys(posListPolygonMembers)) {
+                coords.push(posListPolygonMembers[key].textContent);
             }
+            coords.forEach(coordArray => coordinateArray.push(Object.values(coordArray.replace(/\s\s+/g, " ").split(" "))));
         }
     }
-    return [coordinateArray];
+    return coordinateArray;
 };
 
 /**
@@ -270,52 +275,32 @@ SearchInterfaceSpecialWfs.prototype.getInteriorAndExteriorPolygonMembers = funct
  * @returns {Object} The possible actions.
  */
 SearchInterfaceSpecialWfs.prototype.createPossibleActions = function (searchResult) {
-    const coordinates = [];
+    const geometryType = searchResult.geometryType;
+    let coordinates = [];
 
     if (Array.isArray(searchResult?.coordinates)) {
-        searchResult.coordinates.forEach(coord => {
-            if (Array.isArray(coord)) {
-                coord.forEach(coordinate => {
-                    coordinates.push(parseFloat(coordinate));
-                });
-            }
-            else {
-                coordinates.push(parseFloat(coord));
-            }
-        });
+        coordinates = searchResult?.coordinates;
     }
     else if (Array.isArray(searchResult?.geometry)) {
-        searchResult.geometry.forEach(coord => {
-            if (Array.isArray(coord)) {
-                coord.forEach(coordinate => {
-                    coordinates.push(parseFloat(coordinate));
-                });
-            }
-            if (coord) {
-                coordinates.push(parseFloat(coord));
-            }
-        });
+        coordinates = searchResult?.geometry;
     }
     else if (searchResult?.geometry?.flatCoordinates) {
-        searchResult?.geometry?.flatCoordinates.forEach(coord => {
-            if (coord) {
-                coordinates.push(parseFloat(coord));
-            }
-        });
+        coordinates = searchResult?.geometry.flatCoordinates;
     }
 
     return {
         highlightFeature: {
             hit: {
-                coordinate: [coordinates],
-                geometryType: searchResult.geometryType
+                coordinate: coordinates,
+                geometryType: geometryType
             }
         },
         setMarker: {
-            coordinates: coordinates
+            coordinates: geometryType.toUpperCase() === "POINT" || geometryType.toUpperCase() === "MULTIPOINT" ? coordinates : coordinates[0],
+            geometryType: geometryType
         },
         zoomToResult: {
-            coordinates: coordinates
+            coordinates: geometryType.toUpperCase() === "POINT" || geometryType.toUpperCase() === "MULTIPOINT" ? coordinates : coordinates[0]
         }
     };
 };

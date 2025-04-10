@@ -37,5 +37,23 @@ export default {
             firstPoint = geomCollection.getGeometries().find(geom => geom.getType() === "Point");
 
         return firstPoint ? firstPoint.getCoordinates() : coordinates;
+    },
+
+    /**
+     * Checks if a given Array contains valid coordinates and has the right length.
+     * Is used to check if a given extent is valid or includes not finite numbers.
+     * @param {Array} extent - Array with coordinates of an extent
+     * @returns {Boolean} isValid - true if the extent is valid, false if not
+     */
+    extentIsValid: function (extent) {
+        if (extent.length !== 4) {
+            return false;
+        }
+        for (let i = 0; i < extent.length; i++) {
+            if (typeof extent[i] !== "number" || !isFinite(extent[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 };

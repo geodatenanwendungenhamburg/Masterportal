@@ -5,6 +5,8 @@ import WKTUtil from "../../../../../../shared/js/utils/getWKTGeom";
 import wmsGFIUtil from "../../../../../../shared/js/utils/getWmsFeaturesByMimeType";
 import actions from "../../../../store/actions/actionsSearchBarSearchResult";
 import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
+import mapMarker from "../../../../../../core/maps/js/mapMarker";
+import markerHelper from "../../../../js/marker";
 
 describe("src/modules/searchBar/store/actions/actionsSearchBarSearchResult.spec.js", () => {
     let dispatch,
@@ -38,6 +40,10 @@ describe("src/modules/searchBar/store/actions/actionsSearchBarSearchResult.spec.
         };
         mapCollection.clear();
         mapCollection.addMap(map, "2D");
+        sinon.stub(mapMarker, "getMapmarkerLayerById").returns({getSource: () => {
+            return {getExtent: sinon.stub()};
+        }});
+        sinon.stub(markerHelper, "extentIsValid").returns(true);
     });
 
     afterEach(() => {
@@ -434,10 +440,11 @@ describe("src/modules/searchBar/store/actions/actionsSearchBarSearchResult.spec.
                 },
                 stubGetWKTGeom = sinon.stub(WKTUtil, "getWKTGeom").returns(feature);
 
-            actions.highlightFeature({dispatch}, {hit});
-            expect(dispatch.calledOnce).to.be.true;
+            actions.highlightFeature({getters, dispatch}, {hit});
+            expect(dispatch.calledTwice).to.be.true;
             expect(dispatch.firstCall.args[0]).to.equals("Maps/placingPolygonMarker");
             expect(dispatch.firstCall.args[1]).to.be.deep.equals(feature.getGeometry());
+            expect(dispatch.secondCall.args[0]).to.equals("Maps/zoomToExtent");
             expect(stubGetWKTGeom.calledOnce).to.be.true;
             expect(stubGetWKTGeom.firstCall.args[0]).to.be.deep.equals(hit);
         });

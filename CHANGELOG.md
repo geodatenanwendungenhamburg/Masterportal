@@ -6,6 +6,13 @@
 ## 2025-02-21 v3.3.5 (LTS)
 
 ### Fixed
+- Issue #1366: SearchInterfaceSpecialWfs highlighted multipolygons with empty areas and zooms to the extent and not to the first point of the geometries.
+
+---
+
+## 2025-02-21 v3.3.5 (LTS)
+
+### Fixed
 - Issue #1233: Zoom to selected search result of "wfsSearch" when "resultList" is configured. Show message if no results where found and resultList was not configured.
 - Issue #1331: Show group layers in right order.
 - Issue #1356: ShareView: Deleted import of BorisState as it caused a compiler error when addons are not integrated. Replaced it with a string instead.
