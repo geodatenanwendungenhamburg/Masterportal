@@ -6,6 +6,7 @@
 ## 2025-02-21 v3.3.5 (LTS)
 
 ### Fixed
+- Issue #1388: In a menu section are several modules of same type allowed.
 - LayerInformation: Fixed an issue with no metadata, when cswUrl was undefined, rather than null.
 
 

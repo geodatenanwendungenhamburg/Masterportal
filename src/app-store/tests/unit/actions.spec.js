@@ -120,51 +120,70 @@ describe("src/app-store/actions.js", () => {
             expect(typeof initializeStyleListSpy.firstCall.args[4]).to.be.equals("function");
 
         });
+        describe("moveStartModuleControls", () => {
+            let startModule, getters;
 
-        it("moveStartModuleControls", () => {
-            const startModule = {
+            beforeEach(() => {
+                startModule = {
                     secondaryMenu: [
                         {
                             type: "module_1",
                             foo: "bar"
                         }
                     ]
-                },
+                };
                 getters = {
                     controlsConfig: {
                         startModule
                     }
                 };
 
-            state = {
-                portalConfig: {
-                    map: {
-                        controls: {
-                            startModule
-                        }
-                    },
-                    secondaryMenu: {
-                        sections: [
-                            [
-                                {
-                                    type: "print"
-                                },
-                                {
-                                    type: "draw"
-                                }
+                state = {
+                    portalConfig: {
+                        map: {
+                            controls: {
+                                startModule
+                            }
+                        },
+                        secondaryMenu: {
+                            sections: [
+                                [
+                                    {
+                                        type: "print"
+                                    },
+                                    {
+                                        type: "draw"
+                                    }
+                                ]
                             ]
-                        ]
+                        }
                     }
-                }
-            };
+                };
+            });
 
-            actions.moveStartModuleControls({getters, state}, "secondaryMenu");
+            it("moveStartModuleControls - no duplicates", () => {
+                actions.moveStartModuleControls({getters, state}, "secondaryMenu");
 
-            expect(dispatch.notCalled).to.be.true;
-            expect(state.portalConfig.secondaryMenu.sections[0].length).to.be.equals(3);
-            expect(state.portalConfig.secondaryMenu.sections[0][2].type).to.be.equals("module_1");
-            expect(state.portalConfig.map.controls.startModule.secondaryMenu).to.be.deep.equals([]);
+                expect(dispatch.notCalled).to.be.true;
+                expect(state.portalConfig.secondaryMenu.sections[0].length).to.be.equals(3);
+                expect(state.portalConfig.secondaryMenu.sections[0][2].type).to.be.equals("module_1");
+                expect(state.portalConfig.map.controls.startModule.secondaryMenu).to.be.deep.equals([]);
 
+            });
+
+            it("moveStartModuleControls - with duplicates", () => {
+                startModule.secondaryMenu[0].type = "print";
+
+                actions.moveStartModuleControls({getters, state}, "secondaryMenu");
+
+                expect(dispatch.notCalled).to.be.true;
+                expect(state.portalConfig.secondaryMenu.sections[0].length).to.be.equals(2);
+                expect(state.portalConfig.secondaryMenu.sections[0][0].type).to.be.equals("print");
+                expect(state.portalConfig.secondaryMenu.sections[0][1].type).to.be.equals("draw");
+                expect(state.portalConfig.map.controls.startModule.secondaryMenu).to.be.deep.equals([]);
+
+            });
         });
     });
+
 });

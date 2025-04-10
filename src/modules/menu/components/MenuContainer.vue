@@ -92,12 +92,7 @@ export default {
         }
     },
     created () {
-        const menuConfig = this.menuFromConfig(this.side);
-
-        if (menuConfig?.sections && menuConfig.sections[0]) {
-            menuConfig.sections[0] = this.removeDuplicateMenuEntries(menuConfig.sections[0]);
-        }
-        this.mergeMenuState({menu: menuConfig, side: this.side});
+        this.mergeMenuState({menu: this.menuFromConfig(this.side), side: this.side});
         if (this.isMobile) {
             this.collapseMenues();
             this.setCurrentMenuWidth({side: this.side, width: "100%"});
@@ -121,19 +116,25 @@ export default {
                 type: "searchBar"
             });
         },
-        removeDuplicateMenuEntries (sections) {
-            const seen = new Set();
+        /**
+         * Hides or Displays layerPills and Footer depending on width of secondary Menu.
+         * @param {object} eventData emitted Data from ResizeHandle Event
+         */
+        onResize (eventData) {
+            if (this.side === "secondaryMenu" && this.uiStyle === "DEFAULT") {
+                const secondaryMenuPercentWidth = eventData.handleElement.offsetWidth / document.documentElement.clientWidth,
+                    hideElementBreakPoint = document.documentElement.clientWidth > 1000 ? 0.7 : 0.5,
+                    footer = document.getElementById("module-portal-footer"),
+                    layerPills = document.getElementById("layer-pills");
 
-            return sections.filter(section => {
-                if (!section.type) {
-                    return true;
+
+                if (layerPills) {
+                    layerPills.style.display = secondaryMenuPercentWidth > hideElementBreakPoint ? "none" : "";
                 }
-                if (seen.has(section.type)) {
-                    return false;
+                if (footer) {
+                    footer.style.display = secondaryMenuPercentWidth > hideElementBreakPoint ? "none" : "";
                 }
-                seen.add(section.type);
-                return true;
-            });
+            }
         }
     }
 };

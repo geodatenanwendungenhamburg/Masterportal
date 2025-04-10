@@ -73,7 +73,7 @@ export default {
             const modules = [].concat(getters.controlsConfig.startModule[side]);
 
             modules.forEach(module => {
-                if (module) {
+                if (module && !state.portalConfig[side].sections[0].find(conf => conf.type === module.type)) {
                     state.portalConfig[side].sections[0].push(module);
                 }
             });
