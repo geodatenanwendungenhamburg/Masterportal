@@ -95,6 +95,55 @@
       "confirm": "Bestätigen",
       "stop": "Abbrechen"
     },
+    "bimViewer": {
+      "name": "BIM viewer",
+      "description": "3D-Viewer für BIM-Modelle mit Unterstützung für IFC, XKT, GLTF",
+      "tools": {
+        "resetCamera": "Kamera zurücksetzen",
+        "fitScene": "Szene einpassen",
+        "uploadIfc": "IFC hochladen",
+        "scene": "Szene",
+        "distanceMeasurementsToggle": "Messen",
+        "distanceMeasurementsClear": "Zurücksetzen",
+        "saoLabel": "SAO",
+        "saoAriaLabelOn": "SAO deaktivieren (Scalable Ambient Obscurance)",
+        "saoAriaLabelOff": "SAO aktivieren (Scalable Ambient Obscurance)",
+        "saoAriaLabelNotSupported": "SAO (Scalable Ambient Obscurance) nicht verfügbar",
+        "searchButtonSubmit": "Suchen",
+        "searchButtonResetTitle": "Suche zurücksetzen",
+        "searchInputPlaceholder": "Property-Wert eingeben...",
+        "searchInputAriaLabel": "Property-Wert eingeben...",
+        "searchModalMatchConfirmText": "Suchergebnis",
+        "searchModalMatchContent": "{{count}} Treffer für \"{{filterText}}\" markiert.",
+        "searchModalNoMatchConfirmText": "Suchergebnis",
+        "searchModalNoMatchContent": "Keine Treffer für \"{{filterText}}\".",
+        "objectInfoLabel": "Objekt-Info abfragen",
+        "objectInfoAriaLabel": "Zeige Objekt Informationen zu einem markierten Objekt"
+      },
+      "showRightSideBar": "Seitenleiste anzeigen",
+      "hideRightSideBar": "Seitenleiste ausblenden",
+      "modelLoadingIndicator": "{{currentlyLoadedModels}} von {{totalNumberOfModels}} Modellen geladen",
+      "objectInformation": {
+        "title": "Objekt-Eigenschaften",
+        "noData": "Bitte aktivieren Sie \"Objekt-Info abfragen\" und wählen dann ein Objekt aus, um hier die Eigenschaften zu sehen.",
+        "table": {
+          "name": "Name",
+          "class": "Class",
+          "uuid": "UUID",
+          "storey": "Geschoss"
+        },
+        "cameraSettings": "Kamerakoordinaten"
+      },
+      "annotationMoreLink": "MEHR",
+      "NavCube": {
+        "front": "vorne",
+        "back": "hinten",
+        "top": "oben",
+        "bottom": "unten",
+        "left": "links",
+        "right": "rechts"
+      }
+    },
     "bufferAnalysis": {
       "clearButton": "Zurücksetzen",
       "description": "Finden Sie heraus, was sich in einem Umkreis um ein Objekt befindet",

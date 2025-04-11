@@ -67,6 +67,8 @@ config.global.renderStubDefaultSlot = true;
 // global.SVGElement: @see https://github.com/vuejs/core/issues/3590
 global.SVGElement = window.SVGElement;
 global.CanvasPattern = canvas.CanvasPattern;
+// Mock browser method for bimViewer module / @xeokit/xeokit-sdk
+global.requestAnimationFrame = (callback) => setTimeout(() => callback(Date.now()), 16);
 
 /**
  * EnableAutoUnmount allows to automatically destroy Vue wrappers.

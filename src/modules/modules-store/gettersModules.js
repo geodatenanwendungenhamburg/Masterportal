@@ -1,6 +1,7 @@
 import About from "../about/components/AboutModule.vue";
 import AddWMS from "../addWMS/components/AddWMS.vue";
 import BaselayerSwitcher from "../baselayerSwitcher/components/BaselayerSwitcher.vue";
+import BimViewer from "../bimViewer/components/BimViewer.vue";
 import BufferAnalysis from "../bufferAnalysis/components/BufferAnalysis.vue";
 import Contact from "../contact/components/ContactFormular.vue";
 import CoordToolkit from "../coordToolkit/components/CoordToolkit.vue";
@@ -53,6 +54,7 @@ const getters = {
             about: About,
             addWMS: AddWMS,
             baselayerSwitcher: BaselayerSwitcher,
+            bimViewer: BimViewer,
             bufferAnalysis: BufferAnalysis,
             contact: Contact,
             coordToolkit: CoordToolkit,

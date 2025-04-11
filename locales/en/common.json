@@ -95,6 +95,55 @@
       "confirm": "Confirm",
       "stop": "Cancel"
     },
+    "bimViewer": {
+      "name": "BIM viewer",
+      "description": "3D viewer for BIM models with support for IFC, XKT, GLTF",
+      "tools": {
+        "resetCamera": "Reset Camera",
+        "fitScene": "Fit Scene",
+        "uploadIfc": "Upload IFC",
+        "scene": "Scene",
+        "distanceMeasurementsToggle": "Measurement",
+        "distanceMeasurementsClear": "Clear",
+        "saoLabel": "SAO",
+        "saoArianLabelOn": "SAO disable (Scalable Ambient Obscurance)",
+        "saoArianLabelOff": "SAO enable (Scalable Ambient Obscurance)",
+        "saoAriaLabelNotSupported": "SAO (Scalable Ambient Obscurance) not available",
+        "searchButtonSubmit": "Search",
+        "searchButtonResetTitle": "Reset search",
+        "searchInputPlaceholder": "Insert property value...",
+        "searchInputAriaLabel": "Insert property value...",
+        "searchModalMatchConfirmText": "Search Result",
+        "searchModalMatchContent": "{{count}} results for \"{{filterText}}\" highlighted.",
+        "searchModalNoMatchConfirmText": "Search Result",
+        "searchModalNoMatchContent": "No results for \"{{filterText}}\".",
+        "objectInfoLabel": "Get object info",
+        "objectInfoAriaLabel": "Show object information for a selected object"
+      },
+      "showRightSideBar": "Show Sidebar",
+      "hideRightSideBar": "Hide Sidebar",
+      "modelLoadingIndicator": "{{currentlyLoadedModels}} of {{totalNumberOfModels}} total models loaded",
+      "objectInformation": {
+        "title": "Object Properties",
+        "noData": "Please activate \"Get object info\" and select an object to see the properties here.",
+        "table": {
+          "name": "Name",
+          "class": "Class",
+          "uuid": "UUID",
+          "storey": "Storey"
+        },
+        "cameraSettings": "Camera coordinates"
+      },
+      "annotationMoreLink": "MORE",
+      "NavCube": {
+        "front": "front",
+        "back": "back",
+        "top": "top",
+        "bottom": "bottom",
+        "left": "left",
+        "right": "right"
+      }
+    },
     "bufferAnalysis": {
       "clearButton": "Reset",
       "description": "Find out what is within a radius of an object",
