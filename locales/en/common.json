@@ -101,7 +101,8 @@
       "tools": {
         "resetCamera": "Reset Camera",
         "fitScene": "Fit Scene",
-        "uploadIfc": "Upload IFC",
+        "uploadFormat": "Upload IFC, XKT, glTF",
+        "uploadFormatError": "Invalid file format. Check file extension. Found: \"{{fileExtension}}\". Allowed: .ifc, .xkt, .gltf",
         "scene": "Scene",
         "distanceMeasurementsToggle": "Measurement",
         "distanceMeasurementsClear": "Clear",

@@ -8,7 +8,7 @@ const actions = {
      */
     filterIfcMetaObjects ({rootGetters}, payload) {
         const
-            metaObjects = rootGetters["Modules/BimViewer/xeokitIfcViewer"].metaScene.metaObjects,
+            metaObjects = rootGetters["Modules/BimViewer/xeokitViewer"].metaScene.metaObjects,
             matchedObjects = [];
 
         // Find all matching objects
@@ -42,8 +42,8 @@ const actions = {
      */
     setHighlighting ({rootGetters}, payload) {
         const
-            xeokitIfcViewer = rootGetters["Modules/BimViewer/xeokitIfcViewer"],
-            scene = xeokitIfcViewer.scene;
+            xeokitViewer = rootGetters["Modules/BimViewer/xeokitViewer"],
+            scene = xeokitViewer.scene;
 
         // Make all objects semi transparent and remove previous highlighting
         scene.setObjectsOpacity(scene.objectIds, 0.3);
@@ -57,7 +57,7 @@ const actions = {
         scene.highlightMaterial.fillColor = [0.1, 0.8, 0.8];
         scene.highlightMaterial.fillAlpha = 1;
 
-        xeokitIfcViewer.cameraFlight.jumpTo({
+        xeokitViewer.cameraFlight.jumpTo({
             aabb: scene.getAABB(payload.matchedObjects)
         });
     },
@@ -68,7 +68,7 @@ const actions = {
      * @returns {void}
      */
     resetHighlighting ({rootGetters}) {
-        const scene = rootGetters["Modules/BimViewer/xeokitIfcViewer"].scene;
+        const scene = rootGetters["Modules/BimViewer/xeokitViewer"].scene;
 
         scene.setObjectsOpacity(scene.objectIds, 1.0);
         scene.setObjectsHighlighted(scene.objectIds, false);

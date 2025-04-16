@@ -8,7 +8,7 @@ const actions = {
      */
     initialize ({commit, getters, rootGetters}) {
         const
-            viewer = rootGetters["Modules/BimViewer/xeokitIfcViewer"],
+            viewer = rootGetters["Modules/BimViewer/xeokitViewer"],
             scene = viewer.scene,
             treeView = rootGetters["Modules/BimViewer/xeokitPluginTreeView"];
 
@@ -54,7 +54,7 @@ const actions = {
      */
     reset ({rootGetters, commit}) {
         const
-            scene = rootGetters["Modules/BimViewer/xeokitIfcViewer"].scene,
+            scene = rootGetters["Modules/BimViewer/xeokitViewer"].scene,
             treeView = rootGetters["Modules/BimViewer/xeokitPluginTreeView"];
 
         scene.setObjectsXRayed(scene.objectIds, false);

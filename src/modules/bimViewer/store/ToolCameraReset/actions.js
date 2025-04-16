@@ -7,9 +7,9 @@ const actions = {
      */
     reset ({rootGetters}) {
         const
-            ifcViewer = rootGetters["Modules/BimViewer/xeokitIfcViewer"],
+            xeokitViewer = rootGetters["Modules/BimViewer/xeokitViewer"],
             sceneConfig = rootGetters["Modules/BimViewer/sceneConfigSelected"],
-            scene = ifcViewer.scene;
+            scene = xeokitViewer.scene;
 
         // re-enable all scene items which are not visible
         if (scene.objects) {
@@ -22,11 +22,11 @@ const actions = {
             scene.setObjectsVisible(objIDs, true);
         }
 
-        scene.camera.eye = sceneConfig.cameraSettings.eye;
-        scene.camera.look = sceneConfig.cameraSettings.look;
-        scene.camera.up = sceneConfig.cameraSettings.up;
+        scene.camera.eye = sceneConfig.cameraSettings?.eye;
+        scene.camera.look = sceneConfig.cameraSettings?.look;
+        scene.camera.up = sceneConfig.cameraSettings?.up;
 
-        ifcViewer.cameraFlight.jumpTo({
+        xeokitViewer.cameraFlight.jumpTo({
             aabb: scene.getAABB(scene.visibleObjectIds)
         });
     }

@@ -12,54 +12,54 @@ const actions = {
      * @returns {void}
      */
     setSaoSettings ({commit, rootGetters}, payload) {
-        const ifcViewer = rootGetters["Modules/BimViewer/xeokitIfcViewer"];
+        const xeokitViewer = rootGetters["Modules/BimViewer/xeokitViewer"];
 
         let saoStatus = null;
 
-        if (payload !== undefined && payload !== null && ifcViewer.scene.sao.supported) {
+        if (payload !== undefined && payload !== null && xeokitViewer.scene.sao.supported) {
             //  Set settings from config or vue app if given and supported
             if (payload.enabled !== undefined) {
-                ifcViewer.scene.sao.enabled = payload.enabled;
+                xeokitViewer.scene.sao.enabled = payload.enabled;
                 saoStatus = payload.enabled !== false;
             }
 
             if (payload.intensity !== undefined) {
-                ifcViewer.scene.sao.intensity = payload.intensity;
+                xeokitViewer.scene.sao.intensity = payload.intensity;
             }
 
             if (payload.bias !== undefined) {
-                ifcViewer.scene.sao.bias = payload.bias;
+                xeokitViewer.scene.sao.bias = payload.bias;
             }
 
             if (payload.scale !== undefined) {
-                ifcViewer.scene.sao.scale = payload.scale;
+                xeokitViewer.scene.sao.scale = payload.scale;
             }
 
             if (payload.minResolution !== undefined) {
-                ifcViewer.scene.sao.minResolution = payload.minResolution;
+                xeokitViewer.scene.sao.minResolution = payload.minResolution;
             }
 
             if (payload.numSamples !== undefined) {
-                ifcViewer.scene.sao.numSamples = payload.numSamples;
+                xeokitViewer.scene.sao.numSamples = payload.numSamples;
             }
 
             if (payload.kernelRadius !== undefined) {
-                ifcViewer.scene.sao.kernelRadius = payload.kernelRadius;
+                xeokitViewer.scene.sao.kernelRadius = payload.kernelRadius;
             }
 
             if (payload.blendCutoff !== undefined) {
-                ifcViewer.scene.sao.blendCutoff = payload.blendCutoff;
+                xeokitViewer.scene.sao.blendCutoff = payload.blendCutoff;
             }
 
             if (payload.blendFactor !== undefined) {
-                ifcViewer.scene.sao.blendFactor = payload.blendFactor;
+                xeokitViewer.scene.sao.blendFactor = payload.blendFactor;
             }
 
             if (payload.blur !== undefined) {
-                ifcViewer.scene.sao.blur = payload.blur;
+                xeokitViewer.scene.sao.blur = payload.blur;
             }
         }
-        else if (ifcViewer.scene.sao.supported !== true) {
+        else if (xeokitViewer.scene.sao.supported !== true) {
             saoStatus = null;
         }
         else {

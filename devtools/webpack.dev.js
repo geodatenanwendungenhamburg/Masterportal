@@ -51,6 +51,9 @@ module.exports = function () {
             proxy: proxies,
             publicPath: "/build/"
         },
+        node: {
+            fs: "empty"
+        },
         module: {
             rules: [
                 // Bootstrap Icons are read by bootstrap

@@ -7,7 +7,7 @@ const actions = {
      */
     fit ({rootGetters}) {
         const
-            viewer = rootGetters["Modules/BimViewer/xeokitIfcViewer"],
+            viewer = rootGetters["Modules/BimViewer/xeokitViewer"],
             scene = viewer.scene;
 
         viewer.cameraFlight.jumpTo({

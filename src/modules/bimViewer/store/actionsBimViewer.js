@@ -1,9 +1,11 @@
 import {
+    WebIFCLoaderPlugin,
+    GLTFLoaderPlugin,
+    XKTLoaderPlugin,
     DistanceMeasurementsMouseControl,
     DistanceMeasurementsPlugin,
     NavCubePlugin,
     Viewer,
-    WebIFCLoaderPlugin,
     AnnotationsPlugin,
     LocaleService,
     TreeViewPlugin
@@ -36,17 +38,17 @@ const actions = {
     setScene ({commit, dispatch, getters}, payload) {
         // If an instance exists already, clean up first.
         if (
-            getters.xeokitIfcViewer &&
-            getters.xeokitIfcViewer instanceof Viewer
+            getters.xeokitViewer &&
+            getters.xeokitViewer instanceof Viewer
         ) {
             // Reset tool "Object info" before you destroy the viewer
             dispatch("Modules/BimViewer/ToolObjectInfo/reset", {}, {root: true});
 
             // Destroy Viewer
-            getters.xeokitIfcViewer.destroy();
+            getters.xeokitViewer.destroy();
 
             // Reset all loaded IFC model instances
-            dispatch("resetLoadedIfcModel");
+            dispatch("resetLoadedModels");
         }
         // Initialize the Viewer
         const navCubeLabels = {
@@ -57,7 +59,7 @@ const actions = {
                 "left": i18next.t("modules.bimViewer.NavCube.left"),
                 "right": i18next.t("modules.bimViewer.NavCube.right")
             },
-            ifcViewer = new Viewer({
+            xeokitViewer = new Viewer({
                 canvasElement: payload.domElements.viewerCanvas,
                 transparent: true,
                 localeService: new LocaleService({
@@ -76,32 +78,32 @@ const actions = {
         IfcAPI.SetWasmPath(getters.wasmUrl, true);
 
         commit("setXeokitIfcAPI", IfcAPI);
-        commit("setXeokitIfcViewer", ifcViewer);
+        commit("setXeokitViewer", xeokitViewer);
         commit("setSceneConfigSelected", payload.sceneConfig);
 
         dispatch("Modules/BimViewer/ToolSao/setSaoSettings", payload.sceneConfig.saoSettings, {root: true});
 
         // Arrange the camera
         if (payload.sceneConfig.cameraSettings) {
-            ifcViewer.scene.camera.eye = payload.sceneConfig.cameraSettings.eye;
-            ifcViewer.scene.camera.look = payload.sceneConfig.cameraSettings.look;
-            ifcViewer.scene.camera.up = payload.sceneConfig.cameraSettings.up;
+            xeokitViewer.scene.camera.eye = payload.sceneConfig.cameraSettings.eye;
+            xeokitViewer.scene.camera.look = payload.sceneConfig.cameraSettings.look;
+            xeokitViewer.scene.camera.up = payload.sceneConfig.cameraSettings.up;
         }
         else {
             // [x,y,z]
             // eye =  position of the camera from the center of the secne's coordinate system
-            ifcViewer.scene.camera.eye = [0, 0, 2];
+            xeokitViewer.scene.camera.eye = [0, 0, 2];
             // look = point in the scene to which the camera points (depending on the eye position)
-            ifcViewer.scene.camera.look = [0, 1, 1];
+            xeokitViewer.scene.camera.look = [0, 1, 1];
             // up = a camera's up vector defines which direction is considered "up" for the camera
             // If [0,1,0] is set, it means y is up
-            ifcViewer.scene.camera.up = [0, 1, 0];
+            xeokitViewer.scene.camera.up = [0, 1, 0];
         }
 
         // Load the models
         // eslint-disable-next-line
-        const ifcModels = [];
-        let ifcModelPosition = 0;
+        const modelList = [];
+        let modelPosition = 0;
 
         commit("setCurrentlyLoadedModels", 0);
         commit("setTotalNumberOfModels", 0);
@@ -112,29 +114,42 @@ const actions = {
         });
 
         IfcAPI.Init().then(() => {
-            const ifcLoader = new WebIFCLoaderPlugin(ifcViewer, {
-                WebIFC,
-                IfcAPI
-            });
+            const ifcLoader = new WebIFCLoaderPlugin(xeokitViewer, {
+                    WebIFC,
+                    IfcAPI
+                }),
+                gltfLoader = new GLTFLoaderPlugin(xeokitViewer),
+                xktLoader = new XKTLoaderPlugin(xeokitViewer);
 
             commit("setXeokitIfcLoader", ifcLoader);
-            commit("setTotalNumberOfModels", payload.sceneConfig.ifcModelList.length);
+            commit("setXeokitGltfLoader", gltfLoader);
+            commit("setXeokitXktLoader", xktLoader);
 
-            payload.sceneConfig.ifcModelList.forEach((url) => {
+            commit("setTotalNumberOfModels", payload.sceneConfig.modelList.length);
+
+            payload.sceneConfig.modelList.forEach((url) => {
+                const fileNameSplit = url.split("."),
+                    fileExtension = fileNameSplit.length > 0 ? fileNameSplit[fileNameSplit.length - 1].toLowerCase() : "";
+
+                if (!["ifc", "xkt", "gltf"].includes(fileExtension)) {
+                    console.error("Invalid file extension: ", fileExtension);
+                }
+
                 // Load models invisible to avoid jumps. After loading the last model, all models are set visible.
-                dispatch("loadIfcModel", {
+                dispatch("loadModel", {
                     url: url,
-                    visible: false
-                }).then((ifcModel) => {
-                    ifcModels.push(ifcModel);
+                    visible: false,
+                    type: fileExtension
+                }).then((theModel) => {
+                    modelList.push(theModel);
 
-                    ifcModel.on("loaded", () => {
-                        ifcModelPosition++;
+                    theModel.on("loaded", () => {
+                        modelPosition++;
 
-                        commit("setCurrentlyLoadedModels", ifcModelPosition);
+                        commit("setCurrentlyLoadedModels", modelPosition);
 
                         // When the last model has been loaded, update the camera and make the models visible.
-                        if (payload.sceneConfig.ifcModelList.length === ifcModelPosition) {
+                        if (payload.sceneConfig.modelList.length === modelPosition) {
                             const
                                 annotationCoordinates = urlParams.get("annoCoords"),
                                 cameraEye = urlParams.get("cameraEye"),
@@ -147,24 +162,24 @@ const actions = {
                             if (!payload.sceneConfig.cameraSettings) {
                                 // [x,y,z]
                                 // eye =  position of the camera from the center of the secne's coordinate system
-                                ifcViewer.scene.camera.eye = [0, 2, 2];
+                                xeokitViewer.scene.camera.eye = [0, 2, 2];
                                 // look = point in the scene to which the camera points (depending on the eye position)
-                                ifcViewer.scene.camera.look = [0, 1, 1];
+                                xeokitViewer.scene.camera.look = [0, 1, 1];
                                 // up = a camera's up vector defines which direction is considered "up" for the camera
                                 // If [0,1,0] is set, it means y is up
-                                ifcViewer.scene.camera.up = [0, 1, 0];
+                                xeokitViewer.scene.camera.up = [0, 1, 0];
 
                                 dispatch("Modules/BimViewer/ToolSceneFit/fit", null, {root: true});
                             }
                             else {
-                                ifcViewer.cameraFlight.jumpTo({
+                                xeokitViewer.cameraFlight.jumpTo({
                                     eye: payload.sceneConfig.cameraSettings.eye,
                                     look: payload.sceneConfig.cameraSettings.look,
                                     up: payload.sceneConfig.cameraSettings.up
                                 });
                             }
 
-                            ifcModels.forEach((model) => {
+                            modelList.forEach((model) => {
                                 model.visible = true;
                             });
 
@@ -232,7 +247,7 @@ const actions = {
      * @returns {void}
      */
     addPluginTreeView ({commit, getters}, payload) {
-        const xeokitPluginTreeView = new TreeViewPlugin(getters.xeokitIfcViewer, {
+        const xeokitPluginTreeView = new TreeViewPlugin(getters.xeokitViewer, {
             containerElement: payload.domElement,
             autoExpandDepth: 1,
             sortNodes: false,
@@ -243,7 +258,7 @@ const actions = {
 
         xeokitPluginTreeView.on("nodeTitleClicked", (event) => {
             const
-                viewer = getters.xeokitIfcViewer,
+                viewer = getters.xeokitViewer,
                 scene = viewer.scene,
                 selectedObjectIds = [],
                 isElement = event.treeViewNode.children.length === 0;
@@ -299,11 +314,11 @@ const actions = {
      * Add nav cube plugin (NavCubePlugin)
      *
      * @param {Object} context actions context object.
-     * @param {Object} payload Passed parameters {canvasElement, ifcViewer}
+     * @param {Object} payload Passed parameters {canvasElement}
      * @returns {void}
      */
     addPluginNavCube ({commit, getters}, payload) {
-        const xeokitPluginNavCube = new NavCubePlugin(getters.xeokitIfcViewer, {
+        const xeokitPluginNavCube = new NavCubePlugin(getters.xeokitViewer, {
             canvasElement: payload.canvasElement,
             visible: true, // Initially visible (default)
             cameraFly: true, // Fly camera to each selected axis/diagonal
@@ -329,7 +344,7 @@ const actions = {
      */
     addPluginDistanceMeasurements ({commit, getters}) {
         const
-            distanceMeasurements = new DistanceMeasurementsPlugin(getters.xeokitIfcViewer, {
+            distanceMeasurements = new DistanceMeasurementsPlugin(getters.xeokitViewer, {
                 defaultXLabelEnabled: false,
                 defaultXAxisVisible: false,
                 defaultYLabelEnabled: false,
@@ -422,7 +437,7 @@ const actions = {
                         `,
                     annotationData = response.data,
                     // define AnnotationsPlugin to set a marker at the pickResult position
-                    annotations = new AnnotationsPlugin(getters.xeokitIfcViewer, {
+                    annotations = new AnnotationsPlugin(getters.xeokitViewer, {
                         markerHTML: `
                             <div class="xeokit-annotation-markers" style="background-color: {{markerBGColor}};"></div>
                         `,
@@ -482,7 +497,7 @@ const actions = {
                 // shows or hides the annotation when clicked on the marker
                 annotations.on("markerClicked", (annotation) => {
                     const activeLabel = getters.xeokitPluginAnnotationLabelActive,
-                        input = getters.xeokitIfcViewer.scene.input;
+                        input = getters.xeokitViewer.scene.input;
 
                     // hide any previously opened label
                     if (activeLabel && activeLabel !== annotation) {
@@ -512,11 +527,11 @@ const actions = {
      * Pushes an IFC model to the loaded model array
      *
      * @param {Object} context actions context object.
-     * @param {Object} payload Passed parameters {ifcModel}
+     * @param {Object} payload Passed parameters {theModel}
      * @returns {void}
      */
-    pushLoadedIfcModel ({commit}, payload) {
-        commit("pushLoadedIfcModel", payload.ifcModel);
+    pushLoadedModel ({commit}, payload) {
+        commit("pushLoadedModel", payload.theModel);
     },
     /**
      * Reset the loaded IFC model array
@@ -524,31 +539,82 @@ const actions = {
      * @param {Object} context actions context object.
      * @returns {void}
      */
-    resetLoadedIfcModel ({commit}) {
-        commit("setLoadedIfcModels", []);
+    resetLoadedModels ({commit}) {
+        commit("setLoadedModels", []);
     },
     /**
-     * Load an IFC model
+     * Load an IFC, XKT or glTF model
      *
      * @param {Object} context actions context object.
-     * @param {Object} payload Passed parameters {url, visible}
+     * @param {Object} payload Passed parameters {url, visible, type: ifc|xkt|gltf}
      * @returns {Object} VBOSceneModel instance
      */
-    loadIfcModel ({dispatch, getters}, payload) {
-        return new Promise((resolve) => {
-            const ifcModel = getters.xeokitIfcLoader.load({
-                id: payload.url.split("/").reverse()[0],
-                src: payload.url,
-                excludeTypes: ["IfcSpace"],
-                edges: true,
-                visible: payload.visible
-            });
+    loadModel ({dispatch, getters}, payload) {
+        const loaders = {
+                ifc: getters.xeokitIfcLoader,
+                xkt: getters.xeokitXktLoader,
+                gltf: getters.xeokitGltfLoader
+            },
+            modelLoader = loaders[payload.type];
 
-            dispatch("pushLoadedIfcModel", {
-                ifcModel: ifcModel
-            });
+        if (!modelLoader) {
+            return Promise.reject(new Error("No loader found for type: " + payload.type));
+        }
 
-            resolve(ifcModel);
+        return new Promise((resolve, reject) => {
+            if (typeof payload.url === "string") {
+                if (payload.url.startsWith("blob:")) {
+                    fetch(payload.url)
+                        .then(response => response.blob())
+                        .then(async (blob) => {
+                            await dispatch("loadFromBlob", {
+                                ...payload,
+                                blob: blob,
+                                modelLoader: modelLoader
+                            })
+                                .then((loadedModel) => {
+                                    resolve(loadedModel);
+                                })
+                                .catch((err) => {
+                                    reject(err);
+                                });
+                        })
+                        .catch(err => {
+                            reject(err);
+                        });
+                }
+                else {
+                    const loadedModel = modelLoader.load({
+                        id: payload.url.split("/").reverse()[0],
+                        src: payload.url,
+                        excludeTypes: ["IfcSpace"],
+                        edges: true,
+                        visible: payload.visible
+                    });
+
+                    dispatch("handleModelLoaderEvents", {
+                        loadedModel: loadedModel,
+                        resolve: resolve,
+                        reject: reject
+                    });
+                }
+            }
+            else if (payload.url instanceof Blob) {
+                dispatch("loadFromBlob", {
+                    ...payload,
+                    blob: payload.url,
+                    modelLoader: modelLoader
+                })
+                    .then((loadedModel) => {
+                        resolve(loadedModel);
+                    })
+                    .catch((err) => {
+                        reject(err);
+                    });
+            }
+            else {
+                reject(new Error("Invalid payload.url type. Expect string or Blob"));
+            }
         });
     },
     /**
@@ -571,22 +637,22 @@ const actions = {
 
         const heightValue = payload.annoCoords[2] ?? 0,
             canvasPos = projectedCoords
-                ? getters.xeokitIfcViewer.camera.projectWorldPos([projectedCoords[0], heightValue, projectedCoords[1] * -1])
-                : getters.xeokitIfcViewer.camera.projectWorldPos([
+                ? getters.xeokitViewer.camera.projectWorldPos([projectedCoords[0], heightValue, projectedCoords[1] * -1])
+                : getters.xeokitViewer.camera.projectWorldPos([
                     payload.annoCoords[0],
                     heightValue,
                     payload.annoCoords[1] < 0 ? payload.annoCoords[1] : payload.annoCoords[1] * -1
                 ]),
-            pickResult = getters.xeokitIfcViewer.scene.pick({
+            pickResult = getters.xeokitViewer.scene.pick({
                 canvasPos: canvasPos
             });
 
-        getters.xeokitIfcViewer.scene.camera.eye = payload.cameraEye;
-        getters.xeokitIfcViewer.scene.camera.look = payload.cameraLook;
-        getters.xeokitIfcViewer.scene.camera.up = payload.cameraUp;
+        getters.xeokitViewer.scene.camera.eye = payload.cameraEye;
+        getters.xeokitViewer.scene.camera.look = payload.cameraLook;
+        getters.xeokitViewer.scene.camera.up = payload.cameraUp;
 
         if (payload.showPointer === "1" || payload.showPointer === "true") {
-            const annotations = new AnnotationsPlugin(getters.xeokitIfcViewer, {
+            const annotations = new AnnotationsPlugin(getters.xeokitViewer, {
                 markerHTML: `
                     <div class="xeokit-annotation-markers"></div>
                 `,
@@ -605,7 +671,7 @@ const actions = {
             commit("setPositionPointer", annotations);
         }
 
-        getters.xeokitIfcViewer.cameraFlight.jumpTo({
+        getters.xeokitViewer.cameraFlight.jumpTo({
             aabb: pickResult.entity._aabb
         });
     },
@@ -616,7 +682,7 @@ const actions = {
      * @returns {void}
      */
     getObjectDataForId ({getters}, payload) {
-        return getters.xeokitIfcViewer.metaScene.metaObjects[payload.objectId];
+        return getters.xeokitViewer.metaScene.metaObjects[payload.objectId];
     },
     /**
      * Update the hierarchy property of the TreeView plugin
@@ -627,6 +693,61 @@ const actions = {
      */
     updateXeokitPluginTreeViewHierarchyType ({commit}, hierarchyType) {
         commit("updateXeokitPluginTreeViewHierarchyType", hierarchyType);
+    },
+    /**
+     * Handle model loader events.
+     * @param {Object} context actions context object.
+     * @param {*} payload { loadedModel, resolve, reject}
+     */
+    handleModelLoaderEvents ({dispatch}, payload) {
+        payload.loadedModel.on("loaded", async () => {
+            await dispatch("pushLoadedModel", {theModel: payload.loadedModel});
+            payload.resolve(payload.loadedModel);
+        });
+
+        payload.loadedModel.on("error", (err) => {
+            payload.reject(err);
+        });
+    },
+    /**
+     * Load from Blob.
+     * @param {Object} context actions context object.
+     * @param {Object} payload Passed parameters {url, type, visible, blob, modelLoader}
+     * @returns {Object} VBOSceneModel instance
+     */
+    loadFromBlob ({dispatch, getters}, payload) {
+        return new Promise((resolve, reject) => {
+            const
+                reader = new FileReader(),
+                spinner = getters.xeokitViewer.scene.canvas.spinner;
+
+            spinner.processes++;
+
+            reader.onload = async function (e) {
+                const arrayBuffer = e.target.result,
+                    loadedModel = payload.modelLoader.load({
+                        id: payload.url.name.split("/").reverse()[0],
+                        [payload.type]: arrayBuffer,
+                        edges: true,
+                        visible: payload.visible
+                    });
+
+                await dispatch("handleModelLoaderEvents", {
+                    loadedModel: loadedModel,
+                    resolve: resolve,
+                    reject: reject
+                });
+                spinner.processes--;
+            };
+
+            reader.onerror = function (err) {
+                console.error("Error reading blob:", err);
+                spinner.processes--;
+                reject(err);
+            };
+
+            reader.readAsArrayBuffer(payload.blob);
+        });
     }
 };
 

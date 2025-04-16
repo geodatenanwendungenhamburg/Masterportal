@@ -1,4 +1,3 @@
-// import {generateSimpleMutations} from "../../../../src/app-store/utils/generators";
 import {generateSimpleMutations} from "../../../shared/js/utils/generators";
 import stateBimViewer from "./stateBimViewer";
 
@@ -19,18 +18,18 @@ const mutations = {
      */
     applyTranslationKey: (state, payload) => {
         if (payload && payload.indexOf("translate#") > -1) {
-            state.name = payload.substr("translate#".length);
+            state.name = payload.substring("translate#".length);
         }
     },
     /**
-     * Pushes an IFC model to the model instance array
+     * Pushes a model to the model instance array
      *
      * @param {object} state of this component
-     * @param {object} ifcModel Ifc model instance
+     * @param {object} theModel Ifc, xkt or gltf model instance
      * @returns {void}
      */
-    pushLoadedIfcModel (state, ifcModel) {
-        state.loadedIfcModels.push(ifcModel);
+    pushLoadedModel (state, theModel) {
+        state.loadedModels.push(theModel);
     },
     /**
      * Update the hierarchy property of the TreeView plugin

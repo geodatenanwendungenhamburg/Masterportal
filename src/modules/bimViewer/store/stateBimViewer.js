@@ -12,7 +12,10 @@
  * @property {boolean} useTools  Mode to display Tools set in the portal's config.json
  * @property {number} annotationRefreshInterval Interval to refresh annotation data  set in the portal's config.json
  * @property {string} wasmUrl URL to Wasm files. Must be accessible via web, set in the portal's config.json
- * @typedef {object} xeokitIfcViewer IfcViewer instance
+ * @typedef {object} xeokitViewer xeokit Viewer instance
+ * @typedef {object} xeokitIfcLoader Ifc Loader instance
+ * @typedef {object} xeokitGltfLoader glTF Loader instance
+ * @typedef {object} xeokitXktLoader xkt Loader instance
  * @typedef {object} xeokitIfcLoader IfcLoader instance
  * @typedef {object} xeokitIfcAPI IfcAPI instance
  * @typedef {object} xeokitPluginNavCube NavCubePlugin instance
@@ -21,7 +24,7 @@
  * @typedef {object} xeokitPluginDistanceMeasurementsControl DistanceMeasurementsMouseControl instance
  * @typedef {object} xeokitPluginAnnotationLabelActive active AnnotationLabel instance
  * @typedef {object} xeokitPluginAnnotations Annotations loaded through json
- * @typedef {array} loadedIfcModels The loaded IFC model instances.
+ * @typedef {array} loadedModels The loaded IFC, XKT or glTF model instances.
  * @typedef {array} sceneConfigs Contains multiple scene configs, includes models, camera and sao settings, aso.
  * @typedef {object} sceneConfigSelected The current selected sceneConfig.
  * @typedef {object} toggleRightSidebar Open/Close sidebar
@@ -47,8 +50,10 @@ const state = {
     wasmUrl: "./wasm/",
 
     // Component state (xeokit object instances)
-    xeokitIfcViewer: null,
+    xeokitViewer: null,
     xeokitIfcLoader: null,
+    xeokitGltfLoader: null,
+    xeokitXktLoader: null,
     xeokitIfcAPI: null,
     xeokitPluginNavCube: null,
     xeokitPluginTreeView: null,
@@ -58,7 +63,7 @@ const state = {
     xeokitPluginAnnotations: null,
 
     // Component state
-    loadedIfcModels: [],
+    loadedModels: [],
     sceneConfigs: [],
     sceneConfigSelected: {},
     toggleRightSidebar: false,

@@ -2,8 +2,8 @@
 export default {
     name: "ToolObjectInfo",
     computed: {
-        xeokitIfcViewer () {
-            return this.$store.getters["Modules/BimViewer/xeokitIfcViewer"];
+        xeokitViewer () {
+            return this.$store.getters["Modules/BimViewer/xeokitViewer"];
         },
         modeObjectInfoActive: {
             get () {
@@ -23,7 +23,7 @@ export default {
         }
     },
     watch: {
-        xeokitIfcViewer () {
+        xeokitViewer () {
             this.$store.dispatch("Modules/BimViewer/ToolObjectInfo/initialize");
         }
     },

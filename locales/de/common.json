@@ -101,7 +101,8 @@
       "tools": {
         "resetCamera": "Kamera zurücksetzen",
         "fitScene": "Szene einpassen",
-        "uploadIfc": "IFC hochladen",
+        "uploadFormat": "IFC, XKT, glTF hochladen",
+        "uploadFormatError": "Ungültiges Dateiformat. Prüfen Sie die Dateiendung. Gefunden: \"{{fileExtension}}\". Zulässig: .ifc, .xkt, .gltf",
         "scene": "Szene",
         "distanceMeasurementsToggle": "Messen",
         "distanceMeasurementsClear": "Zurücksetzen",

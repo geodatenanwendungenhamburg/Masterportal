@@ -62,7 +62,7 @@
   "dependencies": {
     "@masterportal/masterportalapi": "2.51.0",
     "@popperjs/core": "^2.11.8",
-    "@xeokit/xeokit-sdk": "2.6.17",
+    "@xeokit/xeokit-sdk": "2.6.73",
     "asciify-image": "0.1.6",
     "axios": "^1.12.2",
     "bootstrap": "^5.3.8",

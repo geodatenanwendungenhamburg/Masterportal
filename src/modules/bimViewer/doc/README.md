@@ -1,6 +1,6 @@
 # BimViewer
 
-This addon is a BimViewer to display IFC files in the sidebar of the Masterportal.
+This addon is a BimViewer to display IFC, XKT or glTF files in the sidebar of the Masterportal.
 It can be configured to add tools such as measure, inspect objects in the scene, search for objects in the scene, add ifc file, etc.
 It is also possible to add annotations from a separate json file.
 
@@ -86,21 +86,21 @@ To change the URL, you can update the `wasmUrl` parameter in `config.json`. It's
 The folder in this new location must contain all required `web-ifc*.wasm` files.
 
 ## Scenes.json configuration
-The scenes.json defines the scenes to be displayed in the BimViewer with the IFC files to be loaded into the scene and the corresponding camera and SAO settings.
+The scenes.json defines the scenes to be displayed in the BimViewer with the IFC, XKT of glTF files to be loaded into the scene and the corresponding camera and SAO settings.
 
 The json contains an array of scene objects which are defined by the parameters below.
 
 If the array consists of multiple scene objects, the different scenes are selectable from a drop down list in the BimViewer tools.
 
-Each scene can be made up of several IFC files defined by the ifcModelList parameter.
+Each scene can be made up of several IFC, XKT of glTF files defined by the `modelList` parameter.
 
-It is also possible to configure an empty scene into which IFC files can be loaded using the upload tool from the BimViewers tools.
+It is also possible to configure an empty scene into which IFC, XKT or glTF files can be loaded using the upload tool from the BimViewers tools.
 
 | Name               | Required | Type    | Description |
 | ------------------ | -------- | ------- |-------------|
 | id                 | yes       | String  | Id of the scene. |
 | name               | yes       | String  | Name of the scene. |
-| ifcModelList       | no       | Array   | Array containing a list of URLs to ifc files to load into the scene |
+| modelList          | no       | Array   | Array containing a list of URLs to ifc,xkt, gltf files to load into the scene |
 | annotationsJSON    | no       | String  | URL to the GeojJson containing annotations. See an example of an [annotations.json](#annotations-in-a-geojson) |
 | cameraSettings     | no       | Object  | Xeokit camera settings: eye, look, up. see [Xeokit camera settings](https://xeokit.github.io/xeokit-sdk/docs/class/src/viewer/scene/camera/Camera.js~Camera.html) |
 | saoSettings        | no       | Object  | Xeokit SAO settings: enabled, intensity, bias, scale, minResolution, numSamples, kernelRadius, blendCutoff, blendFactor blur. see [Xeokit SAO settings](https://xeokit.github.io/xeokit-sdk/docs/class/src/viewer/scene/postfx/SAO.js~SAO.html) |
@@ -113,7 +113,7 @@ It is also possible to configure an empty scene into which IFC files can be load
   {
     "id": "sceneDomHamburgSimple",
     "name": "DOM Hamburg - Simple",
-    "ifcModelList": [
+    "modelList": [
       "https://server/BIM/BIMPitch/Examples/ifc/example.ifc"
     ],
     "annotationsJSON": "http://server/pathToAnnotations",
@@ -127,7 +127,7 @@ It is also possible to configure an empty scene into which IFC files can be load
   {
     "id": "sceneDomHamburgFull",
     "name": "DOM Hamburg - Full",
-    "ifcModelList": [
+    "modelList": [
       "https://server/BIM/BIMPitch/Examples/ifc/example.ifc",
       "https://server/BIM/BIMPitch/Examples/ifc/example2.ifc.ifc",
       "https://server/BIM/BIMPitch/Examples/ifc/example3.ifc",
@@ -154,7 +154,7 @@ It is also possible to configure an empty scene into which IFC files can be load
   {
     "id": "emptyScene",
     "name": "Empty Scene",
-    "ifcModelList": [],
+    "modelList": [],
     "annotationsJSON": null,
     "cameraSettings": {
       "eye": [-2.37, 18.97, -26.12],
