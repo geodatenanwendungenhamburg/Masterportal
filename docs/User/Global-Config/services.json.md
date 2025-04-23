@@ -287,6 +287,7 @@ A layer based on the OGC's [Web Feature Service](https://www.ogc.org/standard/wf
 |doNotLoadInitially|no|String|false|if set to true the layer will be initialized without network call, an empty array of features is promoted - this is useful to add features later on (e.g. by filtering) to a full functional but initially empty layer|false|
 |isSecured|no|Boolean|false|Displays whether the layer belongs to a secured service. (**[see below](#secured-wms-services)**)|false|
 |authenticationUrl|no|String||Additional url called to trigger basic authentication in the browser.|"https://geodienste.hamburg.de/HH_WMS_DOP10?SERVICE=WFS&VERSION=1.1.0&REQUEST=DescribeFeatureType"|
+|layerSequence|no|Number||Number to determine the sequence of selected layers in the layerTree and layerSelection. A Layer with sequence number 1 is always the top layer, etc.|
 |propertyNames|no|Array||The attributes as PROPERTYNAME parameter to receive response from wfs layer |`["properties"]`|
 |wildCard|no|String||The wildcard parameter for the highlightFeaturesByAttribute property query. Must be one character only.|
 |singleChar|no|String||The singlechar parameter for the highlightFeaturesByAttribute property query. Must be one character only.|
@@ -310,6 +311,7 @@ A layer based on the OGC's [Web Feature Service](https://www.ogc.org/standard/wf
       "layerAttribution" : "nicht vorhanden",
       "legend" : true,
       "isSecured": true,
+      "layerSequence": 1,
       "propertyNames": [
           "bezirk_name",
           "stadtteil_name",
