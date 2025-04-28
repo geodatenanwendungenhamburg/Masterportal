@@ -31,6 +31,15 @@ const mutations = {
      */
     pushLoadedIfcModel (state, ifcModel) {
         state.loadedIfcModels.push(ifcModel);
+    },
+    /**
+     * Update the hierarchy property of the TreeView plugin
+     *
+     * @param {object} state of this component
+     * @param {string} hierarchyType Type of hierarchy (containment|storeys|types)
+     */
+    updateXeokitPluginTreeViewHierarchyType (state, hierarchyType) {
+        state.xeokitPluginTreeView.hierarchy = hierarchyType;
     }
 };
 

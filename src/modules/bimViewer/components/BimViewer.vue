@@ -1,21 +1,24 @@
 <script>
-
 import RightSidebar from "./sidebar/RightSidebar.vue";
 import ToolArea from "./tools/ToolArea.vue";
 import {mapGetters, mapMutations} from "vuex";
 import getters from "../store/gettersBimViewer";
 import mutations from "../store/mutationsBimViewer";
+import LeftSidebar from "./sidebar/LeftSidebar.vue";
 
 export default {
     name: "BimViewer",
     components: {
+        LeftSidebar,
         ToolArea,
         RightSidebar
     },
     data () {
         return {
             selectedSceneIndex: 0,
-            hideCube: false
+            hideCube: false,
+            sidebarLeftOpen: false,
+            sidebarRightOpen: false
         };
     },
     computed: {
@@ -40,9 +43,18 @@ export default {
                 currentlyLoadedModels: this.currentlyLoadedModels,
                 totalNumberOfModels: this.totalNumberOfModels
             });
+        },
+        rightSidebarToggleStatus () {
+            return this.$store.getters["Modules/BimViewer/toggleRightSidebar"];
+        }
+    },
+    watch: {
+        rightSidebarToggleStatus (visible) {
+            this.setSidebarRightVisibility(visible);
         }
     },
     async mounted () {
+        this.setMasterportalMainMenuOverflowHidden(true);
         this.applyTranslationKey(this.name);
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -54,10 +66,22 @@ export default {
 
         await this.$store.dispatch("Modules/BimViewer/loadSceneConfigs");
 
-        await this.setScene(this.selectedSceneIndex);
+        this.setScene(this.selectedSceneIndex);
+    },
+    unmounted () {
+        this.setMasterportalMainMenuOverflowHidden(false);
     },
     methods: {
         ...mapMutations("Modules/BimViewer", Object.keys(mutations)),
+        setMasterportalMainMenuOverflowHidden (shouldBeHidden) {
+            const domElement = document?.querySelector("#mp-menu-mainMenu");
+
+            if (domElement) {
+                domElement.style["overflow-y"] = shouldBeHidden
+                    ? "hidden"
+                    : "scroll";
+            }
+        },
         setScene (index) {
             if (typeof this.$refs.viewerCanvas === "undefined") {
                 return;
@@ -67,6 +91,7 @@ export default {
                 domElements: {
                     viewerCanvas: this.$refs.viewerCanvas,
                     cubeCanvas: this.$refs.cubeCanvas,
+                    treeViewContainerElement: this.$refs.treeViewContainer,
                     bimViewer: this.$refs.bimViewer
                 },
                 sceneConfig: this.allSceneConfigs[index]
@@ -85,210 +110,217 @@ export default {
                 overlayingCubeCanvas.style.setProperty("max-width", "100vw", "important");
                 overlayingCubeCanvas.style.setProperty("max-height", "100vh", "important");
             }
+        },
+        setSidebarLeftVisibility (visible) {
+            this.sidebarLeftOpen = visible;
+        },
+        setSidebarRightVisibility (visible) {
+            this.sidebarRightOpen = visible;
         }
     }
 };
 </script>
 
 <template lang="html">
-    <div
-        id="bim-viewer"
-        ref="bimViewer"
-        :class="{'sidebar-open': toggleRightSidebar}"
-    >
-        <div class="mainContent">
-            <ToolArea
-                v-if="useTools"
-                ref="toolArea"
-                @sceneSelected="setScene"
-            />
+    <div id="bim-viewer">
+        <ToolArea
+            v-if="useTools"
+            ref="toolArea"
+            :sidebar-visibility-right="sidebarRightOpen"
+            @sceneSelected="setScene"
+            @toggleSidebarLeft="setSidebarLeftVisibility"
+            @toggleSidebarRight="setSidebarRightVisibility"
+        />
 
-            <div class="viewerArea">
-                <canvas
-                    ref="viewerCanvas"
-                    class="viewer"
-                    aria-hidden="true"
-                    tabindex="0"
-                />
-
+        <div
+            ref="bimViewer"
+            class="bim-viewer-content"
+            :class="{'sidebar-open': toggleRightSidebar}"
+        >
+            <LeftSidebar
+                v-show="sidebarLeftOpen"
+                v-slot="{data}"
+            >
                 <div
-                    :class="{
-                        'navCubeContainer': true,
-                        'hideCube': hideCube
-                    }"
-                >
+                    :id="`treeview-${data.treeviewHierarchyType ?? ''}-pane`"
+                    ref="treeViewContainer"
+                    class="treeViewContainer"
+                />
+            </LeftSidebar>
+
+            <div class="mainContent">
+                <div class="viewerArea">
                     <canvas
-                        ref="cubeCanvas"
-                        class="navCube"
+                        ref="viewerCanvas"
+                        class="viewer"
+                        aria-hidden="true"
+                        tabindex="0"
                     />
 
-                    <strong
-                        v-if="currentlyLoadedModels < totalNumberOfModels"
-                        class="modelLoadingIndicator"
+                    <div
+                        :class="{
+                            'navCubeContainer': true,
+                            'hideCube': hideCube
+                        }"
                     >
-                        {{ modelLoadingIndicator }}
-                    </strong>
+                        <canvas
+                            ref="cubeCanvas"
+                            class="navCube"
+                        />
+
+                        <strong
+                            v-if="currentlyLoadedModels < totalNumberOfModels"
+                            class="modelLoadingIndicator"
+                        >
+                            {{ modelLoadingIndicator }}
+                        </strong>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <RightSidebar />
+            <RightSidebar v-if="sidebarRightOpen" />
+        </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
 #bim-viewer {
-    height: 100%;
-    width: 100%;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex: 1;
     overflow: hidden;
 
-    .mainContent {
+    div.ToolArea {
+        flex-shrink: 0;
+    }
+
+    div.bim-viewer-content {
         display: flex;
-        width: 100%;
-        height: 100%;
-        flex-direction: column;
+        flex-direction: row;
+        flex: 1;
+        overflow: hidden;
+        margin-top: 1rem;
+        border-top: solid 1px #DDD;
+        border-bottom: solid 1px #DDD;
 
-        div.viewerArea {
-            flex: 1;
+        .mainContent {
             display: flex;
-            width: 100%;
-            height: 95%;
-            justify-content: center;
-            overflow: hidden;
+            flex-direction: column;
+            flex: 1;
 
-            // Hide measurement marker, because wrong positioning. See https://vuejs.org/api/sfc-css-features#deep-selectors
-            :deep(div#myMarkerDiv) {
-                display: none;
-            }
-
-            :focus-visible {
-                outline: none;
-            }
-
-            canvas.viewer {
-                width: 100%;
-                height: 100%;
-            }
-
-            div.navCubeContainer {
-                bottom: 1rem;
-                left: 0.5rem;
-                position: absolute;
+            div.viewerArea {
+                flex: 1;
                 display: flex;
                 flex-direction: column;
-                align-items: center;
+                width: 100%;
+                height: 95%;
+                justify-content: center;
+                overflow: hidden;
 
-                canvas.navCube {
-                    width: 9rem;
-                    height: 9rem;
-                    z-index: 2;
-                }
-
-                strong.modelLoadingIndicator {
-                    position: absolute;
-                    bottom: 0;
-                    text-align: center;
-                }
-
-                &.hideCube {
+                // Hide measurement marker, because wrong positioning. See https://vuejs.org/api/sfc-css-features#deep-selectors
+                :deep(div#myMarkerDiv) {
                     display: none;
                 }
-            }
-        }
-    }
 
-    #viewerSpinner {
-        z-index: 9000;
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        margin: auto;
-    }
+                :focus-visible {
+                    outline: none;
+                }
 
-    :deep(div.xeokit-annotation-markers) {
-        background-color: red;
-        position: absolute;
-        width: 1rem;
-        height: 1rem;
-        border-radius: 1rem;
-        border: 0.13rem solid #ffffff;
-        z-index: 0 !important;
-        box-shadow: 1px 1px 15px 1px rgb(168, 167, 167);
-    }
+                canvas.viewer {
+                    width: 100%;
+                    height: 100%;
+                }
 
-    :deep(div.xeokit-annotation-label) {
-        position: absolute;
-        max-width: 18.75rem;
-        min-height: 3.13rem;
-        padding: 0.5rem;
-        padding-left: 0.75rem;
-        padding-right: 0.75rem;
-        background: #ffffff;
-        color: #000000;
-        -webkit-border-radius: 0.19rem;
-        -moz-border-radius: 0.19rem;
-        border-radius: 0.5rem;
-        border: #ffffff solid 0.13rem;
-        box-shadow: 0.31rem 0.31rem 0.94rem 0.06rem #000000;
-        z-index: 1000000 !important;
-        visibility: hidden; /* Set markers and labels initially hidden */
-        transform: translate(-1.38rem, -0.5rem);
-        max-height: 250px;
-        overflow-y: auto;
+                div.navCubeContainer {
+                    display: flex;
+                    align-items: center;
+                    margin-top: -9rem;
 
-        div.xeokit-annotation-title,
-        a.xeokit-annotation-title{
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 0.25rem;
-        }
+                    canvas.navCube {
+                        width: 9rem;
+                        height: 9rem;
+                        z-index: 2;
+                    }
 
-        a.xeokit-annotation-title {
-            display: flex;
-            align-items: baseline;
-            color: #003063;
-            gap: 0.5rem;
+                    strong.modelLoadingIndicator {
+                        background-color: #FFF;
+                        display: block;
+                        padding: 0.5rem;
+                        border-radius: 0.25rem;
+                    }
 
-            div.xeokit-annotation-point {
-                border-radius: 1rem;
-                width: 0.87rem;
-                height: 0.87rem;
+                    &.hideCube {
+                        display: none;
+                    }
+                }
             }
         }
 
-        div.xeokit-annotation-desc {
-            font-size: 14px;
+        #viewerSpinner {
+            z-index: 9000;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
         }
 
-        a.xeokit-annotation-more-link {
-            display: inline-block;
-            margin-top: 0.75rem;
-            font-size: 12px;
+        :deep(div.xeokit-annotation-markers) {
+            background-color: red;
+            position: absolute;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 1rem;
+            border: 0.13rem solid #ffffff;
+            z-index: 0 !important;
+            box-shadow: 1px 1px 15px 1px rgb(168, 167, 167);
         }
-    }
-}
 
-#tool-sidebar-vue {
-    max-width: 100vw;
+        :deep(div.xeokit-annotation-label) {
+            position: absolute;
+            max-width: 18.75rem;
+            min-height: 3.13rem;
+            padding: 0.5rem 0.75rem;
+            background: #ffffff;
+            color: #000000;
+            border-radius: 0.5rem;
+            border: #ffffff solid 0.13rem;
+            box-shadow: 0.31rem 0.31rem 0.94rem 0.06rem #000000;
+            z-index: 1000000;
+            visibility: hidden;
+            transform: translate(-1.38rem, -0.5rem);
+            max-height: 250px;
+            overflow-y: auto;
 
-    :deep(#vue-tool-content-body) {
-        overflow: hidden;
-    }
+            div.xeokit-annotation-title,
+            a.xeokit-annotation-title{
+                font-weight: bold;
+                font-size: 18px;
+                margin-bottom: 0.25rem;
+            }
 
-    &.useFullScreen {
-        width: 100vw;
-        padding: 0;
+            a.xeokit-annotation-title {
+                display: flex;
+                align-items: baseline;
+                color: #003063;
+                gap: 0.5rem;
 
-        :deep(#vue-tool-content-body) {
-            padding: 0;
+                div.xeokit-annotation-point {
+                    border-radius: 1rem;
+                    width: 0.87rem;
+                    height: 0.87rem;
+                }
+            }
 
-            &.win-body-vue {
-                height: 100%;
+            div.xeokit-annotation-desc {
+                font-size: 14px;
+            }
+
+            a.xeokit-annotation-more-link {
+                display: inline-block;
+                margin-top: 0.75rem;
+                font-size: 12px;
             }
         }
     }

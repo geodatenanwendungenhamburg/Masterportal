@@ -5,7 +5,8 @@ import {
     Viewer,
     WebIFCLoaderPlugin,
     AnnotationsPlugin,
-    LocaleService
+    LocaleService,
+    TreeViewPlugin
 } from "@xeokit/xeokit-sdk";
 import * as WebIFC from "web-ifc/web-ifc-api.js";
 import axios from "axios";
@@ -29,7 +30,7 @@ const actions = {
      * Set the scene. Initialize the viewer, scene settings, load models, add plugins.
      *
      * @param {Object} context actions context object.
-     * @param {Object} payload Passed parameters {viewerCanvas, cubeCanvas, sceneConfig}
+     * @param {Object} payload Passed parameters {viewerCanvas, cubeCanvas, treeViewContainerElement, sceneConfig}
      * @returns {void}
      */
     setScene ({commit, dispatch, getters}, payload) {
@@ -105,6 +106,11 @@ const actions = {
         commit("setCurrentlyLoadedModels", 0);
         commit("setTotalNumberOfModels", 0);
 
+        // Add tree view plugin
+        dispatch("addPluginTreeView", {
+            domElement: payload.domElements.treeViewContainerElement
+        });
+
         IfcAPI.Init().then(() => {
             const ifcLoader = new WebIFCLoaderPlugin(ifcViewer, {
                 WebIFC,
@@ -175,39 +181,37 @@ const actions = {
 
                                 dispatch("zoomToObject", zoomToPayload);
                             }
+
+                            // Add annotations plugin
+
+                            // Clear any refresh interval set by a previously loaded scene
+                            if (getters.annotationRefreshIntervalID) {
+                                clearInterval(getters.annotationRefreshIntervalID);
+                            }
+
+                            if (payload.sceneConfig.annotationsJSON?.length > 0) {
+                                dispatch("addPluginAnnotations", {
+                                    sceneAnnotations: payload.sceneConfig.annotationsJSON,
+                                    bimViewer: payload.domElements.bimViewer
+                                });
+
+                                if (typeof getters.annotationRefreshInterval === "number") {
+
+                                    const annotationRefreshIntervalID = setInterval(() => {
+                                        dispatch("addPluginAnnotations", {
+                                            sceneAnnotations: payload.sceneConfig.annotationsJSON,
+                                            bimViewer: payload.domElements.bimViewer
+                                        });
+                                    }, getters.annotationRefreshInterval);
+
+                                    commit("setAnnotationRefreshIntervalID", annotationRefreshIntervalID);
+                                }
+                            }
                         }
                     });
                 });
             });
         });
-
-        // Add plugins
-
-        // Add annotations plugin
-
-        // Clear any refresh interval set by a previously loaded scene
-        if (getters.annotationRefreshIntervalID) {
-            clearInterval(getters.annotationRefreshIntervalID);
-        }
-
-        if (payload.sceneConfig.annotationsJSON?.length > 0) {
-            dispatch("addPluginAnnotations", {
-                sceneAnnotations: payload.sceneConfig.annotationsJSON,
-                bimViewer: payload.domElements.bimViewer
-            });
-
-            if (typeof getters.annotationRefreshInterval === "number") {
-
-                const annotationRefreshIntervalID = setInterval(() => {
-                    dispatch("addPluginAnnotations", {
-                        sceneAnnotations: payload.sceneConfig.annotationsJSON,
-                        bimViewer: payload.domElements.bimViewer
-                    });
-                }, getters.annotationRefreshInterval);
-
-                commit("setAnnotationRefreshIntervalID", annotationRefreshIntervalID);
-            }
-        }
 
         // Add nav cube plugin
         dispatch("addPluginNavCube", {
@@ -217,8 +221,79 @@ const actions = {
         // Add distance measurements plugin
         dispatch("addPluginDistanceMeasurements");
 
-        // Close the right side bar
+        // Close the right sidebar
         commit("Modules/BimViewer/setToggleRightSidebar", false, {root: true});
+    },
+    /**
+     * Add tree view plugin (TreeViewPlugin)
+     *
+     * @param {Object} context actions context object.
+     * @param {Object} payload Passed parameters {domElement}
+     * @returns {void}
+     */
+    addPluginTreeView ({commit, getters}, payload) {
+        const xeokitPluginTreeView = new TreeViewPlugin(getters.xeokitIfcViewer, {
+            containerElement: payload.domElement,
+            autoExpandDepth: 1,
+            sortNodes: false,
+            hierarchy: "containment",
+            pruneEmptyNodes: false,
+            autoAddModels: true
+        });
+
+        xeokitPluginTreeView.on("nodeTitleClicked", (event) => {
+            const
+                viewer = getters.xeokitIfcViewer,
+                scene = viewer.scene,
+                selectedObjectIds = [],
+                isElement = event.treeViewNode.children.length === 0;
+
+            if (!isElement) {
+                return;
+            }
+
+            commit("ToolObjectInfo/setModeObjectInfoActive", true);
+
+            event.treeViewPlugin.withNodeTree(event.treeViewNode, (treeViewNode) => {
+                if (treeViewNode.objectId) {
+                    selectedObjectIds.push(treeViewNode.objectId);
+                }
+            });
+
+            scene.setObjectsSelected(scene.objectIds, false);
+            scene.setObjectsXRayed(scene.objectIds, false);
+
+            if (event.treeViewNode.objectId !== getters["ToolObjectInfo/pickedObjectId"]) {
+                // Reset all objects of the current scene
+                scene.setObjectsXRayed(scene.objectIds, true);
+                scene.setObjectsVisible(scene.objectIds, true);
+
+                // Set only the selected object
+                scene.setObjectsXRayed(selectedObjectIds, false);
+                scene.setObjectsSelected(selectedObjectIds, true);
+
+                commit("ToolObjectInfo/setPickedObjectId", selectedObjectIds[0]);
+                commit("ToolObjectInfo/setModeObjectInfoPickedObjects", Object.values(scene.selectedObjects));
+                commit("Modules/BimViewer/setToggleRightSidebar", true, {root: true});
+
+                xeokitPluginTreeView.showNode(selectedObjectIds[0]);
+
+                viewer.cameraFlight.flyTo({
+                    aabb: scene.getAABB(selectedObjectIds),
+                    duration: 0.5,
+                    fitFOV: 30
+                });
+            }
+            else {
+                commit("ToolObjectInfo/setPickedObjectId", "");
+                commit("ToolObjectInfo/setModeObjectInfoPickedObjects", []);
+                commit("Modules/BimViewer/setToggleRightSidebar", false, {root: true});
+
+                xeokitPluginTreeView.unShowNode();
+            }
+        });
+
+        commit("setXeokitPluginTreeView", xeokitPluginTreeView);
     },
     /**
      * Add nav cube plugin (NavCubePlugin)
@@ -542,6 +617,16 @@ const actions = {
      */
     getObjectDataForId ({getters}, payload) {
         return getters.xeokitIfcViewer.metaScene.metaObjects[payload.objectId];
+    },
+    /**
+     * Update the hierarchy property of the TreeView plugin
+     *
+     * @param {Object} context actions context object.
+     * @param {string} hierarchyType Type of hierarchy (containment|storeys|types)
+     * @returns {void}
+     */
+    updateXeokitPluginTreeViewHierarchyType ({commit}, hierarchyType) {
+        commit("updateXeokitPluginTreeViewHierarchyType", hierarchyType);
     }
 };
 

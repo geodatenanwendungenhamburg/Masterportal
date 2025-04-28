@@ -7,33 +7,42 @@ const actions = {
      * @returns {void}
      */
     initialize ({commit, getters, rootGetters}) {
-        const viewer = rootGetters["Modules/BimViewer/xeokitIfcViewer"];
+        const
+            viewer = rootGetters["Modules/BimViewer/xeokitIfcViewer"],
+            scene = viewer.scene,
+            treeView = rootGetters["Modules/BimViewer/xeokitPluginTreeView"];
 
         viewer.cameraControl.on("picked", (event) => {
-            // return just here possible, not at function beginning
             if (getters.modeObjectInfoActive === false) {
                 return;
             }
 
             if (event?.entity?.id !== undefined && event.entity.id !== null) {
-                getters.modeObjectInfoPickedObjects.push(event.entity);
-                getters.modeObjectInfoPickedObjects.forEach((element) => {
+                scene.setObjectsSelected(scene.objectIds, false);
+                scene.setObjectsXRayed(scene.objectIds, false);
 
-                    if (element.id === event.entity.id) {
-                        event.entity.selected = true;
-                    }
-                });
+                if (event.entity.id !== rootGetters["Modules/BimViewer/ToolObjectInfo/pickedObjectId"]) {
+                    // Reset all objects of the current scene
+                    scene.setObjectsVisible(scene.objectIds, true);
+                    scene.setObjectsXRayed(scene.objectIds, true);
 
-                if (getters.modeObjectInfoPickedObjects.length > 1) {
-                    const oldObj = getters.modeObjectInfoPickedObjects.shift();
+                    // Set only the selected object
+                    scene.setObjectsXRayed([event.entity.id], false);
+                    scene.setObjectsSelected([event.entity.id], true);
 
-                    if (oldObj.id !== event.entity.id) {
-                        oldObj.selected = false;
-                    }
+                    commit("setPickedObjectId", event.entity.id);
+                    commit("setModeObjectInfoPickedObjects", Object.values(scene.selectedObjects));
+                    commit("Modules/BimViewer/setToggleRightSidebar", true, {root: true});
+
+                    treeView.showNode(String(event.entity.id));
                 }
+                else {
+                    commit("setPickedObjectId", "");
+                    commit("setModeObjectInfoPickedObjects", []);
+                    commit("Modules/BimViewer/setToggleRightSidebar", false, {root: true});
 
-                commit("setPickedObjectId", event.entity.id);
-                commit("Modules/BimViewer/setToggleRightSidebar", true, {root: true});
+                    treeView.unShowNode();
+                }
             }
         });
     },
@@ -43,13 +52,19 @@ const actions = {
      * @param {Object} store getters object.
      * @returns {void}
      */
-    reset ({getters, commit}) {
+    reset ({rootGetters, commit}) {
+        const
+            scene = rootGetters["Modules/BimViewer/xeokitIfcViewer"].scene,
+            treeView = rootGetters["Modules/BimViewer/xeokitPluginTreeView"];
+
+        scene.setObjectsXRayed(scene.objectIds, false);
+        scene.setObjectsSelected(scene.objectIds, false);
+
         commit("setModeObjectInfoActive", false);
         commit("setPickedObjectId", "");
+        commit("Modules/BimViewer/setToggleRightSidebar", false, {root: true});
 
-        getters.modeObjectInfoPickedObjects.forEach((element) => {
-            element.selected = false;
-        });
+        treeView.unShowNode();
     }
 };
 

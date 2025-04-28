@@ -2,21 +2,25 @@
 import {mapGetters, mapMutations} from "vuex";
 import getters from "../../store/gettersBimViewer";
 import mutations from "../../store/mutationsBimViewer";
+import FlatButton from "../../../../shared/modules/buttons/components/FlatButton.vue";
 
 export default {
     name: "ObjectInformation",
+    components: {FlatButton},
     data () {
         return {
             objectData: null,
             refreshTimestamp: new Date(),
-            isSticky: false,
-            currentCameraInfo: ""
+            isSticky: false
         };
     },
     computed: {
         ...mapGetters("Modules/BimViewer", Object.keys(getters)),
         pickedObjectId () {
             return this.$store.getters["Modules/BimViewer/ToolObjectInfo/pickedObjectId"];
+        },
+        objectInformationActivated () {
+            return this.$store.getters["Modules/BimViewer/ToolObjectInfo/modeObjectInfoActive"];
         }
     },
     watch: {
@@ -26,36 +30,6 @@ export default {
     },
     mounted () {
         this.loadObjectInformation(this.pickedObjectId);
-
-        this.xeokitIfcViewer.scene.camera.on("viewMatrix", () => {
-
-            const
-                cameraValuesEye = [
-                    this.xeokitIfcViewer.camera.eye[0],
-                    this.xeokitIfcViewer.camera.eye[1],
-                    this.xeokitIfcViewer.camera.eye[2]
-                ],
-                cameraValuesLook = [
-                    this.xeokitIfcViewer.camera.look[0],
-                    this.xeokitIfcViewer.camera.look[1],
-                    this.xeokitIfcViewer.camera.look[2]
-                ],
-                cameraValuesUp = [
-                    this.xeokitIfcViewer.camera.up[0],
-                    this.xeokitIfcViewer.camera.up[1],
-                    this.xeokitIfcViewer.camera.up[2]
-                ];
-
-            // Indent is needed, because info is rendered into an HTML pre tag.
-            this.currentCameraInfo = `
-"cameraSettings": {
-    "eye": [${cameraValuesEye.join(", ")}],
-    "look": [${cameraValuesLook.join(", ")}],
-    "up": [${cameraValuesUp.join(", ")}]
-}
-            `.trim();
-        });
-
     },
     methods: {
         ...mapMutations("Modules/BimViewer", Object.keys(mutations)),
@@ -98,6 +72,9 @@ export default {
         },
         generatedPsetHyperlinkTitle (completeLinkPath) {
             return completeLinkPath.split(/.*[/|\\]/)[1];
+        },
+        activateObjectInformation () {
+            this.$store.commit("Modules/BimViewer/ToolObjectInfo/setModeObjectInfoActive", true);
         }
     }
 };
@@ -105,76 +82,87 @@ export default {
 
 <template lang="html">
     <div class="ObjectInformation">
-        <h4 class="stickyHeader">
-            {{ $t("modules.bimViewer.objectInformation.title") }}
-        </h4>
-
         <div
             v-if="!objectData"
             class="noData"
         >
+            <h4 class="stickyHeader">
+                {{ $t("modules.bimViewer.objectInformation.title") }}
+            </h4>
+
             <p>
                 {{ $t("modules.bimViewer.objectInformation.noData") }}
             </p>
 
-            <div class="cameraValues">
-                <span> {{ $t("modules.bimViewer.objectInformation.cameraSettings") }} </span>
-
-                <pre>{{ currentCameraInfo }}</pre>
-            </div>
+            <FlatButton
+                v-if="!objectInformationActivated"
+                :text="$t('modules.bimViewer.objectInformation.noDataButtonActivateObjectInformation')"
+                :interaction="() => activateObjectInformation()"
+            />
+            <em v-else>
+                {{ $t('modules.bimViewer.objectInformation.noDataObjectInformationActivated') }}
+            </em>
         </div>
 
         <div
             v-else
             class="dataAvailable"
         >
-            <table class="propertiesTable active">
-                <tbody>
-                    <tr>
-                        <td class="tdLabel">
-                            {{ `${$t('modules.bimViewer.objectInformation.table.name')}:` }}
-                        </td>
+            <div class="section">
+                <span class="accordionHeader">
+                    {{ $t("modules.bimViewer.objectInformation.title") }}
+                </span>
 
-                        <td class="tdValue">
-                            <strong>{{ objectData.name }}</strong>
-                        </td>
-                    </tr>
+                <table class="propertiesTable active">
+                    <tbody>
+                        <tr>
+                            <td class="tdLabel">
+                                {{ `${$t('modules.bimViewer.objectInformation.table.name')}:` }}
+                            </td>
 
-                    <tr>
-                        <td class="tdLabel">
-                            {{ `${$t('modules.bimViewer.objectInformation.table.class')}:` }}
-                        </td>
+                            <td class="tdValue">
+                                <!--                            <strong>{{ objectData.name }}</strong>-->
+                                {{ objectData.name }}
+                            </td>
+                        </tr>
 
-                        <td class="tdValue">
-                            {{ objectData.type }}
-                        </td>
-                    </tr>
+                        <tr>
+                            <td class="tdLabel">
+                                {{ `${$t('modules.bimViewer.objectInformation.table.class')}:` }}
+                            </td>
 
-                    <tr>
-                        <td class="tdLabel">
-                            {{ `${$t('modules.bimViewer.objectInformation.table.uuid')}:` }}
-                        </td>
+                            <td class="tdValue">
+                                {{ objectData.type }}
+                            </td>
+                        </tr>
 
-                        <td class="tdValue">
-                            {{ objectData.id }}
-                        </td>
-                    </tr>
+                        <tr>
+                            <td class="tdLabel">
+                                {{ `${$t('modules.bimViewer.objectInformation.table.uuid')}:` }}
+                            </td>
 
-                    <tr>
-                        <td class="tdLabel">
-                            {{ `${$t('modules.bimViewer.objectInformation.table.storey')}:` }}
-                        </td>
+                            <td class="tdValue">
+                                {{ objectData.id }}
+                            </td>
+                        </tr>
 
-                        <td class="tdValue">
-                            {{ objectData.storey }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                        <tr>
+                            <td class="tdLabel">
+                                {{ `${$t('modules.bimViewer.objectInformation.table.storey')}:` }}
+                            </td>
+
+                            <td class="tdValue">
+                                {{ objectData.storey }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <div
                 v-for="(propertySet) in objectData.propertySets"
                 :key="propertySet.id + refreshTimestamp"
+                class="section"
             >
                 <button
                     :class="{
@@ -229,37 +217,38 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    div.ObjectInformation {
-        h4 {
-            padding: 1rem;
-        }
+div.ObjectInformation {
+    overflow-y: scroll;
+    margin-top: 1rem;
+    min-width: 15rem;
 
-        h4.stickyHeader {
-            position: sticky;
-            top:0;
-            background-color:#313961;
-            font-weight: 500;
-            border-radius: 5px;
-            z-index:999;
+    div.section {
+        margin: 0 0 0.5rem 0;
+
+        span.accordionHeader {
+            display: block;
+            color: #ffffff;
+            background-color: #313961;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            padding: 0.25rem 0.5rem;
         }
 
         button.accordionButton {
             margin: 0;
-            position: relative;
-            padding: 15px 15px;
             color: #ffffff;
-            display: block;
-            font-weight: 500;
             background-color: #313961;
             cursor: pointer;
             transition: all 0.3s ease-in-out;
-            border-radius: 5px;
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 6 5 6 6-6'/%3e%3c/svg%3e");
             background-repeat: no-repeat;
-            background-position: right 0.75rem center;
+            background-position: right 0.75rem top 0.6rem;
             background-size: 16px 12px;
             width: 100%;
             text-align: left;
+            border: none;
+            padding: 0.25rem 0.5rem;
 
             &.active {
                 background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 6 6-6 6 6'/%3e%3c/svg%3e");
@@ -267,30 +256,31 @@ export default {
         }
 
         table.propertiesTable {
-            width: 95%;
-            margin: 0.5rem 0.5rem 1rem 0.5rem;
+            width: 100%;
             display: none;
             box-sizing: border-box;
+            border: solid 1px #DDD;
 
             &.active {
                 display: table;
             }
 
             td.tdLabel {
-                padding: 0.6em;
+                padding: 0.25em;
                 vertical-align: top;
-                border-top: 1px solid #81819a;
-                border-right: 1px solid #81819a;
-                font-weight: bold;
-                width: 100px;
+                border-top: 1px solid #DDD;
+                border-right: 1px solid #DDD;
                 max-width: 150px;
+                width: 50%;
+                overflow-wrap: anywhere;
             }
 
             td.tdValue {
-                padding: 0.5em;
+                padding: 0.25em;
                 vertical-align: top;
-                border-top: 1px solid #81819a;
+                border-top: 1px solid #DDD;
                 overflow-wrap: anywhere;
+                width: 50%;
 
                 a {
                     text-decoration: underline;
@@ -301,31 +291,10 @@ export default {
                 border-top: 0;
             }
         }
-
-        div.noData {
-            margin: 2rem 1rem;
-
-            p {
-                color: white;
-                font-size: 1rem;
-            }
-
-            div.cameraValues {
-                margin-top: 2rem;
-                border: solid 1px #79b3e2;
-                padding: 0.5rem;
-                color: #79b3e2;
-
-                span {
-                    display: block;
-                    margin-bottom: 0.25rem;
-                }
-
-                pre {
-                    text-wrap: wrap;
-                    margin-bottom: 0;
-                }
-            }
-        }
     }
+
+    div.noData {
+        margin: 2rem 1rem;
+    }
+}
 </style>

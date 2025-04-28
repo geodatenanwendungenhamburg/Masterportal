@@ -7,10 +7,15 @@ export default {
         },
         modeObjectInfoActive: {
             get () {
-                return this.$store.getters["Modules/BimViewer/ToolObjectInfo/modeObjectInfoActive"];
+                return Boolean(this.$store.getters["Modules/BimViewer/ToolObjectInfo/modeObjectInfoActive"]
+                    || this.$store.getters["Modules/BimViewer/ToolObjectInfo/pickedObjectId"]);
             },
             set (value) {
                 this.$store.commit("Modules/BimViewer/ToolObjectInfo/setModeObjectInfoActive", value);
+
+                if (!value) {
+                    this.$store.dispatch("Modules/BimViewer/ToolObjectInfo/reset");
+                }
             }
         },
         ariaLabel () {
@@ -43,15 +48,10 @@ export default {
             :aria-label="ariaLabel"
             :title="ariaLabel"
             class="btn"
-            :class="[modeObjectInfoActive === true ? 'bim-btn-highlight' : 'btn-primary']"
+            :class="[modeObjectInfoActive === true ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
             @click="setActive()"
         >
             <i class="bi bi-info-circle" />
         </button>
     </div>
 </template>
-
-<style lang="scss">
-div.ToolObjectInfo {
-}
-</style>

@@ -38,7 +38,7 @@ export default {
             :aria-label="modeSaoAriaLabel"
             :title="modeSaoAriaLabel"
             class="btn"
-            :class="[modeSaoStatus === true ? 'bim-btn-highlight' : 'btn-primary']"
+            :class="[modeSaoStatus === true ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
             @click="setSaoSettings({enabled: !modeSaoStatus})"
         >
             <i :class="[modeSaoStatus ? 'bi bi-lightbulb' : 'bi bi-lightbulb-off']" />

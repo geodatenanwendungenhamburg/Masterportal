@@ -118,7 +118,11 @@
         "searchModalNoMatchConfirmText": "Search Result",
         "searchModalNoMatchContent": "No results for \"{{filterText}}\".",
         "objectInfoLabel": "Get object info",
-        "objectInfoAriaLabel": "Show object information for a selected object"
+        "objectInfoAriaLabel": "Show object information for a selected object",
+        "toggleSidebarLeftLabel": "Show model structure",
+        "treeviewHierarchyTypeStoreys": "Storeys",
+        "treeviewHierarchyTypeTypes": "Types",
+        "treeviewHierarchyTypeContainment": "Containment"
       },
       "showRightSideBar": "Show Sidebar",
       "hideRightSideBar": "Hide Sidebar",
@@ -126,6 +130,8 @@
       "objectInformation": {
         "title": "Object Properties",
         "noData": "Please activate \"Get object info\" and select an object to see the properties here.",
+        "noDataButtonActivateObjectInformation": "Activate object info",
+        "noDataObjectInformationActivated": "Object info is now activated. Please select an object.",
         "table": {
           "name": "Name",
           "class": "Class",

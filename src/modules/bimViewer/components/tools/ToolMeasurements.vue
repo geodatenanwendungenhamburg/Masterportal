@@ -29,7 +29,7 @@ export default {
     <div class="ToolMeasurements">
         <div class="buttonContainer">
             <button
-                :class="['btn', toolDistanceMeasurementsActive ? 'bim-btn-highlight' : 'btn-primary']"
+                :class="['btn', toolDistanceMeasurementsActive ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
                 :title="$t('modules.bimViewer.tools.distanceMeasurementsToggle')"
                 @click="setActive(!toolDistanceMeasurementsActive)"
             >
@@ -38,7 +38,7 @@ export default {
 
             <button
                 v-if="toolDistanceMeasurementsActive"
-                :class="['btn', 'resetButton' , !toolDistanceMeasurementsActive ? 'bim-btn-highlight' : 'btn-primary']"
+                :class="['btn', 'resetButton' , !toolDistanceMeasurementsActive ? 'btn-primary btn-primary bim-btn-highlight' : 'btn-primary']"
                 :title="$t('modules.bimViewer.tools.distanceMeasurementsClear')"
                 @click="clear()"
             >

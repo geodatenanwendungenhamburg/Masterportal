@@ -10,7 +10,6 @@ import ToolUpload from "./ToolUpload.vue";
 import ToolCameraReset from "./ToolCameraReset.vue";
 import ToolSceneFit from "./ToolSceneFit.vue";
 import ToolSceneSelector from "./ToolSceneSelector.vue";
-import ToolRightSidebar from "./ToolRightSidebar.vue";
 
 export default {
     name: "ToolArea",
@@ -22,22 +21,49 @@ export default {
         ToolObjectInfo,
         ToolSao,
         ToolMeasurements,
-        ToolFilter,
-        ToolRightSidebar
+        ToolFilter
+    },
+    props: {
+        sidebarVisibilityRight: {
+            type: Boolean,
+            required: true,
+            default: false
+        }
+    },
+    emits: [
+        "sceneSelected",
+        "toggleSidebarLeft",
+        "toggleSidebarRight"
+    ],
+    data () {
+        return {
+            sidebarLeftOpen: false,
+            sidebarRightOpen: false
+        };
     },
     computed: {
         ...mapGetters("Modules/BimViewer", Object.keys(getters)),
-        ...mapGetters(["uiStyle"]),
-        toggleRightSidebar: {
-            get () {
-                return this.$store.getters["Modules/BimViewer/toggleRightSidebar"];
-            }
+        ...mapGetters(["uiStyle"])
+    },
+    watch: {
+        sidebarVisibilityRight (value) {
+            this.sidebarRightOpen = value;
         }
     },
     methods: {
         ...mapMutations("Modules/BimViewer", Object.keys(mutations)),
         onSceneSelected (index) {
             this.$emit("sceneSelected", index);
+        },
+        toggleSidebarLeft () {
+            this.sidebarLeftOpen = !this.sidebarLeftOpen;
+
+            this.$emit("toggleSidebarLeft", this.sidebarLeftOpen);
+        },
+        toggleSidebarRight () {
+            this.sidebarRightOpen = !this.sidebarRightOpen;
+
+            this.$emit("toggleSidebarRight", this.sidebarRightOpen);
         }
     }
 };
@@ -49,24 +75,46 @@ export default {
         class="ToolArea"
     >
         <div class="buttons">
-            <ToolCameraReset />
+            <div class="leftSection">
+                <button
+                    :aria-label="$t('modules.bimViewer.tools.toggleSidebarLeftLabel')"
+                    :title="$t('modules.bimViewer.tools.toggleSidebarLeftLabel')"
+                    class="btn"
+                    :class="[sidebarLeftOpen ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
+                    @click="toggleSidebarLeft()"
+                >
+                    <i class="bi bi-diagram-3" />
+                </button>
 
-            <ToolSceneFit />
+                <ToolCameraReset />
 
-            <ToolUpload />
+                <ToolSceneFit />
 
-            <ToolObjectInfo ref="toolObjectInfo" />
+                <ToolUpload />
 
-            <ToolMeasurements ref="toolMeasurements" />
+                <ToolMeasurements ref="toolMeasurements" />
 
-            <ToolSao />
+                <ToolSao />
 
-            <ToolSceneSelector @sceneSelected="onSceneSelected" />
+                <ToolSceneSelector @sceneSelected="onSceneSelected" />
 
-            <ToolFilter ref="toolFilter" />
+                <ToolFilter ref="toolFilter" />
+            </div>
+
+            <div class="rightSection">
+                <ToolObjectInfo ref="toolObjectInfo" />
+
+                <button
+                    :aria-label="$t('modules.bimViewer.tools.toggleSidebarRightLabel')"
+                    :title="$t('modules.bimViewer.tools.toggleSidebarRightLabel')"
+                    class="btn"
+                    :class="[sidebarRightOpen ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
+                    @click="toggleSidebarRight()"
+                >
+                    <i class="bi bi-layout-sidebar-inset-reverse" />
+                </button>
+            </div>
         </div>
-
-        <ToolRightSidebar />
     </div>
 </template>
 
@@ -84,8 +132,21 @@ div.ToolArea {
 
     div.buttons {
         display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
+        justify-content: space-between;
+        width: 100%;
+
+        div.leftSection {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        div.rightSection {
+            display: flex;
+            flex-direction: row;
+            gap: 0.5rem;
+            align-items: flex-start;
+        }
     }
 
     .btn-primary:hover,

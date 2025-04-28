@@ -118,7 +118,11 @@
         "searchModalNoMatchConfirmText": "Suchergebnis",
         "searchModalNoMatchContent": "Keine Treffer für \"{{filterText}}\".",
         "objectInfoLabel": "Objekt-Info abfragen",
-        "objectInfoAriaLabel": "Zeige Objekt Informationen zu einem markierten Objekt"
+        "objectInfoAriaLabel": "Zeige Objekt Informationen zu einem markierten Objekt",
+        "toggleSidebarLeftLabel": "Modelstruktur anzeigen",
+        "treeviewHierarchyTypeStoreys": "Storeys",
+        "treeviewHierarchyTypeTypes": "Types",
+        "treeviewHierarchyTypeContainment": "Containment"
       },
       "showRightSideBar": "Seitenleiste anzeigen",
       "hideRightSideBar": "Seitenleiste ausblenden",
@@ -126,6 +130,8 @@
       "objectInformation": {
         "title": "Objekt-Eigenschaften",
         "noData": "Bitte aktivieren Sie \"Objekt-Info abfragen\" und wählen dann ein Objekt aus, um hier die Eigenschaften zu sehen.",
+        "noDataButtonActivateObjectInformation": "Objekt-Info abfragen aktivieren",
+        "noDataObjectInformationActivated": "\"Objekt-Info abfragen\" ist nun aktiviert. Bitte wählen Sie ein Objekt aus.",
         "table": {
           "name": "Name",
           "class": "Class",

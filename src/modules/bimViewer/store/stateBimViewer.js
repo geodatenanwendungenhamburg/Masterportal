@@ -16,6 +16,7 @@
  * @typedef {object} xeokitIfcLoader IfcLoader instance
  * @typedef {object} xeokitIfcAPI IfcAPI instance
  * @typedef {object} xeokitPluginNavCube NavCubePlugin instance
+ * @typedef {object} xeokitPluginTreeView TreeViewPlugin instance
  * @typedef {object} xeokitPluginDistanceMeasurements DistanceMeasurementsPlugin instance
  * @typedef {object} xeokitPluginDistanceMeasurementsControl DistanceMeasurementsMouseControl instance
  * @typedef {object} xeokitPluginAnnotationLabelActive active AnnotationLabel instance
@@ -50,6 +51,7 @@ const state = {
     xeokitIfcLoader: null,
     xeokitIfcAPI: null,
     xeokitPluginNavCube: null,
+    xeokitPluginTreeView: null,
     xeokitPluginDistanceMeasurements: null,
     xeokitPluginDistanceMeasurementsControl: null,
     xeokitPluginAnnotationLabelActive: null,
