@@ -223,6 +223,9 @@ export default {
             if (Object.prototype.hasOwnProperty.call(layerConf, "zIndex") && typeof layerConf.zIndex === "number") {
                 return layerConf.zIndex;
             }
+            if (layerConf.layerSequence) {
+                return layerConf.layerSequence;
+            }
             let maxZIndex = -1;
             const isBaselayer = Object.prototype.hasOwnProperty.call(layerConf, "baselayer") && layerConf.baselayer,
                 parentKey = isBaselayer ? treeBaselayersKey : treeSubjectsKey;
