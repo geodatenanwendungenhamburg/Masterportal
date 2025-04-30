@@ -461,6 +461,62 @@ describe("src/app-store/actionsLayerConfig.js", () => {
             );
         });
 
+        it("should correctly extend layers with nested folders and mixed layer properties", () => {
+            state.layerConfig = {
+                [treeSubjectsKey]: {
+                    elements: [
+                        {
+                            name: "Root Folder",
+                            type: "folder",
+                            elements: [
+                                {
+                                    id: "layer_1",
+                                    visibility: true
+                                },
+                                {
+                                    name: "Subfolder",
+                                    type: "folder",
+                                    elements: [
+                                        {
+                                            id: "layer_2",
+                                            showInLayerTree: true
+                                        },
+                                        {
+                                            name: "Empty Folder",
+                                            type: "folder",
+                                            elements: []
+                                        }
+                                    ]
+                                },
+                                {
+                                    id: "layer_3"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            };
+
+            getters = {
+                allLayerConfigs: [],
+                allLayerConfigsByParentKey: () => [],
+                allLayerConfigsStructured: () => [],
+                showLayerAddButton: true
+            };
+
+            actions.extendLayers({dispatch, getters, state});
+
+            expect(dispatch.callCount).to.equals(2);
+            expect(dispatch.firstCall.args[0]).to.equals("addBaselayerAttribute");
+            expect(dispatch.firstCall.args[1]).to.be.undefined;
+
+            expect(dispatch.secondCall.args[0]).to.equals("updateLayerConfigs");
+            expect(dispatch.secondCall.args[1]).to.deep.equal([
+                {id: "layer_1", visibility: true, zIndex: 1},
+                {id: "layer_2", showInLayerTree: true, zIndex: 0}
+            ]);
+        });
+
         it("extend layer configs for custom tree", () => {
             state.layerConfig = layerConfigCustom;
             actions.extendLayers({dispatch, getters, state});
@@ -473,15 +529,18 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 {
                     id: ["717", "718", "719"],
                     visibility: true,
-                    name: "Geobasiskarten (farbig)"
+                    name: "Geobasiskarten (farbig)",
+                    zIndex: 2
                 },
                 {
                     id: "1103",
-                    visibility: true
+                    visibility: true,
+                    zIndex: 1
                 },
                 {
                     id: "10220",
-                    showInLayerTree: true
+                    showInLayerTree: true,
+                    zIndex: 0
                 }
             ]);
         });
@@ -548,10 +607,10 @@ describe("src/app-store/actionsLayerConfig.js", () => {
             expect(dispatch.firstCall.args[1]).to.be.undefined;
             expect(dispatch.secondCall.args[0]).to.equals("updateLayerConfigs");
             expect(dispatch.secondCall.args[1]).to.deep.equals([
-                {id: "1132", name: "100 Jahre Stadtgruen POIs", visibility: true},
-                {id: "717", visibility: true},
-                {id: "718", showInLayerTree: true},
-                {id: "1103", showInLayerTree: true}
+                {id: "1132", name: "100 Jahre Stadtgruen POIs", visibility: true, zIndex: 3},
+                {id: "717", visibility: true, zIndex: 2},
+                {id: "718", showInLayerTree: true, zIndex: 1},
+                {id: "1103", showInLayerTree: true, zIndex: 0}
 
             ]);
         });

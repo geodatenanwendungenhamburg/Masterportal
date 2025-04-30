@@ -21,6 +21,7 @@
 -  Menu: Navigating back from layerinformation to the previous menu item add subject.
 - Loading the layer is accelerated by fixing generation of folder ids.
 - LayerTree, LayerSelection: Introduced an alternative sorting function for layers utilizing the `layerSequence` prop.
+- extendLayers: Adjusted initial z-index values to ensure correct layer order on map load.
 
 
 ## 2025-02-21 v3.3.4 (LTS)

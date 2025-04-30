@@ -78,7 +78,8 @@ export function addAdditional (rawLayer, showAllLayerInTree = false) {
         else if (!Object.prototype.hasOwnProperty.call(rawLayer, "showInLayerTree")) {
             rawLayer.showInLayerTree = false;
         }
-        if (rawLayer.showInLayerTree === true) {
+
+        if ((rawLayer.showInLayerTree === true || rawLayer.visibility === true) && (rawLayer.zIndex === undefined)) {
             rawLayer.zIndex = zIndex++;
         }
         rawLayer.is3DLayer = layerTypes3d.includes(rawLayer.typ?.toUpperCase());
