@@ -54,7 +54,6 @@ export default {
         }
     },
     async mounted () {
-        this.setMasterportalMainMenuOverflowHidden(true);
         this.applyTranslationKey(this.name);
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -68,7 +67,10 @@ export default {
 
         this.setScene(this.selectedSceneIndex);
     },
-    unmounted () {
+    activated () {
+        this.setMasterportalMainMenuOverflowHidden(true);
+    },
+    deactivated () {
         this.setMasterportalMainMenuOverflowHidden(false);
     },
     methods: {
