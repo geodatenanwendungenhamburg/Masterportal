@@ -158,6 +158,7 @@ WMTS layers can be added by:
 | version                 | yes      | String                                                      |                                                                                                                                                                                           | Service version used for *GetMap* requests.                                                                                                                                                                                                                                                                 | `"1.0.0"`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | wrapX                   | no       | Boolean                                                     | `false`                                                                                                                                                                                   | Whether world should be wrapped horizontally.                                                                                                                                                                                                                                                               | `true`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | preview                 | no       | **[preview](#wms_wmts_vectortile_preview)** |                                                                                                                                                                                           | Shows a preview of a baselayer in layer-selection and background-switcher, even if not configured here. For WMS and WMTS layers, the image is fetched as a GetMap request. For VectorTile layers, an image is stored in the file system.                                                                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|layerSequence|no|Number||Number to determine the sequence of selected layers in the layerTree and layerSelection. A Layer with sequence number 1 is always the top layer, etc.|
 
 
 ```json title="Example Configuration of a WMTS Layer that explicitly defines all Options"
@@ -214,7 +215,8 @@ WMTS layers can be added by:
             "zoomLevel": 6,
             "center":"566245.97,5938894.79",
             "radius": 500
-   }
+   },
+   "layerSequence": 1
 }
 ```
 
@@ -470,6 +472,7 @@ Please note the [VTL specification](https://docs.mapbox.com/vector-tiles/specifi
 | url              | yes      | String                                                        |                                 | Service URL                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `"https://example.com/3857/tile/{z}/{y}/{x}.pbf"`                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | useProxy         | no       | Boolean                                                       | `false`                         | _Deprecated in the next major release. *[GDI-DE](https://www.gdi-de.org/en)* recommends setting CORS headers on the required services instead._ Only used for GFI requests. The request will contain the requested URL as path, with dots replaced by underscores.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `false`                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | gfiTheme         | yes      | String/Object                                                 |                                 | Display style of GFI information for this layer. Unless `"default"` is chosen, custom templates may be used to show GFI information in another format than the default table style.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `"default"`                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|layerSequence|no|Number||Number to determine the sequence of selected layers in the layerTree and layerSelection. A Layer with sequence number 1 is always the top layer, etc.|
 
 
 ```json title="Example Configuration of a VectorTile Layer"
@@ -502,7 +505,8 @@ Please note the [VTL specification](https://docs.mapbox.com/vector-tiles/specifi
   ],
   "preview":{
     "src": "./resources/vectorTile.png"
-    }
+    },
+  "layerSequence": 1,
 }
 ```
 
@@ -550,6 +554,7 @@ For more details, consider reading the [extensive SensorThings-API documentation
 |historicalLocations|no|Number||Set to an amount to enable historical locations for each moveable feature. The given amount of historical locations will be displayed on the map.|`5`|
 |enableContinuousRequest|no|Boolean||Set true to enable continuous requests in an interval based on the configured `factor`. Will be ignored if no `factor` is configured.|`true`|
 |scaleStyleByZoom|no|Boolean|Scales the style depending on the zoom level. Works only for image styles and subclasses.|'true'|
+|layerSequence|no|Number||Number to determine the sequence of selected layers in the layerTree and layerSelection. A Layer with sequence number 1 is always the top layer, etc.|
 
 ```json title="Example Configuration of a SensorLayer"
 
@@ -592,7 +597,8 @@ For more details, consider reading the [extensive SensorThings-API documentation
           "host" : "https://localhost",
           "port": "1883"
       },
-      "rotationUnit": "degree"
+      "rotationUnit": "degree",
+      "layerSequence": 1
    }
 ```
 
@@ -1286,6 +1292,7 @@ With these confurations a url in the feature properties can be displayed either 
 | altitude         | no       | Number                                                      |                     | Display height in 3D mode in meters. If an altitude is given, any existing z coordinate is overwritten. If no z coordinate exists, altitude is used as its value.                                                                                                 | `527`                  |
 | altitudeOffset   | no       | Number                                                      |                     | Height offset for display in 3D mode in meters. If given, any existing z coordinates will be increased by this value. If no z coordinate exists, this value is used as z coordinate.                                                                              | `10`                   |
 | gfiTheme         | yes      | String/Object                                               |                     | Display style of GFI information for this layer. Unless `"default"` is chosen, custom templates may be used to show GFI information in another format than the default table style.                                                                               | `"default"`            |
+|layerSequence|no|Number||Number to determine the sequence of selected layers in the layerTree and layerSelection. A Layer with sequence number 1 is always the top layer, etc.|
 
 **GeoJSON layer example:**
 
@@ -1299,7 +1306,8 @@ With these confurations a url in the feature properties can be displayed either 
       "gfiAttributes" : "showAll",
       "layerAttribution" : "nicht vorhanden",
       "legendURL" : "",
-      "gfiTheme": "default"
+      "gfiTheme": "default",
+      "layerSequence": 1
    }
 ```
 
@@ -1326,6 +1334,7 @@ With these confurations a url in the feature properties can be displayed either 
 | authenticationUrl | no       | String                                                          |                                             | Additional url called to trigger basic authentication in the browser.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | "https://api.hamburg.de/datasets/v1/schulen/collections/staatliche_schulen/appschema" |
 | limit             | false    | Number                                                          |                                             | Limits the number of items presented in the response document. Ignored if bulk is `true`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `10`                                                                                  |
 | crs               | false    | String                                                          | http://www.opengis.net/def/crs/EPSG/0/25832 | The coordinate reference system of the response geometries. If not supported, server will respond with error 400. See collections index of your oaf service for supported crs. e.g. https://api.hamburg.de/datasets/v1/schulen/collections. Can also be set to false to disable the crs parameter                                                                                                                                                                                                                                                                                                                  | `"EPSG:25832"`                                                                        |
+|layerSequence|no|Number||Number to determine the sequence of selected layers in the layerTree and layerSelection. A Layer with sequence number 1 is always the top layer, etc.|
 
 **OAF example:**
 
@@ -1340,7 +1349,8 @@ With these confurations a url in the feature properties can be displayed either 
     "crs": "http://www.opengis.net/def/crs/EPSG/0/25832",
     "styleId": "8712",
     "gfiAttributes": "showAll",
-    "gfiTheme": "default"
+    "gfiTheme": "default",
+    "layerSequence": 1
 }
 ```
 
@@ -1360,6 +1370,7 @@ With these confurations a url in the feature properties can be displayed either 
 | blur             | no       | Number   | `15`                                       | Blur of heatmap features.                                                                                                                                                                                                      | `15`                       |
 | gradient         | no       | String[] | `["#00f", "#0ff", "#0f0", "#ff0", "#f00"]` | Heatmap color gradient.                                                                                                                                                                                                        | `["#f00", "#0f0", "#00f"]` |
 | dataLayerId      | yes      | String   |                                            | Id of layer to use for heatmap features.                                                                                                                                                                                       | `"4321"`                   |
+|layerSequence|no|Number||Number to determine the sequence of selected layers in the layerTree and layerSelection. A Layer with sequence number 1 is always the top layer, etc.|
 
 **Heatmap layer example:**
 
@@ -1380,7 +1391,8 @@ With these confurations a url in the feature properties can be displayed either 
       "#bd0026"
     ],
     "gfiAttributes": "ignore",
-    "dataLayerId": "4321"
+    "dataLayerId": "4321",
+    "layerSequence": 1
 }
 ```
 
@@ -1403,6 +1415,7 @@ With these confurations a url in the feature properties can be displayed either 
 | cesium3DTilesetOptions | no       | **[cesium3DTilesetOptions](https://cesiumjs.org/Cesium/Build/Documentation/Cesium3DTileset.html)** |                     | Cesium 3D tileset options directly forwarded to the cesium tileset object. E.g. `maximumScreenSpaceError` can be used for distance visibility.                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | useProxy               | no       | Boolean                                                                                            | `false`             | _Deprecated in the next major release. *[GDI-DE](https://www.gdi-de.org/en)* recommends setting CORS headers on the required services instead._ Only used for GFI requests. The request will contain the requested URL as path, with dots replaced by underscores.                                                                                                                                                                                                                                                                                                                                              | `false`                                          |
 |sceneOptions|no|Object||This can be used to change the depthTestAgainstTerrain parameter on the Cesium Scene. By default, this is set to false in the mpApi so that layers do not disappear under the terrain. However, this is desired for special layers such as 3D Mesh, as they would otherwise be covered by the surface. For this purpose, an object globe{depthTestAgainstTerrain: true} can be added to the layer, as in the example.|`false`|
+|layerSequence|no|Number||Number to determine the sequence of selected layers in the layerTree and layerSelection. A Layer with sequence number 1 is always the top layer, etc.|
 
 **Tileset example:**
 
@@ -1438,7 +1451,8 @@ With these confurations a url in the feature properties can be displayed either 
             ],
             "kategorie_organisation": "Behörde für Wirtschaft, Verkehr und Innovation"
         }
-    ]
+    ],
+    "layerSequence": 1
 }
 ```
 
@@ -1458,6 +1472,7 @@ With these confurations a url in the feature properties can be displayed either 
 | url                          | yes      | String                                                                                                         |                     | Service URL                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `"https://geodienste.hamburg.de/terrain"` |
 | cesiumTerrainProviderOptions | no       | **[cesiumTerrainProviderOptions](https://cesiumjs.org/Cesium/Build/Documentation/CesiumTerrainProvider.html)** |                     | Cesium TerrainProvider options directly forwarded to the Cesium TerrainProvider. E.g. `requestVertexNormals` can be used for object shading.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | useProxy                     | no       | Boolean                                                                                                        | `false`             | _Deprecated in the next major release. *[GDI-DE](https://www.gdi-de.org/en)* recommends setting CORS headers on the required services instead._ Only used for GFI requests. The request will contain the requested URL as path, with dots replaced by underscores.                                                                                                                                                                                                                                                                                                                                                 | `false`                                   |
+|layerSequence|no|Number||Number to determine the sequence of selected layers in the layerTree and layerSelection. A Layer with sequence number 1 is always the top layer, etc.|
 
 **Terrain example:**
 
@@ -1487,7 +1502,8 @@ With these confurations a url in the feature properties can be displayed either 
             ],
             "kategorie_organisation" : "Behörde für Wirtschaft, Verkehr und Innovation"
          }
-      ]
+      ],
+      "layerSequence": 1
    }
 ```
 
@@ -1509,6 +1525,7 @@ With these confurations a url in the feature properties can be displayed either 
 | projection       | yes      | String                                                        |                     | Projection of the oblique image layer.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `EPSG:25832`                              |
 | url              | yes      | String                                                        |                     | Service URL                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `"https://geodienste.hamburg.de/oblique"` |
 | useProxy         | no       | Boolean                                                       | `false`             | _Deprecated in the next major release. *[GDI-DE](https://www.gdi-de.org/en)* recommends setting CORS headers on the required services instead._ Only used for GFI requests. The request will contain the requested URL as path, with dots replaced by underscores.                                                                                                                                                                                                                                                                                                                                                 | `false`                                   |
+|layerSequence|no|Number||Number to determine the sequence of selected layers in the layerTree and layerSelection. A Layer with sequence number 1 is always the top layer, etc.|
 
 **Oblique layer example:**
 
@@ -1535,7 +1552,8 @@ With these confurations a url in the feature properties can be displayed either 
             ],
             "kategorie_organisation" : "Behörde für Wirtschaft, Verkehr und Innovation"
          }
-      ]
+      ],
+      "layerSequence": 1
    }
 ```
 
@@ -1554,6 +1572,7 @@ Used to display 3D models in Gltf or Glb format.
 | typ              | yes      | String                                                        |                     | Service type; in this case, `"Entities3D"`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `"Entities3D"`         |
 | entities         | yes      | Array                                                         |                     | Models to be shown                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `[]`                   |
 | useProxy         | no       | Boolean                                                       | `false`             | _Deprecated in the next major release. *[GDI-DE](https://www.gdi-de.org/en)* recommends setting CORS headers on the required services instead._ Only used for GFI requests. The request will contain the requested URL as path, with dots replaced by underscores.                                                                                                                                                                                                                                                                                                                                                 | `false`                |
+|layerSequence|no|Number||Number to determine the sequence of selected layers in the layerTree and layerSelection. A Layer with sequence number 1 is always the top layer, etc.|
 
 **Entity options**
 
@@ -1611,6 +1630,7 @@ Used to display 3D models in Gltf or Glb format.
          ],
          "kategorie_organisation": "Landesbetrieb Geoinformation und Vermessung"
        }
-     ]
+     ],
+     "layerSequence": 1
    }
 ```
