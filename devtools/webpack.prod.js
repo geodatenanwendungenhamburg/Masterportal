@@ -14,6 +14,9 @@ module.exports = function () {
             filename: "js/[name].js",
             publicPath: "../mastercode/" + mastercodeVersionFolderName + "/"
         },
+        node: {
+            fs: "empty"
+        },
         module: {
             rules: [
                 // all fonts (including Bootstrap-Icons) to local folders
