@@ -2,7 +2,7 @@ import buildTreeStructure from "./js/buildTreeStructure";
 import getNestedValues from "../shared/js/utils/getNestedValues";
 import replacer from "../shared/js/utils/replaceInNestedValues";
 import {getAndMergeAllRawLayers, getAndMergeRawLayer} from "./js/getAndMergeRawLayer";
-import {sortObjects, sortByLayerSequence} from "../shared/js/utils/sortObjects";
+import {sortObjects} from "../shared/js/utils/sortObjects";
 import {treeOrder, treeBaselayersKey, treeSubjectsKey} from "../shared/js/utils/constants";
 import layerCollection from "../core/layers/js/layerCollection";
 import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
@@ -263,17 +263,7 @@ export default {
             // fill layerContainer after state.layerConfig changed
             layerContainer = getNestedValues(state.layerConfig, "elements", true).flat(Infinity);
             if (getters.showLayerAddButton) {
-                const visibleLayers = layerContainer.filter(conf => conf.baselayer === true || conf.visibility === true || conf.showInLayerTree);
-                let configLength = visibleLayers.length;
-
-                sortObjects(visibleLayers, "zIndex", "desc");
-                sortByLayerSequence(visibleLayers);
-
-                visibleLayers.forEach(conf => {
-                    conf.zIndex = --configLength;
-                });
-
-                dispatch("updateLayerConfigs", visibleLayers);
+                dispatch("updateLayerConfigs", layerContainer.filter(conf => conf.baselayer === true || conf.visibility === true || conf.showInLayerTree));
             }
             else {
                 dispatch("updateLayerConfigs", layerContainer);
