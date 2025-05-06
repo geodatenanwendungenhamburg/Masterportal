@@ -201,11 +201,11 @@ describe("src/shared/js/utils/sortObjects.js", () => {
             sortByLayerSequence(clonedLayers);
             expect(clonedLayers).to.be.an("array");
             expect(clonedLayers).to.have.deep.members([
-                {name: "b", layerSequence: 1},
-                {name: "a", layerSequence: 2},
-                {name: "d", layerSequence: 3},
-                {name: "c"},
-                {name: "e"}
+                {name: "b", layerSequence: 1, zIndex: 4},
+                {name: "a", layerSequence: 2, zIndex: 3},
+                {name: "d", layerSequence: 3, zIndex: 2},
+                {name: "c", zIndex: 1},
+                {name: "e", zIndex: 0}
             ]);
         });
         it("should place objects without layerSequence at the end", () => {
@@ -227,10 +227,10 @@ describe("src/shared/js/utils/sortObjects.js", () => {
             sortByLayerSequence(newLayers);
             expect(newLayers).to.be.an("array");
             expect(newLayers).to.have.deep.members([
-                {name: "b", layerSequence: 1},
-                {name: "a", layerSequence: 2},
-                {name: "c", layerSequence: 2},
-                {name: "d", layerSequence: 3}
+                {name: "b", layerSequence: 1, zIndex: 3},
+                {name: "a", layerSequence: 2, zIndex: 2},
+                {name: "c", layerSequence: 2, zIndex: 1},
+                {name: "d", layerSequence: 3, zIndex: 0}
             ]);
             expect(newLayers[1].name).to.equal("a");
         });
