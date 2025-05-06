@@ -1,13 +1,14 @@
-import {config, shallowMount} from "@vue/test-utils";
+import {config, mount} from "@vue/test-utils";
 import {createStore} from "vuex";
 import LeftSidebar from "../../../../components/sidebar/LeftSidebar.vue";
+import sinon from "sinon";
 import {expect} from "chai";
-import {nextTick} from "vue";
 
 config.global.mocks.$t = key => key;
 
-describe("src/modules/bimViewer/components/sidebar/LeftSidebar.vue", () => {
-    let store;
+describe("src/modules/bimViewer/tests/unit/components/sidebar/LeftSidebar.spec.js", () => {
+    let wrapper,
+        store;
 
     beforeEach(() => {
         store = createStore({
@@ -20,82 +21,61 @@ describe("src/modules/bimViewer/components/sidebar/LeftSidebar.vue", () => {
                             getters: {
                                 loadedModels: () => []
                             },
-                            state: {}
+                            actions: {
+                                updateXeokitPluginTreeViewHierarchyType: sinon.stub()
+                            }
                         }
                     }
                 }
             }
         });
-    });
 
-    it("renders the base component", () => {
-        const wrapper = shallowMount(LeftSidebar, {
+        wrapper = mount(LeftSidebar, {
             global: {
                 plugins: [store]
             }
         });
+    });
 
+    afterEach(() => {
+        wrapper.unmount();
+        sinon.restore();
+    });
+
+    it("renders the base component", async () => {
         expect(wrapper.find("div.LeftSidebar").exists()).to.be.true;
     });
 
-    it("renders four tabs and ensures the first tab is active", async () => {
-        const
-            wrapper = shallowMount(LeftSidebar, {
-                global: {
-                    plugins: [store]
-                }
-            }),
-            tabs = wrapper.findAll("nav-tab-stub");
+    it("calls setActiveTab and dispatches the correct action when any tab is clicked", async () => {
+        const dispatchStub = sinon.stub(wrapper.vm.$store, "dispatch"),
+            tabs = [
+                {type: "models", id: "#tab-models", action: "Modules/BimViewer/resetLoadedModelExtraSettings"},
+                {type: "containment", id: "#tab-containment", action: "Modules/BimViewer/updateXeokitPluginTreeViewHierarchyType"},
+                {type: "storeys", id: "#tab-storeys", action: "Modules/BimViewer/updateXeokitPluginTreeViewHierarchyType"},
+                {type: "types", id: "#tab-types", action: "Modules/BimViewer/updateXeokitPluginTreeViewHierarchyType"}
+            ];
 
-        expect(tabs.length).to.equal(4);
+        for (const tab of tabs) {
+            await wrapper.find(tab.id).trigger("click");
 
-        // Check tab ids
+            if (tab.type === "models") {
+                expect(dispatchStub.calledWith(tab.action)).to.be.true;
+            }
+            else {
+                expect(dispatchStub.calledWith(tab.action, tab.type)).to.be.true;
+            }
 
-        expect(tabs[0].attributes("id")).to.equal("tab-models");
-        expect(tabs[1].attributes("id")).to.equal("tab-containment");
-        expect(tabs[2].attributes("id")).to.equal("tab-storeys");
-        expect(tabs[3].attributes("id")).to.equal("tab-types");
+            expect(wrapper.vm.activeTab).to.equal(tab.type);
 
-        // Check tab status and selected content area, if tab is changed
+            dispatchStub.resetHistory();
+        }
 
-        wrapper.vm.activeTab = "models";
+        dispatchStub.restore();
+    });
 
-        await nextTick();
+    it("does not throw if setActiveTab is called with undefined", () => {
+        const setActiveTab = wrapper.vm.setActiveTab;
 
-        expect(wrapper.find("div#tab-content-models").exists()).to.be.true;
-        expect(tabs[0].attributes("active")).to.equal("true");
-        expect(tabs[1].attributes("active")).to.equal("false");
-        expect(tabs[2].attributes("active")).to.equal("false");
-        expect(tabs[3].attributes("active")).to.equal("false");
-
-        wrapper.vm.activeTab = "containment";
-
-        await nextTick();
-
-        expect(wrapper.find("div#tab-content-containment").exists()).to.be.true;
-        expect(tabs[0].attributes("active")).to.equal("false");
-        expect(tabs[1].attributes("active")).to.equal("true");
-        expect(tabs[2].attributes("active")).to.equal("false");
-        expect(tabs[3].attributes("active")).to.equal("false");
-
-        wrapper.vm.activeTab = "storeys";
-
-        await nextTick();
-
-        expect(wrapper.find("div#tab-content-storeys").exists()).to.be.true;
-        expect(tabs[0].attributes("active")).to.equal("false");
-        expect(tabs[1].attributes("active")).to.equal("false");
-        expect(tabs[2].attributes("active")).to.equal("true");
-        expect(tabs[3].attributes("active")).to.equal("false");
-
-        wrapper.vm.activeTab = "types";
-
-        await nextTick();
-
-        expect(wrapper.find("div#tab-content-types").exists()).to.be.true;
-        expect(tabs[0].attributes("active")).to.equal("false");
-        expect(tabs[1].attributes("active")).to.equal("false");
-        expect(tabs[2].attributes("active")).to.equal("false");
-        expect(tabs[3].attributes("active")).to.equal("true");
+        expect(() => setActiveTab(undefined)).to.not.throw();
     });
 });

@@ -8,6 +8,10 @@ export default {
     },
     methods: {
         setActive (isActive) {
+            if (typeof isActive !== "boolean") {
+                throw new Error("setActive expects a boolean value");
+            }
+
             this.$store.dispatch("Modules/BimViewer/ToolMeasurements/toggle", {
                 isActive
             });
