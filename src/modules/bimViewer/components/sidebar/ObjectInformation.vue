@@ -11,7 +11,8 @@ export default {
         return {
             objectData: null,
             refreshTimestamp: new Date(),
-            isSticky: false
+            isSticky: false,
+            objectDataAccordeonisActive: true
         };
     },
     computed: {
@@ -71,7 +72,7 @@ export default {
             this.refreshTimestamp = new Date();
         },
         generatedPsetHyperlinkTitle (completeLinkPath) {
-            return completeLinkPath.split(/.*[/|\\]/)[1];
+            return completeLinkPath.split(/.*[/|\\]/)[1].split("?")[0];
         },
         activateObjectInformation () {
             this.$store.commit("Modules/BimViewer/ToolObjectInfo/setModeObjectInfoActive", true);
@@ -109,26 +110,37 @@ export default {
             class="dataAvailable"
         >
             <div class="section">
-                <span class="accordionHeader">
+                <button
+                    :class="{
+                        'accordionButton': true,
+                        'active': objectDataAccordeonisActive
+                    }"
+                    @click="objectDataAccordeonisActive = !objectDataAccordeonisActive"
+                    @keyup.enter="objectDataAccordeonisActive = !objectDataAccordeonisActive"
+                >
                     {{ $t("modules.bimViewer.objectInformation.title") }}
-                </span>
+                </button>
 
-                <table class="propertiesTable active">
+                <table
+                    :class="{
+                        'propertiesTable': true,
+                        'active': objectDataAccordeonisActive
+                    }"
+                >
                     <tbody>
                         <tr>
                             <td class="tdLabel">
-                                {{ `${$t('modules.bimViewer.objectInformation.table.name')}:` }}
+                                {{ $t('modules.bimViewer.objectInformation.table.name') }}:
                             </td>
 
                             <td class="tdValue">
-                                <!--                            <strong>{{ objectData.name }}</strong>-->
                                 {{ objectData.name }}
                             </td>
                         </tr>
 
                         <tr>
                             <td class="tdLabel">
-                                {{ `${$t('modules.bimViewer.objectInformation.table.class')}:` }}
+                                {{ $t('modules.bimViewer.objectInformation.table.class') }}:
                             </td>
 
                             <td class="tdValue">
@@ -138,7 +150,17 @@ export default {
 
                         <tr>
                             <td class="tdLabel">
-                                {{ `${$t('modules.bimViewer.objectInformation.table.uuid')}:` }}
+                                {{ $t('modules.bimViewer.objectInformation.table.schema') }}:
+                            </td>
+
+                            <td class="tdValue">
+                                {{ objectData.metaModels[0].schema }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="tdLabel">
+                                {{ $t('modules.bimViewer.objectInformation.table.uuid') }}:
                             </td>
 
                             <td class="tdValue">
@@ -148,11 +170,41 @@ export default {
 
                         <tr>
                             <td class="tdLabel">
-                                {{ `${$t('modules.bimViewer.objectInformation.table.storey')}:` }}
+                                {{ $t('modules.bimViewer.objectInformation.table.storey') }}:
                             </td>
 
                             <td class="tdValue">
                                 {{ objectData.storey }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="tdLabel">
+                                {{ $t('modules.bimViewer.objectInformation.table.model') }}:
+                            </td>
+
+                            <td class="tdValue">
+                                {{ objectData.metaModels[0].id }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="tdLabel">
+                                {{ $t('modules.bimViewer.objectInformation.table.createdAt') }}:
+                            </td>
+
+                            <td class="tdValue">
+                                {{ objectData.metaModels[0].createdAt }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="tdLabel">
+                                {{ $t('modules.bimViewer.objectInformation.table.author') }}:
+                            </td>
+
+                            <td class="tdValue">
+                                {{ objectData.metaModels[0].author }}
                             </td>
                         </tr>
                     </tbody>
@@ -191,7 +243,7 @@ export default {
                             </td>
 
                             <td
-                                v-if="propertySet.name === 'Pset_Hyperlink'"
+                                v-if="propertySet.name.startsWith('Pset_Hyperlink') && property.value.startsWith('http')"
                                 class="tdValue"
                             >
                                 <a

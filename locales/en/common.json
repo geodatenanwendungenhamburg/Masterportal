@@ -135,9 +135,13 @@
         "noDataObjectInformationActivated": "Object info is now activated. Please select an object.",
         "table": {
           "name": "Name",
-          "class": "Class",
+          "class": "IFC-Entity",
           "uuid": "UUID",
-          "storey": "Storey"
+          "storey": "Storey",
+          "model": "Model",
+          "createdAt": "Created at",
+          "schema": "IFC-Schema",
+          "author": "Author"
         },
         "cameraSettings": "Camera coordinates"
       },

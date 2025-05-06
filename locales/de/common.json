@@ -135,9 +135,13 @@
         "noDataObjectInformationActivated": "\"Objekt-Info abfragen\" ist nun aktiviert. Bitte wählen Sie ein Objekt aus.",
         "table": {
           "name": "Name",
-          "class": "Class",
+          "class": "IFC-Entität",
           "uuid": "UUID",
-          "storey": "Geschoss"
+          "storey": "Geschoss",
+          "model": "Modell",
+          "createdAt": "Erzeugt am",
+          "schema": "IFC-Schema",
+          "author": "Autor/in"
         },
         "cameraSettings": "Kamerakoordinaten"
       },

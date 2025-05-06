@@ -146,6 +146,8 @@ const actions = {
                     theModel.on("loaded", () => {
                         modelPosition++;
 
+                        dispatch("addMetaInformationToModel", theModel);
+
                         commit("setCurrentlyLoadedModels", modelPosition);
 
                         // When the last model has been loaded, update the camera and make the models visible.
@@ -573,6 +575,9 @@ const actions = {
                                 modelLoader: modelLoader
                             })
                                 .then((loadedModel) => {
+                                    if (payload.type === "ifc" || payload.type === "xkt") {
+                                        dispatch("addMetaInformationToModel", loadedModel);
+                                    }
                                     resolve(loadedModel);
                                 })
                                 .catch((err) => {
@@ -606,6 +611,9 @@ const actions = {
                     modelLoader: modelLoader
                 })
                     .then((loadedModel) => {
+                        if (payload.type === "ifc" || payload.type === "xkt") {
+                            dispatch("addMetaInformationToModel", loadedModel);
+                        }
                         resolve(loadedModel);
                     })
                     .catch((err) => {
@@ -748,6 +756,25 @@ const actions = {
 
             reader.readAsArrayBuffer(payload.blob);
         });
+    },
+    /**
+     * Add meta information to the loaded model.
+     * @param {Object} context actions context object.
+     * @param {Object} payload loadedModel {id}
+     * @returns {void}
+     */
+    addMetaInformationToModel ({getters}, payload) {
+        const api = getters.xeokitIfcAPI,
+            modelId = payload.id,
+            fileName = api.GetHeaderLine(modelId, WebIFC.FILE_NAME), // FILE_NAME
+            schema = api.GetHeaderLine(modelId, WebIFC.FILE_SCHEMA); // FILE_SCHEMA
+
+        // following request will give additional Header-Information for the model
+        // headerInfo = api.GetHeaderLine(modelId, WebIFC.FILE_DESCRIPTION), // FILE_DESCRIPTION
+
+        getters.xeokitViewer.metaScene.metaModels[modelId].schema = schema?.arguments[0][0].value;
+        getters.xeokitViewer.metaScene.metaModels[modelId].author = fileName?.arguments[2][0].value;
+        getters.xeokitViewer.metaScene.metaModels[modelId].createdAt = fileName?.arguments[1].value;
     }
 };
 
