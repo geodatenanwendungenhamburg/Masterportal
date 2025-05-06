@@ -124,17 +124,17 @@ describe("src/modules/layerSelection/components/LayerSelectionTreeNode.vue", () 
             expect(wrapper.emitted().showNode[0]).to.deep.equal([
                 "Folder",
                 [
-                    {id: "2", name: "Layer 2", layerSequence: 1},
-                    {id: "1", name: "Layer 1", layerSequence: 2},
-                    {id: "3", name: "Layer 3"}
+                    {id: "2", name: "Layer 2", layerSequence: 1, zIndex: 2},
+                    {id: "1", name: "Layer 1", layerSequence: 2, zIndex: 1},
+                    {id: "3", name: "Layer 3", zIndex: 0}
                 ]
             ]);
         });
         it("folderClicked - sorts elements by layerSequence, if layerSequence is present", () => {
             expect(wrapper.vm.conf.elements).to.deep.equal([
-                {id: "2", name: "Layer 2", layerSequence: 1},
-                {id: "1", name: "Layer 1", layerSequence: 2},
-                {id: "3", name: "Layer 3"}
+                {id: "2", name: "Layer 2", layerSequence: 1, zIndex: 2},
+                {id: "1", name: "Layer 1", layerSequence: 2, zIndex: 1},
+                {id: "3", name: "Layer 3", zIndex: 0}
             ]);
         });
     });
