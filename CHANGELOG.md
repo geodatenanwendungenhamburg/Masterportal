@@ -10,6 +10,7 @@
 - Issue #1331: Show group layers in right order.
 - Issue #1358: Topic tree search can now also be used in multiple languages via i18next.
 - Issue #1388: In a menu section are several modules of same type allowed.
+- Issue #1387: Sorting layer by `layerSequence` assigns fitting zIndexes.
 - LayerInformation: Fixed an issue with no metadata, when cswUrl was undefined, rather than null.
 - ShareView: 
     - Deleted import of BorisState as it caused a compiler error when addons are not integrated. Replaced it with a string instead.
