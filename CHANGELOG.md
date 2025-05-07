@@ -4,15 +4,14 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
+## 2025-05-07 v3.10.0
 
 ### Added
 - MapMarker: Added the ability to additionally highlight polygons.
 - FullScreen: added "newTabFromFrame" configuration, to disable opening a new tab if in an iFrame.
 - LayerTree: added "contactPublisherName" configuration, to change the info message shown, when clicking the contact sub menu.
 - UrlParams: Added URL-Params mainclosed and secondaryclosed to have the menus initially closed when set to true and opened when set to false.
-- Menutitle: Added ability to show only a logo without portal title (do not set option 'text')
+- Menutitle: Added ability to show only a logo without portal title (do not set option 'text').
 - HighlightFeaturesByAttribute: Highlighted features via url parameter can now be printed.
 - WFST: Added multiselect for edit option in Point-Layers.
 - Menus: Module caching implemented via KeepAlive lifecycle hooks.
@@ -24,10 +23,6 @@
 - CompareMaps: layer selection fields are labeled left/right or upper/lower layer instead of first/second layer.
 - dependencies:
         - @masterportal/masterportalapi: 2.48.0 to 2.49.0
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - Issue #1206: WMTS-Layer: legend is displayed, if configured in attribute legend.
