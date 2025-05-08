@@ -1,21 +1,23 @@
-import {
-    WebIFCLoaderPlugin,
-    GLTFLoaderPlugin,
-    XKTLoaderPlugin,
-    DistanceMeasurementsMouseControl,
-    DistanceMeasurementsPlugin,
-    NavCubePlugin,
-    Viewer,
-    AnnotationsPlugin,
-    LocaleService,
-    TreeViewPlugin
-} from "@xeokit/xeokit-sdk";
-import * as WebIFC from "web-ifc/web-ifc-api.js";
 import axios from "axios";
 import {buildEndpointUrl} from "../utils/buildEndpointUrl";
 import proj4 from "proj4";
 
+let
+    XeoKitSdk = null,
+    WebIFC = null;
+
 const actions = {
+    /**
+     * Initialize BimViewer by dynamically loading the required node packages.
+     * This is required to ensure, that separate js files are generated and
+     * loaded during the webpack build process.
+     *
+     * @returns {Promise<void>}
+     */
+    async initializeBimViewer () {
+        XeoKitSdk = await import(/* webpackChunkName: "bim-viewer_xeokit-sdk" */ "@xeokit/xeokit-sdk");
+        WebIFC = await import(/* webpackChunkName: "bim-viewer_web-ifc-api" */ "web-ifc/web-ifc-api.js");
+    },
     /**
      * Load scene configs from server. Contains multiple scenes each with models, camera settings, sao settings, etc.
      * The sceneConfigsUrl is configured in the portal's config.json
@@ -36,6 +38,8 @@ const actions = {
      * @returns {void}
      */
     setScene ({commit, dispatch, getters}, payload) {
+        const {Viewer} = XeoKitSdk;
+
         // If an instance exists already, clean up first.
         if (
             getters.xeokitViewer &&
@@ -50,8 +54,12 @@ const actions = {
             // Reset all loaded IFC model instances
             dispatch("resetLoadedModels");
         }
+
         // Initialize the Viewer
-        const navCubeLabels = {
+        // eslint-disable-next-line one-var
+        const
+            {WebIFCLoaderPlugin, GLTFLoaderPlugin, XKTLoaderPlugin, LocaleService} = XeoKitSdk,
+            navCubeLabels = {
                 "front": i18next.t("modules.bimViewer.NavCube.front"),
                 "back": i18next.t("modules.bimViewer.NavCube.back"),
                 "top": i18next.t("modules.bimViewer.NavCube.top"),
@@ -249,14 +257,16 @@ const actions = {
      * @returns {void}
      */
     addPluginTreeView ({commit, getters}, payload) {
-        const xeokitPluginTreeView = new TreeViewPlugin(getters.xeokitViewer, {
-            containerElement: payload.domElement,
-            autoExpandDepth: 1,
-            sortNodes: false,
-            hierarchy: "containment",
-            pruneEmptyNodes: false,
-            autoAddModels: true
-        });
+        const
+            {TreeViewPlugin} = XeoKitSdk,
+            xeokitPluginTreeView = new TreeViewPlugin(getters.xeokitViewer, {
+                containerElement: payload.domElement,
+                autoExpandDepth: 1,
+                sortNodes: false,
+                hierarchy: "containment",
+                pruneEmptyNodes: false,
+                autoAddModels: true
+            });
 
         xeokitPluginTreeView.on("nodeTitleClicked", (event) => {
             const
@@ -320,21 +330,23 @@ const actions = {
      * @returns {void}
      */
     addPluginNavCube ({commit, getters}, payload) {
-        const xeokitPluginNavCube = new NavCubePlugin(getters.xeokitViewer, {
-            canvasElement: payload.canvasElement,
-            visible: true, // Initially visible (default)
-            cameraFly: true, // Fly camera to each selected axis/diagonal
-            cameraFitFOV: 45, // How much field-of-view the scene takes once camera has fitted it to view
-            cameraFlyDuration: 0.5, // How long (in seconds) camera takes to fly to each new axis/diagonal
-            fitVisible: false, // Fit whole scene, including invisible objects (default)
-            synchProjection: false, // Keep NavCube in perspective projection, even when camera switches to ortho
-            frontColor: "rgb(200,200,200)",
-            backColor: "rgb(200,200,200)",
-            leftColor: "rgb(200,200,200)",
-            rightColor: "rgb(200,200,200)",
-            topColor: "rgb(200,200,200)",
-            bottomColor: "rgb(200,200,200)"
-        });
+        const
+            {NavCubePlugin} = XeoKitSdk,
+            xeokitPluginNavCube = new NavCubePlugin(getters.xeokitViewer, {
+                canvasElement: payload.canvasElement,
+                visible: true, // Initially visible (default)
+                cameraFly: true, // Fly camera to each selected axis/diagonal
+                cameraFitFOV: 45, // How much field-of-view the scene takes once camera has fitted it to view
+                cameraFlyDuration: 0.5, // How long (in seconds) camera takes to fly to each new axis/diagonal
+                fitVisible: false, // Fit whole scene, including invisible objects (default)
+                synchProjection: false, // Keep NavCube in perspective projection, even when camera switches to ortho
+                frontColor: "rgb(200,200,200)",
+                backColor: "rgb(200,200,200)",
+                leftColor: "rgb(200,200,200)",
+                rightColor: "rgb(200,200,200)",
+                topColor: "rgb(200,200,200)",
+                bottomColor: "rgb(200,200,200)"
+            });
 
         commit("setXeokitPluginNavCube", xeokitPluginNavCube);
     },
@@ -346,6 +358,7 @@ const actions = {
      */
     addPluginDistanceMeasurements ({commit, getters}) {
         const
+            {DistanceMeasurementsMouseControl, DistanceMeasurementsPlugin} = XeoKitSdk,
             distanceMeasurements = new DistanceMeasurementsPlugin(getters.xeokitViewer, {
                 defaultXLabelEnabled: false,
                 defaultXAxisVisible: false,
@@ -368,8 +381,10 @@ const actions = {
      * @returns {void}
      */
     async addPluginAnnotations ({rootGetters, getters, commit}, payload) {
-        // for DIPAS URL parameters need to be added to the json containing the annotations
-        const urlParams = new URLSearchParams(window.location.search),
+        const
+            {AnnotationsPlugin} = XeoKitSdk,
+            // for DIPAS URL parameters need to be added to the json containing the annotations
+            urlParams = new URLSearchParams(window.location.search),
             urlParamsObject = {};
 
         urlParams.forEach((param, key) => {
@@ -643,7 +658,9 @@ const actions = {
             );
         }
 
-        const heightValue = payload.annoCoords[2] ?? 0,
+        const
+            {AnnotationsPlugin} = XeoKitSdk,
+            heightValue = payload.annoCoords[2] ?? 0,
             canvasPos = projectedCoords
                 ? getters.xeokitViewer.camera.projectWorldPos([projectedCoords[0], heightValue, projectedCoords[1] * -1])
                 : getters.xeokitViewer.camera.projectWorldPos([

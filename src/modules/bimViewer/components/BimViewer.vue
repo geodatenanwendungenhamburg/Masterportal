@@ -54,6 +54,8 @@ export default {
         }
     },
     async mounted () {
+        await this.$store.dispatch("Modules/BimViewer/initializeBimViewer");
+
         this.applyTranslationKey(this.name);
 
         const urlParams = new URLSearchParams(window.location.search);
