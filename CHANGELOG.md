@@ -16,6 +16,7 @@
 ### Removed
 
 ### Fixed
+- Issue #1366: SpecialWfs: Fixes search for coordinates with different format. 
 - Issue #1387: Sorting layer by `layerSequence` assigns fitting zIndexes.
 
 ---
