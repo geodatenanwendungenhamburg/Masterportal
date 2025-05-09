@@ -57,8 +57,9 @@ const actions = {
         scene.highlightMaterial.fillColor = [0.1, 0.8, 0.8];
         scene.highlightMaterial.fillAlpha = 1;
 
-        xeokitViewer.cameraFlight.jumpTo({
-            aabb: scene.getAABB(payload.matchedObjects)
+        xeokitViewer.cameraFlight.flyTo({
+            aabb: scene.getAABB(payload.matchedObjects),
+            duration: 0.5
         });
     },
     /**

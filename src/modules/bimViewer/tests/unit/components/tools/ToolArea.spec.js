@@ -38,9 +38,6 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolArea.vue", () =>
         wrapper = shallowMount(ToolArea, {
             global: {
                 plugins: [store]
-            },
-            props: {
-                sidebarVisibilityRight: false
             }
         });
 

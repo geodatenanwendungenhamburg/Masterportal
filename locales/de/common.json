@@ -121,9 +121,7 @@
         "objectInfoLabel": "Objekt-Info abfragen",
         "objectInfoAriaLabel": "Zeige Objekt Informationen zu einem markierten Objekt",
         "toggleSidebarLeftLabel": "Modelstruktur anzeigen",
-        "treeviewHierarchyTypeStoreys": "Storeys",
-        "treeviewHierarchyTypeTypes": "Types",
-        "treeviewHierarchyTypeContainment": "Containment"
+        "toggleSidebarRightLabel": "Objekt-Eigenschaften anzeigen"
       },
       "showRightSideBar": "Seitenleiste anzeigen",
       "hideRightSideBar": "Seitenleiste ausblenden",
@@ -153,6 +151,20 @@
         "bottom": "unten",
         "left": "links",
         "right": "rechts"
+      },
+      "modelExplorer": {
+        "noModelsLoaded": "Kein Modell geladen",
+        "tabModels": "Modelle",
+        "tabStoreys": "Geschosse",
+        "tabTypes": "IFC-Typ",
+        "tabContainment": "Hierarchie",
+        "models": {
+          "buttonToggleTransparency": "Transparenz ein-/ausschalten",
+          "buttonToggleVisibility": "Modell ein-/ausblenden",
+          "buttonDeleteModel": "Modell aus Szene löschen",
+          "buttonClearScene": "Szene leeren",
+          "fitModel": "Modell einpassen"
+        }
       }
     },
     "bufferAnalysis": {

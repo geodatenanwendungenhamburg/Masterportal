@@ -29,7 +29,13 @@ const mutations = {
      * @returns {void}
      */
     pushLoadedModel (state, theModel) {
-        state.loadedModels.push(theModel);
+        state.loadedModels.push({
+            sceneModel: theModel,
+            extraSettings: {
+                xRayed: false,
+                visible: true
+            }
+        });
     },
     /**
      * Update the hierarchy property of the TreeView plugin
@@ -38,7 +44,20 @@ const mutations = {
      * @param {string} hierarchyType Type of hierarchy (containment|storeys|types)
      */
     updateXeokitPluginTreeViewHierarchyType (state, hierarchyType) {
-        state.xeokitPluginTreeView.hierarchy = hierarchyType;
+        if (state.loadedModels?.length) {
+            state.xeokitPluginTreeView.hierarchy = hierarchyType;
+        }
+    },
+    /**
+     * Remove a model from the loaded model list
+     *
+     * @param {object} state of this component
+     * @param {string} modelId ModelId to be removed
+     */
+    removeFromLoadedModels (state, modelId) {
+        state.loadedModels = state.loadedModels.filter(
+            item => item.sceneModel.id !== modelId
+        );
     }
 };
 

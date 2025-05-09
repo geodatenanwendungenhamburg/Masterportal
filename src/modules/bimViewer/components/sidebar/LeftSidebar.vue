@@ -1,21 +1,51 @@
 <script>
 import NavTab from "../../../../shared/modules/tabs/components/NavTab.vue";
+import {mapGetters} from "vuex";
+import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
+import FlatButton from "../../../../shared/modules/buttons/components/FlatButton.vue";
 
 export default {
     name: "LeftSidebar",
     components: {
+        FlatButton,
+        IconButton,
         NavTab
     },
     data () {
         return {
-            treeviewHierarchyType: "containment"
+            activeTab: "models"
         };
     },
+    computed: {
+        ...mapGetters("Modules/BimViewer", [
+            "loadedModels"
+        ])
+    },
     methods: {
-        setTreeviewHierarchyType (hierarchyType) {
-            this.$store.dispatch("Modules/BimViewer/updateXeokitPluginTreeViewHierarchyType", hierarchyType);
+        setActiveTab (tab) {
+            if (tab !== "models") {
+                this.$store.dispatch("Modules/BimViewer/updateXeokitPluginTreeViewHierarchyType", tab);
+            }
+            else {
+                this.$store.dispatch("Modules/BimViewer/resetLoadedModelExtraSettings");
+            }
 
-            this.treeviewHierarchyType = hierarchyType;
+            this.activeTab = tab;
+        },
+        deleteModel (modelId) {
+            this.$store.dispatch("Modules/BimViewer/destroyModel", modelId);
+        },
+        deleteAllModels () {
+            this.loadedModels.forEach(item => this.$store.dispatch("Modules/BimViewer/destroyModel", item.sceneModel.id));
+        },
+        setLoadedModelXRayed (modelId, isXRayed) {
+            this.$store.dispatch("Modules/BimViewer/setLoadedModelXRayed", {modelId, isXRayed});
+        },
+        setLoadedModelInvisible (modelId, isInvisible) {
+            this.$store.dispatch("Modules/BimViewer/setLoadedModelInvisible", {modelId, isInvisible});
+        },
+        flyToCompleteModel (modelId) {
+            this.$store.dispatch("Modules/BimViewer/flyToCompleteModel", modelId);
         }
     }
 };
@@ -28,122 +58,240 @@ export default {
             role="tablist"
         >
             <NavTab
-                :id="'treeview-containment-tab'"
-                :active="treeviewHierarchyType === 'containment'"
-                :target="'#treeview-containment-pane'"
-                :label="'modules.bimViewer.tools.treeviewHierarchyTypeContainment'"
-                :interaction="() => setTreeviewHierarchyType('containment')"
+                :id="'tab-models'"
+                class="text-nowrap"
+                :active="activeTab === 'models'"
+                :target="'#tab-content-models'"
+                :label="'modules.bimViewer.modelExplorer.tabModels'"
+                :interaction="() => setActiveTab('models')"
             />
 
             <NavTab
-                :id="'treeview-storeys-tab'"
-                :active="treeviewHierarchyType === 'storeys'"
-                :target="'#treeview-storeys-pane'"
-                :label="'modules.bimViewer.tools.treeviewHierarchyTypeStoreys'"
-                :interaction="() => setTreeviewHierarchyType('storeys')"
+                :id="'tab-containment'"
+                class="text-nowrap"
+                :active="activeTab === 'containment'"
+                :target="'#tab-content-containment'"
+                :label="'modules.bimViewer.modelExplorer.tabContainment'"
+                :interaction="() => setActiveTab('containment')"
             />
 
             <NavTab
-                :id="'treeview-types-tab'"
-                :active="treeviewHierarchyType === 'types'"
-                :target="'#treeview-types-pane'"
-                :label="'modules.bimViewer.tools.treeviewHierarchyTypeTypes'"
-                :interaction="() => setTreeviewHierarchyType('types')"
+                :id="'tab-storeys'"
+                class="text-nowrap"
+                :active="activeTab === 'storeys'"
+                :target="'#tab-content-storeys'"
+                :label="'modules.bimViewer.modelExplorer.tabStoreys'"
+                :interaction="() => setActiveTab('storeys')"
+            />
+
+            <NavTab
+                :id="'tab-types'"
+                class="text-nowrap"
+                :active="activeTab === 'types'"
+                :target="'#tab-content-types'"
+                :label="'modules.bimViewer.modelExplorer.tabTypes'"
+                :interaction="() => setActiveTab('types')"
             />
         </ul>
 
-        <slot :data="{treeviewHierarchyType}" />
+        <template v-if="activeTab === 'models'">
+            <div
+                id="tab-content-models"
+                class="modelContainer"
+            >
+                <div v-if="!loadedModels?.length">
+                    {{ $t("modules.bimViewer.modelExplorer.noModelsLoaded") }}
+                </div>
+
+                <template v-else>
+                    <div
+                        v-for="loadedModelItem in loadedModels"
+                        :key="`model_${loadedModelItem.sceneModel.id}`"
+                        class="modelItem"
+                    >
+                        <div
+                            class="link"
+                            role="button"
+                            tabindex="0"
+                            :title="$t('modules.bimViewer.modelExplorer.models.fitModel')"
+                            :aria-label="$t('modules.bimViewer.modelExplorer.models.fitModel')"
+                            @click="flyToCompleteModel(loadedModelItem.sceneModel.id)"
+                            @keydown.enter="flyToCompleteModel(loadedModelItem.sceneModel.id)"
+                        >
+                            {{ loadedModelItem.sceneModel.id }}
+                        </div>
+
+                        <div class="actions">
+                            <IconButton
+                                :class-array="['btn-light', 'bootstrap-icon']"
+                                :titel="$t('modules.bimViewer.modelExplorer.models.buttonToggleVisibility')"
+                                :aria="$t('modules.bimViewer.modelExplorer.models.buttonToggleVisibility')"
+                                :icon="loadedModelItem.extraSettings.visible ? 'bi-eye' : 'bi-eye-slash'"
+                                :interaction="() => setLoadedModelInvisible(
+                                    loadedModelItem.sceneModel.id,
+                                    loadedModelItem.extraSettings.visible
+                                )"
+                            />
+
+                            <IconButton
+                                :class-array="['btn-light', 'bootstrap-icon']"
+                                :titel="$t('modules.bimViewer.modelExplorer.models.buttonToggleTransparency')"
+                                :aria="$t('modules.bimViewer.modelExplorer.models.buttonToggleTransparency')"
+                                :icon="loadedModelItem.extraSettings.xRayed ? 'bi-border' : 'bi-border-all'"
+                                :interaction="() => setLoadedModelXRayed(
+                                    loadedModelItem.sceneModel.id,
+                                    !loadedModelItem.extraSettings.xRayed
+                                )"
+                            />
+
+                            <IconButton
+                                :class-array="['btn-light', 'bootstrap-icon']"
+                                :titel="$t('modules.bimViewer.modelExplorer.models.buttonDeleteModel')"
+                                :aria="$t('modules.bimViewer.modelExplorer.models.buttonDeleteModel')"
+                                :icon="'bi-trash'"
+                                :interaction="() => deleteModel(loadedModelItem.sceneModel.id)"
+                            />
+                        </div>
+                    </div>
+
+                    <FlatButton
+                        :text="$t('modules.bimViewer.modelExplorer.models.buttonClearScene')"
+                        :interaction="() => deleteAllModels()"
+                    />
+                </template>
+            </div>
+        </template>
+
+        <div
+            v-show="activeTab !=='models'"
+            :id="`tab-content-${activeTab}`"
+            ref="treeViewContainer"
+            class="treeViewContainer"
+        >
+            <div v-if="!loadedModels?.length">
+                {{ $t("modules.bimViewer.modelExplorer.noModelsLoaded") }}
+            </div>
+        </div>
     </div>
 </template>
 
 <style lang="scss">
 div.LeftSidebar {
-  display: flex;
-  flex-direction: column;
-  flex: 0.5;
-  padding: 0 1rem 0 0;
-  box-shadow: 0.1875rem 0.1875rem 1rem #00000050;
+    display: flex;
+    flex-direction: column;
+    flex: 0.5;
+    padding: 0 1rem 0 0;
+    box-shadow: 0.1875rem 0.1875rem 1rem #00000050;
 
-  div.treeViewContainer {
-    height: 100%;
-    pointer-events: all;
-    overflow: auto;
-    color: black;
-    margin: 1rem 0 0 0.5rem;
-    max-width: 300px;
+    div.modelContainer {
+        margin: 1rem 0 0 0.5rem;
 
-    ul {
-      list-style: none;
-      padding-left: 0.75em;
-      pointer-events: none;
+        div.modelItem {
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: solid 0.0625rem #DDD;
+            padding-bottom: 1rem;
 
-      &:first-child {
-        padding-left: 1.5rem;
-      }
+            div.link {
+                overflow-wrap: anywhere;
 
-      li {
-        position: relative;
-        width: 100%;
-        pointer-events: none;
-        padding: 3px 0;
-        vertical-align: middle;
+                &:hover {
+                    background-color: #DCE2F3;
+                }
+            }
 
-        &.xrayed-node {
-          > span {
-            color: #AAA;
-          }
+            div.actions {
+                display: flex;
+            }
+
+            &:last-of-type {
+                margin-bottom: 1rem;
+            }
         }
-
-        &.highlighted-node {
-          > span {
-            font-weight: bold;
-          }
-        }
-
-        a {
-          background-color: #eee;
-          border-radius: 50%;
-          color: #000;
-          display: inline-block;
-          height: 1.5em;
-          left: -1.5em;
-          position: absolute;
-          text-align: center;
-          text-decoration: none;
-          width: 1.5em;
-          pointer-events: all;
-
-          &.plus {
-            background-color: #ded;
-            pointer-events: all;
-          }
-
-          &.minus {
-            background-color: #eee;
-            pointer-events: all;
-          }
-
-          &:active {
-            top: 1px;
-            pointer-events: all;
-          }
-        }
-
-        span {
-          display: inline;
-          padding-left: 2px;
-          pointer-events: all;
-          height: 23px;
-
-          &:hover {
-            background-color: #FFF;
-            cursor: pointer;
-            padding-left: 2px;
-            pointer-events: all;
-          }
-        }
-      }
     }
-  }
+
+    div.treeViewContainer {
+        height: 100%;
+        pointer-events: all;
+        overflow: auto;
+        color: black;
+        margin: 1rem 0 0 0.5rem;
+
+        ul {
+            list-style: none;
+            padding-left: 0.75em;
+            pointer-events: none;
+
+            &:first-child {
+                padding-left: 1.5rem;
+            }
+
+            li {
+                position: relative;
+                width: 100%;
+                pointer-events: none;
+                padding: 3px 0;
+                vertical-align: middle;
+
+                &.xrayed-node {
+                    > span {
+                        color: #AAA;
+                    }
+                }
+
+                &.highlighted-node {
+                    > span {
+                        font-weight: bold;
+                    }
+                }
+
+                a {
+                    background-color: #eee;
+                    border-radius: 50%;
+                    color: #000;
+                    display: inline-block;
+                    height: 1.5em;
+                    left: -1.5em;
+                    position: absolute;
+                    text-align: center;
+                    text-decoration: none;
+                    width: 1.5em;
+                    pointer-events: all;
+
+                    &.plus {
+                        background-color: #ded;
+                        pointer-events: all;
+                    }
+
+                    &.minus {
+                        background-color: #eee;
+                        pointer-events: all;
+                    }
+
+                    &:active {
+                        top: 1px;
+                        pointer-events: all;
+                    }
+                }
+
+                span {
+                    display: inline;
+                    padding-left: 2px;
+                    pointer-events: all;
+                    height: 23px;
+
+                    &:hover {
+                        background-color: #DCE2F3;
+                        cursor: pointer;
+                        padding-left: 2px;
+                        pointer-events: all;
+                    }
+                }
+            }
+        }
+    }
 }
 </style>

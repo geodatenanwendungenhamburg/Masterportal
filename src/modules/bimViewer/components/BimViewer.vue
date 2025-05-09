@@ -2,7 +2,6 @@
 import RightSidebar from "./sidebar/RightSidebar.vue";
 import ToolArea from "./tools/ToolArea.vue";
 import {mapGetters, mapMutations} from "vuex";
-import getters from "../store/gettersBimViewer";
 import mutations from "../store/mutationsBimViewer";
 import LeftSidebar from "./sidebar/LeftSidebar.vue";
 
@@ -17,40 +16,22 @@ export default {
         return {
             selectedSceneIndex: 0,
             hideCube: false,
-            sidebarLeftOpen: false,
-            sidebarRightOpen: false
+            sidebarLeftOpen: false
         };
     },
     computed: {
-        ...mapGetters("Modules/BimViewer", Object.keys(getters)),
-        useTools () {
-            return this.$store.getters["Modules/BimViewer/useTools"];
-        },
-        allSceneConfigs () {
-            return this.$store.getters["Modules/BimViewer/sceneConfigs"];
-        },
-        toggleRightSidebar () {
-            return this.$store.getters["Modules/BimViewer/toggleRightSidebar"];
-        },
-        currentlyLoadedModels () {
-            return this.$store.getters["Modules/BimViewer/currentlyLoadedModels"];
-        },
-        totalNumberOfModels () {
-            return this.$store.getters["Modules/BimViewer/totalNumberOfModels"];
-        },
+        ...mapGetters("Modules/BimViewer", [
+            "useTools",
+            "sceneConfigs",
+            "toggleRightSidebar",
+            "currentlyLoadedModels",
+            "totalNumberOfModels"
+        ]),
         modelLoadingIndicator () {
             return this.$t("modules.bimViewer.modelLoadingIndicator", {
                 currentlyLoadedModels: this.currentlyLoadedModels,
                 totalNumberOfModels: this.totalNumberOfModels
             });
-        },
-        rightSidebarToggleStatus () {
-            return this.$store.getters["Modules/BimViewer/toggleRightSidebar"];
-        }
-    },
-    watch: {
-        rightSidebarToggleStatus (visible) {
-            this.setSidebarRightVisibility(visible);
         }
     },
     async mounted () {
@@ -95,10 +76,10 @@ export default {
                 domElements: {
                     viewerCanvas: this.$refs.viewerCanvas,
                     cubeCanvas: this.$refs.cubeCanvas,
-                    treeViewContainerElement: this.$refs.treeViewContainer,
+                    treeViewContainerElement: this.$refs.leftSidebar.$refs.treeViewContainer,
                     bimViewer: this.$refs.bimViewer
                 },
-                sceneConfig: this.allSceneConfigs[index]
+                sceneConfig: this.sceneConfigs[index]
             });
 
             this.$refs.toolArea.$refs.toolMeasurements.setActive(false);
@@ -117,9 +98,6 @@ export default {
         },
         setSidebarLeftVisibility (visible) {
             this.sidebarLeftOpen = visible;
-        },
-        setSidebarRightVisibility (visible) {
-            this.sidebarRightOpen = visible;
         }
     }
 };
@@ -130,10 +108,9 @@ export default {
         <ToolArea
             v-if="useTools"
             ref="toolArea"
-            :sidebar-visibility-right="sidebarRightOpen"
+            :sidebar-visibility-right="toggleRightSidebar"
             @sceneSelected="setScene"
             @toggleSidebarLeft="setSidebarLeftVisibility"
-            @toggleSidebarRight="setSidebarRightVisibility"
         />
 
         <div
@@ -143,14 +120,8 @@ export default {
         >
             <LeftSidebar
                 v-show="sidebarLeftOpen"
-                v-slot="{data}"
-            >
-                <div
-                    :id="`treeview-${data.treeviewHierarchyType ?? ''}-pane`"
-                    ref="treeViewContainer"
-                    class="treeViewContainer"
-                />
-            </LeftSidebar>
+                ref="leftSidebar"
+            />
 
             <div class="mainContent">
                 <div class="viewerArea">
@@ -182,7 +153,7 @@ export default {
                 </div>
             </div>
 
-            <RightSidebar v-if="sidebarRightOpen" />
+            <RightSidebar v-if="toggleRightSidebar" />
         </div>
     </div>
 </template>

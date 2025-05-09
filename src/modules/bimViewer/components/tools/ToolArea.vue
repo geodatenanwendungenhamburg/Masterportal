@@ -23,13 +23,6 @@ export default {
         ToolMeasurements,
         ToolFilter
     },
-    props: {
-        sidebarVisibilityRight: {
-            type: Boolean,
-            required: true,
-            default: false
-        }
-    },
     emits: [
         "sceneSelected",
         "toggleSidebarLeft",
@@ -43,11 +36,14 @@ export default {
     },
     computed: {
         ...mapGetters("Modules/BimViewer", Object.keys(getters)),
-        ...mapGetters(["uiStyle"])
-    },
-    watch: {
-        sidebarVisibilityRight (value) {
-            this.sidebarRightOpen = value;
+        ...mapGetters(["uiStyle"]),
+        toggleRightSidebar: {
+            get () {
+                return this.$store.getters["Modules/BimViewer/toggleRightSidebar"];
+            },
+            set (value) {
+                this.$store.commit("Modules/BimViewer/setToggleRightSidebar", value);
+            }
         }
     },
     methods: {
@@ -61,9 +57,9 @@ export default {
             this.$emit("toggleSidebarLeft", this.sidebarLeftOpen);
         },
         toggleSidebarRight () {
-            this.sidebarRightOpen = !this.sidebarRightOpen;
+            this.toggleRightSidebar = !this.toggleRightSidebar;
 
-            this.$emit("toggleSidebarRight", this.sidebarRightOpen);
+            this.$emit("toggleSidebarRight", this.toggleRightSidebar);
         }
     }
 };
@@ -108,7 +104,7 @@ export default {
                     :aria-label="$t('modules.bimViewer.tools.toggleSidebarRightLabel')"
                     :title="$t('modules.bimViewer.tools.toggleSidebarRightLabel')"
                     class="btn"
-                    :class="[sidebarRightOpen ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
+                    :class="[toggleRightSidebar ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
                     @click="toggleSidebarRight()"
                 >
                     <i class="bi bi-layout-sidebar-inset-reverse" />

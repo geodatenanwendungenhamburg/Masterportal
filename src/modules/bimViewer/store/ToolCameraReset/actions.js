@@ -26,8 +26,9 @@ const actions = {
         scene.camera.look = sceneConfig.cameraSettings?.look;
         scene.camera.up = sceneConfig.cameraSettings?.up;
 
-        xeokitViewer.cameraFlight.jumpTo({
-            aabb: scene.getAABB(scene.visibleObjectIds)
+        xeokitViewer.cameraFlight.flyTo({
+            aabb: scene.getAABB(scene.visibleObjectIds),
+            duration: 0.5
         });
     }
 };

@@ -264,59 +264,73 @@ const actions = {
                 autoExpandDepth: 1,
                 sortNodes: false,
                 hierarchy: "containment",
-                pruneEmptyNodes: false,
+                pruneEmptyNodes: true,
                 autoAddModels: true
             });
 
+        getters.xeokitViewer.scene.on("modelUnloaded", (modelId) => {
+            if (getters.xeokitViewer.metaScene.metaModels[modelId]) {
+                xeokitPluginTreeView.removeModel(modelId);
+            }
+        });
+
+        // Handle clicks in TreeView. Click on a "folder" just zooms to the object,
+        // click on single object zooms to the object and selects it.
         xeokitPluginTreeView.on("nodeTitleClicked", (event) => {
             const
                 viewer = getters.xeokitViewer,
                 scene = viewer.scene,
                 selectedObjectIds = [],
-                isElement = event.treeViewNode.children.length === 0;
+                selectedSingleObject = event.treeViewNode.children.length === 0;
 
-            if (!isElement) {
-                return;
-            }
+            if (selectedSingleObject) {
+                commit("ToolObjectInfo/setModeObjectInfoActive", true);
 
-            commit("ToolObjectInfo/setModeObjectInfoActive", true);
+                selectedObjectIds.push(event.treeViewNode.objectId);
 
-            event.treeViewPlugin.withNodeTree(event.treeViewNode, (treeViewNode) => {
-                if (treeViewNode.objectId) {
-                    selectedObjectIds.push(treeViewNode.objectId);
+                scene.setObjectsSelected(scene.objectIds, false);
+                scene.setObjectsXRayed(scene.objectIds, false);
+
+                if (event.treeViewNode.objectId !== getters["ToolObjectInfo/pickedObjectId"]) {
+                    // Reset all objects of the current scene
+                    scene.setObjectsXRayed(scene.objectIds, true);
+                    scene.setObjectsVisible(scene.objectIds, true);
+
+                    // Set only the selected object
+                    scene.setObjectsXRayed(selectedObjectIds, false);
+                    scene.setObjectsSelected(selectedObjectIds, true);
+
+                    commit("ToolObjectInfo/setPickedObjectId", selectedObjectIds[0]);
+                    commit("ToolObjectInfo/setModeObjectInfoPickedObjects", Object.values(scene.selectedObjects));
+                    commit("Modules/BimViewer/setToggleRightSidebar", true, {root: true});
+
+                    xeokitPluginTreeView.showNode(selectedObjectIds[0]);
+
+                    viewer.cameraFlight.flyTo({
+                        aabb: scene.getAABB(selectedObjectIds),
+                        duration: 0.5
+                    });
                 }
-            });
+                else {
+                    commit("ToolObjectInfo/setPickedObjectId", "");
+                    commit("ToolObjectInfo/setModeObjectInfoPickedObjects", []);
+                    commit("Modules/BimViewer/setToggleRightSidebar", false, {root: true});
 
-            scene.setObjectsSelected(scene.objectIds, false);
-            scene.setObjectsXRayed(scene.objectIds, false);
-
-            if (event.treeViewNode.objectId !== getters["ToolObjectInfo/pickedObjectId"]) {
-                // Reset all objects of the current scene
-                scene.setObjectsXRayed(scene.objectIds, true);
-                scene.setObjectsVisible(scene.objectIds, true);
-
-                // Set only the selected object
-                scene.setObjectsXRayed(selectedObjectIds, false);
-                scene.setObjectsSelected(selectedObjectIds, true);
-
-                commit("ToolObjectInfo/setPickedObjectId", selectedObjectIds[0]);
-                commit("ToolObjectInfo/setModeObjectInfoPickedObjects", Object.values(scene.selectedObjects));
-                commit("Modules/BimViewer/setToggleRightSidebar", true, {root: true});
-
-                xeokitPluginTreeView.showNode(selectedObjectIds[0]);
+                    xeokitPluginTreeView.unShowNode();
+                }
+            }
+            else {
+                // Collect all objectIds under this objectId
+                event.treeViewPlugin.withNodeTree(event.treeViewNode, (treeViewNode) => {
+                    if (treeViewNode.objectId) {
+                        selectedObjectIds.push(treeViewNode.objectId);
+                    }
+                });
 
                 viewer.cameraFlight.flyTo({
                     aabb: scene.getAABB(selectedObjectIds),
-                    duration: 0.5,
-                    fitFOV: 30
+                    duration: 0.5
                 });
-            }
-            else {
-                commit("ToolObjectInfo/setPickedObjectId", "");
-                commit("ToolObjectInfo/setModeObjectInfoPickedObjects", []);
-                commit("Modules/BimViewer/setToggleRightSidebar", false, {root: true});
-
-                xeokitPluginTreeView.unShowNode();
             }
         });
 
@@ -696,8 +710,9 @@ const actions = {
             commit("setPositionPointer", annotations);
         }
 
-        getters.xeokitViewer.cameraFlight.jumpTo({
-            aabb: pickResult.entity._aabb
+        getters.xeokitViewer.cameraFlight.flyTo({
+            aabb: pickResult.entity._aabb,
+            duration: 0.5
         });
     },
     /* Get the metaobjects for a given objectID
@@ -718,6 +733,88 @@ const actions = {
      */
     updateXeokitPluginTreeViewHierarchyType ({commit}, hierarchyType) {
         commit("updateXeokitPluginTreeViewHierarchyType", hierarchyType);
+    },
+    /**
+     * Destroy the model
+     * @param {Object} context actions context object.
+     * @param {string} modelId objectId to destroy
+     */
+    destroyModel ({commit, rootGetters, getters, dispatch}, modelId) {
+        const
+            model = getters.loadedModels.find(item => item.sceneModel.id === modelId),
+            selectedObjectId = rootGetters["Modules/BimViewer/ToolObjectInfo/pickedObjectId"],
+            modelObjectIsSelected = model.sceneModel.objects[selectedObjectId] ?? false;
+
+        model.sceneModel.destroy();
+
+        commit("removeFromLoadedModels", modelId);
+
+        if (modelObjectIsSelected) {
+            dispatch("Modules/BimViewer/ToolObjectInfo/reset", getters.loadedModels.length === 0, {root: true});
+        }
+        else if (getters.loadedModels.length === 0) {
+            dispatch("Modules/BimViewer/ToolObjectInfo/reset", true, {root: true});
+        }
+    },
+    /**
+     * Fly to the complete model
+     * @param {Object} context actions context object.
+     * @param {string} modelId root modelId to fly to
+     */
+    flyToCompleteModel ({getters}, modelId) {
+        const model = getters.loadedModels.find(item => item.sceneModel.id === modelId);
+
+        getters.xeokitViewer.cameraFlight.flyTo({
+            aabb: getters.xeokitViewer.scene.getAABB(Object.keys(model.sceneModel.objects)),
+            duration: 0.5
+        });
+    },
+    /**
+     * Set the loaded model xRayed or not
+     * @param {Object} context actions context object.
+     * @param {*} payload { modelId, isXRayed }
+     */
+    setLoadedModelXRayed ({getters}, payload) {
+        const model = getters.loadedModels.find(item => item.sceneModel.id === payload.modelId);
+
+        model.extraSettings.xRayed = payload.isXRayed;
+
+        getters.xeokitViewer.scene.setObjectsXRayed(
+            Object.keys(model.sceneModel.objects),
+            model.extraSettings.xRayed
+        );
+    },
+    /**
+     * Set the loaded model invisible or not
+     * @param {Object} context actions context object.
+     * @param {*} payload { modelId, isInvisible}
+     */
+    setLoadedModelInvisible ({getters}, payload) {
+        const model = getters.loadedModels.find(item => item.sceneModel.id === payload.modelId);
+
+        model.extraSettings.visible = !payload.isInvisible;
+
+        getters.xeokitViewer.scene.setObjectsVisible(
+            Object.keys(model.sceneModel.objects),
+            model.extraSettings.visible
+        );
+    },
+    /**
+     * Reset the extra settings for each of the loaded models
+     * @param {Object} context actions context object.
+     */
+    resetLoadedModelExtraSettings ({dispatch, getters}) {
+        getters.loadedModels.forEach(item => {
+            dispatch("setLoadedModelXRayed", {
+                modelId: item.sceneModel.id,
+                isXRayed: false
+            });
+
+            dispatch("setLoadedModelInvisible", {
+                modelId: item.sceneModel.id,
+                isInvisible: false
+            });
+        });
     },
     /**
      * Handle model loader events.

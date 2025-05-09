@@ -6,7 +6,7 @@ const actions = {
      * @param {Object} store getters object.
      * @returns {void}
      */
-    initialize ({commit, getters, rootGetters}) {
+    initialize ({commit, dispatch, getters, rootGetters}) {
         const
             viewer = rootGetters["Modules/BimViewer/xeokitViewer"],
             scene = viewer.scene,
@@ -18,6 +18,9 @@ const actions = {
             }
 
             if (event?.entity?.id !== undefined && event.entity.id !== null) {
+                // Reset visibility and xRayed settings
+                dispatch("Modules/BimViewer/resetLoadedModelExtraSettings", {}, {root: true});
+
                 scene.setObjectsSelected(scene.objectIds, false);
                 scene.setObjectsXRayed(scene.objectIds, false);
 
@@ -50,9 +53,10 @@ const actions = {
      * Switch picking mode of and un-select highlighted object
      *
      * @param {Object} store getters object.
+     * @param {Boolean} closeSidebar Close the sidebar or not
      * @returns {void}
      */
-    reset ({rootGetters, commit}) {
+    reset ({rootGetters, commit}, closeSidebar = true) {
         const
             scene = rootGetters["Modules/BimViewer/xeokitViewer"].scene,
             treeView = rootGetters["Modules/BimViewer/xeokitPluginTreeView"];
@@ -60,9 +64,12 @@ const actions = {
         scene.setObjectsXRayed(scene.objectIds, false);
         scene.setObjectsSelected(scene.objectIds, false);
 
-        commit("setModeObjectInfoActive", false);
         commit("setPickedObjectId", "");
-        commit("Modules/BimViewer/setToggleRightSidebar", false, {root: true});
+
+        if (closeSidebar) {
+            commit("setModeObjectInfoActive", false);
+            commit("Modules/BimViewer/setToggleRightSidebar", false, {root: true});
+        }
 
         treeView.unShowNode();
     }
