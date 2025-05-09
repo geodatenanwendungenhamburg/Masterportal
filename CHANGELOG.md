@@ -6,6 +6,111 @@
 ## 2025-02-21 v3.3.5 (LTS)
 
 ### Fixed
+- Issue #1341: AboutModule: Show actual Masterportal version even when no cswUrl or metaId is configured.
+- Issue #1366: SpecialWfs: Fixes search for coordinates with different format. 
+- Issue #1371: Footer: Fixded rendering issue on menu expand.
+- Issue #1387: Sorting layer by `layerSequence` assigns fitting zIndexes.
+- Issue #1398: SearchBar/SpecialWfs: Fixed incorrect type name for SpecialWfs in documentation.
+- AboutModule: fixed undefined in imprint.
+
+---
+
+## 2025-05-07 v3.10.0
+
+### Added
+- MapMarker: Added the ability to additionally highlight polygons.
+- FullScreen: added "newTabFromFrame" configuration, to disable opening a new tab if in an iFrame.
+- LayerTree: added "contactPublisherName" configuration, to change the info message shown, when clicking the contact sub menu.
+- UrlParams: Added URL-Params mainclosed and secondaryclosed to have the menus initially closed when set to true and opened when set to false.
+- Menutitle: Added ability to show only a logo without portal title (do not set option 'text')
+- HighlightFeaturesByAttribute: Highlighted features via url parameter can now be printed.
+- WFST: Added multiselect for edit option in Point-Layers.
+- Menus: Module caching implemented via KeepAlive lifecycle hooks.
+
+### Changed
+- WMS-Time: Shrunk wms-time slider for mobile views, adjusted Position on desktop.
+- getFeatureInfo: gfi now works on BaseLayers as well as SubjectLayers.
+- Menutitle: Allow html in title text.
+- CompareMaps: layer selection fields are labeled left/right or upper/lower layer instead of first/second layer.
+- dependencies:
+        - @masterportal/masterportalapi: 2.48.0 to 2.49.0
+
+### Removed
+- Removed since version 3 not used state property `deactivateGFI` and `translate#`,`.tools.` in language-keys.
+
+### Fixed
+- Issue #1206: WMTS-Layer: legend is displayed, if configured in attribute legend.
+- Issue #1220: Routing: Calculated accessibility displayed on the map remains after exporting the result.
+- Issue #1233: Zoom to selected search result of "wfsSearch" when "resultList" is configured. Show message if no results where found and resultList was not configured.
+- Issue #1295: Extend error processing for error responses from MapFish server.
+- Issue #1345: Opacity of circleStrokeColor is now taken into account when printing.
+- Issue #1351: Fix OIDC Token Auto-Refresh After Initial Login.
+- Issue #1352: Updating menu item name from Login to Logout after a user is logged in and visa versa.
+- Issue #1375: Fixed topic tree search with respect to spaces.
+- Issue #1378: KML-export now uses the correct url for circle-icon.
+- Issue #1382: Icon Info button can now be conditionally hidden based on layer configuration.
+- Issue #1383: LightButton: Added padding-bottom, so the theme names are fully visible.
+- Issue #1388: In a menu section are several modules of same type allowed.
+- Issue #1389: Set and remove cookies with domain flag.
+- Layer3dTileset: Prevent set cesium scene options if it wasn't changed before by another 3D tileset layer.
+- PortalFooter: The attribute `alias_mobil` has been corrected to `alias_mobile`.
+- WMS-Time: Listeners are now removed from Layers when compare maps is ended.
+- buildSpec: Added hash check to include only unique legend images in print output.
+- Charts: Fixed wrong link and modernized method declaration syntax for weekday function.
+- WFST-Tool: Saving objects now works correctly after layer reordering.
+- Tests: Refactored tests, fixed asynchronous describe blocks and other tests that were failing.
+- LayerInformation:
+    - Fixed console error if clicked on contact.
+    - Fixed creating url to portal contained in contact.
+- AddWMS: Added layers are displayed in layer selection under the headline 'external subject data'.
+
+---
+
+## 2025-04-02 v3.9.0
+
+### Added
+- URL-Parameter: added url-Parameter to set the width of menu and secondary menu (menuwidth/secondarywidth).
+- New function getOAFFeature.getTemporalExtent for requesting the temporal extent of a collection.
+- Routing:
+    - Added option to avoid borders for directions and isochrones.
+    - Added tooltip to get additional information of isochrones while hovering over it on map.
+- Searchbar:
+    - Topic tree search can now output baselayer as search category.
+    - Topic tree search can be configured whether the path of the layer is displayed in the tooltip.
+- LayerTree: added checkMove function to validate dragged layer movement based on allowBaselayerDrag configuration.
+- WFST-Tool:
+  - Correct transactionFeature properties order.
+  - Input validation.
+  - gfiAttributes nested object handling.
+- LayerSelection: added "deactivateShowAllCheckbox" configuration, to disable the "Show All Checkbox" inside folders.
+- LayerTree, LayerSelection: Introduced an alternative sorting function for layers utilizing the layerSequence prop.
+- SliderItem: Added markers functionality for visual indication of key points along the slider range.
+- Filter:
+  - Added parameter questionLink. Can be configured to open a URL with information about the tool.
+  - A new parameter "closeDropdownOnSelect" to enable/disable closing list after selecting an option in multiselect dropdown list.
+- CustomMenuElement: Added configuration "showOnlyByLayersVisible" to specify a list of layer IDs that must be visible for the module to appear.
+- Folder in menu: "showEntryDirectly" to directly open and display entries based on configuration and active layers.
+
+### Changed
+- Coding Conventions: updated.
+- Menus: Increased maximum width of menu and secondary menu to 95% of viewport.
+- secondary Menu: Increasing width of secondary Menu over 70% of viewport (50% for viewwidth < 1000px) now temporarily hides layerpills and footer to show the secondary Menu at a maximum width of 95% of viewport.
+- Filter: Parameters featureNS and featurePrefix removed from WFS-request due to redundancy and invalid values at specific layers.
+- dependencies:
+        - @masterportal/masterportalapi: 2.45.0 to 2.47.0 (This also raised ol to version 10.4.0 and @cesium/engine to version 15.0.0)
+        - @masterportal/masterportalapi: 2.47.0 to 2.48.0
+- FullScreen: Using the FullScreen control in an iFrame keeps the current state (center, zoom, layers etc.) now.
+
+### Fixed
+- LayerInformation:
+  - Empty contact accordion was shown, if metadata contains no contact.
+  - Fixed wrong or undefined metadata showing when current Layer has no metadata.
+  - Fixed an issue with no metadata, when cswUrl was undefined, rather than null.
+- Loading the layer is accelerated by fixing generation of folder ids.
+- ShareView: Duplicated url params are filtered.
+- Issue #1324: CompareMaps: always show loading spinner when loading and do not split maps after closing tool.
+- Issue #1348: BaselayerSwitcher: use preview settings from config.
+- Issue #1358: Topic tree search can now also be used in multiple languages via i18next.
 - Issue #1366: SearchInterfaceSpecialWfs highlighted multipolygons with empty areas and zooms to the extent and not to the first point of the geometries.
 
 ---

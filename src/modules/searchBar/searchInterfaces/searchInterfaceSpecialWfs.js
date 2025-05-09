@@ -282,10 +282,23 @@ SearchInterfaceSpecialWfs.prototype.createPossibleActions = function (searchResu
         coordinates = searchResult?.coordinates;
     }
     else if (Array.isArray(searchResult?.geometry)) {
-        coordinates = searchResult?.geometry;
+        searchResult.geometry.forEach(coord => {
+            if (Array.isArray(coord)) {
+                coord.forEach(coordinate => {
+                    coordinates.push(parseFloat(coordinate));
+                });
+            }
+            if (coord) {
+                coordinates.push(parseFloat(coord));
+            }
+        });
     }
     else if (searchResult?.geometry?.flatCoordinates) {
-        coordinates = searchResult?.geometry.flatCoordinates;
+        searchResult?.geometry?.flatCoordinates.forEach(coord => {
+            if (coord) {
+                coordinates.push(parseFloat(coord));
+            }
+        });
     }
 
     return {
@@ -296,11 +309,11 @@ SearchInterfaceSpecialWfs.prototype.createPossibleActions = function (searchResu
             }
         },
         setMarker: {
-            coordinates: geometryType.toUpperCase() === "POINT" || geometryType.toUpperCase() === "MULTIPOINT" ? coordinates : coordinates[0],
+            coordinates: geometryType.toUpperCase() === "MULTIPOLYGON" ? coordinates[0] : coordinates,
             geometryType: geometryType
         },
         zoomToResult: {
-            coordinates: geometryType.toUpperCase() === "POINT" || geometryType.toUpperCase() === "MULTIPOINT" ? coordinates : coordinates[0]
+            coordinates: geometryType.toUpperCase() === "MULTIPOLYGON" ? coordinates[0] : coordinates
         }
     };
 };
