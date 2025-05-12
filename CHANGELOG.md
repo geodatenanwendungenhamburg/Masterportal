@@ -4,6 +4,22 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased - in development
+### __Breaking Changes__
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+- Issue #1387: Sorting layer by `layerSequence` assigns fitting zIndexes.
+
+---
+
 ## 2025-05-07 v3.10.0
 
 ### Added
@@ -36,7 +52,6 @@
 - Issue #1378: KML-export now uses the correct url for circle-icon.
 - Issue #1382: Icon Info button can now be conditionally hidden based on layer configuration.
 - Issue #1383: LightButton: Added padding-bottom, so the theme names are fully visible.
-- Issue #1387: Sorting layer by `layerSequence` assigns fitting zIndexes.
 - Issue #1388: In a menu section are several modules of same type allowed.
 - Issue #1389: Set and remove cookies with domain flag.
 - Layer3dTileset: Prevent set cesium scene options if it wasn't changed before by another 3D tileset layer.
