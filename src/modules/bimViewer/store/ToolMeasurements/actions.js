@@ -11,6 +11,9 @@ const actions = {
 
         if (payload.isActive) {
             distanceMeasurementsControl.activate();
+
+            // Workaround to hide the markerDiv, see https://github.com/xeokit/xeokit-sdk/issues/1882
+            distanceMeasurementsControl._markerDiv.style.display = "none";
         }
         else {
             distanceMeasurementsControl.deactivate();

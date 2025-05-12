@@ -221,11 +221,6 @@ export default {
                 justify-content: center;
                 overflow: hidden;
 
-                // Hide measurement marker, because wrong positioning. See https://vuejs.org/api/sfc-css-features#deep-selectors
-                :deep(div#myMarkerDiv) {
-                    display: none;
-                }
-
                 :focus-visible {
                     outline: none;
                 }
