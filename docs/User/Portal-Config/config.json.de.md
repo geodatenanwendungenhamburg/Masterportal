@@ -4508,7 +4508,7 @@ Eine Url kann unterschiedlich definiert werden.
 ***
 
 ### portalConfig.tree {data-toc-label='Tree'}
-Möglichkeit, um Einstellungen für den Themenbaum vorzunehmen.
+Möglichkeit, um Einstellungen für den Themenbaum vorzunehmen. Die Layer werden entgegen ihrer Konfigurationsreihenfolge gerendert.
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|

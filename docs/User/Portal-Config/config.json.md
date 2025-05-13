@@ -4517,7 +4517,7 @@ A Url can be defined in various ways.
 ***
 
 ### portalConfig.tree {data-toc-label='Tree'}
-Possibility to make settings for the topic selection tree.
+Possibility to make settings for the topic selection tree. The layers are rendered in reverse configuration order.
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
