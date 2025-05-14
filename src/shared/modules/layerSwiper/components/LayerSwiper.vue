@@ -10,7 +10,7 @@ export default {
      * @type {Object}
      * @default () => ({})
      */
-     initialTimeSliderObject: {
+        initialTimeSliderObject: {
             type: Object,
             default: () => ({})
         }
