@@ -5,31 +5,23 @@ const actions = {
      * @param {Object} context actions context object.
      * @returns {void}
      */
-    reset ({rootGetters}) {
+    reset ({rootGetters, dispatch}) {
         const
             xeokitViewer = rootGetters["Modules/BimViewer/xeokitViewer"],
             sceneConfig = rootGetters["Modules/BimViewer/sceneConfigSelected"],
             scene = xeokitViewer.scene;
 
-        // re-enable all scene items which are not visible
-        if (scene.objects) {
-            const objIDs = [];
+        scene.setObjectsVisible(scene.objectIds, true);
 
-            Object.keys(scene.objects).forEach(entity => {
-                objIDs.push(entity);
-            });
-
-            scene.setObjectsVisible(objIDs, true);
+        // If there are camera settings, reset camera using these. Otherwise, just fit the object ids.
+        if (sceneConfig.cameraSettings !== null) {
+            scene.camera.eye = sceneConfig.cameraSettings?.eye;
+            scene.camera.look = sceneConfig.cameraSettings?.look;
+            scene.camera.up = sceneConfig.cameraSettings?.up;
         }
-
-        scene.camera.eye = sceneConfig.cameraSettings?.eye;
-        scene.camera.look = sceneConfig.cameraSettings?.look;
-        scene.camera.up = sceneConfig.cameraSettings?.up;
-
-        xeokitViewer.cameraFlight.flyTo({
-            aabb: scene.getAABB(scene.visibleObjectIds),
-            duration: 0.5
-        });
+        else {
+            dispatch("Modules/BimViewer/ToolSceneFit/fit", null, {root: true});
+        }
     }
 };
 

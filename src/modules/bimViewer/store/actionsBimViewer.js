@@ -38,12 +38,10 @@ const actions = {
      * @returns {void}
      */
     setScene ({commit, dispatch, getters}, payload) {
-        const {Viewer} = XeoKitSdk;
-
         // If an instance exists already, clean up first.
         if (
             getters.xeokitViewer &&
-            getters.xeokitViewer instanceof Viewer
+            getters.xeokitViewer instanceof XeoKitSdk.Viewer
         ) {
             // Reset tool "Object info" before you destroy the viewer
             dispatch("Modules/BimViewer/ToolObjectInfo/reset", {}, {root: true});
@@ -56,9 +54,8 @@ const actions = {
         }
 
         // Initialize the Viewer
-        // eslint-disable-next-line one-var
         const
-            {WebIFCLoaderPlugin, GLTFLoaderPlugin, XKTLoaderPlugin, LocaleService} = XeoKitSdk,
+            {Viewer, WebIFCLoaderPlugin, GLTFLoaderPlugin, XKTLoaderPlugin, LocaleService} = XeoKitSdk,
             navCubeLabels = {
                 "front": i18next.t("modules.bimViewer.NavCube.front"),
                 "back": i18next.t("modules.bimViewer.NavCube.back"),
