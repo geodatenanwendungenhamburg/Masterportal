@@ -9,7 +9,9 @@
 - Issue #1388: In a menu section are several modules of same type allowed.
 - LayerInformation: Fixed an issue with no metadata, when cswUrl was undefined, rather than null.
 - ShareView: Deleted import of BorisState as it caused a compiler error when addons are not integrated. Replaced it with a string instead.
-- WMS-Time: GFIFeature is now called every time the time slider is used, ensuring the selected time is always displayed in the feature.
+- WMS-Time: 
+    - GFIFeature is now called every time the time slider is used, ensuring the selected time is always displayed in the feature.
+    - Updated to ensure WMS-Time Layer compatibility with version 1.3.0. 
 
 
 ## 2025-02-21 v3.3.4 (LTS)
