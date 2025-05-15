@@ -6,6 +6,7 @@
 ## 2025-02-21 v3.3.5 (LTS)
 
 ### Fixed
+- Issue #1233: Zoom to selected search result of "wfsSearch" when "resultList" is configured. Show message if no results where found and resultList was not configured.
 - Issue #1331: Show group layers in right order.
 - Issue #1358: Topic tree search can now also be used in multiple languages via i18next.
 - Issue #1388: In a menu section are several modules of same type allowed.
