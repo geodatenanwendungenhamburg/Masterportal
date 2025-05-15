@@ -51,6 +51,9 @@ export default {
          */
         isBold () {
             return this.isLayerVisible || this.highlightLayerId === this.conf.id;
+        },
+        layerName () {
+            return this.conf.shortname || this.conf.name;
         }
     },
     mounted () {
@@ -129,7 +132,7 @@ export default {
             :class="['pt-4']"
             :for="'layer-tree-layer-preview-' + conf.id"
             tabindex="0"
-            :aria-label="$t(conf.name)"
+            :aria-label="$t(layerName)"
         >
             <span
                 v-if="conf.shortname"
