@@ -4,16 +4,7 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
+## 2025-05-15 v3.10.1
 
 ### Fixed
 - Issue #1366: SpecialWfs: Fixes search for coordinates with different format. 
