@@ -233,6 +233,8 @@ const actions = {
                     });
                 });
             });
+
+            commit("setBimViewerFullyLoaded", true);
         });
 
         // Add nav cube plugin

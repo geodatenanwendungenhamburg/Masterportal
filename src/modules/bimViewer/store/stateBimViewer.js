@@ -32,6 +32,7 @@
  * @typedef {object} currentlyLoadedModels Number of actually loaded models.
  * @typedef {number} annotationRefreshIntervalID ID of refresh interval for annotations.
  * @typedef {object} positionPointer Annotation set through URLParameter.
+ * @typedef {boolean} bimViewerFullyLoaded indicates if all elements and xeokit plugins are fully loaded.
  */
 
 const state = {
@@ -70,7 +71,8 @@ const state = {
     totalNumberOfModels: 0,
     currentlyLoadedModels: 0,
     annotationRefreshIntervalID: null,
-    positionPointer: null
+    positionPointer: null,
+    bimViewerFullyLoaded: false
 };
 
 export default state;

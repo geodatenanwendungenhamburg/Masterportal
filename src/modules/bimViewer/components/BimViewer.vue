@@ -35,6 +35,7 @@ export default {
         }
     },
     async mounted () {
+        this.$store.commit("Modules/BimViewer/setBimViewerFullyLoaded", false);
         await this.$store.dispatch("Modules/BimViewer/initializeBimViewer");
 
         this.applyTranslationKey(this.name);
