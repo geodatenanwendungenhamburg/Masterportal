@@ -32,8 +32,8 @@ const simpleGetters = {
         const layerParams = rootGetters.layerUrlParams,
             mapParams = rootGetters["Maps/urlParams"],
             menuParams = rootGetters["Menu/urlParams"],
-            componentTypes = [shareViewState.type, layerSelectionState.type, stateSearchBar.type, "borisComponent"];
-        let shareUrl = location.origin + location.pathname + "?";
+            componentTypes = [shareViewState.type, layerSelectionState.type, stateSearchBar.type, "borisComponent"],
+            shareUrl = new URL(location.origin + location.pathname + "?" + mapParams);
 
         if (componentTypes.includes(menuParams.main.currentComponent)) {
             menuParams.main.currentComponent = "root";
@@ -47,9 +47,9 @@ const simpleGetters = {
         areAttributesValid(menuParams.main);
         areAttributesValid(menuParams.secondary);
 
-        shareUrl = shareUrl + mapParams;
-        shareUrl = `${shareUrl}&MENU=${JSON.stringify(menuParams)}`;
-        shareUrl = `${shareUrl}&LAYERS=${JSON.stringify(layerParams)}`;
+        shareUrl.searchParams.set("MENU", JSON.stringify(menuParams));
+        shareUrl.searchParams.set("LAYERS", JSON.stringify(layerParams));
+
 
         // Add existing URL parameters if there are any
         if (location.search) {
