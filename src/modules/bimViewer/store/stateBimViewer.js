@@ -24,6 +24,7 @@
  * @typedef {object} xeokitPluginDistanceMeasurementsControl DistanceMeasurementsMouseControl instance
  * @typedef {object} xeokitPluginAnnotationLabelActive active AnnotationLabel instance
  * @typedef {object} xeokitPluginAnnotations Annotations loaded through json
+ * @typedef {object} xeokitPluginBCFViewpoints Plugin to show BIM Collaboration Format (BCF) data
  * @typedef {array} loadedModels The loaded IFC, XKT or glTF model instances.
  * @typedef {array} sceneConfigs Contains multiple scene configs, includes models, camera and sao settings, aso.
  * @typedef {object} sceneConfigSelected The current selected sceneConfig.
@@ -62,6 +63,7 @@ const state = {
     xeokitPluginDistanceMeasurementsControl: null,
     xeokitPluginAnnotationLabelActive: null,
     xeokitPluginAnnotations: null,
+    xeokitPluginBCFViewpoints: null,
 
     // Component state
     loadedModels: [],

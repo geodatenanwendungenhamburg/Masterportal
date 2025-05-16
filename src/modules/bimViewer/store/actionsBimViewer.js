@@ -245,6 +245,9 @@ const actions = {
         // Add distance measurements plugin
         dispatch("addPluginDistanceMeasurements");
 
+        // Add plugin to show BCF data (BIM Collaboration Format)
+        dispatch("addPluginBCFViewpoints");
+
         // Close the right sidebar
         commit("Modules/BimViewer/setToggleRightSidebar", false, {root: true});
     },
@@ -362,6 +365,17 @@ const actions = {
             });
 
         commit("setXeokitPluginNavCube", xeokitPluginNavCube);
+    },
+    /**
+     * Add BCF - BIM Collaboration Format - plugin (BCFViewpointsPlugin)
+     *
+     * @param {Object} context actions context object.
+     * @returns {void}
+     */
+    addPluginBCFViewpoints ({commit, getters}) {
+        const {BCFViewpointsPlugin} = XeoKitSdk;
+
+        commit("setXeokitPluginBCFViewpoints", new BCFViewpointsPlugin(getters.xeokitViewer));
     },
     /**
      * Add distance measurements plugin (DistanceMeasurementsPlugin)
@@ -888,6 +902,58 @@ const actions = {
         getters.xeokitViewer.metaScene.metaModels[modelId].schema = schema?.arguments[0][0].value;
         getters.xeokitViewer.metaScene.metaModels[modelId].author = fileName?.arguments[2][0].value;
         getters.xeokitViewer.metaScene.metaModels[modelId].createdAt = fileName?.arguments[1].value;
+    },
+    /**
+     * Load a BCF viewpoint file (BIM Collaboration Format)
+     * @param {Object} context actions context object.
+     * @param {Object} payload Passed parameters {url}
+     * @returns {void}
+     */
+    async loadBCF ({dispatch, getters}, payload) {
+        const
+            scene = getters.xeokitViewer.scene,
+            spinner = scene.canvas.spinner;
+
+        try {
+            spinner.processes++;
+
+            const
+                json = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = () => reject(reader.error);
+
+                    reader.readAsText(payload.url);
+                }),
+                bcfData = JSON.parse(json);
+
+            getters.xeokitPluginBCFViewpoints.setViewpoint(bcfData);
+        }
+        catch (error) {
+            dispatch("Alerting/addSingleAlert", {
+                category: "error",
+                content: i18next.t("modules.bimViewer.tools.uploadBCFError")
+            }, {root: true});
+        }
+        finally {
+            spinner.processes--;
+        }
+    },
+    /**
+     * Export BCF (BIM Collaboration Format) to json
+     * @param {Object} context actions context object.
+     * @returns {void}
+     */
+    async getBCFViewpointJson ({getters}) {
+        const viewpoint = getters.xeokitPluginBCFViewpoints.getViewpoint({
+            spacesVisible: false,
+            spaceBoundariesVisible: false,
+            openingsVisible: false,
+            snapshot: true
+        });
+
+        return JSON.stringify(viewpoint, null, 4);
     }
 };
 

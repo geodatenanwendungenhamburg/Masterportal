@@ -3,11 +3,12 @@ export default {
     name: "ToolUpload",
     methods: {
         uploadFile (event) {
-            const file = event.target.files[0] || null,
+            const
+                file = event.target.files[0] || null,
                 fileNameSplit = file.name.split("."),
                 fileExtension = fileNameSplit.length > 0 ? fileNameSplit[fileNameSplit.length - 1].toLowerCase() : "";
 
-            if (!["ifc", "xkt", "gltf"].includes(fileExtension)) {
+            if (!["ifc", "xkt", "gltf", "bcf"].includes(fileExtension)) {
                 this.$store.dispatch("Alerting/addSingleAlert", {
                     category: "error",
                     content: i18next.t("modules.bimViewer.tools.uploadFormatError", {fileExtension: fileExtension})
@@ -17,15 +18,22 @@ export default {
             }
 
             if (file) {
-                this.$store.dispatch("Modules/BimViewer/loadModel", {
-                    url: file,
-                    visible: true,
-                    type: fileExtension
-                }).then((theModel) => {
-                    theModel.on("loaded", () => {
-                        this.$store.dispatch("Modules/BimViewer/ToolSceneFit/fit");
+                if (fileExtension === "bcf") {
+                    this.$store.dispatch("Modules/BimViewer/loadBCF", {
+                        url: file
                     });
-                });
+                }
+                else {
+                    this.$store.dispatch("Modules/BimViewer/loadModel", {
+                        url: file,
+                        visible: true,
+                        type: fileExtension
+                    }).then((theModel) => {
+                        theModel.on("loaded", () => {
+                            this.$store.dispatch("Modules/BimViewer/ToolSceneFit/fit");
+                        });
+                    });
+                }
             }
 
             // Clear input value. Required to trigger change event again, if the same file is uploaded twice.
@@ -51,14 +59,14 @@ export default {
             :title="$t('modules.bimViewer.tools.uploadFormat')"
             @keydown="clickUploadButton"
         >
-            <i class="bi bi-box-arrow-in-down" />
+            <i class="bi bi-file-earmark-plus" />
         </label>
 
         <input
             id="uploadButton"
             ref="uploadButton"
             type="file"
-            accept=".ifc,.xkt,.gltf"
+            accept=".ifc,.xkt,.gltf,.bcf"
             @change="uploadFile"
         >
     </form>

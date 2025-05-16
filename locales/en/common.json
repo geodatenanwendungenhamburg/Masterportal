@@ -101,8 +101,11 @@
       "tools": {
         "resetCamera": "Reset Camera",
         "fitScene": "Fit Scene",
-        "uploadFormat": "Upload IFC, XKT, glTF",
-        "uploadFormatError": "Invalid file format. Check file extension. Found: \"{{fileExtension}}\". Allowed: .ifc, .xkt, .gltf",
+        "uploadFormat": "Upload IFC, XKT, glTF, BCF",
+        "uploadFormatError": "Invalid file format. Check file extension. Found: \"{{fileExtension}}\". Allowed: .ifc, .xkt, .gltf, .bcf",
+        "downloadBCF": "Download BCF file.",
+        "downloadBCFErrorObjectPicked": "The BCF file can only be created when no object in the scene is selected. Please deselect any selected objects.",
+        "uploadBCFError": "Invalid BFC file.",
         "scene": "Scene",
         "distanceMeasurementsToggle": "Measurement",
         "distanceMeasurementsClear": "Clear",

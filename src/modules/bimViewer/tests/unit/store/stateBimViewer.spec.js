@@ -26,6 +26,7 @@ describe("src/modules/bimViewer/store/gettersBimViewer.js", () => {
         xeokitPluginDistanceMeasurementsControl: null,
         xeokitPluginAnnotationLabelActive: null,
         xeokitPluginAnnotations: null,
+        xeokitPluginBCFViewpoints: null,
         loadedModels: [],
         sceneConfigs: [],
         sceneConfigSelected: {},

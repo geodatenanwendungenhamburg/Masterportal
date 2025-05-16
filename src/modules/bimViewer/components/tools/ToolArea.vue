@@ -10,10 +10,12 @@ import ToolUpload from "./ToolUpload.vue";
 import ToolCameraReset from "./ToolCameraReset.vue";
 import ToolSceneFit from "./ToolSceneFit.vue";
 import ToolSceneSelector from "./ToolSceneSelector.vue";
+import ToolDownloadBCF from "./ToolDownloadBCF.vue";
 
 export default {
     name: "ToolArea",
     components: {
+        ToolDownloadBCF,
         ToolSceneSelector,
         ToolSceneFit,
         ToolCameraReset,
@@ -87,6 +89,8 @@ export default {
                 <ToolSceneFit />
 
                 <ToolUpload />
+
+                <ToolDownloadBCF />
 
                 <ToolMeasurements ref="toolMeasurements" />
 
