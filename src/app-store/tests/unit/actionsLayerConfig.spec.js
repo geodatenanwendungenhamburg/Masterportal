@@ -18,7 +18,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
         setIdsAtFoldersSpy,
         replaceInNestedValuesSpy,
         buildSpy;
-    const restConf = "./resources/rest-services-internet.json",
+    const restConf = "./resources/rest-services.json",
         layerConf = "./services.json";
 
     beforeEach(() => {
@@ -455,6 +455,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
             expect(dispatch.secondCall.args[0]).to.equals("updateLayerConfigs");
             expect(dispatch.secondCall.args[1]).to.deep.equals([
                 {id: "453", visibility: true},
+                {id: "452"},
                 {id: "1132", name: "100 Jahre Stadtgruen POIs", visibility: true},
                 {id: "10220", showInLayerTree: true}
             ]
@@ -519,6 +520,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
 
         it("extend layer configs for custom tree", () => {
             state.layerConfig = layerConfigCustom;
+            getters.showLayerAddButton = true;
             actions.extendLayers({dispatch, getters, state});
 
             expect(dispatch.callCount).to.be.equals(2);
@@ -548,7 +550,8 @@ describe("src/app-store/actionsLayerConfig.js", () => {
         it("extend layers for special configuration with folders", () => {
             getters = {
                 allLayerConfigsStructured: () => [],
-                allLayerConfigsByParentKey: () => []
+                allLayerConfigsByParentKey: () => [],
+                showLayerAddButton: true
             };
             layerConfig = {
                 [treeSubjectsKey]: {
@@ -716,7 +719,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
         });
 
         describe("replaceByIdInLayerConfig", () => {
-            it("replaceByIdInLayerConfig layer is contained in layerConfig", () => {
+            it("replaceByIdInLayerConfig layer is contained in layerConfig, mode is 2D and showLayerAttributions are called", () => {
                 const toReplace = {
                         id: "453",
                         visibility: true,
@@ -730,7 +733,8 @@ describe("src/app-store/actionsLayerConfig.js", () => {
 
                 getters = {
                     layerConfigById: () => sinon.stub(),
-                    determineZIndex: determineZIndexSpy
+                    determineZIndex: determineZIndexSpy,
+                    "Maps/mode": "2D"
                 };
 
                 state.layerConfig = layerConfig;
@@ -922,17 +926,18 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 };
                 layerList[2].zIndex = 5;
                 layerList[2].visibility = true;
+                layerList[2].showInLayerTree = true;
 
                 expectedConfig.visibility = true;
                 expectedConfig.transparency = 0;
                 expectedConfig.showInLayerTree = true;
-                expectedConfig.zIndex = 6;
+                expectedConfig.zIndex = 5;
 
                 actions.addOrReplaceLayer({dispatch, getters}, {layerId: "1132", showInLayerTree: true});
                 expect(dispatch.calledOnce).to.be.true;
                 expect(dispatch.firstCall.args[0]).to.equals("replaceByIdInLayerConfig");
                 expect(dispatch.firstCall.args[1]).to.deep.equals({layerConfigs: [{id: "1132", layer: expectedConfig}]});
-                expect(determineZIndexSpy.calledOnce).to.be.true;
+                expect(determineZIndexSpy.notCalled).to.be.true;
             });
 
         });
