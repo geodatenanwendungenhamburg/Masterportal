@@ -11,6 +11,7 @@ import ToolCameraReset from "./ToolCameraReset.vue";
 import ToolSceneFit from "./ToolSceneFit.vue";
 import ToolSceneSelector from "./ToolSceneSelector.vue";
 import ToolDownloadBCF from "./ToolDownloadBCF.vue";
+import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
 
 export default {
     name: "ToolArea",
@@ -23,7 +24,8 @@ export default {
         ToolObjectInfo,
         ToolSao,
         ToolMeasurements,
-        ToolFilter
+        ToolFilter,
+        IconButton
     },
     emits: [
         "sceneSelected",
@@ -74,15 +76,13 @@ export default {
     >
         <div class="buttons">
             <div class="leftSection">
-                <button
-                    :aria-label="$t('modules.bimViewer.tools.toggleSidebarLeftLabel')"
+                <IconButton
+                    :aria="$t('modules.bimViewer.tools.toggleSidebarLeftLabel')"
                     :title="$t('modules.bimViewer.tools.toggleSidebarLeftLabel')"
-                    class="btn"
                     :class="[sidebarLeftOpen ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
-                    @click="toggleSidebarLeft()"
-                >
-                    <i class="bi bi-diagram-3" />
-                </button>
+                    icon="bi-diagram-3"
+                    :interaction="() => toggleSidebarLeft()"
+                />
 
                 <ToolCameraReset />
 
@@ -104,21 +104,21 @@ export default {
             <div class="rightSection">
                 <ToolObjectInfo ref="toolObjectInfo" />
 
-                <button
-                    :aria-label="$t('modules.bimViewer.tools.toggleSidebarRightLabel')"
+                <IconButton
+                    :aria="$t('modules.bimViewer.tools.toggleSidebarRightLabel')"
                     :title="$t('modules.bimViewer.tools.toggleSidebarRightLabel')"
-                    class="btn"
                     :class="[toggleRightSidebar ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
-                    @click="toggleSidebarRight()"
-                >
-                    <i class="bi bi-layout-sidebar-inset-reverse" />
-                </button>
+                    icon="bi-layout-sidebar-inset-reverse"
+                    :interaction="() => toggleSidebarRight()"
+                />
             </div>
         </div>
     </div>
 </template>
 
 <style lang="scss">
+@import "~variables";
+
 div.ToolArea {
     margin: 0 0 0.5rem 0;
     display: flex;
@@ -152,8 +152,14 @@ div.ToolArea {
     .btn-primary:hover,
     .bim-btn-highlight,
     .bim-btn-highlight:hover {
-        color: #FFF;
-        background-color: #004996;
+        color: $white;
+        background-color: $secondary;
+    }
+
+    .btn {
+        i {
+            font-size: 1rem;
+        }
     }
 }
 </style>

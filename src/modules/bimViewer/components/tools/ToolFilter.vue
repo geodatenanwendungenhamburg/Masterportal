@@ -92,6 +92,8 @@ export default {
 </template>
 
 <style lang="scss">
+@import "~variables";
+
 div.ToolFilter {
     display: flex;
 
@@ -111,7 +113,7 @@ div.ToolFilter {
         border: none;
         background: transparent;
         font-size: 1.25rem;
-        color: rgb(238, 35, 35);;
+        color: $light_red;
         padding: 0;
         cursor: pointer;
         box-shadow: none;
@@ -119,7 +121,7 @@ div.ToolFilter {
     }
 
     button.btn-reset:hover {
-        color: rgb(238, 18, 18);
+        color: $light_red;
         opacity: 1;
     }
 }

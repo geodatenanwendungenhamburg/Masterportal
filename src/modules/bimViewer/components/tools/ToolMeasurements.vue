@@ -1,6 +1,11 @@
 <script>
+import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
+
 export default {
     name: "ToolMeasurements",
+    components: {
+        IconButton
+    },
     data () {
         return {
             toolDistanceMeasurementsActive: false
@@ -32,13 +37,13 @@ export default {
 <template>
     <div class="ToolMeasurements">
         <div class="buttonContainer">
-            <button
-                :class="['btn', toolDistanceMeasurementsActive ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
+            <IconButton
+                :aria="$t('modules.bimViewer.tools.distanceMeasurementsToggle')"
                 :title="$t('modules.bimViewer.tools.distanceMeasurementsToggle')"
-                @click="setActive(!toolDistanceMeasurementsActive)"
-            >
-                <i class="bi bi-rulers" />
-            </button>
+                :class="['btn', toolDistanceMeasurementsActive ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
+                icon="bi-rulers"
+                :interaction="() => setActive(!toolDistanceMeasurementsActive)"
+            />
 
             <button
                 v-if="toolDistanceMeasurementsActive"
@@ -53,6 +58,8 @@ export default {
 </template>
 
 <style lang="scss">
+@import "~variables";
+
 div.ToolMeasurements {
     display: flex;
     align-items: center;
@@ -63,11 +70,11 @@ div.ToolMeasurements {
 
         .resetButton {
             position: absolute;
-            bottom: -10px;
-            right: -5px;
+            bottom: -0.625rem;
+            right: -0.3125rem;
             border: none;
-            background-color: rgb(238, 35, 35);
-            color: white;
+            background-color: $light_red;
+            color: $white;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -81,7 +88,14 @@ div.ToolMeasurements {
         }
 
         .resetButton:hover {
-            background-color:rgb(221, 6, 6);
+            background-color: $light_red;
+        }
+
+        .btn-primary:hover,
+        .bim-btn-highlight,
+        .bim-btn-highlight:hover {
+            color: $white;
+            background-color: $secondary;
         }
     }
 }

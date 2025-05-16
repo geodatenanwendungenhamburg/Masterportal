@@ -1,6 +1,11 @@
 <script>
+import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
+
 export default {
     name: "ToolObjectInfo",
+    components: {
+        IconButton
+    },
     computed: {
         xeokitViewer () {
             return this.$store.getters["Modules/BimViewer/xeokitViewer"];
@@ -44,14 +49,27 @@ export default {
 
 <template>
     <div class="ToolObjectInfo">
-        <button
-            :aria-label="ariaLabel"
+        <IconButton
+            :aria="ariaLabel"
             :title="ariaLabel"
-            class="btn"
-            :class="[modeObjectInfoActive === true ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
-            @click="setActive()"
-        >
-            <i class="bi bi-info-circle" />
-        </button>
+            :class="[modeObjectInfoActive ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
+            icon="bi-info-circle"
+            :interaction="() => setActive()"
+        />
     </div>
 </template>
+
+
+<style lang="scss">
+@import "~variables";
+
+div.ToolObjectInfo {
+    .btn-primary:hover,
+    .bim-btn-highlight,
+    .bim-btn-highlight:hover {
+        color: $white;
+        background-color: $secondary;
+    }
+}
+</style>
+

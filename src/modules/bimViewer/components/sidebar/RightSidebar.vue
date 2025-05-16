@@ -16,11 +16,13 @@ export default {
 </template>
 
 <style lang="scss">
+@import "~variables";
+
 div.RightSidebar {
     display: flex;
     flex-direction: column;
     flex: 0.5;
     padding: 0 0 0 1rem;
-    box-shadow: 3px 3px 1rem #00000050;
+    box-shadow: 0.1875rem 0.1875rem 1rem $shadow;
 }
 </style>

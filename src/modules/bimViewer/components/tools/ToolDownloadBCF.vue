@@ -1,8 +1,12 @@
 <script>
 import {mapGetters} from "vuex";
+import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
 
 export default {
     name: "ToolDownloadBCF",
+    components: {
+        IconButton
+    },
     computed: {
         ...mapGetters("Modules/BimViewer", [
             "sceneConfigSelected"
@@ -64,12 +68,23 @@ export default {
 
 <template>
     <div class="ToolDownloadBCF">
-        <button
-            class="btn btn-primary"
+        <IconButton
+            :aria="$t('modules.bimViewer.tools.downloadBCF')"
             :title="$t('modules.bimViewer.tools.downloadBCF')"
-            @click="downloadBCF()"
-        >
-            <i class="bi bi-save-fill" />
-        </button>
+            class="btn-primary"
+            icon="bi-save-fill"
+            :interaction="() => downloadBCF()"
+        />
     </div>
 </template>
+
+<style lang="scss">
+@import "~variables";
+
+div.ToolDownloadBCF {
+    .btn-primary:hover {
+        color: $white;
+        background-color: $secondary;
+    }
+}
+</style>

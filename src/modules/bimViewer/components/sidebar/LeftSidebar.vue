@@ -176,12 +176,14 @@ export default {
 </template>
 
 <style lang="scss">
+@import "~variables";
+
 div.LeftSidebar {
     display: flex;
     flex-direction: column;
     flex: 0.5;
     padding: 0 1rem 0 0;
-    box-shadow: 0.1875rem 0.1875rem 1rem #00000050;
+    box-shadow: 0.1875rem 0.1875rem 1rem $shadow;
 
     div.modelContainer {
         margin: 1rem 0 0 0.5rem;
@@ -199,7 +201,7 @@ div.LeftSidebar {
                 overflow-wrap: anywhere;
 
                 &:hover {
-                    background-color: #DCE2F3;
+                    background-color: $accent_hover;
                 }
             }
 
@@ -233,12 +235,12 @@ div.LeftSidebar {
                 position: relative;
                 width: 100%;
                 pointer-events: none;
-                padding: 3px 0;
+                padding: 0.1875rem 0;
                 vertical-align: middle;
 
                 &.xrayed-node {
                     > span {
-                        color: #AAA;
+                        color: $light_grey_inactive;
                     }
                 }
 
@@ -249,9 +251,9 @@ div.LeftSidebar {
                 }
 
                 a {
-                    background-color: #eee;
+                    background-color: $light_grey;
                     border-radius: 50%;
-                    color: #000;
+                    color: $black;
                     display: inline-block;
                     height: 1.5em;
                     left: -1.5em;
@@ -261,32 +263,30 @@ div.LeftSidebar {
                     width: 1.5em;
                     pointer-events: all;
 
-                    &.plus {
-                        background-color: #ded;
-                        pointer-events: all;
-                    }
-
-                    &.minus {
-                        background-color: #eee;
+                    &.plus, &.minus {
                         pointer-events: all;
                     }
 
                     &:active {
-                        top: 1px;
+                        top: 0.0625rem;
                         pointer-events: all;
+                    }
+
+                    &:hover {
+                        background-color: $accent_hover;
                     }
                 }
 
                 span {
                     display: inline;
-                    padding-left: 2px;
+                    padding-left: 0.125rem;
                     pointer-events: all;
-                    height: 23px;
+                    height: 1.437rem;
 
                     &:hover {
-                        background-color: #DCE2F3;
+                        background-color: $accent_hover;
                         cursor: pointer;
-                        padding-left: 2px;
+                        padding-left: 0.125rem;
                         pointer-events: all;
                     }
                 }

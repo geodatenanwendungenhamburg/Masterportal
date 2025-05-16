@@ -1,6 +1,7 @@
 import {config, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import ToolCameraReset from "../../../../components/tools/ToolCameraReset.vue";
+import IconButton from "../../../../../../shared/modules/buttons/components/IconButton.vue";
 import {createStore} from "vuex";
 import sinon from "sinon";
 
@@ -33,7 +34,10 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolCameraReset.vue"
 
         wrapper = shallowMount(ToolCameraReset, {
             global: {
-                plugins: [store]
+                plugins: [store],
+                stubs: {
+                    IconButton: IconButton
+                }
             }
         });
     });
@@ -43,8 +47,11 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolCameraReset.vue"
         wrapper.unmount();
     });
 
-    it("renders the component", () => {
+    it("renders the component", async () => {
         expect(wrapper.exists()).to.be.true;
+
+        await wrapper.vm.$nextTick();
+
         expect(wrapper.find("div.ToolCameraReset").exists()).to.be.true;
         expect(wrapper.find("button").exists()).to.be.true;
         expect(wrapper.find("i").exists()).to.be.true;

@@ -3,6 +3,7 @@ import {expect} from "chai";
 import {createStore} from "vuex";
 import sinon from "sinon";
 import ToolDownloadBCF from "../../../../components/tools/ToolDownloadBCF.vue";
+import IconButton from "../../../../../../shared/modules/buttons/components/IconButton.vue";
 
 config.global.mocks.$t = key => key;
 
@@ -37,10 +38,19 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolDownloadBCF.vue"
     it("renders the base component", async () => {
         wrapper = shallowMount(ToolDownloadBCF, {
             global: {
-                plugins: [store]
+                plugins: [store],
+                stubs: {
+                    IconButton: IconButton
+                }
             }
         });
 
+        expect(wrapper.exists()).to.be.true;
+
+        await wrapper.vm.$nextTick();
+
         expect(wrapper.find("div.ToolDownloadBCF").exists()).to.be.true;
+        expect(wrapper.find("button").exists()).to.be.true;
+        expect(wrapper.find("i").exists()).to.be.true;
     });
 });

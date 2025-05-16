@@ -1,6 +1,7 @@
 import {config, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import ToolArea from "../../../../components/tools/ToolArea.vue";
+import IconButton from "../../../../../../shared/modules/buttons/components/IconButton.vue";
 import {createStore} from "vuex";
 import sinon from "sinon";
 
@@ -39,7 +40,10 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolArea.vue", () =>
 
         wrapper = shallowMount(ToolArea, {
             global: {
-                plugins: [store]
+                plugins: [store],
+                stubs: {
+                    IconButton: IconButton
+                }
             }
         });
     });

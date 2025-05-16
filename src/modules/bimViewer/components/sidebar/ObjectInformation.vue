@@ -269,6 +269,8 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+@import "~variables";
+
 div.ObjectInformation {
     overflow-y: scroll;
     margin-top: 1rem;
@@ -279,8 +281,8 @@ div.ObjectInformation {
 
         span.accordionHeader {
             display: block;
-            color: #ffffff;
-            background-color: #313961;
+            color: $black;
+            background-color: $light_blue;
             cursor: pointer;
             width: 100%;
             text-align: left;
@@ -289,21 +291,21 @@ div.ObjectInformation {
 
         button.accordionButton {
             margin: 0;
-            color: #ffffff;
-            background-color: #313961;
+            color: $black;
+            background-color: $light_blue;
             cursor: pointer;
             transition: all 0.3s ease-in-out;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 6 5 6 6-6'/%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 6 6 6 6-6'/%3e%3c/svg%3e");
             background-repeat: no-repeat;
             background-position: right 0.75rem top 0.6rem;
-            background-size: 16px 12px;
+            background-size: 1rem 0.75rem;
             width: 100%;
             text-align: left;
             border: none;
             padding: 0.25rem 0.5rem;
 
             &.active {
-                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 6 6-6 6 6'/%3e%3c/svg%3e");
+                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 11 6-6 6 6'/%3e%3c/svg%3e");
             }
         }
 
@@ -311,7 +313,7 @@ div.ObjectInformation {
             width: 100%;
             display: none;
             box-sizing: border-box;
-            border: solid 1px #DDD;
+            border: solid 0.0625rem #DDD;
 
             &.active {
                 display: table;
@@ -320,9 +322,9 @@ div.ObjectInformation {
             td.tdLabel {
                 padding: 0.25em;
                 vertical-align: top;
-                border-top: 1px solid #DDD;
-                border-right: 1px solid #DDD;
-                max-width: 150px;
+                border-top: 0.0625rem solid #DDD;
+                border-right: 0.0625rem solid #DDD;
+                max-width: 9.375rem;
                 width: 50%;
                 overflow-wrap: anywhere;
             }
@@ -330,7 +332,7 @@ div.ObjectInformation {
             td.tdValue {
                 padding: 0.25em;
                 vertical-align: top;
-                border-top: 1px solid #DDD;
+                border-top: 0.0625rem solid #DDD;
                 overflow-wrap: anywhere;
                 width: 50%;
 

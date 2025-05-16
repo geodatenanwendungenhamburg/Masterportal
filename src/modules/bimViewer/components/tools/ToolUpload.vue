@@ -1,6 +1,11 @@
 <script>
+import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
+
 export default {
     name: "ToolUpload",
+    components: {
+        IconButton
+    },
     methods: {
         uploadFile (event) {
             const
@@ -38,12 +43,6 @@ export default {
 
             // Clear input value. Required to trigger change event again, if the same file is uploaded twice.
             event.target.value = "";
-        },
-        clickUploadButton (event) {
-            if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                this.$refs.uploadButton.click();
-            }
         }
     }
 };
@@ -51,16 +50,13 @@ export default {
 
 <template>
     <form class="ToolUpload">
-        <label
-            role="button"
-            class="btn btn-primary"
-            for="uploadButton"
-            tabindex="0"
+        <IconButton
+            :aria="$t('modules.bimViewer.tools.uploadFormat')"
             :title="$t('modules.bimViewer.tools.uploadFormat')"
-            @keydown="clickUploadButton"
-        >
-            <i class="bi bi-file-earmark-plus" />
-        </label>
+            class="btn-primary"
+            icon="bi-file-earmark-plus"
+            :interaction="() => $refs.uploadButton.click()"
+        />
 
         <input
             id="uploadButton"
@@ -73,6 +69,8 @@ export default {
 </template>
 
 <style lang="scss">
+@import "~variables";
+
 form.ToolUpload {
     input[type="file"] {
         display: none;
@@ -80,6 +78,11 @@ form.ToolUpload {
 
     i::before {
         line-height: inherit !important;
+    }
+
+    .btn-primary:hover {
+        color: $white;
+        background-color: $secondary;
     }
 }
 </style>

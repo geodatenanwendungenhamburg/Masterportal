@@ -1,6 +1,11 @@
 <script>
+import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
+
 export default {
     name: "ToolSao",
+    components: {
+        IconButton
+    },
     computed: {
         /**
          * @return {bool|null} Status null=not available, false=Off or true=On
@@ -32,24 +37,30 @@ export default {
 
 <template>
     <div class="ToolSao">
-        <button
+        <IconButton
             :disabled="modeSaoNotSupported"
-            :aria-disabled="modeSaoNotSupported"
-            :aria-label="modeSaoAriaLabel"
+            :aria="modeSaoNotSupported ? '' : modeSaoAriaLabel"
             :title="modeSaoAriaLabel"
-            class="btn btn-primary"
-            :class="{'bim-btn-highlight': modeSaoStatus}"
-            @click="setSaoSettings({enabled: !modeSaoStatus})"
-        >
-            <i :class="[modeSaoStatus ? 'bi bi-lightbulb' : 'bi bi-lightbulb-off']" />
-        </button>
+            :class="[modeSaoStatus === true ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
+            :icon="modeSaoStatus ? 'bi-lightbulb' : 'bi-lightbulb-off'"
+            :interaction="() => setSaoSettings({enabled: !modeSaoStatus})"
+        />
     </div>
 </template>
 
 <style lang="scss">
+@import "~variables";
+
 div.ToolSao {
     button:disabled {
-        background-color: #fff;
+        background-color: $white;
+    }
+
+    .btn-primary:hover,
+    .bim-btn-highlight,
+    .bim-btn-highlight:hover {
+        color: $white;
+        background-color: $secondary;
     }
 }
 </style>

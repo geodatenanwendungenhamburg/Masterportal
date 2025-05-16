@@ -1,6 +1,11 @@
 <script>
+import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
+
 export default {
     name: "ToolCameraReset",
+    components: {
+        IconButton
+    },
     methods: {
         resetCamera () {
             this.$store.dispatch("Modules/BimViewer/ToolCameraReset/reset");
@@ -11,17 +16,23 @@ export default {
 
 <template>
     <div class="ToolCameraReset">
-        <button
-            class="btn btn-primary"
+        <IconButton
+            :aria="$t('modules.bimViewer.tools.resetCamera')"
             :title="$t('modules.bimViewer.tools.resetCamera')"
-            @click="resetCamera()"
-        >
-            <i class="bi bi-house" />
-        </button>
+            class="btn-primary"
+            icon="bi-house"
+            :interaction="() => resetCamera()"
+        />
     </div>
 </template>
 
 <style lang="scss">
+@import "~variables";
+
 div.ToolCameraReset {
+    .btn-primary:hover {
+        color: $white;
+        background-color: $secondary;
+    }
 }
 </style>

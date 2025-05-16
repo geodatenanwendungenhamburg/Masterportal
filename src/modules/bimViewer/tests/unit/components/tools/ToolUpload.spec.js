@@ -1,6 +1,7 @@
 import {config, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import ToolUpload from "../../../../components/tools/ToolUpload.vue";
+import IconButton from "../../../../../../shared/modules/buttons/components/IconButton.vue";
 import {createStore} from "vuex";
 import sinon from "sinon";
 
@@ -63,7 +64,10 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolUpload.vue", () 
 
         wrapper = shallowMount(ToolUpload, {
             global: {
-                plugins: [store]
+                plugins: [store],
+                stubs: {
+                    IconButton: IconButton
+                }
             }
         });
     });
@@ -96,7 +100,7 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolUpload.vue", () 
     });
 
     it("triggers the file input when the upload button is clicked", async () => {
-        const uploadButton = wrapper.find("label[for='uploadButton']"),
+        const uploadButton = wrapper.find("button.btn-primary"),
             input = wrapper.find("#uploadButton"),
             clickStub = sinon.stub(input.element, "click");
 

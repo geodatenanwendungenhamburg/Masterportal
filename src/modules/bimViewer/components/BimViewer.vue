@@ -160,6 +160,8 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+@import "~variables";
+
 #bim-viewer {
     display: flex;
     flex-direction: column;
@@ -176,8 +178,8 @@ export default {
         flex: 1;
         overflow: hidden;
         margin-top: 1rem;
-        border-top: solid 1px #DDD;
-        border-bottom: solid 1px #DDD;
+        border-top: solid 0.0625rem $light_grey;
+        border-bottom: solid 0.0625rem $light_grey;
 
         .mainContent {
             display: flex;
@@ -214,7 +216,7 @@ export default {
                     }
 
                     strong.modelLoadingIndicator {
-                        background-color: #FFF;
+                        background-color: $white;
                         display: block;
                         padding: 0.5rem;
                         border-radius: 0.25rem;
@@ -238,14 +240,14 @@ export default {
         }
 
         :deep(div.xeokit-annotation-markers) {
-            background-color: red;
+            background-color: $light_red;
             position: absolute;
             width: 1rem;
             height: 1rem;
             border-radius: 1rem;
-            border: 0.13rem solid #ffffff;
+            border: 0.13rem solid $white;
             z-index: 0 !important;
-            box-shadow: 1px 1px 15px 1px rgb(168, 167, 167);
+            box-shadow: 0.0625rem 0.0625rem 0.9375rem 0.0625rem $shadow;
         }
 
         :deep(div.xeokit-annotation-label) {
@@ -253,27 +255,28 @@ export default {
             max-width: 18.75rem;
             min-height: 3.13rem;
             padding: 0.5rem 0.75rem;
-            background: #ffffff;
-            color: #000000;
+            background: $white;
+            color: $black;
             border-radius: 0.5rem;
-            border: #ffffff solid 0.13rem;
-            box-shadow: 0.31rem 0.31rem 0.94rem 0.06rem #000000;
+            border: $white solid 0.13rem;
+            box-shadow: 0.31rem 0.31rem 0.94rem 0.06rem $black;
             z-index: 1000000;
             visibility: hidden;
             transform: translate(-1.38rem, -0.5rem);
-            max-height: 250px;
+            max-height: 15.625rem;
             overflow-y: auto;
 
             div.xeokit-annotation-title,
             a.xeokit-annotation-title{
                 font-weight: bold;
-                font-size: 18px;
+                font-size: 1.125rem;
                 margin-bottom: 0.25rem;
             }
 
             a.xeokit-annotation-title {
                 display: flex;
                 align-items: baseline;
+                /* color for usage in DIPAS, therefore not from 'variables' */
                 color: #003063;
                 gap: 0.5rem;
 
@@ -285,13 +288,13 @@ export default {
             }
 
             div.xeokit-annotation-desc {
-                font-size: 14px;
+                font-size: 0.875rem;
             }
 
             a.xeokit-annotation-more-link {
                 display: inline-block;
                 margin-top: 0.75rem;
-                font-size: 12px;
+                font-size: 0.75rem;
             }
         }
     }
