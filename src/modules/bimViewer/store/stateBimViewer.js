@@ -41,7 +41,7 @@ const state = {
     description: "common:modules.bimViewer.description",
     icon: "bi-houses",
     name: "common:modules.bimViewer.name",
-    supportedDevices: ["Desktop", "Mobile", "Table"],
+    supportedDevices: ["Desktop"],
     supportedMapModes: ["2D", "3D"],
 
     // Defaults for "bimViewer" addon state - Overwrite from the portal's config.json
