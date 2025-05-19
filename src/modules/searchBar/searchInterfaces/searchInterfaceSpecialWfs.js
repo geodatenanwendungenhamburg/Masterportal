@@ -188,7 +188,7 @@ SearchInterfaceSpecialWfs.prototype.fillHitList = function (xml, result, request
                     elementGeometryFirstChild = elementGeometryName.firstElementChild,
                     firstChildNameUpperCase = elementGeometryFirstChild.localName.toUpperCase(),
                     identifier = element.getElementsByTagName(propertyName)[0].textContent;
-                let geometry, geometryType, coordinates;
+                let geometry, geometryType, coordinates, interior;
 
                 if (multiGeometries.includes(firstChildNameUpperCase)) {
                     const memberName = elementGeometryFirstChild.firstElementChild.localName,
@@ -197,6 +197,15 @@ SearchInterfaceSpecialWfs.prototype.fillHitList = function (xml, result, request
                     coordinates = this.getInteriorAndExteriorPolygonMembers(geometryMembers);
                     geometry = undefined;
                     geometryType = "MultiPolygon";
+                }
+                else if (elementGeometryName.getElementsByTagNameNS("*", "interior").length > 0) {
+                    const memberName = element.getElementsByTagName(geometryName)[0].firstElementChild.localName,
+                        geometryMembers = elementGeometryName.getElementsByTagNameNS("*", memberName);
+
+                    coordinates = this.getInteriorAndExteriorPolygonMembers(geometryMembers);
+                    geometry = undefined;
+                    geometryType = "Polygon";
+                    interior = true;
                 }
                 else {
                     const feature = new WFS().readFeatures(xml)[i];
@@ -213,7 +222,8 @@ SearchInterfaceSpecialWfs.prototype.fillHitList = function (xml, result, request
                         geometryType,
                         geometry,
                         coordinates,
-                        icon
+                        icon,
+                        interior
                     }
                 );
             }
@@ -279,7 +289,12 @@ SearchInterfaceSpecialWfs.prototype.createPossibleActions = function (searchResu
     let coordinates = [];
 
     if (Array.isArray(searchResult?.coordinates)) {
-        coordinates = searchResult?.coordinates;
+        if (searchResult.interior) {
+            coordinates = searchResult?.coordinates[0];
+        }
+        else {
+            coordinates = searchResult?.coordinates;
+        }
     }
     else if (Array.isArray(searchResult?.geometry)) {
         searchResult.geometry.forEach(coord => {
@@ -309,11 +324,11 @@ SearchInterfaceSpecialWfs.prototype.createPossibleActions = function (searchResu
             }
         },
         setMarker: {
-            coordinates: geometryType.toUpperCase() === "MULTIPOLYGON" ? coordinates[0] : coordinates,
+            coordinates: geometryType.toUpperCase() === "MULTIPOLYGON" || searchResult.interior ? coordinates[0] : coordinates,
             geometryType: geometryType
         },
         zoomToResult: {
-            coordinates: geometryType.toUpperCase() === "MULTIPOLYGON" ? coordinates[0] : coordinates
+            coordinates: geometryType.toUpperCase() === "MULTIPOLYGON" || searchResult.interior ? coordinates[0] : coordinates
         }
     };
 };

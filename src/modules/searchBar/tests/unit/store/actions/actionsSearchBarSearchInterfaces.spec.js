@@ -1,6 +1,7 @@
 import actions from "../../../../store/actions/actionsSearchBarSearchInterfaces";
 import {expect} from "chai";
 import sinon from "sinon";
+import store from "../../../../../../app-store";
 
 const {
     cleanSearchResults,
@@ -16,6 +17,14 @@ describe("src/modules/searchBar/store/actions/actionsSearchBarSearchInterfaces.j
     beforeEach(() => {
         commit = sinon.spy();
         dispatch = sinon.spy();
+
+        store.getters = {
+            restServiceById: () => sinon.stub()
+        };
+    });
+
+    afterEach(() => {
+        sinon.restore();
     });
 
     describe("instantiateSearchInterfaces", () => {

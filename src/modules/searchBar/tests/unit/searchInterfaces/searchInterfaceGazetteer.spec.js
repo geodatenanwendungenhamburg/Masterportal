@@ -23,6 +23,7 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceGazetteer.js", (
 
     afterEach(() => {
         SearchInterface1.clearSearchResults();
+        sinon.restore();
     });
 
     describe("prototype", () => {
