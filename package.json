@@ -38,7 +38,8 @@
     "versionMajor:all": "npm run versionMajor && cd addons && npm run versionMajor && cd .. && cd portalconfigs && npm run versionMajor && cd ..",
     "prePushHook": "node ./node_modules/@masterportal/mpconfigparser/cli.js docs/User/Portal-Config/config.json.md docs/User/Portal-Config/config.json.de.md && eslint --max-warnings 0 \"./**/*.{vue,js}\" && npm run test",
     "validateDocs": "node devtools/docsValidation/validateDocs.js",
-    "prepare": "husky"
+    "prepare": "husky",
+    "bimviewer-update-wasm": "node devtools/tasks/bimViewerUpdateWasm.js"
   },
   "@comment dependencies and devDependencies": [
     "These are the comments for the `dependencies` and for the `devDependencies` section.",

@@ -1,0 +1,17 @@
+[
+  {
+    "id": "empty_scene",
+    "name": "Empty scene",
+    "modelList": [
+      "./resources/demo/models/hamburg-fanzone.xkt"
+    ],
+    "annotationsJSON": null,
+    "cameraSettings": {
+      "eye": [564305.9637, 412.3003, -5934053.5701],
+      "look": [564305.9659, 411.4261, -5934054.0557],
+      "up": [0.0039205102, 0.4856081144, -0.8741678265]
+    },
+    "saoSettings": null
+  }
+]
+

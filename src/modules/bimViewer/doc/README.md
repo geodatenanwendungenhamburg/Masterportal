@@ -53,17 +53,15 @@ These [URL parameters](#url-parameters) are described further down.
 
 ##  Update Wasm files in the config repository
 
-> Only required if .wasm files in the `node_modules/web-ifc/` folder are updated after `npm install`.
+The BimViewer requires as set of [WebAssembly](https://webassembly.org/) (wasm) files in order to load IFC files.
 
-The BimViewer uses [WebAssembly](https://webassembly.org/) (wasm) files located in the `node_modules/web-ifc/` folder.
+To update these files in your portal, run:
 
-These files must be accessible via HTTP request.
+```bash
+npm run bimviewer-update-wasm
+```
 
-**Copying files**
-
-`cp node_modules/web-ifc/web-ifc*.wasm /path/to/portal/BimViewer/wasm/`
-
-This command copies all the .wasm files in the folder, e.g. web-ifc-mt.wasm, web-ifc-node.wasm and web-ifc.wasm.
+This will automatically copy the required files to the specified portal.
 
 **Commit updated files**
 
@@ -86,6 +84,7 @@ To change the URL, you can update the `wasmUrl` parameter in `config.json`. It's
 The folder in this new location must contain all required `web-ifc*.wasm` files.
 
 ## Scenes.json configuration
+
 The scenes.json defines the scenes to be displayed in the BimViewer with the IFC, XKT of glTF files to be loaded into the scene and the corresponding camera and SAO settings.
 
 The json contains an array of scene objects which are defined by the parameters below.
