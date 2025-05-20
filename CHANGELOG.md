@@ -8,21 +8,24 @@
 ### Fixed
 - Issue #1233: Zoom to selected search result of "wfsSearch" when "resultList" is configured. Show message if no results where found and resultList was not configured.
 - Issue #1331: Show group layers in right order.
+- Issue #1356: ShareView: Deleted import of BorisState as it caused a compiler error when addons are not integrated. Replaced it with a string instead.
 - Issue #1358: Topic tree search can now also be used in multiple languages via i18next.
 - Issue #1388: In a menu section are several modules of same type allowed.
 - Issue #1387: Sorting layer by `layerSequence` assigns fitting zIndexes.
 - LayerInformation: Fixed an issue with no metadata, when cswUrl was undefined, rather than null.
 - ShareView: 
-    - Deleted import of BorisState as it caused a compiler error when addons are not integrated. Replaced it with a string instead.
-    - url paramter are uri encoded now.
+    - Url parameter are uri encoded now.
+    - Duplicated url params are filtered.
 - WMS-Time: 
     - GFIFeature is now called every time the time slider is used, ensuring the selected time is always displayed in the feature.
     - Updated to ensure WMS-Time Layer compatibility with version 1.3.0.
     - Fixed issue where dragging the slider while comparing two time instances updated both sliders instead of only the active one.
--  Menu: Navigating back from layerinformation to the previous menu item add subject.
+- Menu: Navigating back from layerinformation to the previous menu item add subject.
 - Loading the layer is accelerated by fixing generation of folder ids.
 - LayerTree, LayerSelection: Introduced an alternative sorting function for layers utilizing the `layerSequence` prop.
 - extendLayers: Adjusted initial z-index values to ensure correct layer order on map load.
+- UrlParams: 3D params heading, tilt and altitude are evaluated correctly.
+- Searchbar: Fixed a bug where the searchbar would focus itself on mounting, scrolling the parent page if embedded in an iframe.
 
 
 ## 2025-02-21 v3.3.4 (LTS)
