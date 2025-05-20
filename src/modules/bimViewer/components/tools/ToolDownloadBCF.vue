@@ -1,5 +1,5 @@
 <script>
-import {mapGetters} from "vuex";
+import {mapGetters, mapActions} from "vuex";
 import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
 
 export default {
@@ -8,17 +8,19 @@ export default {
         IconButton
     },
     computed: {
-        ...mapGetters("Modules/BimViewer", [
-            "sceneConfigSelected"
-        ]),
-        ...mapGetters("Modules/BimViewer/ToolObjectInfo", [
-            "pickedObjectId"
-        ])
+        ...mapGetters({
+            sceneConfigSelected: "Modules/BimViewer/sceneConfigSelected",
+            pickedObjectId: "Modules/BimViewer/ToolObjectInfo/pickedObjectId"
+        })
     },
     methods: {
+        ...mapActions({
+            addSingleAlert: "Alerting/addSingleAlert",
+            getBCFViewpointJson: "Modules/BimViewer/getBCFViewpointJson"
+        }),
         async downloadBCF () {
             if (this.pickedObjectId) {
-                this.$store.dispatch("Alerting/addSingleAlert", {
+                this.addSingleAlert({
                     category: "error",
                     content: i18next.t("modules.bimViewer.tools.downloadBCFErrorObjectPicked")
                 }, {root: true});
@@ -27,7 +29,7 @@ export default {
             }
 
             const
-                json = await this.$store.dispatch("Modules/BimViewer/getBCFViewpointJson"),
+                json = await this.getBCFViewpointJson(),
                 datePrefix = new Date().toISOString().slice(0, 10);
 
             this.forceFileDownload(

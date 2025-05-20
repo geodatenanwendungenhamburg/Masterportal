@@ -1,4 +1,6 @@
 <script>
+import {mapActions} from "vuex";
+
 export default {
     name: "ToolFilter",
     data () {
@@ -7,27 +9,35 @@ export default {
         };
     },
     methods: {
+        ...mapActions("Modules/BimViewer/ToolFilter", [
+            "resetHighlighting",
+            "filterIfcMetaObjects",
+            "setHighlighting"
+        ]),
+        ...mapActions("Alerting", [
+            "addSingleAlert"
+        ]),
         async filterSubmit () {
             // Reset filter, if filter text is empty
             if (!this.filterText.trim()) {
-                this.$store.dispatch("Modules/BimViewer/ToolFilter/resetHighlighting");
+                await this.resetHighlighting();
 
                 return;
             }
 
-            const matchedObjects = await this.$store.dispatch("Modules/BimViewer/ToolFilter/filterIfcMetaObjects", {
+            const matchedObjects = await this.filterIfcMetaObjects({
                 filterText: this.filterText
             });
 
-            // Show modal - Nothing matched
+            // show modal - Nothing matched
             if (!matchedObjects.length) {
                 this.showModal(matchedObjects.length);
-                this.$store.dispatch("Modules/BimViewer/ToolFilter/resetHighlighting");
+                await this.resetHighlighting();
 
                 return;
             }
 
-            this.$store.dispatch("Modules/BimViewer/ToolFilter/setHighlighting", {
+            await this.setHighlighting({
                 matchedObjects: matchedObjects
             });
 
@@ -38,14 +48,14 @@ export default {
         filterReset () {
             this.filterText = "";
 
-            this.$store.dispatch("Modules/BimViewer/ToolFilter/resetHighlighting");
+            this.resetHighlighting();
         },
         showModal (count) {
-            this.$store.dispatch("Alerting/addSingleAlert", {
+            this.addSingleAlert({
                 category: "Info",
                 displayClass: "info",
-                "confirmText": this.$t("modules.bimViewer.tools.searchModalMatchConfirmText"),
-                "content": this.$t("modules.bimViewer.tools.searchModalMatchContent", {
+                confirmText: this.$t("modules.bimViewer.tools.searchModalMatchConfirmText"),
+                content: this.$t("modules.bimViewer.tools.searchModalMatchContent", {
                     count: count,
                     filterText: this.filterText
                 })

@@ -13,13 +13,18 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolSceneFit.vue", (
     beforeEach(() => {
         store = createStore({
             modules: {
-                BimViewer: {
+                Modules: {
                     namespaced: true,
                     modules: {
-                        ToolSceneFit: {
+                        BimViewer: {
                             namespaced: true,
-                            actions: {
-                                fit: sinon.stub()
+                            modules: {
+                                ToolSceneFit: {
+                                    namespaced: true,
+                                    actions: {
+                                        fit: sinon.stub()
+                                    }
+                                }
                             }
                         }
                     }
@@ -43,13 +48,15 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolSceneFit.vue", (
     });
 
     it("renders the component with correct classes", () => {
-
         const button = wrapper.find("button"),
             icon = wrapper.find("i");
 
         expect(wrapper.exists()).to.be.true;
+
         expect(wrapper.find("div.ToolSceneFit").exists()).to.be.true;
+
         expect(button.attributes("title")).to.equal("modules.bimViewer.tools.fitScene");
+
         expect(icon.classes()).to.include("bi-aspect-ratio");
     });
 

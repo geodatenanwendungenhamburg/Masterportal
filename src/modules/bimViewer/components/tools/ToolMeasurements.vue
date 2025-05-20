@@ -1,4 +1,5 @@
 <script>
+import {mapActions} from "vuex";
 import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
 
 export default {
@@ -12,23 +13,22 @@ export default {
         };
     },
     methods: {
+        ...mapActions({
+            toggleMeasurements: "Modules/BimViewer/ToolMeasurements/toggle",
+            clearMeasurements: "Modules/BimViewer/ToolMeasurements/clear",
+            resetObjectInfo: "Modules/BimViewer/ToolObjectInfo/reset"
+        }),
         setActive (isActive) {
             if (typeof isActive !== "boolean") {
                 throw new Error("setActive expects a boolean value");
             }
 
-            this.$store.dispatch("Modules/BimViewer/ToolMeasurements/toggle", {
-                isActive
-            });
-
+            this.toggleMeasurements({isActive});
             this.toolDistanceMeasurementsActive = isActive;
 
             if (isActive === true) {
-                this.$store.dispatch("Modules/BimViewer/ToolObjectInfo/reset");
+                this.resetObjectInfo();
             }
-        },
-        clear () {
-            this.$store.dispatch("Modules/BimViewer/ToolMeasurements/clear");
         }
     }
 };
@@ -47,9 +47,9 @@ export default {
 
             <button
                 v-if="toolDistanceMeasurementsActive"
-                :class="['btn', 'resetButton' , !toolDistanceMeasurementsActive ? 'btn-primary btn-primary bim-btn-highlight' : 'btn-primary']"
+                :class="['btn', 'resetButton', !toolDistanceMeasurementsActive ? 'btn-primary btn-primary bim-btn-highlight' : 'btn-primary']"
                 :title="$t('modules.bimViewer.tools.distanceMeasurementsClear')"
-                @click="clear()"
+                @click="clearMeasurements"
             >
                 <i class="bi bi-arrow-counterclockwise" />
             </button>

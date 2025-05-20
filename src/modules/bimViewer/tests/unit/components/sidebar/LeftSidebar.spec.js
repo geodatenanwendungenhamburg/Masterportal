@@ -22,7 +22,8 @@ describe("src/modules/bimViewer/tests/unit/components/sidebar/LeftSidebar.spec.j
                                 loadedModels: () => []
                             },
                             actions: {
-                                updateXeokitPluginTreeViewHierarchyType: sinon.stub()
+                                updateXeokitPluginTreeViewHierarchyType: sinon.stub(),
+                                resetLoadedModelExtraSettings: sinon.stub()
                             }
                         }
                     }

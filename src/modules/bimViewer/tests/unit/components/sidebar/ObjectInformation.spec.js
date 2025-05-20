@@ -18,9 +18,26 @@ describe("src/modules/bimViewer/tests/unit/components/sidebar/ObjectInformation.
                     modules: {
                         BimViewer: {
                             namespaced: true,
-                            getters: {
-                                "ToolObjectInfo/pickedObjectId": (state) => state.ToolObjectInfo.pickedObjectId,
-                                "ToolObjectInfo/modeObjectInfoActive": () => true
+                            modules: {
+                                ToolObjectInfo: {
+                                    namespaced: true,
+                                    getters: {
+                                        pickedObjectId: state => state.pickedObjectId,
+                                        modeObjectInfoActive: state => state.modeObjectInfoActive
+                                    },
+                                    mutations: {
+                                        setModeObjectInfoActive: (state, isActive) => {
+                                            state.modeObjectInfoActive = isActive;
+                                        },
+                                        setPickedObjectId: (state, id) => {
+                                            state.pickedObjectId = id;
+                                        }
+                                    },
+                                    state: {
+                                        pickedObjectId: "2FqgbXt9bA5fhc7u8N0XU2",
+                                        modeObjectInfoActive: true
+                                    }
+                                }
                             },
                             actions: {
                                 getObjectDataForId: () => Promise.resolve({
@@ -47,19 +64,6 @@ describe("src/modules/bimViewer/tests/unit/components/sidebar/ObjectInformation.
                                         }
                                     ]
                                 })
-                            },
-                            mutations: {
-                                "ToolObjectInfo/setModeObjectInfoActive": (state, isActive) => {
-                                    state.ToolObjectInfo.modeObjectInfoActive = isActive;
-                                },
-                                "ToolObjectInfo/setPickedObjectId": (state, id) => {
-                                    state.ToolObjectInfo.pickedObjectId = id;
-                                }
-                            },
-                            state: {
-                                ToolObjectInfo: {
-                                    pickedObjectId: "2FqgbXt9bA5fhc7u8N0XU2"
-                                }
                             }
                         }
                     }

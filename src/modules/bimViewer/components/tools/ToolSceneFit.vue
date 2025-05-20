@@ -1,15 +1,17 @@
 <script>
 import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
 
+import {mapActions} from "vuex";
+
 export default {
     name: "ToolSceneFit",
     components: {
         IconButton
     },
     methods: {
-        fitScene () {
-            this.$store.dispatch("Modules/BimViewer/ToolSceneFit/fit");
-        }
+        ...mapActions("Modules/BimViewer/ToolSceneFit", {
+            fitScene: "fit"
+        })
     }
 };
 </script>

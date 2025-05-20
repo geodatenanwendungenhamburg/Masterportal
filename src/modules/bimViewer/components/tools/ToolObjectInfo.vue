@@ -1,4 +1,6 @@
 <script>
+import {mapGetters, mapMutations, mapActions} from "vuex";
+
 import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
 
 export default {
@@ -7,19 +9,20 @@ export default {
         IconButton
     },
     computed: {
-        xeokitViewer () {
-            return this.$store.getters["Modules/BimViewer/xeokitViewer"];
-        },
-        modeObjectInfoActive: {
+        ...mapGetters("Modules/BimViewer", ["xeokitViewer"]),
+        ...mapGetters("Modules/BimViewer/ToolObjectInfo", [
+            "modeObjectInfoActive",
+            "pickedObjectId"
+        ]),
+        modeObjectInfoActiveProxy: {
             get () {
-                return Boolean(this.$store.getters["Modules/BimViewer/ToolObjectInfo/modeObjectInfoActive"]
-                    || this.$store.getters["Modules/BimViewer/ToolObjectInfo/pickedObjectId"]);
+                return Boolean(this.modeObjectInfoActive || this.pickedObjectId);
             },
             set (value) {
-                this.$store.commit("Modules/BimViewer/ToolObjectInfo/setModeObjectInfoActive", value);
+                this.setModeObjectInfoActive(value);
 
                 if (!value) {
-                    this.$store.dispatch("Modules/BimViewer/ToolObjectInfo/reset");
+                    this.reset();
                 }
             }
         },
@@ -29,18 +32,20 @@ export default {
     },
     watch: {
         xeokitViewer () {
-            this.$store.dispatch("Modules/BimViewer/ToolObjectInfo/initialize");
+            this.initialize();
         }
     },
     methods: {
+        ...mapMutations("Modules/BimViewer/ToolObjectInfo", ["setModeObjectInfoActive"]),
+        ...mapActions("Modules/BimViewer/ToolObjectInfo", ["reset", "initialize"]),
         setActive () {
-            this.modeObjectInfoActive = !this.modeObjectInfoActive;
+            this.modeObjectInfoActiveProxy = !this.modeObjectInfoActiveProxy;
 
-            if (this.modeObjectInfoActive === true) {
+            if (this.modeObjectInfoActiveProxy === true) {
                 this.$parent.$refs.toolMeasurements.setActive(false);
             }
             else {
-                this.$store.dispatch("Modules/BimViewer/ToolObjectInfo/reset");
+                this.reset();
             }
         }
     }

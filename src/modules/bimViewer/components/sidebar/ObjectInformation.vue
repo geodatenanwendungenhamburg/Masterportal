@@ -1,7 +1,5 @@
 <script>
-import {mapGetters, mapMutations} from "vuex";
-import getters from "../../store/gettersBimViewer";
-import mutations from "../../store/mutationsBimViewer";
+import {mapGetters, mapMutations, mapActions} from "vuex";
 import FlatButton from "../../../../shared/modules/buttons/components/FlatButton.vue";
 
 export default {
@@ -16,13 +14,10 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/BimViewer", Object.keys(getters)),
-        pickedObjectId () {
-            return this.$store.getters["Modules/BimViewer/ToolObjectInfo/pickedObjectId"];
-        },
-        objectInformationActivated () {
-            return this.$store.getters["Modules/BimViewer/ToolObjectInfo/modeObjectInfoActive"];
-        }
+        ...mapGetters("Modules/BimViewer/ToolObjectInfo", {
+            pickedObjectId: "pickedObjectId",
+            objectInformationActivated: "modeObjectInfoActive"
+        })
     },
     watch: {
         pickedObjectId (newObjectId) {
@@ -33,19 +28,25 @@ export default {
         this.loadObjectInformation(this.pickedObjectId);
     },
     methods: {
-        ...mapMutations("Modules/BimViewer", Object.keys(mutations)),
+        ...mapMutations("Modules/BimViewer/ToolObjectInfo", [
+            "setModeObjectInfoActive"
+        ]),
+        ...mapActions("Modules/BimViewer", [
+            "getObjectDataForId"
+        ]),
         loadObjectInformation (objectId) {
             if (objectId) {
-                this.$store.dispatch("Modules/BimViewer/getObjectDataForId", {objectId: objectId}).then((data) => {
-                    if (data) {
-                        this.objectData = data;
-                        this.objectData.storey = this.getStoreyFromObjectData(data);
+                this.getObjectDataForId({objectId: objectId})
+                    .then((data) => {
+                        if (data) {
+                            this.objectData = data;
+                            this.objectData.storey = this.getStoreyFromObjectData(data);
 
-                        this.objectData.propertySets.forEach((set) => {
-                            set.isActive = true;
-                        });
-                    }
-                });
+                            this.objectData.propertySets.forEach((set) => {
+                                set.isActive = true;
+                            });
+                        }
+                    });
             }
             else {
                 this.objectData = null;
@@ -75,7 +76,7 @@ export default {
             return completeLinkPath.split(/.*[/|\\]/)[1].split("?")[0];
         },
         activateObjectInformation () {
-            this.$store.commit("Modules/BimViewer/ToolObjectInfo/setModeObjectInfoActive", true);
+            this.setModeObjectInfoActive(true);
         }
     }
 };

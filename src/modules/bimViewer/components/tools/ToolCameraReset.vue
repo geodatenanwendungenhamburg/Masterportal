@@ -1,4 +1,6 @@
 <script>
+import {mapActions} from "vuex";
+
 import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
 
 export default {
@@ -7,9 +9,9 @@ export default {
         IconButton
     },
     methods: {
-        resetCamera () {
-            this.$store.dispatch("Modules/BimViewer/ToolCameraReset/reset");
-        }
+        ...mapActions("Modules/BimViewer/ToolCameraReset", {
+            resetCamera: "reset"
+        })
     }
 };
 </script>

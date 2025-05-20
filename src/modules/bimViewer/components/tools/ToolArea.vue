@@ -1,7 +1,5 @@
 <script>
 import {mapGetters, mapMutations} from "vuex";
-import getters from "../../store/gettersBimViewer";
-import mutations from "../../store/mutationsBimViewer";
 import ToolFilter from "./ToolFilter.vue";
 import ToolMeasurements from "./ToolMeasurements.vue";
 import ToolSao from "./ToolSao.vue";
@@ -39,19 +37,22 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/BimViewer", Object.keys(getters)),
-        ...mapGetters(["uiStyle"]),
-        toggleRightSidebar: {
+        ...mapGetters("Modules/BimViewer", [
+            "toggleRightSidebar"
+        ]),
+        toggleRightSidebarProxy: {
             get () {
-                return this.$store.getters["Modules/BimViewer/toggleRightSidebar"];
+                return this.toggleRightSidebar;
             },
             set (value) {
-                this.$store.commit("Modules/BimViewer/setToggleRightSidebar", value);
+                this.setToggleRightSidebar(value);
             }
         }
     },
     methods: {
-        ...mapMutations("Modules/BimViewer", Object.keys(mutations)),
+        ...mapMutations("Modules/BimViewer", [
+            "setToggleRightSidebar"
+        ]),
         onSceneSelected (index) {
             this.$emit("sceneSelected", index);
         },
@@ -61,9 +62,9 @@ export default {
             this.$emit("toggleSidebarLeft", this.sidebarLeftOpen);
         },
         toggleSidebarRight () {
-            this.toggleRightSidebar = !this.toggleRightSidebar;
+            this.toggleRightSidebarProxy = !this.toggleRightSidebarProxy;
 
-            this.$emit("toggleSidebarRight", this.toggleRightSidebar);
+            this.$emit("toggleSidebarRight", this.toggleRightSidebarProxy);
         }
     }
 };

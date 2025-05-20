@@ -1,4 +1,6 @@
 <script>
+import {mapActions} from "vuex";
+
 import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
 
 export default {
@@ -7,36 +9,42 @@ export default {
         IconButton
     },
     methods: {
-        uploadFile (event) {
-            const
-                file = event.target.files[0] || null,
-                fileNameSplit = file.name.split("."),
+        ...mapActions({
+            addSingleAlert: "Alerting/addSingleAlert",
+            loadBCF: "Modules/BimViewer/loadBCF",
+            loadModel: "Modules/BimViewer/loadModel",
+            fitScene: "Modules/BimViewer/ToolSceneFit/fit"
+        }),
+        async uploadFile (event) {
+            const file = event.target.files[0] || null,
+                fileNameSplit = file ? file.name.split(".") : [],
                 fileExtension = fileNameSplit.length > 0 ? fileNameSplit[fileNameSplit.length - 1].toLowerCase() : "";
 
             if (!["ifc", "xkt", "gltf", "bcf"].includes(fileExtension)) {
-                this.$store.dispatch("Alerting/addSingleAlert", {
+                this.addSingleAlert({
                     category: "error",
                     content: i18next.t("modules.bimViewer.tools.uploadFormatError", {fileExtension: fileExtension})
                 }, {root: true});
 
+                event.target.value = "";
                 return;
             }
 
             if (file) {
                 if (fileExtension === "bcf") {
-                    this.$store.dispatch("Modules/BimViewer/loadBCF", {
-                        url: file
-                    });
+                    this.loadBCF({url: file});
                 }
                 else {
-                    this.$store.dispatch("Modules/BimViewer/loadModel", {
+                    this.loadModel({
                         url: file,
                         visible: true,
                         type: fileExtension
                     }).then((theModel) => {
-                        theModel.on("loaded", () => {
-                            this.$store.dispatch("Modules/BimViewer/ToolSceneFit/fit");
-                        });
+                        if (theModel && typeof theModel.on === "function") {
+                            theModel.on("loaded", () => {
+                                this.fitScene();
+                            });
+                        }
                     });
                 }
             }

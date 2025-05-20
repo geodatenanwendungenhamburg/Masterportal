@@ -1,4 +1,6 @@
 <script>
+import {mapGetters} from "vuex";
+
 export default {
     name: "ToolSceneSelector",
     data () {
@@ -7,9 +9,9 @@ export default {
         };
     },
     computed: {
-        allSceneConfigs () {
-            return this.$store.getters["Modules/BimViewer/sceneConfigs"];
-        },
+        ...mapGetters("Modules/BimViewer", {
+            allSceneConfigs: "sceneConfigs"
+        }),
         selectIsVisible () {
             // Select is only visible if more than one scene is configured.
             return this.allSceneConfigs.length > 1;

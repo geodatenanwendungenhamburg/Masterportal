@@ -1,4 +1,6 @@
 <script>
+import {mapGetters, mapActions} from "vuex";
+
 import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
 
 export default {
@@ -7,11 +9,9 @@ export default {
         IconButton
     },
     computed: {
-        /**
-         * @return {bool|null} Status null=not available, false=Off or true=On
-         */
+        ...mapGetters("Modules/BimViewer/ToolSao", ["saoStatus"]),
         modeSaoStatus () {
-            return this.$store.getters["Modules/BimViewer/ToolSao/saoStatus"];
+            return this.saoStatus;
         },
         modeSaoNotSupported () {
             return this.modeSaoStatus === null;
@@ -28,9 +28,7 @@ export default {
         }
     },
     methods: {
-        setSaoSettings (options) {
-            this.$store.dispatch("Modules/BimViewer/ToolSao/setSaoSettings", options);
-        }
+        ...mapActions("Modules/BimViewer/ToolSao", ["setSaoSettings"])
     }
 };
 </script>

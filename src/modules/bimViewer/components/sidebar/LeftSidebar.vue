@@ -1,6 +1,6 @@
 <script>
 import NavTab from "../../../../shared/modules/tabs/components/NavTab.vue";
-import {mapGetters} from "vuex";
+import {mapGetters, mapActions} from "vuex";
 import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
 import FlatButton from "../../../../shared/modules/buttons/components/FlatButton.vue";
 
@@ -22,30 +22,38 @@ export default {
         ])
     },
     methods: {
+        ...mapActions("Modules/BimViewer", {
+            updateXeokitPluginTreeViewHierarchyType: "updateXeokitPluginTreeViewHierarchyType",
+            resetLoadedModelExtraSettings: "resetLoadedModelExtraSettings",
+            destroyModelAction: "destroyModel",
+            setLoadedModelXRayedAction: "setLoadedModelXRayed",
+            setLoadedModelInvisibleAction: "setLoadedModelInvisible",
+            flyToCompleteModelAction: "flyToCompleteModel"
+        }),
         setActiveTab (tab) {
             if (tab !== "models") {
-                this.$store.dispatch("Modules/BimViewer/updateXeokitPluginTreeViewHierarchyType", tab);
+                this.updateXeokitPluginTreeViewHierarchyType(tab);
             }
             else {
-                this.$store.dispatch("Modules/BimViewer/resetLoadedModelExtraSettings");
+                this.resetLoadedModelExtraSettings();
             }
 
             this.activeTab = tab;
         },
         deleteModel (modelId) {
-            this.$store.dispatch("Modules/BimViewer/destroyModel", modelId);
+            this.destroyModelAction(modelId);
         },
         deleteAllModels () {
-            this.loadedModels.forEach(item => this.$store.dispatch("Modules/BimViewer/destroyModel", item.sceneModel.id));
+            this.loadedModels.forEach(item => this.destroyModelAction(item.sceneModel.id));
         },
         setLoadedModelXRayed (modelId, isXRayed) {
-            this.$store.dispatch("Modules/BimViewer/setLoadedModelXRayed", {modelId, isXRayed});
+            this.setLoadedModelXRayedAction({modelId, isXRayed});
         },
         setLoadedModelInvisible (modelId, isInvisible) {
-            this.$store.dispatch("Modules/BimViewer/setLoadedModelInvisible", {modelId, isInvisible});
+            this.setLoadedModelInvisibleAction({modelId, isInvisible});
         },
         flyToCompleteModel (modelId) {
-            this.$store.dispatch("Modules/BimViewer/flyToCompleteModel", modelId);
+            this.flyToCompleteModelAction(modelId);
         }
     }
 };

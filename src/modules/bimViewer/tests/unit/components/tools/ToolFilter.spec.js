@@ -6,23 +6,26 @@ import sinon from "sinon";
 
 config.global.mocks.$t = key => key;
 
-
 describe("src/modules/bimViewer/tests/unit/components/tools/ToolFilter.vue", () => {
-    let store,
-        wrapper;
+    let store, wrapper;
 
     beforeEach(() => {
         store = createStore({
             modules: {
-                BimViewer: {
+                Modules: {
                     namespaced: true,
                     modules: {
-                        ToolFilter: {
+                        BimViewer: {
                             namespaced: true,
-                            actions: {
-                                filterIfcMetaObjects: sinon.stub().resolves([]),
-                                resetHighlighting: sinon.stub(),
-                                setHighlighting: sinon.stub()
+                            modules: {
+                                ToolFilter: {
+                                    namespaced: true,
+                                    actions: {
+                                        filterIfcMetaObjects: sinon.stub().resolves([]),
+                                        resetHighlighting: sinon.stub(),
+                                        setHighlighting: sinon.stub()
+                                    }
+                                }
                             }
                         }
                     }

@@ -50,45 +50,58 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolMeasurements.vue
     });
 
     it("toggles toolDistanceMeasurementsActive when setActive is called", async () => {
-        const toggleStub = sinon.stub(store, "dispatch");
+        const toggleStub = sinon.stub(wrapper.vm, "toggleMeasurements");
 
         wrapper.vm.setActive(true);
         await wrapper.vm.$nextTick();
+
         expect(wrapper.vm.toolDistanceMeasurementsActive).to.be.true;
-        expect(toggleStub.calledWith("Modules/BimViewer/ToolMeasurements/toggle")).to.be.true;
+        expect(toggleStub.calledWith({isActive: true})).to.be.true;
 
         wrapper.vm.setActive(false);
         await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.toolDistanceMeasurementsActive).to.be.false;
-        expect(toggleStub.calledWith("Modules/BimViewer/ToolMeasurements/toggle")).to.be.true;
+        expect(toggleStub.calledWith({isActive: false})).to.be.true;
 
         toggleStub.restore();
     });
 
     it("calls reset action when setActive is called with true", async () => {
-        const resetStub = sinon.stub(store, "dispatch").withArgs("Modules/BimViewer/ToolObjectInfo/reset");
+        const resetStub = sinon.stub(wrapper.vm, "resetObjectInfo");
 
         wrapper.vm.setActive(true);
         await wrapper.vm.$nextTick();
 
-        expect(resetStub.calledWith("Modules/BimViewer/ToolObjectInfo/reset")).to.be.true;
+        expect(resetStub.calledOnce).to.be.true;
+
+        resetStub.restore();
     });
 
     it("does not call reset action when setActive is called with false", async () => {
-        const resetSpy = sinon.spy(store.dispatch);
+        const resetSpy = sinon.spy(wrapper.vm, "resetObjectInfo");
 
         wrapper.vm.setActive(false);
 
-        expect(resetSpy.calledWith("Modules/BimViewer/ToolObjectInfo/reset")).to.be.false;
+        expect(resetSpy.called).to.be.false;
+
+        resetSpy.restore();
     });
 
-    it("calls clear action when clear is called", async () => {
-        const clearSpy = sinon.stub(store, "dispatch").withArgs("Modules/BimViewer/ToolMeasurements/clear");
+    it("calls clearMeasurements when reset button is clicked", async () => {
+        const clearStub = sinon.stub(wrapper.vm, "clearMeasurements");
 
-        wrapper.vm.clear();
+        wrapper.vm.toolDistanceMeasurementsActive = true;
+        await wrapper.vm.$nextTick();
 
-        expect(clearSpy.calledWith("Modules/BimViewer/ToolMeasurements/clear")).to.be.true;
+        // eslint-disable-next-line
+        const resetButton = wrapper.find("button.resetButton");
+
+        await resetButton.trigger("click");
+
+        expect(clearStub.calledOnce).to.be.true;
+
+        clearStub.restore();
     });
 
     it("renders the toggle button with the correct class when toolDistanceMeasurementsActive is true", async () => {
@@ -103,6 +116,7 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolMeasurements.vue
     it("renders the toggle button with the correct class when toolDistanceMeasurementsActive is false", async () => {
         wrapper.vm.toolDistanceMeasurementsActive = false;
         await wrapper.vm.$nextTick();
+
         const toggleButton = wrapper.find("button.btn-primary");
 
         expect(toggleButton.classes()).to.not.include("bim-btn-highlight");
@@ -111,6 +125,7 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolMeasurements.vue
     it("renders the reset button when toolDistanceMeasurementsActive is true", async () => {
         wrapper.vm.toolDistanceMeasurementsActive = true;
         await wrapper.vm.$nextTick();
+
         const resetButton = wrapper.find("button.resetButton");
 
         expect(resetButton.exists()).to.be.true;
@@ -119,18 +134,19 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolMeasurements.vue
     it("does not render the reset button when toolDistanceMeasurementsActive is false", async () => {
         wrapper.vm.toolDistanceMeasurementsActive = false;
         await wrapper.vm.$nextTick();
+
         const resetButton = wrapper.find("button.resetButton");
 
         expect(resetButton.exists()).to.be.false;
     });
 
     it("throws an error if setActive is called without a boolean value", () => {
+
         expect(() => wrapper.vm.setActive(null)).to.throw();
         expect(() => wrapper.vm.setActive(undefined)).to.throw();
         expect(() => wrapper.vm.setActive("string")).to.throw();
     });
 
-    it("does not throw an error if clear is called without any parameters", () => {
-        expect(() => wrapper.vm.clear()).to.not.throw();
-    });
+    // Removed tests for wrapper.vm.clear since there is no clear method anymore
+
 });

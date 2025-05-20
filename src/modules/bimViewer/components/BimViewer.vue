@@ -1,8 +1,7 @@
 <script>
 import RightSidebar from "./sidebar/RightSidebar.vue";
 import ToolArea from "./tools/ToolArea.vue";
-import {mapGetters, mapMutations} from "vuex";
-import mutations from "../store/mutationsBimViewer";
+import {mapGetters, mapMutations, mapActions} from "vuex";
 import LeftSidebar from "./sidebar/LeftSidebar.vue";
 
 export default {
@@ -35,20 +34,11 @@ export default {
         }
     },
     async mounted () {
-        this.$store.commit("Modules/BimViewer/setBimViewerFullyLoaded", false);
-        await this.$store.dispatch("Modules/BimViewer/initializeBimViewer");
-
+        this.setBimViewerFullyLoaded(false);
+        await this.initializeBimViewer();
         this.applyTranslationKey(this.name);
-
-        const urlParams = new URLSearchParams(window.location.search);
-
-        // Allow to hide the NavCube with URL parameter ?cube=false
-        if (urlParams.get("cube") && urlParams.get("cube") === "false") {
-            this.hideCube = true;
-        }
-
-        await this.$store.dispatch("Modules/BimViewer/loadSceneConfigs");
-
+        this.setHideCube();
+        await this.loadSceneConfigs();
         this.setScene(this.selectedSceneIndex);
     },
     activated () {
@@ -58,7 +48,23 @@ export default {
         this.setMasterportalMainMenuOverflowHidden(false);
     },
     methods: {
-        ...mapMutations("Modules/BimViewer", Object.keys(mutations)),
+        ...mapMutations("Modules/BimViewer", [
+            "setBimViewerFullyLoaded",
+            "applyTranslationKey"
+        ]),
+        ...mapActions("Modules/BimViewer", {
+            loadSceneConfigs: "loadSceneConfigs",
+            initializeBimViewer: "initializeBimViewer",
+            setSceneAction: "setScene"
+        }),
+        setHideCube () {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Allow to hide the NavCube with URL parameter ?cube=false
+            if (urlParams.get("cube") && urlParams.get("cube") === "false") {
+                this.hideCube = true;
+            }
+        },
         setMasterportalMainMenuOverflowHidden (shouldBeHidden) {
             const domElement = document?.querySelector("#mp-menu-mainMenu");
 
@@ -73,7 +79,7 @@ export default {
                 return;
             }
 
-            this.$store.dispatch("Modules/BimViewer/setScene", {
+            this.setSceneAction({
                 domElements: {
                     viewerCanvas: this.$refs.viewerCanvas,
                     cubeCanvas: this.$refs.cubeCanvas,
@@ -82,7 +88,6 @@ export default {
                 },
                 sceneConfig: this.sceneConfigs[index]
             });
-
             this.$refs.toolArea.$refs.toolMeasurements.setActive(false);
 
             this.setCanvasStyleToPreventOverflow();

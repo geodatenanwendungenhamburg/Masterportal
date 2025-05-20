@@ -18,13 +18,18 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolObjectInfo.vue",
                     modules: {
                         BimViewer: {
                             namespaced: true,
+                            state: () => ({
+                                xeokitViewer: null
+                            }),
+                            getters: {
+                                xeokitViewer: state => state.xeokitViewer
+                            },
                             modules: {
                                 ToolObjectInfo: {
                                     namespaced: true,
                                     state: () => ({
                                         modeObjectInfoActive: false,
-                                        pickedObjectId: null,
-                                        xeokitViewer: null
+                                        pickedObjectId: null
                                     }),
                                     getters: {
                                         modeObjectInfoActive: state => state.modeObjectInfoActive,
@@ -37,9 +42,6 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolObjectInfo.vue",
                                     mutations: {
                                         setModeObjectInfoActive: (state, val) => {
                                             state.modeObjectInfoActive = val;
-                                        },
-                                        setXeokitViewer: (state, viewer) => {
-                                            state.xeokitViewer = viewer;
                                         }
                                     }
                                 }
@@ -67,26 +69,20 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolObjectInfo.vue",
 
     it("renders the base component", () => {
         expect(wrapper.exists()).to.be.true;
+
         expect(wrapper.find("div.ToolObjectInfo").exists()).to.be.true;
     });
 
     it("toggles modeObjectInfoActive when setActive is called", async () => {
-        const commitStub = sinon.stub(store, "commit");
+        const commitStub = sinon.stub(store, "commit"),
+            dispatchStub = sinon.stub(store, "dispatch");
 
         await wrapper.vm.setActive();
 
         expect(commitStub.calledWith("Modules/BimViewer/ToolObjectInfo/setModeObjectInfoActive", true)).to.be.true;
-        commitStub.restore();
-    });
-
-    it("calls reset action when modeObjectInfoActive is set to false", async () => {
-        const dispatchStub = sinon.stub(store, "dispatch");
-
-        wrapper.vm.modeObjectInfoActive = false;
-        await wrapper.vm.$nextTick();
-
         expect(dispatchStub.calledWith("Modules/BimViewer/ToolObjectInfo/reset")).to.be.true;
-        dispatchStub.restore();
+
+        commitStub.restore();
     });
 
     it("renders the button with correct classes based on modeObjectInfoActive state", async () => {
@@ -104,7 +100,7 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolObjectInfo.vue",
     });
 
     it("does not call reset if modeObjectInfoActive is already false", async () => {
-        const dispatchStub = sinon.stub(store, "dispatch");
+        const dispatchStub = sinon.stub(store, "dispatch").resolves();
 
         store.commit("Modules/BimViewer/ToolObjectInfo/setModeObjectInfoActive", false);
         await wrapper.vm.$nextTick();
