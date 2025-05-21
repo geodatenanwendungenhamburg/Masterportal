@@ -13,6 +13,7 @@ const actions = {
             treeView = rootGetters["Modules/BimViewer/xeokitPluginTreeView"];
 
         viewer.cameraControl.on("picked", (event) => {
+            // A node is picked, do the things here..
             if (getters.modeObjectInfoActive === false) {
                 return;
             }
@@ -26,7 +27,6 @@ const actions = {
 
                 if (event.entity.id !== rootGetters["Modules/BimViewer/ToolObjectInfo/pickedObjectId"]) {
                     // Reset all objects of the current scene
-                    scene.setObjectsVisible(scene.objectIds, true);
                     scene.setObjectsXRayed(scene.objectIds, true);
 
                     // Set only the selected object

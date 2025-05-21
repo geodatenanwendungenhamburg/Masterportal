@@ -270,7 +270,6 @@ const actions = {
                 if (event.treeViewNode.objectId !== getters["ToolObjectInfo/pickedObjectId"]) {
                     // Reset all objects of the current scene
                     scene.setObjectsXRayed(scene.objectIds, true);
-                    scene.setObjectsVisible(scene.objectIds, true);
 
                     // Set only the selected object
                     scene.setObjectsXRayed(selectedObjectIds, false);
@@ -309,7 +308,6 @@ const actions = {
                 });
             }
         });
-
         commit("setXeokitPluginTreeView", xeokitPluginTreeView);
     },
     /**
@@ -799,11 +797,6 @@ const actions = {
             dispatch("setLoadedModelXRayed", {
                 modelId: item.sceneModel.id,
                 isXRayed: false
-            });
-
-            dispatch("setLoadedModelInvisible", {
-                modelId: item.sceneModel.id,
-                isInvisible: false
             });
         });
     },
