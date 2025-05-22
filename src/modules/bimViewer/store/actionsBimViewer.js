@@ -88,23 +88,6 @@ const actions = {
 
         dispatch("Modules/BimViewer/ToolSao/setSaoSettings", payload.sceneConfig.saoSettings, {root: true});
 
-        // Arrange the camera
-        if (payload.sceneConfig.cameraSettings) {
-            xeokitViewer.scene.camera.eye = payload.sceneConfig.cameraSettings.eye;
-            xeokitViewer.scene.camera.look = payload.sceneConfig.cameraSettings.look;
-            xeokitViewer.scene.camera.up = payload.sceneConfig.cameraSettings.up;
-        }
-        else {
-            // [x,y,z]
-            // eye =  position of the camera from the center of the secne's coordinate system
-            xeokitViewer.scene.camera.eye = [0, 0, 2];
-            // look = point in the scene to which the camera points (depending on the eye position)
-            xeokitViewer.scene.camera.look = [0, 1, 1];
-            // up = a camera's up vector defines which direction is considered "up" for the camera
-            // If [0,1,0] is set, it means y is up
-            xeokitViewer.scene.camera.up = [0, 1, 0];
-        }
-
         // Load the models
         // eslint-disable-next-line
         const modelList = [];
@@ -132,107 +115,98 @@ const actions = {
 
             commit("setTotalNumberOfModels", payload.sceneConfig.modelList.length);
 
-            payload.sceneConfig.modelList.forEach((url) => {
-                const fileNameSplit = url.split("."),
-                    fileExtension = fileNameSplit.length > 0 ? fileNameSplit[fileNameSplit.length - 1].toLowerCase() : "";
+            if (!payload.sceneConfig.modelList.length) {
+                // If there are no models, we just update the camera settings.
+                dispatch("adjustSceneCamera", {
+                    cameraSettings: payload.sceneConfig.cameraSettings ?? null
+                });
+            }
+            else {
+                payload.sceneConfig.modelList.forEach((url) => {
+                    const fileNameSplit = url.split("."),
+                        fileExtension = fileNameSplit.length > 0 ? fileNameSplit[fileNameSplit.length - 1].toLowerCase() : "";
 
-                if (!["ifc", "xkt", "gltf"].includes(fileExtension)) {
-                    console.error("Invalid file extension: ", fileExtension);
-                }
+                    if (!["ifc", "xkt", "gltf"].includes(fileExtension)) {
+                        console.error("Invalid file extension: ", fileExtension);
+                    }
 
-                // Load models invisible to avoid jumps. After loading the last model, all models are set visible.
-                dispatch("loadModel", {
-                    url: url,
-                    visible: false,
-                    type: fileExtension
-                }).then((theModel) => {
-                    modelList.push(theModel);
+                    // Load models invisible to avoid jumps. After loading the last model, all models are set visible.
+                    dispatch("loadModel", {
+                        url: url,
+                        visible: false,
+                        type: fileExtension
+                    }).then((theModel) => {
+                        modelList.push(theModel);
 
-                    theModel.on("loaded", () => {
-                        modelPosition++;
+                        theModel.on("loaded", () => {
+                            modelPosition++;
 
-                        dispatch("addMetaInformationToModel", theModel);
+                            dispatch("addMetaInformationToModel", theModel);
 
-                        commit("setCurrentlyLoadedModels", modelPosition);
+                            commit("setCurrentlyLoadedModels", modelPosition);
 
-                        // When the last model has been loaded, update the camera and make the models visible.
-                        if (payload.sceneConfig.modelList.length === modelPosition) {
-                            const
-                                annotationCoordinates = urlParams.get("annoCoords"),
-                                cameraEye = urlParams.get("cameraEye"),
-                                cameraLook = urlParams.get("cameraLook"),
-                                cameraUp = urlParams.get("cameraUp"),
-                                projection = urlParams.get("annoProj"),
-                                showPointer = urlParams.get("showPointer");
+                            // When the last model has been loaded, update the camera and make the models visible.
+                            if (payload.sceneConfig.modelList.length === modelPosition) {
+                                const
+                                    annotationCoordinates = urlParams.get("annoCoords"),
+                                    cameraEye = urlParams.get("cameraEye"),
+                                    cameraLook = urlParams.get("cameraLook"),
+                                    cameraUp = urlParams.get("cameraUp"),
+                                    projection = urlParams.get("annoProj"),
+                                    showPointer = urlParams.get("showPointer");
 
-
-                            if (!payload.sceneConfig.cameraSettings) {
-                                // [x,y,z]
-                                // eye =  position of the camera from the center of the secne's coordinate system
-                                xeokitViewer.scene.camera.eye = [0, 2, 2];
-                                // look = point in the scene to which the camera points (depending on the eye position)
-                                xeokitViewer.scene.camera.look = [0, 1, 1];
-                                // up = a camera's up vector defines which direction is considered "up" for the camera
-                                // If [0,1,0] is set, it means y is up
-                                xeokitViewer.scene.camera.up = [0, 1, 0];
-
-                                dispatch("Modules/BimViewer/ToolSceneFit/fit", null, {root: true});
-                            }
-                            else {
-                                xeokitViewer.cameraFlight.jumpTo({
-                                    eye: payload.sceneConfig.cameraSettings.eye,
-                                    look: payload.sceneConfig.cameraSettings.look,
-                                    up: payload.sceneConfig.cameraSettings.up
-                                });
-                            }
-
-                            modelList.forEach((model) => {
-                                model.visible = true;
-                            });
-
-                            if (annotationCoordinates) {
-                                const zoomToPayload = {
-                                    annoCoords: annotationCoordinates.split(",").map(Number),
-                                    cameraEye: cameraEye.split(",").map(Number),
-                                    cameraLook: cameraLook.split(",").map(Number),
-                                    cameraUp: cameraUp.split(",").map(Number),
-                                    projection: projection,
-                                    showPointer: showPointer,
-                                    bimViewer: payload.domElements.bimViewer
-                                };
-
-                                dispatch("zoomToObject", zoomToPayload);
-                            }
-
-                            // Add annotations plugin
-
-                            // Clear any refresh interval set by a previously loaded scene
-                            if (getters.annotationRefreshIntervalID) {
-                                clearInterval(getters.annotationRefreshIntervalID);
-                            }
-
-                            if (payload.sceneConfig.annotationsJSON?.length > 0) {
-                                dispatch("addPluginAnnotations", {
-                                    sceneAnnotations: payload.sceneConfig.annotationsJSON,
-                                    bimViewer: payload.domElements.bimViewer
+                                dispatch("adjustSceneCamera", {
+                                    cameraSettings: payload.sceneConfig.cameraSettings ?? null
                                 });
 
-                                if (typeof getters.annotationRefreshInterval === "number") {
+                                modelList.forEach((model) => {
+                                    model.visible = true;
+                                });
 
-                                    const annotationRefreshIntervalID = setInterval(() => {
-                                        dispatch("addPluginAnnotations", {
-                                            sceneAnnotations: payload.sceneConfig.annotationsJSON,
-                                            bimViewer: payload.domElements.bimViewer
-                                        });
-                                    }, getters.annotationRefreshInterval);
+                                if (annotationCoordinates) {
+                                    const zoomToPayload = {
+                                        annoCoords: annotationCoordinates.split(",").map(Number),
+                                        cameraEye: cameraEye.split(",").map(Number),
+                                        cameraLook: cameraLook.split(",").map(Number),
+                                        cameraUp: cameraUp.split(",").map(Number),
+                                        projection: projection,
+                                        showPointer: showPointer,
+                                        bimViewer: payload.domElements.bimViewer
+                                    };
 
-                                    commit("setAnnotationRefreshIntervalID", annotationRefreshIntervalID);
+                                    dispatch("zoomToObject", zoomToPayload);
+                                }
+
+                                // Add annotations plugin
+
+                                // Clear any refresh interval set by a previously loaded scene
+                                if (getters.annotationRefreshIntervalID) {
+                                    clearInterval(getters.annotationRefreshIntervalID);
+                                }
+
+                                if (payload.sceneConfig.annotationsJSON?.length > 0) {
+                                    dispatch("addPluginAnnotations", {
+                                        sceneAnnotations: payload.sceneConfig.annotationsJSON,
+                                        bimViewer: payload.domElements.bimViewer
+                                    });
+
+                                    if (typeof getters.annotationRefreshInterval === "number") {
+
+                                        const annotationRefreshIntervalID = setInterval(() => {
+                                            dispatch("addPluginAnnotations", {
+                                                sceneAnnotations: payload.sceneConfig.annotationsJSON,
+                                                bimViewer: payload.domElements.bimViewer
+                                            });
+                                        }, getters.annotationRefreshInterval);
+
+                                        commit("setAnnotationRefreshIntervalID", annotationRefreshIntervalID);
+                                    }
                                 }
                             }
-                        }
+                        });
                     });
                 });
-            });
+            }
 
             commit("setBimViewerFullyLoaded", true);
         });
@@ -674,7 +648,7 @@ const actions = {
      * @param {Object} payload Passed parameters {projection, annoCoords, cameraEye, cameraLook, cameraUp, showPointer, bimViewer}
      * @returns {void}
      */
-    zoomToObject ({rootGetters, getters, commit}, payload) {
+    zoomToObject ({rootGetters, getters, commit, dispatch}, payload) {
         let projectedCoords = null;
 
         if (payload.projection === "EPSG:4326") {
@@ -699,9 +673,13 @@ const actions = {
                 canvasPos: canvasPos
             });
 
-        getters.xeokitViewer.scene.camera.eye = payload.cameraEye;
-        getters.xeokitViewer.scene.camera.look = payload.cameraLook;
-        getters.xeokitViewer.scene.camera.up = payload.cameraUp;
+        dispatch("adjustSceneCamera", {
+            cameraSettings: {
+                eye: payload.cameraEye,
+                look: payload.cameraLook,
+                up: payload.cameraUp
+            }
+        });
 
         if (payload.showPointer === "1" || payload.showPointer === "true") {
             const annotations = new AnnotationsPlugin(getters.xeokitViewer, {
@@ -954,6 +932,33 @@ const actions = {
         });
 
         return JSON.stringify(viewpoint, null, 4);
+    },
+    /**
+     * Adjust the camera by given camera settings from scenes.json, or by default values.
+     * If the default camera settings are applied, we use ToolSceneFit/fit to fit the models.
+     * @param {Object} context actions context object.
+     * @param {Object} payload Passed parameters
+     * @param {Object|null} payload.cameraSettings Settings for the camera, null or {eye, look, up}.
+     * @returns {void}
+     */
+    adjustSceneCamera ({getters, dispatch}, payload) {
+        const camera = getters.xeokitViewer.scene.camera;
+
+        if (payload.cameraSettings) {
+            // Use given camera settings
+            camera.eye = payload.cameraSettings.eye;
+            camera.look = payload.cameraSettings.look;
+            camera.up = payload.cameraSettings.up;
+        }
+        else {
+            // Use default camera settings
+            camera.eye = [0.5, 1.77, 1.9];
+            camera.look = [1.6, 0.09, -0.05];
+            camera.up = [0.16, 0.86, -0.4];
+
+            // Fit objects in scene
+            dispatch("Modules/BimViewer/ToolSceneFit/fit", null, {root: true});
+        }
     }
 };
 
