@@ -13,7 +13,17 @@ const actions = {
 
         // Find all matching objects
         for (const objectId in metaObjects) {
-            const metaObject = metaObjects[objectId];
+            const metaObject = metaObjects[objectId],
+                searchArray = [
+                    metaObject.name,
+                    metaObject.type,
+                    metaObject.id,
+                    metaObject.storey,
+                    metaObject.metaModels[0].schema,
+                    metaObject.metaModels[0].createdAt,
+                    metaObject.metaModels[0].author,
+                    metaObject.metaModels[0].id
+                ];
 
             metaObject?.propertySets.forEach((propertySet) => {
                 propertySet?.properties.forEach((property) => {
@@ -23,14 +33,15 @@ const actions = {
                 });
             });
 
-            // Try to apply the filter to the full metaObject too
-            if (String(metaObject.name).toLowerCase().includes(payload.filterText.toLowerCase())) {
-                matchedObjects.push(objectId);
-            }
+            searchArray?.forEach((searchString) => {
+                if (String(searchString).toLowerCase().includes(payload.filterText.toLowerCase())) {
+                    matchedObjects.push(objectId);
+                }
+            });
         }
 
         return new Promise((resolve) => {
-            resolve(matchedObjects);
+            resolve([...new Set(matchedObjects)]);
         });
     },
     /**
