@@ -22,7 +22,9 @@ const mutations = {
         }
     },
     /**
-     * Pushes a model to the model instance array
+     * Pushes a model to the model instance array.
+     * Adds an extraSettings object, which contains the xRayed and visible state.
+     * These are required for the sidebar "Object Structure / Models tab" buttons.
      *
      * @param {object} state of this component
      * @param {object} theModel Ifc, xkt or gltf model instance
@@ -32,8 +34,10 @@ const mutations = {
         state.loadedModels.push({
             sceneModel: theModel,
             extraSettings: {
-                xRayed: false,
-                visible: true
+                // Fully xRayed: 1, Not xRayed: 0, Partially xRayed: -1
+                xRayed: 0,
+                // Fully visible: 1, Not visible: 0, Partially visible: -1
+                visible: 1
             }
         });
     },

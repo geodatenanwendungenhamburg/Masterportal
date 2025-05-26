@@ -12,10 +12,15 @@ const actions = {
             scene = xeokitViewer.scene;
 
         scene.setObjectsVisible(scene.objectIds, true);
+        scene.setObjectsXRayed(scene.objectIds, false);
 
         dispatch("Modules/BimViewer/adjustSceneCamera", {
             cameraSettings: sceneConfig.cameraSettings ?? null
         }, {root: true});
+
+
+        // Required to refresh the "object structure" sidebar icons (visible/xRayed)
+        dispatch("Modules/BimViewer/refreshLoadedModelExtraSettings", {}, {root: true});
     }
 };
 

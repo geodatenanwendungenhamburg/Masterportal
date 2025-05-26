@@ -22,38 +22,59 @@ export default {
         ])
     },
     methods: {
-        ...mapActions("Modules/BimViewer", {
-            updateXeokitPluginTreeViewHierarchyType: "updateXeokitPluginTreeViewHierarchyType",
-            resetLoadedModelExtraSettings: "resetLoadedModelExtraSettings",
-            destroyModelAction: "destroyModel",
-            setLoadedModelXRayedAction: "setLoadedModelXRayed",
-            setLoadedModelInvisibleAction: "setLoadedModelInvisible",
-            flyToCompleteModelAction: "flyToCompleteModel"
-        }),
+        ...mapActions("Modules/BimViewer", [
+            "updateXeokitPluginTreeViewHierarchyType",
+            "refreshLoadedModelExtraSettings",
+            "destroyModel",
+            "setLoadedModelXRayed",
+            "setLoadedModelVisible",
+            "flyToCompleteModel"
+        ]),
         setActiveTab (tab) {
             if (tab !== "models") {
                 this.updateXeokitPluginTreeViewHierarchyType(tab);
             }
             else {
-                this.resetLoadedModelExtraSettings();
+                // Required to refresh the "object structure" sidebar icons (visible/xRayed)
+                this.refreshLoadedModelExtraSettings();
             }
 
             this.activeTab = tab;
         },
-        deleteModel (modelId) {
-            this.destroyModelAction(modelId);
-        },
         deleteAllModels () {
             this.loadedModels.forEach(item => this.destroyModelAction(item.sceneModel.id));
         },
-        setLoadedModelXRayed (modelId, isXRayed) {
-            this.setLoadedModelXRayedAction({modelId, isXRayed});
+        setXRayed (modelId, isXRayedParameter) {
+            let isXRayed = isXRayedParameter;
+
+            // If it's partially set, a click resets the state to not xRayed.
+            isXRayed = ![1, -1].includes(isXRayed);
+
+            this.setLoadedModelXRayed({
+                modelId,
+                isXRayed: Boolean(isXRayed)}
+            );
         },
-        setLoadedModelInvisible (modelId, isInvisible) {
-            this.setLoadedModelInvisibleAction({modelId, isInvisible});
+        setVisible (modelId, isVisibleParameter) {
+            let isVisible = isVisibleParameter;
+
+            // If it's partially set, a click resets the state to not invisible.
+            isVisible = [0, -1].includes(isVisible);
+
+            this.setLoadedModelVisible({
+                modelId,
+                isVisible: Boolean(isVisible)
+            });
         },
-        flyToCompleteModel (modelId) {
-            this.flyToCompleteModelAction(modelId);
+        buttonVisibilityTitle (state) {
+            return state === -1
+                ? this.$t("modules.bimViewer.modelExplorer.models.buttonToggleVisibilityPartially")
+                : this.$t("modules.bimViewer.modelExplorer.models.buttonToggleVisibility");
+        },
+        buttonXRayedTitle (state) {
+            return state === -1
+                ? this.$t("modules.bimViewer.modelExplorer.models.buttonToggleTransparencyPartially")
+                : this.$t("modules.bimViewer.modelExplorer.models.buttonToggleTransparency");
         }
     }
 };
@@ -131,24 +152,32 @@ export default {
 
                         <div class="actions">
                             <IconButton
-                                :class-array="['btn-light', 'bootstrap-icon']"
-                                :titel="$t('modules.bimViewer.modelExplorer.models.buttonToggleVisibility')"
-                                :aria="$t('modules.bimViewer.modelExplorer.models.buttonToggleVisibility')"
-                                :icon="loadedModelItem.extraSettings.visible ? 'bi-eye' : 'bi-eye-slash'"
-                                :interaction="() => setLoadedModelInvisible(
+                                :class-array="[
+                                    'btn-light',
+                                    'bootstrap-icon',
+                                    loadedModelItem.extraSettings.visible === -1 ? 'partially-active' : ''
+                                ]"
+                                :titel="buttonVisibilityTitle(loadedModelItem.extraSettings.visible)"
+                                :aria="buttonVisibilityTitle(loadedModelItem.extraSettings.visible)"
+                                :icon="[0, -1].includes(loadedModelItem.extraSettings.visible) ? 'bi-eye-slash': 'bi-eye'"
+                                :interaction="() => setVisible(
                                     loadedModelItem.sceneModel.id,
                                     loadedModelItem.extraSettings.visible
                                 )"
                             />
 
                             <IconButton
-                                :class-array="['btn-light', 'bootstrap-icon']"
-                                :titel="$t('modules.bimViewer.modelExplorer.models.buttonToggleTransparency')"
-                                :aria="$t('modules.bimViewer.modelExplorer.models.buttonToggleTransparency')"
-                                :icon="loadedModelItem.extraSettings.xRayed ? 'bi-border' : 'bi-border-all'"
-                                :interaction="() => setLoadedModelXRayed(
+                                :class-array="[
+                                    'btn-light',
+                                    'bootstrap-icon',
+                                    loadedModelItem.extraSettings.xRayed === -1 ? 'partially-active' : ''
+                                ]"
+                                :titel="buttonXRayedTitle(loadedModelItem.extraSettings.xRayed)"
+                                :aria="buttonXRayedTitle(loadedModelItem.extraSettings.xRayed)"
+                                :icon="[0].includes(loadedModelItem.extraSettings.xRayed) ? 'bi-border-all': 'bi-border'"
+                                :interaction="() => setXRayed(
                                     loadedModelItem.sceneModel.id,
-                                    !loadedModelItem.extraSettings.xRayed
+                                    loadedModelItem.extraSettings.xRayed
                                 )"
                             />
 
@@ -157,7 +186,7 @@ export default {
                                 :titel="$t('modules.bimViewer.modelExplorer.models.buttonDeleteModel')"
                                 :aria="$t('modules.bimViewer.modelExplorer.models.buttonDeleteModel')"
                                 :icon="'bi-trash'"
-                                :interaction="() => deleteModel(loadedModelItem.sceneModel.id)"
+                                :interaction="() => destroyModel(loadedModelItem.sceneModel.id)"
                             />
                         </div>
                     </div>
@@ -215,6 +244,12 @@ div.LeftSidebar {
 
             div.actions {
                 display: flex;
+
+                button {
+                    &.partially-active {
+                        border: 0.125rem dashed $light_grey_inactive;
+                    }
+                }
             }
 
             &:last-of-type {

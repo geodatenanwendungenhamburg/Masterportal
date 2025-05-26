@@ -12,22 +12,20 @@ const actions = {
             scene = viewer.scene,
             treeView = rootGetters["Modules/BimViewer/xeokitPluginTreeView"];
 
+        // Handle click on node in TreeView, if object info is active.
         viewer.cameraControl.on("picked", (event) => {
-            // A node is picked, do the things here..
             if (getters.modeObjectInfoActive === false) {
                 return;
             }
 
             if (event?.entity?.id !== undefined && event.entity.id !== null) {
-                // Reset visibility and xRayed settings
-                dispatch("Modules/BimViewer/resetLoadedModelExtraSettings", {}, {root: true});
-
                 scene.setObjectsSelected(scene.objectIds, false);
                 scene.setObjectsXRayed(scene.objectIds, false);
 
                 if (event.entity.id !== rootGetters["Modules/BimViewer/ToolObjectInfo/pickedObjectId"]) {
                     // Reset all objects of the current scene
                     scene.setObjectsXRayed(scene.objectIds, true);
+                    scene.setObjectsVisible(scene.objectIds, true);
 
                     // Set only the selected object
                     scene.setObjectsXRayed([event.entity.id], false);
@@ -46,6 +44,9 @@ const actions = {
 
                     treeView.unShowNode();
                 }
+
+                // Required to refresh the "object structure" sidebar icons (visible/xRayed)
+                dispatch("Modules/BimViewer/refreshLoadedModelExtraSettings", {}, {root: true});
             }
         });
     },
@@ -56,7 +57,7 @@ const actions = {
      * @param {Boolean} closeSidebar Close the sidebar or not
      * @returns {void}
      */
-    reset ({rootGetters, commit}, closeSidebar = true) {
+    reset ({rootGetters, commit, dispatch}, closeSidebar = true) {
         const
             scene = rootGetters["Modules/BimViewer/xeokitViewer"].scene,
             treeView = rootGetters["Modules/BimViewer/xeokitPluginTreeView"];
@@ -70,6 +71,9 @@ const actions = {
             commit("setModeObjectInfoActive", false);
             commit("Modules/BimViewer/setToggleRightSidebar", false, {root: true});
         }
+
+        // Required to refresh the "object structure" sidebar icons (visible/xRayed)
+        dispatch("Modules/BimViewer/refreshLoadedModelExtraSettings", {}, {root: true});
 
         treeView.unShowNode();
     }

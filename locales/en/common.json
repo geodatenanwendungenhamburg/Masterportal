@@ -162,8 +162,10 @@
         "tabTypes": "Types",
         "tabContainment": "Containment",
         "models": {
-          "buttonToggleHidden": "Toggle transparency",
+          "buttonToggleTransparency": "Toggle transparency",
+          "buttonToggleTransparencyPartially": "Parts of the model are transparent. Reset transparency.",
           "buttonToggleVisibility": "Toggle model visibility",
+          "buttonToggleVisibilityPartially": "Some parts of the model are hidden. Show all.",
           "buttonDeleteModel": "Delete model from scene",
           "buttonClearScene": "Clear scene",
           "fitModel": "Fit model"

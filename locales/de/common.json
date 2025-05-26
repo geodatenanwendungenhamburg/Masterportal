@@ -163,7 +163,9 @@
         "tabContainment": "Hierarchie",
         "models": {
           "buttonToggleTransparency": "Transparenz ein-/ausschalten",
+          "buttonToggleTransparencyPartially": "Teile des Modells sind transparent. Transparenz zurücksetzen.",
           "buttonToggleVisibility": "Modell ein-/ausblenden",
+          "buttonToggleVisibilityPartially": "Teile des Modells sind ausgeblendet. Alles anzeigen.",
           "buttonDeleteModel": "Modell aus Szene löschen",
           "buttonClearScene": "Szene leeren",
           "fitModel": "Modell einpassen"

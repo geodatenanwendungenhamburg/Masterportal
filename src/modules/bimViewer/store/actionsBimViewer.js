@@ -308,6 +308,7 @@ const actions = {
                 });
             }
         });
+
         commit("setXeokitPluginTreeView", xeokitPluginTreeView);
     },
     /**
@@ -761,43 +762,109 @@ const actions = {
     /**
      * Set the loaded model xRayed or not
      * @param {Object} context actions context object.
-     * @param {*} payload { modelId, isXRayed }
+     * @param {Object} payload Passed parameters
+     * @param {String} payload.modelId Model ID
+     * @param {Boolean} payload.isXRayed Active or not
      */
     setLoadedModelXRayed ({getters}, payload) {
         const model = getters.loadedModels.find(item => item.sceneModel.id === payload.modelId);
 
-        model.extraSettings.xRayed = payload.isXRayed;
-
         getters.xeokitViewer.scene.setObjectsXRayed(
             Object.keys(model.sceneModel.objects),
-            model.extraSettings.xRayed
+            payload.isXRayed
         );
+
+        model.extraSettings.xRayed = payload.isXRayed ? 1 : 0;
     },
     /**
      * Set the loaded model invisible or not
      * @param {Object} context actions context object.
-     * @param {*} payload { modelId, isInvisible}
+     * @param {Object} payload Passed parameters
+     * @param {String} payload.modelId Model ID
+     * @param {Boolean} payload.isVisible Active or not
      */
-    setLoadedModelInvisible ({getters}, payload) {
+    setLoadedModelVisible ({getters}, payload) {
         const model = getters.loadedModels.find(item => item.sceneModel.id === payload.modelId);
-
-        model.extraSettings.visible = !payload.isInvisible;
 
         getters.xeokitViewer.scene.setObjectsVisible(
             Object.keys(model.sceneModel.objects),
-            model.extraSettings.visible
+            payload.isVisible
         );
+
+        model.extraSettings.visible = payload.isVisible ? 1 : 0;
     },
     /**
-     * Reset the extra settings for each of the loaded models
+     * Refresh the "visible" and "xRayed" state for each of the loaded models
+     * Required for the sidebar "Object Structure / Models tab"
      * @param {Object} context actions context object.
      */
-    resetLoadedModelExtraSettings ({dispatch, getters}) {
-        getters.loadedModels.forEach(item => {
-            dispatch("setLoadedModelXRayed", {
-                modelId: item.sceneModel.id,
-                isXRayed: false
-            });
+    refreshLoadedModelExtraSettings ({getters}) {
+        getters.loadedModels.forEach(loadedModel => {
+            const modelObjects = loadedModel.sceneModel.objects;
+
+            let
+                // Fully visible: 1, Not visible: 0, Partially visible: -1
+                visibleState = null,
+                // Fully xRayed: 1, Not xRayed: 0, Partially xRayed: -1
+                xRayedState = null;
+
+            for (const id in modelObjects) {
+                if (!Object.prototype.hasOwnProperty.call(modelObjects, id)) {
+                    continue;
+                }
+
+                const modelObject = modelObjects[id];
+
+                if (visibleState === null) {
+                    visibleState = modelObject.visible;
+                }
+                else if (
+                    visibleState !== -1
+                    && visibleState !== modelObject.visible
+                ) {
+                    visibleState = -1;
+                }
+
+                if (xRayedState === null) {
+                    xRayedState = modelObject.xrayed;
+                }
+                else if (
+                    xRayedState !== -1
+                    && xRayedState !== modelObject.xrayed
+                ) {
+                    xRayedState = -1;
+                }
+
+                // Early return for performance optimization
+                if (
+                    visibleState === -1
+                    && xRayedState === -1
+                ) {
+                    break;
+                }
+            }
+
+            // Assign visible state
+            if (visibleState === true) {
+                loadedModel.extraSettings.visible = 1;
+            }
+            else if (visibleState === false) {
+                loadedModel.extraSettings.visible = 0;
+            }
+            else {
+                loadedModel.extraSettings.visible = -1;
+            }
+
+            // Assign xRayed state
+            if (xRayedState === true) {
+                loadedModel.extraSettings.xRayed = 1;
+            }
+            else if (xRayedState === false) {
+                loadedModel.extraSettings.xRayed = 0;
+            }
+            else {
+                loadedModel.extraSettings.xRayed = -1;
+            }
         });
     },
     /**

@@ -22,8 +22,8 @@ describe("src/modules/bimViewer/tests/unit/components/sidebar/LeftSidebar.spec.j
                                 loadedModels: () => []
                             },
                             actions: {
-                                updateXeokitPluginTreeViewHierarchyType: sinon.stub(),
-                                resetLoadedModelExtraSettings: sinon.stub()
+                                refreshLoadedModelExtraSettings: sinon.stub(),
+                                updateXeokitPluginTreeViewHierarchyType: sinon.stub()
                             }
                         }
                     }
@@ -50,7 +50,7 @@ describe("src/modules/bimViewer/tests/unit/components/sidebar/LeftSidebar.spec.j
     it("calls setActiveTab and dispatches the correct action when any tab is clicked", async () => {
         const dispatchStub = sinon.stub(wrapper.vm.$store, "dispatch"),
             tabs = [
-                {type: "models", id: "#tab-models", action: "Modules/BimViewer/resetLoadedModelExtraSettings"},
+                {type: "models", id: "#tab-models", action: "Modules/BimViewer/refreshLoadedModelExtraSettings"},
                 {type: "containment", id: "#tab-containment", action: "Modules/BimViewer/updateXeokitPluginTreeViewHierarchyType"},
                 {type: "storeys", id: "#tab-storeys", action: "Modules/BimViewer/updateXeokitPluginTreeViewHierarchyType"},
                 {type: "types", id: "#tab-types", action: "Modules/BimViewer/updateXeokitPluginTreeViewHierarchyType"}
