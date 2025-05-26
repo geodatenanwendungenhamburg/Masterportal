@@ -257,55 +257,45 @@ const actions = {
                 viewer = getters.xeokitViewer,
                 scene = viewer.scene,
                 selectedObjectIds = [],
-                selectedSingleObject = event.treeViewNode.children.length === 0;
+                rootObjectId = event.treeViewNode.objectId;
 
-            if (selectedSingleObject) {
-                commit("ToolObjectInfo/setModeObjectInfoActive", true);
+            commit("ToolObjectInfo/setModeObjectInfoActive", true);
 
-                selectedObjectIds.push(event.treeViewNode.objectId);
-
-                scene.setObjectsSelected(scene.objectIds, false);
-                scene.setObjectsXRayed(scene.objectIds, false);
-
-                if (event.treeViewNode.objectId !== getters["ToolObjectInfo/pickedObjectId"]) {
-                    // Reset all objects of the current scene
-                    scene.setObjectsXRayed(scene.objectIds, true);
-
-                    // Set only the selected object
-                    scene.setObjectsXRayed(selectedObjectIds, false);
-                    scene.setObjectsSelected(selectedObjectIds, true);
-
-                    commit("ToolObjectInfo/setPickedObjectId", selectedObjectIds[0]);
-                    commit("ToolObjectInfo/setModeObjectInfoPickedObjects", Object.values(scene.selectedObjects));
-                    commit("Modules/BimViewer/setToggleRightSidebar", true, {root: true});
-
-                    xeokitPluginTreeView.showNode(selectedObjectIds[0]);
-
-                    viewer.cameraFlight.flyTo({
-                        aabb: scene.getAABB(selectedObjectIds),
-                        duration: 0.5
-                    });
+            // Collect all objectIds under this objectId
+            event.treeViewPlugin.withNodeTree(event.treeViewNode, (treeViewNode) => {
+                if (treeViewNode.objectId) {
+                    selectedObjectIds.push(treeViewNode.objectId);
                 }
-                else {
-                    commit("ToolObjectInfo/setPickedObjectId", "");
-                    commit("ToolObjectInfo/setModeObjectInfoPickedObjects", []);
-                    commit("Modules/BimViewer/setToggleRightSidebar", false, {root: true});
+            });
 
-                    xeokitPluginTreeView.unShowNode();
-                }
-            }
-            else {
-                // Collect all objectIds under this objectId
-                event.treeViewPlugin.withNodeTree(event.treeViewNode, (treeViewNode) => {
-                    if (treeViewNode.objectId) {
-                        selectedObjectIds.push(treeViewNode.objectId);
-                    }
-                });
+            scene.setObjectsSelected(scene.objectIds, false);
+            scene.setObjectsXRayed(scene.objectIds, false);
+
+            if (event.treeViewNode.objectId !== getters["ToolObjectInfo/pickedObjectId"]) {
+                // Reset all objects of the current scene
+                scene.setObjectsXRayed(scene.objectIds, true);
+
+                // Set only the selected object
+                scene.setObjectsXRayed(selectedObjectIds, false);
+                scene.setObjectsSelected(selectedObjectIds, true);
+
+                commit("ToolObjectInfo/setPickedObjectId", rootObjectId);
+                commit("ToolObjectInfo/setModeObjectInfoPickedObjects", Object.values(scene.selectedObjects));
+                commit("Modules/BimViewer/setToggleRightSidebar", true, {root: true});
+
+                xeokitPluginTreeView.showNode(selectedObjectIds[0]);
 
                 viewer.cameraFlight.flyTo({
                     aabb: scene.getAABB(selectedObjectIds),
                     duration: 0.5
                 });
+            }
+            else {
+                commit("ToolObjectInfo/setPickedObjectId", "");
+                commit("ToolObjectInfo/setModeObjectInfoPickedObjects", []);
+                commit("Modules/BimViewer/setToggleRightSidebar", false, {root: true});
+
+                xeokitPluginTreeView.unShowNode();
             }
         });
 
@@ -566,17 +556,24 @@ const actions = {
      * @param {Object} payload Passed parameters {url, visible, type: ifc|xkt|gltf}
      * @returns {Object} VBOSceneModel instance
      */
-    loadModel ({dispatch, getters}, payload) {
+    loadModel ({dispatch, getters, rootGetters}, payload) {
         const loaders = {
                 ifc: getters.xeokitIfcLoader,
                 xkt: getters.xeokitXktLoader,
                 gltf: getters.xeokitGltfLoader
             },
-            modelLoader = loaders[payload.type];
+            modelLoader = loaders[payload.type],
+            viewer = rootGetters["Modules/BimViewer/xeokitViewer"],
+            scene = viewer?.scene;
 
         if (!modelLoader) {
             return Promise.reject(new Error("No loader found for type: " + payload.type));
         }
+
+        // In case a model with the same objects as already loaded objects is loaded again
+        // any selections must be cleared prior to loading the model again.
+        scene.setObjectsSelected(scene.selectedObjects, false);
+        dispatch("Modules/BimViewer/ToolObjectInfo/reset", {}, {root: true});
 
         return new Promise((resolve, reject) => {
             if (typeof payload.url === "string") {
@@ -928,7 +925,7 @@ const actions = {
      * @param {Object} payload loadedModel {id}
      * @returns {void}
      */
-    addMetaInformationToModel ({getters}, payload) {
+    addMetaInformationToModel ({getters, dispatch}, payload) {
         const api = getters.xeokitIfcAPI,
             modelId = payload.id,
             fileName = api.GetHeaderLine(modelId, WebIFC.FILE_NAME), // FILE_NAME
@@ -940,6 +937,9 @@ const actions = {
         getters.xeokitViewer.metaScene.metaModels[modelId].schema = schema?.arguments[0][0].value;
         getters.xeokitViewer.metaScene.metaModels[modelId].author = fileName?.arguments[2][0].value;
         getters.xeokitViewer.metaScene.metaModels[modelId].createdAt = fileName?.arguments[1].value;
+        getters.xeokitViewer.metaScene.metaModels[modelId].ifcModelSchemaId = api.modelSchemaList.length - 1;
+
+        dispatch("buildRelAggregatesMap", getters.xeokitViewer.metaScene.metaModels[modelId].ifcModelSchemaId);
     },
     /**
      * Load a BCF viewpoint file (BIM Collaboration Format)
@@ -1024,6 +1024,36 @@ const actions = {
             // Fit objects in scene
             dispatch("Modules/BimViewer/ToolSceneFit/fit", null, {root: true});
         }
+    },
+    /**
+     * Builds a map of relationships between parent and child objects in an IFC model.
+     * This function processes IFCRELAGGREGATES relationships to establish a mapping
+     * between child object IDs and their corresponding parent object IDs.
+     *
+     * @param {Object} context - The Vuex actions context object.
+     * @param {Object} context.getters - Vuex getters object.
+     * @param {Function} context.commit - Vuex commit function to update state.
+     * @param {string} ifcModelId - The xeokit internal ID of the IFC model to process.
+     */
+    buildRelAggregatesMap ({getters, commit}, ifcModelId) {
+        const relAggregatesMap = getters.relAggregatesMap,
+            rels = getters.xeokitIfcAPI.GetLineIDsWithType(ifcModelId, WebIFC.IFCRELAGGREGATES);
+
+        for (let i = 0; i < rels.size(); i++) {
+            const relID = rels.get(i),
+                rel = getters.xeokitIfcAPI.GetLine(ifcModelId, relID),
+                parent = getters.xeokitIfcAPI.GetLine(ifcModelId, rel.RelatingObject.value),
+                parentId = parent.GlobalId.value;
+
+            for (const related of rel.RelatedObjects) {
+                const child = getters.xeokitIfcAPI.GetLine(ifcModelId, related.value),
+                    childId = child.GlobalId.value;
+
+                relAggregatesMap[childId] = parentId;
+            }
+        }
+
+        commit("setRelAggregatesMap", relAggregatesMap);
     }
 };
 

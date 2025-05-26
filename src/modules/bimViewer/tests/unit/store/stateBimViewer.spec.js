@@ -35,7 +35,8 @@ describe("src/modules/bimViewer/store/gettersBimViewer.js", () => {
         currentlyLoadedModels: 0,
         annotationRefreshIntervalID: null,
         positionPointer: null,
-        bimViewerFullyLoaded: false
+        bimViewerFullyLoaded: false,
+        relAggregatesMap: {}
     };
 
     /**

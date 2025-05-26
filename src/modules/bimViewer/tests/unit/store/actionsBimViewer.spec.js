@@ -35,23 +35,28 @@ describe("src/modules/bimViewer/store/actionsBimViewer.js", () => {
 
     it("action: loadModel() exception: missing loader", async function () {
         const payload = {
-                type: "abc",
-                url: "http://localhost/model.ifc",
-                visible: true
-            },
-            mockGetters = {
-                xeokitIfcLoader: null
-            };
+            type: "abc",
+            url: "http://localhost/model.ifc",
+            visible: true
+        };
 
         try {
-            await actions.loadModel({dispatch, getters: mockGetters}, payload);
+            await actions.loadModel({
+                dispatch,
+                getters: {
+                    xeokitIfcLoader: null
+                },
+                rootGetters: {
+                    "Modules/BimViewer/xeokitViewer": {
+                        scene: {}
+                    }
+                }
+            }, payload);
         }
         catch (e) {
             expect(e.message).to.equal("No loader found for type: abc");
-
             return;
         }
-
         // catch block must succeed the test, here final report to fail.
         expect(false, "Test failed!").to.be.true;
     });
@@ -67,7 +72,6 @@ describe("src/modules/bimViewer/store/actionsBimViewer.js", () => {
                     if (event === "loaded") {
                         return callback();
                     }
-
                     return undefined;
                 })
             },
@@ -76,6 +80,13 @@ describe("src/modules/bimViewer/store/actionsBimViewer.js", () => {
             },
             mockGetters = {
                 xeokitIfcLoader: mockIfcLoader
+            },
+            rootGetters = {
+                "Modules/BimViewer/xeokitViewer": {
+                    scene: {
+                        setObjectsSelected: sinon.stub()
+                    }
+                }
             };
 
         dispatch = sinon.stub().callsFake((action, payload2) => {
@@ -85,17 +96,19 @@ describe("src/modules/bimViewer/store/actionsBimViewer.js", () => {
                 });
                 return Promise.resolve();
             }
-
             return Promise.resolve();
         });
 
         // eslint-disable-next-line one-var
-        const result = await actions.loadModel({dispatch, getters: mockGetters}, payload);
+        const result = await actions.loadModel({
+            dispatch,
+            getters: mockGetters,
+            rootGetters
+        }, payload);
 
         expect(dispatch.calledWith("loadFromBlob")).to.be.false;
         expect(dispatch.calledWith("handleModelLoaderEvents")).to.be.true;
         expect(result).to.equal(mockLoadedModel);
-
     });
 
     it("action: loadModel() from blob", async function () {
@@ -110,7 +123,6 @@ describe("src/modules/bimViewer/store/actionsBimViewer.js", () => {
                     if (event === "loaded") {
                         return callback();
                     }
-
                     return undefined;
                 })
             },
@@ -120,33 +132,38 @@ describe("src/modules/bimViewer/store/actionsBimViewer.js", () => {
             mockGetters = {
                 xeokitIfcLoader: mockIfcLoader
             },
-            globalFetch = global.fetch;
+            rootGetters = {
+                "Modules/BimViewer/xeokitViewer": {
+                    scene: {
+                        setObjectsSelected: () => sinon.stub()
+                    }
+                }
+            },
+            globalFetch = global.fetch,
+            localDispatch = sinon.stub().callsFake((action, payload2) => {
+                if (action === "handleModelLoaderEvents") {
+                    payload2.loadedModel.on("loaded", () => {
+                        payload2.resolve(payload2.loadedModel);
+                    });
+                    return Promise.resolve();
+                }
+                if (action === "loadFromBlob") {
+                    return Promise.resolve(mockLoadedModel);
+                }
+                return Promise.resolve();
+            });
 
         global.fetch = sinon.stub().resolves({
             blob: sinon.stub().resolves(mockBlob)
         });
 
-        dispatch = sinon.stub().callsFake((action, payload2) => {
-            if (action === "handleModelLoaderEvents") {
-                payload2.loadedModel.on("loaded", () => {
-                    payload2.resolve(payload2.loadedModel);
-                });
-                return Promise.resolve();
-            }
-            if (action === "loadFromBlob") {
-                return Promise.resolve(mockLoadedModel);
-            }
-            return Promise.resolve();
-        });
-
         // eslint-disable-next-line one-var
-        const result = await actions.loadModel({dispatch, getters: mockGetters}, payload);
+        const result = await actions.loadModel({dispatch: localDispatch, getters: mockGetters, rootGetters}, payload);
 
-        expect(dispatch.calledWith("loadFromBlob")).to.be.true;
-        expect(dispatch.calledWith("handleModelLoaderEvents")).to.be.false;
+        expect(localDispatch.calledWith("loadFromBlob")).to.be.true;
+        expect(localDispatch.calledWith("handleModelLoaderEvents")).to.be.false;
         expect(result).to.equal(mockLoadedModel);
 
-        // Cleanup
         delete global.fetch;
         global.fetch = globalFetch;
     });

@@ -34,6 +34,7 @@
  * @typedef {number} annotationRefreshIntervalID ID of refresh interval for annotations.
  * @typedef {object} positionPointer Annotation set through URLParameter.
  * @typedef {boolean} bimViewerFullyLoaded indicates if all elements and xeokit plugins are fully loaded.
+ * @typedef {object} relAggregatesMap Object that holds the relation of a child and its parent as defined in the ifcAggregates an IFC.
  */
 
 const state = {
@@ -74,7 +75,8 @@ const state = {
     currentlyLoadedModels: 0,
     annotationRefreshIntervalID: null,
     positionPointer: null,
-    bimViewerFullyLoaded: false
+    bimViewerFullyLoaded: false,
+    relAggregatesMap: {}
 };
 
 export default state;

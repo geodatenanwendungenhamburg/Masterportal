@@ -42,7 +42,7 @@ export default {
             this.activeTab = tab;
         },
         deleteAllModels () {
-            this.loadedModels.forEach(item => this.destroyModelAction(item.sceneModel.id));
+            this.loadedModels.forEach(item => this.destroyModel(item.sceneModel.id));
         },
         setXRayed (modelId, isXRayedParameter) {
             let isXRayed = isXRayedParameter;

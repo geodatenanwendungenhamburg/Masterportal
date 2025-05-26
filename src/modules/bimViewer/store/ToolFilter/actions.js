@@ -54,22 +54,39 @@ const actions = {
     setHighlighting ({rootGetters}, payload) {
         const
             xeokitViewer = rootGetters["Modules/BimViewer/xeokitViewer"],
-            scene = xeokitViewer.scene;
+            scene = xeokitViewer.scene,
+            highlightIds = [];
+
+        // find all the children of an object if there are any
+        payload.matchedObjects.forEach(object => {
+            const childrenIDs = Object.keys(rootGetters["Modules/BimViewer/relAggregatesMap"]).filter(key => {
+                return rootGetters["Modules/BimViewer/relAggregatesMap"][key] === object;
+            });
+
+            if (childrenIDs.length) {
+                childrenIDs.forEach(child => {
+                    highlightIds.push(child);
+                });
+            }
+            else {
+                highlightIds.push(object);
+            }
+        });
 
         // Make all objects semi transparent and remove previous highlighting
         scene.setObjectsOpacity(scene.objectIds, 0.3);
         scene.setObjectsHighlighted(scene.objectIds, false);
 
         // Highlight all matched objects
-        scene.setObjectsOpacity(payload.matchedObjects, 1.0);
-        scene.setObjectsHighlighted(payload.matchedObjects, true);
+        scene.setObjectsOpacity(highlightIds, 1.0);
+        scene.setObjectsHighlighted(highlightIds, true);
 
         // Set highlight color
         scene.highlightMaterial.fillColor = [0.1, 0.8, 0.8];
         scene.highlightMaterial.fillAlpha = 1;
 
         xeokitViewer.cameraFlight.flyTo({
-            aabb: scene.getAABB(payload.matchedObjects),
+            aabb: scene.getAABB(highlightIds),
             duration: 0.5
         });
     },
