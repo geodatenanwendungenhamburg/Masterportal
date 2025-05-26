@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import sinon from "sinon";
-import {Polygon, Point} from "ol/geom";
+import {Polygon, Point, MultiLineString, MultiPolygon} from "ol/geom";
 import SearchInterface from "../../../searchInterfaces/searchInterface.js";
 import SearchInterfaceSpecialWfs from "../../../searchInterfaces/searchInterfaceSpecialWfs.js";
 
@@ -268,6 +268,102 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceSpecialWfs.js", 
                     },
                     zoomToResult: {
                         coordinates: [10, 20]
+                    }
+                }
+            );
+        });
+        it("should create possible events from search result for multi linestring", () => {
+            const searchResult = {
+                "type": "MultiLineString",
+                "identifier": "Test",
+                "geometryType": "MultiLineString",
+                "icon": "bi-house",
+                geometry: new MultiLineString([[
+                    [10, 10, 0],
+                    [20, 20, 0],
+                    [30, 10, 0],
+                    [40, 20, 0],
+                    [50, 10, 0]
+                ], [
+                    [60, 10, 0],
+                    [70, 20, 0],
+                    [80, 10, 0]
+                ]])
+            };
+
+            expect(SearchInterface1.createPossibleActions(searchResult)).to.deep.equals(
+                {
+                    highlightFeature: {
+                        hit: {
+                            coordinate: [[
+                                10, 10,
+                                20, 20,
+                                30, 10,
+                                40, 20,
+                                50, 10
+                            ], [
+                                60, 10,
+                                70, 20,
+                                80, 10
+                            ]],
+                            geometryType: "MultiLineString"
+                        }
+                    },
+                    setMarker: {
+                        coordinates: [
+                            10, 10,
+                            20, 20,
+                            30, 10,
+                            40, 20,
+                            50, 10
+                        ],
+                        geometryType: "MultiLineString"
+                    },
+                    zoomToResult: {
+                        coordinates: [
+                            10, 10,
+                            20, 20,
+                            30, 10,
+                            40, 20,
+                            50, 10
+                        ]
+                    }
+                }
+            );
+        });
+        it("should create possible events from search result for a multi polygon", () => {
+            const searchResult = {
+                "type": "B-Plan",
+                "identifier": "Test",
+                "geometryType": "MultiPolygon",
+                "icon": "bi-house",
+                geometry: new MultiPolygon([
+                    [[[10, 10], [20, 1], [1, 1], [1, 30], [40, 10]]],
+                    [[[2, 2], [2, 3], [3, 3], [3, 2], [2, 2]]]
+                ])
+            };
+
+            expect(SearchInterface1.createPossibleActions(searchResult)).to.deep.equals(
+                {
+                    highlightFeature: {
+                        hit: {
+                            coordinate: [
+                                [10, 10, 20, 1, 1, 1, 1, 30, 40, 10],
+                                [2, 2, 2, 3, 3, 3, 3, 2, 2, 2]
+                            ],
+                            geometryType: "MultiPolygon"
+                        }
+                    },
+                    setMarker: {
+                        coordinates: [
+                            10, 10, 20, 1, 1, 1, 1, 30, 40, 10
+                        ],
+                        geometryType: "MultiPolygon"
+                    },
+                    zoomToResult: {
+                        coordinates: [
+                            10, 10, 20, 1, 1, 1, 1, 30, 40, 10
+                        ]
                     }
                 }
             );

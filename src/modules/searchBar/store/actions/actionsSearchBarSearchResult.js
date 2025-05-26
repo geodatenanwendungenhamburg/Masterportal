@@ -203,7 +203,7 @@ export default {
                 coordinateForMarker = markerHelper.getRandomCoordinate(feature.getGeometry().getCoordinates());
             }
         }
-        else if (!feature && (geomType === "Polygon" || geomType === "MultiPolygon")) {
+        else if (!feature && (geomType === "Polygon" || geomType === "MultiPolygon" || geomType === "MultiLineString")) {
             const polygonFeature = WKTUtil.getWKTGeom([numberCoordinates], geometryType.toUpperCase());
 
             coordinateForMarker = polygonFeature.getGeometry().getFirstCoordinate();

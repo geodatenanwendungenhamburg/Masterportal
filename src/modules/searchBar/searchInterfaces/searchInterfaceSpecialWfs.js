@@ -258,12 +258,12 @@ SearchInterfaceSpecialWfs.prototype.getInteriorAndExteriorPolygonMembers = funct
         if (posListPolygonMembers.length > 1) {
             posListPolygonMembers = [];
             exterior = polygonMembers[i].getElementsByTagNameNS("*", "exterior");
-            exteriorCoord = exterior[0].getElementsByTagNameNS("*", "posList")[0].textContent;
+            exteriorCoord = exterior[0].getElementsByTagNameNS("*", "posList")[0].textContent.trim();
             polygonsWithInteriors.push(Object.values(exteriorCoord.replace(/\s\s+/g, " ").split(" ")));
 
             interior = polygonMembers[i].getElementsByTagNameNS("*", "interior");
             for (const key in Object.keys(interior)) {
-                interiorCoords.push(interior[key].getElementsByTagNameNS("*", "posList")[0].textContent);
+                interiorCoords.push(interior[key].getElementsByTagNameNS("*", "posList")[0].textContent.trim());
             }
             interiorCoords.forEach(coord => polygonsWithInteriors.push(Object.values(coord.replace(/\s\s+/g, " ").split(" "))));
             coordinateArray.push(polygonsWithInteriors);
@@ -309,11 +309,49 @@ SearchInterfaceSpecialWfs.prototype.createPossibleActions = function (searchResu
         });
     }
     else if (searchResult?.geometry?.flatCoordinates) {
-        searchResult?.geometry?.flatCoordinates.forEach(coord => {
-            if (coord) {
-                coordinates.push(parseFloat(coord));
-            }
-        });
+        if (geometryType === "Polygon" && searchResult?.geometry.getEnds().length === 1) {
+            searchResult?.geometry?.flatCoordinates.forEach(coord => {
+                if (coord) {
+                    coordinates.push(parseFloat(coord));
+                }
+            });
+        }
+        else if (Array.isArray(searchResult?.geometry.getCoordinates())) {
+            searchResult.geometry.getCoordinates().forEach((coord1, index1) => {
+                if (Array.isArray(coord1)) {
+                    const coordArray1 = [];
+
+                    coord1.forEach(coord2 => {
+                        if (Array.isArray(coord2)) {
+                            const coordArray3 = [];
+
+                            coord2.forEach((coord3, index3) => {
+                                if (Array.isArray(coord3)) {
+                                    coord3.forEach((coord4, index4) => {
+                                        if (coord4 > 0 && index4 !== 2) {
+                                            coordArray3.push(parseFloat(coord4));
+                                        }
+                                    });
+                                }
+                                else if (coord3 > 0 && index3 !== 2) {
+                                    coordArray1.push(parseFloat(coord3));
+                                }
+                            });
+                            if (coordArray3.length > 0) {
+                                coordinates.push(coordArray3);
+                            }
+                        }
+                    });
+                    if (coordArray1.length > 0) {
+                        coordinates.push(coordArray1);
+                    }
+                }
+                else if (coord1 > 0 && index1 !== 2) {
+                    coordinates.push(parseFloat(coord1));
+                }
+            });
+        }
+
     }
 
     return {
@@ -324,11 +362,11 @@ SearchInterfaceSpecialWfs.prototype.createPossibleActions = function (searchResu
             }
         },
         setMarker: {
-            coordinates: geometryType.toUpperCase() === "MULTIPOLYGON" || searchResult.interior ? coordinates[0] : coordinates,
+            coordinates: geometryType.includes("Multi") || searchResult.interior ? coordinates[0] : coordinates,
             geometryType: geometryType
         },
         zoomToResult: {
-            coordinates: geometryType.toUpperCase() === "MULTIPOLYGON" || searchResult.interior ? coordinates[0] : coordinates
+            coordinates: geometryType.includes("Multi") || searchResult.interior ? coordinates[0] : coordinates
         }
     };
 };
