@@ -5,7 +5,7 @@ import ToolMeasurements from "./ToolMeasurements.vue";
 import ToolSao from "./ToolSao.vue";
 import ToolObjectInfo from "./ToolObjectInfo.vue";
 import ToolUpload from "./ToolUpload.vue";
-import ToolCameraReset from "./ToolCameraReset.vue";
+import ToolSceneReset from "./ToolSceneReset.vue";
 import ToolSceneFit from "./ToolSceneFit.vue";
 import ToolSceneSelector from "./ToolSceneSelector.vue";
 import ToolDownloadBCF from "./ToolDownloadBCF.vue";
@@ -17,7 +17,7 @@ export default {
         ToolDownloadBCF,
         ToolSceneSelector,
         ToolSceneFit,
-        ToolCameraReset,
+        ToolSceneReset,
         ToolUpload,
         ToolObjectInfo,
         ToolSao,
@@ -85,7 +85,7 @@ export default {
                     :interaction="() => toggleSidebarLeft()"
                 />
 
-                <ToolCameraReset />
+                <ToolSceneReset />
 
                 <ToolSceneFit />
 

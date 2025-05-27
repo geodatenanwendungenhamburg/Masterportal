@@ -93,7 +93,7 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolArea.vue", () =>
     it("renders all child components", () => {
         expect(wrapper.findComponent({name: "ToolSceneSelector"}).exists()).to.be.true;
         expect(wrapper.findComponent({name: "ToolSceneFit"}).exists()).to.be.true;
-        expect(wrapper.findComponent({name: "ToolCameraReset"}).exists()).to.be.true;
+        expect(wrapper.findComponent({name: "ToolSceneReset"}).exists()).to.be.true;
         expect(wrapper.findComponent({name: "ToolUpload"}).exists()).to.be.true;
         expect(wrapper.findComponent({name: "ToolObjectInfo"}).exists()).to.be.true;
         expect(wrapper.findComponent({name: "ToolSao"}).exists()).to.be.true;

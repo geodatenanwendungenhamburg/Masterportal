@@ -4,7 +4,7 @@ import actions from "./actionsBimViewer";
 import state from "./stateBimViewer";
 
 // Module imports
-import ToolCameraReset from "./ToolCameraReset";
+import ToolSceneReset from "./ToolSceneReset";
 import ToolMeasurements from "./ToolMeasurements";
 import ToolFilter from "./ToolFilter";
 import ToolSceneFit from "./ToolSceneFit";
@@ -18,7 +18,7 @@ export default {
     actions,
     getters,
     modules: {
-        ToolCameraReset,
+        ToolSceneReset,
         ToolMeasurements,
         ToolFilter,
         ToolSceneFit,

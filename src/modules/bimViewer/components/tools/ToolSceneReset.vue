@@ -4,26 +4,26 @@ import {mapActions} from "vuex";
 import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
 
 export default {
-    name: "ToolCameraReset",
+    name: "ToolSceneReset",
     components: {
         IconButton
     },
     methods: {
-        ...mapActions("Modules/BimViewer/ToolCameraReset", {
-            resetCamera: "reset"
-        })
+        ...mapActions("Modules/BimViewer/ToolSceneReset", [
+            "resetScene"
+        ])
     }
 };
 </script>
 
 <template>
-    <div class="ToolCameraReset">
+    <div class="ToolSceneReset">
         <IconButton
-            :aria="$t('modules.bimViewer.tools.resetCamera')"
-            :title="$t('modules.bimViewer.tools.resetCamera')"
+            :aria="$t('modules.bimViewer.tools.resetScene')"
+            :title="$t('modules.bimViewer.tools.resetScene')"
             class="btn-primary"
             icon="bi-house"
-            :interaction="() => resetCamera()"
+            :interaction="() => resetScene()"
         />
     </div>
 </template>
@@ -31,7 +31,7 @@ export default {
 <style lang="scss">
 @import "~variables";
 
-div.ToolCameraReset {
+div.ToolSceneReset {
     .btn-primary:hover {
         color: $white;
         background-color: $secondary;

@@ -1,13 +1,13 @@
 import {config, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
-import ToolCameraReset from "../../../../components/tools/ToolCameraReset.vue";
+import ToolSceneReset from "../../../../components/tools/ToolSceneReset.vue";
 import IconButton from "../../../../../../shared/modules/buttons/components/IconButton.vue";
 import {createStore} from "vuex";
 import sinon from "sinon";
 
 config.global.mocks.$t = key => key;
 
-describe("src/modules/bimViewer/tests/unit/components/tools/ToolCameraReset.vue", () => {
+describe("src/modules/bimViewer/tests/unit/components/tools/ToolSceneReset.vue", () => {
     let store, wrapper;
 
     beforeEach(() => {
@@ -19,10 +19,10 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolCameraReset.vue"
                         BimViewer: {
                             namespaced: true,
                             modules: {
-                                ToolCameraReset: {
+                                ToolSceneReset: {
                                     namespaced: true,
                                     actions: {
-                                        reset: sinon.stub()
+                                        resetScene: sinon.stub()
                                     }
                                 }
                             }
@@ -32,7 +32,7 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolCameraReset.vue"
             }
         });
 
-        wrapper = shallowMount(ToolCameraReset, {
+        wrapper = shallowMount(ToolSceneReset, {
             global: {
                 plugins: [store],
                 stubs: {
@@ -52,7 +52,7 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolCameraReset.vue"
 
         await wrapper.vm.$nextTick();
 
-        expect(wrapper.find("div.ToolCameraReset").exists()).to.be.true;
+        expect(wrapper.find("div.ToolSceneReset").exists()).to.be.true;
         expect(wrapper.find("button").exists()).to.be.true;
         expect(wrapper.find("i").exists()).to.be.true;
     });
@@ -60,7 +60,7 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolCameraReset.vue"
     it("renders the button with the correct title", () => {
         const button = wrapper.find("button");
 
-        expect(button.attributes("title")).to.equal("modules.bimViewer.tools.resetCamera");
+        expect(button.attributes("title")).to.equal("modules.bimViewer.tools.resetScene");
     });
 
     it("renders the correct icon", () => {
@@ -69,13 +69,13 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolCameraReset.vue"
         expect(icon.classes()).to.include("bi-house");
     });
 
-    it("dispatches 'reset' action when the button is clicked", async () => {
+    it("dispatches 'resetScene' action when the button is clicked", async () => {
         const dispatchStub = sinon.stub(store, "dispatch"),
             button = wrapper.find("button");
 
         await button.trigger("click");
 
-        expect(dispatchStub.calledWith("Modules/BimViewer/ToolCameraReset/reset")).to.be.true;
+        expect(dispatchStub.calledWith("Modules/BimViewer/ToolSceneReset/resetScene")).to.be.true;
     });
 });
 

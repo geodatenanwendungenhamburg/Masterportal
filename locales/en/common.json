@@ -99,7 +99,7 @@
       "name": "BIM viewer",
       "description": "3D viewer for BIM models with support for IFC, XKT, GLTF",
       "tools": {
-        "resetCamera": "Reset Camera",
+        "resetScene": "Reset Scene",
         "fitScene": "Fit Scene",
         "uploadFormat": "Upload IFC, XKT, glTF, BCF",
         "uploadFormatError": "Invalid file format. Check file extension. Found: \"{{fileExtension}}\". Allowed: .ifc, .xkt, .gltf, .bcf",
