@@ -38,7 +38,8 @@ export default {
     },
     computed: {
         ...mapGetters("Modules/BimViewer", [
-            "toggleRightSidebar"
+            "toggleRightSidebar",
+            "sceneConfigs"
         ]),
         toggleRightSidebarProxy: {
             get () {
@@ -78,12 +79,18 @@ export default {
         <div class="buttons">
             <div class="leftSection">
                 <IconButton
+                    :class-array="[
+                        'btn-primary',
+                        sidebarLeftOpen ? 'bim-btn-highlight' : ''
+                    ]"
                     :aria="$t('modules.bimViewer.tools.toggleSidebarLeftLabel')"
                     :title="$t('modules.bimViewer.tools.toggleSidebarLeftLabel')"
-                    :class-array="[sidebarLeftOpen ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
                     icon="bi-diagram-3"
                     :interaction="() => toggleSidebarLeft()"
+                    @keydown.enter="toggleSidebarLeft"
                 />
+
+                <ToolSceneSelector @sceneSelected="onSceneSelected" />
 
                 <ToolSceneReset />
 
@@ -97,8 +104,6 @@ export default {
 
                 <ToolSao />
 
-                <ToolSceneSelector @sceneSelected="onSceneSelected" />
-
                 <ToolFilter ref="toolFilter" />
             </div>
 
@@ -111,6 +116,7 @@ export default {
                     :class-array="[toggleRightSidebar ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
                     icon="bi-layout-sidebar-inset-reverse"
                     :interaction="() => toggleSidebarRight()"
+                    @keydown.enter="toggleSidebarRight"
                 />
             </div>
         </div>
@@ -122,7 +128,6 @@ export default {
 
 #bim-viewer {
     div.ToolArea {
-        margin: 0 0 0.5rem 0;
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
@@ -140,13 +145,13 @@ export default {
             div.leftSection {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 0.5rem;
+                gap: 0.2rem;
             }
 
             div.rightSection {
                 display: flex;
                 flex-direction: row;
-                gap: 0.5rem;
+                gap: 0.2rem;
                 align-items: flex-start;
             }
         }

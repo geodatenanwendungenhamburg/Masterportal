@@ -57,9 +57,10 @@ export default {
         <IconButton
             :aria="ariaLabel"
             :title="ariaLabel"
-            :class-array="[modeObjectInfoActive ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
+            :class-array="['btn-primary', modeObjectInfoActive ? ' bim-btn-highlight' : '']"
             icon="bi-info-circle"
             :interaction="() => setActive()"
+            @keydown.enter="setActive"
         />
     </div>
 </template>

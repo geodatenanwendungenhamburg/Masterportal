@@ -182,7 +182,7 @@ export default {
         flex-direction: row;
         flex: 1;
         overflow: hidden;
-        margin-top: 1rem;
+        margin-top: 0.5rem;
         border-top: solid 0.0625rem $light_grey;
         border-bottom: solid 0.0625rem $light_grey;
 

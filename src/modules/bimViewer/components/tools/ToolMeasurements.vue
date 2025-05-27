@@ -40,16 +40,18 @@ export default {
             <IconButton
                 :aria="$t('modules.bimViewer.tools.distanceMeasurementsToggle')"
                 :title="$t('modules.bimViewer.tools.distanceMeasurementsToggle')"
-                :class-array="['btn', toolDistanceMeasurementsActive ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
+                :class-array="['measurementButton btn-primary', toolDistanceMeasurementsActive ? ' bim-btn-highlight' : '']"
                 icon="bi-rulers"
                 :interaction="() => setActive(!toolDistanceMeasurementsActive)"
+                @keydown.enter="() => setActive(!toolDistanceMeasurementsActive)"
             />
 
             <button
                 v-if="toolDistanceMeasurementsActive"
-                :class="['btn', 'resetButton', !toolDistanceMeasurementsActive ? 'btn-primary btn-primary bim-btn-highlight' : 'btn-primary']"
+                :class="['resetButton btn btn-primary', !toolDistanceMeasurementsActive ? 'bim-btn-highlight' : '']"
                 :title="$t('modules.bimViewer.tools.distanceMeasurementsClear')"
                 @click="clearMeasurements"
+                @keydown.enter="clearMeasurements"
             >
                 <i class="bi bi-arrow-counterclockwise" />
             </button>
@@ -69,6 +71,10 @@ export default {
             position: relative;
             display: inline-block;
 
+            .measurementButton {
+                margin-bottom: 0;
+            }
+
             .resetButton {
                 position: absolute;
                 bottom: -0.625rem;
@@ -82,6 +88,7 @@ export default {
                 justify-content: center;
                 padding: 0.2rem;
                 cursor: pointer;
+                z-index: 10;
 
                 i {
                     line-height: 1;

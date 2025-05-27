@@ -90,15 +90,17 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolFilter.vue", () 
         expect(wrapper.vm.filterText).to.equal("");
     });
 
-    it("renders the input field with the correct placeholder", () => {
+    it("renders the input field with the correct placeholder", async () => {
+        wrapper.setData({searchVisible: true});
+        await wrapper.vm.$nextTick();
+
         const input = wrapper.find("input");
 
         expect(input.attributes("placeholder")).to.equal("modules.bimViewer.tools.searchInputPlaceholder");
     });
 
     it("renders the reset button when filterText is not empty", async () => {
-        wrapper.setData({filterText: "test"});
-
+        wrapper.setData({searchVisible: true, filterText: "test"});
         await wrapper.vm.$nextTick();
 
         const resetButton = wrapper.find("button.btn-reset");
@@ -107,8 +109,7 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolFilter.vue", () 
     });
 
     it("does not render the reset button when filterText is empty", async () => {
-        wrapper.setData({filterText: ""});
-
+        wrapper.setData({searchVisible: true, filterText: ""});
         await wrapper.vm.$nextTick();
 
         const resetButton = wrapper.find("button.btn-reset");
@@ -116,8 +117,11 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolFilter.vue", () 
         expect(resetButton.exists()).to.be.false;
     });
 
-    it("renders the submit button with the correct title", () => {
-        const submitButton = wrapper.find("button.btn-primary");
+    it("renders the submit button with the correct title", async () => {
+        wrapper.setData({searchVisible: true});
+        await wrapper.vm.$nextTick();
+
+        const submitButton = wrapper.find("button.btn-submit");
 
         expect(submitButton.attributes("title")).to.equal("modules.bimViewer.tools.searchButtonSubmit");
     });

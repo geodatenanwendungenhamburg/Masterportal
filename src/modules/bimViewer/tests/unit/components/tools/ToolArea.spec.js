@@ -25,12 +25,17 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolArea.vue", () =>
                         BimViewer: {
                             namespaced: true,
                             getters: {
-                                toggleRightSidebar: state => state.toggleRightSidebar ?? false
+                                toggleRightSidebar: state => state.toggleRightSidebar ?? false,
+                                sceneConfigs: (state) => state.sceneConfigs
                             },
                             mutations,
                             actions: {},
                             state: {
-                                toggleRightSidebar: false
+                                toggleRightSidebar: false,
+                                sceneConfigs: [
+                                    {id: 1, name: "Scene 1"},
+                                    {id: 2, name: "Scene 2"}
+                                ]
                             }
                         }
                     }

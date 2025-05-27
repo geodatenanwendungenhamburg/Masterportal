@@ -52,22 +52,18 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolSceneSelector.vu
 
     it("renders the component", () => {
         expect(wrapper.exists()).to.be.true;
-        expect(wrapper.find("select.ToolSceneSelector").exists()).to.be.true;
+        expect(wrapper.find(".ToolSceneSelector").exists()).to.be.true;
+        expect(wrapper.findComponent({name: "IconButton"}).exists()).to.be.true;
     });
 
-    it("renders the correct number of options based on sceneConfigs", () => {
-        const options = wrapper.findAll("option");
-
-        expect(options.length).to.equal(2);
-
-        expect(options[0].text()).to.equal("Scene 1");
-        expect(options[1].text()).to.equal("Scene 2");
-    });
-
-    it("does not render the select element if there is only one sceneConfig", async () => {
-        store.commit("Modules/BimViewer/setSceneConfigs", [{id: 1, name: "Scene 1"}]);
+    it("renders the correct number of scenes in the dropdown when open", async () => {
+        await wrapper.setData({dropdownVisible: true});
         await wrapper.vm.$nextTick();
 
-        expect(wrapper.find("select.ToolSceneSelector").exists()).to.be.false;
+        const items = wrapper.findAll("ul.custom-dropdown li");
+
+        expect(items.length).to.equal(2);
+        expect(items[0].find(".scene-link").text()).to.equal("Scene 1");
+        expect(items[1].find(".scene-link").text()).to.equal("Scene 2");
     });
 });
