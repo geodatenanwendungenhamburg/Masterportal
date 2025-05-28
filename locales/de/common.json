@@ -99,13 +99,15 @@
       "name": "BIM viewer",
       "description": "3D-Viewer für BIM-Modelle mit Unterstützung für IFC, XKT, GLTF",
       "tools": {
+        "downloadBCFViewpointJson": {
+          "buttonTitle": "Ansicht-Datei (bcfvjson) herunterladen.",
+          "errorObjectPicked": "Die BCF-Datei kann nur erstellt werden, wenn kein Objekt in der Szene ausgewählt ist.",
+          "errorInvalidFile": "Ungültige Ansicht-Datei (bcfvjson)."
+        },
         "resetScene": "Szene zurücksetzen",
         "fitScene": "Szene einpassen",
-        "uploadFormat": "IFC, XKT, glTF, BCF hochladen",
-        "uploadFormatError": "Ungültiges Dateiformat. Prüfen Sie die Dateiendung. Gefunden: \"{{fileExtension}}\". Zulässig: .ifc, .xkt, .gltf, .bcf",
-        "downloadBCF": "BCF-Datei herunterladen.",
-        "downloadBCFErrorObjectPicked": "Die BCF-Datei kann nur erstellt werden, wenn kein Objekt in der Szene ausgewählt ist. Bitte heben Sie die Auswahl auf.",
-        "uploadBCFError": "Ungültige BFC-Datei.",
+        "uploadFormat": "IFC, XKT, glTF, bcfvjson hochladen",
+        "uploadFormatError": "Ungültiges Dateiformat. Prüfen Sie die Dateiendung. Gefunden: \"{{fileExtension}}\". Zulässig: .ifc, .xkt, .gltf, .bcfvjson",
         "scene": "Szene",
         "distanceMeasurementsToggle": "Messen",
         "distanceMeasurementsClear": "Zurücksetzen",

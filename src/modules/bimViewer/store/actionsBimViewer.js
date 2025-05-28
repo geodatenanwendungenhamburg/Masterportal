@@ -971,7 +971,7 @@ const actions = {
         catch (error) {
             dispatch("Alerting/addSingleAlert", {
                 category: "error",
-                content: i18next.t("modules.bimViewer.tools.uploadBCFError")
+                content: i18next.t("modules.bimViewer.tools.downloadBCFViewpointJson.errorInvalidFile")
             }, {root: true});
         }
         finally {
@@ -979,9 +979,14 @@ const actions = {
         }
     },
     /**
-     * Export BCF (BIM Collaboration Format) to json
+     * Extract BCF viewpoint data. (BIM Collaboration Format)
+     * This viewpoint data contains camera position, orientation and projection,
+     * entity visibilities and selection states, SectionPlanes
+     * to slice the model, lineSets to show 3D lines,
+     * bitmaps to show images. This data does not contain comments/marker.
+     *
      * @param {Object} context actions context object.
-     * @returns {void}
+     * @returns {String} BCF viewpoint data as JSON object
      */
     async getBCFViewpointJson ({getters}) {
         const viewpoint = getters.xeokitPluginBCFViewpoints.getViewpoint({

@@ -2,12 +2,12 @@ import {config, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import {createStore} from "vuex";
 import sinon from "sinon";
-import ToolDownloadBCF from "../../../../components/tools/ToolDownloadBCF.vue";
+import ToolDownloadBCFViewpointJson from "../../../../components/tools/ToolDownloadBCFViewpointJson.vue";
 import IconButton from "../../../../../../shared/modules/buttons/components/IconButton.vue";
 
 config.global.mocks.$t = key => key;
 
-describe("src/modules/bimViewer/tests/unit/components/tools/ToolDownloadBCF.vue", () => {
+describe("src/modules/bimViewer/tests/unit/components/tools/ToolDownloadBCFViewpointJson.vue", () => {
     let
         store,
         wrapper;
@@ -36,7 +36,7 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolDownloadBCF.vue"
     });
 
     it("renders the base component", async () => {
-        wrapper = shallowMount(ToolDownloadBCF, {
+        wrapper = shallowMount(ToolDownloadBCFViewpointJson, {
             global: {
                 plugins: [store],
                 stubs: {
@@ -49,7 +49,7 @@ describe("src/modules/bimViewer/tests/unit/components/tools/ToolDownloadBCF.vue"
 
         await wrapper.vm.$nextTick();
 
-        expect(wrapper.find("div.ToolDownloadBCF").exists()).to.be.true;
+        expect(wrapper.find("div.ToolDownloadBCFViewpointJson").exists()).to.be.true;
         expect(wrapper.find("button").exists()).to.be.true;
         expect(wrapper.find("i").exists()).to.be.true;
     });

@@ -8,13 +8,13 @@ import ToolUpload from "./ToolUpload.vue";
 import ToolSceneReset from "./ToolSceneReset.vue";
 import ToolSceneFit from "./ToolSceneFit.vue";
 import ToolSceneSelector from "./ToolSceneSelector.vue";
-import ToolDownloadBCF from "./ToolDownloadBCF.vue";
+import ToolDownloadBCFViewpointJson from "./ToolDownloadBCFViewpointJson.vue";
 import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
 
 export default {
     name: "ToolArea",
     components: {
-        ToolDownloadBCF,
+        ToolDownloadBCFViewpointJson,
         ToolSceneSelector,
         ToolSceneFit,
         ToolSceneReset,
@@ -91,7 +91,7 @@ export default {
 
                 <ToolUpload />
 
-                <ToolDownloadBCF />
+                <ToolDownloadBCFViewpointJson />
 
                 <ToolMeasurements ref="toolMeasurements" />
 

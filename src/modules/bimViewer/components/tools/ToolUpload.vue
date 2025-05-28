@@ -20,7 +20,7 @@ export default {
                 fileNameSplit = file ? file.name.split(".") : [],
                 fileExtension = fileNameSplit.length > 0 ? fileNameSplit[fileNameSplit.length - 1].toLowerCase() : "";
 
-            if (!["ifc", "xkt", "gltf", "bcf"].includes(fileExtension)) {
+            if (!["ifc", "xkt", "gltf", "bcfvjson"].includes(fileExtension)) {
                 this.addSingleAlert({
                     category: "error",
                     content: i18next.t("modules.bimViewer.tools.uploadFormatError", {fileExtension: fileExtension})
@@ -31,7 +31,7 @@ export default {
             }
 
             if (file) {
-                if (fileExtension === "bcf") {
+                if (fileExtension === "bcfvjson") {
                     this.loadBCF({url: file});
                 }
                 else {
@@ -70,7 +70,7 @@ export default {
             id="uploadButton"
             ref="uploadButton"
             type="file"
-            accept=".ifc,.xkt,.gltf,.bcf"
+            accept=".ifc,.xkt,.gltf,.bcfvjson"
             @change="uploadFile"
         >
     </form>

@@ -3,7 +3,7 @@ import {mapGetters, mapActions} from "vuex";
 import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
 
 export default {
-    name: "ToolDownloadBCF",
+    name: "ToolDownloadBCFViewpointJson",
     components: {
         IconButton
     },
@@ -18,11 +18,11 @@ export default {
             addSingleAlert: "Alerting/addSingleAlert",
             getBCFViewpointJson: "Modules/BimViewer/getBCFViewpointJson"
         }),
-        async downloadBCF () {
+        async downloadBCFViewpointJson () {
             if (this.pickedObjectId) {
                 this.addSingleAlert({
                     category: "error",
-                    content: i18next.t("modules.bimViewer.tools.downloadBCFErrorObjectPicked")
+                    content: i18next.t("modules.bimViewer.tools.downloadBCFViewpointJson.errorObjectPicked")
                 }, {root: true});
 
                 return;
@@ -30,10 +30,11 @@ export default {
 
             const
                 json = await this.getBCFViewpointJson(),
+                // Creates a date string in format YYYY-mm-dd
                 datePrefix = new Date().toISOString().slice(0, 10);
 
             this.forceFileDownload(
-                `${datePrefix}_${this.createSafeFilename(this.sceneConfigSelected.name)}.bcf`,
+                `${datePrefix}_${this.createSafeFilename(this.sceneConfigSelected.name)}.bcfvjson`,
                 json
             );
         },
@@ -69,13 +70,13 @@ export default {
 </script>
 
 <template>
-    <div class="ToolDownloadBCF">
+    <div class="ToolDownloadBCFViewpointJson">
         <IconButton
-            :aria="$t('modules.bimViewer.tools.downloadBCF')"
-            :title="$t('modules.bimViewer.tools.downloadBCF')"
+            :aria="$t('modules.bimViewer.tools.downloadBCFViewpointJson.buttonTitle')"
+            :title="$t('modules.bimViewer.tools.downloadBCFViewpointJson.buttonTitle')"
             class="btn-primary"
             icon="bi-save-fill"
-            :interaction="() => downloadBCF()"
+            :interaction="() => downloadBCFViewpointJson()"
         />
     </div>
 </template>
@@ -83,7 +84,7 @@ export default {
 <style lang="scss">
 @import "~variables";
 
-div.ToolDownloadBCF {
+div.ToolDownloadBCFViewpointJson {
     .btn-primary:hover {
         color: $white;
         background-color: $secondary;
