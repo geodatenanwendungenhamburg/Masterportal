@@ -19,7 +19,7 @@ export function adaptCylinderToGround (cylinder, position) {
  * @param {Cesium.Entity} entity - the entity that should be ignored by sampleHeight
  * @param {Cesium.Entity} cylinder - the cylinder
  * @param {Cesium.Cartesian3} position - the position that should get normalized
- * @returns {Cesium.Cartesian3} - the normalized position
+ * @returns {Cesium.Cartesian3} - the normalized position (if sampleHeight fails, the original position)
  */
 export function adaptCylinderToEntity (entity, cylinder, position) {
     const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
@@ -29,6 +29,9 @@ export function adaptCylinderToEntity (entity, cylinder, position) {
         sampledHeight = scene.sampleHeight(cartographic, [entity, cylinder, ...outlines]),
         heightDelta = entity?.polygon?.extrudedHeight - sampledHeight || sampledHeight;
 
+    if (!sampledHeight) {
+        return position;
+    }
     cylinder.cylinder.length = heightDelta + 5;
 
     cartographic.height = sampledHeight + cylinder.cylinder.length._value / 2;
