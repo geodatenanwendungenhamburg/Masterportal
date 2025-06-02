@@ -8,7 +8,7 @@ let
 
 const actions = {
     /**
-     * Initialize BimViewer by dynamically loading the required node packages.
+     * Initialize BIM Viewer by dynamically loading the required node packages.
      * This is required to ensure, that separate js files are generated and
      * loaded during the webpack build process.
      *

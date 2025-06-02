@@ -96,7 +96,7 @@
       "stop": "Cancel"
     },
     "bimViewer": {
-      "name": "BIM viewer",
+      "name": "BIM Viewer",
       "description": "3D viewer for BIM models with support for IFC, XKT, GLTF",
       "tools": {
         "downloadBCFViewpointJson": {

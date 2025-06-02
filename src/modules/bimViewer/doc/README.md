@@ -1,13 +1,13 @@
-# BimViewer
+# BIM Viewer
 
-This addon is a BimViewer to display IFC, XKT or glTF files in the sidebar of the Masterportal.
+This addon is a BIM Viewer to display IFC, XKT or glTF files in the sidebar of the Masterportal.
 It can be configured to add tools such as measure, inspect objects in the scene, search for objects in the scene, add ifc file, etc.
 It is also possible to add annotations from a separate json file.
 
 **Table of Contents**
 
 - [Installation](#installation)
-- [All configuration parameters of the BimViewer](#all-configuration-parameters-of-the-bimviewer)
+- [All configuration parameters of the BIM Viewer](#all-configuration-parameters-of-the-bimviewer)
 - [Update Wasm files in the config repository](#update-wasm-files-in-the-config-repository)
 - [Load Wasm files from a different URL](#load-wasm-files-from-a-different-url)
 - [Mode to get the 3D position on click (pick) and send message via remoteInterface](#mode-to-get-the-3d-position-on-click-pick-and-send-message-via-remoteinterface)
@@ -20,9 +20,9 @@ It is also possible to add annotations from a separate json file.
 
 - `npm install` within the addons folder.
 
-## All configuration parameters of the BimViewer
-The BimViewer can be configured using the parameters below.
-There are also some URL parameters with which the BimViewer can be loaded.
+## All configuration parameters of the BIM Viewer
+The BIM Viewer can be configured using the parameters below.
+There are also some URL parameters with which the BIM Viewer can be loaded.
 These [URL parameters](#url-parameters) are described further down.
 
 | Name               | Required | Type    | Default                      | Description                                                                                                                                                                                               |
@@ -40,7 +40,7 @@ These [URL parameters](#url-parameters) are described further down.
 
 ```json
 "bimViewer": {
-    "name": "BIM viewer",
+    "name": "BIM Viewer",
     "description": "3D viewer for BIM models ...",
     "icon": "bi-houses",
     "useTools": true,
@@ -53,7 +53,7 @@ These [URL parameters](#url-parameters) are described further down.
 
 ##  Update Wasm files in the config repository
 
-The BimViewer requires as set of [WebAssembly](https://webassembly.org/) (wasm) files in order to load IFC files.
+The BIM Viewer requires as set of [WebAssembly](https://webassembly.org/) (wasm) files in order to load IFC files.
 
 To update these files in your portal, run:
 
@@ -65,7 +65,7 @@ This will automatically copy the required files to the specified portal.
 
 **Commit updated files**
 
-The updated .wasm files must be committed to the BimViewer repository where the BimViewer is set up.
+The updated .wasm files must be committed to the BIM Viewer repository where the BIM Viewer is set up.
 
 ## Load Wasm files from a different URL
 
@@ -85,15 +85,15 @@ The folder in this new location must contain all required `web-ifc*.wasm` files.
 
 ## Scenes.json configuration
 
-The scenes.json defines the scenes to be displayed in the BimViewer with the IFC, XKT of glTF files to be loaded into the scene and the corresponding camera and SAO settings.
+The scenes.json defines the scenes to be displayed in the BIM Viewer with the IFC, XKT of glTF files to be loaded into the scene and the corresponding camera and SAO settings.
 
 The json contains an array of scene objects which are defined by the parameters below.
 
-If the array consists of multiple scene objects, the different scenes are selectable from a drop down list in the BimViewer tools.
+If the array consists of multiple scene objects, the different scenes are selectable from a drop down list in the BIM Viewer tools.
 
 Each scene can be made up of several IFC, XKT of glTF files defined by the `modelList` parameter.
 
-It is also possible to configure an empty scene into which IFC, XKT or glTF files can be loaded using the upload tool from the BimViewers tools.
+It is also possible to configure an empty scene into which IFC, XKT or glTF files can be loaded using the upload tool from the BIM Viewers tools.
 
 | Name               | Required | Type    | Description |
 | ------------------ | -------- | ------- |-------------|
@@ -183,11 +183,11 @@ If the coordinates are **not in WGS84 (EPSG 4326)** the projection used must be 
 }
 ```
 
-The BimViewer automatically reprojects the coordinates from WGS84 (EPSG 4326) to the projection used by the Masterportal.
+The BIM Viewer automatically reprojects the coordinates from WGS84 (EPSG 4326) to the projection used by the Masterportal.
 
-The coordinates can have a height value (third parameter). If the height value is missing, the BimViewer automatically sets the height to 0.
+The coordinates can have a height value (third parameter). If the height value is missing, the BIM Viewer automatically sets the height to 0.
 
-The following properties must be included for the annotation to be displayed in the BimViewer.
+The following properties must be included for the annotation to be displayed in the BIM Viewer.
 
 | Name               | Required | Type    | Description |
 | ------------------ | -------- | ------- |-------------|
@@ -292,7 +292,7 @@ Each feature (annotation) in the GeoJson must also have an id (not within the pr
 
 
 ## URL Parameters
-The BimViewer can be loaded using the following parameters in the URL:
+The BIM Viewer can be loaded using the following parameters in the URL:
 
 
 | Parameter | Value | Description | Example |
