@@ -31,10 +31,12 @@ export default {
 <style lang="scss">
 @import "~variables";
 
-div.ToolSceneFit {
-    .btn-primary:hover {
-        color: $white;
-        background-color: $secondary;
+#bim-viewer {
+    div.ToolSceneFit {
+        .btn-primary:hover {
+            color: $white;
+            background-color: $secondary;
+        }
     }
 }
 </style>

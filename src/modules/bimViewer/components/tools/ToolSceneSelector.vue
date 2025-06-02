@@ -51,10 +51,12 @@ export default {
 </template>
 
 <style lang="scss">
-select.ToolSceneSelector {
-    &:focus {
-        box-shadow: none;
-        outline: none;
+#bim-viewer {
+    select.ToolSceneSelector {
+        &:focus {
+            box-shadow: none;
+            outline: none;
+        }
     }
 }
 </style>

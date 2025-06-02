@@ -120,46 +120,48 @@ export default {
 <style lang="scss">
 @import "~variables";
 
-div.ToolArea {
-    margin: 0 0 0.5rem 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-
-    button i::before {
-        line-height: inherit !important;
-    }
-
-    div.buttons {
+#bim-viewer {
+    div.ToolArea {
+        margin: 0 0 0.5rem 0;
         display: flex;
         justify-content: space-between;
-        width: 100%;
+        align-items: flex-start;
+        gap: 1rem;
 
-        div.leftSection {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
+        button i::before {
+            line-height: inherit !important;
         }
 
-        div.rightSection {
+        div.buttons {
             display: flex;
-            flex-direction: row;
-            gap: 0.5rem;
-            align-items: flex-start;
+            justify-content: space-between;
+            width: 100%;
+
+            div.leftSection {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            div.rightSection {
+                display: flex;
+                flex-direction: row;
+                gap: 0.5rem;
+                align-items: flex-start;
+            }
         }
-    }
 
-    .btn-primary:hover,
-    .bim-btn-highlight,
-    .bim-btn-highlight:hover {
-        color: $white;
-        background-color: $secondary;
-    }
+        .btn-primary:hover,
+        .bim-btn-highlight,
+        .bim-btn-highlight:hover {
+            color: $white;
+            background-color: $secondary;
+        }
 
-    .btn {
-        i {
-            font-size: 1rem;
+        .btn {
+            i {
+                font-size: 1rem;
+            }
         }
     }
 }

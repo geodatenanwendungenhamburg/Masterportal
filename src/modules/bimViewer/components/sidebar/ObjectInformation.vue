@@ -269,87 +269,89 @@ export default {
     </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "~variables";
 
-div.ObjectInformation {
-    overflow-y: scroll;
-    margin-top: 1rem;
-    min-width: 15rem;
+#bim-viewer {
+    div.ObjectInformation {
+        overflow-y: scroll;
+        margin-top: 1rem;
+        min-width: 15rem;
 
-    div.section {
-        margin: 0 0 0.5rem 0;
+        div.section {
+            margin: 0 0 0.5rem 0;
 
-        span.accordionHeader {
-            display: block;
-            color: $black;
-            background-color: $light_blue;
-            cursor: pointer;
-            width: 100%;
-            text-align: left;
-            padding: 0.25rem 0.5rem;
-        }
-
-        button.accordionButton {
-            margin: 0;
-            color: $black;
-            background-color: $light_blue;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 6 6 6 6-6'/%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 0.75rem top 0.6rem;
-            background-size: 1rem 0.75rem;
-            width: 100%;
-            text-align: left;
-            border: none;
-            padding: 0.25rem 0.5rem;
-
-            &.active {
-                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 11 6-6 6 6'/%3e%3c/svg%3e");
-            }
-        }
-
-        table.propertiesTable {
-            width: 100%;
-            display: none;
-            box-sizing: border-box;
-            border: solid 0.0625rem #DDD;
-
-            &.active {
-                display: table;
+            span.accordionHeader {
+                display: block;
+                color: $black;
+                background-color: $light_blue;
+                cursor: pointer;
+                width: 100%;
+                text-align: left;
+                padding: 0.25rem 0.5rem;
             }
 
-            td.tdLabel {
-                padding: 0.25em;
-                vertical-align: top;
-                border-top: 0.0625rem solid #DDD;
-                border-right: 0.0625rem solid #DDD;
-                max-width: 9.375rem;
-                width: 50%;
-                overflow-wrap: anywhere;
-            }
+            button.accordionButton {
+                margin: 0;
+                color: $black;
+                background-color: $light_blue;
+                cursor: pointer;
+                transition: all 0.3s ease-in-out;
+                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 6 6 6 6-6'/%3e%3c/svg%3e");
+                background-repeat: no-repeat;
+                background-position: right 0.75rem top 0.6rem;
+                background-size: 1rem 0.75rem;
+                width: 100%;
+                text-align: left;
+                border: none;
+                padding: 0.25rem 0.5rem;
 
-            td.tdValue {
-                padding: 0.25em;
-                vertical-align: top;
-                border-top: 0.0625rem solid #DDD;
-                overflow-wrap: anywhere;
-                width: 50%;
-
-                a {
-                    text-decoration: underline;
+                &.active {
+                    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 11 6-6 6 6'/%3e%3c/svg%3e");
                 }
             }
 
-            tr:first-child td {
-                border-top: 0;
+            table.propertiesTable {
+                width: 100%;
+                display: none;
+                box-sizing: border-box;
+                border: solid 0.0625rem #DDD;
+
+                &.active {
+                    display: table;
+                }
+
+                td.tdLabel {
+                    padding: 0.25em;
+                    vertical-align: top;
+                    border-top: 0.0625rem solid #DDD;
+                    border-right: 0.0625rem solid #DDD;
+                    max-width: 9.375rem;
+                    width: 50%;
+                    overflow-wrap: anywhere;
+                }
+
+                td.tdValue {
+                    padding: 0.25em;
+                    vertical-align: top;
+                    border-top: 0.0625rem solid #DDD;
+                    overflow-wrap: anywhere;
+                    width: 50%;
+
+                    a {
+                        text-decoration: underline;
+                    }
+                }
+
+                tr:first-child td {
+                    border-top: 0;
+                }
             }
         }
-    }
 
-    div.noData {
-        margin: 2rem 1rem;
+        div.noData {
+            margin: 2rem 1rem;
+        }
     }
 }
 </style>

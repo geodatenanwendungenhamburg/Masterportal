@@ -68,12 +68,14 @@ export default {
 <style lang="scss">
 @import "~variables";
 
-div.ToolObjectInfo {
-    .btn-primary:hover,
-    .bim-btn-highlight,
-    .bim-btn-highlight:hover {
-        color: $white;
-        background-color: $secondary;
+#bim-viewer {
+    div.ToolObjectInfo {
+        .btn-primary:hover,
+        .bim-btn-highlight,
+        .bim-btn-highlight:hover {
+            color: $white;
+            background-color: $secondary;
+        }
     }
 }
 </style>

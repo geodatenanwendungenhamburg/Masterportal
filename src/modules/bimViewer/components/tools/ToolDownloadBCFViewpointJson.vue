@@ -84,10 +84,12 @@ export default {
 <style lang="scss">
 @import "~variables";
 
-div.ToolDownloadBCFViewpointJson {
-    .btn-primary:hover {
-        color: $white;
-        background-color: $secondary;
+#bim-viewer {
+    div.ToolDownloadBCFViewpointJson {
+        .btn-primary:hover {
+            color: $white;
+            background-color: $secondary;
+        }
     }
 }
 </style>

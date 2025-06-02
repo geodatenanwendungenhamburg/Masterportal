@@ -49,16 +49,18 @@ export default {
 <style lang="scss">
 @import "~variables";
 
-div.ToolSao {
-    button:disabled {
-        background-color: $white;
-    }
+#bim-viewer {
+    div.ToolSao {
+        button:disabled {
+            background-color: $white;
+        }
 
-    .btn-primary:hover,
-    .bim-btn-highlight,
-    .bim-btn-highlight:hover {
-        color: $white;
-        background-color: $secondary;
+        .btn-primary:hover,
+        .bim-btn-highlight,
+        .bim-btn-highlight:hover {
+            color: $white;
+            background-color: $secondary;
+        }
     }
 }
 </style>

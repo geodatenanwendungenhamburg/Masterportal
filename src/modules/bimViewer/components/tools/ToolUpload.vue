@@ -79,18 +79,20 @@ export default {
 <style lang="scss">
 @import "~variables";
 
-form.ToolUpload {
-    input[type="file"] {
-        display: none;
-    }
+#bim-viewer {
+    form.ToolUpload {
+        input[type="file"] {
+            display: none;
+        }
 
-    i::before {
-        line-height: inherit !important;
-    }
+        i::before {
+            line-height: inherit !important;
+        }
 
-    .btn-primary:hover {
-        color: $white;
-        background-color: $secondary;
+        .btn-primary:hover {
+            color: $white;
+            background-color: $secondary;
+        }
     }
 }
 </style>

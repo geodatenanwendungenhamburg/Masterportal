@@ -60,42 +60,44 @@ export default {
 <style lang="scss">
 @import "~variables";
 
-div.ToolMeasurements {
-    display: flex;
-    align-items: center;
+#bim-viewer {
+    div.ToolMeasurements {
+        display: flex;
+        align-items: center;
 
-    .buttonContainer {
-        position: relative;
-        display: inline-block;
+        .buttonContainer {
+            position: relative;
+            display: inline-block;
 
-        .resetButton {
-            position: absolute;
-            bottom: -0.625rem;
-            right: -0.3125rem;
-            border: none;
-            background-color: $light_red;
-            color: $white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.2rem;
-            cursor: pointer;
+            .resetButton {
+                position: absolute;
+                bottom: -0.625rem;
+                right: -0.3125rem;
+                border: none;
+                background-color: $light_red;
+                color: $white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.2rem;
+                cursor: pointer;
 
-            i {
-                line-height: 1;
+                i {
+                    line-height: 1;
+                }
             }
-        }
 
-        .resetButton:hover {
-            background-color: $light_red;
-        }
+            .resetButton:hover {
+                background-color: $light_red;
+            }
 
-        .btn-primary:hover,
-        .bim-btn-highlight,
-        .bim-btn-highlight:hover {
-            color: $white;
-            background-color: $secondary;
+            .btn-primary:hover,
+            .bim-btn-highlight,
+            .bim-btn-highlight:hover {
+                color: $white;
+                background-color: $secondary;
+            }
         }
     }
 }

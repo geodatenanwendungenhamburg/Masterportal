@@ -104,35 +104,37 @@ export default {
 <style lang="scss">
 @import "~variables";
 
-div.ToolFilter {
-    display: flex;
-
-    form {
+#bim-viewer {
+    div.ToolFilter {
         display: flex;
-        input:focus {
-            box-shadow: none;
-            outline: none;
+
+        form {
+            display: flex;
+            input:focus {
+                box-shadow: none;
+                outline: none;
+            }
         }
-    }
 
-    button.btn-reset {
-        position: absolute;
-        right: 2.8rem;
-        top: 50%;
-        transform: translateY(-50%);
-        border: none;
-        background: transparent;
-        font-size: 1.25rem;
-        color: $light_red;
-        padding: 0;
-        cursor: pointer;
-        box-shadow: none;
-        opacity: 0.6;
-    }
+        button.btn-reset {
+            position: absolute;
+            right: 2.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            font-size: 1.25rem;
+            color: $light_red;
+            padding: 0;
+            cursor: pointer;
+            box-shadow: none;
+            opacity: 0.6;
+        }
 
-    button.btn-reset:hover {
-        color: $light_red;
-        opacity: 1;
+        button.btn-reset:hover {
+            color: $light_red;
+            opacity: 1;
+        }
     }
 }
 </style>

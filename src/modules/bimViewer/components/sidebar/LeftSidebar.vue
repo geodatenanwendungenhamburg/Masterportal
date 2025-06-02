@@ -215,122 +215,124 @@ export default {
 <style lang="scss">
 @import "~variables";
 
-div.LeftSidebar {
-    display: flex;
-    flex-direction: column;
-    flex: 0.5;
-    padding: 0 1rem 0 0;
-    box-shadow: 0.1875rem 0.1875rem 1rem $shadow;
+#bim-viewer {
+    div.LeftSidebar {
+        display: flex;
+        flex-direction: column;
+        flex: 0.5;
+        padding: 0 1rem 0 0;
+        box-shadow: 0.1875rem 0.1875rem 1rem $shadow;
 
-    div.modelContainer {
-        margin: 1rem 0 0 0.5rem;
+        div.modelContainer {
+            margin: 1rem 0 0 0.5rem;
 
-        div.modelItem {
-            margin-bottom: 0.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 0.5rem;
-            border-bottom: solid 0.0625rem #DDD;
-            padding-bottom: 1rem;
-
-            div.link {
-                overflow-wrap: anywhere;
-
-                &:hover {
-                    background-color: $accent_hover;
-                }
-            }
-
-            div.actions {
+            div.modelItem {
+                margin-bottom: 0.5rem;
                 display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 0.5rem;
+                border-bottom: solid 0.0625rem #DDD;
+                padding-bottom: 1rem;
 
-                button {
-                    &.partially-active {
-                        border: 0.125rem dashed $light_grey_inactive;
+                div.link {
+                    overflow-wrap: anywhere;
+
+                    &:hover {
+                        background-color: $accent_hover;
                     }
                 }
-            }
 
-            &:last-of-type {
-                margin-bottom: 1rem;
+                div.actions {
+                    display: flex;
+
+                    button {
+                        &.partially-active {
+                            border: 0.125rem dashed $light_grey_inactive;
+                        }
+                    }
+                }
+
+                &:last-of-type {
+                    margin-bottom: 1rem;
+                }
             }
         }
-    }
 
-    div.treeViewContainer {
-        height: 100%;
-        pointer-events: all;
-        overflow: auto;
-        color: black;
-        margin: 1rem 0 0 0.5rem;
+        div.treeViewContainer {
+            height: 100%;
+            pointer-events: all;
+            overflow: auto;
+            color: black;
+            margin: 1rem 0 0 0.5rem;
 
-        ul {
-            list-style: none;
-            padding-left: 0.75em;
-            pointer-events: none;
-
-            &:first-child {
-                padding-left: 1.5rem;
-            }
-
-            li {
-                position: relative;
-                width: 100%;
+            ul {
+                list-style: none;
+                padding-left: 0.75em;
                 pointer-events: none;
-                padding: 0.1875rem 0;
-                vertical-align: middle;
 
-                &.xrayed-node {
-                    > span {
-                        color: $light_grey_inactive;
-                    }
+                &:first-child {
+                    padding-left: 1.5rem;
                 }
 
-                &.highlighted-node {
-                    > span {
-                        font-weight: bold;
+                li {
+                    position: relative;
+                    width: 100%;
+                    pointer-events: none;
+                    padding: 0.1875rem 0;
+                    vertical-align: middle;
+
+                    &.xrayed-node {
+                        > span {
+                            color: $light_grey_inactive;
+                        }
                     }
-                }
 
-                a {
-                    background-color: $light_grey;
-                    border-radius: 50%;
-                    color: $black;
-                    display: inline-block;
-                    height: 1.5em;
-                    left: -1.5em;
-                    position: absolute;
-                    text-align: center;
-                    text-decoration: none;
-                    width: 1.5em;
-                    pointer-events: all;
+                    &.highlighted-node {
+                        > span {
+                            font-weight: bold;
+                        }
+                    }
 
-                    &.plus, &.minus {
+                    a {
+                        background-color: $light_grey;
+                        border-radius: 50%;
+                        color: $black;
+                        display: inline-block;
+                        height: 1.5em;
+                        left: -1.5em;
+                        position: absolute;
+                        text-align: center;
+                        text-decoration: none;
+                        width: 1.5em;
                         pointer-events: all;
+
+                        &.plus, &.minus {
+                            pointer-events: all;
+                        }
+
+                        &:active {
+                            top: 0.0625rem;
+                            pointer-events: all;
+                        }
+
+                        &:hover {
+                            background-color: $accent_hover;
+                        }
                     }
 
-                    &:active {
-                        top: 0.0625rem;
-                        pointer-events: all;
-                    }
-
-                    &:hover {
-                        background-color: $accent_hover;
-                    }
-                }
-
-                span {
-                    display: inline;
-                    padding-left: 0.125rem;
-                    pointer-events: all;
-                    height: 1.437rem;
-
-                    &:hover {
-                        background-color: $accent_hover;
-                        cursor: pointer;
+                    span {
+                        display: inline;
                         padding-left: 0.125rem;
                         pointer-events: all;
+                        height: 1.437rem;
+
+                        &:hover {
+                            background-color: $accent_hover;
+                            cursor: pointer;
+                            padding-left: 0.125rem;
+                            pointer-events: all;
+                        }
                     }
                 }
             }
