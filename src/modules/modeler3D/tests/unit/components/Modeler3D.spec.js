@@ -214,7 +214,23 @@ describe("src/modules/modeler3D/components/Modeler3D.vue", () => {
                 Modules: {
                     namespaced: true,
                     modules: {
-                        Modeler3D
+                        Modeler3D: {
+                            ...Modeler3D,
+                            actions: {
+                                ...actions,
+                                updateUI: updateUISpy,
+                                movePolygon: movePolygonSpy,
+                                movePolyline: movePolylineSpy,
+                                updatePositionUI: updatePositionUISpy
+                            }
+                        },
+                        GetFeatureInfo: {
+                            namespaced: true,
+                            actions: {
+                                highlight3DTile: sinon.stub(),
+                                removeHighlight3DTile: sinon.stub()
+                            }
+                        }
                     }
                 },
                 Maps: {

@@ -112,6 +112,7 @@ export default {
         const scene = mapCollection.getMap("3D").getCesiumScene();
 
         this.initProjectionsInModeler3D(crs, this.projections, this.namedProjections, this.currentProjection);
+        this.removeHighlight3DTile();
         this.eventHandler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
 
         this.eventHandler.setInputAction(this.selectObject, Cesium.ScreenSpaceEventType.LEFT_CLICK);
@@ -120,11 +121,16 @@ export default {
         document.addEventListener("keydown", this.catchUndoRedo);
     },
     beforeUnmount () {
+        this.highlight3DTile();
         this.setCurrentModelId(null);
         this.eventHandler.destroy();
         document.removeEventListener("keydown", this.catchUndoRedo);
     },
     methods: {
+        ...mapActions("Modules/GetFeatureInfo", [
+            "highlight3DTile",
+            "removeHighlight3DTile"
+        ]),
         ...mapActions("Modules/Modeler3D", [
             "createCylinder",
             "generateCylinders",
