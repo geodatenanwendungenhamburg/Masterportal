@@ -39,7 +39,7 @@ export default {
             :disabled="modeSaoNotSupported"
             :aria="modeSaoNotSupported ? '' : modeSaoAriaLabel"
             :title="modeSaoAriaLabel"
-            :class="[modeSaoStatus === true ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
+            :class-array="[modeSaoStatus === true ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
             :icon="modeSaoStatus ? 'bi-lightbulb' : 'bi-lightbulb-off'"
             :interaction="() => setSaoSettings({enabled: !modeSaoStatus})"
         />

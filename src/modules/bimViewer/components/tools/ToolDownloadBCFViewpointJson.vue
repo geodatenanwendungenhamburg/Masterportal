@@ -74,7 +74,7 @@ export default {
         <IconButton
             :aria="$t('modules.bimViewer.tools.downloadBCFViewpointJson.buttonTitle')"
             :title="$t('modules.bimViewer.tools.downloadBCFViewpointJson.buttonTitle')"
-            class="btn-primary"
+            class-array="btn-primary"
             icon="bi-save-fill"
             :interaction="() => downloadBCFViewpointJson()"
         />

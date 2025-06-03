@@ -40,7 +40,7 @@ export default {
             <IconButton
                 :aria="$t('modules.bimViewer.tools.distanceMeasurementsToggle')"
                 :title="$t('modules.bimViewer.tools.distanceMeasurementsToggle')"
-                :class="['btn', toolDistanceMeasurementsActive ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
+                :class-array="['btn', toolDistanceMeasurementsActive ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
                 icon="bi-rulers"
                 :interaction="() => setActive(!toolDistanceMeasurementsActive)"
             />

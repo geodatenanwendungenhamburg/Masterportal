@@ -80,7 +80,7 @@ export default {
                 <IconButton
                     :aria="$t('modules.bimViewer.tools.toggleSidebarLeftLabel')"
                     :title="$t('modules.bimViewer.tools.toggleSidebarLeftLabel')"
-                    :class="[sidebarLeftOpen ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
+                    :class-array="[sidebarLeftOpen ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
                     icon="bi-diagram-3"
                     :interaction="() => toggleSidebarLeft()"
                 />
@@ -108,7 +108,7 @@ export default {
                 <IconButton
                     :aria="$t('modules.bimViewer.tools.toggleSidebarRightLabel')"
                     :title="$t('modules.bimViewer.tools.toggleSidebarRightLabel')"
-                    :class="[toggleRightSidebar ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
+                    :class-array="[toggleRightSidebar ? 'btn-primary bim-btn-highlight' : 'btn-primary']"
                     icon="bi-layout-sidebar-inset-reverse"
                     :interaction="() => toggleSidebarRight()"
                 />

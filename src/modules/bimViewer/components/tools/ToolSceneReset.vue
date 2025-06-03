@@ -21,7 +21,7 @@ export default {
         <IconButton
             :aria="$t('modules.bimViewer.tools.resetScene')"
             :title="$t('modules.bimViewer.tools.resetScene')"
-            class="btn-primary"
+            class-array="btn-primary"
             icon="bi-house"
             :interaction="() => resetScene()"
         />
