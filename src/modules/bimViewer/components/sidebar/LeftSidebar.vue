@@ -223,8 +223,9 @@ export default {
         padding: 0 1rem 0 0;
         box-shadow: 0.1875rem 0.1875rem 1rem $shadow;
 
-        div.modelContainer {
-            margin: 1rem 0 0 0.5rem;
+    div.modelContainer {
+        margin: 1rem 0 0 0.5rem;
+        overflow-y: auto;
 
             div.modelItem {
                 margin-bottom: 0.5rem;

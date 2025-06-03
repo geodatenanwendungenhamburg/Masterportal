@@ -1,6 +1,7 @@
 import axios from "axios";
 import {buildEndpointUrl} from "../utils/buildEndpointUrl";
 import proj4 from "proj4";
+import generateUniqueModelId from "../utils/generateUniqueModelId";
 
 let
     XeoKitSdk = null,
@@ -601,13 +602,17 @@ const actions = {
                         });
                 }
                 else {
-                    const loadedModel = modelLoader.load({
-                        id: payload.url.split("/").reverse()[0],
-                        src: payload.url,
-                        excludeTypes: ["IfcSpace"],
-                        edges: true,
-                        visible: payload.visible
-                    });
+                    const
+                        loadedModel = modelLoader.load({
+                            id: generateUniqueModelId(
+                                payload.url.split("/").reverse()[0],
+                                getters.loadedModels.map((item) => item.sceneModel.id)
+                            ),
+                            src: payload.url,
+                            excludeTypes: ["IfcSpace"],
+                            edges: true,
+                            visible: payload.visible
+                        });
 
                     dispatch("handleModelLoaderEvents", {
                         loadedModel: loadedModel,
@@ -894,9 +899,13 @@ const actions = {
             spinner.processes++;
 
             reader.onload = async function (e) {
-                const arrayBuffer = e.target.result,
+                const
+                    arrayBuffer = e.target.result,
                     loadedModel = payload.modelLoader.load({
-                        id: payload.url.name.split("/").reverse()[0],
+                        id: generateUniqueModelId(
+                            payload.url.name.split("/").reverse()[0],
+                            getters.loadedModels.map((item) => item.sceneModel.id)
+                        ),
                         [payload.type]: arrayBuffer,
                         edges: true,
                         visible: payload.visible

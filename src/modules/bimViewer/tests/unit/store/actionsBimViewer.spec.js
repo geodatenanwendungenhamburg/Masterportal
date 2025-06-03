@@ -79,7 +79,8 @@ describe("src/modules/bimViewer/store/actionsBimViewer.js", () => {
                 load: sinon.stub().returns(mockLoadedModel)
             },
             mockGetters = {
-                xeokitIfcLoader: mockIfcLoader
+                xeokitIfcLoader: mockIfcLoader,
+                loadedModels: []
             },
             rootGetters = {
                 "Modules/BimViewer/xeokitViewer": {
