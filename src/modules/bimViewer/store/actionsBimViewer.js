@@ -131,14 +131,11 @@ const actions = {
                         console.error("Invalid file extension: ", fileExtension);
                     }
 
-                    // Load models invisible to avoid jumps. After loading the last model, all models are set visible.
                     dispatch("loadModel", {
                         url: url,
-                        visible: false,
+                        visible: true,
                         type: fileExtension
                     }).then((theModel) => {
-                        modelList.push(theModel);
-
                         theModel.on("loaded", () => {
                             modelPosition++;
 
@@ -146,7 +143,11 @@ const actions = {
 
                             commit("setCurrentlyLoadedModels", modelPosition);
 
-                            // When the last model has been loaded, update the camera and make the models visible.
+                            dispatch("adjustSceneCamera", {
+                                cameraSettings: payload.sceneConfig.cameraSettings ?? null
+                            });
+
+                            // When the last model has been loaded, update the camera.
                             if (payload.sceneConfig.modelList.length === modelPosition) {
                                 const
                                     annotationCoordinates = urlParams.get("annoCoords"),
@@ -155,14 +156,6 @@ const actions = {
                                     cameraUp = urlParams.get("cameraUp"),
                                     projection = urlParams.get("annoProj"),
                                     showPointer = urlParams.get("showPointer");
-
-                                dispatch("adjustSceneCamera", {
-                                    cameraSettings: payload.sceneConfig.cameraSettings ?? null
-                                });
-
-                                modelList.forEach((model) => {
-                                    model.visible = true;
-                                });
 
                                 if (annotationCoordinates) {
                                     const zoomToPayload = {

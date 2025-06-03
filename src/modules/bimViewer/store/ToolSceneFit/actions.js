@@ -10,9 +10,8 @@ const actions = {
             viewer = rootGetters["Modules/BimViewer/xeokitViewer"],
             scene = viewer.scene;
 
-        viewer.cameraFlight.flyTo({
-            aabb: scene.getAABB(scene.visibleObjectIds),
-            duration: 0.5
+        viewer.cameraFlight.jumpTo({
+            aabb: scene.getAABB(scene.visibleObjectIds)
         });
     }
 };
