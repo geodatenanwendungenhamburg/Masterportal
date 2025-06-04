@@ -1,5 +1,6 @@
 import axios from "axios";
 import {buildEndpointUrl} from "../utils/buildEndpointUrl";
+import validateGltfUris from "../utils/validateGltfUris";
 import proj4 from "proj4";
 import generateUniqueModelId from "../utils/generateUniqueModelId";
 
@@ -38,7 +39,7 @@ const actions = {
      * @param {Object} payload Passed parameters {viewerCanvas, cubeCanvas, treeViewContainerElement, sceneConfig}
      * @returns {void}
      */
-    setScene ({commit, dispatch, getters}, payload) {
+    setScene ({commit, dispatch, getters, reject}, payload) {
         // If an instance exists already, clean up first.
         if (
             getters.xeokitViewer &&
@@ -198,6 +199,8 @@ const actions = {
                                 }
                             }
                         });
+                    }).catch((error) => {
+                        reject(error);
                     });
                 });
             }
@@ -560,33 +563,30 @@ const actions = {
                                 ...payload,
                                 blob: blob,
                                 modelLoader: modelLoader
-                            })
-                                .then((loadedModel) => {
-                                    if (payload.type === "ifc" || payload.type === "xkt") {
-                                        dispatch("addMetaInformationToModel", loadedModel);
-                                    }
-                                    resolve(loadedModel);
-                                })
-                                .catch((err) => {
-                                    reject(err);
-                                });
+                            }).then((loadedModel) => {
+                                if (payload.type === "ifc" || payload.type === "xkt") {
+                                    dispatch("addMetaInformationToModel", loadedModel);
+                                }
+                                resolve(loadedModel);
+                            }).catch((err) => {
+                                reject(err);
+                            });
                         })
                         .catch(err => {
                             reject(err);
                         });
                 }
                 else {
-                    const
-                        loadedModel = modelLoader.load({
-                            id: generateUniqueModelId(
-                                payload.url.split("/").reverse()[0],
-                                getters.loadedModels.map((item) => item.sceneModel.id)
-                            ),
-                            src: payload.url,
-                            excludeTypes: ["IfcSpace"],
-                            edges: true,
-                            visible: payload.visible
-                        });
+                    const loadedModel = modelLoader.load({
+                        id: generateUniqueModelId(
+                            payload.url.split("/").reverse()[0],
+                            getters.loadedModels.map((item) => item.sceneModel.id)
+                        ),
+                        src: payload.url,
+                        excludeTypes: ["IfcSpace"],
+                        edges: true,
+                        visible: payload.visible
+                    });
 
                     dispatch("handleModelLoaderEvents", {
                         loadedModel: loadedModel,
@@ -596,20 +596,44 @@ const actions = {
                 }
             }
             else if (payload.url instanceof Blob) {
-                dispatch("loadFromBlob", {
-                    ...payload,
-                    blob: payload.url,
-                    modelLoader: modelLoader
-                })
-                    .then((loadedModel) => {
+                if (payload.type === "gltf") {
+                    validateGltfUris(payload.url)
+                        .then(() => {
+                            dispatch("loadFromBlob", {
+                                ...payload,
+                                blob: payload.url,
+                                modelLoader: modelLoader
+                            }).then((loadedModel) => {
+                                resolve(loadedModel);
+                            }).catch((err) => {
+                                reject(err);
+                            });
+                        }).catch((err) => {
+                            dispatch("Alerting/addSingleAlert", {
+                                category: "error",
+                                content: err.message || "Invalid glTF file."
+                            }, {root: true});
+
+                            reject(err);
+                        });
+                }
+                else {
+                    // for IFC/XKT...
+                    dispatch("loadFromBlob", {
+                        ...payload,
+                        blob: payload.url,
+                        modelLoader: modelLoader
+                    }
+                    ).then((loadedModel) => {
                         if (payload.type === "ifc" || payload.type === "xkt") {
                             dispatch("addMetaInformationToModel", loadedModel);
                         }
                         resolve(loadedModel);
-                    })
-                    .catch((err) => {
+                    }
+                    ).catch((err) => {
                         reject(err);
                     });
+                }
             }
             else {
                 reject(new Error("Invalid payload.url type. Expect string or Blob"));
@@ -854,24 +878,31 @@ const actions = {
             spinner.processes++;
 
             reader.onload = async function (e) {
-                const
-                    arrayBuffer = e.target.result,
-                    loadedModel = payload.modelLoader.load({
-                        id: generateUniqueModelId(
-                            payload.url.name.split("/").reverse()[0],
-                            getters.loadedModels.map((item) => item.sceneModel.id)
-                        ),
-                        [payload.type]: arrayBuffer,
-                        edges: true,
-                        visible: payload.visible
+                try {
+                    const arrayBuffer = e.target.result,
+                        loadedModel = payload.modelLoader.load({
+                            id: payload.url.name.split("/").reverse()[0],
+                            [payload.type]: arrayBuffer,
+                            edges: true,
+                            visible: payload.visible
+                        });
+
+                    loadedModel.on("error", (err) => {
+                        reject(err);
                     });
 
-                await dispatch("handleModelLoaderEvents", {
-                    loadedModel: loadedModel,
-                    resolve: resolve,
-                    reject: reject
-                });
-                spinner.processes--;
+                    await dispatch("handleModelLoaderEvents", {
+                        loadedModel: loadedModel,
+                        resolve: resolve,
+                        reject: reject
+                    });
+
+                    spinner.processes--;
+                }
+                catch (err) {
+                    spinner.processes--;
+                    reject(err);
+                }
             };
 
             reader.onerror = function (err) {

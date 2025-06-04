@@ -44,6 +44,11 @@ export default {
                                 this.fitScene();
                             });
                         }
+                    }).catch((error) => {
+                        this.addSingleAlert({
+                            category: "error",
+                            content: error?.message || i18next.t("modules.bimViewer.tools.errorLoadingModel")
+                        }, {root: true});
                     });
                 }
             }
