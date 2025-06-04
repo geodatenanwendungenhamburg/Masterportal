@@ -21,7 +21,7 @@ export default {
         <IconButton
             :aria="$t('modules.bimViewer.tools.fitScene')"
             :title="$t('modules.bimViewer.tools.fitScene')"
-            class-array="btn-primary"
+            :class-array="['btn-primary']"
             icon="bi-aspect-ratio"
             :interaction="() => fitScene()"
         />
