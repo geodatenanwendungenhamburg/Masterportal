@@ -4,28 +4,21 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
+## 2025-06-04 v3.11.0
 
 ### Added
 - GraphicalSelect: Added prop to enable the graphicalSelect component to start with an existing polygon
 - WFST-Tool: Saving objects now works correctly after layer reordering for multiselection.
 - IconButton extended by further property label. If a label is given, it will be displayed under the button.
 
-### Changed
-
-### Deprecated
-
-### Removed
-
 ### Fixed
-- WFST-Tool: Fixed Margins in editing of wfs-t fields.
 - Issue #1341: AboutModule: Show actual Masterportal version even when no cswUrl or metaId is configured.
 - Issue #1360: Fixed Errorhandling for 2D-layers.
 - Issue #1366: SpecialWfs: Fixes search for polygons with interior areas.
 - Issue #1371: Footer: Fixded rendering issue on menu expand.
 - Issue #1381: SpecialWFS: Fixes highlighting of multi linestring geometries.
 - Issue #1398: SearchBar/SpecialWfs: Fixed incorrect type name for SpecialWfs in documentation.
+- WFST-Tool: Fixed Margins in editing of wfs-t fields.
 - AboutModule: fixed undefined in imprint.
 - AddLayerButton: Fixed overlap with underlying layer icons (e.g. info/settings) that blocked user interaction.
 - Proxy: Inconsistencies when using a proxy through the attribute `useProxy` on the layer have been corrected.
