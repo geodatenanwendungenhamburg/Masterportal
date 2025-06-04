@@ -238,21 +238,23 @@ export default {
     /**
      * Resets MenuContainers.
      * @param {Object} param store context
-     * @param {Object} param.commit the commit
-     * @param {Object} param.dispatch the dispatch
+     * @param {Function} param.commit the commit
+     * @param {Function} param.dispatch the dispatch
      * @param {Object} param.getters the getters
      * @param {Object} param.rootGetters the rootGetters
      * @param {Object} param.state the state
      * @param {String} side secondary or main Menu
      * @returns {void}
      */
-    resetMenu ({commit, dispatch, getters, rootGetters, state}, side) {
+    resetMenu ({commit, dispatch, getters, state}, side) {
         if (getters.currentComponent(side).type === state.currentMouseMapInteractionsComponent && getters.currentComponent(side).type !== state.defaultComponent) {
             dispatch("changeCurrentMouseMapInteractionsComponent", {type: state.defaultComponent, side});
         }
-        if (rootGetters["Modules/SearchBar/currentSide"] === side) {
-            commit("Menu/switchToPreviousComponent", side, {root: true});
+
+        if (getters.currentComponent(side).type === "layerInformation") {
+            dispatch("Modules/LayerSelection/reset", null, {root: true});
         }
+
         commit("switchToRoot", side);
     },
 

@@ -697,25 +697,21 @@ describe("src/modules/menu/menu-store/actionsMenu.js", () => {
     });
 
     describe("resetMenu", () => {
-        let side = "mainMenu";
+        const side = "mainMenu";
 
         it("should switch to Root but not change Interaction if already GFI", async () => {
-            rootGetters["Modules/SearchBar/currentSide"] = side;
             actions.resetMenu({commit, dispatch, getters, rootGetters, state}, side);
 
             await nextTick(() => {
                 expect(dispatch.notCalled).to.be.true;
-                expect(commit.calledTwice).to.be.true;
-                expect(commit.firstCall.args[0]).to.equal("Menu/switchToPreviousComponent");
+                expect(commit.calledOnce).to.be.true;
+                expect(commit.firstCall.args[0]).to.equal("switchToRoot");
                 expect(commit.firstCall.args[1]).to.equal(side);
-                expect(commit.secondCall.args[0]).to.equal("switchToRoot");
-                expect(commit.secondCall.args[1]).to.equal(side);
             });
         });
 
         it("should switch to Root and change Interaction if not already GFI", async () => {
             Object.assign(state, {currentMouseMapInteractionsComponent: "abc"});
-            rootGetters["Modules/SearchBar/currentSide"] = side;
 
             actions.resetMenu({commit, dispatch, getters, rootGetters, state}, side);
 
@@ -723,21 +719,35 @@ describe("src/modules/menu/menu-store/actionsMenu.js", () => {
                 expect(dispatch.calledOnce).to.be.true;
                 expect(dispatch.firstCall.args[0]).to.equal("changeCurrentMouseMapInteractionsComponent");
                 expect(dispatch.firstCall.args[1]).to.deep.equal({type: state.defaultComponent, side});
-                expect(commit.calledTwice).to.be.true;
-                expect(commit.firstCall.args[0]).to.equal("Menu/switchToPreviousComponent");
+                expect(commit.calledOnce).to.be.true;
+                expect(commit.firstCall.args[0]).to.equal("switchToRoot");
                 expect(commit.firstCall.args[1]).to.equal(side);
-                expect(commit.secondCall.args[0]).to.equal("switchToRoot");
-                expect(commit.secondCall.args[1]).to.equal(side);
             });
         });
 
-        it("should switch to Root but not call switchToPreviousComponent, if search is on other side", async () => {
-            rootGetters["Modules/SearchBar/currentSide"] = "mainMenu";
-            side = "secondaryMenu";
+        it("should reset LayerSelection if currentComponent is layerInformation", async () => {
+            getters.currentComponent = () => ({type: "layerInformation"});
+
             actions.resetMenu({commit, dispatch, getters, rootGetters, state}, side);
 
             await nextTick(() => {
-                expect(dispatch.notCalled).to.be.true;
+                expect(dispatch.calledWith("Modules/LayerSelection/reset", null, {root: true})).to.be.true;
+                expect(commit.calledOnce).to.be.true;
+                expect(commit.firstCall.args[0]).to.equal("switchToRoot");
+                expect(commit.firstCall.args[1]).to.equal(side);
+            });
+        });
+
+        it("should reset LayerSelection and change mouse interaction if needed", async () => {
+            state.currentMouseMapInteractionsComponent = "layerInformation";
+            state.defaultComponent = "defaultComp";
+            getters.currentComponent = () => ({type: "layerInformation"});
+
+            actions.resetMenu({commit, dispatch, getters, rootGetters, state}, side);
+
+            await nextTick(() => {
+                expect(dispatch.calledWith("Modules/LayerSelection/reset", null, {root: true})).to.be.true;
+                expect(dispatch.calledWith("changeCurrentMouseMapInteractionsComponent", {type: "defaultComp", side})).to.be.true;
                 expect(commit.calledOnce).to.be.true;
                 expect(commit.firstCall.args[0]).to.equal("switchToRoot");
                 expect(commit.firstCall.args[1]).to.equal(side);
