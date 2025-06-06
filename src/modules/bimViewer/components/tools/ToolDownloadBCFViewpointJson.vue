@@ -10,13 +10,13 @@ export default {
     computed: {
         ...mapGetters({
             sceneConfigSelected: "Modules/BimViewer/sceneConfigSelected",
-            pickedObjectId: "Modules/BimViewer/ToolObjectInfo/pickedObjectId"
+            pickedObjectId: "Modules/BimViewer/ToolObjectInfo/pickedObjectId",
+            bcfViewpointJson: "Modules/BimViewer/getBcfViewpointJson"
         })
     },
     methods: {
         ...mapActions({
-            addSingleAlert: "Alerting/addSingleAlert",
-            getBCFViewpointJson: "Modules/BimViewer/getBCFViewpointJson"
+            addSingleAlert: "Alerting/addSingleAlert"
         }),
         async downloadBCFViewpointJson () {
             if (this.pickedObjectId) {
@@ -28,14 +28,12 @@ export default {
                 return;
             }
 
-            const
-                json = await this.getBCFViewpointJson(),
-                // Creates a date string in format YYYY-mm-dd
-                datePrefix = new Date().toISOString().slice(0, 10);
+            // Creates a date string in format YYYY-mm-dd
+            const datePrefix = new Date().toISOString().slice(0, 10);
 
             this.forceFileDownload(
                 `${datePrefix}_${this.createSafeFilename(this.sceneConfigSelected.name)}.bcfvjson`,
-                json
+                this.bcfViewpointJson
             );
         },
         createSafeFilename (input) {

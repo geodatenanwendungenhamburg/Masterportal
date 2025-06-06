@@ -1,5 +1,5 @@
 <script>
-import {mapGetters, mapMutations, mapActions} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import FlatButton from "../../../../shared/modules/buttons/components/FlatButton.vue";
 
 export default {
@@ -17,6 +17,9 @@ export default {
         ...mapGetters("Modules/BimViewer/ToolObjectInfo", {
             pickedObjectId: "pickedObjectId",
             objectInformationActivated: "modeObjectInfoActive"
+        }),
+        ...mapGetters("Modules/BimViewer", {
+            getObjectDataForId: "getObjectDataForId"
         })
     },
     watch: {
@@ -31,22 +34,18 @@ export default {
         ...mapMutations("Modules/BimViewer/ToolObjectInfo", [
             "setModeObjectInfoActive"
         ]),
-        ...mapActions("Modules/BimViewer", [
-            "getObjectDataForId"
-        ]),
         loadObjectInformation (objectId) {
             if (objectId) {
-                this.getObjectDataForId({objectId: objectId})
-                    .then((data) => {
-                        if (data) {
-                            this.objectData = data;
-                            this.objectData.storey = this.getStoreyFromObjectData(data);
+                const data = this.getObjectDataForId(objectId);
 
-                            this.objectData.propertySets.forEach((set) => {
-                                set.isActive = true;
-                            });
-                        }
+                if (data) {
+                    this.objectData = data;
+                    this.objectData.storey = this.getStoreyFromObjectData(data);
+
+                    this.objectData.propertySets.forEach((set) => {
+                        set.isActive = true;
                     });
+                }
             }
             else {
                 this.objectData = null;

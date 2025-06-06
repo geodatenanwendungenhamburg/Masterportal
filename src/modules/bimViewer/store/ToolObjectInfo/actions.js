@@ -22,39 +22,37 @@ const actions = {
                 scene.setObjectsSelected(scene.objectIds, false);
                 scene.setObjectsXRayed(scene.objectIds, false);
 
-                const parentID = rootGetters["Modules/BimViewer/relAggregatesMap"][event.entity.id];
+                const parentID = rootGetters["Modules/BimViewer/relAggregatesMap"][event.entity.id],
+                    parent = rootGetters["Modules/BimViewer/getObjectDataForId"](parentID),
+                    childrenIDs = parent ? parent?.children.map(child => {
+                        return child.id;
+                    }) : [event.entity.id],
+                    pickedId = parent ? parent.id : event.entity.id;
 
-                dispatch("Modules/BimViewer/getObjectDataForId", {objectId: parentID}, {root: true}).then(parent => {
-                    const childrenIDs = parent ? parent?.children.map(child => {
-                            return child.id;
-                        }) : [event.entity.id],
-                        pickedId = parent ? parent.id : event.entity.id;
+                if (event.entity.id !== rootGetters["Modules/BimViewer/ToolObjectInfo/pickedObjectId"]) {
+                    // Reset all objects of the current scene
+                    scene.setObjectsXRayed(scene.objectIds, true);
 
-                    if (event.entity.id !== rootGetters["Modules/BimViewer/ToolObjectInfo/pickedObjectId"]) {
-                        // Reset all objects of the current scene
-                        scene.setObjectsXRayed(scene.objectIds, true);
+                    // Set only the selected object
+                    scene.setObjectsXRayed(childrenIDs, false);
+                    scene.setObjectsSelected(childrenIDs, true);
 
-                        // Set only the selected object
-                        scene.setObjectsXRayed(childrenIDs, false);
-                        scene.setObjectsSelected(childrenIDs, true);
+                    commit("setPickedObjectId", pickedId);
+                    commit("setModeObjectInfoPickedObjects", Object.values(scene.selectedObjects));
+                    commit("Modules/BimViewer/setToggleRightSidebar", true, {root: true});
 
-                        commit("setPickedObjectId", pickedId);
-                        commit("setModeObjectInfoPickedObjects", Object.values(scene.selectedObjects));
-                        commit("Modules/BimViewer/setToggleRightSidebar", true, {root: true});
+                    treeView.showNode(String(pickedId));
+                }
+                else {
+                    commit("setPickedObjectId", "");
+                    commit("setModeObjectInfoPickedObjects", []);
+                    commit("Modules/BimViewer/setToggleRightSidebar", false, {root: true});
 
-                        treeView.showNode(String(pickedId));
-                    }
-                    else {
-                        commit("setPickedObjectId", "");
-                        commit("setModeObjectInfoPickedObjects", []);
-                        commit("Modules/BimViewer/setToggleRightSidebar", false, {root: true});
+                    treeView.unShowNode();
+                }
 
-                        treeView.unShowNode();
-                    }
-
-                    // Required to refresh the "object structure" sidebar icons (visible/xRayed)
-                    dispatch("Modules/BimViewer/refreshLoadedModelExtraSettings", {}, {root: true});
-                });
+                // Required to refresh the "object structure" sidebar icons (visible/xRayed)
+                dispatch("Modules/BimViewer/refreshLoadedModelExtraSettings", {}, {root: true});
             }
         });
     },

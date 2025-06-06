@@ -1,6 +1,6 @@
 <script>
 import NavTab from "../../../../shared/modules/tabs/components/NavTab.vue";
-import {mapGetters, mapActions} from "vuex";
+import {mapGetters, mapActions, mapMutations} from "vuex";
 import IconButton from "../../../../shared/modules/buttons/components/IconButton.vue";
 import FlatButton from "../../../../shared/modules/buttons/components/FlatButton.vue";
 
@@ -23,12 +23,14 @@ export default {
     },
     methods: {
         ...mapActions("Modules/BimViewer", [
-            "updateXeokitPluginTreeViewHierarchyType",
             "refreshLoadedModelExtraSettings",
             "destroyModel",
             "setLoadedModelXRayed",
             "setLoadedModelVisible",
             "flyToCompleteModel"
+        ]),
+        ...mapMutations("Modules/BimViewer", [
+            "updateXeokitPluginTreeViewHierarchyType"
         ]),
         setActiveTab (tab) {
             if (tab !== "models") {

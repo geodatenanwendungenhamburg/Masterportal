@@ -51,7 +51,7 @@ const actions = {
             getters.xeokitViewer.destroy();
 
             // Reset all loaded IFC model instances
-            dispatch("resetLoadedModels");
+            commit("setLoadedModels", []);
         }
 
         // Initialize the Viewer
@@ -525,25 +525,6 @@ const actions = {
             });
     },
     /**
-     * Pushes an IFC model to the loaded model array
-     *
-     * @param {Object} context actions context object.
-     * @param {Object} payload Passed parameters {theModel}
-     * @returns {void}
-     */
-    pushLoadedModel ({commit}, payload) {
-        commit("pushLoadedModel", payload.theModel);
-    },
-    /**
-     * Reset the loaded IFC model array
-     *
-     * @param {Object} context actions context object.
-     * @returns {void}
-     */
-    resetLoadedModels ({commit}) {
-        commit("setLoadedModels", []);
-    },
-    /**
      * Load an IFC, XKT or glTF model
      *
      * @param {Object} context actions context object.
@@ -700,25 +681,6 @@ const actions = {
             duration: 0.5
         });
     },
-    /* Get the metaobjects for a given objectID
-     *
-     * @param {Object} context actions context object.
-     * @param {Object} payload Passed parameters {objectId}
-     * @returns {void}
-     */
-    getObjectDataForId ({getters}, payload) {
-        return getters.xeokitViewer.metaScene.metaObjects[payload.objectId];
-    },
-    /**
-     * Update the hierarchy property of the TreeView plugin
-     *
-     * @param {Object} context actions context object.
-     * @param {string} hierarchyType Type of hierarchy (containment|storeys|types)
-     * @returns {void}
-     */
-    updateXeokitPluginTreeViewHierarchyType ({commit}, hierarchyType) {
-        commit("updateXeokitPluginTreeViewHierarchyType", hierarchyType);
-    },
     /**
      * Destroy the model
      * @param {Object} context actions context object.
@@ -867,9 +829,9 @@ const actions = {
      * @param {Object} context actions context object.
      * @param {*} payload { loadedModel, resolve, reject}
      */
-    handleModelLoaderEvents ({dispatch}, payload) {
+    handleModelLoaderEvents ({commit}, payload) {
         payload.loadedModel.on("loaded", async () => {
-            await dispatch("pushLoadedModel", {theModel: payload.loadedModel});
+            commit("pushLoadedModel", payload.loadedModel);
             payload.resolve(payload.loadedModel);
         });
 
@@ -935,7 +897,6 @@ const actions = {
 
         // following request will give additional Header-Information for the model
         // headerInfo = api.GetHeaderLine(modelId, WebIFC.FILE_DESCRIPTION), // FILE_DESCRIPTION
-
         getters.xeokitViewer.metaScene.metaModels[modelId].schema = schema?.arguments[0][0].value;
         getters.xeokitViewer.metaScene.metaModels[modelId].author = fileName?.arguments[2][0].value;
         getters.xeokitViewer.metaScene.metaModels[modelId].createdAt = fileName?.arguments[1].value;
@@ -979,26 +940,6 @@ const actions = {
         finally {
             spinner.processes--;
         }
-    },
-    /**
-     * Extract BCF viewpoint data. (BIM Collaboration Format)
-     * This viewpoint data contains camera position, orientation and projection,
-     * entity visibilities and selection states, SectionPlanes
-     * to slice the model, lineSets to show 3D lines,
-     * bitmaps to show images. This data does not contain comments/marker.
-     *
-     * @param {Object} context actions context object.
-     * @returns {String} BCF viewpoint data as JSON object
-     */
-    async getBCFViewpointJson ({getters}) {
-        const viewpoint = getters.xeokitPluginBCFViewpoints.getViewpoint({
-            spacesVisible: false,
-            spaceBoundariesVisible: false,
-            openingsVisible: false,
-            snapshot: true
-        });
-
-        return JSON.stringify(viewpoint, null, 4);
     },
     /**
      * Adjust the camera by given camera settings from scenes.json, or by default values.

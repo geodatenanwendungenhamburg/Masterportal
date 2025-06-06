@@ -39,8 +39,8 @@ describe("src/modules/bimViewer/tests/unit/components/sidebar/ObjectInformation.
                                     }
                                 }
                             },
-                            actions: {
-                                getObjectDataForId: () => Promise.resolve({
+                            getters: {
+                                getObjectDataForId: () => () => ({
                                     id: "mockObjectId",
                                     name: "Mock Object",
                                     type: "IfcWall",

@@ -3,34 +3,14 @@ import sinon from "sinon";
 import {expect} from "chai";
 
 describe("src/modules/bimViewer/store/actionsBimViewer.js", () => {
-    let commit,
-        dispatch;
+    let dispatch;
 
     beforeEach(() => {
-        commit = sinon.spy();
         dispatch = sinon.stub().resolves();
     });
 
     afterEach(() => {
         sinon.restore();
-    });
-
-    it("action: pushLoadedModel()", () => {
-        const payload = {
-            theModel: {}
-        };
-
-        actions.pushLoadedModel({commit}, payload);
-
-        expect(commit.calledOnce).to.be.true;
-        expect(commit.getCall(0).args).to.eql(["pushLoadedModel", {}]);
-    });
-
-    it("action: resetLoadedModels()", () => {
-        actions.resetLoadedModels({commit});
-
-        expect(commit.calledOnce).to.be.true;
-        expect(commit.getCall(0).args).to.eql(["setLoadedModels", []]);
     });
 
     it("action: loadModel() exception: missing loader", async function () {
