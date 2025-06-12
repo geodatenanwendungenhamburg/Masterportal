@@ -41,34 +41,36 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceTopicTree.js", (
 
     describe("searchInLayers", () => {
         describe("map mode 2D", () => {
+            let layerConfigs;
+
             beforeEach(() => {
                 store.getters = {
                     "Maps/mode": "2D"
                 };
+                layerConfigs = [
+                    {
+                        id: "1",
+                        name: "Überschwemmungsgebiete",
+                        typ: "WMS",
+                        datasets: [{
+                            md_name: "Überschwemmungsgebiete (alkis)"
+                        }]
+                    },
+                    {
+                        id: "2",
+                        name: "Krankenhäuser Test",
+                        typ: "WMS"
+                    },
+                    {
+                        id: "3",
+                        name: "Überschwemmungsgebiete 3D",
+                        typ: "TILESET3D"
+                    }
+                ];
             });
 
             it("should search in layers and return found layers only 2D-layers", () => {
                 const searchInput = "Überschwemmungsgebiete",
-                    layerConfigs = [
-                        {
-                            id: "1",
-                            name: "Überschwemmungsgebiete",
-                            typ: "WMS",
-                            datasets: [{
-                                md_name: "Überschwemmungsgebiete (alkis)"
-                            }]
-                        },
-                        {
-                            id: "2",
-                            name: "Krankenhäuser",
-                            typ: "WMS"
-                        },
-                        {
-                            id: "3",
-                            name: "Überschwemmungsgebiete 3D",
-                            typ: "TILESET3D"
-                        }
-                    ],
                     searchInputRegExp = SearchInterface1.createRegExp(searchInput);
 
                 expect(SearchInterface1.searchInLayers(layerConfigs, searchInputRegExp)).to.deep.equals([
@@ -93,6 +95,36 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceTopicTree.js", (
                         id: "1",
                         name: "Überschwemmungsgebiete",
                         toolTip: "Überschwemmungsgebiete (alkis)"
+                    }
+                ]);
+            });
+
+            it("should find a layer when the search input partially matches its name with internal spaces", () => {
+                const searchInput = "Krankenhäuser T",
+                    searchInputRegExp = SearchInterface1.createRegExp(searchInput);
+
+                expect(SearchInterface1.searchInLayers(layerConfigs, searchInputRegExp)).to.deep.equals([
+                    {
+                        category: "modules.searchBar.type.topic",
+                        events: {
+                            onClick: {
+                                activateLayerInTopicTree: {
+                                    layerId: "2"
+                                }
+                            },
+                            buttons: {
+                                showInTree: {
+                                    layerId: "2"
+                                },
+                                showLayerInfo: {
+                                    layerId: "2"
+                                }
+                            }
+                        },
+                        icon: "bi-stack",
+                        id: "2",
+                        name: "Krankenhäuser Test",
+                        toolTip: ""
                     }
                 ]);
             });

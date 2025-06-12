@@ -44,7 +44,7 @@ SearchInterfaceTopicTree.prototype = Object.create(SearchInterface.prototype);
  */
 SearchInterfaceTopicTree.prototype.search = async function (searchInput) {
     this.searchState = "running";
-    const searchInputRegExp = this.createRegExp(searchInput),
+    const searchInputRegExp = this.createRegExp(searchInput.trim()),
         foundLayers = this.searchInLayers(store.getters.allLayerConfigs, searchInputRegExp),
         foundFolders = this.searchInFolders(store.getters.layerConfig, searchInputRegExp);
 
@@ -83,10 +83,10 @@ SearchInterfaceTopicTree.prototype.searchInLayers = function (layerConfigs, sear
                 datasetsExist = false;
 
             if (this.searchType === "metadata" && Array.isArray(datasets) && datasets.length > 0 && typeof datasets[0].md_name === "string") {
-                searchString = i18next.t(layer.datasets[0].md_name.replace(/ /g, ""));
+                searchString = i18next.t(layer.datasets[0].md_name);
             }
             else if (typeof layer.name === "string") {
-                searchString = i18next.t(layer.name).replace(/ /g, "");
+                searchString = i18next.t(layer.name);
             }
             if (Array.isArray(datasets) && datasets.length > 0 && typeof datasets[0].md_name === "string") {
                 datasetsExist = true;
