@@ -92,11 +92,11 @@ export default {
 
                 <ToolSceneSelector @sceneSelected="onSceneSelected" />
 
+                <ToolUpload />
+
                 <ToolSceneReset />
 
                 <ToolSceneFit />
-
-                <ToolUpload />
 
                 <ToolDownloadBCFViewpointJson />
 

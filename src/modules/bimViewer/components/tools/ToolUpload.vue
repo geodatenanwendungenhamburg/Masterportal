@@ -66,7 +66,7 @@ export default {
             :aria="$t('modules.bimViewer.tools.uploadFormat')"
             :title="$t('modules.bimViewer.tools.uploadFormat')"
             :class-array="['btn-primary']"
-            icon="bi-file-earmark-plus"
+            icon="bi-file-earmark-plus-fill"
             :interaction="() => $refs.uploadButton.click()"
         />
 

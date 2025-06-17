@@ -28,8 +28,10 @@ const actions = {
      * @returns {void}
      */
     async loadSceneConfigs ({commit, getters}) {
+        const timestamp = Date.now();
+
         return axios
-            .get(buildEndpointUrl(getters.sceneConfigsUrl))
+            .get(buildEndpointUrl(getters.sceneConfigsUrl, {"t": timestamp}))
             .then(response => commit("setSceneConfigs", response.data));
     },
     /**
