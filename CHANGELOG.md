@@ -240,6 +240,7 @@ Migrator: Corrected 'infoText' of 'mouseHover' in created config.json.
 - Routing:
     - added avoid points, avoid area import and export
     - selecting a waypoint input field and adding a point by clicking into the map, the new waypoint is added into the previously selected field instead of the first empty field on the list
+- Added module "BIM Viewer" to masterportal core and created new example portal /portal/bim
 
 ### Changed
 - Replaced layer 452, which will be deleted.
@@ -251,6 +252,7 @@ Migrator: Corrected 'infoText' of 'mouseHover' in created config.json.
     - button for adding a new waypoint was moved between start and endpoint
     - reset button was moved to the bottom of the menu
     - consistent button design in avoid area menu
+- GraphicalSelect: Added prop to enable the graphicalSelect component to start with an existing polygon
 
 ### Fixed
 - Menu: Menu title now updates correctly on language change.

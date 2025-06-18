@@ -1,6 +1,6 @@
 # BIM Viewer
 
-This addon is a BIM Viewer to display IFC, XKT or glTF files in the sidebar of the Masterportal.
+This module is a BIM Viewer to display IFC, XKT or glTF files in the sidebar of the Masterportal.
 It can be configured to add tools such as measure, inspect objects in the scene, search for objects in the scene, add ifc file, etc.
 It is also possible to add annotations from a separate json file.
 
@@ -18,7 +18,7 @@ It is also possible to add annotations from a separate json file.
 
 ## Installation
 
-- `npm install` within the addons folder.
+- `npm install`.
 
 ## All configuration parameters of the BIM Viewer
 The BIM Viewer can be configured using the parameters below.
