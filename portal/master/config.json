@@ -804,26 +804,15 @@
           "name": "Geobasiskarten (HamburgDE)",
           "shortname": "Geobasiskarten",
           "typ": "WMS",
-          "visibility": true
-        },
-        {
-          "id": "452",
-          "name": "Digitale Orthophotos (belaubt) Hamburg",
-          "shortname": "Orthophotos",
-          "typ": "WMS",
-          "visibility": false,
-          "transparency": 30,
-          "preview": {
-            "zoomLevel": 6,
-            "center": "566245.97,5938894.79",
-            "radius": 500
-          }
+          "visibility": true,
+          "layerSequence": 2
         },
         {
           "id": "33787",
           "name": "Geobasiskarten (schwarz-grau)",
           "shortname": "Karte schwarz-grau",
-          "visibility": false
+          "visibility": true,
+          "layerSequence": 1
         },
         {
           "id": "VectorTile",
@@ -958,7 +947,7 @@
           "name": "Satellitenbilder Sentinel-2 CIR",
           "url": "https://geodienste.hamburg.de/HH_WMS-T_Satellitenbilder_Sentinel-2",
           "typ": "WMS",
-          "visibility": false
+          "visibility": true
         },
         {
           "id": "4538",

@@ -31,7 +31,7 @@ const Config = {
             }
         }
     },
-    cesiumLibrary: "https://geoportal-hamburg.de/mastercode/cesium/latest/Cesium.js",
+    cesiumLibrary: "https://geoportal-hamburg.de/mastercode/cesium/1_118/Cesium.js",
     portalLanguage: {
         enabled: true,
         debug: false,
