@@ -1,6 +1,6 @@
 import {Image, Tile, Vector, VectorTile} from "ol/layer.js";
 
-import store from "@appstore";
+import store from "@appstore/index.js";
 
 const CanvasModel = {
     /**

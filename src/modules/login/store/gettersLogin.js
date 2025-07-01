@@ -1,5 +1,5 @@
 import stateLogin from "./stateLogin";
-import {generateSimpleGetters} from "@shared/js/utils/generators";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
 
 /**
  * The getters for the Login.

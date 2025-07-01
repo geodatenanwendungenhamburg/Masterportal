@@ -4,7 +4,7 @@ import {config, shallowMount} from "@vue/test-utils";
 import RoutingDistanceDisplayComponent from "@modules/routing/components/RoutingDistanceDisplay.vue";
 import mutations from "@modules/routing/store/mutationsRouting";
 import actions from "@modules/routing/store/actionsRouting";
-import thousandsSeparator from "@shared/js/utils/thousandsSeparator";
+import thousandsSeparator from "@shared/js/utils/thousandsSeparator.js";
 
 config.global.mocks.$t = key => key;
 

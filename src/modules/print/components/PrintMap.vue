@@ -1,19 +1,19 @@
 <script>
 import axios from "axios";
-import Cluster from "ol/source/Cluster";
+import Cluster from "ol/source/Cluster.js";
 import {mapGetters, mapMutations, mapActions} from "vuex";
 import {Vector} from "ol/layer.js";
 
-import isObject from "@shared/js/utils/isObject";
+import isObject from "@shared/js/utils/isObject.js";
 import mutations from "../store/mutationsPrint";
-import thousandsSeparator from "@shared/js/utils/thousandsSeparator";
-import layerProvider from "../js/getVisibleLayer";
+import thousandsSeparator from "@shared/js/utils/thousandsSeparator.js";
+import layerProvider from "../js/getVisibleLayer.js";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 import SwitchInput from "@shared/modules/checkboxes/components/SwitchInput.vue";
-import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
-import BuildSpec from "../js/buildSpec";
-import layerCollection from "@core/layers/js/layerCollection";
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
+import BuildSpec from "../js/buildSpec.js";
+import layerCollection from "@core/layers/js/layerCollection.js";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
 
 /**
@@ -805,7 +805,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
 
     .info {
         max-width: fit-content;

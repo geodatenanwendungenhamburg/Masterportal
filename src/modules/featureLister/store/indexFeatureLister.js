@@ -1,7 +1,7 @@
-import actions from "./actionsFeatureLister";
-import mutations from "./mutationsFeatureLister";
-import getters from "./gettersFeatureLister";
-import state from "./stateFeatureLister";
+import actions from "./actionsFeatureLister.js";
+import mutations from "./mutationsFeatureLister.js";
+import getters from "./gettersFeatureLister.js";
+import state from "./stateFeatureLister.js";
 
 
 export default {

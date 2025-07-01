@@ -1,5 +1,5 @@
-import layerCollection from "@core/layers/js/layerCollection";
-import {treeTopicConfigKey} from "@shared/js/utils/constants";
+import layerCollection from "@core/layers/js/layerCollection.js";
+import {treeTopicConfigKey} from "@shared/js/utils/constants.js";
 
 const actions = {
 

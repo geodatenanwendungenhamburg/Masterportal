@@ -1,4 +1,4 @@
-import changeCase from "@shared/js/utils/changeCase";
+import changeCase from "@shared/js/utils/changeCase.js";
 
 export default {
     /**

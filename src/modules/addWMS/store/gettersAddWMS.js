@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import AddWMSState from "./stateAddWMS";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import AddWMSState from "./stateAddWMS.js";
 
 const getters = {
     ...generateSimpleGetters(AddWMSState)

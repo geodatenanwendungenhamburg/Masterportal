@@ -1,5 +1,5 @@
 import axios from "axios";
-import convertJsonToPost from "@shared/js/utils/convertJsonToPost";
+import convertJsonToPost from "@shared/js/utils/convertJsonToPost.js";
 
 /**
  * Sends the given data to the mail service behind the given url.

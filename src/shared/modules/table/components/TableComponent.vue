@@ -5,9 +5,9 @@ import localeCompare from "@shared/js/utils/localeCompare";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import ExportButtonCSV from "@shared/modules/buttons/components/ExportButtonCSV.vue";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
-import isObject from "@shared/js/utils/isObject";
+import isObject from "@shared/js/utils/isObject.js";
 import Multiselect from "vue-multiselect";
-import thousandsSeparator from "@shared/js/utils/thousandsSeparator";
+import thousandsSeparator from "@shared/js/utils/thousandsSeparator.js";
 import {isPhoneNumber, getPhoneNumberAsWebLink} from "@shared/js/utils/isPhoneNumber.js";
 import {isWebLink} from "@shared/js/utils/urlHelper.js";
 import {isEmailAddress} from "@shared/js/utils/isEmailAddress.js";
@@ -1313,7 +1313,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .dropdown-menu {
     --bs-dropdown-min-width: 25em;
@@ -1531,7 +1531,7 @@ table {
 </style>
 
 <style lang="scss">
-@import "~variables";
+
 
 .filter-select-box-wrapper {
     .multiselect__single {

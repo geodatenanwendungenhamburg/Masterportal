@@ -1,9 +1,9 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import getNestedValues from "@shared/js/utils/getNestedValues";
-import searchInTree from "@shared/js/utils/searchInTree";
-import {sortObjects} from "@shared/js/utils/sortObjects";
-import stateAppStore from "./state";
-import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import getNestedValues from "@shared/js/utils/getNestedValues.js";
+import searchInTree from "@shared/js/utils/searchInTree.js";
+import {sortObjects} from "@shared/js/utils/sortObjects.js";
+import stateAppStore from "./state.js";
+import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants.js";
 
 /**
  * The root getters.
@@ -397,7 +397,7 @@ export default {
      * @returns {Object} The map marker config.
      */
     mapMarker: state => {
-        return state.portalConfig?.map.mapMarker || {};
+        return state.portalConfig?.map?.mapMarker || {pointStyleId: "mapMarker_geo-alt-fill"};
     },
 
     /**
@@ -406,7 +406,7 @@ export default {
      * @returns {Object} The map view settings.
      */
     mapViewSettings: state => {
-        return state.portalConfig?.map.mapView || {};
+        return state.portalConfig?.map?.mapView || {};
     },
 
     /**

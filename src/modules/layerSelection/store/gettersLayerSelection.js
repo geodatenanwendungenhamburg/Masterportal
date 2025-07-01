@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import state from "./stateLayerSelection";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import state from "./stateLayerSelection.js";
 
 const getters = {
     ...generateSimpleGetters(state)

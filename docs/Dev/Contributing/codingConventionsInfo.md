@@ -235,7 +235,7 @@ const mutations = {
 
 ```html
 <style lang="scss" scoped>
-    @import "~variables";
+    
 </style>
 ```
 

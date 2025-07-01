@@ -1,7 +1,7 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import initialState from "./stateWfsSearch";
-import {removePath} from "../js/pathFunctions";
-import isObject from "@shared/js/utils/isObject";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import initialState from "./stateWfsSearch.js";
+import {removePath} from "../js/pathFunctions.js";
+import isObject from "@shared/js/utils/isObject.js";
 
 const mutations = {
     ...generateSimpleMutations(initialState),

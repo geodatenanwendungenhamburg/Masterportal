@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import stateStyleVT from "./stateStyleVT";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import stateStyleVT from "./stateStyleVT.js";
 
 const getters = {
     ...generateSimpleGetters(stateStyleVT),

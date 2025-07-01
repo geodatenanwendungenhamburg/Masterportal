@@ -1,6 +1,6 @@
-import state from "./stateButton3d";
-import getters from "./gettersButton3d";
-import mutations from "./mutationsButton3d";
+import state from "./stateButton3d.js";
+import getters from "./gettersButton3d.js";
+import mutations from "./mutationsButton3d.js";
 
 export default {
     namespaced: true,

@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import gsState from "./stateGraphicalSelect";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import gsState from "./stateGraphicalSelect.js";
 
 const getters = {
     /**

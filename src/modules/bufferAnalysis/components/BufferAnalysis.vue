@@ -1,6 +1,6 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import {ResultType} from "../store/enums";
+import {ResultType} from "../store/enums.js";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
 
@@ -272,6 +272,6 @@ export default {
     </div>
 </template>
 
+
 <style lang="scss" scoped>
-    @import "~variables";
 </style>

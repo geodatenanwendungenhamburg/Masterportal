@@ -1,6 +1,6 @@
-import {createMessage, createSubject, createTicketId} from "../js/createFunctions";
-import httpClientModule from "../js/httpClient";
-import getSystemInfo from "../js/getSystemInfo";
+import {createMessage, createSubject, createTicketId} from "../js/createFunctions.js";
+import httpClientModule from "../js/httpClient.js";
+import getSystemInfo from "../js/getSystemInfo.js";
 
 const actions = {
     /**

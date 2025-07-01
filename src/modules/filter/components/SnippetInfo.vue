@@ -78,8 +78,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
+
     .bottom {
         position: sticky;
         width: 340px;

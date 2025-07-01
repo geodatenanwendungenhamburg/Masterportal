@@ -1,7 +1,7 @@
-import getters from "./gettersLayerPreview";
-import mutations from "./mutationsLayerPreview";
-import actions from "./actionsLayerPreview";
-import state from "./stateLayerPreview";
+import getters from "./gettersLayerPreview.js";
+import mutations from "./mutationsLayerPreview.js";
+import actions from "./actionsLayerPreview.js";
+import state from "./stateLayerPreview.js";
 
 export default {
     namespaced: true,

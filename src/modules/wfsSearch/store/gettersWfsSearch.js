@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import initialState from "./stateWfsSearch";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import initialState from "./stateWfsSearch.js";
 
 const getters = {
     ...generateSimpleGetters(initialState),

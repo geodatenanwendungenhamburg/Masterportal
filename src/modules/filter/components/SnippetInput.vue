@@ -228,7 +228,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
+
     input {
         box-sizing: border-box;
         outline: 0;

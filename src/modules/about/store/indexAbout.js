@@ -1,7 +1,7 @@
-import actions from "./actionsAbout";
-import mutations from "./mutationsAbout";
-import getters from "./gettersAbout";
-import state from "./stateAbout";
+import actions from "./actionsAbout.js";
+import mutations from "./mutationsAbout.js";
+import getters from "./gettersAbout.js";
+import state from "./stateAbout.js";
 
 
 export default {

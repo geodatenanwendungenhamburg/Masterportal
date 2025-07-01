@@ -4,7 +4,7 @@ import Feature from "ol/Feature";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import WFSLayer from "@core/layers/js/layer2dVectorWfs";
-import webgl from "@core/layers/js/webglRenderer";
+import webgl from "@core/layers/js/webglRenderer.js";
 
 afterEach(() => {
     sinon.restore();

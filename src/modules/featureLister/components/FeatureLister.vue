@@ -1,10 +1,10 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from "vuex";
 import VectorLayer from "ol/layer/Vector.js";
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 import {isPhoneNumber, getPhoneNumberAsWebLink} from "@shared/js/utils/isPhoneNumber.js";
 import beautifyKey from "@shared/js/utils/beautifyKey";
-import {isWebLink} from "@shared/js/utils/urlHelper";
+import {isWebLink} from "@shared/js/utils/urlHelper.js";
 import {isEmailAddress} from "@shared/js/utils/isEmailAddress";
 import toBold from "@shared/js/utils/toBold";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
@@ -356,7 +356,6 @@ export default {
 
 
 <style lang="scss" scoped>
-    @import "~variables";
 
 #featureLister {
     width: fit-content;

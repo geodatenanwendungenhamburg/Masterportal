@@ -1,5 +1,5 @@
-import menuState from "./stateMenu";
-import {generateSimpleMutations} from "@shared/js/utils/generators";
+import menuState from "./stateMenu.js";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
 
 export default {
     ...generateSimpleMutations(menuState),

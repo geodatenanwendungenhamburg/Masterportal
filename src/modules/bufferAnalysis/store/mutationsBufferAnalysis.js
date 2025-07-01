@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import stateBufferAnalysis from "./stateBufferAnalysis";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import stateBufferAnalysis from "./stateBufferAnalysis.js";
 
 const mutations = {
     /**

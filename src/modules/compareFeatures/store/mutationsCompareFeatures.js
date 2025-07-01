@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import stateCompareFeatures from "./stateCompareFeatures";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import stateCompareFeatures from "./stateCompareFeatures.js";
 
 const mutations = {
     /**

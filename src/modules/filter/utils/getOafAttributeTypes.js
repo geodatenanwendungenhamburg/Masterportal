@@ -1,5 +1,5 @@
 import axios from "axios";
-import isObject from "@shared/js/utils/isObject";
+import isObject from "@shared/js/utils/isObject.js";
 import {getValueFromObjectByPath} from "@masterportal/masterportalapi/src/lib/getValueFromObjectByPath";
 
 /**

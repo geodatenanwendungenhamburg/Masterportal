@@ -1,5 +1,5 @@
 <script>
-import getCswRecordById from "@shared/js/api/getCswRecordById";
+import getCswRecordById from "@shared/js/api/getCswRecordById.js";
 import {mapGetters} from "vuex";
 
 /**

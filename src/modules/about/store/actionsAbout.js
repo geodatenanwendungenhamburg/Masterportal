@@ -1,4 +1,4 @@
-import getCswRecordById from "@shared/js/api/getCswRecordById";
+import getCswRecordById from "@shared/js/api/getCswRecordById.js";
 import packageJson from "../../../../package.json";
 
 /**

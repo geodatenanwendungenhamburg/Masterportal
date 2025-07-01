@@ -1,6 +1,6 @@
-import state from "./stateTotalView";
-import getters from "./gettersTotalView";
-import mutations from "./mutationsTotalView";
+import state from "./stateTotalView.js";
+import getters from "./gettersTotalView.js";
+import mutations from "./mutationsTotalView.js";
 
 export default {
     namespaced: true,

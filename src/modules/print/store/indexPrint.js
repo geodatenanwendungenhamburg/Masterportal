@@ -1,7 +1,7 @@
-import actions from "./actionsPrint";
-import mutations from "./mutationsPrint";
-import getters from "./gettersPrint";
-import state from "./statePrint";
+import actions from "./actionsPrint.js";
+import mutations from "./mutationsPrint.js";
+import getters from "./gettersPrint.js";
+import state from "./statePrint.js";
 
 
 export default {

@@ -1,7 +1,7 @@
-import actions from "./actionsRotation";
-import state from "./stateRotation";
-import getters from "./gettersRotation";
-import mutations from "./mutationsRotation";
+import actions from "./actionsRotation.js";
+import state from "./stateRotation.js";
+import getters from "./gettersRotation.js";
+import mutations from "./mutationsRotation.js";
 export default {
     namespaced: true,
     state: {...state},

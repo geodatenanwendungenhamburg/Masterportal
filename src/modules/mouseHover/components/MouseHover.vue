@@ -97,8 +97,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
-@import "~mixins";
+
 
 .mouseHover {
     font-size: var(--mousehover-font-size, $font-size-base);

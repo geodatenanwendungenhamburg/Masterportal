@@ -1,7 +1,7 @@
-import state from "./stateContact";
-import actions from "./actionsContact";
-import getters from "./gettersContact";
-import mutations from "./mutationsContact";
+import state from "./stateContact.js";
+import actions from "./actionsContact.js";
+import getters from "./gettersContact.js";
+import mutations from "./mutationsContact.js";
 
 export default {
     namespaced: true,

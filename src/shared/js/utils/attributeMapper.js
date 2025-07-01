@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 
 import {getValueFromObjectByPath} from "./getValueFromObjectByPath.js";
-import thousandsSeparator from "./thousandsSeparator";
+import thousandsSeparator from "./thousandsSeparator.js";
 
 /**
  * Maps the feature properties by the given object.

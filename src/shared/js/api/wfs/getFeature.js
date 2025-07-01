@@ -1,8 +1,8 @@
 import axios from "axios";
-import {handleAxiosError} from "@shared/js/utils/handleAxiosError";
+import handleAxiosError from "@shared/js/utils/handleAxiosError";
 import getWfsError from "@shared/js/utils/getWfsError";
 import {WFS} from "ol/format.js";
-import isObject from "@shared/js/utils/isObject";
+import isObject from "@shared/js/utils/isObject.js";
 
 /**
  * Handles the WFS GetFeature request by GET.
@@ -140,7 +140,7 @@ function handleWfsResponse (response, onerror) {
     return response.data;
 }
 
-module.exports = {
+export default {
     getFeatureGET,
     getFeaturePOST
 };

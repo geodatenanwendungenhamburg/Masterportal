@@ -1,4 +1,4 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
 import stateResizeHandle from "./stateResizeHandle";
 const getters = {
     /**

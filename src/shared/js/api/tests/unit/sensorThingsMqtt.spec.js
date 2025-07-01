@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {SensorThingsMqtt} from "../../sensorThingsMqtt.js";
 
-describe("src/shared/js/api/sensorThingsMqtt", () => {
+describe("src/shared/js/api/sensorThingsMqtt.js", () => {
     describe("constructor", () => {
         const options = {
             host: "foo",

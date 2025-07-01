@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import stateAppStore from "./state";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import stateAppStore from "./state.js";
 
 /**
  * The root mutations.

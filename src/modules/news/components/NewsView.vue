@@ -1,7 +1,7 @@
 <script>
 import dayjs from "dayjs";
 import {mapGetters} from "vuex";
-import sortBy from "@shared/js/utils/sortBy";
+import sortBy from "@shared/js/utils/sortBy.js";
 
 /**
  * Shows the news as history.
@@ -74,7 +74,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 .title{
     font-size: $font-size-lg;
 }

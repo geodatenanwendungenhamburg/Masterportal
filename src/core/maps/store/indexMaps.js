@@ -1,7 +1,7 @@
-import actions from "./actionsMaps";
-import getters from "./gettersMaps";
-import mutations from "./mutationsMaps";
-import state from "./stateMaps";
+import actions from "./actionsMaps.js";
+import getters from "./gettersMaps.js";
+import mutations from "./mutationsMaps.js";
+import state from "./stateMaps.js";
 
 export default {
     namespaced: true,

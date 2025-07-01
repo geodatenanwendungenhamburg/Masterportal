@@ -1,8 +1,8 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import shareViewState from "./stateShareView";
-import stateSearchBar from "../../searchBar/store/stateSearchBar";
-import layerSelectionState from "../../layerSelection/store/stateLayerSelection";
-import layerCollection from "@core/layers/js/layerCollection";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import shareViewState from "./stateShareView.js";
+import stateSearchBar from "../../searchBar/store/stateSearchBar.js";
+import layerSelectionState from "../../layerSelection/store/stateLayerSelection.js";
+import layerCollection from "@core/layers/js/layerCollection.js";
 
 /**
  * Checks if the attributes can be converted to a string. if not, an error message is displayed and the attributes are removed from the params.

@@ -1,7 +1,7 @@
 import axios from "axios";
 import {RoutingGeosearchResult} from "../classes/routing-geosearch-result";
 import state from "../../store/stateRouting";
-import store from "@appstore";
+import store from "@appstore/index.js";
 
 /**
  * Requests POIs from text from LocationFinder

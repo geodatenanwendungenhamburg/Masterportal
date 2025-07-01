@@ -1,6 +1,6 @@
-import state from "./stateShadow";
-import getters from "./gettersShadow";
-import mutations from "./mutationsShadow";
+import state from "./stateShadow.js";
+import getters from "./gettersShadow.js";
+import mutations from "./mutationsShadow.js";
 
 export default {
     namespaced: true,

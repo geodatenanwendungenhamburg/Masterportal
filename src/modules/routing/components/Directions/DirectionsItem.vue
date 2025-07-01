@@ -14,8 +14,8 @@ import RoutingSpeedProfileIcon from "../RoutingSpeedProfileIcon.vue";
 import RoutingAvoidFeatures from "../RoutingAvoidFeatures.vue";
 import RoutingRestrictionsInput from "../RoutingRestrictionsInput.vue";
 import RoutingElevationProfile from "../RoutingElevationProfile.vue";
-import * as constants from "../../store/directions/constantsDirections";
-import * as constantsRouting from "../../store/constantsRouting";
+import * as constants from "../../store/directions/constantsDirections.js";
+import * as constantsRouting from "../../store/constantsRouting.js";
 import {Modal} from "bootstrap";
 
 /**
@@ -568,7 +568,7 @@ export default {
                                 >
                                     {{ $t('common:modules.routing.importAvoidAreas.header') }}
                                     <a
-                                        href="#"
+                                        href="javascript:void(0)"
                                         :aria-label="$t('common:modules.routing.importAvoidAreas.help')"
                                     />
                                 </h1>
@@ -662,7 +662,7 @@ export default {
                     v-for="(segment, segmentIndex) of routingDirections.segments"
                     :key="'segment_header_' + segmentIndex"
                 >
-                    <button
+                    <div
                         class="d-flex step pl-2 py-4 btn-directions"
                         @mouseover="highlightRoute({fromWaypointIndex: segmentIndex, toWaypointIndex: segmentIndex + 1})"
                         @focus="highlightRoute({fromWaypointIndex: segmentIndex, toWaypointIndex: segmentIndex + 1})"
@@ -699,7 +699,7 @@ export default {
                                 <RoutingDistanceDisplay :distance="segment.distance" />
                             </div>
                         </button>
-                    </button>
+                    </div>
 
                     <hr
                         class="m-0"
@@ -800,7 +800,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .test {
     background-color: yellow;

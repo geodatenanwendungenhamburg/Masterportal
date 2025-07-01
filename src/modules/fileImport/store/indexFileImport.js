@@ -1,7 +1,7 @@
-import state from "./stateFileImport";
-import actions from "./actionsFileImport";
-import getters from "./gettersFileImport";
-import mutations from "./mutationsFileImport";
+import state from "./stateFileImport.js";
+import actions from "./actionsFileImport.js";
+import getters from "./gettersFileImport.js";
+import mutations from "./mutationsFileImport.js";
 
 export default {
     namespaced: true,

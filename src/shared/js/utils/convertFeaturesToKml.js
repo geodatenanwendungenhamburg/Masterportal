@@ -1,7 +1,7 @@
 import {KML} from "ol/format.js";
-import getProjections from "./getProjections";
+import getProjections from "./getProjections.js";
 import proj4 from "proj4";
-import isObject from "./isObject";
+import isObject from "./isObject.js";
 
 const projections = getProjections("EPSG:25832", "EPSG:4326", "32"),
     colorOptions = [

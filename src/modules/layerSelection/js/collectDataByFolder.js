@@ -1,5 +1,5 @@
-import {treeSubjectsKey} from "@shared/js/utils/constants";
-import sortBy from "@shared/js/utils/sortBy";
+import {treeSubjectsKey} from "@shared/js/utils/constants.js";
+import sortBy from "@shared/js/utils/sortBy.js";
 
 /**
  * Returns an object contains baselayerConfs, subjectDataLayerConfs and folderNames from given folder up to root.

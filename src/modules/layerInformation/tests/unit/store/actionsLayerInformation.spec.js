@@ -1,8 +1,8 @@
 import {expect} from "chai";
 import sinon from "sinon";
-import testAction from "@devtools/tests/VueTestUtils";
+import testAction from "@devtools/tests/VueTestUtils.js";
 import actions from "@modules/layerInformation/store/actionsLayerInformation";
-import getCswRecordById from "@shared/js/api/getCswRecordById";
+import getCswRecordById from "@shared/js/api/getCswRecordById.js";
 
 const {startLayerInformation, setMetadataURL} = actions;
 

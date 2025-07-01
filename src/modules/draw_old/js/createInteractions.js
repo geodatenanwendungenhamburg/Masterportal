@@ -1,6 +1,6 @@
 import {Select, Modify} from "ol/interaction.js";
 import Draw, {createRegularPolygon} from "ol/interaction/Draw.js";
-import createStyleModule from "./style/createStyle";
+import createStyleModule from "./style/createStyle.js";
 
 /**
  * Creates a draw interaction to draw features on the map.

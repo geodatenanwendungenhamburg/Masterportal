@@ -2,7 +2,7 @@
 import {mapGetters, mapMutations} from "vuex";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
-import {convertColor} from "@shared/js/utils/convertColor";
+import {convertColor} from "@shared/js/utils/convertColor.js";
 export default {
     name: "StatisticDashboardLegend",
     components: {
@@ -292,7 +292,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 #class-range {
     accent-color:  $secondary;
     width: 100%;

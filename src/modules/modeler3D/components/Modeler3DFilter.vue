@@ -5,9 +5,9 @@ import AccordionItem from "@shared/modules/accordion/components/AccordionItem.vu
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 
-import {uniqueId} from "@shared/js/utils/uniqueId";
+import {uniqueId} from "@shared/js/utils/uniqueId.js";
 
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 import processLayerConfig from "@core/layers/js/layerProcessor";
 
 /**
@@ -834,8 +834,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~mixins";
-@import "~variables";
 
 .small-heading {
     font-size: $font_size_big;

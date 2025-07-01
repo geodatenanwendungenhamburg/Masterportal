@@ -1,7 +1,7 @@
-import actions from "./actionsScaleSwitcher";
-import mutations from "./mutationsScaleSwitcher";
-import getters from "./gettersScaleSwitcher";
-import state from "./stateScaleSwitcher";
+import actions from "./actionsScaleSwitcher.js";
+import mutations from "./mutationsScaleSwitcher.js";
+import getters from "./gettersScaleSwitcher.js";
+import state from "./stateScaleSwitcher.js";
 
 
 export default {

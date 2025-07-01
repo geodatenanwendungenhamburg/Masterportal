@@ -4,8 +4,8 @@ import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createSty
 import {expect} from "chai";
 import FilterStore from "@modules/filter/store/indexFilter";
 import getIconListFromLegend from "@modules/filter/utils/getIconListFromLegend.js";
-import layerCollection from "@core/layers/js/layerCollection";
-import layerFactory from "@core/layers/js/layerFactory";
+import layerCollection from "@core/layers/js/layerCollection.js";
+import layerFactory from "@core/layers/js/layerFactory.js";
 import openlayerFunctions from "@modules/filter/utils/openlayerFunctions.js";
 import SnippetDropdown from "@modules/filter/components/SnippetDropdown.vue";
 import sinon from "sinon";

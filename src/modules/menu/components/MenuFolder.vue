@@ -43,5 +43,5 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 </style>

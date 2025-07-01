@@ -1,5 +1,5 @@
 <script>
-import thousandsSeparator from "@shared/js/utils/thousandsSeparator";
+import thousandsSeparator from "@shared/js/utils/thousandsSeparator.js";
 
 /**
  * RoutingDistanceDisplay

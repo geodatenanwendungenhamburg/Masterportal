@@ -1,18 +1,18 @@
-import actions from "./actionsControls";
-import getters from "./gettersControls";
-import mutations from "./mutationsControls";
-import state from "./stateControls";
+import actions from "./actionsControls.js";
+import getters from "./gettersControls.js";
+import mutations from "./mutationsControls.js";
+import state from "./stateControls.js";
 
-import BackForward from "../backForward/store/indexBackForward";
-import Button3d from "../button3d/store/indexButton3d";
-import Freeze from "../freeze/store/indexFreeze";
-import FullScreen from "../fullScreen/store/indexFullScreen";
-import Orientation from "../orientation/store/indexOrientation";
-import Rotation from "../rotation/store/indexRotation";
-import StartModule from "../startModule/store/indexStartModule";
-import TiltView from "../tiltView/store/indexTiltView";
-import TotalView from "../totalView/store/indexTotalView";
-import Zoom from "../zoom/store/indexZoom";
+import BackForward from "../backForward/store/indexBackForward.js";
+import Button3d from "../button3d/store/indexButton3d.js";
+import Freeze from "../freeze/store/indexFreeze.js";
+import FullScreen from "../fullScreen/store/indexFullScreen.js";
+import Orientation from "../orientation/store/indexOrientation.js";
+import Rotation from "../rotation/store/indexRotation.js";
+import StartModule from "../startModule/store/indexStartModule.js";
+import TiltView from "../tiltView/store/indexTiltView.js";
+import TotalView from "../totalView/store/indexTotalView.js";
+import Zoom from "../zoom/store/indexZoom.js";
 
 /**
  * controls-Module is required to be able to nest controls

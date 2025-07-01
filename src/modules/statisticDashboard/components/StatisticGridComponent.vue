@@ -76,7 +76,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 .flex-container {
     display: grid;
     gap: 10px;

@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import Map from "ol/Map";
-import store from "@appstore";
+import store from "@appstore/index.js";
 import {nextTick} from "vue";
 import sinon from "sinon";
 import View from "ol/View";

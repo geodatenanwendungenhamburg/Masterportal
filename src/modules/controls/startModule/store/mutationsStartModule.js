@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import stateStartModule from "./stateStartModule";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import stateStartModule from "./stateStartModule.js";
 
 export default {
     ...generateSimpleMutations(stateStartModule),

@@ -1,7 +1,7 @@
 <script>
 import {mapGetters} from "vuex";
 import axios from "axios";
-import visibilityChecker from "@shared/js/utils/visibilityChecker";
+import visibilityChecker from "@shared/js/utils/visibilityChecker.js";
 
 /**
  * This module can display HTML from config.json or an external file.

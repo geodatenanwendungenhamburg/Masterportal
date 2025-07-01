@@ -2,7 +2,7 @@ import {expect} from "chai";
 import sinon from "sinon";
 import SearchInterface from "@modules/searchBar/searchInterfaces/searchInterface.js";
 import SearchInterfaceGazetteer from "@modules/searchBar/searchInterfaces/searchInterfaceGazetteer.js";
-import store from "@appstore";
+import store from "@appstore/index.js";
 
 afterEach(() => {
     sinon.restore();

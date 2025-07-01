@@ -1,4 +1,4 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
 import stateResizeHandle from "./stateResizeHandle";
 
 const mutations = {

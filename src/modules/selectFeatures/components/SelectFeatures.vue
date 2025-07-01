@@ -5,10 +5,10 @@ import VectorSource from "ol/source/Vector.js";
 import {Style, Stroke, Fill, Circle as CircleStyle} from "ol/style";
 
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import getters from "../store/gettersSelectFeatures";
-import mutations from "../store/mutationsSelectFeatures";
+import getters from "../store/gettersSelectFeatures.js";
+import mutations from "../store/mutationsSelectFeatures.js";
 
-import {isUrl} from "@shared/js/utils/urlHelper";
+import {isUrl} from "@shared/js/utils/urlHelper.js";
 import {isEmailAddress} from "@shared/js/utils/isEmailAddress.js";
 import {isPhoneNumber, getPhoneNumberAsWebLink} from "@shared/js/utils/isPhoneNumber.js";
 
@@ -497,7 +497,7 @@ export default {
                         :key="'a' + index"
                         href="#"
                         class="select-features-zoom-link"
-                        @click="featureZoom"
+                        @click.prevent="featureZoom"
                     >
                         {{ translate("common:modules.selectFeatures.zoomToFeature") }}
                     </a>

@@ -3,7 +3,7 @@ import {config, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
 
-import layerTypes from "@core/layers/js/layerTypes";
+import layerTypes from "@core/layers/js/layerTypes.js";
 import LayerComponent from "@modules/layerTree/components/LayerComponent.vue";
 
 config.global.mocks.$t = key => key;

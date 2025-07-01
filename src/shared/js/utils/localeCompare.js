@@ -1,5 +1,5 @@
-import store from "@appstore";
-import isObject from "./isObject";
+import store from "@appstore/index.js";
+import isObject from "./isObject.js";
 
 /**
  * Compares the reference string and compared string with locales and options

@@ -13,7 +13,7 @@ import SnippetTag from "./SnippetTag.vue";
 import SnippetFeatureInfo from "./SnippetFeatureInfo.vue";
 import SnippetChart from "./SnippetChart.vue";
 import SnippetDownload from "./SnippetDownload.vue";
-import isObject from "@shared/js/utils/isObject";
+import isObject from "@shared/js/utils/isObject.js";
 import FilterApi from "../js/interfaces/filter.api.js";
 import MapHandler from "../utils/mapHandler.js";
 import {compileSnippets} from "../utils/compileSnippets.js";
@@ -1526,9 +1526,8 @@ export default {
     </div>
 </template>
 
+
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
     .win-body-vue {
         padding: 0;
     }

@@ -3,8 +3,8 @@ import DefaultTheme from "../themes/default/components/DefaultTheme.vue";
 import SensorTheme from "../themes/sensor/components/SensorTheme.vue";
 import getTheme from "../js/getTheme";
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import layerCollection from "@core/layers/js/layerCollection";
-import removeHtmlTags from "@shared/js/utils/removeHtmlTags";
+import layerCollection from "@core/layers/js/layerCollection.js";
+import removeHtmlTags from "@shared/js/utils/removeHtmlTags.js";
 
 /**
  * Get Feature Info Detached
@@ -300,7 +300,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .gfi-title {
     font-size: 1.5rem;

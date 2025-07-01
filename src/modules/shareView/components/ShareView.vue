@@ -1,6 +1,6 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import mutations from "../store/mutationsShareView";
+import mutations from "../store/mutationsShareView.js";
 import QRCode from "qrcode";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import {Toast} from "bootstrap";
@@ -218,7 +218,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .qrCode {
     max-width: 75%;

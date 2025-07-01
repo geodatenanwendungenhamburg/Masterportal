@@ -330,7 +330,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
 
     .sensor-text {
         text-align: center;

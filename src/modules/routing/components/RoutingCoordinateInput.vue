@@ -1,6 +1,6 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
-import {RoutingGeosearchResult} from "../js/classes/routing-geosearch-result";
+import {RoutingGeosearchResult} from "../js/classes/routing-geosearch-result.js";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 
@@ -343,7 +343,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .btn-up-down {
     margin-left: 5px;

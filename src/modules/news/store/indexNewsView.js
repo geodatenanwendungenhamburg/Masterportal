@@ -1,6 +1,6 @@
-import mutations from "./mutationsNewsView";
-import getters from "./gettersNewsView";
-import state from "./stateNewsView";
+import mutations from "./mutationsNewsView.js";
+import getters from "./gettersNewsView.js";
+import state from "./stateNewsView.js";
 
 
 export default {

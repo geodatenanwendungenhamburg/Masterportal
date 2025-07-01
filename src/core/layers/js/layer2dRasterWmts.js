@@ -1,5 +1,5 @@
-import {wmts} from "@masterportal/masterportalapi";
-import getNestedValues from "@shared/js/utils/getNestedValues";
+import {wmts} from "@masterportal/masterportalapi/src/index.js";
+import getNestedValues from "@shared/js/utils/getNestedValues.js";
 import Layer2dRaster from "./layer2dRaster";
 
 /**

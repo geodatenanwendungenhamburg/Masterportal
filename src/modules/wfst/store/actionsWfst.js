@@ -4,10 +4,10 @@ import VectorSource from "ol/source/Vector";
 import {platformModifierKeyOnly, primaryAction, click} from "ol/events/condition";
 import addFeaturePropertiesToFeature from "../js/addFeaturePropertiesToFeature";
 import prepareFeaturePropertiesModule from "../js/prepareFeatureProperties";
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 import wfs from "@masterportal/masterportalapi/src/layer/wfs";
 import DragBox from "ol/interaction/DragBox";
-import store from "@appstore";
+import store from "@appstore/index.js";
 import {handleMultipolygon, buildMultipolygon, splitOuterFeatures} from "../js/handleMultipolygon";
 import {nextTick} from "vue";
 

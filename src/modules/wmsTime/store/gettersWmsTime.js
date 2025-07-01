@@ -1,6 +1,6 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import initialState from "./stateWmsTime";
-import findCurrentTimeSliderObject from "../utils/findCurrentTimeSliderObject";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import initialState from "./stateWmsTime.js";
+import findCurrentTimeSliderObject from "../utils/findCurrentTimeSliderObject.js";
 
 const getters = {
     ...generateSimpleGetters(initialState),

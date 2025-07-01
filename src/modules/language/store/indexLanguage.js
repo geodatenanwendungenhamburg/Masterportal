@@ -1,6 +1,6 @@
-import state from "./stateLanguage";
-import getters from "./gettersLanguage";
-import mutations from "./mutationsLanguage";
+import state from "./stateLanguage.js";
+import getters from "./gettersLanguage.js";
+import mutations from "./mutationsLanguage.js";
 
 export default {
     namespaced: true,

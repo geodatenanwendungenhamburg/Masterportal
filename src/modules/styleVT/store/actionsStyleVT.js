@@ -1,4 +1,4 @@
-import stateStyleVT from "./stateStyleVT";
+import stateStyleVT from "./stateStyleVT.js";
 
 const initialState = Object.assign({}, stateStyleVT),
     actions = {

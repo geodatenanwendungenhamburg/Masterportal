@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import copyrightConstraintsState from "./stateCopyrightConstraints";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import copyrightConstraintsState from "./stateCopyrightConstraints.js";
 
 const getters = {
     ...generateSimpleGetters(copyrightConstraintsState)

@@ -1,10 +1,10 @@
 <script>
 import Multiselect from "vue-multiselect";
 import {mapGetters, mapMutations} from "vuex";
-import isObject from "@shared/js/utils/isObject";
+import isObject from "@shared/js/utils/isObject.js";
 import StatisticSwitcher from "./StatisticDashboardSwitcher.vue";
 import getOAFFeature from "@shared/js/api/oaf/getOAFFeature";
-import {rawLayerList} from "@masterportal/masterportalapi";
+import {rawLayerList} from "@masterportal/masterportalapi/src/index.js";
 
 
 export default {
@@ -201,7 +201,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .bootstrap-icon {
     position: absolute;
@@ -225,7 +225,7 @@ export default {
 </style>
 
 <style lang="scss">
-@import "~variables";
+
 
 .multiselect, .multiselect__input, .multiselect__single {
     font-family: inherit;

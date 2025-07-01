@@ -90,7 +90,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 .btn {
     border-radius: 0px;
     background-color: $light_grey;

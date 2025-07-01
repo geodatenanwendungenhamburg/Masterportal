@@ -96,7 +96,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
 
 #module-layer-slider {
     .form-check-input {

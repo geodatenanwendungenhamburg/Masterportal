@@ -1,5 +1,5 @@
 import hash from "object-hash";
-import isObject from "@shared/js/utils/isObject";
+import isObject from "@shared/js/utils/isObject.js";
 import openlayerFunctions from "../../utils/openlayerFunctions.js";
 import IntervalRegister from "../../utils/intervalRegister.js";
 import InterfaceWfsIntern from "./interface.wfs.intern.js";

@@ -1,8 +1,8 @@
 import {expect} from "chai";
 import sinon from "sinon";
 import actions from "@modules/openConfig/store/actionsOpenConfig";
-import layerCollection from "@core/layers/js/layerCollection";
-import {treeTopicConfigKey, treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants";
+import layerCollection from "@core/layers/js/layerCollection.js";
+import {treeTopicConfigKey, treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants.js";
 
 const {
     processConfigJsonOnload

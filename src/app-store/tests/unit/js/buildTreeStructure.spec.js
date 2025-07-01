@@ -1,8 +1,8 @@
-import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
 import buildTreeStructure from "@appstore/js/buildTreeStructure.js";
 import {getAndMergeRawLayer, getAndMergeAllRawLayers} from "@appstore/js/getAndMergeRawLayer.js";
-import getNestedValues from "@shared/js/utils/getNestedValues";
-import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants";
+import getNestedValues from "@shared/js/utils/getNestedValues.js";
+import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants.js";
 import {uniqueId} from "@shared/js/utils/uniqueId.js";
 import {expect} from "chai";
 import sinon from "sinon";

@@ -1,15 +1,15 @@
 import {
     fetchRoutingNominatimGeosearch,
     fetchRoutingNominatimGeosearchReverse
-} from "../js/geosearch/routing-nominatim-geosearch";
-import crs from "@masterportal/masterportalapi/src/crs";
-import {fetchRoutingBkgGeosearch, fetchRoutingBkgGeosearchReverse} from "../js/geosearch/routing-bkg-geosearch";
-import {fetchRoutingLocationFinderGeosearch} from "../js/geosearch/routing-locationFinder-geosearch";
-import {fetchRoutingKomootGeosearch, fetchRoutingKomootGeosearchReverse} from "../js/geosearch/routing-komoot-geosearch";
-import {fetchRoutingElasticGeosearch} from "../js/geosearch/routing-elastic-geosearch";
-import {fetchRoutingSpecialWfsGeosearch} from "../js/geosearch/routing-specialWfs-geosearch";
-import {fetchRoutingGazetteerGeosearch} from "../js/geosearch/routing-gazetteer-geosearch";
-import * as constantsRouting from "./constantsRouting";
+} from "../js/geosearch/routing-nominatim-geosearch.js";
+import crs from "@masterportal/masterportalapi/src/crs.js";
+import {fetchRoutingBkgGeosearch, fetchRoutingBkgGeosearchReverse} from "../js/geosearch/routing-bkg-geosearch.js";
+import {fetchRoutingLocationFinderGeosearch} from "../js/geosearch/routing-locationFinder-geosearch.js";
+import {fetchRoutingKomootGeosearch, fetchRoutingKomootGeosearchReverse} from "../js/geosearch/routing-komoot-geosearch.js";
+import {fetchRoutingElasticGeosearch} from "../js/geosearch/routing-elastic-geosearch.js";
+import {fetchRoutingSpecialWfsGeosearch} from "../js/geosearch/routing-specialWfs-geosearch.js";
+import {fetchRoutingGazetteerGeosearch} from "../js/geosearch/routing-gazetteer-geosearch.js";
+import * as constantsRouting from "./constantsRouting.js";
 
 /**
  * @const {String} configPath an array of possible config locations. First one found will be used

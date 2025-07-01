@@ -1,7 +1,7 @@
-import state from "./stateLayerSelection";
-import mutations from "./mutationsLayerSelection";
-import getters from "./gettersLayerSelection";
-import actions from "./actionsLayerSelection";
+import state from "./stateLayerSelection.js";
+import mutations from "./mutationsLayerSelection.js";
+import getters from "./gettersLayerSelection.js";
+import actions from "./actionsLayerSelection.js";
 
 export default {
     namespaced: true,

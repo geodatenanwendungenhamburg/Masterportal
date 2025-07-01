@@ -1,4 +1,4 @@
-import Cluster from "ol/source/Cluster";
+import Cluster from "ol/source/Cluster.js";
 import {expect} from "chai";
 import Feature from "ol/Feature.js";
 import {Icon} from "ol/style.js";
@@ -7,7 +7,7 @@ import MultiPolygon from "ol/geom/MultiPolygon.js";
 import sinon from "sinon";
 import VectorSource from "ol/source/Vector";
 
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 import SearchInterface from "@modules/searchBar/searchInterfaces/searchInterface.js";
 import SearchInterfaceVisibleVector from "@modules/searchBar/searchInterfaces/searchInterfaceVisibleVector.js";
 

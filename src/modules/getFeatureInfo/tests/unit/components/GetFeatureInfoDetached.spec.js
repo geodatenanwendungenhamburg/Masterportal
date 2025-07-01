@@ -8,7 +8,7 @@ import LineString from "ol/geom/LineString";
 import Polygon from "ol/geom/Polygon";
 import MultiPolygon from "ol/geom/MultiPolygon";
 
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 import DetachedTemplate from "@modules/getFeatureInfo/components/GetFeatureInfoDetached.vue";
 
 config.global.mocks.$t = key => key;

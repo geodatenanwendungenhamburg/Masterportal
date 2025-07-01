@@ -1,7 +1,7 @@
 import Feature from "ol/Feature.js";
 import Point from "ol/geom/Point.js";
 
-import mapMarker from "../js/mapMarker";
+import mapMarker from "../js/mapMarker.js";
 
 /**
  * Place and remove map markers as point or polygon.

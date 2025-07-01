@@ -1,7 +1,7 @@
-import actions from "./actionsOpenConfig";
-import mutations from "./mutationsOpenConfig";
-import getters from "./gettersOpenConfig";
-import state from "./stateOpenConfig";
+import actions from "./actionsOpenConfig.js";
+import mutations from "./mutationsOpenConfig.js";
+import getters from "./gettersOpenConfig.js";
+import state from "./stateOpenConfig.js";
 
 
 export default {
