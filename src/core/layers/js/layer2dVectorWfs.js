@@ -1,5 +1,5 @@
 import {bbox, all} from "ol/loadingstrategy.js";
-import {wfs} from "@masterportal/masterportalapi";
+import {wfs} from "@masterportal/masterportalapi/src/index.js";
 import Layer2dVector from "./layer2dVector.js";
 
 /**

@@ -1,4 +1,4 @@
-import store from "@appstore";
+import store from "@appstore/index.js";
 import {nextTick} from "vue";
 import isObject from "@shared/js/utils/isObject.js";
 import LayerGroup from "ol/layer/Group";

@@ -1,7 +1,7 @@
 import {generateSimpleGetters} from "@shared/js/utils/generators.js";
 import statePrint from "./statePrint.js";
 import layerFactory from "@core/layers/js/layerFactory.js";
-import {rawLayerList} from "@masterportal/masterportalapi";
+import {rawLayerList} from "@masterportal/masterportalapi/src/index.js";
 
 const getters = {
     ...generateSimpleGetters(statePrint),
@@ -12,8 +12,13 @@ const getters = {
      * @returns {Array} list of additional layers with status active
      */
     activeAdditionalLayers: state => {
-        return state.additionalLayers.filter(layer => layer.active)
-            .map(layer => layerFactory.createLayer(rawLayerList.getLayerWhere({id: layer.id}), "2D").layer);
+        const promises = state.additionalLayers
+            .filter(layer => layer.active)
+            .map(layer => layerFactory.createLayer(rawLayerList.getLayerWhere({id: layer.id}), "2D")
+                .then(layerInstance => layerInstance?.layer)
+            );
+
+        return Promise.all(promises);
     },
 
     /**

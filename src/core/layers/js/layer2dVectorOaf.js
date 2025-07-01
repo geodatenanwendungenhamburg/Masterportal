@@ -1,9 +1,9 @@
 import {all, bbox} from "ol/loadingstrategy.js";
-import {oaf} from "@masterportal/masterportalapi";
-import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
-import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle";
-import getGeometryTypeFromService from "@masterportal/masterportalapi/src/vectorStyle/lib/getGeometryTypeFromService";
-import store from "@appstore";
+import {oaf} from "@masterportal/masterportalapi/src/index.js";
+import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
+import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle.js";
+import getGeometryTypeFromService from "@masterportal/masterportalapi/src/vectorStyle/lib/getGeometryTypeFromService.js";
+import store from "@appstore/index.js";
 import Layer2dVector from "./layer2dVector.js";
 
 /**

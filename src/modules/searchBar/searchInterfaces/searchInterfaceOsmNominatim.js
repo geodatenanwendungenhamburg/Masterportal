@@ -1,8 +1,8 @@
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 import dayjs from "dayjs";
 
 import SearchInterface from "./searchInterface.js";
-import store from "@appstore";
+import store from "@appstore/index.js";
 import {uniqueId} from "@shared/js/utils/uniqueId.js";
 import proj4 from "proj4";
 

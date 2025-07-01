@@ -1,7 +1,7 @@
 import VectorSource from "ol/source/Vector";
 import {Vector as VectorLayer} from "ol/layer";
 import {GeoJSON} from "ol/format";
-import Feature from "ol/Feature";
+import Feature from "ol/Feature.js";
 import {BufferOp} from "jsts/org/locationtech/jts/operation/buffer";
 import {ResultType} from "./enums.js";
 import * as setters from "./settersBufferAnalysis.js";

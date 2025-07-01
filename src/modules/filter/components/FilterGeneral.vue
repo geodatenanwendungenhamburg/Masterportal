@@ -13,11 +13,11 @@ import isObject from "@shared/js/utils/isObject.js";
 import {isRule} from "../utils/isRule.js";
 import GeometryFilter from "./GeometryFilter.vue";
 import {getFeaturesOfAdditionalGeometries} from "../utils/getFeaturesOfAdditionalGeometries.js";
-import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
-import {getFeatureGET} from "@shared/js/api/wfs/getFeature.js";
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
+import getFeature  from "@shared/js/api/wfs/getFeature.js";
 import {WFS} from "ol/format.js";
 import UrlHandler from "../utils/urlHandler.js";
-import Cluster from "ol/source/Cluster";
+import Cluster from "ol/source/Cluster.js";
 import layerCollection from "@core/layers/js/layerCollection.js";
 import {Toast} from "bootstrap";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
@@ -314,7 +314,7 @@ export default {
 
                 for (const additionalGeometry of additionalGeometries) {
                     const rawLayer = rawLayerList.getLayerWhere({id: additionalGeometry.layerId}),
-                        features = await getFeatureGET(rawLayer.url, {version: rawLayer.version, featureType: rawLayer.featureType});
+                        features = await getFeature.getFeatureGET(rawLayer.url, {version: rawLayer.version, featureType: rawLayer.featureType});
 
                     additionalGeometry.features = wfsReader.readFeatures(features);
                 }
@@ -898,9 +898,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
-
     .panel {
         position: relative;
     }

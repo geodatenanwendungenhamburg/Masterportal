@@ -7,7 +7,7 @@ import prepareFeaturePropertiesModule from "../js/prepareFeatureProperties.js";
 import layerCollection from "@core/layers/js/layerCollection.js";
 import wfs from "@masterportal/masterportalapi/src/layer/wfs";
 import DragBox from "ol/interaction/DragBox";
-import store from "@appstore";
+import store from "@appstore/index.js";
 import {handleMultipolygon, buildMultipolygon, splitOuterFeatures} from "../js/handleMultipolygon.js";
 import {nextTick} from "vue";
 

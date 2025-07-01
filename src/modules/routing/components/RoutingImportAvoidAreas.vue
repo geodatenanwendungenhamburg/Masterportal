@@ -1,10 +1,10 @@
 <script>
 import {mapGetters, mapActions} from "vuex";
-import GeoJSON from "ol/format/GeoJSON";
-import KML from "ol/format/KML";
-import Feature from "ol/Feature";
-import Polygon from "ol/geom/Polygon";
-import MultiPolygon from "ol/geom/MultiPolygon";
+import GeoJSON from "ol/format/GeoJSON.js";
+import KML from "ol/format/KML.js";
+import Feature from "ol/Feature.js";
+import Polygon from "ol/geom/Polygon.js";
+import MultiPolygon from "ol/geom/MultiPolygon.js";
 import {Modal} from "bootstrap";
 import FileUpload from "../../../shared/modules/inputs/components/FileUpload.vue";
 
@@ -410,7 +410,6 @@ export default {
 
 
 <style lang="scss" scoped>
-@import "~variables";
 
 .drop-area-fake {
     background-color: $white;

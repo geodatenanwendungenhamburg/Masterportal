@@ -272,6 +272,6 @@ export default {
     </div>
 </template>
 
+
 <style lang="scss" scoped>
-    @import "~variables";
 </style>

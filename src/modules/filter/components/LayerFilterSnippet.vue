@@ -1655,9 +1655,8 @@ export default {
     </div>
 </template>
 
+
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
     .win-body-vue {
         padding: 0;
     }

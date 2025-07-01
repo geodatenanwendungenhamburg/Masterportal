@@ -4,7 +4,7 @@ import sinon from "sinon";
 
 import SearchInterface from "@modules/searchBar/searchInterfaces/searchInterface.js";
 import SearchInterfaceBkg from "@modules/searchBar/searchInterfaces/searchInterfaceBkg.js";
-import store from "@appstore";
+import store from "@appstore/index.js";
 import {reset} from "@shared/js/utils/uniqueId.js";
 
 describe("src/modules/searchBar/searchInterfaces/searchInterfaceBkg.js", () => {

@@ -1,7 +1,8 @@
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 
 import SearchInterface from "./searchInterface.js";
-import store from "@appstore";
+import store from "@appstore/index.js";
+import i18next from "i18next";
 
 /**
  * The search interface to the elasticSearch.

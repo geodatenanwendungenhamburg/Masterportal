@@ -1,4 +1,4 @@
-import store from "@appstore";
+import store from "@appstore/index.js";
 import getCswRecordById from "@shared/js/api/getCswRecordById.js";
 import sortBy from "@shared/js/utils/sortBy.js";
 import xml2json from "@shared/js/utils/xml2json.js";

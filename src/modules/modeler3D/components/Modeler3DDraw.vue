@@ -7,7 +7,7 @@ import EntityList from "./ui/EntityList.vue";
 import EntityModel from "./Modeler3DEntityModel.vue";
 import {mapGetters, mapActions, mapMutations} from "vuex";
 
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 import {adaptCylinderToEntity, adaptCylinderToGround, adaptCylinderUnclamped, calculatePolygonArea} from "../js/draw.js";
 import {uniqueId} from "@shared/js/utils/uniqueId.js";
 import SwitchInput from "@shared/modules/checkboxes/components/SwitchInput.vue";
@@ -976,9 +976,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
-
 
     .col-form-label {
         font-size: $font_size_big;

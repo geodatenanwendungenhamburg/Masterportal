@@ -1,4 +1,4 @@
-import store from "@appstore";
+import store from "@appstore/index.js";
 import changeCase from "@shared/js/utils/changeCase.js";
 import processUrlParams from "@shared/js/utils/processUrlParams.js";
 import isMobile from "@shared/js/utils/isMobile.js";

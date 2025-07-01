@@ -4,7 +4,7 @@ import ExportButtonGeoJSON from "@shared/modules/buttons/components/ExportButton
 import openlayerFunctions from "../utils/openlayerFunctions.js";
 import isObject from "@shared/js/utils/isObject";
 import {GeoJSON} from "ol/format.js";
-import Feature from "ol/Feature";
+import Feature from "ol/Feature.js";
 
 /**
 * Snippet Download

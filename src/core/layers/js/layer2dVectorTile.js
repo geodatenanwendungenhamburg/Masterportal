@@ -1,7 +1,7 @@
 import axios from "axios";
-import {vectorTile} from "@masterportal/masterportalapi";
+import {vectorTile} from "@masterportal/masterportalapi/src/index.js";
 
-import store from "@appstore";
+import store from "@appstore/index.js";
 import webgl from "./webglRenderer.js";
 import Layer2d from "./layer2d.js";
 

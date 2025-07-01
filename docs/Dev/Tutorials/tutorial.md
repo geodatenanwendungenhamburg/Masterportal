@@ -122,7 +122,7 @@ Add [VueX getters](https://vuex.vuejs.org/guide/getters.html) to the `modules/sc
 
 ```js
 import {generateSimpleGetters} from "@shared/js/utils/generators";
-import scaleSwitcherState from "./stateScaleSwitcher";
+import scaleSwitcherState from "./stateScaleSwitcher.js";
 
 const getters = {
     ...generateSimpleGetters(scaleSwitcherState)
@@ -139,7 +139,7 @@ Add [Vuex mutations](https://vuex.vuejs.org/guide/mutations.html) to the `module
 
 ```js
 import {generateSimpleMutations} from "@shared/js/utils/generators";
-import stateScaleSwitcher from "./stateScaleSwitcher";
+import stateScaleSwitcher from "./stateScaleSwitcher.js";
 
 const mutations = {
     /**
@@ -178,7 +178,7 @@ Open the file `modules/scaleSwitcher/store/indexScaleSwitcher.js`. Default expor
 import actions from "./actionsScaleSwitcher";
 import mutations from "./mutationsScaleSwitcher";
 import getters from "./gettersScaleSwitcher";
-import state from "./stateScaleSwitcher";
+import state from "./stateScaleSwitcher.js";
 
 
 export default {
@@ -315,7 +315,7 @@ Within the `modules/scaleSwitcher/components/ScaleSwitcher.vue*`, styles can be 
 
 ```scss
 <style lang="scss" scoped>
-    @import "~variables";
+    
 
     // no extra styles needed in this case.
 </style>

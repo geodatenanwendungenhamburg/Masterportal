@@ -52,8 +52,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
 
     #freeze-screen-unfreeze {
         z-index: 10000;

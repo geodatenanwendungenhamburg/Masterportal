@@ -1,4 +1,4 @@
-import Feature from "ol/Feature";
+import Feature from "ol/Feature.js";
 import initialState from "./stateWfst.js";
 import {defaultInteractionConfig} from "../constantsWfst.js";
 import {generateSimpleGetters} from "@shared/js/utils/generators.js";

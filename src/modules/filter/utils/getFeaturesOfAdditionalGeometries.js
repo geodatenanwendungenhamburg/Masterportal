@@ -1,5 +1,5 @@
-import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
-import {getFeatureGET} from "@shared/js/api/wfs/getFeature.js";
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
+import getFeatureGET from "@shared/js/api/wfs/getFeature.js";
 import {WFS} from "ol/format.js";
 
 /**

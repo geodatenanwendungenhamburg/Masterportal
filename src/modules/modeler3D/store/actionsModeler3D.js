@@ -1,4 +1,4 @@
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 import {adaptCylinderToGround, adaptCylinderToEntity, calculateRotatedPointCoordinates} from "../js/draw.js";
 import {convertColor} from "@shared/js/utils/convertColor.js";
 import blobHandler from "../js/blob.js";

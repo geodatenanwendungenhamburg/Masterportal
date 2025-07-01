@@ -1,6 +1,6 @@
 import {expect} from "chai";
-import getters from "@modules/scaleSwitcher/store/gettersScaleSwitcher";
-import stateScaleSwitcher from "@modules/scaleSwitcher/store/stateScaleSwitcher";
+import getters from "@modules/scaleSwitcher/store/gettersScaleSwitcher.js";
+import stateScaleSwitcher from "@modules/scaleSwitcher/store/stateScaleSwitcher.js";
 
 const {
     icon,

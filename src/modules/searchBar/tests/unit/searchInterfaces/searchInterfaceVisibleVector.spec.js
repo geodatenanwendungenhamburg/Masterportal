@@ -1,4 +1,4 @@
-import Cluster from "ol/source/Cluster";
+import Cluster from "ol/source/Cluster.js";
 import {expect} from "chai";
 import Feature from "ol/Feature.js";
 import {Icon} from "ol/style.js";

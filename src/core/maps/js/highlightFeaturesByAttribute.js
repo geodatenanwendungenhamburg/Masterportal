@@ -1,10 +1,10 @@
 import axios from "axios";
-import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle";
+import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle.js";
 import Feature from "ol/Feature.js";
 import Point from "ol/geom/Point.js";
-import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
+import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
 import {WFS} from "ol/format.js";
-import store from "@appstore";
+import store from "@appstore/index.js";
 
 import layerCollection from "../../layers/js/layerCollection.js";
 import {treeSubjectsKey} from "@shared/js/utils/constants.js";

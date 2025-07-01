@@ -1,5 +1,5 @@
 
-import {wms} from "@masterportal/masterportalapi";
+import {wms} from "@masterportal/masterportalapi/src/index.js";
 import Layer2dRaster from "./layer2dRaster.js";
 
 /**

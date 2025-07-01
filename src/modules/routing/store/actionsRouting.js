@@ -2,7 +2,7 @@ import {
     fetchRoutingNominatimGeosearch,
     fetchRoutingNominatimGeosearchReverse
 } from "../js/geosearch/routing-nominatim-geosearch.js";
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 import {fetchRoutingBkgGeosearch, fetchRoutingBkgGeosearchReverse} from "../js/geosearch/routing-bkg-geosearch.js";
 import {fetchRoutingLocationFinderGeosearch} from "../js/geosearch/routing-locationFinder-geosearch.js";
 import {fetchRoutingKomootGeosearch, fetchRoutingKomootGeosearchReverse} from "../js/geosearch/routing-komoot-geosearch.js";

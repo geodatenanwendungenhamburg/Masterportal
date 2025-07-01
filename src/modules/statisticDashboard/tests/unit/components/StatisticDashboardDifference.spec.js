@@ -4,7 +4,7 @@ import {createStore} from "vuex";
 import StatisticDashboardDifference from "@modules/statisticDashboard/components/StatisticDashboardDifference.vue";
 import indexStatisticDashboard from "@modules/statisticDashboard/store/indexStatisticDashboard";
 import Multiselect from "vue-multiselect";
-import {rawLayerList} from "@masterportal/masterportalapi";
+import {rawLayerList} from "@masterportal/masterportalapi/src/index.js";
 import getOAFFeature from "@shared/js/api/oaf/getOAFFeature.js";
 import sinon from "sinon";
 

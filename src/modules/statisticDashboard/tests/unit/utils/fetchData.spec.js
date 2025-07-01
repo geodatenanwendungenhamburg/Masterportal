@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import fetchData from "@modules/statisticDashboard/js/fetchData";
 import sinon from "sinon";
-import {rawLayerList} from "@masterportal/masterportalapi";
+import {rawLayerList} from "@masterportal/masterportalapi/src/index.js";
 
 describe("src/modules/statisticDashboard/utils/fetchData.js", () => {
     describe("getUniqueValuesFromFeatures", () => {

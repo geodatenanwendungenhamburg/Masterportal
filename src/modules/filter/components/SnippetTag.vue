@@ -86,8 +86,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
     .snippetTagContainer {
         margin: 0 0 2px 2px;
         float: left;

@@ -1,13 +1,13 @@
 import axios from "axios";
-import state from "../../store/stateRouting.js";
-import stateDirections from "../../store/directions/stateDirections.js";
-import store from "@appstore";
+import state from "./../../store/stateRouting.js";
+import stateDirections from "./../../store/directions/stateDirections.js";
+import store from "@appstore/index.js";
 import {RoutingDirections} from "../classes/routing-directions.js";
 import {RoutingDirectionsStep} from "../classes/routing-directions-step.js";
 import {RoutingDirectionsSegment} from "../classes/routing-directions-segment.js";
 import routingOrsSpeedProfile from "../speedprofiles/routing-ors-speedprofiles.js";
 import routingOrsAvoidOption from "../avoidoptions/routing-ors-avoidoptions.js";
-import LineString from "ol/geom/LineString";
+import LineString from "ol/geom/LineString.js";
 import {getLength} from "ol/sphere.js";
 
 /**

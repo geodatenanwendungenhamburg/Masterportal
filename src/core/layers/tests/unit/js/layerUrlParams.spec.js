@@ -1,7 +1,7 @@
 import layerUrlParams from "@core/layers/js/layerUrlParams.js";
-import store from "@appstore";
+import store from "@appstore/index.js";
 import {expect} from "chai";
-import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
 import sinon from "sinon";
 
 describe("src/core/layers/js/layerUrlParams.js", () => {

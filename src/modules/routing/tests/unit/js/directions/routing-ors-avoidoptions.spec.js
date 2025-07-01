@@ -1,4 +1,4 @@
-import store from "@appstore";
+import store from "@appstore/index.js";
 import {expect} from "chai";
 import routingOrsAvoidOption from "@modules/routing/js/avoidoptions/routing-ors-avoidoptions";
 

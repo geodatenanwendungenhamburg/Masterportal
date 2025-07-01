@@ -1,6 +1,6 @@
 import {WKT} from "ol/format.js";
 import isObject from "@shared/js/utils/isObject.js";
-import Feature from "ol/Feature";
+import Feature from "ol/Feature.js";
 
 /**
  * Sets the geometry of each feature as WKT and epsg to its attributes.

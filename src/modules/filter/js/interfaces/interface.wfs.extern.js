@@ -1,7 +1,7 @@
 import axios from "axios";
 import isObject from "@shared/js/utils/isObject.js";
 import {describeFeatureTypeWFS} from "../../utils/describeFeatureTypeWFS.js";
-import {WFS} from "ol/format";
+import {WFS} from "ol/format.js";
 import {
     bbox as bboxFilter,
     intersects as intersectsFilter,
@@ -16,7 +16,7 @@ import {
     like as likeFilter,
     notEqualTo as notEqualToFilter,
     or as orFilter
-} from "ol/format/filter";
+} from "ol/format/filter.js";
 import dayjs from "dayjs";
 import GeometryCollection from "ol/geom/GeometryCollection.js";
 

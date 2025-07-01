@@ -703,7 +703,7 @@ export default {
 </template>
 
 <style lang="scss">
-@import "~variables";
+
 #geometryFilter {
 
     .btn-check:checked + .btn {

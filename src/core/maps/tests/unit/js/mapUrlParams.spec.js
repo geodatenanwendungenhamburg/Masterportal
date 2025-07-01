@@ -6,7 +6,7 @@ import View from "ol/View";
 
 import highlightFeaturesByAttribute from "@core/maps/js/highlightFeaturesByAttribute.js";
 import mapUrlParams from "@core/maps/js/mapUrlParams.js";
-import store from "@appstore";
+import store from "@appstore/index.js";
 
 describe("src/core/maps/js/mapUrlParams.js", () => {
     let dispatchCalls = {},

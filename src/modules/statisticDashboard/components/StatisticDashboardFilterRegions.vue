@@ -1,7 +1,7 @@
 <script>
 import Multiselect from "vue-multiselect";
 import {mapGetters, mapMutations} from "vuex";
-import {rawLayerList} from "@masterportal/masterportalapi";
+import {rawLayerList} from "@masterportal/masterportalapi/src/index.js";
 import getOAFFeature from "@shared/js/api/oaf/getOAFFeature.js";
 import {getUniqueValuesFromFetchedFeatures as getUniqueValuesFromOAF} from "../../filter/utils/fetchAllOafProperties.js";
 import FetchDataHandler from "../js/fetchData.js";
@@ -9,7 +9,7 @@ import {
     equalTo as equalToFilter,
     or as orFilter
 } from "ol/format/filter";
-import {getFeaturePOST} from "@shared/js/api/wfs/getFeature.js";
+import getFeature from "@shared/js/api/wfs/getFeature.js";
 import WFS from "ol/format/WFS";
 import sortBy from "@shared/js/utils/sortBy.js";
 import isObject from "@shared/js/utils/isObject.js";
@@ -197,7 +197,7 @@ export default {
                         propertyNames: [region.child.attrName],
                         filter: this.getFilterWFS(region.attrName, region.selectedValues)
                     },
-                    features = await getFeaturePOST(url, payload, error => {
+                    features = await getFeature.getFeaturePOST(url, payload, error => {
                         console.error(error);
                     }),
                     olFeatures = new WFS().readFeatures(features),
@@ -471,7 +471,7 @@ export default {
 </template>
 
 <style lang="scss">
-@import "~variables";
+
     .region-filter {
         .btn-light {
             background: $light_blue;

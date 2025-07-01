@@ -1,4 +1,4 @@
-import store from "@appstore";
+import store from "@appstore/index.js";
 import processUrlParams from "@shared/js/utils/processUrlParams.js";
 
 const searchBarUrlParams = {

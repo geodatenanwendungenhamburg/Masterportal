@@ -507,7 +507,7 @@ export default {
                                     v-if="index < (lastFolderNames.length -1)"
                                     class="mp-menu-navigation"
                                     href="#"
-                                    @click="navigateStepsBack(index)"
+                                    @click.prevent="navigateStepsBack(index)"
                                     @keypress="navigateStepsBack(index)"
                                 >
                                     <h6 class="mp-menu-navigation-link bold">{{ lastFolderName === "root" ? $t("common:modules.layerSelection.datalayer") : $t(lastFolderName) }}</h6>
@@ -570,7 +570,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .breadcrumb-item + .breadcrumb-item::before{
     font-weight: bold;

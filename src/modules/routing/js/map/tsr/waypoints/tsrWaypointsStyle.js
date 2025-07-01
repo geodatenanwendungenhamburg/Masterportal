@@ -1,5 +1,5 @@
 import {Circle, Fill, Stroke, Style, Text} from "ol/style.js";
-import stateRouting from "@modules/routing/store/stateRouting";
+import stateRouting from "@modules/routing/store/stateRouting.js";
 import stateTSR from "@modules/routing/store/tsr/stateTSR.js";
 /**
  * Creates TSR waypoint style

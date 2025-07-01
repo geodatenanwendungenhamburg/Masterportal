@@ -4,7 +4,7 @@ import placingAdditionalPolygonMarker from "@core/maps/js/multipleHighlighting.j
 import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
 import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle";
 import layerCollection from "@core/layers/js/layerCollection.js";
-import store from "@appstore";
+import store from "@appstore/index.js";
 import Feature from "ol/Feature";
 import Polygon from "ol/geom/Polygon";
 import Collection from "ol/Collection";

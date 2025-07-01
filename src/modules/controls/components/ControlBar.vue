@@ -186,8 +186,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
-
     .btn-group-controls {
         display: none;
         background-color: $white;

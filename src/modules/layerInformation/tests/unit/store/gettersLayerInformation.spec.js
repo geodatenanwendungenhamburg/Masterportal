@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import getters from "@modules/layerInformation/store/gettersLayerInformation";
+import getters from "@modules/layerInformation/store/gettersLayerInformation.js";
 
 describe("src/modules/layerInformation/store/gettersLayerInformation.js", () => {
 

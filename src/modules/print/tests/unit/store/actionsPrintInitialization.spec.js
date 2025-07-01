@@ -1,11 +1,11 @@
 import {expect} from "chai";
 import VectorLayer from "ol/layer/Vector.js";
 import sinon from "sinon";
-import store from "@appstore";
+import store from "@appstore/index.js";
 
-import testAction from "@devtools/tests/VueTestUtils";
-import actions from "@modules/print/store/actionsPrintInitialization";
-import Canvas from "@modules/print/js/buildCanvas";
+import testAction from "@devtools/tests/VueTestUtils.js";
+import actions from "@modules/print/store/actionsPrintInitialization.js";
+import Canvas from "@modules/print/js/buildCanvas.js";
 
 const {
     chooseCurrentLayout,

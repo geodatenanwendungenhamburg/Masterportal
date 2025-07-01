@@ -3,8 +3,8 @@ import routingOrsAvoidOption from "../avoidoptions/routing-ors-avoidoptions.js";
 import {RoutingIsochrones} from "../classes/routing-isochrones.js";
 import {RoutingIsochronesArea} from "../classes/routing-isochrones-area.js";
 import routingOrsSpeedProfile from "../speedprofiles/routing-ors-speedprofiles.js";
-import state from "../../store/stateRouting.js";
-import store from "@appstore";
+import state from "./../../store/stateRouting.js";
+import store from "@appstore/index.js";
 import stateIsochrones from "../../store/isochrones/stateIsochrones.js";
 
 /**

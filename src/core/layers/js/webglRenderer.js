@@ -1,5 +1,5 @@
-import store from "@appstore";
-import * as webgl from "@masterportal/masterportalapi/src/renderer/webgl";
+import store from "@appstore/index.js";
+import * as webgl from "@masterportal/masterportalapi/src/renderer/webgl.js";
 
 
 /**

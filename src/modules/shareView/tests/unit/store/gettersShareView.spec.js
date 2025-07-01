@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import sinon from "sinon";
-import getters from "@modules/shareView/store/gettersShareView";
-import shareViewState from "@modules/shareView/store/stateShareView";
+import getters from "@modules/shareView/store/gettersShareView.js";
+import shareViewState from "@modules/shareView/store/stateShareView.js";
 
 describe("src/modules/shareView/store/gettersShareView.js", () => {
     let rootGetters,

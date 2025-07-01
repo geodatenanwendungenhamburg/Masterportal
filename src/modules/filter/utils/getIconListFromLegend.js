@@ -1,6 +1,6 @@
 import svgFactory from "@shared/js/utils/svgFactory.js";
 import openLayerFunctions from "./openlayerFunctions.js";
-import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
+import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
 
 /**
  * Returns a list of image paths from the Legend

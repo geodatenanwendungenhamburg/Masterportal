@@ -9,7 +9,7 @@ import SwitchInput from "@shared/modules/checkboxes/components/SwitchInput.vue";
 
 import {mapActions, mapGetters, mapMutations} from "vuex";
 
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 import getGfiFeatures from "@shared/js/utils/getGfiFeaturesByTileFeature.js";
 import {adaptCylinderUnclamped} from "../js/draw.js";
 import layerCollection from "@core/layers/js/layerCollection.js";
@@ -985,8 +985,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~mixins";
-@import "~variables";
+
 
 .text-with-newlines {
     white-space: pre-wrap;

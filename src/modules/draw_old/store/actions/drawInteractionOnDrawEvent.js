@@ -1,4 +1,4 @@
-import createStyleModule from "@modules/draw_old/js/style/createStyle";
+import createStyleModule from "@modules/draw_old/js/style/createStyle.js";
 import circleCalculations from "@modules/draw_old/js/circleCalculations";
 import squareCalculations from "../../js/squareCalculations.js";
 

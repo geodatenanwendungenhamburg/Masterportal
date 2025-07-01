@@ -5,7 +5,7 @@ import sinon from "sinon";
 import {reset} from "@shared/js/utils/uniqueId.js";
 import SearchInterface from "@modules/searchBar/searchInterfaces/searchInterface.js";
 import SearchInterfaceOsmNominatim from "@modules/searchBar/searchInterfaces/searchInterfaceOsmNominatim.js";
-import store from "@appstore";
+import store from "@appstore/index.js";
 
 describe("src/modules/searchBar/searchInterfaces/searchInterfaceOsmNominatim.js", () => {
     let SearchInterface1 = null,
