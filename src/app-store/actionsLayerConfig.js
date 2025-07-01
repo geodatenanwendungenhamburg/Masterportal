@@ -123,9 +123,9 @@ export default function getActionsLayerConfig () {
      * @param {Number} [payload.time] time information for time-dependent layers e.g. timestamp
      * @returns {Boolean} true, if layer exists an was added or replaced
      */
-        addOrReplaceLayer: function ({dispatch, getters}, {layerId, visibility = true, transparency = 0, showInLayerTree = true, isBaseLayer = false, zIndex, time}) {
-            const layer = getters.layerConfigById(layerId);
-            let newZIndex = zIndex;
+     addOrReplaceLayer: function ({dispatch, getters}, {layerId, visibility = true, transparency = 0, showInLayerTree = true, isBaseLayer = false, zIndex, time}) {
+        const layer = getters.layerConfigById(layerId);
+        let newZIndex = zIndex;
 
             if (!layer) {
                 const config = rawLayerList.getLayerWhere({id: layerId}),
