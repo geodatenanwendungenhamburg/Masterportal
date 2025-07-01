@@ -74,7 +74,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 .title{
     font-size: $font-size-lg;
 }

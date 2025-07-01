@@ -830,8 +830,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
 
     .cta {
         margin-bottom:12px;

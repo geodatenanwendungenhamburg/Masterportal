@@ -300,7 +300,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 #class-range {
     accent-color:  $secondary;
     width: 100%;

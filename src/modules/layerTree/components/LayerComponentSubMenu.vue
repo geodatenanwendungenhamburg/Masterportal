@@ -158,7 +158,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
     .path{
         font-size: $font-size-sm;
         text-align: start;

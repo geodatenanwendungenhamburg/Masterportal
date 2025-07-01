@@ -1,0 +1,21 @@
+/*
+ * Grid breakpoints
+ *
+ * Define the minimum dimensions at which your layout will change,
+ * adapting to different screen sizes, for use in media queries.
+ */
+ $xs: 0;
+ $sm: 576px;
+ $md: 768px;
+ $lg: 992px;
+ $xl: 1200px;
+ $xxl: 1400px;
+ 
+ :export {
+   gridBreakpointsXs: $xs;
+   gridBreakpointsSm: $sm;
+   gridBreakpointsMd: $md;
+   gridBreakpointsLg: $lg;
+   gridBreakpointsXl: $xl;
+   gridBreakpointsXxl: $xxl;
+ }

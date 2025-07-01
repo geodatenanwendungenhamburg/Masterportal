@@ -708,8 +708,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
-
     @include media-breakpoint-down(md) {
         .checkbox-container .form-inline {
             font-size: $font-size-base;

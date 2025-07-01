@@ -73,7 +73,7 @@ export default {
 </template>
 
 <style lang="scss">
-    @import "~variables";
+
 
     #modules-scales {
         display: none;

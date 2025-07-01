@@ -819,7 +819,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
 
     .info {
         max-width: fit-content;

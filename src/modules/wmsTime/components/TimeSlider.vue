@@ -199,7 +199,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .disabled {
     pointer-events: none;
