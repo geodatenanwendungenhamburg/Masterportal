@@ -108,7 +108,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 #module-compareFeatures-no-features {
     padding: 15px;

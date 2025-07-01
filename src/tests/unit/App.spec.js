@@ -3,7 +3,6 @@ import {expect} from "chai";
 import sinon from "sinon";
 import {shallowMount} from "@vue/test-utils";
 import AppComponent from "../../App.vue";
-import MenuContainer from "@modules/menu/components/MenuContainer.vue";
 import MenuToggleButton from "@modules/menu/components/MenuToggleButton.vue";
 import maps from "@core/maps/js/maps.js";
 import loadAddons from "@plugins/addons";
@@ -112,7 +111,6 @@ describe("src/App.vue", () => {
                 plugins: [store]
             }});
 
-        wrapper.findComponent(MenuContainer);
         wrapper.findComponent(MenuToggleButton);
     });
     it("watcher allConfigsLoaded is true", async () => {

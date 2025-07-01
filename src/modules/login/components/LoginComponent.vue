@@ -141,7 +141,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 .login-window {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.176);
   left: 50%;

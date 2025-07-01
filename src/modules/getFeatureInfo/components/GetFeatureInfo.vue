@@ -405,7 +405,7 @@ export default {
 
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
     .gfi {
         color: $dark_blue;

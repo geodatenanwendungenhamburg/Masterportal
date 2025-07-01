@@ -300,7 +300,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .gfi-title {
     font-size: 1.5rem;

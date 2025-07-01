@@ -169,8 +169,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
-    @import "~mixins";
+
     .layer-tree-select-all {
         border-radius: 15px;
         &:hover {

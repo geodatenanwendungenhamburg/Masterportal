@@ -282,12 +282,13 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
     .layer-pills-container {
-        position: relative;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
         top: 15px;
         display: flex;
-        justify-content: left;
+        justify-content: center;
         pointer-events: all;
         margin: 0 auto 0 auto;
         border-radius: 19px;
@@ -391,5 +392,4 @@ export default {
     .layer-pills-container::-webkit-scrollbar {
     display: none;
     }
-
 </style>

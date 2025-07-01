@@ -63,7 +63,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
     .nav-tabs {
         border: none;
         .nav-link.active {

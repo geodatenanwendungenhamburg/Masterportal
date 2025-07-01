@@ -343,7 +343,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .btn-up-down {
     margin-left: 5px;
