@@ -17,6 +17,7 @@ export default function Layer2dGroup (attributes, factory) {
 
     this.attributes = Object.assign(defaultAttributes, attributes);
     this.layerFactory = factory;
+    this.layerFactory = factory;
     if (!Array.isArray(attributes.children)) {
         console.warn("Wrong configuration for Grouplayer: children are missing.", attributes);
     }
