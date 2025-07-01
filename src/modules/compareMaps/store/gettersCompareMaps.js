@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import compareMapsState from "./stateCompareMaps";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import compareMapsState from "./stateCompareMaps.js";
 
 /**
  * The getters for compareMaps.

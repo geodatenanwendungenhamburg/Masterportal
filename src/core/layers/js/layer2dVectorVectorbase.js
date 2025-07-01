@@ -1,6 +1,6 @@
 import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
-import Layer2dVector from "./layer2dVector";
+import Layer2dVector from "./layer2dVector.js";
 
 /**
  * Creates a 2d vector vectorbase layer.

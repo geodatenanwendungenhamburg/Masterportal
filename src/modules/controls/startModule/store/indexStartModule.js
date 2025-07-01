@@ -1,7 +1,7 @@
-import actions from "./actionsStartModule";
-import state from "./stateStartModule";
-import getters from "./gettersStartModule";
-import mutations from "./mutationsStartModule";
+import actions from "./actionsStartModule.js";
+import state from "./stateStartModule.js";
+import getters from "./gettersStartModule.js";
+import mutations from "./mutationsStartModule.js";
 
 export default {
     namespaced: true,

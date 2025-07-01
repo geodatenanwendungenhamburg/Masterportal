@@ -1,6 +1,6 @@
-import getters from "./gettersOrientation";
-import mutations from "./mutationsOrientation";
-import state from "./stateOrientation";
+import getters from "./gettersOrientation.js";
+import mutations from "./mutationsOrientation.js";
+import state from "./stateOrientation.js";
 
 export default {
     namespaced: true,

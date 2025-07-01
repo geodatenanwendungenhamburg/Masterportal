@@ -1,5 +1,5 @@
 import VectorSource from "ol/source/Vector.js";
-import Feature from "ol/Feature";
+import Feature from "ol/Feature.js";
 import LineString from "ol/geom/LineString";
 
 export default new VectorSource({

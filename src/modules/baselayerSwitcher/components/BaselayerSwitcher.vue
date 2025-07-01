@@ -204,8 +204,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
-
     #baselayer-switcher {
         display: block;
         pointer-events: all;
@@ -214,11 +212,13 @@ export default {
          /* Hide scrollbar for IE, Edge and Firefox */
         -ms-overflow-style: none;
         scrollbar-width: none;
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        &::-webkit-scrollbar {
+            display: none;
+        }
     }
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    #baselayer-switcher::-webkit-scrollbar {
-        display: none;
-    }
+
     .btn-group-background-switcher {
         background-color: $white;
         border: solid $white 1px;
@@ -262,5 +262,4 @@ export default {
     .top:hover, .top:focus {
         border: 2px solid rgba(66, 66, 66, 0.8);
     }
-
 </style>

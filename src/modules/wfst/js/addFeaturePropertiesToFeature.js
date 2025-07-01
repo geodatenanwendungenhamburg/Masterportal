@@ -1,4 +1,4 @@
-import Feature from "ol/Feature";
+import Feature from "ol/Feature.js";
 
 /**
  * Adds the given featureProperties and the geometry of the feature

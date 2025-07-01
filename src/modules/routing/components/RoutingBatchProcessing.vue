@@ -156,7 +156,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .strukturtext {
     max-width: 400px;

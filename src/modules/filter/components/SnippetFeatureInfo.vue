@@ -260,7 +260,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
     .snippetFeatureInfoContainer {
         dt {
             font-weight: normal;

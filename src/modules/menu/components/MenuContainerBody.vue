@@ -154,7 +154,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
     .mp-menu-body {
         display: flex;
         flex-direction: column;

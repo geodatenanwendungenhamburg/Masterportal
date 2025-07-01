@@ -1,8 +1,8 @@
 import {expect} from "chai";
 import sinon from "sinon";
 import validator from "@modules/legend/js/validator";
-import layerCollection from "@core/layers/js/layerCollection";
-import layerFactory from "@core/layers/js/layerFactory";
+import layerCollection from "@core/layers/js/layerCollection.js";
+import layerFactory from "@core/layers/js/layerFactory.js";
 import legendDraw from "@modules/legend/js/legendDraw";
 import actions from "@modules/legend/store/actionsLegend";
 

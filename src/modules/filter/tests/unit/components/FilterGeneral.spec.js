@@ -5,7 +5,7 @@ import FilterGeneral from "@modules/filter/components/FilterGeneral.vue";
 import FilterStore from "@modules/filter/store/indexFilter";
 import sinon from "sinon";
 import openlayerFunctions from "@modules/filter/utils/openlayerFunctions";
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 
 config.global.mocks.$t = key => key;

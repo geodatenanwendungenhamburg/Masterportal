@@ -2,10 +2,9 @@
 import TableComponent from "@shared/modules/table/components/TableComponent.vue";
 import {mapActions, mapGetters, mapMutations} from "vuex";
 import WfsSearchLiteral from "./WfsSearchLiteral.vue";
-import {createUserHelp} from "../js/literalFunctions";
-import requestProvider from "../js/requests";
-import getGeometry from "../js/getGeometry.js";
-import isObject from "@shared/js/utils/isObject";
+import {createUserHelp} from "../js/literalFunctions.js";
+import requestProvider from "../js/requests.js";
+import isObject from "@shared/js/utils/isObject.js";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 
 /**
@@ -360,7 +359,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
     .btn {
         margin-top: 10px;
     }

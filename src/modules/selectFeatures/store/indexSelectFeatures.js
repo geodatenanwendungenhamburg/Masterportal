@@ -1,7 +1,7 @@
-import getters from "./gettersSelectFeatures";
-import mutations from "./mutationsSelectFeatures";
-import actions from "./actionsSelectFeatures";
-import state from "./stateSelectFeatures";
+import getters from "./gettersSelectFeatures.js";
+import mutations from "./mutationsSelectFeatures.js";
+import actions from "./actionsSelectFeatures.js";
+import state from "./stateSelectFeatures.js";
 
 export default {
     namespaced: true,

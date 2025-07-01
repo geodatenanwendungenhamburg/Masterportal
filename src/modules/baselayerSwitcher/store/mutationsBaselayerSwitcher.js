@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import stateBaselayerSwitcher from "./stateBaselayerSwitcher";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import stateBaselayerSwitcher from "./stateBaselayerSwitcher.js";
 
 const mutations = {
     ...generateSimpleMutations(stateBaselayerSwitcher)

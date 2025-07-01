@@ -1,11 +1,11 @@
-import Cluster from "ol/source/Cluster";
+import Cluster from "ol/source/Cluster.js";
 import axios from "axios";
 
-import store from "@appstore";
-import Layer from "./layer";
+import store from "@appstore/index.js";
+import Layer from "./layer.js";
 import {boundingExtent} from "ol/extent";
-import crs from "@masterportal/masterportalapi/src/crs";
-import handleAxiosResponse from "@shared/js/utils/handleAxiosResponse";
+import crs from "@masterportal/masterportalapi/src/crs.js";
+import handleAxiosResponse from "@shared/js/utils/handleAxiosResponse.js";
 import {Group as LayerGroup} from "ol/layer.js";
 
 /**

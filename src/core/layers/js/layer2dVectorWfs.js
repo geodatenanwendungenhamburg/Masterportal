@@ -1,6 +1,6 @@
 import {bbox, all} from "ol/loadingstrategy.js";
-import {wfs} from "@masterportal/masterportalapi";
-import Layer2dVector from "./layer2dVector";
+import {wfs} from "@masterportal/masterportalapi/src/index.js";
+import Layer2dVector from "./layer2dVector.js";
 
 /**
  * Creates a 2d vector wfs (Web Feature Service) layer.

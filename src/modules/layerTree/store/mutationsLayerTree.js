@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import state from "./stateLayerTree";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import state from "./stateLayerTree.js";
 
 /**
  * The mutations for the LayerTree.

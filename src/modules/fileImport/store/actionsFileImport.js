@@ -7,11 +7,11 @@ import Icon from "ol/style/Icon";
 import CircleStyle from "ol/style/Circle";
 import Text from "ol/style/Text";
 import {createDrawStyle} from "../../draw_old/js/style/createDrawStyle";
-import isObject from "@shared/js/utils/isObject";
+import isObject from "@shared/js/utils/isObject.js";
 import {createEmpty as createEmptyExtent, extend} from "ol/extent";
 import {uniqueId} from "@shared/js/utils/uniqueId.js";
-import layerCollection from "@core/layers/js/layerCollection";
-import {treeSubjectsKey} from "@shared/js/utils/constants";
+import layerCollection from "@core/layers/js/layerCollection.js";
+import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 
 const defaultFont = "16px Arial",
     supportedFormats = {

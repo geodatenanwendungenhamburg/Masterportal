@@ -1,7 +1,7 @@
-import getters from "./gettersFilter";
-import mutations from "./mutationsFilter";
-import actions from "./actionsFilter";
-import state from "./stateFilter";
+import getters from "./gettersFilter.js";
+import mutations from "./mutationsFilter.js";
+import actions from "./actionsFilter.js";
+import state from "./stateFilter.js";
 
 export default {
     namespaced: true,

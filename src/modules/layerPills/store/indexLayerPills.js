@@ -1,6 +1,6 @@
-import getters from "./gettersLayerPills";
-import mutations from "./mutationsLayerPills";
-import state from "./stateLayerPills";
+import getters from "./gettersLayerPills.js";
+import mutations from "./mutationsLayerPills.js";
+import state from "./stateLayerPills.js";
 
 export default {
     namespaced: true,

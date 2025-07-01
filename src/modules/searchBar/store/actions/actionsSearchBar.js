@@ -5,7 +5,7 @@
 import actionsSearchBarResultList from "./actionsSearchBarResultList";
 import actionsSearchBarSearchInterfaces from "./actionsSearchBarSearchInterfaces";
 import actionsSearchBarSearchResult from "./actionsSearchBarSearchResult";
-import SearchInterface from "../../searchInterfaces/searchInterface";
+import SearchInterface from "../../searchInterfaces/searchInterface.js";
 
 export default {
     ...actionsSearchBarResultList,

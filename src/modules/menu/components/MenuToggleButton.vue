@@ -58,7 +58,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
 
 
 .menu-toggle-button {

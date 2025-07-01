@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import {isUrl} from "@shared/js/utils/urlHelper";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import {isUrl} from "@shared/js/utils/urlHelper.js";
 import stateLayerInformation from "./stateLayerInformation";
 
 /**

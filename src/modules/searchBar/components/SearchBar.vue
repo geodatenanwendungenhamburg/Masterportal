@@ -179,9 +179,6 @@ export default {
                 }
                 else {
                     this.checkCurrentComponent(this.currentComponentSide);
-                    this.$nextTick(() => {
-                        document.getElementById("searchInput").focus();
-                    });
                 }
             },
             deep: true
@@ -352,7 +349,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
     .input-group {
         position: relative;
     }
@@ -374,7 +370,6 @@ export default {
     }
     }
     .btn-icon {
-        position: absolute;
         position: absolute;
         right: 40px;
         top: 40%;
@@ -404,4 +399,3 @@ export default {
         text-overflow: ellipsis;
     }
 </style>
-

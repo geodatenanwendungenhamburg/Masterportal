@@ -2,25 +2,24 @@
 import AccordionItem from "@shared/modules/accordion/components/AccordionItem.vue";
 import {and as andFilter, equalTo as equalToFilter, or as orFilter} from "ol/format/filter";
 import ChartProcessor from "../js/chartProcessor.js";
-import {colorbrewer} from "../js/colorbrewer";
+import {colorbrewer} from "../js/colorbrewer.js";
 import Controls from "./StatisticDashboardControls.vue";
-import {convertColor} from "@shared/js/utils/convertColor";
+import {convertColor} from "@shared/js/utils/convertColor.js";
 import dayjs from "dayjs";
 import FeaturesHandler from "../js/handleFeatures.js";
 import FetchDataHandler from "../js/fetchData.js";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
-import {getFeaturePOST} from "@shared/js/api/wfs/getFeature.js";
-import getters from "../store/gettersStatisticDashboard";
+import getters from "../store/gettersStatisticDashboard.js";
 import GridComponent from "./StatisticGridComponent.vue";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 import LegendComponent from "./StatisticDashboardLegend.vue";
 import {mapGetters, mapMutations, mapActions} from "vuex";
 import Multiselect from "vue-multiselect";
 import TableComponent from "@shared/modules/table/components/TableComponent.vue";
-import isNumber from "@shared/js/utils/isNumber";
-import isObject from "@shared/js/utils/isObject";
+import isNumber from "@shared/js/utils/isNumber.js";
+import isObject from "@shared/js/utils/isObject.js";
 import {rawLayerList} from "@masterportal/masterportalapi";
-import sortBy from "@shared/js/utils/sortBy";
+import sortBy from "@shared/js/utils/sortBy.js";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
 import StatisticsHandler from "../js/handleStatistics.js";
 import StatisticSwitcher from "./StatisticDashboardSwitcher.vue";
@@ -827,7 +826,7 @@ export default {
                 statFeatures = [];
 
             if (selectedLayer.typ === "WFS") {
-                response = await getFeaturePOST(selectedLayer.url, payload, error => {
+                response = await getFeature.getFeaturePOST(selectedLayer.url, payload, error => {
                     console.error(error);
                 });
                 this.loadedFeatures = new WFS().readFeatures(response);
@@ -2016,8 +2015,8 @@ export default {
     </div>
 </template>
 
+
 <style lang="scss" scoped>
-@import "~variables";
 
 hr {
     clear: both;

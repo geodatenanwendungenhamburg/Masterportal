@@ -1,11 +1,11 @@
 import axios from "axios";
-import routingOrsAvoidOption from "../avoidoptions/routing-ors-avoidoptions";
-import {RoutingIsochrones} from "../classes/routing-isochrones";
-import {RoutingIsochronesArea} from "../classes/routing-isochrones-area";
-import routingOrsSpeedProfile from "../speedprofiles/routing-ors-speedprofiles";
-import state from "./../../store/stateRouting";
-import store from "@appstore";
-import stateIsochrones from "../../store/isochrones/stateIsochrones";
+import routingOrsAvoidOption from "../avoidoptions/routing-ors-avoidoptions.js";
+import {RoutingIsochrones} from "../classes/routing-isochrones.js";
+import {RoutingIsochronesArea} from "../classes/routing-isochrones-area.js";
+import routingOrsSpeedProfile from "../speedprofiles/routing-ors-speedprofiles.js";
+import state from "./../../store/stateRouting.js";
+import store from "@appstore/index.js";
+import stateIsochrones from "../../store/isochrones/stateIsochrones.js";
 
 /**
  * Translates the optimization in the corresponding value for the service

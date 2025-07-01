@@ -1,5 +1,5 @@
-import {RoutingWaypoint} from "../../js/classes/routing-waypoint";
-import Feature from "ol/Feature";
+import {RoutingWaypoint} from "../../js/classes/routing-waypoint.js";
+import Feature from "ol/Feature.js";
 import Point from "ol/geom/Point";
 import {fetchTSRDirections} from "../../js/tsr/routing-vroom-directions.js";
 import {toRaw} from "vue";

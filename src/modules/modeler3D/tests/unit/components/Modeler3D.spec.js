@@ -9,7 +9,7 @@ import actions from "@modules/modeler3D/store/actionsModeler3D";
 import Modeler3DDraw from "@modules/modeler3D/components/Modeler3DDraw.vue";
 import Modeler3DImport from "@modules/modeler3D/components/Modeler3DImport.vue";
 import getGfiFeaturesByTileFeatureModule from "@shared/js/utils/getGfiFeaturesByTileFeature";
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 
 config.global.mocks.$t = key => key;
 

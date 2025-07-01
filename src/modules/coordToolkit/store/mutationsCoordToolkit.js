@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import coordState from "./stateCoordToolkit";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import coordState from "./stateCoordToolkit.js";
 
 /**
  * The mutations for the CoodToolkit.

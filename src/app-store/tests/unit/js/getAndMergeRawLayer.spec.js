@@ -1,7 +1,7 @@
-import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
-import {addAdditional, getAndMergeAllRawLayers, getAndMergeRawLayer, resetZIndex} from "@appstore/js/getAndMergeRawLayer";
-import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants";
-import layerTypes from "@core/layers/js/layerTypes";
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
+import {addAdditional, getAndMergeAllRawLayers, getAndMergeRawLayer, resetZIndex} from "@appstore//js/getAndMergeRawLayer.js";
+import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants.js";
+import layerTypes from "@core/layers/js/layerTypes.js";
 import {expect} from "chai";
 import sinon from "sinon";
 

@@ -3,7 +3,7 @@ import {config, mount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
 import OrientationItemComponent from "@modules/controls/orientation/components/OrientationItem.vue";
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 
 config.global.mocks.$t = key => key;
 

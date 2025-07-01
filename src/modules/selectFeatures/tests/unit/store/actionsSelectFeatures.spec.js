@@ -1,9 +1,9 @@
 import sinon from "sinon";
 import {expect} from "chai";
-import layerCollectionModule from "@core/layers/js/layerCollection";
-import createLayerAddToTreeModule from "@shared/js/utils/createLayerAddToTree";
+import layerCollectionModule from "@core/layers/js/layerCollection.js";
+import createLayerAddToTreeModule from "@shared/js/utils/createLayerAddToTree.js";
 import actions from "@modules/selectFeatures/store/actionsSelectFeatures";
-import stateSelectFeatures from "@modules/selectFeatures/store/stateSelectFeatures";
+import stateSelectFeatures from "@modules/selectFeatures/store/stateSelectFeatures.js";
 
 
 describe("src/modules/selectFeatures/store/actionsSelectFeatures.js", () => {

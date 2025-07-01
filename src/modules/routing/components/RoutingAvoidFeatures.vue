@@ -1,6 +1,6 @@
 <script>
 import {mapGetters} from "vuex";
-import * as constantsRouting from "../store/constantsRouting";
+import * as constantsRouting from "../store/constantsRouting.js";
 
 /**
  * Routing Avoid Features
@@ -180,7 +180,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
 
 .btn-icon {
     background-color: $white;

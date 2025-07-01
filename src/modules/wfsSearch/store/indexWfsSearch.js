@@ -1,7 +1,7 @@
-import state from "./stateWfsSearch";
-import actions from "./actionsWfsSearch";
-import getters from "./gettersWfsSearch";
-import mutations from "./mutationsWfsSearch";
+import state from "./stateWfsSearch.js";
+import actions from "./actionsWfsSearch.js";
+import getters from "./gettersWfsSearch.js";
+import mutations from "./mutationsWfsSearch.js";
 
 export default {
     namespaced: true,

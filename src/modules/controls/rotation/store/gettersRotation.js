@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import stateRotation from "./stateRotation";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import stateRotation from "./stateRotation.js";
 
 /**
  * The getters for the control rotation.

@@ -1,6 +1,6 @@
-import mutations from "./mutationsShareView";
-import getters from "./gettersShareView";
-import state from "./stateShareView";
+import mutations from "./mutationsShareView.js";
+import getters from "./gettersShareView.js";
+import state from "./stateShareView.js";
 
 
 export default {

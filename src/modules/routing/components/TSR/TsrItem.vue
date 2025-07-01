@@ -3,8 +3,7 @@ import {mapGetters, mapActions, mapMutations} from "vuex";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 import RoutingCoordinateInput from "../RoutingCoordinateInput.vue";
 import RoutingSpeedProfileIcon from "../RoutingSpeedProfileIcon.vue";
-import RoutingContextMenu from "../RoutingContextMenu.vue";
-import * as constantsRouting from "../../store/constantsRouting";
+import * as constantsRouting from "../../store/constantsRouting.js";
 import TsrUpload from "./TsrUpload.vue";
 import TsrOutput from "./TsrOutput.vue";
 import {Modal} from "bootstrap";
@@ -318,7 +317,7 @@ export default {
 
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 #button-up {
     cursor: pointer;

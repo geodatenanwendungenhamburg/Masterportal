@@ -1,7 +1,7 @@
-import actions from "./actionsBufferAnalysis";
-import mutations from "./mutationsBufferAnalysis";
-import getters from "./gettersBufferAnalysis";
-import state from "./stateBufferAnalysis";
+import actions from "./actionsBufferAnalysis.js";
+import mutations from "./mutationsBufferAnalysis.js";
+import getters from "./gettersBufferAnalysis.js";
+import state from "./stateBufferAnalysis.js";
 
 
 export default {

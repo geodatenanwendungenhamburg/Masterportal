@@ -1,6 +1,6 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import {isUrl} from "@shared/js/utils/urlHelper";
-import legendState from "./stateLegend";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import {isUrl} from "@shared/js/utils/urlHelper.js";
+import legendState from "./stateLegend.js";
 
 const getters = {
     /**

@@ -1,6 +1,6 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
-import visibilityChecker from "@shared/js/utils/visibilityChecker";
+import visibilityChecker from "@shared/js/utils/visibilityChecker.js";
 import LightButton from "@shared/modules/buttons/components/LightButton.vue";
 
 /**
@@ -243,7 +243,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .mp-menu-root-element {
     min-height: 2.3rem;

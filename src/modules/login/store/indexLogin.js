@@ -1,7 +1,7 @@
-import state from "./stateLogin";
-import mutations from "./mutationsLogin";
-import getters from "./gettersLogin";
-import actions from "./actionsLogin";
+import state from "./stateLogin.js";
+import mutations from "./mutationsLogin.js";
+import getters from "./gettersLogin.js";
+import actions from "./actionsLogin.js";
 
 export default {
     namespaced: true,

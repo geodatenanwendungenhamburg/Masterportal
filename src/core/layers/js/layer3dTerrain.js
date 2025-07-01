@@ -1,5 +1,5 @@
-import {terrain} from "@masterportal/masterportalapi/src";
-import Layer3d from "./layer3d";
+import {terrain} from "@masterportal/masterportalapi/src/index.js";
+import Layer3d from "./layer3d.js";
 
 /**
  * Creates a 3d layer terrain.

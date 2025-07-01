@@ -1,11 +1,11 @@
 <script>
 import {mapGetters, mapActions} from "vuex";
-import * as constants from "./../store/constantsRouting";
+import * as constants from "./../store/constantsRouting.js";
 import {GeoJSON, GPX} from "ol/format.js";
 import convertFeaturesToKml from "@shared/js/utils/convertFeaturesToKml.js";
-import directionsRouteStyle from "../js/map/directions/route/directionsRouteStyle";
-import tsrRouteStyle from "../js/map/tsr/route/tsrRouteStyle";
-import Feature from "ol/Feature";
+import directionsRouteStyle from "../js/map/directions/route/directionsRouteStyle.js";
+import tsrRouteStyle from "../js/map/tsr/route/tsrRouteStyle.js";
+import Feature from "ol/Feature.js";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 

@@ -1,7 +1,7 @@
-import actions from "./actionsCompareFeatures";
-import mutations from "./mutationsCompareFeatures";
-import getters from "./gettersCompareFeatures";
-import state from "./stateCompareFeatures";
+import actions from "./actionsCompareFeatures.js";
+import mutations from "./mutationsCompareFeatures.js";
+import getters from "./gettersCompareFeatures.js";
+import state from "./stateCompareFeatures.js";
 
 
 export default {

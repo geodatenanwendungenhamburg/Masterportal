@@ -1,6 +1,6 @@
 <script>
 import {mapGetters} from "vuex";
-import thousandsSeparator from "@shared/js/utils/thousandsSeparator";
+import thousandsSeparator from "@shared/js/utils/thousandsSeparator.js";
 
 /**
  * Scale Line
@@ -73,7 +73,7 @@ export default {
 </template>
 
 <style lang="scss">
-    @import "~variables";
+
 
     #modules-scales {
         display: none;

@@ -1,4 +1,4 @@
-import processUrlParams from "@shared/js/utils/processUrlParams";
+import processUrlParams from "@shared/js/utils/processUrlParams.js";
 
 /**
  * Examples:

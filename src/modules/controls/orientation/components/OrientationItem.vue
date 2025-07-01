@@ -1,6 +1,6 @@
 <script>
 import {mapGetters, mapMutations, mapActions} from "vuex";
-import mutations from "../store/mutationsOrientation";
+import mutations from "../store/mutationsOrientation.js";
 import ControlIcon from "../../components/ControlIcon.vue";
 import PoiChoice from "./poi/PoiChoice.vue";
 import PoiOrientation from "./poi/PoiOrientation.vue";
@@ -9,8 +9,8 @@ import Overlay from "ol/Overlay.js";
 import proj4 from "proj4";
 import * as Proj from "ol/proj.js";
 import {Circle, LineString} from "ol/geom.js";
-import layerCollection from "@core/layers/js/layerCollection";
-import isObject from "@shared/js/utils/isObject";
+import layerCollection from "@core/layers/js/layerCollection.js";
+import isObject from "@shared/js/utils/isObject.js";
 
 /**
  * Orientation control that allows the user to locate themselves on the map.
@@ -555,7 +555,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
 
     .orientationButtons {
         >.toggleButtonPressed {

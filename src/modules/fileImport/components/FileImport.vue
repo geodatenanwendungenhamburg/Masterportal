@@ -1,6 +1,6 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import isObject from "@shared/js/utils/isObject";
+import isObject from "@shared/js/utils/isObject.js";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 import FileUpload from "@shared/modules/inputs/components/FileUpload.vue";
@@ -326,25 +326,26 @@ export default {
                 >
                     {{ $t("common:modules.fileImport.successfullyImportedLabel") }}
                 </label>
-                <ul id="succesfully-imported-files">
-                    <li
-                        v-for="(filename, index) in importedFileNames"
-                        :key="index"
-                        :class="enableZoomToExtend ? 'hasZoom' : ''"
-                    >
-                        <span>
-                            {{ filename }}
-                        </span>
-                        <FlatButton
-                            v-if="enableZoomToExtend"
-                            :aria-label="$t(`common:modules.fileImport.fileZoom`, {filename: filename})"
-                            :interaction="() => zoomTo(filename)"
-                            :text="$t('common:modules.fileImport.zoom')"
-                            :icon="'bi-rocket-takeoff-fill'"
-                        />
-                    </li>
-                </ul>
             </p>
+            <ul id="succesfully-imported-files">
+                <li
+                    v-for="(filename, index) in importedFileNames"
+                    :key="index"
+                    :class="enableZoomToExtend ? 'hasZoom' : ''"
+                >
+                    <span>
+                        {{ filename }}
+                    </span>
+                    <FlatButton
+                        v-if="enableZoomToExtend"
+                        :aria-label="$t(`common:modules.fileImport.fileZoom`, {filename: filename})"
+                        :interaction="() => zoomTo(filename)"
+                        :text="$t('common:modules.fileImport.zoom')"
+                        :icon="'bi-rocket-takeoff-fill'"
+                    />
+                </li>
+            </ul>
+
             <div class="h-seperator" />
             <p
                 class="mb-3 introDrawTool"
@@ -365,7 +366,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
 
     .h-seperator {
         margin:12px 0 12px 0;

@@ -1,13 +1,13 @@
 <script>
 import {mapGetters} from "vuex";
-import layerTypes from "@core/layers/js/layerTypes";
-import thousandsSeparator from "@shared/js/utils/thousandsSeparator";
+import layerTypes from "@core/layers/js/layerTypes.js";
+import thousandsSeparator from "@shared/js/utils/thousandsSeparator.js";
 import LayerCheckBox from "./LayerCheckBox.vue";
 import LayerComponentIconFilter from "./LayerComponentIconFilter.vue";
 import LayerComponentIconInfo from "./LayerComponentIconInfo.vue";
 import LayerComponentIconSubMenu from "./LayerComponentIconSubMenu.vue";
 import LayerComponentSubMenu from "./LayerComponentSubMenu.vue";
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 
 /**
  * Representation of a layer in layerTree.
@@ -40,7 +40,8 @@ export default {
         ...mapGetters("Maps", ["mode", "scale", "scales"])
     },
     mounted () {
-        if (this.conf.maxScale && this.conf.minScale) {
+        // #VITE The condition was adjusted to prevent the error Cannot read properties of null (reading 'length').
+        if (this.conf.maxScale && this.conf.minScale && Array.isArray(this.scales)) {
             let minScale = parseInt(this.conf.minScale, 10);
 
             if (minScale === 0) {
@@ -159,8 +160,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
-    @import "~mixins";
+
 
     .layer-checkbox-tooltip {
         overflow: hidden;

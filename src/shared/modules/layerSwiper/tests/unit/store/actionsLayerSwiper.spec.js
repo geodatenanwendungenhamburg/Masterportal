@@ -2,7 +2,7 @@ import sinon from "sinon";
 import {expect} from "chai";
 import actions from "@shared/modules/layerSwiper/store/actionsLayerSwiper";
 import {JSDOM} from "jsdom";
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 
 describe("actions", () => {
     let commit, dispatch, state, rootGetters, jsdom, map, originalDocument, originalWindow, originalKeyboardEvent, originalMouseEvent;

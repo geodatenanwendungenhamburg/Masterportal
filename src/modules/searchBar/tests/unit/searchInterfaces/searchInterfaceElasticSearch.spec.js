@@ -5,7 +5,7 @@ import sinon from "sinon";
 
 import SearchInterface from "@modules/searchBar/searchInterfaces/searchInterface.js";
 import SearchInterfaceElasticSearch from "@modules/searchBar/searchInterfaces/searchInterfaceElasticSearch.js";
-import store from "@appstore";
+import store from "@appstore/index.js";
 
 describe("src/modules/searchBar/searchInterfaces/searchInterfaceElasticSearch.js", () => {
     let SearchInterface1 = null,

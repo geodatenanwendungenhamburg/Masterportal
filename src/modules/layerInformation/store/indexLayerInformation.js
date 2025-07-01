@@ -1,7 +1,7 @@
-import actions from "./actionsLayerInformation";
-import mutations from "./mutationsLayerInformation";
-import getters from "./gettersLayerInformation";
-import state from "./stateLayerInformation";
+import actions from "./actionsLayerInformation.js";
+import mutations from "./mutationsLayerInformation.js";
+import getters from "./gettersLayerInformation.js";
+import state from "./stateLayerInformation.js";
 
 
 export default {

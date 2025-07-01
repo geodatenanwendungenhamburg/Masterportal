@@ -273,7 +273,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 #hazmatInput {
     margin-top: 10px;

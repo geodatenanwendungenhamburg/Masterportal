@@ -5,7 +5,7 @@ import sinon from "sinon";
 import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
-import webgl from "@core/layers/js/webglRenderer";
+import webgl from "@core/layers/js/webglRenderer.js";
 import Layer2dVectorWfs from "@core/layers/js/layer2dVectorWfs";
 
 describe("src/core/js/layers/layer2dVectorWfs.js", () => {

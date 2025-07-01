@@ -109,7 +109,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .btn-svg {
     border: none;

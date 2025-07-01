@@ -1,7 +1,7 @@
-import getters from "./gettersCompareMaps";
-import mutations from "./mutationsCompareMaps";
-import actions from "./actionsCompareMaps";
-import state from "./stateCompareMaps";
+import getters from "./gettersCompareMaps.js";
+import mutations from "./mutationsCompareMaps.js";
+import actions from "./actionsCompareMaps.js";
+import state from "./stateCompareMaps.js";
 
 export default {
     namespaced: true,

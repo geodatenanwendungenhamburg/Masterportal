@@ -1,6 +1,6 @@
-import getters from "./gettersBackForward";
-import mutations from "./mutationsBackForward";
-import state from "./stateBackForward";
+import getters from "./gettersBackForward.js";
+import mutations from "./mutationsBackForward.js";
+import state from "./stateBackForward.js";
 
 export default {
     namespaced: true,

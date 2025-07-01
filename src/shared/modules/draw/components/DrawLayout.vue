@@ -1,5 +1,5 @@
 <script>
-import {convertColor} from "@shared/js/utils/convertColor";
+import {convertColor} from "@shared/js/utils/convertColor.js";
 import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
 
 /**
@@ -263,8 +263,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
-@import "~mixins";
+
 
 .btn {
     width: 3.5rem;

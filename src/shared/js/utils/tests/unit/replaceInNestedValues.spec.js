@@ -1,4 +1,4 @@
-import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants";
+import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants.js";
 import replacer from "@shared/js/utils/replaceInNestedValues.js";
 import {expect} from "chai";
 

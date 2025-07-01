@@ -1,4 +1,4 @@
-import * as mqtt from "mqtt";
+import mqtt from "mqtt/dist/mqtt";
 import {SensorThingsHttp} from "./sensorThingsHttp";
 import {SensorThingsMqttConnector} from "./sensorThingsMqttConnector";
 
@@ -61,6 +61,6 @@ class SensorThingsMqtt {
     }
 }
 
-module.exports = {
+export {
     SensorThingsMqtt
 };

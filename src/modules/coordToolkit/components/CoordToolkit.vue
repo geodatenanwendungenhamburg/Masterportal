@@ -1,13 +1,13 @@
 <script>
 import {Pointer} from "ol/interaction.js";
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 import {mapGetters, mapActions, mapMutations} from "vuex";
-import mutations from "../store/mutationsCoordToolkit";
+import mutations from "../store/mutationsCoordToolkit.js";
 import NavTab from "@shared/modules/tabs/components/NavTab.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import {Toast} from "bootstrap";
-import initProjections from "@shared/js/utils/initProjections";
+import initProjections from "@shared/js/utils/initProjections.js";
 
 /**
  * Toolkit to access coordinates on the map or search for coordinates.
@@ -708,8 +708,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
-
     @include media-breakpoint-down(md) {
         .checkbox-container .form-inline {
             font-size: $font-size-base;

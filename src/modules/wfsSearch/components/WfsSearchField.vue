@@ -1,10 +1,10 @@
 <script>
 import {mapGetters, mapMutations} from "vuex";
-import isObject from "@shared/js/utils/isObject";
-import {buildXmlFilter} from "../js/buildFilter";
-import {fieldValueChanged} from "../js/literalFunctions";
-import {buildPath, getOptions, prepareOptionsWithId} from "../js/pathFunctions";
-import requestProvider from "../js/requests";
+import isObject from "@shared/js/utils/isObject.js";
+import {buildXmlFilter} from "../js/buildFilter.js";
+import {fieldValueChanged} from "../js/literalFunctions.js";
+import {buildPath, getOptions, prepareOptionsWithId} from "../js/pathFunctions.js";
+import requestProvider from "../js/requests.js";
 
 /**
  * Validates that the prop for the type is correct.
@@ -322,7 +322,7 @@ export default {
 
 <style lang="scss" scoped>
 /* Loader CSS based on https://codepen.io/lopis/pen/zwprzP  */
-@import "~variables";
+
 
 $length: 1.5em;
 

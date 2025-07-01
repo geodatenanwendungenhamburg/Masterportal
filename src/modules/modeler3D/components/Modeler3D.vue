@@ -9,11 +9,11 @@ import SwitchInput from "@shared/modules/checkboxes/components/SwitchInput.vue";
 
 import {mapActions, mapGetters, mapMutations} from "vuex";
 
-import crs from "@masterportal/masterportalapi/src/crs";
-import getGfiFeatures from "@shared/js/utils/getGfiFeaturesByTileFeature";
-import {adaptCylinderUnclamped} from "../js/draw";
-import layerCollection from "@core/layers/js/layerCollection";
-import initProjections from "@shared/js/utils/initProjections";
+import crs from "@masterportal/masterportalapi/src/crs.js";
+import getGfiFeatures from "@shared/js/utils/getGfiFeaturesByTileFeature.js";
+import {adaptCylinderUnclamped} from "../js/draw.js";
+import layerCollection from "@core/layers/js/layerCollection.js";
+import initProjections from "@shared/js/utils/initProjections.js";
 
 /**
  * The component that handels the 3D modeler.
@@ -985,8 +985,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~mixins";
-@import "~variables";
+
 
 .text-with-newlines {
     white-space: pre-wrap;

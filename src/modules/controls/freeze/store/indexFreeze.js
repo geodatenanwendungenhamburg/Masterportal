@@ -1,6 +1,6 @@
-import state from "./stateFreeze";
-import getters from "./gettersFreeze";
-import mutations from "./mutationsFreeze";
+import state from "./stateFreeze.js";
+import getters from "./gettersFreeze.js";
+import mutations from "./mutationsFreeze.js";
 
 export default {
     namespaced: true,

@@ -1,7 +1,7 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import getters from "../store/gettersFilter";
-import mutations from "../store/mutationsFilter";
+import getters from "../store/gettersFilter.js";
+import mutations from "../store/mutationsFilter.js";
 import LayerFilterSnippet from "./LayerFilterSnippet.vue";
 import MapHandler from "../utils/mapHandler.js";
 import FilterApi from "../js/interfaces/filter.api.js";
@@ -11,12 +11,12 @@ import FilterList from "./FilterList.vue";
 import isObject from "@shared/js/utils/isObject.js";
 import GeometryFilter from "./GeometryFilter.vue";
 import {getFeaturesOfAdditionalGeometries} from "../utils/getFeaturesOfAdditionalGeometries.js";
-import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
-import {getFeatureGET} from "@shared/js/api/wfs/getFeature";
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
+import getFeature  from "@shared/js/api/wfs/getFeature.js";
 import {WFS} from "ol/format.js";
 import UrlHandler from "../utils/urlHandler.js";
-import Cluster from "ol/source/Cluster";
-import layerCollection from "@core/layers/js/layerCollection";
+import Cluster from "ol/source/Cluster.js";
+import layerCollection from "@core/layers/js/layerCollection.js";
 import {Toast} from "bootstrap";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 import {hasUnfixedRules} from "../utils/hasUnfixedRules.js";
@@ -229,7 +229,7 @@ export default {
 
                 for (const additionalGeometry of additionalGeometries) {
                     const rawLayer = rawLayerList.getLayerWhere({id: additionalGeometry.layerId}),
-                        features = await getFeatureGET(rawLayer.url, {version: rawLayer.version, featureType: rawLayer.featureType});
+                        features = await getFeature.getFeatureGET(rawLayer.url, {version: rawLayer.version, featureType: rawLayer.featureType});
 
                     additionalGeometry.features = wfsReader.readFeatures(features);
                 }
@@ -767,7 +767,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
+
     .layerGroupContainer {
         background-color: #f5f5f5;
         padding: 10px;

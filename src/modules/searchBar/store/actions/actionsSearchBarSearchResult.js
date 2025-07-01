@@ -1,18 +1,18 @@
 import markerHelper from "../../js/marker";
-import {treeSubjectsKey} from "@shared/js/utils/constants";
+import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 import WKTUtil from "@shared/js/utils/getWKTGeom";
 import wmsGFIUtil from "@shared/js/utils/getWmsFeaturesByMimeType";
-import {rawLayerList} from "@masterportal/masterportalapi/src";
-import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
+import {rawLayerList} from "@masterportal/masterportalapi/src/index.js";
+import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
 import {trackMatomo} from "@plugins/matomo";
-import mapMarker from "@core/maps/js/mapMarker";
+import mapMarker from "@core/maps/js/mapMarker.js";
 import calculateScreenPosition from "../../js/calculateScreenPosition";
 import addInitialTilesLoadedListener from "../../js/addInitialTilesLoadedListener";
 import find3DPickedFeature from "@shared/js/utils/find3DPickedFeature";
 import get3DHighlightColor from "@shared/js/utils/get3DHighlightColor";
 import applyTileStyle from "@shared/js/utils/applyTileStyle";
 import remove3DFeatureHighlight from "@shared/js/utils/remove3DFeatureHighlight";
-import {convertColor} from "@shared/js/utils/convertColor";
+import {convertColor} from "@shared/js/utils/convertColor.js";
 
 /**
  * Contains actions that communicate with other components after an interaction, such as onClick or onHover, with a search result.

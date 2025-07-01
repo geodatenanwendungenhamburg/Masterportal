@@ -1,5 +1,5 @@
-import {requestGfi} from "@shared/js/api/wmsGetFeatureInfo";
-import {interpretLinebreaks} from "./interpretLinebreaks";
+import {requestGfi} from "@shared/js/api/wmsGetFeatureInfo.js";
+import {interpretLinebreaks} from "./interpretLinebreaks.js";
 import {GeoJSON} from "ol/format";
 
 /**

@@ -1,4 +1,4 @@
-import isObject from "./isObject";
+import isObject from "./isObject.js";
 
 /**
  * implementation of json to csv based on rfc4180

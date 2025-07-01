@@ -1,6 +1,6 @@
 import {getRenderPixel} from "ol/render";
 import getPosition from "@shared/modules/layerSwiper/utils/getPosition";
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 
 /**
  * The actions for the LayerSwiper.

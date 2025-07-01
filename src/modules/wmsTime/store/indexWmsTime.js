@@ -1,7 +1,7 @@
-import state from "./stateWmsTime";
-import actions from "./actionsWmsTime";
-import getters from "./gettersWmsTime";
-import mutations from "./mutationsWmsTime";
+import state from "./stateWmsTime.js";
+import actions from "./actionsWmsTime.js";
+import getters from "./gettersWmsTime.js";
+import mutations from "./mutationsWmsTime.js";
 
 export default {
     namespaced: true,

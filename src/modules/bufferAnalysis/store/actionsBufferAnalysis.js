@@ -1,12 +1,12 @@
 import VectorSource from "ol/source/Vector";
 import {Vector as VectorLayer} from "ol/layer";
 import {GeoJSON} from "ol/format";
-import Feature from "ol/Feature";
+import Feature from "ol/Feature.js";
 import {BufferOp} from "jsts/org/locationtech/jts/operation/buffer";
 import {ResultType} from "./enums";
 import * as setters from "./settersBufferAnalysis";
 import * as initializers from "./initializersBufferAnalysis";
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 
 const actions = {
     ...initializers,

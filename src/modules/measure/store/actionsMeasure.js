@@ -1,7 +1,7 @@
 import source from "../js/measureSource";
 import makeDraw2d from "../js/measureDraw";
 import makeDraw3d from "../js/measureDraw3d";
-import changeCase from "@shared/js/utils/changeCase";
+import changeCase from "@shared/js/utils/changeCase.js";
 
 export default {
     /**

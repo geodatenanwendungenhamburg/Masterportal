@@ -1,7 +1,7 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import isObject from "@shared/js/utils/isObject";
-import initialState from "./stateStatisticDashboard";
-import sortBy from "@shared/js/utils/sortBy";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import isObject from "@shared/js/utils/isObject.js";
+import initialState from "./stateStatisticDashboard.js";
+import sortBy from "@shared/js/utils/sortBy.js";
 
 const getters = {
     ...generateSimpleGetters(initialState),

@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import OrientationState from "./stateOrientation";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import OrientationState from "./stateOrientation.js";
 
 const getters = {
     ...generateSimpleGetters(OrientationState)

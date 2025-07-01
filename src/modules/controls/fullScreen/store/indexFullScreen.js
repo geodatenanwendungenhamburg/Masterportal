@@ -1,6 +1,6 @@
-import state from "./stateFullScreen";
-import getters from "./gettersFullScreen";
-import mutations from "./mutationsFullScreen";
+import state from "./stateFullScreen.js";
+import getters from "./gettersFullScreen.js";
+import mutations from "./mutationsFullScreen.js";
 
 export default {
     namespaced: true,

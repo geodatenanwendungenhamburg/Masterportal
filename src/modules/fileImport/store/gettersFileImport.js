@@ -1,6 +1,6 @@
 
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import fileImportState from "./stateFileImport";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import fileImportState from "./stateFileImport.js";
 
 const getters = {
     ...generateSimpleGetters(fileImportState)

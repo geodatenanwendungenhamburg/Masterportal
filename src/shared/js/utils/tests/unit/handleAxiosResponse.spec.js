@@ -1,7 +1,7 @@
 import {Assertion, expect} from "chai";
 import sinon from "sinon";
 
-import handleAxiosResponse from "@shared/js/utils/handleAxiosResponse";
+import handleAxiosResponse from "@shared/js/utils/handleAxiosResponse.js";
 
 describe("src/shared/js/utils/handleAxiosResponse.js", () => {
     const callContext = "Unit Tests",

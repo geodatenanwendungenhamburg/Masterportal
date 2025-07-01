@@ -1,6 +1,6 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from "vuex";
-import getters from "@shared/modules/layerSwiper/store/gettersLayerSwiper";
+import getters from "@shared/modules/layerSwiper/store/gettersLayerSwiper.js";
 
 export default {
     name: "LayerSwiper",
@@ -116,7 +116,7 @@ export default {
 
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 button {
     pointer-events: all;

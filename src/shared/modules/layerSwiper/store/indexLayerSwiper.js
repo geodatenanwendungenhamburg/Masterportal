@@ -1,7 +1,7 @@
-import getters from "./gettersLayerSwiper";
-import mutations from "./mutationsLayerSwiper";
-import actions from "./actionsLayerSwiper";
-import state from "./stateLayerSwiper";
+import getters from "./gettersLayerSwiper.js";
+import mutations from "./mutationsLayerSwiper.js";
+import actions from "./actionsLayerSwiper.js";
+import state from "./stateLayerSwiper.js";
 
 export default {
     namespaced: true,

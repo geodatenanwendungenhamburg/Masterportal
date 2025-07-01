@@ -1,6 +1,6 @@
-import state from "./stateCopyrightConstraints";
-import getters from "./gettersCopyrightConstraints";
-import mutations from "./mutationsCopyrightConstraints";
+import state from "./stateCopyrightConstraints.js";
+import getters from "./gettersCopyrightConstraints.js";
+import mutations from "./mutationsCopyrightConstraints.js";
 
 export default {
     namespaced: true,

@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import AddWMSState from "./stateAddWMS";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import AddWMSState from "./stateAddWMS.js";
 
 const mutations = {
     /**

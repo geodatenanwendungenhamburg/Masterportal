@@ -1,7 +1,7 @@
-import mutations from "./mutationsDirections";
-import actions from "./actionsDirections";
-import getters from "./gettersDirections";
-import state from "./stateDirections";
+import mutations from "./mutationsDirections.js";
+import actions from "./actionsDirections.js";
+import getters from "./gettersDirections.js";
+import state from "./stateDirections.js";
 
 export default {
     namespaced: true,

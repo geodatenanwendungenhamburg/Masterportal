@@ -1,7 +1,7 @@
 import {markRaw} from "vue";
-import api from "@masterportal/masterportalapi/src/maps/api";
+import api from "@masterportal/masterportalapi/src/maps/api.js";
 import {transform, get} from "ol/proj.js";
-import findWhereJs from "@shared/js/utils/findWhereJs";
+import findWhereJs from "@shared/js/utils/findWhereJs.js";
 
 /**
  * Registers on events of the map and view to keep the attributes up to date.

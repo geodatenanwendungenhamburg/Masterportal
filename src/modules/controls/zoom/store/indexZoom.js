@@ -1,6 +1,6 @@
-import state from "./stateZoom";
-import getters from "./gettersZoom";
-import mutations from "./mutationsZoom";
+import state from "./stateZoom.js";
+import getters from "./gettersZoom.js";
+import mutations from "./mutationsZoom.js";
 
 export default {
     namespaced: true,

@@ -209,7 +209,7 @@ export default {
 </template>
 
 <style lang="scss">
-@import "~variables";
+
 .mp-menu {
     height: 100%;
     position: fixed;

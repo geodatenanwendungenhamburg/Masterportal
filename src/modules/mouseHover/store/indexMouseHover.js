@@ -1,7 +1,7 @@
-import state from "./stateMouseHover";
-import getters from "./gettersMouseHover";
-import mutations from "./mutationsMouseHover";
-import actions from "./actionsMouseHover";
+import state from "./stateMouseHover.js";
+import getters from "./gettersMouseHover.js";
+import mutations from "./mutationsMouseHover.js";
+import actions from "./actionsMouseHover.js";
 
 export default {
     namespaced: true,

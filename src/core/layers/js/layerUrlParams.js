@@ -1,5 +1,5 @@
-import processUrlParams from "@shared/js/utils/processUrlParams";
-import store from "@appstore";
+import processUrlParams from "@shared/js/utils/processUrlParams.js";
+import store from "@appstore/index.js";
 
 /**
  * Here the urlParams for the layers are processed.

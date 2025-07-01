@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import modeler3DState from "./stateModeler3D";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import modeler3DState from "./stateModeler3D.js";
 /**
  * The mutations for the modeler3D module.
  * @module modules/modeler3D/store/mutationsModeler3D

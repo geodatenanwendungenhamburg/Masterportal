@@ -3,7 +3,7 @@ import sinon from "sinon";
 import VectorSource from "ol/source/Vector";
 import transformer from "@shared/js/utils/coordToPixel3D";
 import actions from "@modules/getFeatureInfo/store/actionsGetFeatureInfo.js";
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 
 describe("src/modules/getFeatureInfo/store/actionsGetFeatureInfo.js", () => {
     let getters,

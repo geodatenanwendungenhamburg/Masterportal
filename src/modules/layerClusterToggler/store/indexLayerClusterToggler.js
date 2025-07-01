@@ -1,7 +1,7 @@
-import actions from "./actionsLayerClusterToggler";
-import state from "./stateLayerClusterToggler";
-import getters from "./gettersLayerClusterToggler";
-import mutations from "./mutationsLayerClusterToggler";
+import actions from "./actionsLayerClusterToggler.js";
+import state from "./stateLayerClusterToggler.js";
+import getters from "./gettersLayerClusterToggler.js";
+import mutations from "./mutationsLayerClusterToggler.js";
 
 export default {
     namespaced: true,

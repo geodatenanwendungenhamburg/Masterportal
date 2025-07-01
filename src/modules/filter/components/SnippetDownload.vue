@@ -3,9 +3,9 @@ import ExportButtonCSV from "@shared/modules/buttons/components/ExportButtonCSV.
 import ExportButtonGeoJSON from "@shared/modules/buttons/components/ExportButtonGeoJSON.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 import openlayerFunctions from "../utils/openlayerFunctions";
-import isObject from "@shared/js/utils/isObject";
+import isObject from "@shared/js/utils/isObject.js";
 import {GeoJSON} from "ol/format.js";
-import Feature from "ol/Feature";
+import Feature from "ol/Feature.js";
 
 /**
 * Snippet Download

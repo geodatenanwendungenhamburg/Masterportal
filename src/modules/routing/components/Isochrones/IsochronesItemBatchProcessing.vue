@@ -1,8 +1,8 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import mutations from "../../store/isochrones/mutationsIsochrones";
+import mutations from "../../store/isochrones/mutationsIsochrones.js";
 import RoutingBatchProcessing from "../RoutingBatchProcessing.vue";
-import {RoutingTaskHandler} from "../../js/classes/routing-task-handler";
+import {RoutingTaskHandler} from "../../js/classes/routing-task-handler.js";
 
 /**
  * IsochronesItemBatchProcessing

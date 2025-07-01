@@ -1,6 +1,6 @@
-import layerCollection from "@core/layers/js/layerCollection";
-import {treeSubjectsKey} from "@shared/js/utils/constants";
-import store from "@appstore";
+import layerCollection from "@core/layers/js/layerCollection.js";
+import {treeSubjectsKey} from "@shared/js/utils/constants.js";
+import store from "@appstore/index.js";
 
 export default {
     windowWidthChanged ({commit, dispatch, state, getters, rootGetters}) {
