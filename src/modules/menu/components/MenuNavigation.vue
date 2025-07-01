@@ -59,7 +59,7 @@ export default {
                 :id="'mp-navigation-' + side"
                 class="pt-2 mp-menu-navigation-link"
                 href="#"
-                @click="navigateBack(side)"
+                @click.prevent="navigateBack(side)"
                 @keypress="navigateBack(side)"
             >
                 <h6 class="mp-menu-navigation-link-text mb-1"><p class="bi-chevron-left me-2" />{{ previousNavigation }}</h6>
@@ -90,7 +90,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .mp-menu-navigation{
     display: flex;

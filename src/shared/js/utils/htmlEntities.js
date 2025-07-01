@@ -10,10 +10,13 @@ const decodingMap = {
 
 /**
  * Decode html entities from a string.
+ * @param {String} text The input HTML-encoded string
  * @returns {String} The decoded html string.
  */
 export default function decodeHtmlEntites (text) {
-    return text.replace(/&[\w#]+;/g, entity => {
-        return decodingMap[entity] || entity;
-    });
+    if (typeof text !== "string") {
+        return "";
+    }
+
+    return text.replace(/&[\w#]+;/g, entity => decodingMap[entity] || entity);
 }

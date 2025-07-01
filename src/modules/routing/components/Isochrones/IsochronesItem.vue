@@ -385,7 +385,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 #routing-isochrones {
   min-width: 350px;
 }

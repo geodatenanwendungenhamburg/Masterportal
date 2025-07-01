@@ -111,7 +111,7 @@ export default {
      * @returns {void}
      */
     addSingleAlert: function ({state, commit}, newAlert) {
-        const objectHash = require("object-hash"),
+        const objectHash = () => import("object-hash"),
             newAlertObj = typeof newAlert === "string" ? {content: newAlert} : newAlert,
             alertProtoClone = {...state.alertProto},
             hasInitAlert = state.alerts.some(function (alert) {

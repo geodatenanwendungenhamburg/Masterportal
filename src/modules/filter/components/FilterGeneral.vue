@@ -14,7 +14,7 @@ import {isRule} from "../utils/isRule.js";
 import GeometryFilter from "./GeometryFilter.vue";
 import {getFeaturesOfAdditionalGeometries} from "../utils/getFeaturesOfAdditionalGeometries.js";
 import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
-import {getFeatureGET} from "@shared/js/api/wfs/getFeature.js";
+import getFeature  from "@shared/js/api/wfs/getFeature.js";
 import {WFS} from "ol/format.js";
 import UrlHandler from "../utils/urlHandler.js";
 import Cluster from "ol/source/Cluster.js";
@@ -314,7 +314,7 @@ export default {
 
                 for (const additionalGeometry of additionalGeometries) {
                     const rawLayer = rawLayerList.getLayerWhere({id: additionalGeometry.layerId}),
-                        features = await getFeatureGET(rawLayer.url, {version: rawLayer.version, featureType: rawLayer.featureType});
+                        features = await getFeature.getFeatureGET(rawLayer.url, {version: rawLayer.version, featureType: rawLayer.featureType});
 
                     additionalGeometry.features = wfsReader.readFeatures(features);
                 }
@@ -898,9 +898,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
-
     .panel {
         position: relative;
     }

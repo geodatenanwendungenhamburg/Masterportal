@@ -91,8 +91,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
-@import "~mixins";
+
 
 .btn-wrapper {
     width: 16rem;

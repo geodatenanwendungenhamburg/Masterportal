@@ -172,7 +172,7 @@ export default {
 
 
 <style lang="scss" scoped>
-@import "~variables";
+
     .no-list{
         list-style: none;
     }

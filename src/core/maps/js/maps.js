@@ -123,7 +123,7 @@ function create3DMap () {
     }
 }
 
-module.exports = {
+export {
     create3DMap,
     initializeMaps,
     load3DMap

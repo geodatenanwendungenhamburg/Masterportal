@@ -381,7 +381,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
     input[type="checkbox"] {
         cursor: pointer;
     }

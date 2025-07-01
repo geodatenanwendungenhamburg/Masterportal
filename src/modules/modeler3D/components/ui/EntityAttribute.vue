@@ -111,8 +111,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
 
     .btn-pos {
         padding: 0.25em;

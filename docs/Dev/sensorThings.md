@@ -293,7 +293,7 @@ The extent needs to be described including its source projection and target proj
 See this basic implementation of `SensorThingsHttp` to receive data within the browser's current view extent only, using Masterportal events to show its functionality, as an example:
 
 ```js
-import {SensorThingsHttp} from "@shared/js/api/sensorThingsHttp";
+import {SensorThingsHttp} from "@shared/js/api/sensorThingsHttp.js";
 import store from "@appstore/index.js";
 
 const http = new SensorThingsHttp(),

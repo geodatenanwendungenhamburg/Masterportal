@@ -143,9 +143,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    // @todo
-    // @import "~/css/mixins.scss";
-    @import "~variables";
 
     .modal-rounded-dialog {
     border-radius: 0.3em;

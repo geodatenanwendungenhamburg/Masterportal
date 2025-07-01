@@ -2,6 +2,7 @@
 import store from "@appstore/index.js";
 import {defineComponent} from "vue";
 import {upperFirst} from "@shared/js/utils/changeCase.js";
+import i18next from "i18next";
 
 const allAddons = typeof VUE_ADDONS !== "undefined" ? VUE_ADDONS : {};
 
@@ -142,12 +143,8 @@ export default {
  * @returns {Object} The addon.
  */
     loadAddon: async function (addonKey) {
-        const addonModule = await import(
-                /* webpackChunkName: "[request]" */
-                /* webpackInclude: /addons[\\\/].*[\\\/]index.js$/ */
-                /* webpackExclude: /(node_modules)|(.+unittests.)|(.+test.)+/ */
-                `../../addons/${allAddons[addonKey].entry}`
-            ),
+        // the plugin "vite-plugin-dynamic-import" is required for this import with variables:
+        const addonModule = await import(`../../addons/${allAddons[addonKey].entry}`),
             addon = addonModule.default;
 
         for (const localeKey in addon.locales) {

@@ -308,7 +308,7 @@ export default {
 
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .gfi-iFrame {
     height: 450px;
