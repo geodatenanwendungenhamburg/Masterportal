@@ -1,5 +1,5 @@
 import Point from "ol/geom/Point";
-import Feature from "ol/Feature";
+import Feature from "ol/Feature.js";
 
 /**
  * @description Selected waypoints by the user.

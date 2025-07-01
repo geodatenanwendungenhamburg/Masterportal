@@ -201,7 +201,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
 
     .modal-backdrop {
         pointer-events: all;

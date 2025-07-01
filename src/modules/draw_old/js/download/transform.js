@@ -1,4 +1,4 @@
-import store from "@appstore";
+import store from "@appstore/index.js";
 import {transform, transformPoint} from "./transformGeometry.js";
 
 /**

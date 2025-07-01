@@ -1,4 +1,4 @@
-import testAction from "@devtools/tests/VueTestUtils";
+import testAction from "@devtools/tests/VueTestUtils.js";
 import getCswRecordById from "@shared/js/api/getCswRecordById.js";
 import sinon from "sinon";
 import actions from "@modules/about/store/actionsAbout";

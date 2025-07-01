@@ -1,6 +1,6 @@
 import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
-import testAction from "@devtools/tests/VueTestUtils";
+import testAction from "@devtools/tests/VueTestUtils.js";
 import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 import actions from "@modules/fileImport/store/actionsFileImport";
 import importedState from "@modules/fileImport/store/stateFileImport";

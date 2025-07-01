@@ -1,4 +1,4 @@
-import store from "@appstore";
+import store from "@appstore/index.js";
 import isObject from "@shared/js/utils/isObject.js";
 import isNumber from "@shared/js/utils/isNumber.js";
 import {getMinMaxFromFetchedFeatures, getUniqueValuesFromFetchedFeatures} from "../../utils/fetchAllOafProperties.js";

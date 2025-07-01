@@ -1,4 +1,4 @@
-import Feature from "ol/Feature";
+import Feature from "ol/Feature.js";
 
 /**
  * Sets the attributes of each feature as requested by the converting function.

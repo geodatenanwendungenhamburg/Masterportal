@@ -1,10 +1,10 @@
 import {markRaw} from "vue";
-import api from "@masterportal/masterportalapi/src/maps/api";
-import {rawLayerList} from "@masterportal/masterportalapi/src";
-import load3DScript from "@masterportal/masterportalapi/src/lib/load3DScript";
+import api from "@masterportal/masterportalapi/src/maps/api.js";
+import {rawLayerList} from "@masterportal/masterportalapi/src/index.js";
+import load3DScript from "@masterportal/masterportalapi/src/lib/load3DScript.js";
 
 import {setResolutions, setValues} from "./setValuesToMapView.js";
-import store from "@appstore";
+import store from "@appstore/index.js";
 import mapMarker from "./mapMarker.js";
 
 /**
@@ -123,7 +123,7 @@ function create3DMap () {
     }
 }
 
-module.exports = {
+export {
     create3DMap,
     initializeMaps,
     load3DMap

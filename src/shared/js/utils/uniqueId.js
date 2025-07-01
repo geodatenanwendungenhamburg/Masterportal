@@ -38,7 +38,7 @@ function incIdCounter () {
     idCounter++;
 }
 
-module.exports = {
+export {
     uniqueId,
     reset
 };

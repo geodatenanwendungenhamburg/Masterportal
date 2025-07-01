@@ -1,4 +1,4 @@
-import testAction from "@devtools/tests/VueTestUtils";
+import testAction from "@devtools/tests/VueTestUtils.js";
 import {expect} from "chai";
 import sinon from "sinon";
 

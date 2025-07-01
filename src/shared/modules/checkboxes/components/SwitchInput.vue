@@ -58,7 +58,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .form-check-input {
         width: 2.5rem;

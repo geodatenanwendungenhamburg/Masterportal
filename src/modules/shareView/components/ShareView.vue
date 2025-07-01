@@ -218,7 +218,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .qrCode {
     max-width: 75%;

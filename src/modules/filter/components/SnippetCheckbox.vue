@@ -216,8 +216,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
     .snippetCheckboxContainer {
         height: auto;
     }

@@ -356,7 +356,6 @@ export default {
 
 
 <style lang="scss" scoped>
-    @import "~variables";
 
 #featureLister {
     width: fit-content;

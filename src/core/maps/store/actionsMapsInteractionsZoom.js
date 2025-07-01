@@ -1,6 +1,6 @@
 import calculateExtent from "@shared/js/utils/calculateExtent.js";
 import Cluster from "ol/source/Cluster.js";
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 
 /**
  * Interactions with the Map and MapView that are exclusively about zooming.

@@ -1,6 +1,6 @@
 import SearchInterface from "./searchInterface.js";
-import store from "@appstore";
-import layerTypes from "@core/layers/js/layerTypes.js";
+import store from "@appstore/index.js";
+import i18next from "i18next";
 
 /**
  * The search interface to the topic tree.

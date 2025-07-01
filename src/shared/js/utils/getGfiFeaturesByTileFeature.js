@@ -1,5 +1,5 @@
-import {createGfiFeature} from "./getWmsFeaturesByMimeType.js";
-import store from "@appstore";
+import {createGfiFeature} from "./getWmsFeaturesByMimeType";
+import store from "@appstore/index.js";
 
 /**
  * gets an array of gfiFeatures for 3d tile features, using ./getWmsFeaturesByMimeType->createGfiFeature

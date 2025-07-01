@@ -1,5 +1,5 @@
 
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 import {generateSimpleGetters} from "@shared/js/utils/generators.js";
 import coordState from "./stateCoordToolkit.js";
 

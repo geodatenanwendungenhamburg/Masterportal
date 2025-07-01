@@ -2,7 +2,7 @@
 import {mapGetters, mapActions} from "vuex";
 import {WMSCapabilities} from "ol/format.js";
 import {intersects} from "ol/extent";
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 import axios from "axios";
 import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 import {deleteParams} from "@shared/js/utils/deleteUrlParams.js";
@@ -453,8 +453,8 @@ export default {
     </div>
 </template>
 
+
 <style lang="scss" scoped>
-    @import "~variables";
     .WMS_example_text {
         margin-top: 10px;
         color: $light_grey;

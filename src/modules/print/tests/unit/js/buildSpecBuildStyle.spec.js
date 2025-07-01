@@ -1,4 +1,4 @@
-import BuildSpec from "@modules/print/js/buildSpec";
+import BuildSpec from "@modules/print/js/buildSpec.js";
 import Polygon from "ol/geom/Polygon";
 import {Fill, Stroke} from "ol/style";
 import Feature from "ol/Feature.js";

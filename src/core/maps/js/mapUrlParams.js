@@ -1,6 +1,6 @@
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 
-import store from "@appstore";
+import store from "@appstore/index.js";
 import highlightFeaturesByAttribute from "./highlightFeaturesByAttribute.js";
 import processUrlParams from "@shared/js/utils/processUrlParams.js";
 

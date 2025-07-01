@@ -1,6 +1,6 @@
 import layerCollection from "@core/layers/js/layerCollection.js";
 import {treeSubjectsKey} from "@shared/js/utils/constants.js";
-import store from "@appstore";
+import store from "@appstore/index.js";
 import {resetRenderListeners} from "@shared/js/utils/resetRenderListeners.js";
 
 export default {

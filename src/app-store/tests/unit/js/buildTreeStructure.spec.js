@@ -1,4 +1,4 @@
-import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
 import buildTreeStructure from "@appstore/js/buildTreeStructure.js";
 import {getAndMergeRawLayer, getAndMergeAllRawLayers} from "@appstore/js/getAndMergeRawLayer.js";
 import getNestedValues from "@shared/js/utils/getNestedValues.js";

@@ -1,7 +1,7 @@
 <script>
 import {mapGetters, mapActions} from "vuex";
 import {Modal} from "bootstrap";
-import GeoJSON from "ol/format/GeoJSON";
+import GeoJSON from "ol/format/GeoJSON.js";
 import convertFeaturesToKml from "../../../shared/js/utils/convertFeaturesToKml.js";
 
 /**

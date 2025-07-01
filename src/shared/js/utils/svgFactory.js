@@ -1,5 +1,5 @@
-import {returnColor} from "@masterportal/masterportalapi/src/vectorStyle/lib/colorConvertions";
-import StylePolygon from "@masterportal/masterportalapi/src/vectorStyle/styles/polygon/stylePolygon";
+import {returnColor} from "@masterportal/masterportalapi/src/vectorStyle/lib/colorConvertions.js";
+import StylePolygon from "@masterportal/masterportalapi/src/vectorStyle/styles/polygon/stylePolygon.js";
 
 /**
  * Creating the circle svg

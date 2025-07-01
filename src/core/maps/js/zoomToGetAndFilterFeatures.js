@@ -1,7 +1,7 @@
 import axios from "axios";
-import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
 import {WFS} from "ol/format";
-import escape from "escape-html";
+// import escape from "/@/node_modules/escape-html";
 
 import handleAxiosResponse from "@shared/js/utils/handleAxiosResponse.js";
 

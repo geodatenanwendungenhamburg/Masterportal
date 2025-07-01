@@ -1,7 +1,7 @@
 import axios from "axios";
 import {RoutingGeosearchResult} from "../classes/routing-geosearch-result.js";
 import state from "../../store/stateRouting.js";
-import store from "@appstore";
+import store from "@appstore/index.js";
 
 /**
  * Requests POIs from text from Elastic

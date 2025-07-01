@@ -1,6 +1,6 @@
 <script>
 import isObject from "@shared/js/utils/isObject.js";
-import thousandsSeparator from "@masterportal/masterportalapi/src/lib/thousandsSeparator";
+import thousandsSeparator from "@masterportal/masterportalapi/src/lib/thousandsSeparator.js";
 import {translateKeyWithPlausibilityCheck} from "@shared/js/utils/translateKeyWithPlausibilityCheck.js";
 import {getDefaultOperatorBySnippetType} from "../utils/getDefaultOperatorBySnippetType.js";
 import SnippetInfo from "./SnippetInfo.vue";
@@ -885,7 +885,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
+
 
     .snippetSliderRangeContainer {
         cursor: default;

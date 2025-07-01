@@ -1,7 +1,7 @@
-import {rawLayerList} from "@masterportal/masterportalapi/src";
+import {rawLayerList} from "@masterportal/masterportalapi/src/index.js";
 import {updateProxyUrl} from "./getProxyUrl.js";
 import layerTypes from "@core/layers/js/layerTypes.js";
-import store from "@appstore";
+import store from "@appstore/index.js";
 
 let zIndex = 1;
 

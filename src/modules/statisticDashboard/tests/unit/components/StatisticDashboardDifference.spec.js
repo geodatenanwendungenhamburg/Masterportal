@@ -5,7 +5,7 @@ import StatisticDashboardDifference from "@modules/statisticDashboard/components
 import indexStatisticDashboard from "@modules/statisticDashboard/store/indexStatisticDashboard";
 import Multiselect from "vue-multiselect";
 import StatisticSwitcher from "@modules/statisticDashboard/components/StatisticDashboardSwitcher.vue";
-import {rawLayerList} from "@masterportal/masterportalapi";
+import {rawLayerList} from "@masterportal/masterportalapi/src/index.js";
 import getOAFFeature from "@shared/js/api/oaf/getOAFFeature.js";
 import sinon from "sinon";
 

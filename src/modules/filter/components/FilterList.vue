@@ -199,7 +199,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 #tool-general-filter .panel {
     background-color: $white;
     border: 1px solid #ddd;

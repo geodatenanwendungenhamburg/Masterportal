@@ -141,8 +141,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
 
     .portal-footer {
         background-color: $menu-background-color;

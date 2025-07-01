@@ -1,6 +1,6 @@
 import {toStringHDMS} from "ol/coordinate.js";
 import proj4 from "proj4";
-import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
 import {convertSexagesimalFromString, convertSexagesimalToDecimal, convertSexagesimalFromDecimal} from "@shared/js/utils/convertSexagesimalCoordinates.js";
 import {requestGfi} from "@shared/js/api/wmsGetFeatureInfo.js";
 import layerFactory from "@core/layers/js/layerFactory.js";
@@ -63,7 +63,10 @@ export default {
             layerConfig = rootGetters.layerConfigById(state.heightLayerId);
 
             if (layerConfig) {
-                commit("setHeightLayer", layerFactory.createLayer(layerConfig));
+
+                layerFactory.createLayer(layerConfig).then((layer) => {
+                    commit("setHeightLayer", layer);
+                }).catch(error => console.error(error));
             }
         }
         if (!layerConfig) {

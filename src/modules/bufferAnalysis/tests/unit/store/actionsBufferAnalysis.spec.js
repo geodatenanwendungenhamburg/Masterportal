@@ -3,7 +3,7 @@ import {expect} from "chai";
 import {createLayerConfigsArray} from "../utils/functions.js";
 import actions from "@modules/bufferAnalysis/store/actionsBufferAnalysis";
 import stateBufferAnalysis from "@modules/bufferAnalysis/store/stateBufferAnalysis";
-import testAction from "@devtools/tests/VueTestUtils";
+import testAction from "@devtools/tests/VueTestUtils.js";
 import {
     LineString,
     MultiLineString,

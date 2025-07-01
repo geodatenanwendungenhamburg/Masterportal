@@ -608,7 +608,7 @@ export default {
 </template>
 
 <style lang="scss">
-@import "~variables";
+
 #geometryFilter {
     font-size: $font-size-lg;
 

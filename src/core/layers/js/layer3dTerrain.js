@@ -1,4 +1,4 @@
-import {terrain} from "@masterportal/masterportalapi/src";
+import {terrain} from "@masterportal/masterportalapi/src/index.js";
 import Layer3d from "./layer3d.js";
 
 /**

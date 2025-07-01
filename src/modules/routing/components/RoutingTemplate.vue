@@ -3,7 +3,7 @@ import {mapGetters, mapActions, mapMutations} from "vuex";
 import mutations from "../store/mutationsRouting.js";
 import * as constantsRouting from "../store/constantsRouting.js";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
-import store from "@appstore/index";
+import store from "@appstore/index.js";
 
 /**
  * RoutingTemplate
@@ -93,7 +93,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
     .pointer {
         cursor: pointer;

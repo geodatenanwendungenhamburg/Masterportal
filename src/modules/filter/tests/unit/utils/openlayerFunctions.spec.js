@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import store from "@appstore";
+import store from "@appstore/index.js";
 import sinon from "sinon";
 import openlayerFunctions from "@modules/filter/utils/openlayerFunctions";
 

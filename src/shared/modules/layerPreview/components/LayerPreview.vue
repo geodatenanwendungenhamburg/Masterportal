@@ -1,7 +1,7 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from "vuex";
 import {buffer} from "ol/extent";
-import {wms, wmts} from "@masterportal/masterportalapi";
+import {wms, wmts} from "@masterportal/masterportalapi/src/index.js";
 import WMTS, {optionsFromCapabilities} from "ol/source/WMTS";
 import proj4 from "proj4";
 import {Point} from "ol/geom";
@@ -319,7 +319,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
 
 .layerPreview {
     position: relative;
