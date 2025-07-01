@@ -649,7 +649,7 @@ export default {
                                 layer.getLayer().setVisible(false);
                             });
                         });
-                    });
+                    }).catch(error => console.error(error));
                 }
                 else {
                     this.getLegendByStyleId(this.layerId);
