@@ -339,7 +339,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .gfi-title-container {
     min-width: 0;

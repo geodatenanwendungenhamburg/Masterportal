@@ -229,7 +229,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
 .slider-item {
     width: 100%;
     align-items: center;
@@ -327,5 +326,4 @@ export default {
         }
     }
 }
-
 </style>

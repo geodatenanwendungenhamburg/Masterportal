@@ -177,7 +177,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
     .path {
         text-align: left;
         margin-bottom: 0!important;

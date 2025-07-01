@@ -107,7 +107,13 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
+    .layer-tre {
+        padding-left: $padding;
+        font-size: $font-size-base;
+        max-height: 350px;
+    }
+
     .sticky {
         position : sticky;
         bottom: 2rem;

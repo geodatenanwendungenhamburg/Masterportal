@@ -637,19 +637,19 @@ export default {
 
                 this.styleModel = getIconListFromLegendModule.getStyleModel(this.layerId);
                 if (!layerCollection.getLayerById(this.layerId) && ["WFS", "OAF", "GeoJSON"].includes(layerConfig.typ)) {
-                    const layer = layerFactory.createLayer(layerConfig);
-
-                    if (mapCollection.getMap("2D").getLayers().getArray().find(aLayer => aLayer.get("id") === this.layerId) === undefined) {
-                        this.addLayer(layer.getLayer());
-                    }
-                    else {
-                        layer.getLayer().setVisible(true);
-                    }
-                    this.areLayerFeaturesLoaded(this.layerId).then(() => {
-                        this.getLegendByStyleId(layer.get("styleId"), layer.getLayer(), () => {
-                            layer.getLayer().setVisible(false);
+                    layerFactory.createLayer(layerConfig).then((layer) => {
+                        if (mapCollection.getMap("2D").getLayers().getArray().find(aLayer => aLayer.get("id") === this.layerId) === undefined) {
+                            this.addLayer(layer.getLayer());
+                        }
+                        else {
+                            layer.getLayer().setVisible(true);
+                        }
+                        this.areLayerFeaturesLoaded(this.layerId).then(() => {
+                            this.getLegendByStyleId(layer.get("styleId"), layer.getLayer(), () => {
+                                layer.getLayer().setVisible(false);
+                            });
                         });
-                    });
+                    }).catch(error => console.error(error));
                 }
                 else {
                     this.getLegendByStyleId(this.layerId);
@@ -1104,7 +1104,7 @@ export default {
                     <a
                         href="#"
                         class="link-dark"
-                        @click="!allSelected ? selectAll() : deselectAll()"
+                        @click.prevent="!allSelected ? selectAll() : deselectAll()"
                     >
                         {{ selectAllTitle }}
                     </a>
@@ -1174,7 +1174,7 @@ export default {
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
 <style lang="scss">
-    @import "~variables";
+
     .filter-select-box-container .multiselect, .filter-select-box-container .multiselect__input, .filter-select-box-container .multiselect__single {
         font-family: inherit;
         font-size: $font-size-base;
@@ -1326,8 +1326,7 @@ export default {
 </style>
 
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
+
     .snippetListContainer .check-box-label {
         margin: 0;
     }

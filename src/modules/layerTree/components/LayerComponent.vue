@@ -34,7 +34,12 @@ export default {
         }
     },
     computed: {
-        ...mapGetters("Maps", ["mode", "scale", "scales"]),
+        ...mapGetters("Maps", ["mode", "scale", "scales"])
+    },
+    mounted () {
+        // #VITE The condition was adjusted to prevent the error Cannot read properties of null (reading 'length').
+        if (this.conf.maxScale && this.conf.minScale && Array.isArray(this.scales)) {
+            let minScale = parseInt(this.conf.minScale, 10);
 
         /**
          * Tooltip text explaining why a layer is disabled due to scale restrictions.
@@ -190,8 +195,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
-    @import "~mixins";
+
 
     .handle-layer-component-drag {
       position: relative;

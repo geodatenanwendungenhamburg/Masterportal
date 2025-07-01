@@ -253,8 +253,6 @@ export default {
 </template>
 
 <style lang="scss">
-    @import "~variables";
-
     #modules-about {
         height: 100%;
         overflow-y: hidden;

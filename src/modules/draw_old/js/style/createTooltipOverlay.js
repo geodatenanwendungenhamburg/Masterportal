@@ -1,6 +1,6 @@
 import Overlay from "ol/Overlay.js";
 import thousandsSeparator from "@shared/js/utils/thousandsSeparator.js";
-import * as setters from "../../store/actions/settersDraw.js";
+import * as setters from "@modules/draw_old/store/actions/settersDraw.js";
 import {getArea, getLength} from "ol/sphere.js";
 
 /**

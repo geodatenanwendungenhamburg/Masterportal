@@ -392,7 +392,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
+
 
     #surrounding_vectorfeatures {
         background-color: transparent;

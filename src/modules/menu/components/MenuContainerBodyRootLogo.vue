@@ -65,7 +65,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .mp-menu-logo {
     padding: 0 $padding 0 $padding;

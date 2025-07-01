@@ -365,7 +365,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
 
     .h-seperator {
         margin:12px 0 12px 0;

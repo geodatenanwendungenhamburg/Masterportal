@@ -101,8 +101,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
-
     .accordion {
         --bs-accordion-border-width: 0;
         --bs-accordion-active-bg: $white;
@@ -114,9 +112,8 @@ export default {
             font-size: $font-size-base;
         }
 
-   [coloured=true] {
-        background-color: $light_blue;
-   }
-
-   }
+        [coloured=true] {
+                background-color: $light_blue;
+        }
+    }
 </style>

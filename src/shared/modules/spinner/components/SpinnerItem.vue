@@ -28,7 +28,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .spinner-border {
     border: 3px solid $dark_blue;

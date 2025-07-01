@@ -491,12 +491,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
-.tool-wfs-transaction-cancel-button {
-    margin-top: 20px;
-    display: inline-block;
-    text-align: right;
-}
 
 #delete:focus, #update:focus,  #multiUpdate:focus {
     background-color:$light_blue;
