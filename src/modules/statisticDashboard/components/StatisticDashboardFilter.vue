@@ -498,7 +498,6 @@ export default {
     </div>
 </template>
 <style lang="scss" scoped>
-
 .stretched {
     position: relative
 }
