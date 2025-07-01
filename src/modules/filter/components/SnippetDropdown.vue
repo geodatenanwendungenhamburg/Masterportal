@@ -630,7 +630,7 @@ export default {
                 this.styleModel = getIconListFromLegendModule.getStyleModel(this.layerId);
                 if (!layerCollection.getLayerById(this.layerId) && ["WFS", "OAF", "GeoJSON"].includes(layerConfig.typ)) {
                     const layer = layerFactory.createLayer(layerConfig);
-                    
+
                     if (mapCollection.getMap("2D").getLayers().getArray().find(aLayer => aLayer.get("id") === this.layerId) === undefined) {
                         this.addLayer(layer.getLayer());
                     }
@@ -641,7 +641,7 @@ export default {
                         this.getLegendByStyleId(layer.get("styleId"), layer.getLayer(), () => {
                             layer.getLayer().setVisible(false);
                         });
-                    });
+                    }).catch(error => console.error(error));
                 }
                 else {
                     this.getLegendByStyleId(this.layerId);
