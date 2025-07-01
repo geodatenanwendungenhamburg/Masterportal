@@ -432,7 +432,7 @@ export default {
 </template>
 
 <style lang="scss">
-@import "~variables";
+
 
 $handle_size: 6px;
 

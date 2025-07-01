@@ -410,7 +410,6 @@ export default {
 
 
 <style lang="scss" scoped>
-@import "~variables";
 
 .drop-area-fake {
     background-color: $white;

@@ -27,6 +27,7 @@ export default {
                 console.error("RemoteInterface could not call \"" + fullActionName + "\". Please ensure this action is available.");
             }
         });
+        // to circular dependency
 
         app.config.globalProperties.$remoteInterface = {
             sendMessage: params => {
@@ -35,8 +36,8 @@ export default {
                     return;
                 }
 
-                parent.postMessage(params, options.postMessageUrl);
-            }
-        };
+        //         parent.postMessage(params, options.postMessageUrl);
+        //     }
+        // };
     }
 };

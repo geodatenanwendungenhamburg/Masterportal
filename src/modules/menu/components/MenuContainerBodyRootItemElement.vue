@@ -244,7 +244,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .mp-menu-root-element {
     min-height: 2.3rem;

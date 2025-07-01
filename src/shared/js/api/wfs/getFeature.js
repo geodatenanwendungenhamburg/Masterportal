@@ -140,7 +140,7 @@ function handleWfsResponse (response, onerror) {
     return response.data;
 }
 
-module.exports = {
+export default {
     getFeatureGET,
     getFeaturePOST
 };

@@ -321,7 +321,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
 
 .layerPreview {
     position: relative;

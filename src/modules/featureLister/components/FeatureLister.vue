@@ -159,7 +159,6 @@ export default {
 
 
 <style lang="scss" scoped>
-    @import "~variables";
 
 .feature-lister-list {
     margin-bottom: 0;

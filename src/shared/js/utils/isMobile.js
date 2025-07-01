@@ -1,10 +1,9 @@
-import variables from "../../../assets/css/variables.scss";
+import variables from "@/assets/css/export-variables.module.scss";
 
 /**
  * Breakpoint in pixels at which to switch to mobile mode.
  */
-const mobileBreakpoint = parseInt(variables["gridBreakpoints-md"], 10) || 768;
-
+const mobileBreakpoint = parseInt(variables.gridBreakpointsMd, 10) || 768;
 
 /**
  * Checks if the current window size indicates a mobile device.

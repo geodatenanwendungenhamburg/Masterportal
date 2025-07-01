@@ -108,8 +108,8 @@ export default {
          * @returns {void}
          */
         setGlobalVariables () {
-            global.mapCollection = mapCollection;
-            global.moduleCollection = {};
+            window.mapCollection = mapCollection;
+            window.moduleCollection = {};
         },
 
         /**
@@ -135,8 +135,8 @@ export default {
         * @returns {void}
         */
         checkVueObservation () {
-            /* eslint-disable n/no-process-env */
-            if (process.env.NODE_ENV === "development") {
+
+            if (import.meta.env.VITE_NODE_ENV === "development") {
                 setInterval(() => {
                     const map3d = mapCollection.getMap("3D");
 
@@ -158,7 +158,8 @@ export default {
                 breakpoint = "(max-width: 768px)",
                 mediaQuery = window.matchMedia(breakpoint);
 
-            this.setDeviceMode(mediaQuery.matches ? MOBILE : DESKTOP);
+           this.setDeviceMode(mediaQuery.matches ? MOBILE : DESKTOP);
+           window.addEventListener("resize", () => this.onResize(mobile, desktop));
 
             this.mediaQueryHandler = (event) => {
                 this.setDeviceMode(event.matches ? MOBILE : DESKTOP);
@@ -232,8 +233,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
-
 .masterportal-container {
     display: flex;
     flex-direction: row;

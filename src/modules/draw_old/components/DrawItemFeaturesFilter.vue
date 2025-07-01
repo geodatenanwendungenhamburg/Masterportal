@@ -122,7 +122,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 #draw-filter {
     input {
         margin-top: 0;

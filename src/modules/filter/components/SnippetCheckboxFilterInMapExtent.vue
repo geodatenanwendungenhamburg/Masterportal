@@ -83,7 +83,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
+
     .snippetCheckboxContainer {
         margin-bottom: 10px;
         height: auto;
