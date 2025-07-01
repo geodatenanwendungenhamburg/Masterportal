@@ -278,7 +278,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
 
 #compare-maps {
     position: relative;

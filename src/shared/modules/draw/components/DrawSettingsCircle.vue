@@ -145,7 +145,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .input-radius {
     width: 100%;

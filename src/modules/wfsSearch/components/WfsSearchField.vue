@@ -322,7 +322,7 @@ export default {
 
 <style lang="scss" scoped>
 /* Loader CSS based on https://codepen.io/lopis/pen/zwprzP  */
-@import "~variables";
+
 
 $length: 1.5em;
 

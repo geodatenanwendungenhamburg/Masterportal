@@ -4,7 +4,7 @@ import {expect} from "chai";
 import sinon from "sinon";
 import store from "@appstore/index.js";
 
-describe("src/modules/print/utils/getVisibleLayer", function () {
+describe("src/modules/print/utils/getVisibleLayer.js", function () {
     let layers,
         layer1,
         layer2,
@@ -66,7 +66,7 @@ describe("src/modules/print/utils/getVisibleLayer", function () {
         store.commit = origCommit;
     });
 
-    describe("getVisibleLayer", function () {
+    describe("getVisibleLayer.js", function () {
         it("getVisibleLayer return empty array", function () {
             layerProvider.getVisibleLayer();
 

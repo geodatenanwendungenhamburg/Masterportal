@@ -191,8 +191,8 @@ describe("src/modules/scaleSwitcher/components/ScaleSwitcher.vue", () => {
 ```js
 // modules/tools/scaleSwitcher/store/gettersScaleSwitcher.js
 import {expect} from "chai";
-import getters from "../../../store/gettersScaleSwitcher";
-import stateScaleSwitcher from "../../../store/stateScaleSwitcher";
+import getters from "../../../store/gettersScaleSwitcher.js";
+import stateScaleSwitcher from "../../../store/stateScaleSwitcher.js";
 
 const {
     icon,
