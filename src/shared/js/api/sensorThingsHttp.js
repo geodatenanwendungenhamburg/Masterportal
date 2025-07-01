@@ -1,6 +1,6 @@
 import axios from "axios";
 import UrlParser from "url-parse";
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 
 /**
  * SensorThingsHttp is the software layer to handle the special needs of the SensorThingsAPI regarding http requests.
@@ -508,6 +508,6 @@ class SensorThingsHttp {
     }
 }
 
-module.exports = {
+export {
     SensorThingsHttp
 };

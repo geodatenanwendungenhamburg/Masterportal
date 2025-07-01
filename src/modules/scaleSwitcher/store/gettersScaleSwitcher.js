@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import scaleSwitcherState from "./stateScaleSwitcher";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import scaleSwitcherState from "./stateScaleSwitcher.js";
 
 const getters = {
     ...generateSimpleGetters(scaleSwitcherState)

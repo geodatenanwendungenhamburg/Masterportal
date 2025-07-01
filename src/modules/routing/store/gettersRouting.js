@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import routingState from "./stateRouting";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import routingState from "./stateRouting.js";
 import DirectionsItem from "../components/Directions/DirectionsItem.vue";
 import IsochronesItem from "../components/Isochrones/IsochronesItem.vue";
 import TsrItem from "../components/TSR/TsrItem.vue";

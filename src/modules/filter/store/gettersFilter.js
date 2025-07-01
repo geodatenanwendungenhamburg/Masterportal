@@ -1,6 +1,6 @@
 
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import filterState from "./stateFilter";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import filterState from "./stateFilter.js";
 
 const getters = {
     ...generateSimpleGetters(filterState),

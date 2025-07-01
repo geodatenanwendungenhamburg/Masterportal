@@ -1,33 +1,33 @@
-import directionsWaypointsSource from "../../js/map/directions/waypoints/directionsWaypointsSource";
-import directionsWaypointsLayer from "../../js/map/directions/waypoints/directionsWaypointsLayer";
-import directionsWaypointsModifyInteraction from "../../js/map/directions/waypoints/directionsWaypointsModify";
-import directionsWaypointsSnapInteraction from "../../js/map/directions/waypoints/directionsWaypointsSnap";
-import directionsWaypointsDrawInteraction from "../../js/map/directions/waypoints/directionsWaypointsDraw";
+import directionsWaypointsSource from "../../js/map/directions/waypoints/directionsWaypointsSource.js";
+import directionsWaypointsLayer from "../../js/map/directions/waypoints/directionsWaypointsLayer.js";
+import directionsWaypointsModifyInteraction from "../../js/map/directions/waypoints/directionsWaypointsModify.js";
+import directionsWaypointsSnapInteraction from "../../js/map/directions/waypoints/directionsWaypointsSnap.js";
+import directionsWaypointsDrawInteraction from "../../js/map/directions/waypoints/directionsWaypointsDraw.js";
 
-import directionsRouteSource from "../../js/map/directions/route/directionsRouteSource";
-import directionsRouteLayer from "../../js/map/directions/route/directionsRouteLayer";
-import directionsRouteModifyInteraction from "../../js/map/directions/route/directionsRouteModify";
-import directionsRouteSnapInteraction from "../../js/map/directions/route/directionsRouteSnap";
+import directionsRouteSource from "../../js/map/directions/route/directionsRouteSource.js";
+import directionsRouteLayer from "../../js/map/directions/route/directionsRouteLayer.js";
+import directionsRouteModifyInteraction from "../../js/map/directions/route/directionsRouteModify.js";
+import directionsRouteSnapInteraction from "../../js/map/directions/route/directionsRouteSnap.js";
 
-import directionsAvoidSource from "../../js/map/directions/avoid/directionsAvoidSource";
-import directionsAvoidLayer from "../../js/map/directions/avoid/directionsAvoidLayer";
-import directionsAvoidModifyInteraction from "../../js/map/directions/avoid/directionsAvoidModify";
-import directionsAvoidSnapInteraction from "../../js/map/directions/avoid/directionsAvoidSnap";
-import directionsAvoidDrawInteraction from "../../js/map/directions/avoid/directionsAvoidDraw";
-import directionsAvoidSelectInteraction from "../../js/map/directions/avoid/directionsAvoidSelect";
+import directionsAvoidSource from "../../js/map/directions/avoid/directionsAvoidSource.js";
+import directionsAvoidLayer from "../../js/map/directions/avoid/directionsAvoidLayer.js";
+import directionsAvoidModifyInteraction from "../../js/map/directions/avoid/directionsAvoidModify.js";
+import directionsAvoidSnapInteraction from "../../js/map/directions/avoid/directionsAvoidSnap.js";
+import directionsAvoidDrawInteraction from "../../js/map/directions/avoid/directionsAvoidDraw.js";
+import directionsAvoidSelectInteraction from "../../js/map/directions/avoid/directionsAvoidSelect.js";
 
-import directionsAvoidPointSource from "../../js/map/directions/avoid/directionsAvoidPointSource";
-import directionsAvoidPointLayer from "../../js/map/directions/avoid/directionsAvoidPointLayer";
+import directionsAvoidPointSource from "../../js/map/directions/avoid/directionsAvoidPointSource.js";
+import directionsAvoidPointLayer from "../../js/map/directions/avoid/directionsAvoidPointLayer.js";
 
-import directionsAvoidPointDrawInteraction from "../../js/map/directions/avoid/directionsAvoidPointDraw";
-import directionsAvoidPointTranslateInteraction from "../../js/map/directions/avoid/directionsAvoidPointTranslate";
-import directionsAvoidPointSelectInteraction from "../../js/map/directions/avoid/directionsAvoidPointSelect";
+import directionsAvoidPointDrawInteraction from "../../js/map/directions/avoid/directionsAvoidPointDraw.js";
+import directionsAvoidPointTranslateInteraction from "../../js/map/directions/avoid/directionsAvoidPointTranslate.js";
+import directionsAvoidPointSelectInteraction from "../../js/map/directions/avoid/directionsAvoidPointSelect.js";
 
 
-import directionsElevationSource from "../../js/map/directions/elevation/directionsElevationSource";
-import directionsElevationLayer from "../../js/map/directions/elevation/directionsElevationLayer";
+import directionsElevationSource from "../../js/map/directions/elevation/directionsElevationSource.js";
+import directionsElevationLayer from "../../js/map/directions/elevation/directionsElevationLayer.js";
 
-import stateRouting from "../stateRouting";
+import stateRouting from "../stateRouting.js";
 
 /**
  * State of routing directions

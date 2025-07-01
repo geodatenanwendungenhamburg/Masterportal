@@ -1,7 +1,7 @@
-import state from "./stateStyleVT";
-import actions from "./actionsStyleVT";
-import getters from "./gettersStyleVT";
-import mutations from "./mutationsStyleVT";
+import state from "./stateStyleVT.js";
+import actions from "./actionsStyleVT.js";
+import getters from "./gettersStyleVT.js";
+import mutations from "./mutationsStyleVT.js";
 
 export default {
     namespaced: true,

@@ -1,7 +1,7 @@
-import state from "./stateGetFeatureInfo";
-import getters from "./gettersGetFeatureInfo";
-import mutations from "./mutationsGetFeatureInfo";
-import actions from "./actionsGetFeatureInfo";
+import state from "./stateGetFeatureInfo.js";
+import getters from "./gettersGetFeatureInfo.js";
+import mutations from "./mutationsGetFeatureInfo.js";
+import actions from "./actionsGetFeatureInfo.js";
 
 export default {
     namespaced: true,

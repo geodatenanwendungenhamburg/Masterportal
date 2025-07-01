@@ -1,6 +1,6 @@
 <script>
 import {mapGetters} from "vuex";
-import getNestedValues from "@shared/js/utils/getNestedValues";
+import getNestedValues from "@shared/js/utils/getNestedValues.js";
 import Layer from "../../layerTree/components/LayerComponent.vue";
 import SelectAllCheckBox from "./SelectAllCheckBox.vue";
 import LightButton from "@shared/modules/buttons/components/LightButton.vue";

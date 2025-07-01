@@ -1,6 +1,6 @@
-import state from "./stateStatisticDashboard";
-import getters from "./gettersStatisticDashboard";
-import mutations from "./mutationsStatisticDashboard";
+import state from "./stateStatisticDashboard.js";
+import getters from "./gettersStatisticDashboard.js";
+import mutations from "./mutationsStatisticDashboard.js";
 
 export default {
     namespaced: true,

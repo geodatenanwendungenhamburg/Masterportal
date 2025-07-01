@@ -1,9 +1,9 @@
 import {Fill, Stroke, Style} from "ol/style.js";
-import {convertColor} from "@shared/js/utils/convertColor";
-import isObject from "@shared/js/utils/isObject";
+import {convertColor} from "@shared/js/utils/convertColor.js";
+import isObject from "@shared/js/utils/isObject.js";
 import isNumber from "@shared/js/utils/isNumber";
 import quantile from "@shared/js/utils/quantile";
-import thousandsSeparator from "@shared/js/utils/thousandsSeparator";
+import thousandsSeparator from "@shared/js/utils/thousandsSeparator.js";
 
 /**
  * Filters the features by the passed key and value.

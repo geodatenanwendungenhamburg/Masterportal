@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import changeCase from "@shared/js/utils/changeCase";
+import changeCase from "@shared/js/utils/changeCase.js";
 
 describe("src/shared/js/utils/changeCase.js", () => {
     describe("upperFirst", () => {

@@ -1,7 +1,7 @@
-import layerCollection from "@core/layers/js/layerCollection";
-import validator from "../js/validator";
-import legendDraw from "../js/legendDraw";
-import layerCollector from "../js/layerCollector";
+import layerCollection from "@core/layers/js/layerCollection.js";
+import validator from "../js/validator.js";
+import legendDraw from "../js/legendDraw.js";
+import layerCollector from "../js/layerCollector.js";
 
 const actions = {
     /**

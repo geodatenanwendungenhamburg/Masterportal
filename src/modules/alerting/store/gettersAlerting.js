@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import alertState from "./stateAlerting";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import alertState from "./stateAlerting.js";
 
 export default {
     ...generateSimpleGetters(alertState),

@@ -1,7 +1,7 @@
-import getters from "./gettersCoordToolkit";
-import mutations from "./mutationsCoordToolkit";
-import actions from "./actionsCoordToolkit";
-import state from "./stateCoordToolkit";
+import getters from "./gettersCoordToolkit.js";
+import mutations from "./mutationsCoordToolkit.js";
+import actions from "./actionsCoordToolkit.js";
+import state from "./stateCoordToolkit.js";
 
 export default {
     namespaced: true,

@@ -1,5 +1,6 @@
 const Config = {
-    addons: ["exampleControl", "bildungsatlas", "dataTable", "dipas", "exampleSearch", "populationRequest", "schulinfo", "sturmflut", "trafficCount", "trinkwasser", "verkehrsstaerken"],
+    addons: ["dataTable", "exampleSearch", "populationRequest", "schulinfo"],
+    addonsOrig: ["exampleControl", "bildungsatlas", "dataTable", "dipas", "exampleSearch", "populationRequest", "schulinfo", "sturmflut", "trafficCount", "trinkwasser", "verkehrsstaerken"],
     ignoredKeys: ["BOUNDEDBY", "SHAPE", "SHAPE_LENGTH", "SHAPE_AREA", "OBJECTID", "GLOBALID", "GEOMETRY", "SHP", "SHP_AREA", "SHP_LENGTH", "GEOM"],
     namedProjections: [
         // ETRS89 UTM
@@ -55,3 +56,5 @@ const Config = {
 if (typeof module !== "undefined") {
     module.exports = Config;
 }
+
+

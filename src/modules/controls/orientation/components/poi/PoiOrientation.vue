@@ -1,10 +1,10 @@
 <script>
 import {mapGetters, mapMutations, mapActions} from "vuex";
-import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
-import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle";
-import mutations from "../../store/mutationsOrientation";
-import {extractEventCoordinates} from "@shared/js/utils/extractEventCoordinates";
-import svgFactory from "@shared/js/utils/svgFactory";
+import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
+import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle.js";
+import mutations from "../../store/mutationsOrientation.js";
+import {extractEventCoordinates} from "@shared/js/utils/extractEventCoordinates.js";
+import svgFactory from "@shared/js/utils/svgFactory.js";
 
 /**
  * Orientation control that allowsthe user to locate themselves on the map.
@@ -392,7 +392,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
+
 
     #surrounding_vectorfeatures {
         background-color: transparent;

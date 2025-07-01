@@ -1,4 +1,4 @@
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 
 /**
  * Adds an event listener for the `initialTilesLoaded` event on all TileSet3D layers.

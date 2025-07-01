@@ -1,7 +1,7 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
-import layerTypes from "@core/layers/js/layerTypes";
+import layerTypes from "@core/layers/js/layerTypes.js";
 import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
 import LayerInfoContactButton from "./LayerInfoContactButton.vue";
 
@@ -158,7 +158,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
     .path{
         font-size: $font-size-sm;
         text-align: start;

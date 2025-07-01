@@ -1,5 +1,5 @@
 import axios from "axios";
-import isObject from "../../utils/isObject";
+import isObject from "../../utils/isObject.js";
 import {GeoJSON} from "ol/format";
 import {getUniqueValuesFromFetchedFeatures} from "@modules/filter/utils/fetchAllOafProperties";
 

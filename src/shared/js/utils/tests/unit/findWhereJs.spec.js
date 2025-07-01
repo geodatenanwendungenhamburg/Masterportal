@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import findWhereJs from "@shared/js/utils/findWhereJs";
+import findWhereJs from "@shared/js/utils/findWhereJs.js";
 
 describe("src/shared/js/utils/findWhereJs.js", () => {
     describe("findWhereJs", () => {

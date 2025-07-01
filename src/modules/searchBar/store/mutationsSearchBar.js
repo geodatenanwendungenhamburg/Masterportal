@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import stateSearchBar from "./stateSearchBar";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import stateSearchBar from "./stateSearchBar.js";
 
 /**
  * The mutations for the searchBar.

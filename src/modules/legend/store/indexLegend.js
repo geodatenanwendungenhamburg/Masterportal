@@ -1,7 +1,7 @@
-import state from "./stateLegend";
-import mutations from "./mutationsLegend";
-import getters from "./gettersLegend";
-import actions from "./actionsLegend";
+import state from "./stateLegend.js";
+import mutations from "./mutationsLegend.js";
+import getters from "./gettersLegend.js";
+import actions from "./actionsLegend.js";
 
 export default {
     namespaced: true,

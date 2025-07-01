@@ -16,7 +16,7 @@ import {
 } from "ol/geom";
 import isObject from "@shared/js/utils/isObject.js";
 import {translateKeyWithPlausibilityCheck} from "@shared/js/utils/translateKeyWithPlausibilityCheck.js";
-import sortBy from "@shared/js/utils/sortBy";
+import sortBy from "@shared/js/utils/sortBy.js";
 
 /**
  * Geometry Filter
@@ -608,7 +608,7 @@ export default {
 </template>
 
 <style lang="scss">
-@import "~variables";
+
 #geometryFilter {
     font-size: $font-size-lg;
 

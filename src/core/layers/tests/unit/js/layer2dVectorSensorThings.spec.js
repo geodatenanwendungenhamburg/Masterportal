@@ -4,7 +4,7 @@ import Feature from "ol/Feature.js";
 import Point from "ol/geom/Point.js";
 import sinon from "sinon";
 import crs from "@masterportal/masterportalapi/src/crs";
-import store from "@appstore";
+import store from "@appstore/index.js";
 import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 import Collection from "ol/Collection";

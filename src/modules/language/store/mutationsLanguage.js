@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import state from "./stateLanguage";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import state from "./stateLanguage.js";
 
 const mutations = {
     /**

@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import OrientationState from "./stateOrientation";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import OrientationState from "./stateOrientation.js";
 
 const mutations = {
     /**

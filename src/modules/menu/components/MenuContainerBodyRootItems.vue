@@ -1,7 +1,7 @@
 <script>
 import {mapGetters} from "vuex";
 import MenuContainerBodyRootItemElement from "./MenuContainerBodyRootItemElement.vue";
-import changeCase from "@shared/js/utils/changeCase";
+import changeCase from "@shared/js/utils/changeCase.js";
 
 /**
  * Menu Container Body Root Items
@@ -109,5 +109,5 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 </style>

@@ -351,8 +351,9 @@ export default {
     </div>
 </template>
 
-<style lang="scss" scoped>
-button{
+<style lang="scss">
+#rotation-control{
+    button{
     border: none;
     background-color: transparent;
 }
@@ -428,4 +429,6 @@ button{
     right: 20px;
     background-image: v-bind(controlsEastIcon);
 }
+}
+
 </style>

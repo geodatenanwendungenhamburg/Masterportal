@@ -1,5 +1,5 @@
-import stateRouting from "../../store/stateRouting";
-import {convertColor} from "@shared/js/utils/convertColor";
+import stateRouting from "../../store/stateRouting.js";
+import {convertColor} from "@shared/js/utils/convertColor.js";
 
 /**
  * @description Abstracts the search results of isochrones areas.

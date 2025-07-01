@@ -1,6 +1,6 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import stateIsochrones from "./stateIsochrones";
-import * as constantsRouting from "../constantsRouting";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import stateIsochrones from "./stateIsochrones.js";
+import * as constantsRouting from "../constantsRouting.js";
 
 /**
  * The getters for the routing isochrones.

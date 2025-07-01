@@ -1,7 +1,7 @@
-import layerCollection from "@core/layers/js/layerCollection";
-import {treeSubjectsKey} from "@shared/js/utils/constants";
-import store from "@appstore";
-import {resetRenderListeners} from "@shared/js/utils/resetRenderListeners";
+import layerCollection from "@core/layers/js/layerCollection.js";
+import {treeSubjectsKey} from "@shared/js/utils/constants.js";
+import store from "@appstore/index.js";
+import {resetRenderListeners} from "@shared/js/utils/resetRenderListeners.js";
 
 export default {
     windowWidthChanged ({commit, dispatch, state, getters, rootGetters}) {

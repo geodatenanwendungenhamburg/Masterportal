@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import compareFeaturesState from "./stateCompareFeatures";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import compareFeaturesState from "./stateCompareFeatures.js";
 
 const getters = {
     ...generateSimpleGetters(compareFeaturesState),

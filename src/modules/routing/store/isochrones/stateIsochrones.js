@@ -1,15 +1,15 @@
-import {RoutingWaypoint} from "../../js/classes/routing-waypoint";
+import {RoutingWaypoint} from "../../js/classes/routing-waypoint.js";
 
-import isochronesPointSource from "../../js/map/isochrones/point/isochronesPointSource";
-import isochronesPointLayer from "../../js/map/isochrones/point/isochronesPointLayer";
-import isochronesPointDrawInteraction from "../../js/map/isochrones/point/isochronesPointDraw";
-import isochronesPointModifyInteraction from "../../js/map/isochrones/point/isochronesPointModify";
-import isochronesPointSnapInteraction from "../../js/map/isochrones/point/isochronesPointSnap";
+import isochronesPointSource from "../../js/map/isochrones/point/isochronesPointSource.js";
+import isochronesPointLayer from "../../js/map/isochrones/point/isochronesPointLayer.js";
+import isochronesPointDrawInteraction from "../../js/map/isochrones/point/isochronesPointDraw.js";
+import isochronesPointModifyInteraction from "../../js/map/isochrones/point/isochronesPointModify.js";
+import isochronesPointSnapInteraction from "../../js/map/isochrones/point/isochronesPointSnap.js";
 
-import isochronesAreaSource from "../../js/map/isochrones/area/isochronesAreaSource";
-import isochronesAreaLayer from "../../js/map/isochrones/area/isochronesAreaLayer";
+import isochronesAreaSource from "../../js/map/isochrones/area/isochronesAreaSource.js";
+import isochronesAreaLayer from "../../js/map/isochrones/area/isochronesAreaLayer.js";
 
-import stateRouting from "../stateRouting";
+import stateRouting from "../stateRouting.js";
 
 /**
  * State of routing isochrones

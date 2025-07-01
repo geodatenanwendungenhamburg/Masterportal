@@ -1,7 +1,7 @@
-import mutations from "./mutationsTSR";
-import actions from "./actionsTSR";
-import getters from "./gettersTSR";
-import state from "./stateTSR";
+import mutations from "./mutationsTSR.js";
+import actions from "./actionsTSR.js";
+import getters from "./gettersTSR.js";
+import state from "./stateTSR.js";
 
 export default {
     namespaced: true,

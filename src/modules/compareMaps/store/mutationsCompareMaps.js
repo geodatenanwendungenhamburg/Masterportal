@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import coordState from "./stateCompareMaps";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import coordState from "./stateCompareMaps.js";
 
 /**
  * The mutations for compareMaps.

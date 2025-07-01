@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import backForwardState from "./stateBackForward";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import backForwardState from "./stateBackForward.js";
 
 /**
  * Updates map and state as side-effect.

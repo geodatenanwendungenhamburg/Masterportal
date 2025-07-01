@@ -93,6 +93,7 @@ function parseNodeAttributes (nodeAttributes) {
     return attributes;
 }
 
+
 /**
  * Make sure we have Node.children and Element.children available.
  * Internet Explorer 11 Polyfill.
@@ -112,7 +113,7 @@ function parseNodeAttributes (nodeAttributes) {
 
                 // iterate all childNodes
                 nodes.forEach(function (node) {
-                    // remenber those, that are Node.ELEMENT_NODE (1)
+                    // remember those that are Node.ELEMENT_NODE (1)
                     if (node.nodeType === 1) {
                         children.push(node);
                     }

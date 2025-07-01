@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import initialState from "./stateAlerting";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import initialState from "./stateAlerting.js";
 
 export default {
     ...generateSimpleMutations(initialState),

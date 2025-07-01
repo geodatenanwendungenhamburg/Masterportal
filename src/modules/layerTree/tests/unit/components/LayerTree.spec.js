@@ -2,8 +2,8 @@ import {createStore} from "vuex";
 import {config, mount, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
-import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants";
-import getNestedValues from "@shared/js/utils/getNestedValues";
+import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants.js";
+import getNestedValues from "@shared/js/utils/getNestedValues.js";
 import LayerTreeComponent from "@modules/layerTree/components/LayerTree.vue";
 import LayerTree from "@modules/layerTree/store/indexLayerTree";
 

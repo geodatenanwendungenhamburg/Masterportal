@@ -3,7 +3,7 @@ import {expect} from "chai";
 
 import actions from "@modules/wmsTime/store/actionsWmsTime";
 import initialState from "@modules/wmsTime/store/stateWmsTime";
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 
 describe("src/modules/wmsTime/store/actionsWmsTime.js", () => {
     let commit, dispatch, getters, rootGetters, state, map;

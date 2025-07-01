@@ -1,16 +1,16 @@
-import tsrWaypointsSource from "../../js/map/tsr/waypoints/tsrWaypointsSource";
-import tsrWaypointsLayer from "../../js/map/tsr/waypoints/tsrWaypointsLayer";
-import tsrWaypointsModifyInteraction from "../../js/map/tsr/waypoints/tsrWaypointsModify";
-import tsrWaypointsSnapInteraction from "../../js/map/tsr/waypoints/tsrWaypointsSnap";
-import tsrWaypointsDrawInteraction from "../../js/map/tsr/waypoints/tsrWaypointsDraw";
+import tsrWaypointsSource from "../../js/map/tsr/waypoints/tsrWaypointsSource.js";
+import tsrWaypointsLayer from "../../js/map/tsr/waypoints/tsrWaypointsLayer.js";
+import tsrWaypointsModifyInteraction from "../../js/map/tsr/waypoints/tsrWaypointsModify.js";
+import tsrWaypointsSnapInteraction from "../../js/map/tsr/waypoints/tsrWaypointsSnap.js";
+import tsrWaypointsDrawInteraction from "../../js/map/tsr/waypoints/tsrWaypointsDraw.js";
 
-import tsrRouteSource from "../../js/map/tsr/route/tsrRouteSource";
-import tsrRouteLayer from "../../js/map/tsr/route/tsrRouteLayer";
+import tsrRouteSource from "../../js/map/tsr/route/tsrRouteSource.js";
+import tsrRouteLayer from "../../js/map/tsr/route/tsrRouteLayer.js";
 
-import tsrElevationSource from "../../js/map/tsr/elevation/tsrElevationSource";
-import tsrElevationLayer from "../../js/map/tsr/elevation/tsrElevationLayer";
+import tsrElevationSource from "../../js/map/tsr/elevation/tsrElevationSource.js";
+import tsrElevationLayer from "../../js/map/tsr/elevation/tsrElevationLayer.js";
 
-import stateRouting from "../stateRouting";
+import stateRouting from "../stateRouting.js";
 
 /**
  * State of tsr

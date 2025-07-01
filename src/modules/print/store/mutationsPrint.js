@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import statePrint from "./statePrint";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import statePrint from "./statePrint.js";
 
 const mutations = {
     ...generateSimpleMutations(statePrint),

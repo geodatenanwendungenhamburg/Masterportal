@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import initialState from "./stateLogin";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import initialState from "./stateLogin.js";
 
 /**
  * The mutations for the Login.

@@ -1,5 +1,5 @@
-import {entities} from "@masterportal/masterportalapi/src";
-import Layer3d from "./layer3d";
+import {entities} from "@masterportal/masterportalapi/src/index.js";
+import Layer3d from "./layer3d.js";
 
 /**
  * Creates a 3d layer entities.

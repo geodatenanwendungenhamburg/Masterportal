@@ -129,7 +129,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .form-control:focus ~ label {
     color: $secondary;

@@ -1,7 +1,7 @@
-import state from "./stateWfst";
-import actions from "./actionsWfst";
-import getters from "./gettersWfst";
-import mutations from "./mutationsWfst";
+import state from "./stateWfst.js";
+import actions from "./actionsWfst.js";
+import getters from "./gettersWfst.js";
+import mutations from "./mutationsWfst.js";
 
 export default {
     namespaced: true,

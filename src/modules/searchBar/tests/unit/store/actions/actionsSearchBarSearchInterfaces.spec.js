@@ -1,7 +1,7 @@
 import actions from "@modules/searchBar/store/actions/actionsSearchBarSearchInterfaces";
 import {expect} from "chai";
 import sinon from "sinon";
-import store from "@appstore";
+import store from "@appstore/index.js";
 
 const {
     cleanSearchResults,

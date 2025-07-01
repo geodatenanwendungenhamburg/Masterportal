@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import calculateCenterOfExtent from "@shared/js/utils/calculateCenterOfExtent";
+import calculateCenterOfExtent from "@shared/js/utils/calculateCenterOfExtent.js";
 
 describe("src/shared/js/utils/calculateCenterOfExtent.js", () => {
     it("should return the center coordinate of an extent", () => {

@@ -1,6 +1,6 @@
 import {expect} from "chai";
-import getters from "@modules/modeler3D/store/gettersModeler3D";
-import Modeler3DState from "@modules/modeler3D/store/stateModeler3D";
+import getters from "@modules/modeler3D/store/gettersModeler3D.js";
+import Modeler3DState from "@modules/modeler3D/store/stateModeler3D.js";
 
 describe("src/modules/tools/modeler3D/store/gettersModeler3D.js", () => {
     let state;

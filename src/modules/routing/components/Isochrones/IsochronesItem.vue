@@ -1,9 +1,9 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from "vuex";
-import actions from "../../store/isochrones/actionsIsochrones";
-import mutations from "../../store/isochrones/mutationsIsochrones";
-import * as constants from "../../store/isochrones/constantsIsochrones";
-import * as constantsRouting from "../../store/constantsRouting";
+import actions from "../../store/isochrones/actionsIsochrones.js";
+import mutations from "../../store/isochrones/mutationsIsochrones.js";
+import * as constants from "../../store/isochrones/constantsIsochrones.js";
+import * as constantsRouting from "../../store/constantsRouting.js";
 import RoutingCoordinateInput from "../RoutingCoordinateInput.vue";
 import RoutingSliderInput from "../RoutingSliderInput.vue";
 import RoutingDownload from "../RoutingDownload.vue";
@@ -337,7 +337,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 #routing-isochrones {
   min-width: 350px;
 }

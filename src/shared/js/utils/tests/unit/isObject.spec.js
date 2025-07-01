@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import isObject from "@shared/js/utils/isObject";
+import isObject from "@shared/js/utils/isObject.js";
 
 describe("src/shared/js/utils/isObject", () => {
     describe("isObject", () => {

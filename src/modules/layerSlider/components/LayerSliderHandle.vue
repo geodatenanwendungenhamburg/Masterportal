@@ -154,7 +154,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
 
     #module-layer-slider-handle {
         accent-color: $secondary;

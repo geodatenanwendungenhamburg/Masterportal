@@ -1,6 +1,6 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import featureListerState from "./stateFeatureLister";
-import layerCollection from "@core/layers/js/layerCollection";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import featureListerState from "./stateFeatureLister.js";
+import layerCollection from "@core/layers/js/layerCollection.js";
 
 const simpleGetters = {
     ...generateSimpleGetters(featureListerState),

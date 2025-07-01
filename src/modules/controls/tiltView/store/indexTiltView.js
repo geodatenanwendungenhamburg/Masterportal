@@ -1,6 +1,6 @@
-import state from "./stateTiltView";
-import getters from "./gettersTiltView";
-import mutations from "./mutationsTiltView";
+import state from "./stateTiltView.js";
+import getters from "./gettersTiltView.js";
+import mutations from "./mutationsTiltView.js";
 
 export default {
     namespaced: true,

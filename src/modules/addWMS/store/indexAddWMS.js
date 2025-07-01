@@ -1,6 +1,6 @@
-import getters from "./gettersAddWMS";
-import mutations from "./mutationsAddWMS";
-import state from "./stateAddWMS";
+import getters from "./gettersAddWMS.js";
+import mutations from "./mutationsAddWMS.js";
+import state from "./stateAddWMS.js";
 
 export default {
     namespaced: true,

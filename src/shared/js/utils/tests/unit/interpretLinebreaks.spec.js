@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {interpretLinebreaks} from "@shared/js/utils/interpretLinebreaks";
+import {interpretLinebreaks} from "@shared/js/utils/interpretLinebreaks.js";
 
 describe("interpretLinebreaks", () => {
     it("does not change objects without CR/LF linebreaks", () => {

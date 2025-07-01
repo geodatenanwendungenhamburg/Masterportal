@@ -1,7 +1,7 @@
 <script>
 import LegendSingleLayer from "../../legend/components/LegendSingleLayer.vue";
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import {isWebLink} from "@shared/js/utils/urlHelper";
+import {isWebLink} from "@shared/js/utils/urlHelper.js";
 import AccordionItem from "@shared/modules/accordion/components/AccordionItem.vue";
 import {buildMetaURLs} from "@shared/js/utils/metaUrlHelper";
 import LayerInfoContactButton from "../../layerTree/components/LayerInfoContactButton.vue";
@@ -473,7 +473,7 @@ export default {
                         href="#url"
                         class="nav-link"
                         :class="{active: isActiveTab('url') }"
-                        @click="setActiveTab"
+                        @click.prevent="setActiveTab"
                     >{{ layerTyp }}
                     </a>
                 </li>
@@ -549,8 +549,6 @@ export default {
 </template>
 
 <style lang="scss">
-    @import "~variables";
-
     .layer-info-text {
         word-break: break-word;
     }
@@ -666,5 +664,4 @@ export default {
     .pt-5 {
         padding-top: 5px;
     }
-
 </style>

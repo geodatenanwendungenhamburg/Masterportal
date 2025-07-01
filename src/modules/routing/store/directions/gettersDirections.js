@@ -1,6 +1,6 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import directionsState from "./stateDirections";
-import * as constantsRouting from "../constantsRouting";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import directionsState from "./stateDirections.js";
+import * as constantsRouting from "../constantsRouting.js";
 
 /**
  * The getters for the routing directions.

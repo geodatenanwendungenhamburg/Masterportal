@@ -1,7 +1,7 @@
-import state from "./stateBaselayerSwitcher";
-import mutations from "./mutationsBaselayerSwitcher";
-import getters from "./gettersBaselayerSwitcher";
-import actions from "./actionsBaselayerSwitcher";
+import state from "./stateBaselayerSwitcher.js";
+import mutations from "./mutationsBaselayerSwitcher.js";
+import getters from "./gettersBaselayerSwitcher.js";
+import actions from "./actionsBaselayerSwitcher.js";
 
 export default {
     namespaced: true,

@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import stateBackForward from "./stateBackForward";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import stateBackForward from "./stateBackForward.js";
 
 export default {
     ...generateSimpleGetters(stateBackForward),

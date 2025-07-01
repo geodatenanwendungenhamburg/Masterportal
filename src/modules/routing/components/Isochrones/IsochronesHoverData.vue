@@ -176,7 +176,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
 
 #routing-hover-menu-content {
     display: none;

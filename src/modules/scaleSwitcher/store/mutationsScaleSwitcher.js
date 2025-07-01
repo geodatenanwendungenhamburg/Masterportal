@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import stateScaleSwitcher from "./stateScaleSwitcher";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import stateScaleSwitcher from "./stateScaleSwitcher.js";
 
 const mutations = {
     /**

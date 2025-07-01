@@ -1,8 +1,8 @@
-import Feature from "ol/Feature";
-import initialState from "./stateWfst";
-import {defaultInteractionConfig} from "../constantsWfst";
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import deepCopy from "@shared/js/utils/deepCopy";
+import Feature from "ol/Feature.js";
+import initialState from "./stateWfst.js";
+import {defaultInteractionConfig} from "../constantsWfst.js";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import deepCopy from "@shared/js/utils/deepCopy.js";
 
 const getters = {
     ...generateSimpleGetters(initialState),

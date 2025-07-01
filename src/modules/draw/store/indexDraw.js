@@ -1,7 +1,7 @@
-import actions from "./actionsDraw";
-import mutations from "./mutationsDraw";
-import getters from "./gettersDraw";
-import state from "./stateDraw";
+import actions from "./actionsDraw.js";
+import mutations from "./mutationsDraw.js";
+import getters from "./gettersDraw.js";
+import state from "./stateDraw.js";
 
 
 export default {

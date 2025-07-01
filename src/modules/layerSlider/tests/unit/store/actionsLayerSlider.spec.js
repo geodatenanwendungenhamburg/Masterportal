@@ -1,5 +1,5 @@
 import sinon from "sinon";
-import testAction from "@devtools/tests/VueTestUtils";
+import testAction from "@devtools/tests/VueTestUtils.js";
 import actions from "@modules/layerSlider/store/actionsLayerSlider";
 
 const {

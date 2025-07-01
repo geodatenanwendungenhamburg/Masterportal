@@ -111,7 +111,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 input[type="file"] {
         display: none;

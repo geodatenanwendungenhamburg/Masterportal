@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import stateIsochrones from "./stateIsochrones";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import stateIsochrones from "./stateIsochrones.js";
 
 /**
  * The mutations for the routing isochrones.

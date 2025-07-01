@@ -1,8 +1,8 @@
 <script>
 import {toRaw} from "vue";
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import changeCase from "@shared/js/utils/changeCase";
-import visibilityChecker from "@shared/js/utils/visibilityChecker";
+import changeCase from "@shared/js/utils/changeCase.js";
+import visibilityChecker from "@shared/js/utils/visibilityChecker.js";
 
 /**
  * Control layout component that places controls on the map.
@@ -186,8 +186,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
-
     .btn-group-controls {
         display: none;
         background-color: $white;

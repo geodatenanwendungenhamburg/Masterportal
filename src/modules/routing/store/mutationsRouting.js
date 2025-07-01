@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import routingState from "./stateRouting";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import routingState from "./stateRouting.js";
 
 /**
  * The mutations for the routing module.

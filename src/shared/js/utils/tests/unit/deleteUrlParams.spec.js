@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {deleteParams} from "@shared/js/utils/deleteUrlParams";
+import {deleteParams} from "@shared/js/utils/deleteUrlParams.js";
 
 describe("src/utils/deleteUrlParams.js", () => {
     describe("deleteParams", () => {

@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import stateControls from "./stateControls";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import stateControls from "./stateControls.js";
 
 import BackForward from "../backForward/components/BackForward.vue";
 import Button3d from "../button3d/components/Button3dItem.vue";

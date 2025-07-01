@@ -218,8 +218,8 @@ export default {
     </div>
 </template>
 
+
 <style lang="scss" scoped>
-    @import "~variables";
 
 .info-icon i {
     font-size: $icon_length_small;

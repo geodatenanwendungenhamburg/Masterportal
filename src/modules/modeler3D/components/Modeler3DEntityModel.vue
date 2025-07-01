@@ -5,9 +5,9 @@ import EntityAttributeSlider from "./ui/EntityAttributeSlider.vue";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 import {mapActions, mapGetters, mapMutations} from "vuex";
 
-import {convertColor} from "@shared/js/utils/convertColor";
-import {uniqueId} from "@shared/js/utils/uniqueId";
-import {calculatePolygonArea} from "../js/draw";
+import {convertColor} from "@shared/js/utils/convertColor.js";
+import {uniqueId} from "@shared/js/utils/uniqueId.js";
+import {calculatePolygonArea} from "../js/draw.js";
 import SwitchInput from "@shared/modules/checkboxes/components/SwitchInput.vue";
 /**
  * The entity model component for the 3D modeler.
@@ -830,8 +830,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
 
     .cta {
         margin-bottom:12px;

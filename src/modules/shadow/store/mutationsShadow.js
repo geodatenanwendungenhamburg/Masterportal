@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import stateShadow from "./stateShadow";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import stateShadow from "./stateShadow.js";
 
 const mutations = {
     ...generateSimpleMutations(stateShadow)

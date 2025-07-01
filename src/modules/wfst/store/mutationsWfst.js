@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import initialState from "./stateWfst";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import initialState from "./stateWfst.js";
 
 const mutations = {
     ...generateSimpleMutations(initialState),

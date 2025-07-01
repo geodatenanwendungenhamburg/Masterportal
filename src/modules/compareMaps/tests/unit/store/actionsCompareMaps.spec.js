@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import sinon from "sinon";
 import actions from "@modules/compareMaps/store/actionsCompareMaps";
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 
 describe("modules/compareMaps/store/actionsCompareMaps", () => {
     let commit, dispatch, state, rootGetters;

@@ -1,7 +1,7 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
 import RoutingBatchProcessing from "../RoutingBatchProcessing.vue";
-import {RoutingTaskHandler} from "../../js/classes/routing-task-handler";
+import {RoutingTaskHandler} from "../../js/classes/routing-task-handler.js";
 
 
 /**

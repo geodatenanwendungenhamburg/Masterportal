@@ -1,6 +1,6 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import tsrState from "./stateTSR";
-import * as constantsRouting from "../constantsRouting";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import tsrState from "./stateTSR.js";
+import * as constantsRouting from "../constantsRouting.js";
 
 /**
  * The getters for the routing tsr.

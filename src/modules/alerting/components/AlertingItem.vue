@@ -341,8 +341,8 @@ export default {
     </div>
 </template>
 
+
 <style lang="scss" scoped>
-    @import "~variables";
     #alertModal{
         display: block;
         background-color: rgba(0,0,0,0.5);

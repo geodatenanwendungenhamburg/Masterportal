@@ -4,7 +4,7 @@ import sinon from "sinon";
 import {config, shallowMount} from "@vue/test-utils";
 import FeatureListerComponent from "@modules/featureLister/components/FeatureLister.vue";
 import FeatureLister from "@modules/featureLister/store/indexFeatureLister";
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 import getGfiFeatureModule from "@shared/js/utils/getGfiFeaturesByTileFeature";
 
 config.global.mocks.$t = key => key;

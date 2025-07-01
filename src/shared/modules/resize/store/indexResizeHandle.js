@@ -1,6 +1,6 @@
-import getters from "./gettersResizeHandle";
-import mutations from "./mutationsResizeHandle";
-import state from "./stateResizeHandle";
+import getters from "./gettersResizeHandle.js";
+import mutations from "./mutationsResizeHandle.js";
+import state from "./stateResizeHandle.js";
 export default {
     namespaced: true,
     state: {...state},

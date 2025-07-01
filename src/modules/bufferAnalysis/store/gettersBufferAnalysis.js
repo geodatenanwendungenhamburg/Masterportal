@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import stateBufferAnalysis from "./stateBufferAnalysis";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import stateBufferAnalysis from "./stateBufferAnalysis.js";
 
 const getters = {
     ...generateSimpleGetters(stateBufferAnalysis),

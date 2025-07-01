@@ -3,7 +3,7 @@
  * @module modules/searchBar/store/actions/actionsSearchBarSearchInterfaces
  */
 import SearchInterfaceBkg from "../../searchInterfaces/searchInterfaceBkg";
-import SearchInterfaceElasticSearch from "../../searchInterfaces/searchInterfaceElasticSearch";
+import SearchInterfaceElasticSearch from "../../searchInterfaces/searchInterfaceElasticSearch.js";
 import SearchInterfaceGazetteer from "../../searchInterfaces/searchInterfaceGazetteer";
 import SearchInterfaceKomootPhoton from "../../searchInterfaces/searchInterfaceKomootPhoton";
 import SearchInterfaceLocationFinder from "../../searchInterfaces/searchInterfaceLocationFinder";

@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import sinon from "sinon";
 import layerCollector from "@modules/legend/js/layerCollector";
-import layerCollection from "@core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 
 describe("src/modules/legend/js/layerCollector.js", function () {
     let layers,

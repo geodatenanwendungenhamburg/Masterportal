@@ -1,4 +1,4 @@
-import isObject from "@shared/js/utils/isObject";
+import isObject from "@shared/js/utils/isObject.js";
 
 /**
  * Clones, checks and modifies the given original layers to match the needs of Filter.

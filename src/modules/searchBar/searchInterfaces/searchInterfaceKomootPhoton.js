@@ -1,8 +1,8 @@
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 
-import SearchInterface from "./searchInterface";
-import store from "@appstore";
-import {uniqueId} from "@shared/js/utils/uniqueId";
+import SearchInterface from "./searchInterface.js";
+import store from "@appstore/index.js";
+import {uniqueId} from "@shared/js/utils/uniqueId.js";
 
 /**
  * The search interface to the koomot photon geocoder.

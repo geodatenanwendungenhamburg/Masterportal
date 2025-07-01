@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import tsrState from "./stateTSR";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import tsrState from "./stateTSR.js";
 
 /**
  * The mutations for the routing tsr.

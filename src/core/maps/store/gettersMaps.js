@@ -1,5 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators";
-import stateMaps from "./stateMaps";
+import {generateSimpleGetters} from "@shared/js/utils/generators.js";
+import stateMaps from "./stateMaps.js";
 
 const getters = {
     ...generateSimpleGetters(stateMaps),

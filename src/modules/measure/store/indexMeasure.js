@@ -1,7 +1,7 @@
-import getters from "./gettersMeasure";
-import mutations from "./mutationsMeasure";
-import actions from "./actionsMeasure";
-import state from "./stateMeasure";
+import getters from "./gettersMeasure.js";
+import mutations from "./mutationsMeasure.js";
+import actions from "./actionsMeasure.js";
+import state from "./stateMeasure.js";
 import "../js/typedefs";
 
 export default {

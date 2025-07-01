@@ -1502,7 +1502,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 .no-cursor {
     cursor: none;
 }

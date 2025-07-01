@@ -1,7 +1,4 @@
-import actions from "./actionsDraw";
-import getters from "./gettersDraw";
-import mutations from "./mutationsDraw";
-import drawTypeOptions from "./drawTypeOptions";
+import drawTypeOptions from "./drawTypeOptions.js";
 
 const colorOptions = [
         {color: "blue", value: [55, 126, 184]},
@@ -35,11 +32,6 @@ const colorOptions = [
         {caption: "m", value: "m"},
         {caption: "km", value: "km"}
     ],
-    keyStore = {
-        getters: Object.keys(getters || {}),
-        mutations: Object.keys(mutations || {}),
-        actions: Object.keys(actions || {})
-    },
     pointSizeOptions = [
         {caption: "6 px", value: 6},
         {caption: "8 px", value: 8},
@@ -77,7 +69,6 @@ export {
     fontOptions,
     fontSizeOptions,
     unitOptions,
-    keyStore,
     pointSizeOptions,
     strokeOptions,
     transparencyOptions

@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import stateDraw from "./stateDraw";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import stateDraw from "./stateDraw.js";
 
 /**
  * The mutations for the draw module.

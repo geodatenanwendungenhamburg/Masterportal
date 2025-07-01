@@ -63,7 +63,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
 
     p {
         color: $black;

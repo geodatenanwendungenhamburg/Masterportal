@@ -1,5 +1,5 @@
-import layerCollection from "@core/layers/js/layerCollection";
-import {resetRenderListeners} from "@shared/js/utils/resetRenderListeners";
+import layerCollection from "@core/layers/js/layerCollection.js";
+import {resetRenderListeners} from "@shared/js/utils/resetRenderListeners.js";
 
 /**
  * The actions for the CompareMaps.

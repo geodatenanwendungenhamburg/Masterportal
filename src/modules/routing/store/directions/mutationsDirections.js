@@ -1,5 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators";
-import directionsState from "./stateDirections";
+import {generateSimpleMutations} from "@shared/js/utils/generators.js";
+import directionsState from "./stateDirections.js";
 
 /**
  * The mutations for the routing directions.
