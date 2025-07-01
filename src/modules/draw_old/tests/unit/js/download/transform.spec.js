@@ -2,7 +2,7 @@ import sinon from "sinon";
 import {expect} from "chai";
 
 import transform from "@modules/draw_old/js/download/transform";
-import store from "@appstore";
+import store from "@appstore/index.js";
 
 import Circle from "ol/geom/Circle";
 import Line from "ol/geom/LineString";

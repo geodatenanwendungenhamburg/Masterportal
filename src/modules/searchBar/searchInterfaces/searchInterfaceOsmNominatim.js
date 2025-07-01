@@ -1,4 +1,4 @@
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 import dayjs from "dayjs";
 
 import SearchInterface from "./searchInterface.js";

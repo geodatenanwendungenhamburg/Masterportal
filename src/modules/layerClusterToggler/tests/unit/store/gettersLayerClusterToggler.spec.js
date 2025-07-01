@@ -1,6 +1,6 @@
 import {expect} from "chai";
-import getters from "@modules/layerClusterToggler/store/gettersLayerClusterToggler";
-import state from "@modules/layerClusterToggler/store/stateLayerClusterToggler";
+import getters from "@modules/layerClusterToggler/store/gettersLayerClusterToggler.js";
+import state from "@modules/layerClusterToggler/store/stateLayerClusterToggler.js";
 
 describe("src/modules/layerClusterToggler/store/gettersLayerClusterToggler.js", () => {
     describe("layerNames", () => {

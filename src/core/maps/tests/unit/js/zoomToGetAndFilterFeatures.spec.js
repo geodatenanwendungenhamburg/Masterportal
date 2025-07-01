@@ -1,6 +1,6 @@
 import axios from "axios";
 import {expect} from "chai";
-import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
 import sinon from "sinon";
 
 import featureProvider from "@core/maps/js/zoomToGetAndFilterFeatures.js";

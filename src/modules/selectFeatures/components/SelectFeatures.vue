@@ -494,7 +494,7 @@ export default {
                         :key="'a' + index"
                         href="#"
                         class="select-features-zoom-link"
-                        @click="featureZoom"
+                        @click.prevent="featureZoom"
                     >
                         {{ translate("common:modules.selectFeatures.zoomToFeature") }}
                     </a>

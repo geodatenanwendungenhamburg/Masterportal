@@ -1,9 +1,9 @@
 import WMSGetFeatureInfo from "ol/format/WMSGetFeatureInfo.js";
-import Feature from "ol/Feature";
+import Feature from "ol/Feature.js";
 import axios from "axios";
 import handleAxiosResponse from "../utils/handleAxiosResponse.js";
-import {rawLayerList} from "@masterportal/masterportalapi/src";
-import store from "@appstore";
+import {rawLayerList} from "@masterportal/masterportalapi/src/index.js";
+import store from "@appstore/index.js";
 
 /**
  * Handles the GetFeatureInfo request.

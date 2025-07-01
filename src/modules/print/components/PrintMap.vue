@@ -1,6 +1,6 @@
 <script>
 import axios from "axios";
-import Cluster from "ol/source/Cluster";
+import Cluster from "ol/source/Cluster.js";
 import {mapGetters, mapMutations, mapActions} from "vuex";
 import {Vector} from "ol/layer.js";
 
@@ -806,7 +806,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
 
     .info {
         max-width: fit-content;

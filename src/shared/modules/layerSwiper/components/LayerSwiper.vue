@@ -116,7 +116,7 @@ export default {
 
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 button {
     pointer-events: all;

@@ -1,8 +1,8 @@
-import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle";
-import Feature from "ol/Feature";
+import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle.js";
+import Feature from "ol/Feature.js";
 import {Icon, Style} from "ol/style";
 import Point from "ol/geom/Point";
-import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
+import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
 
 import calculateCenterOfExtent from "@shared/js/utils/calculateCenterOfExtent.js";
 import {isUrl} from "@shared/js/utils/urlHelper.js";

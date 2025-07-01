@@ -1,4 +1,4 @@
-import testAction from "@devtools/tests/VueTestUtils";
+import testAction from "@devtools/tests/VueTestUtils.js";
 import actions from "@modules/filter/store/actionsFilter";
 import state from "@modules/filter/store/stateFilter";
 

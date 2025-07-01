@@ -1,5 +1,5 @@
 import axios from "axios";
-import store from "@appstore";
+import store from "@appstore/index.js";
 import state from "@modules/routing/store/stateRouting";
 import {expect} from "chai";
 import sinon from "sinon";

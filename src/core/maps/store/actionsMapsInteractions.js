@@ -1,5 +1,5 @@
 
-import api from "@masterportal/masterportalapi/src/maps/api";
+import api from "@masterportal/masterportalapi/src/maps/api.js";
 import {unByKey as unlistenByKey} from "ol/Observable.js";
 import {toRaw} from "vue";
 import proj4 from "proj4";

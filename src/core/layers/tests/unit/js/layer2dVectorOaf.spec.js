@@ -4,7 +4,7 @@ import sinon from "sinon";
 import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
-import getGeometryTypeFromService from "@masterportal/masterportalapi/src/vectorStyle/lib/getGeometryTypeFromService";
+import getGeometryTypeFromService from "@masterportal/masterportalapi/src/vectorStyle/lib/getGeometryTypeFromService.js";
 import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle";
 import webgl from "@core/layers/js/webglRenderer.js";
 import store from "@appstore";

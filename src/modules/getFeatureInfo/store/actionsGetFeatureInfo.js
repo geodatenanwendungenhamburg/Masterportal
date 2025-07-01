@@ -1,4 +1,4 @@
-import Cluster from "ol/source/Cluster";
+import Cluster from "ol/source/Cluster.js";
 import VectorSource from "ol/source/Vector";
 import {getWmsFeaturesByMimeType} from "@shared/js/utils/getWmsFeaturesByMimeType.js";
 import {getVisibleWmsLayersAtResolution} from "../js/getLayers.js";

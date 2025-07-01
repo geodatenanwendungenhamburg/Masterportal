@@ -985,8 +985,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~mixins";
-@import "~variables";
+
 
 .text-with-newlines {
     white-space: pre-wrap;

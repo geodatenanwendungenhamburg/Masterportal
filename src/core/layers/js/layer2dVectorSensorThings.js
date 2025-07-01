@@ -1,10 +1,10 @@
 import {buffer, containsExtent} from "ol/extent";
-import Cluster from "ol/source/Cluster";
+import Cluster from "ol/source/Cluster.js";
 import {Circle as CircleStyle, Fill, Stroke, Style} from "ol/style.js";
 import {unByKey} from "ol/Observable";
-import crs from "@masterportal/masterportalapi/src/crs";
-import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
-import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle";
+import crs from "@masterportal/masterportalapi/src/crs.js";
+import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
+import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle.js";
 import {GeoJSON} from "ol/format";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";

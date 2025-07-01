@@ -80,9 +80,6 @@ export default {
             selector: "[data-bs-toggle='tooltip']"
         });
     },
-    unmounted () {
-        window.removeEventListener("resize", this.onResize());
-    },
     methods: {
         ...mapMutations([
             "setDeviceMode"
@@ -105,8 +102,8 @@ export default {
          * @returns {void}
          */
         setGlobalVariables () {
-            global.mapCollection = mapCollection;
-            global.moduleCollection = {};
+            window.mapCollection = mapCollection;
+            window.moduleCollection = {};
         },
 
         /**
@@ -132,8 +129,8 @@ export default {
         * @returns {void}
         */
         checkVueObservation () {
-            /* eslint-disable n/no-process-env */
-            if (process.env.NODE_ENV === "development") {
+
+            if (import.meta.env.VITE_NODE_ENV === "development") {
                 setInterval(() => {
                     const map3d = mapCollection.getMap("3D");
 
@@ -154,7 +151,7 @@ export default {
                 mobile = "Mobile";
 
             this.setDeviceMode(isMobile() ? mobile : desktop);
-            window.addEventListener("resize", this.onResize(mobile, desktop));
+            window.addEventListener("resize", () => this.onResize(mobile, desktop));
         },
 
         /**
@@ -250,8 +247,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
-
 .masterportal-container {
     display: flex;
     flex-direction: row;

@@ -4,11 +4,12 @@ let replacements = [];
 module.exports = function (destination, stableVersionNumber) {
     replacements = [];
 
-    replacements.push({
+    // #VITE The file has been deleted.
+    /*     replacements.push({
         "files": destination + "/index.html",
         "from": /\/*(\.+\/)*build\/css\/style\.css/g,
         "to": "../Mastercode/" + stableVersionNumber + "/css/style.css"
-    });
+    }); */
     replacements.push({
         "files": destination + "/index.html",
         "from": /\/*(\.+\/)*build\/js\/masterportal\.js/g,

@@ -40,7 +40,8 @@ export default {
         ...mapGetters("Maps", ["mode", "scale", "scales"])
     },
     mounted () {
-        if (this.conf.maxScale && this.conf.minScale) {
+        // #VITE The condition was adjusted to prevent the error Cannot read properties of null (reading 'length').
+        if (this.conf.maxScale && this.conf.minScale && Array.isArray(this.scales)) {
             let minScale = parseInt(this.conf.minScale, 10);
 
             if (minScale === 0) {
@@ -159,8 +160,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
-    @import "~mixins";
+
 
     .layer-checkbox-tooltip {
         overflow: hidden;

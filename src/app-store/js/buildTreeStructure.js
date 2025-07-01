@@ -1,6 +1,6 @@
-import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
 import getNestedValues from "@shared/js/utils/getNestedValues.js";
-import {sortObjects} from "@shared/js/utils/sortObjects.js";
+import {sortObjects} from "@shared/js/utils/sortObjects";
 import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants.js";
 import {uniqueId} from "@shared/js/utils/uniqueId.js";
 import layerTypes from "@core/layers/js/layerTypes.js";

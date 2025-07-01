@@ -2,7 +2,7 @@ import axios from "axios";
 import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle.js";
 import {expect} from "chai";
 import {nextTick} from "vue";
-import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
 import sinon from "sinon";
 import VectorLayer from "ol/layer/Vector";
 

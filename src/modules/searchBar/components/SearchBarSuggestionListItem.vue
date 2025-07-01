@@ -60,7 +60,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
 .btn {
     align-items: center;
     justify-content: left;

@@ -1335,7 +1335,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .dropdown-menu {
     --bs-dropdown-min-width: 25em;
@@ -1555,7 +1555,7 @@ table {
 </style>
 
 <style lang="scss">
-@import "~variables";
+
 
 .filter-select-box-wrapper {
     .multiselect__single {

@@ -1,4 +1,4 @@
-import testAction from "@devtools/tests/VueTestUtils";
+import testAction from "@devtools/tests/VueTestUtils.js";
 import actions from "@modules/coordToolkit/store/actionsCoordToolkit";
 import crs from "@masterportal/masterportalapi/src/crs";
 import sinon from "sinon";

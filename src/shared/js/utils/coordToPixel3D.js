@@ -1,4 +1,4 @@
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 
 /**
  * Returns the pixel in 3D map, calculated by the given coordinates.

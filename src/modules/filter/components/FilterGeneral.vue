@@ -229,7 +229,7 @@ export default {
 
                 for (const additionalGeometry of additionalGeometries) {
                     const rawLayer = rawLayerList.getLayerWhere({id: additionalGeometry.layerId}),
-                        features = await getFeatureGET(rawLayer.url, {version: rawLayer.version, featureType: rawLayer.featureType});
+                        features = await getFeature.getFeatureGET(rawLayer.url, {version: rawLayer.version, featureType: rawLayer.featureType});
 
                     additionalGeometry.features = wfsReader.readFeatures(features);
                 }
@@ -767,7 +767,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
+
     .layerGroupContainer {
         background-color: #f5f5f5;
         padding: 10px;

@@ -1,4 +1,4 @@
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 
 import store from "@appstore";
 import highlightFeaturesByAttribute from "./highlightFeaturesByAttribute.js";

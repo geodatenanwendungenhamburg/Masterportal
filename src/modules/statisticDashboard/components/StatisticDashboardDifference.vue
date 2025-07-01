@@ -223,7 +223,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .bootstrap-icon {
     position: absolute;
@@ -247,7 +247,7 @@ export default {
 </style>
 
 <style lang="scss">
-@import "~variables";
+
 
 .multiselect, .multiselect__input, .multiselect__single {
     font-family: inherit;

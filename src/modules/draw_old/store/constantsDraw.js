@@ -35,11 +35,6 @@ const colorOptions = [
         {caption: "m", value: "m"},
         {caption: "km", value: "km"}
     ],
-    keyStore = {
-        getters: Object.keys(getters || {}),
-        mutations: Object.keys(mutations || {}),
-        actions: Object.keys(actions || {})
-    },
     pointSizeOptions = [
         {caption: "6 px", value: 6},
         {caption: "8 px", value: 8},
@@ -77,7 +72,6 @@ export {
     fontOptions,
     fontSizeOptions,
     unitOptions,
-    keyStore,
     pointSizeOptions,
     strokeOptions,
     transparencyOptions

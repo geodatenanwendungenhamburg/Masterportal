@@ -1,8 +1,8 @@
 import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
-import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle";
-import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
-import store from "@appstore";
+import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle.js";
+import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
+import store from "@appstore/index.js";
 
 /**
  * Create the map markers and add them to the map.
@@ -10,8 +10,11 @@ import store from "@appstore";
  * @returns {void}
  */
 function initializeMapMarkers (mapMarker) {
-    store.dispatch("Maps/addLayer", createMapMarker("POINT", mapMarker?.pointStyleId));
-    store.dispatch("Maps/addLayer", createMapMarker("POLYGON", mapMarker?.polygonStyleId));
+    // #VITE Modified here to prevent the code from breaking or freezing
+    const safeMapMarker = mapMarker || {pointStyleId: "mapMarker_geo-alt-fill"};
+
+    store.dispatch("Maps/addLayer", createMapMarker("POINT", safeMapMarker.pointStyleId));
+    store.dispatch("Maps/addLayer", createMapMarker("POLYGON", safeMapMarker.polygonStyleId));
 }
 
 /**

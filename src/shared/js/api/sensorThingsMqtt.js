@@ -61,6 +61,6 @@ class SensorThingsMqtt {
     }
 }
 
-module.exports = {
+export {
     SensorThingsMqtt
 };

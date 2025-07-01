@@ -1,4 +1,4 @@
-import Cluster from "ol/source/Cluster";
+import Cluster from "ol/source/Cluster.js";
 import axios from "axios";
 
 import store from "@appstore";

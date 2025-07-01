@@ -143,9 +143,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
-@import "~mixins";
-
 .search-bar-result-list-topic-tree-item-title, .search-bar-result-list-topic-tree-item-checkbox {
     &:hover {
         @include primary_action_hover;

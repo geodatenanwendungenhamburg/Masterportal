@@ -4,7 +4,7 @@ import store from "@appstore";
 import SearchInterface from "./searchInterface.js";
 import wfs from "@masterportal/masterportalapi/src/layer/wfs";
 
-import Cluster from "ol/source/Cluster";
+import Cluster from "ol/source/Cluster.js";
 import * as olExtent from "ol/extent";
 import {Icon} from "ol/style.js";
 

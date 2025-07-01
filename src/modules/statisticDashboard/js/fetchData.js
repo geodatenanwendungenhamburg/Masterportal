@@ -64,7 +64,7 @@ async function fetchAllDataForWFS (url, featureType, propertyNames) {
         propertyNames
     };
 
-    return getFeatureGET(url, payload, error => {
+    return getFeature.getFeatureGET(url, payload, error => {
         console.error(error);
     });
 }
