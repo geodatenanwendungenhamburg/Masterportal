@@ -78,6 +78,11 @@ export default {
                 class="bold mb-4 mt-4"
                 :title="$t('common:modules.searchBar.searchResultsFrom') + category + '-' + $t('common:modules.searchBar.search')"
             >
+                <img
+                    v-if="items[category][0]?.imgPath"
+                    alt="search result image"
+                    :src="items[category][0].imgPath"
+                >
                 <i
                     v-if="items[category][0]?.icon"
                     :class="items[category][0]?.icon"
