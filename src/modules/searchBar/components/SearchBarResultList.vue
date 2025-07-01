@@ -88,7 +88,7 @@ export default {
                 <img
                     v-if="limitedSortedSearchResults?.results[currentAvailableCategories + 'ImgPath']"
                     alt="search result image"
-                    src="searchResult.imgPath"
+                    :src="searchResult.imgPath"
                 >
                 <i
                     v-if="!limitedSortedSearchResults?.results[currentAvailableCategories + 'ImgPath']"

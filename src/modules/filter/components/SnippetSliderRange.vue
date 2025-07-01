@@ -894,7 +894,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
+
 
     .snippetSliderRangeContainer {
         cursor: default;

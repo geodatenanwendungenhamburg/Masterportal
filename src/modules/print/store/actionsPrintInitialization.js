@@ -1,6 +1,6 @@
 
 import {apply as applyTransform} from "ol/transform.js";
-import {createEmpty, extendCoordinate} from "ol/extent.js";
+import {createEmpty, extendCoordinate} from "ol/extent";
 import {DEVICE_PIXEL_RATIO} from "ol/has.js";
 
 import BuildSpec from "../js/buildSpec.js";
@@ -9,6 +9,7 @@ import layerProvider from "../js/getVisibleLayer.js";
 import thousandsSeparator from "@shared/js/utils/thousandsSeparator.js";
 import {autoDrawMask} from "olcs/lib/olcs/print/drawCesiumMask.js";
 import {computeRectangle} from "olcs/lib/olcs/print/computeRectangle.js";
+import i18next from "i18next";
 
 export default {
     /**

@@ -453,8 +453,8 @@ export default {
     </div>
 </template>
 
+
 <style lang="scss" scoped>
-    @import "~variables";
     .WMS_example_text {
         margin-top: 10px;
         color: $light_grey;

@@ -225,7 +225,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
     .snippetInput {
         box-sizing: border-box;
         position: relative;
@@ -242,7 +241,6 @@ export default {
 </style>
 
 <style lang="scss">
-    @import "~mixins";
     .snippetInput {
         .form-control {
             height: unset;

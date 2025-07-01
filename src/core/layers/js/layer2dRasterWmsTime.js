@@ -3,7 +3,7 @@ import WMSLayer from "./layer2dRasterWms.js";
 import layerCollection from "./layerCollection.js";
 import store from "@appstore/index.js";
 import handleAxiosResponse from "@shared/js/utils/handleAxiosResponse.js";
-import detectIso8601Precision from "@shared/js/utils/detectIso8601Precision.js";
+import detectIso8601Precision from "@shared/js/utils/detectIso8601Precision";
 
 import axios from "axios";
 import dayjs from "dayjs";

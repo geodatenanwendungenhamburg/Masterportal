@@ -11,7 +11,7 @@
  *
  * how to import
  * ------------
- * import {convertColor} from "src/utils/convertColor";
+ * import {convertColor} from "src/utils/convertColor.js";
  *
  * examples
  * ------------

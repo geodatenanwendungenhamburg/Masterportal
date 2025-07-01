@@ -2,7 +2,6 @@ import Layer2dRasterStaticImage from "./layer2dRasterStaticImage.js";
 import Layer2dRasterWms from "./layer2dRasterWms.js";
 import Layer2dRasterWmts from "./layer2dRasterWmts.js";
 import Layer2dRasterWmsTime from "./layer2dRasterWmsTime.js";
-import Layer2dVector from "./layer2dVector.js";
 import Layer2dVectorGeojson from "./layer2dVectorGeojson.js";
 import Layer2dVectorOaf from "./layer2dVectorOaf.js";
 import Layer2dVectorSensorThings from "./layer2dVectorSensorThings.js";
@@ -15,6 +14,11 @@ import Layer3dTerrain from "./layer3dTerrain.js";
 import Layer3dTileset from "./layer3dTileset.js";
 import removeHtmlTags from "@shared/js/utils/removeHtmlTags.js";
 
+/**
+ * Dynamic import registry for layers.
+ * If not dynamic imports: any code path (including test) causes layerFactory.js to be loaded before e.g. layer2dRaster.js is fully evaluated,
+ * a circular dependency is created and test will fail.
+ */
 const layerTypes2d = {
         GEOJSON: Layer2dVectorGeojson,
         GROUP: Layer2dGroup,
@@ -38,9 +42,9 @@ const layerTypes2d = {
  * Creates layer instances.
  * @param {Object} layerConf The layer configuration.
  * @param {String} mapMode The current map mode.
- * @returns {Layer} The layer instance.
+ * @returns {Promise<Layer>} The layer instance.
  */
-function createLayer (layerConf, mapMode) {
+export async function createLayer (layerConf, mapMode) {
     let layer,
         typ;
 
@@ -54,7 +58,9 @@ function createLayer (layerConf, mapMode) {
         layer = new layerTypes2d[typ](layerConf, typ === "GROUP" ? this : undefined);
     }
     else if (mapMode === "3D" && layerTypes3d[typ]) {
-        layer = new layerTypes3d[typ](layerConf);
+        const module = await layerTypes3d[typ]();
+
+        layer = new module.default(layerConf);
     }
     if (layer) {
         const htmlName = layer.attributes.name;
@@ -71,15 +77,13 @@ function createLayer (layerConf, mapMode) {
  * @returns {Array} The vectorLayer types as an array.
  */
 function getVectorLayerTypes () {
-    const vectorLayerTypes = [];
-
-    Object.keys(layerTypes2d).forEach(layerTyp => {
-        if (layerTypes2d[layerTyp].prototype instanceof Layer2dVector) {
-            vectorLayerTypes.push(layerTyp);
-        }
-    });
-
-    return vectorLayerTypes;
+    return [
+        "GEOJSON",
+        "OAF",
+        "SENSORTHINGS",
+        "VECTORBASE",
+        "WFS"
+    ];
 }
 
 export default {

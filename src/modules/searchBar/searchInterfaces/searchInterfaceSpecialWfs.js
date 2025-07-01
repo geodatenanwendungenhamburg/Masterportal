@@ -1,6 +1,7 @@
 import SearchInterface from "./searchInterface.js";
 import WFS from "ol/format/WFS.js";
 import {uniqueId} from "@shared/js/utils/uniqueId.js";
+import i18next from "i18next";
 
 /**
  * The search interface to the special wfs.

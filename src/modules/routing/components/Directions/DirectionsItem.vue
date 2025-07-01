@@ -566,7 +566,7 @@ export default {
                                 >
                                     {{ $t('common:modules.routing.importAvoidAreas.header') }}
                                     <a
-                                        href="#"
+                                        href="javascript:void(0)"
                                         :aria-label="$t('common:modules.routing.importAvoidAreas.help')"
                                     />
                                 </h1>
@@ -660,7 +660,7 @@ export default {
                     v-for="(segment, segmentIndex) of routingDirections.segments"
                     :key="'segment_header_' + segmentIndex"
                 >
-                    <button
+                    <div
                         class="d-flex step pl-2 py-4 btn-directions"
                         @mouseover="highlightRoute({fromWaypointIndex: segmentIndex, toWaypointIndex: segmentIndex + 1})"
                         @focus="highlightRoute({fromWaypointIndex: segmentIndex, toWaypointIndex: segmentIndex + 1})"
@@ -701,7 +701,6 @@ export default {
                                 <RoutingDistanceDisplay :distance="segment.distance" />
                             </div>
                         </span>
-                    </button>
 
                     <hr
                         class="m-0"
@@ -803,7 +802,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
 .test {
     background-color: yellow;
