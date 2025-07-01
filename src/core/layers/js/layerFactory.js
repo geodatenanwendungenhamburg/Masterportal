@@ -46,7 +46,7 @@ const layerTypes2d = {
  * @param {String} mapMode The current map mode.
  * @returns {Promise<Layer>} The layer instance.
  */
-function createLayer (layerConf, mapMode) {
+export async function createLayer (layerConf, mapMode) {
     let layer,
         typ;
 
@@ -61,7 +61,9 @@ function createLayer (layerConf, mapMode) {
         layer = new layerTypes2d[typ](layerConf, typ === "GROUP" ? this : undefined);
     }
     else if (mapMode === "3D" && layerTypes3d[typ]) {
-        layer = new layerTypes3d[typ](layerConf);
+        const module = await layerTypes3d[typ]();
+
+        layer = new module.default(layerConf);
     }
 
     return layer;
