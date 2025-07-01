@@ -2,6 +2,7 @@ import menuState from "./stateMenu.js";
 import {badPathSymbol, idx} from "@shared/js/utils/idx.js";
 import {generateSimpleGetters} from "@shared/js/utils/generators.js";
 import changeCase from "@shared/js/utils/changeCase.js";
+import i18next from "i18next";
 
 const menuGetters = {
     ...generateSimpleGetters(menuState),

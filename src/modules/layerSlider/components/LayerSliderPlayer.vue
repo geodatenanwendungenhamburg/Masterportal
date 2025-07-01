@@ -195,8 +195,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
 
     #module-layer-slider-player {
         .progress-bar {

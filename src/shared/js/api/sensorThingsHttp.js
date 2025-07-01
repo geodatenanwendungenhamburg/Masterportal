@@ -508,6 +508,6 @@ class SensorThingsHttp {
     }
 }
 
-module.exports = {
+export {
     SensorThingsHttp
 };

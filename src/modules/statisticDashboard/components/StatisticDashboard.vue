@@ -864,7 +864,7 @@ export default {
                 statFeatures = [];
 
             if (selectedLayer.typ === "WFS") {
-                response = await getFeaturePOST(selectedLayer.url, payload, error => {
+                response = await getFeature.getFeaturePOST(selectedLayer.url, payload, error => {
                     console.error(error);
                 });
                 this.loadedFeatures = new WFS().readFeatures(response);
@@ -2199,8 +2199,9 @@ export default {
     </div>
 </template>
 
+
 <style lang="scss" scoped>
-@import "~variables";
+
 .hover-overlay {
     position: absolute;
     display: none;

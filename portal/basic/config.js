@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 const Config = {
     alerting: {
         fetchBroadcastUrl: "./resources/newsFeedPortalAlerts.json"
@@ -42,3 +41,7 @@ const Config = {
         }
     }
 };
+
+if (typeof module !== "undefined") {
+    module.exports = Config;
+}

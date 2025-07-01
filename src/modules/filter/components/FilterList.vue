@@ -329,7 +329,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
 
 .header-color {
    color: $light_grey_inactive_contrast;
