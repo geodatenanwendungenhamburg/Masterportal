@@ -12,8 +12,13 @@ const getters = {
      * @returns {Array} list of additional layers with status active
      */
     activeAdditionalLayers: state => {
-        return state.additionalLayers.filter(layer => layer.active)
-            .map(layer => layerFactory.createLayer(rawLayerList.getLayerWhere({id: layer.id}), "2D").layer);
+        const promises = state.additionalLayers
+            .filter(layer => layer.active)
+            .map(layer => layerFactory.createLayer(rawLayerList.getLayerWhere({id: layer.id}), "2D")
+                .then(layerInstance => layerInstance?.layer)
+            );
+
+        return Promise.all(promises);
     },
 
     /**
