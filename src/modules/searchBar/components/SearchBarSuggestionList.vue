@@ -108,7 +108,14 @@ export default {
         if (input) {
             input.focus();
         }
-    }
+    },
+    updated() {
+    // Refocus the search input after suggestions appear
+        const input = document.getElementById("searchInput");
+        if (input) {
+            input.focus();
+    };
+}
 };
 </script>
 
