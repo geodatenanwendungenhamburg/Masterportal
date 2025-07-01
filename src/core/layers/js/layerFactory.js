@@ -56,7 +56,6 @@ export async function createLayer (layerConf, mapMode) {
     else {
         typ = layerConf?.typ?.toUpperCase();
     }
-
     if (layerTypes2d[typ]) {
         layer = new layerTypes2d[typ](layerConf, typ === "GROUP" ? this : undefined);
     }
