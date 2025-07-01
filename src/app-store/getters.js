@@ -397,7 +397,7 @@ export default {
      * @returns {Object} The map marker config.
      */
     mapMarker: state => {
-        return state.portalConfig?.map.mapMarker || {};
+        return state.portalConfig?.map?.mapMarker || {pointStyleId: "mapMarker_geo-alt-fill"};
     },
 
     /**
@@ -406,7 +406,7 @@ export default {
      * @returns {Object} The map view settings.
      */
     mapViewSettings: state => {
-        return state.portalConfig?.map.mapView || {};
+        return state.portalConfig?.map?.mapView || {};
     },
 
     /**
