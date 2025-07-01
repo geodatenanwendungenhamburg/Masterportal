@@ -41,8 +41,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~mixins";
-    @import "~variables";
     progress {
         border-radius: 7px;
         margin-top: 20px;

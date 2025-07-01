@@ -834,8 +834,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~mixins";
-@import "~variables";
 
 .small-heading {
     font-size: $font_size_big;

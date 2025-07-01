@@ -181,7 +181,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
 
     .first-image {
         grid-column: 1;

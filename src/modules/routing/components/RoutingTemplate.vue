@@ -93,7 +93,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 
     .pointer {
         cursor: pointer;

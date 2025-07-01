@@ -271,14 +271,14 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
             const modifyInteraction = createModifyAttributesInteraction(this.$app.config.globalProperties.$layer),
                 selectInteractionModify = createSelectInteraction(this.$app.config.globalProperties.$layer, 10);
 
-            commit("setModifyAttributesInteraction", modifyInteraction);
-            dispatch("manipulateInteraction", {interaction: "modifyAttributes", active: active});
-            dispatch("createModifyAttributesInteractionListener");
-            dispatch("Maps/addInteraction", modifyInteraction, {root: true});
+            // commit("setModifyAttributesInteraction", modifyInteraction);
+            // dispatch("manipulateInteraction", {interaction: "modifyAttributes", active: active});
+            // dispatch("createModifyAttributesInteractionListener");
+            // dispatch("Maps/addInteraction", modifyInteraction, {root: true});
 
-            commit("setSelectInteractionModifyAttributes", selectInteractionModify);
-            dispatch("createSelectInteractionModifyAttributesListener");
-            dispatch("Maps/addInteraction", selectInteractionModify, {root: true});
+            // commit("setSelectInteractionModifyAttributes", selectInteractionModify);
+            // dispatch("createSelectInteractionModifyAttributesListener");
+            // dispatch("Maps/addInteraction", selectInteractionModify, {root: true});
         },
         /**
          * Creates modify attributes interaction listener.
@@ -362,14 +362,14 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
             const modifyInteraction = createModifyInteraction(this.$app.config.globalProperties.$layer),
                 selectInteractionModify = createSelectInteraction(this.$app.config.globalProperties.$layer, 10);
 
-            commit("setModifyInteraction", modifyInteraction);
-            dispatch("manipulateInteraction", {interaction: "modify", active: active});
-            dispatch("createModifyInteractionListener");
-            dispatch("Maps/addInteraction", modifyInteraction, {root: true});
+            // commit("setModifyInteraction", modifyInteraction);
+            // dispatch("manipulateInteraction", {interaction: "modify", active: active});
+            // dispatch("createModifyInteractionListener");
+            // dispatch("Maps/addInteraction", modifyInteraction, {root: true});
 
-            commit("setSelectInteractionModify", selectInteractionModify);
-            dispatch("createSelectInteractionModifyListener");
-            dispatch("Maps/addInteraction", selectInteractionModify, {root: true});
+            // commit("setSelectInteractionModify", selectInteractionModify);
+            // dispatch("createSelectInteractionModifyListener");
+            // dispatch("Maps/addInteraction", selectInteractionModify, {root: true});
         },
         /**
          * Listener to change the features through the modify interaction.

@@ -84,7 +84,7 @@ export default {
 </template>
 
 <style lang="scss">
-    @import "~variables";
+
 
     .control-button-controls {
         display: block;
