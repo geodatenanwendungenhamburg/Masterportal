@@ -9,7 +9,7 @@ import Layer2dVectorSensorThings from "./layer2dVectorSensorThings";
 import Layer2dVectorTile from "./layer2dVectorTile";
 import Layer2dVectorVectorbase from "./layer2dVectorVectorbase";
 import Layer2dVectorWfs from "./layer2dVectorWfs";
-import Layer2dGroup from "./layer2dGroup";
+// import Layer2dGroup from "./layer2dGroup";
 import Layer3dEntities from "./layer3dEntities";
 import Layer3dTerrain from "./layer3dTerrain";
 import Layer3dTileset from "./layer3dTileset";
@@ -22,7 +22,8 @@ import removeHtmlTags from "@shared/js/utils/removeHtmlTags";
  */
 const layerTypes2d = {
         GEOJSON: Layer2dVectorGeojson,
-        GROUP: Layer2dGroup,
+        // to circular dependency
+        // GROUP: Layer2dGroup,
         OAF: Layer2dVectorOaf,
         SENSORTHINGS: Layer2dVectorSensorThings,
         STATICIMAGE: Layer2dRasterStaticImage,
