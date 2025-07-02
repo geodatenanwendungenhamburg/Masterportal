@@ -18,7 +18,7 @@ import Layer3dTileset from "./layer3dTileset.js";
 const layerTypes2d = {
         GEOJSON: Layer2dVectorGeojson,
         // to circular dependency
-        // GROUP: Layer2dGroup,
+        GROUP: Layer2dGroup,
         OAF: Layer2dVectorOaf,
         SENSORTHINGS: Layer2dVectorSensorThings,
         STATICIMAGE: Layer2dRasterStaticImage,
