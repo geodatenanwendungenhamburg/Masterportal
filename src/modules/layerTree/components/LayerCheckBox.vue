@@ -178,7 +178,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-
     .layer-tree-layer-title {
         overflow: hidden;
         line-height: normal;

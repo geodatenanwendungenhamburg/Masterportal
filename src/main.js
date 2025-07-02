@@ -51,7 +51,7 @@ loadConfigJs.then(() => {
     // if (Object.prototype.hasOwnProperty.call(Config, "remoteInterface")) {
     //     app.use(remoteInterface, Config.remoteInterface);
     // }
-    app.use(vuetify)
+    app.use(vuetify);
     app.use(store);
     store.$app = app;
     if (Config.matomo) {

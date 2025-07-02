@@ -83,7 +83,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-
     .snippetCheckboxContainer {
         margin-bottom: 10px;
         height: auto;

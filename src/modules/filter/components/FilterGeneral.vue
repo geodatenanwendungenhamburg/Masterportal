@@ -910,13 +910,11 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    .panel {
-        position: relative;
-    }
-    .dividing-line {
-        background-color: $dark_blue;
-        height: 1px;
-        border: none;
+    .layerGroupContainer {
+        background-color: #f5f5f5;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
     }
     .link-section {
         position: relative;

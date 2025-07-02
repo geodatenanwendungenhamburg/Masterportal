@@ -142,6 +142,7 @@ export default {
 </script>
 
 <template>
+    <div class="control-bar">
     <div
         class="btn-group-vertical my-5 btn-group-controls shadow"
         role="group"
@@ -183,6 +184,7 @@ export default {
             </div>
         </div>
     </div>
+</div>
 </template>
 
 <style lang="scss" scoped>
@@ -220,5 +222,5 @@ export default {
             right: 2rem;
         }
     }
-
+}
 </style>

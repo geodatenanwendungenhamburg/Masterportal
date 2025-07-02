@@ -225,7 +225,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    .snippetInput {
+    input {
         box-sizing: border-box;
         position: relative;
         width: 100%;

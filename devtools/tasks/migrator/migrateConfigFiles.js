@@ -248,6 +248,8 @@ function migrateMapParameters (configJS) {
     }
     if (configJS.mapMarker) {
         map.mapMarker = configJS.mapMarker;
+    } else {
+        map.mapMarker = { pointStyleId: "mapMarker_geo-alt-fill" };
     }
     else {
         map.mapMarker = {pointStyleId: "mapMarker_geo-alt-fill"};
