@@ -430,7 +430,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-
     .form-control {
         height: 28px;
     }

@@ -161,7 +161,6 @@ export default {
 
 <style lang="scss" scoped>
 
-
     .layer-checkbox-tooltip {
         overflow: hidden;
         display: block;

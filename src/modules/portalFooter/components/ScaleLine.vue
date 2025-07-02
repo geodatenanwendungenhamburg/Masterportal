@@ -74,7 +74,6 @@ export default {
 
 <style lang="scss">
 
-
     #modules-scales {
         display: none;
 

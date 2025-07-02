@@ -886,7 +886,6 @@ export default {
 
 <style lang="scss" scoped>
 
-
     .snippetSliderRangeContainer {
         cursor: default;
         height: auto;
