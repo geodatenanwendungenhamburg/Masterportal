@@ -45,10 +45,15 @@ export default {
         ]),
         ...mapGetters("Modules", [
             "componentMap"
-        ])
+        ]),
+        _debug_allConfigsLoaded() {
+            console.log("[App.vue] computed allConfigsLoaded:", this.allConfigsLoaded);
+            return this.allConfigsLoaded;
+        }
     },
     watch: {
         async allConfigsLoaded (value) {
+            console.log("[App.vue] watch allConfigsLoaded:", value);
             if (value) {
                 await addonsPlugin.loadAddons(this.$.appContext.app, Config.addons);
                 this.addonsLoaded = true;
@@ -68,10 +73,12 @@ export default {
                     await this.setUpTokenRefreshInterval();
                 }
 
+                console.log("[App.vue] allConfigsLoaded actions done");
             }
         }
     },
     created () {
+        console.log("[App.vue] created - start loading configs");
         this.setGlobalVariables();
         this.initializeUrlParams();
         this.loadConfigsToTheVuexState();
@@ -119,6 +126,7 @@ export default {
          * @returns {void}
          */
         loadConfigsToTheVuexState () {
+            console.log("[App.vue] loadConfigsToTheVuexState called");
             this.loadConfigJs(Config);
             this.loadServicesJson();
             this.loadConfigJson();
@@ -137,7 +145,6 @@ export default {
         * @returns {void}
         */
         checkVueObservation () {
-
             if (import.meta.env.VITE_NODE_ENV === "development") {
                 setInterval(() => {
                     const map3d = mapCollection.getMap("3D");
@@ -182,15 +189,12 @@ export default {
         id="masterportal-container"
         class="masterportal-container"
     >
-        <div v-if="allConfigsLoaded && addonsLoaded">
-            <Alerting />
-        </div>
         <MenuContainer
-            v-if="allConfigsLoaded && addonsLoaded && mainMenu && uiStyle !== 'SIMPLE'"
+            v-if="allConfigsLoaded && mainMenu && uiStyle !== 'SIMPLE'"
             side="mainMenu"
         />
         <MenuToggleButton
-            v-if="allConfigsLoaded && addonsLoaded && mainMenu && uiStyle !== 'SIMPLE'"
+            v-if="allConfigsLoaded && mainMenu && uiStyle !== 'SIMPLE'"
             side="mainMenu"
         />
         <template v-if="allConfigsLoaded && addonsLoaded">
@@ -215,11 +219,11 @@ export default {
             </div>
         </template>
         <MenuToggleButton
-            v-if="allConfigsLoaded && addonsLoaded && secondaryMenu && uiStyle !== 'SIMPLE'"
+            v-if="allConfigsLoaded && secondaryMenu && uiStyle !== 'SIMPLE'"
             side="secondaryMenu"
         />
         <MenuContainer
-            v-if="allConfigsLoaded && addonsLoaded && secondaryMenu && uiStyle !== 'SIMPLE'"
+            v-if="allConfigsLoaded && secondaryMenu && uiStyle !== 'SIMPLE'"
             side="secondaryMenu"
         />
         <div
