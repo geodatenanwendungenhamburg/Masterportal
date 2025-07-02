@@ -4,8 +4,7 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
+## 2025-07-02 v3.12.0
 
 ### Added
 - Issue #1400: UrlParams: added url parameter `configjs` to provide an external config.js file.
@@ -24,10 +23,6 @@
     - button for adding a new waypoint was moved between start and endpoint 
     - reset button was moved to the bottom of the menu
     - consistent button design in avoid area menu
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - Menu: Menu title now updates correctly on language change.
