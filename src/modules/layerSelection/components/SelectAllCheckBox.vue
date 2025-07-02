@@ -169,7 +169,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-
     .layer-tree-select-all {
         border-radius: 15px;
         &:hover {

@@ -228,7 +228,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-
     input {
         box-sizing: border-box;
         outline: 0;

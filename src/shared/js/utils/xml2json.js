@@ -1,96 +1,19 @@
-/**
- * Parses Xml to Json recursivly
- * @param {Document|Element} srcDom - Dom to parse
- * @param {Boolean} [attributeValue=true] Returns the lowest level as value and attribute functions.
- * @returns {Object} json
- */
-export default function xml2json (srcDom, attributeValue = true) {
-    // HTMLCollection to Array
-    const children = [...srcDom.children],
-        jsonResult = {};
-
-    // base case for recursion
-    if (!children.length) {
-        if (attributeValue) {
-
-            if (srcDom.hasAttributes()) {
-                return {
-                    getValue: () => srcDom.textContent,
-                    getAttributes: () => parseNodeAttributes(srcDom.attributes)
-                };
-            }
-            return {
-                getValue: () => srcDom.textContent,
-                getAttributes: () => undefined
-            };
-        }
-        return srcDom.textContent;
-    }
-
-    // in the first iteration it is a (XML-)Document
-    if (srcDom instanceof Element && srcDom.hasAttributes()) {
-        jsonResult.attributes = parseNodeAttributes(srcDom.attributes);
-    }
-
-    children.forEach(child => {
-        // checking if child has siblings of same name
-        const childIsArray = children.filter(eachChild => eachChild.nodeName === child.nodeName).length > 1,
-            // the key is equal to the nodeName property without the xmlns if exists
-            keyName = child.nodeName.substr(child.nodeName.indexOf(":") + 1);
-
-        // if child is array, save the values as an array of objects, else as object
-        if (childIsArray) {
-            if (jsonResult[keyName] === undefined) {
-                jsonResult[keyName] = [xml2json(child, attributeValue)];
-            }
-            else {
-                const jsonResultHasArray = Array.isArray(jsonResult[keyName]);
-
-                if (jsonResultHasArray) {
-                    jsonResult[keyName].push(xml2json(child, attributeValue));
-                }
-                else {
-                    /* may occur on e.g. siblings ['a:x', 'x', 'x'] -
-                     * first object was written, now array comes in ... */
-                    jsonResult[keyName] = [
-                        jsonResult[keyName],
-                        xml2json(child, attributeValue)
-                    ];
-                }
-            }
-        }
-        else {
-            const value = xml2json(child, attributeValue);
-
-            // make sure no name conflict resulting from prefix deletion overrides content
-            if (Array.isArray(jsonResult[keyName])) {
-                jsonResult[keyName].push(value);
-            }
-            else if (jsonResult[keyName] instanceof Object) {
-                jsonResult[keyName] = [jsonResult[keyName], value];
-            }
-            else {
-                jsonResult[keyName] = value;
-            }
-        }
-    });
-
-    return jsonResult;
-}
+import { XMLParser } from "fast-xml-parser";
 
 /**
- * Gets the names and the values from the attributes of a node
- * @param {Object} nodeAttributes - collection of nodes attributes as a NamedNodeMap object
- * @returns {Object} name value pairs
+ * Parses an XML string or XMLDocument to JSON using fast-xml-parser.
+ * @param {string|XMLDocument} srcDom - XML string or XMLDocument
+ * @param {boolean} [attributeValue=true] - (Not used with fast-xml-parser, kept for compatibility)
+ * @returns {object} JSON representation
  */
-function parseNodeAttributes (nodeAttributes) {
-    const attributes = {};
-
-    for (const node of nodeAttributes) {
-        attributes[node.name] = node.value;
+export default function xml2json(srcDom, attributeValue = true) {
+    let xmlString = srcDom;
+    if (typeof srcDom !== "string") {
+        // If srcDom is an XMLDocument or Node, convert it to string
+        xmlString = new XMLSerializer().serializeToString(srcDom);
     }
-
-    return attributes;
+    const parser = new XMLParser({ ignoreAttributes: false });
+    return parser.parse(xmlString);
 }
 
 
