@@ -25,7 +25,7 @@ export default {
     },
     data () {
         return {
-            addonsLoaded: false
+            // addonsLoaded: false
         };
     },
     computed: {
@@ -206,19 +206,16 @@ export default {
         id="masterportal-container"
         class="masterportal-container"
     >
-        <div v-if="allConfigsLoaded && addonsLoaded">
-            <Alerting />
-        </div>
         <MenuContainer
-            v-if="allConfigsLoaded && addonsLoaded && mainMenu && uiStyle !== 'SIMPLE'"
+            v-if="allConfigsLoaded && mainMenu && uiStyle !== 'SIMPLE'"
             side="mainMenu"
         />
         <MenuToggleButton
-            v-if="allConfigsLoaded && addonsLoaded && mainMenu && uiStyle !== 'SIMPLE'"
+            v-if="allConfigsLoaded && mainMenu && uiStyle !== 'SIMPLE'"
             side="mainMenu"
         />
         <div
-            v-if="allConfigsLoaded && addonsLoaded"
+            v-if="allConfigsLoaded"
             class="elements-positioned-over-map"
         >
             <component :is="componentMap.mouseHover" />
@@ -229,11 +226,11 @@ export default {
             <component :is="componentMap.portalFooter" />
         </div>
         <MenuToggleButton
-            v-if="allConfigsLoaded && addonsLoaded && secondaryMenu && uiStyle !== 'SIMPLE'"
+            v-if="allConfigsLoaded && secondaryMenu && uiStyle !== 'SIMPLE'"
             side="secondaryMenu"
         />
         <MenuContainer
-            v-if="allConfigsLoaded && addonsLoaded && secondaryMenu && uiStyle !== 'SIMPLE'"
+            v-if="allConfigsLoaded && secondaryMenu && uiStyle !== 'SIMPLE'"
             side="secondaryMenu"
         />
         <div
