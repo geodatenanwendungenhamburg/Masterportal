@@ -388,7 +388,6 @@ export default {
 
 <style lang="scss" scoped>
 
-
     #surrounding_vectorfeatures {
         background-color: transparent;
     }

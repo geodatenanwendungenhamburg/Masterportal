@@ -53,7 +53,7 @@ const getters = {
             wmsTime: defineAsyncComponent(() => import("../wmsTime/components/WmsTime.vue"))
         };
 
-        moduleCollection = {...coreModules, ...moduleCollection};
+        moduleCollection = { ...coreModules, ...moduleCollection };
         return moduleCollection;
     }
 };

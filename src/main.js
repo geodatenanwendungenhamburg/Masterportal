@@ -6,7 +6,9 @@ import "regenerator-runtime/runtime";
 import {initiateVueI18Next, initLanguage} from "./plugins/i18next.js";
 import globalUrlParams from "../src/core/urlParams/js/globalUrlParams";
 import {createApp} from "vue";
+console.log("imported vue");
 import App from "./App.vue";
+console.log("imported App.vue");
 import store from "./app-store";
 // import "bootstrap/js/dist/offcanvas";
 // import remoteInterface from "./plugins/remoteInterface";
@@ -23,7 +25,7 @@ const env = window.location.pathname.split("/")[2],
     configPath = globalUrlParams.getConfigJsPath() === null ? window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1) + "config.js" : globalUrlParams.getConfigJsPath(),
     loadConfigJs = new Promise((resolve, reject) => {
         const script = document.createElement("script");
-
+        console.log("declaration");
         document.body.appendChild(script);
         script.onload = resolve;
         script.onerror = reject;

@@ -36,9 +36,9 @@ function fillSections (data, secondaryMenu, migratedTools, toRemoveFromTools) {
                 if (name.toLowerCase() === "coordtoolkit") {
                     name = "coordToolkit";
                 }
-                if (name === "draw") {
+              /*   if (name === "draw") {
                     name = "draw_old";
-                }
+                } */
                 console.info("       " + name);
                 if (name === "layerClusterToggler") {
                     console.log(tool);
@@ -57,13 +57,13 @@ function fillSections (data, secondaryMenu, migratedTools, toRemoveFromTools) {
                 if (name === "parcelSearch") {
                     console.info("--- HINT parcelSearch was removed, use wfsSearch instead.");
                 }
-                if (name === "draw_old") {
+   /*              if (name === "draw_old") {
                     if (Array.isArray(tool.iconList)) {
                         tool.iconList.forEach(icon => {
                             delete icon.caption;
                         });
                     }
-                }
+                } */
                 if (name.toLowerCase() === "wfst") {
                     adaptWfst(tool);
                 }

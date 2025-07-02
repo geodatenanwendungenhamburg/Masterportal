@@ -1,18 +1,3 @@
-import Layer2dRasterStaticImage from "./layer2dRasterStaticImage";
-import Layer2dRasterWms from "./layer2dRasterWms";
-import Layer2dRasterWmts from "./layer2dRasterWmts";
-import Layer2dRasterWmsTime from "./layer2dRasterWmsTime";
-import Layer2dVector from "./layer2dVector";
-import Layer2dVectorGeojson from "./layer2dVectorGeojson";
-import Layer2dVectorOaf from "./layer2dVectorOaf";
-import Layer2dVectorSensorThings from "./layer2dVectorSensorThings";
-import Layer2dVectorTile from "./layer2dVectorTile";
-import Layer2dVectorVectorbase from "./layer2dVectorVectorbase";
-import Layer2dVectorWfs from "./layer2dVectorWfs";
-import Layer2dGroup from "./layer2dGroup";
-import Layer3dEntities from "./layer3dEntities";
-import Layer3dTerrain from "./layer3dTerrain";
-import Layer3dTileset from "./layer3dTileset";
 import removeHtmlTags from "@shared/js/utils/removeHtmlTags";
 
 /**
@@ -56,6 +41,7 @@ export async function createLayer (layerConf, mapMode) {
     else {
         typ = layerConf?.typ?.toUpperCase();
     }
+
     if (layerTypes2d[typ]) {
         layer = new layerTypes2d[typ](layerConf, typ === "GROUP" ? this : undefined);
     }
