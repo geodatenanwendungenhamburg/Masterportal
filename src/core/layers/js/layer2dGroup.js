@@ -40,7 +40,7 @@ Layer2dGroup.prototype.createLayer = function (attributes) {
     let groupLayer = null;
 
     attributes.children.forEach(rawLayer => {
-        layerFactory.createLayer(rawLayer, "2D").then((layer) => {
+        this.layerFactory.createLayer(rawLayer, "2D").then((layer) => {
             olLayers.push(layer.getLayer());
             sourceLayers.push(layer);
         }).catch(error => console.error(error));
