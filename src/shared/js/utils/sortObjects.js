@@ -6,7 +6,6 @@
  * @returns {void}
  */
 export function sortObjects (objects, nestedAttribute, order = "asc") {
-    let objectLength = objects.length;
 
     objects.sort((a, b) => {
         let firstElement,
@@ -28,10 +27,6 @@ export function sortObjects (objects, nestedAttribute, order = "asc") {
             return 1;
         }
         return 0;
-    });
-
-    objects.forEach((object) => {
-        object.zIndex = --objectLength;
     });
 }
 

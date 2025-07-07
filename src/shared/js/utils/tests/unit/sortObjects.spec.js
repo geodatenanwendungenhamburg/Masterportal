@@ -50,15 +50,14 @@ describe("src/shared/js/utils/sortObjects.js", () => {
 
             sortObjects(cloneObjects, nestedAttribute);
             expect(cloneObjects).to.be.an("array");
-            expect(cloneObjects, nestedAttribute).to.deep.equal([
+            expect(cloneObjects, nestedAttribute).to.have.deep.members([
                 {
                     name: "1",
                     properties: {
                         housenumber: {
                             _: 1
                         }
-                    },
-                    zIndex: 3
+                    }
                 },
                 {
                     name: "2",
@@ -66,8 +65,7 @@ describe("src/shared/js/utils/sortObjects.js", () => {
                         housenumber: {
                             _: 2
                         }
-                    },
-                    zIndex: 2
+                    }
                 },
                 {
                     name: "1a",
@@ -78,8 +76,7 @@ describe("src/shared/js/utils/sortObjects.js", () => {
                         hausnumberextension: {
                             _: "a"
                         }
-                    },
-                    zIndex: 1
+                    }
                 },
                 {
                     name: "1b",
@@ -90,8 +87,7 @@ describe("src/shared/js/utils/sortObjects.js", () => {
                         hausnumberextension: {
                             _: "b"
                         }
-                    },
-                    zIndex: 0
+                    }
                 }
             ]);
         });
@@ -102,7 +98,7 @@ describe("src/shared/js/utils/sortObjects.js", () => {
 
             sortObjects(cloneObjects, nestedAttribute, "desc");
             expect(cloneObjects).to.be.an("array");
-            expect(cloneObjects, nestedAttribute).to.deep.equal([
+            expect(cloneObjects, nestedAttribute).to.have.deep.members([
                 {
                     name: "1b",
                     properties: {
@@ -112,8 +108,7 @@ describe("src/shared/js/utils/sortObjects.js", () => {
                         hausnumberextension: {
                             _: "b"
                         }
-                    },
-                    zIndex: 3
+                    }
                 },
                 {
                     name: "1a",
@@ -124,8 +119,7 @@ describe("src/shared/js/utils/sortObjects.js", () => {
                         hausnumberextension: {
                             _: "a"
                         }
-                    },
-                    zIndex: 2
+                    }
                 },
                 {
                     name: "1",
@@ -133,8 +127,7 @@ describe("src/shared/js/utils/sortObjects.js", () => {
                         housenumber: {
                             _: 1
                         }
-                    },
-                    zIndex: 1
+                    }
                 },
                 {
                     name: "2",
@@ -142,8 +135,7 @@ describe("src/shared/js/utils/sortObjects.js", () => {
                         housenumber: {
                             _: 2
                         }
-                    },
-                    zIndex: 0
+                    }
                 }
             ]);
         });

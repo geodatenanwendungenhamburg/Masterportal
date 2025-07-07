@@ -4,6 +4,14 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## 2025-07-08 v3.12.1
+
+### Fixed
+- AddWMS: Fixed incorrect layer order caused by baselayer zIndex being modified when adding a WMS.
+- LayerTree: Fixed incorrect layer order when adding last layer of a folder within the layertree.
+
+---
+
 ## 2025-07-02 v3.12.0
 
 ### Added
