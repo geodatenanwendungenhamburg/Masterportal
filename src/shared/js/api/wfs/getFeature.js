@@ -136,6 +136,7 @@ function handleWfsResponse (response, onerror) {
             return undefined;
         }
         throw wfsError;
+        throw wfsError;
     }
     return response.data;
 }

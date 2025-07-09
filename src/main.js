@@ -25,6 +25,7 @@ const env = window.location.pathname.split("/")[2],
     configPath = globalUrlParams.getConfigJsPath() === null ? window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1) + "config.js" : globalUrlParams.getConfigJsPath(),
     loadConfigJs = new Promise((resolve, reject) => {
         const script = document.createElement("script");
+
         console.log("declaration");
         document.body.appendChild(script);
         script.onload = resolve;
@@ -43,7 +44,6 @@ loadConfigJs.then(() => {
     }
 
     app = createApp(App);
-
 
     // if (utilsLogin.handleLoginParameters()) {
     //     window.close();
