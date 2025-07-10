@@ -6,16 +6,15 @@ import "regenerator-runtime/runtime";
 import {initiateVueI18Next, initLanguage} from "./plugins/i18next.js";
 import globalUrlParams from "../src/core/urlParams/js/globalUrlParams";
 import {createApp} from "vue";
-console.log("imported vue");
 import App from "./App.vue";
-console.log("imported App.vue");
 import store from "./app-store";
 // import "bootstrap/js/dist/offcanvas";
 // import remoteInterface from "./plugins/remoteInterface";
 // import utilsLogin from "../src/modules/login/js/utilsLogin";
 // import {instantiateVuetify} from "./plugins/vuetify";
-import vuetify from ".plugins/vuetify";
+// import vuetify from ".plugins/vuetify";
 import {initiateMatomo} from "./plugins/matomo";
+import vuetify from "@plugins/vuetify.js";
 
 const isDev = import.meta.env.MODE === "development";
 let app;
@@ -26,7 +25,6 @@ const env = window.location.pathname.split("/")[2],
     loadConfigJs = new Promise((resolve, reject) => {
         const script = document.createElement("script");
 
-        console.log("declaration");
         document.body.appendChild(script);
         script.onload = resolve;
         script.onerror = reject;
@@ -37,7 +35,7 @@ const env = window.location.pathname.split("/")[2],
 // Wait until config.js is loaded
 loadConfigJs.then(() => {
 
-    // Reload protection in dev mode only – prevents double mounting
+    // Reload protection in dev mode only â€“ prevents double mounting
     if (isDev && window.__appMounted) {
         window.location.reload();
         return;

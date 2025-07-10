@@ -222,5 +222,4 @@ export default {
             right: 2rem;
         }
     }
-}
 </style>
