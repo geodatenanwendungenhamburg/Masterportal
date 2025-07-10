@@ -36,7 +36,7 @@ export default {
 </script>
 
 <template>
-    <div>
+    <div class="form-check form-switch">
         <input
             :id="id"
             type="checkbox"

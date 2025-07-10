@@ -84,7 +84,7 @@ export default {
 
 
 .btn-wrapper {
-    width: 16rem;
+    // width: 16rem;
 }
 
 .btn-wrapper > .btn-label {

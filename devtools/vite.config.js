@@ -144,6 +144,9 @@ export default defineConfig({
             "@turf/turf", // used for addons
             "@turf/helpers", // used for addons
             "@turf/boolean-point-in-polygon", // used for addons
+            "@turf/union",
+            "@turf/buffer",
+            "@turf/intersect",
             // add other @turf/* packages we use
             "d3-geo", // used for addons
             "point-in-polygon-hao", // used for addons
