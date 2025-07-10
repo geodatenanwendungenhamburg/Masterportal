@@ -1,3 +1,18 @@
+import Layer2dRasterStaticImage from "./layer2dRasterStaticImage";
+import Layer2dRasterWms from "./layer2dRasterWms";
+import Layer2dRasterWmts from "./layer2dRasterWmts";
+import Layer2dRasterWmsTime from "./layer2dRasterWmsTime";
+import Layer2dVector from "./layer2dVector";
+import Layer2dVectorGeojson from "./layer2dVectorGeojson";
+import Layer2dVectorOaf from "./layer2dVectorOaf";
+import Layer2dVectorSensorThings from "./layer2dVectorSensorThings";
+import Layer2dVectorTile from "./layer2dVectorTile";
+import Layer2dVectorVectorbase from "./layer2dVectorVectorbase";
+import Layer2dVectorWfs from "./layer2dVectorWfs";
+import Layer2dGroup from "./layer2dGroup";
+import Layer3dEntities from "./layer3dEntities";
+import Layer3dTerrain from "./layer3dTerrain";
+import Layer3dTileset from "./layer3dTileset";
 import removeHtmlTags from "@shared/js/utils/removeHtmlTags";
 
 /**
@@ -31,7 +46,7 @@ const layerTypes2d = {
  * @param {String} mapMode The current map mode.
  * @returns {Object} The layer instance.
  */
-export async function createLayer (layerConf, mapMode) {
+function createLayer (layerConf, mapMode) {
     let layer,
         typ;
 
@@ -46,9 +61,7 @@ export async function createLayer (layerConf, mapMode) {
         layer = new layerTypes2d[typ](layerConf, typ === "GROUP" ? this : undefined);
     }
     else if (mapMode === "3D" && layerTypes3d[typ]) {
-        const module = await layerTypes3d[typ]();
-
-        layer = new module.default(layerConf);
+        layer = new layerTypes3d[typ](layerConf);
     }
     if (layer) {
         const htmlName = layer.attributes.name;

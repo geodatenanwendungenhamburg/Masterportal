@@ -140,7 +140,7 @@ function fetchFirstModuleConfig (context, configPaths, moduleName) {
 
         // Check for missing default values in module state
         for (const sourceProp in source) {
-            if (!defaultsNotInState.includes(sourceProp) && typeof state[sourceProp] === "undefined") {
+            if (!defaultsNotInState.includes(sourceProp) && typeof state?.sourceProp === "undefined") {
                 missingDefaultValue.push(sourceProp);
             }
         }

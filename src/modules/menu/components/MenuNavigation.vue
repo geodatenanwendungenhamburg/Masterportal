@@ -75,7 +75,7 @@ export default {
         </div>
         <h4
             v-if="currentTitle !== 'none'"
-            class="mp-menu-navigation-moduletitle mb-4"
+            class="mp-menu-navigation-moduletitle mb-2"
         >
             <i
                 v-if="showIcon && (currentIcon !== null)"
