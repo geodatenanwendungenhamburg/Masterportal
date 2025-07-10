@@ -113,6 +113,27 @@ function removeMapMarker (layerId) {
 }
 
 /**
+ * Removes a specific feature from a map marker layer by its coordinates.
+ * @param {String} layerId - The ID of the map marker layer.
+ * @param {Array<Number>} coord - The coordinates of the feature to remove.
+ * @returns {void}
+ */
+function removeFeatureByCoord (layerId, coord) {
+    const markerLayer = getMapmarkerLayerById(layerId),
+        markerLayerSource = markerLayer.getSource(),
+        features = markerLayerSource.getFeatures();
+
+    features.forEach((feature) => {
+        const xCoordFeature = feature.getGeometry().getCoordinates()[0].toString().slice(0, 12),
+            yCoordFeature = feature.getGeometry().getCoordinates()[1].toString().slice(0, 12);
+
+        if (xCoordFeature === coord[0].toString().slice(0, 12) && yCoordFeature === coord[1].toString().slice(0, 12)) {
+            markerLayerSource.removeFeature(feature);
+        }
+    });
+}
+
+/**
  * Returns the map marker layer by id.
  * @param {String} layerId The layer id of the map marker.
  * @returns {ol/layer/Vector} The map marker layer.
@@ -127,5 +148,6 @@ export default {
     createMapMarker,
     addFeatureToMapMarkerLayer,
     removeMapMarker,
+    removeFeatureByCoord,
     getMapmarkerLayerById
 };

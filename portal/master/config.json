@@ -517,34 +517,6 @@
                 "elements": []
               }
             ]
-          },
-          {
-            "name": "Ansichten",
-            "icon": "bi-binoculars-fill",
-            "type": "folder",
-            "elements": [
-              {
-                "name": "Ansicht 1",
-                "icon": "bi-bullseye",
-                "type": "customMenuElement",
-                "execute": {
-                  "action": "Maps/activateViewpoint",
-                  "payload": {
-                    "heading": -0.30858728378862876,
-                    "tilt": -90,
-                    "altitude": 272.3469798217454,
-                    "center": [
-                      564028.7954571751,
-                      5934555.967867207
-                    ],
-                    "zoom": 7.456437968949651
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "type": "copyrightConstraints"
           }
         ]
       ]
@@ -553,6 +525,121 @@
       "expanded": true,
       "sections": [
         [
+          {
+            "type": "districtSelector",
+            "districtLevels": [
+{
+              "layerId": "27773",
+              "label": "Statistische Gebiete",
+              "keyOfAttrName": "statgebiet",
+              "stats": {
+                "keyOfAttrName": ["stat_gebiet", "statistisches_gebiet", "statistisches_gebiet", "statistisches_gebiet", "statistisches_gebiet", "statistisches_gebiet"],
+                "layerIds": ["31232", "31225", "31226", "31227", "31228", "31229"],
+                "metadataUrls": ["https://www.statistik-nord.de/fileadmin/maps/Stadtteil_Profile_2020/QuellenangabenKarte2021.htm", "https://hmdk.metaver.de/trefferanzeige?docuuid=99687398-CFFE-413E-B966-6B8629D335F5"]
+              },
+              "activeStyle": {
+                "fillColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "stroke": {
+                  "color": "#3399CC",
+                  "width": 2
+                }
+              }
+            },
+            {
+              "layerId": "28201",
+              "label": "Stadtteile",
+              "keyOfAttrName": "stadtteil_name",
+              "stats": {
+                "keyOfAttrName": ["stadtteil", "stadtteil", "stadtteil_name", "stadtteil_name"],
+                "layerIds": ["31240", "29287", "34503", "34505"],
+                "metadataUrls": ["https://www.statistik-nord.de/fileadmin/maps/Stadtteil_Profile_2022/QuellenangabenKarte2023.htm", "https://hmdk.metaver.de/trefferanzeige?docuuid=F4062BD8-43C4-4C4F-AA45-253D84A3685E", "https://hmdk.metaver.de/trefferanzeige?docuuid=28C680E0-F158-4271-9004-515D5557DB0A"]
+              },
+              "districtNamesMap": {
+                "Steinwerder": "Steinwerder/Kl. Grasbrook",
+                "Kleiner Grasbrook": "Steinwerder/Kl. Grasbrook",
+                "Waltershof": "Waltershof/Finkenwerder",
+                "Finkenwerder": "Waltershof/Finkenwerder",
+                "St.Pauli": "St. Pauli",
+                "St.Georg": "St. Georg",
+                "Moorburg": "Moorburg/Altenwerder",
+                "Altenwerder": "Moorburg/Altenwerder",
+                "Neuland": "Neuland/Gut Moor",
+                "Gut Moor": "Neuland/Gut Moor"
+              }
+            },
+            {
+              "layerId": "28028",
+              "label": "Bezirke",
+              "keyOfAttrName": "bezirk_name",
+              "duplicateDistrictNames": [
+                "Eimsbüttel",
+                "Wandsbek",
+                "Bergedorf",
+                "Harburg"
+              ],
+              "stats": {
+                "keyOfAttrName": [
+                  "bezirk",
+                  "bezirk",
+                  "bezirk_name",
+                  "bezirk_name"
+                ],
+                "layerIds": [
+                  "31271",
+                  "29353",
+                  "34502",
+                  "34504"
+                ],
+                "metadataUrls": [
+                  "https://www.statistik-nord.de/fileadmin/maps/Stadtteil_Profile_2022/QuellenangabenKarte2023.htm",
+                  "https://hmdk.metaver.de/trefferanzeige?docuuid=0076F219-A3CA-4898-8501-361565361342",
+                  "https://hmdk.metaver.de/trefferanzeige?docuuid=28C680E0-F158-4271-9004-515D5557DB0A"
+                ]
+              }
+            },
+            {
+              "layerId": "28150",
+              "label": "Hamburg",
+              "keyOfAttrName": "fhh",
+              "stats": {
+                "keyOfAttrName": ["verwaltungseinheit", "verwaltungseinheit"],
+                "layerIds": ["31270", "29194"],
+                "metadataUrls": ["https://www.statistik-nord.de/fileadmin/maps/Stadtteil_Profile_2022/QuellenangabenKarte2023.htm", "https://hmdk.metaver.de/trefferanzeige?docuuid=0076F219-A3CA-4898-8501-361565361342"]
+              },
+              "displayAll": true,
+              "districtNamesMap": {
+                "FHH": "Hamburg"
+              }
+            }
+
+            ],
+            "active": true,
+            "additionalInfoLayers": {
+              "Sozialräume": [
+                "20179"
+              ],
+              "RISE Fördergebiete": [
+                "4411",
+                "13895",
+                "17040",
+                "18712",
+                "4413",
+                "4409",
+                "18713",
+                "18714",
+                "10767"
+              ]
+            }
+          },
+          {
+            "type": "accessibilityAnalysis",
+            "serviceId": "bkg_ors"
+          },
           {
             "type": "populationRequest"
           },
@@ -652,38 +739,7 @@
             }
           },
           {
-            "type": "modeler3D",
-            "gmlIdPath": "gmlid",
-            "updateAllLayers": false,
-            "highlightStyle": {
-              "silhouetteColor": "#E20D0F",
-              "silhouetteSize": 4
-            },
-            "allowedAttributes": [
-              "Gebaeudefunktion",
-              "Wertbezeichnung"
-            ],
-            "pvoColors": {
-              "housing": "#ff0000",
-              "commercial": "#666666",
-              "public": "#44ff44"
-            },
-            "buildingSource": "ALKIS",
-            "buildingFunctionURL": "https://geoportal-hamburg.de/3Dprojektplaner/buildingFunctionTypeAdV.xml"
-          },
-          {
-            "type": "scaleSwitcher"
-          },
-          {
-            "type": "shareView",
-            "facebookShare": true,
-            "qrShare": true
-          },
-          {
             "type": "measure"
-          },
-          {
-            "type": "styleVT"
           },
           {
             "type": "coordToolkit",
@@ -955,9 +1011,25 @@
     },
     "subjectlayer": {
       "elements": [
-       
         {
-          "id": "34406",
+          "id": [ "20501", "20502", "20503", "20504" ],
+          "name": "Gruppe Freizeitrouten und Radfernwege (4 WFS Layer)",
+          "typ": "GROUP",
+          "styleId": "4515",
+          "visibility": true,
+          "showInLayerTree": true
+        },
+        {
+          "id": "20179",
+          "styleId": "yellow-polygon",
+          "name": "Sozialräume",
+          "visibility": false,
+          "legend": false,
+          "alwaysOnTop": true,
+          "loadingStrategy": "all"
+        },
+        {
+          "id": "47",
           "styleId": "47",
           "name": "##O+++O## Ich sollte NIEMALS im Themenbaum sichtbar sein (isNeverVisibleInTree)!",
           "isNeverVisibleInTree": true

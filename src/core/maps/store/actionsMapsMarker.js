@@ -24,12 +24,15 @@ export default {
      * @param {String[]|Object} position The array with the markable coordinate pair or an Object wird coordinates and rotation.
      * @param {String[]} [position.coordinates] The array with the coordinates.
      * @param {Number} [position.rotation] The rotation in degree.
+     * @param {Boolean} [position.keepPreviousMarker] If true, the previous marker will not be removed.
      * @returns {void}
      */
     placingPointMarker ({commit, dispatch, rootGetters}, position) {
         const coordinates = Array.isArray(position) ? position : position?.coordinates;
 
-        dispatch("removePointMarker");
+        if (!position?.keepPreviousMarker) {
+            dispatch("removePointMarker");
+        }
 
         if (coordinates) {
             const layerId = "marker_point_layer",
@@ -59,6 +62,10 @@ export default {
     removePointMarker ({commit}) {
         mapMarker.removeMapMarker("marker_point_layer");
         commit("setCurrentMarker");
+    },
+
+    removePointMarkerFeature (context, coord) {
+        mapMarker.removeFeatureByCoord("marker_point_layer", coord);
     },
 
     /**
