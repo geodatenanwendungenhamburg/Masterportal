@@ -12,8 +12,9 @@ import store from "./app-store/index.js";
 // import remoteInterface from "./plugins/remoteInterface";
 // import utilsLogin from "../src/modules/login/js/utilsLogin";
 // import {instantiateVuetify} from "./plugins/vuetify";
+// import vuetify from ".plugins/vuetify";
 import {initiateMatomo} from "./plugins/matomo";
-import vuetify from ".plugins/vuetify";
+import vuetify from "@plugins/vuetify.js";
 
 let app;
 
@@ -33,7 +34,7 @@ const isDev = import.meta.env.MODE === "development",
 // Wait until config.js is loaded
 loadConfigJs.then(() => {
 
-    // Reload protection in dev mode only – prevents double mounting
+    // Reload protection in dev mode only â€“ prevents double mounting
     if (isDev && window.__appMounted) {
         window.location.reload();
         return;
