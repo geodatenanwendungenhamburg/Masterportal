@@ -220,7 +220,8 @@ Layer2dVector.prototype.createStyle = async function (attrs) {
         this.setStyle(style);
     }
     else {
-        console.warn(i18next.t("common:core.layers.errorHandling.wrongStyleId", {styleId}));
+        console.warn("common:core.layers.errorHandling.wrongStyleId", styleId);
+        // console.warn(i18next.t("common:core.layers.errorHandling.wrongStyleId", {styleId}));
     }
 };
 
