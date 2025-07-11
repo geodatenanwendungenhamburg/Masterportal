@@ -44,6 +44,7 @@ export default {
         if (state.configJs?.portalConf?.slice(-5) === format) {
             targetPath = state.configJs.portalConf;
         }
+        console.log("targetPath", targetPath);
 
         axios.get(targetPath)
             .then(response => {
