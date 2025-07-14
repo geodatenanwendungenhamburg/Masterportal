@@ -80,9 +80,6 @@ export default defineConfig({
     server: {
         port: 9001,
         https: httpsConfig.cert && httpsConfig.key ? httpsConfig : false,
-        fsServe: {
-            root: rootPath // Allow serving files from the root directory
-        },
         fs: {
             strict: false,
             allow: [
