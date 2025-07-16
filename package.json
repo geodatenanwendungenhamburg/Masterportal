@@ -66,6 +66,7 @@
     "@masterportal/masterportalapi": "git+https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git#vite-dev",
     "@mdi/font": "^7.4.47",
     "@popperjs/core": "^2.11.8",
+    "@vitejs/plugin-vue": "^6.0.0",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.6",
     "bootstrap-icons": "^1.11.3",
