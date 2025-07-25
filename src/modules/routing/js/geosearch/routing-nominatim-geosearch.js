@@ -34,7 +34,7 @@ function getRoutingNominatimGeosearchUrl (search) {
     url.searchParams.set("format", "json");
     url.searchParams.set("limit", state.geosearch.limit);
     url.searchParams.set("bounded", "1");
-    url.searchParams.set("q", encodeURIComponent(search));
+    url.searchParams.set("q", search);
     return url;
 }
 
@@ -82,7 +82,7 @@ function getRoutingNominatimGeosearchReverseUrl (coordinates) {
  */
 function parseRoutingNominatimGeosearchResult (geosearchResult) {
     return new RoutingGeosearchResult(
-        [Number(geosearchResult.lat), Number(geosearchResult.lon)],
+        [Number(geosearchResult.lon), Number(geosearchResult.lat)],
         geosearchResult.display_name
     );
 }

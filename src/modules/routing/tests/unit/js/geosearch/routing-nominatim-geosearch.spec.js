@@ -94,8 +94,8 @@ describe("src/modules/routing/js/geosearch/routing-nominatim-geosearch.js", () =
 
             const result = await fetchRoutingNominatimGeosearch("testsearch"),
                 expectedResult = [
-                    new RoutingGeosearchResult([51.3331205, 6.5623343], "Krefeld, Nordrhein-Westfalen, 47798, Deutschland"),
-                    new RoutingGeosearchResult([51.3459404, 6.579289471155352], "Krefeld, Nordrhein-Westfalen, Deutschland")
+                    new RoutingGeosearchResult([6.5623343, 51.3331205], "Krefeld, Nordrhein-Westfalen, 47798, Deutschland"),
+                    new RoutingGeosearchResult([6.579289471155352, 51.3459404], "Krefeld, Nordrhein-Westfalen, Deutschland")
                 ];
 
             expect(result).deep.to.equal(expectedResult);
