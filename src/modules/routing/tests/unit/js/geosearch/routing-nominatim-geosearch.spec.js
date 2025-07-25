@@ -146,7 +146,7 @@ describe("src/modules/routing/js/geosearch/routing-nominatim-geosearch.js", () =
             );
 
             const result = await fetchRoutingNominatimGeosearchReverse("testsearch"),
-                expectedResult = new RoutingGeosearchResult([51.3353612, 6.5752281], "17, Winnertzhof, Cracau, Krefeld-Mitte, Krefeld, Nordrhein-Westfalen, 47799, Deutschland");
+                expectedResult = new RoutingGeosearchResult([6.5752281, 51.3353612], "17, Winnertzhof, Cracau, Krefeld-Mitte, Krefeld, Nordrhein-Westfalen, 47799, Deutschland");
 
             expect(result).deep.to.equal(expectedResult);
         });
