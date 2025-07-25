@@ -72,7 +72,7 @@ export default {
      * @param {String} search searching text.
      * @returns {RoutingGeosearchResult[]} Returns parsed Array of RoutingGeosearchResults.
      */
-    async fetchCoordinatesByText ({state, dispatch}, {search}) {
+    async fetchCoordinatesByText ({state, dispatch, rootGetters}, {search}) {
         let geosearchResults = [];
 
         if (search.length < state.geosearch.minChars) {
@@ -119,6 +119,7 @@ export default {
                     );
 
                     geosearchResult.setCoordinates(coordinatesLocal);
+                    geosearchResult.setEpsg(rootGetters["Maps/projectionCode"].replace("EPSG:", "")); // set EPSG code to portal CRS
                 });
             }
             catch (err) {
@@ -138,7 +139,7 @@ export default {
      * @param {Array<{Number, Number}>} coordinates LonLat Coordinates.
      * @returns {RoutingGeosearchResult} Returns parsed Array of RoutingGeosearchResults.
      */
-    async fetchTextByCoordinates ({state, dispatch}, {coordinates}) {
+    async fetchTextByCoordinates ({state, dispatch, rootGetters}, {coordinates}) {
         let geosearchResults = null;
 
         try {
@@ -181,6 +182,7 @@ export default {
                 );
 
                 geosearchResult.setCoordinates(coordinatesLocal);
+                geosearchResult.setEpsg(rootGetters["Maps/projectionCode"].replace("EPSG:", "")); // set EPSG code to portal CRS
             });
         }
         catch (err) {

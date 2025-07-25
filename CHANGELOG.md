@@ -26,6 +26,7 @@
 ### Removed
 
 ### Fixed
+- Routing/Nominatim-Geosearch: Reverse nominatim results to [lon, lat] (previously [lat, lon]) analogous to BKG geosearch; add correct EPSG code to result; prevent double URI-encoding for search string since axios already encodes the query implicitly
 - Issue #1223: Gazetteer: Fixed filtering of search results where only the address was used as identifier, which led to errors if the same address was used in multiple cities.
 - Issue #1418: Routing: Fixed add waypoint button functionality via keyboard input.
 - Issue #1432: CompareMaps: Remove the complete loading of maps before activating the addon or changing the map view.
