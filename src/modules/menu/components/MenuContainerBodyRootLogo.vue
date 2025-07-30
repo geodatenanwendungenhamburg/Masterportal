@@ -48,7 +48,7 @@ export default {
         :href="link ? link : '#'"
         :target="link ? '_blank' : '_self'"
         :title="toolTip"
-        class="mp-menu-logo"
+        :class="['mp-menu-logo', { 'logo-only': text === null }]"
     >
 
         <img
@@ -68,30 +68,44 @@ export default {
 @import "~variables";
 
 .mp-menu-logo {
-        padding: 0 $padding 0 $padding;
-        width: 100%;
-        display: flex;
-        justify-content: space-around;
-        overflow-wrap: break-word;
+    padding: 0 $padding 0 $padding;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: 20px;
+    gap: 0.5rem;
 
-        img {
-            max-height: 30px;
-            flex-grow: 0;
-            flex-shrink: 0;
+    img {
+        max-height: 30px;
+        flex-shrink: 0;
+        margin-right: 0.5rem;
 
-            &.logoOnly {
-                max-width: 80%;
-                max-height: 80px;
-            }
-        }
-
-        h1 {
-            color: $dark_blue;
-            font-size: $font_size_huge;
-            flex-grow: 1;
-            margin-left: 20px;
+        &.logoOnly {
+            max-width: 80%;
+            max-height: 80px;
+            justify-content: center;
         }
     }
+
+    h1 {
+        color: $dark_blue;
+        font-size: $font_size_huge;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex-grow: 1;
+        text-align: left;
+    }
+}
+
+.mp-menu-logo.logo-only {
+    justify-content: center;
+
+    img.logoOnly {
+        margin-right: 0;
+    }
+}
 
 @include media-breakpoint-up(sm)  {
     .mp-menu-logo {
