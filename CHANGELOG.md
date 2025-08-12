@@ -12,7 +12,8 @@
         - @masterportal/masterportalapi: 2.51.0 to 2.51.1
 
 ### Fixed
--  VectorStyle: Fixed styling of polygons: `"zig-line-horizontal"` and `"diagonal-right"` are rotated by 90°.
+- VectorStyle: Fixed styling of polygons: `"zig-line-horizontal"` and `"diagonal-right"` are rotated by 90°.
+- sortObjects: Ensure stable sortByLayerSequence order in Chrome/Firefox.
 
 ---
 ## 2025-02-06 v3.15.2 (LTS)
