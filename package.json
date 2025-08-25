@@ -63,7 +63,11 @@
     }
   ],
   "dependencies": {
+<<<<<<< HEAD
+    "@masterportal/masterportalapi": "2.53.0",
+=======
     "@masterportal/masterportalapi": "git+https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git#vite-dev",
+>>>>>>> 7f73dfc371 (reverted packagejson)
     "@popperjs/core": "^2.11.8",
     "axios": "^1.12.2",
     "bootstrap": "^5.3.8",
