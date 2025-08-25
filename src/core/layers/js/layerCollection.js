@@ -1,5 +1,5 @@
-import layerTypes from "./layerTypes.js";
-import store from "@appstore/index.js";
+import layerTypes from "./layerTypes";
+import store from "@appstore";
 
 const layerCollection = [];
 
@@ -11,7 +11,6 @@ const layerCollection = [];
 function addLayer (layer) {
     layerCollection.push(layer);
 
-    if (layerTypes.getLayerTypes2d().includes(layer.get("typ")?.toUpperCase())) {
     if (layerTypes.getLayerTypes2d().includes(layer.get("typ")?.toUpperCase())) {
         store.dispatch("Maps/addLayer", layer.getLayer());
     }
@@ -47,7 +46,6 @@ function clear () {
             olLayer.setVisible(false);
             mapCollection.getMap("2D")?.removeLayer(olLayer);
         }
-        else if (layerTypes.getLayerTypes3d().includes(layer.get("typ")?.toUpperCase())) {
         else if (layerTypes.getLayerTypes3d().includes(layer.get("typ")?.toUpperCase())) {
             layer.setVisible(false, mapCollection.getMap("3D"), layer.attributes);
         }
