@@ -1,23 +1,25 @@
-import "regenerator-runtime/runtime.js";
+import "@/assets/css/bootstrap-custom.scss";
+import "@/assets/css/masterportal.css";
 
-import "./assets/css/bootstrap.scss";
-import "./assets/css/style.css";
-
+import "regenerator-runtime/runtime";
+import {initiateVueI18Next, initLanguage} from "./plugins/i18next.js";
+import globalUrlParams from "../src/core/urlParams/js/globalUrlParams.js";
 import {createApp} from "vue";
 import App from "./App.vue";
 import store from "./app-store/index.js";
-import "bootstrap/js/dist/offcanvas";
-
-import remoteInterface from "./plugins/remoteInterface.js";
-import utilsLogin from "./modules/login/js/utilsLogin.js";
-import globalUrlParams from "./core/urlParams/js/globalUrlParams.js";
-import {initiateVueI18Next, initLanguage} from "./plugins/i18next.js";
+// import "bootstrap/js/dist/offcanvas";
+// import remoteInterface from "./plugins/remoteInterface";
+// import utilsLogin from "../src/modules/login/js/utilsLogin";
+// import {instantiateVuetify} from "./plugins/vuetify";
 
 import {initiateMatomo} from "./plugins/matomo.js";
 
-
+const isDev = import.meta.env.MODE === "development";
 let app;
-const configPath = globalUrlParams.getConfigJsPath() === null ? window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1) + "config.js" : globalUrlParams.getConfigJsPath(),
+
+window.__appMounted = window.__appMounted || false;
+const env = window.location.pathname.split("/")[2],
+    configPath = globalUrlParams.getConfigJsPath() === null ? window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1) + "config.js" : globalUrlParams.getConfigJsPath(),
     loadConfigJs = new Promise((resolve, reject) => {
         const script = document.createElement("script");
 
@@ -26,36 +28,60 @@ const configPath = globalUrlParams.getConfigJsPath() === null ? window.location.
         script.onerror = reject;
         script.async = true;
         script.src = configPath;
-    });
+    }),
+    main = {
+        /**
+         * Returns the app.
+         * @returns {Object} the app
+         */
+        // to circular dependency
+        getApp: () => app
+    };
 
+// import(`/portal/${env}/config.js`).then((config) => {
+//     const app = createApp(App)
+//     app.provide('config', config.default || config)
+//     app.mount('#app')
+// })
 
 // Wait until config.js is loaded
 loadConfigJs.then(() => {
-    app = createApp(App);
 
-    if (utilsLogin.handleLoginParameters()) {
-        window.close();
+    // Reload protection in dev mode only – prevents double mounting
+    if (isDev && window.__appMounted) {
+        window.location.reload();
         return;
     }
 
-    // Load remoteInterface
-    if (Object.prototype.hasOwnProperty.call(Config, "remoteInterface")) {
-        app.use(remoteInterface, Config.remoteInterface);
-    }
+    app = createApp(App);
 
-    initiateVueI18Next(app);
+
+    // if (utilsLogin.handleLoginParameters()) {
+    //     window.close();
+    //     return;
+    // }
+
+    // // Load remoteInterface
+    // if (Object.prototype.hasOwnProperty.call(Config, "remoteInterface")) {
+    //     app.use(remoteInterface, Config.remoteInterface);
+    // }
+
     app.use(store);
-    store.$app = app;
-
     if (Config.matomo) {
         initiateMatomo(app);
     }
 
 
-    initLanguage(Config.portalLanguage, Config.portalLocales)
+    initLanguage(Config.portalLanguage, Config.portalLocales)//TODO INKA
         .then(() => {
+            initiateVueI18Next(app);
             app.mount("#masterportal-root");
+            window.__appMounted = true;
         });
+}).catch((err) => {
 });
 
-export default app;
+import {Buffer} from "buffer";
+window.Buffer = Buffer;
+
+export default main;
