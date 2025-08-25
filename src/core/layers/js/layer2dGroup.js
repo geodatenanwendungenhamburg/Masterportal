@@ -1,4 +1,4 @@
-import {Group as LayerGroup} from "ol/layer.js";
+import {Group as LayerGroup} from "ol/layer";
 import Layer2d from "./layer2d.js";
 
 /**
@@ -11,12 +11,10 @@ import Layer2d from "./layer2d.js";
  * @returns {void}
  */
 export default function Layer2dGroup (attributes, factory) {
-export default function Layer2dGroup (attributes, factory) {
     const defaultAttributes = {
     };
 
     this.attributes = Object.assign(defaultAttributes, attributes);
-    this.layerFactory = factory;
     this.layerFactory = factory;
     if (!Array.isArray(attributes.children)) {
         console.warn("Wrong configuration for Grouplayer: children are missing.", attributes);
@@ -142,4 +140,3 @@ Layer2dGroup.prototype.addErrorListener = function () {
         Layer2d.prototype.addErrorListener.call(sourceLayer.getLayerSource());
     });
 };
-
