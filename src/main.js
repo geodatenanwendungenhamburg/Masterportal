@@ -33,7 +33,15 @@ const isDev = import.meta.env.MODE === "development",
         script.onerror = reject;
         script.async = true;
         script.src = configPath;
-    });
+    }),
+    main = {
+        /**
+         * Returns the app.
+         * @returns {Object} the app
+         */
+        // to circular dependency
+        getApp: () => app
+    };
 
 // Wait until config.js is loaded
 loadConfigJs.then(() => {
@@ -64,12 +72,13 @@ loadConfigJs.then(() => {
     }
 
 
-    initLanguage(Config.portalLanguage, Config.portalLocales)
+    initLanguage(Config.portalLanguage, Config.portalLocales)//TODO INKA
         .then(() => {
             initiateVueI18Next(app);
             app.mount("#masterportal-root");
             window.__appMounted = true;
         });
+}).catch((err) => {
 });
 
 
