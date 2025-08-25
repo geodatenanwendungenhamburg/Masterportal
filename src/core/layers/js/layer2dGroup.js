@@ -11,7 +11,6 @@ import Layer2d from "./layer2d.js";
  * @returns {void}
  */
 export default function Layer2dGroup (attributes, factory) {
-export default function Layer2dGroup (attributes, factory) {
     const defaultAttributes = {
     };
 
