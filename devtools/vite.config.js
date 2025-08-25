@@ -5,6 +5,7 @@ import fs from "fs";
 import {nodePolyfills} from "vite-plugin-node-polyfills";
 import dynamicImport from "vite-plugin-dynamic-import";
 import htmlExtFallback from "./html-ext-fallback.js";
+import {directoryListing} from "./directory_listing.js";
 
 
 const rootPath = path.resolve(__dirname, "../"),
@@ -60,76 +61,7 @@ export default defineConfig({
         htmlExtFallback({
             rootDir: __dirname
         }),
-        {
-            name: "directory-listing",
-            configureServer (server) {
-                server.middlewares.use((req, res, next) => {
-                    if (!req.url) {
-                        next();
-                        return;
-                    }
-                    const requestedPath = path.join(process.cwd(), req.url);
-
-                    if (fs.existsSync(requestedPath) && fs.statSync(requestedPath).isDirectory()) {
-                        const files = fs.readdirSync(requestedPath);
-
-                        let html = `
-                        <html>
-                            <head>
-                                <style>
-                                    body {
-                                        font-family: Arial, sans-serif;
-                                        margin: 20px;
-                                    }
-                                    h1 {
-                                        text-align: center;
-                                    }
-                                    .file-list {
-                                        display: grid;
-                                        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                                        gap: 10px;
-                                        list-style-type: none;
-                                        padding: 0;
-                                    }
-                                    .file-list li {
-                                        text-align: center;
-                                        padding: 10px;
-                                        border: 1px solid #ccc;
-                                        border-radius: 5px;
-                                        background-color: #f9f9f9;
-                                    }
-                                    .file-list li a {
-                                        text-decoration: none;
-                                        color: #333;
-                                    }
-                                    .file-list li a:hover {
-                                        color: #007BFF;
-                                    }
-                                </style>
-                            </head>
-                            <body>
-                                <h1>Directory Listing</h1>
-                                <ul class="file-list">
-                    `;
-
-                        files
-                            .filter((file) => !file.startsWith("."))
-                            .forEach((file) => {
-                                const filePath = path.join(req.url, file, "/");
-
-                                html += `<li><a href="${filePath}">${file}</a></li>`;
-                            });
-                        html += "</ul></body></html>";
-
-                        res.setHeader("Content-Type", "text/html");
-                        res.end(html);
-                        return;
-                    }
-
-                    next();
-                });
-            }
-        }
+        directoryListing
     ],
     css: {
         devSourcemap: false, // Disable CSS source maps in development for faster build and reload times
