@@ -1,6 +1,7 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
 import LayerPreview from "@shared/modules/layerPreview/components/LayerPreview.vue";
+import ZIndexManager from "../../../core/layers/js/zIndexManager";
 
 export default {
     name: "BaselayerSwitcher",
@@ -29,33 +30,20 @@ export default {
     watch: {
         visibleBaselayerConfigs: {
             handler (newVal) {
-                const baselayerConfigs = Object.values(this.allBaselayerConfigs),
-                    zIndex = [];
-                let maxZIndex = null,
-                    topLayer = null;
+                const topLayer = ZIndexManager.getTopBaselayer(newVal);
 
-                newVal.forEach((val) => {
-                    zIndex.push(val.zIndex);
-                });
+                if (topLayer) {
+                    const baselayers = Object.values(this.allBaselayerConfigs)
+                        .filter(layer => layer.id !== topLayer.id);
 
-                maxZIndex = Math.max(...zIndex);
-                topLayer = newVal.filter(layer =>layer.zIndex === maxZIndex);
-
-                if (topLayer[0]?.id !== undefined) {
-                    const baselayers = [];
-
-                    baselayerConfigs.forEach((layer) => {
-                        if (layer.id !== topLayer[0].id) {
-                            baselayers.push(layer);
-                        }
-                    });
-                    this.setTopBaselayer(topLayer[0]);
+                    this.setTopBaselayer(topLayer);
                     this.setBaselayers(baselayers);
                 }
                 else {
                     this.setTopBaselayer(null);
-                    this.setBaselayers(baselayerConfigs);
+                    this.setBaselayers(Object.values(this.allBaselayerConfigs));
                 }
+
                 this.setActivatedExpandable(false);
             },
             deep: true

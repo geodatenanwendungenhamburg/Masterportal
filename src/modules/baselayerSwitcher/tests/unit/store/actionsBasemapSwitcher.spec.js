@@ -24,7 +24,8 @@ describe("baselayerSwitcher/store/actionsBaselayerSwitcher", () => {
         rootGetters = {
             layerConfigsByAttributes: () => layerConfigs,
             determineZIndex: () => layerConfigs[0].zIndex,
-            isBaselayer: () => layerConfigs[0].baselayer
+            isBaselayer: () => layerConfigs[0].baselayer,
+            layerConfigById: sinon.stub().returns(layerConfigs[0])
         };
         baselayerHandlerSpy = sinon.spy(baselayerHandler, "checkAndAdd");
     });

@@ -1,4 +1,5 @@
 import baselayerHandler from "../../layerSelection/js/handleSingleBaselayer.js";
+import zIndexManager from "../../../core/layers/js/zIndexManager.js";
 
 const actions = {
     /**
@@ -13,20 +14,18 @@ const actions = {
      */
     updateLayerVisibilityAndZIndex ({dispatch, rootGetters}, layerId) {
         const layerConfigs = [],
-            maxBaselayerZIndex = Math.max(...rootGetters.layerConfigsByAttributes({
-                baselayer: true,
-                showInLayerTree: true
-            }).map(layer => layer.zIndex));
-        let baselayerZIndex = maxBaselayerZIndex + 1,
-            zIndex = rootGetters.determineZIndex(layerId);
+            isBaselayer = rootGetters.isBaselayer(layerId);
 
+        let zIndex = zIndexManager.getZIndexForLayer(layerId, isBaselayer, rootGetters);
 
-        if (rootGetters.isBaselayer(layerId)) {
-            dispatch("updateLayerConfigZIndex", {
-                layerContainer: rootGetters.layerConfigsByAttributes({showInLayerTree: true}),
-                maxZIndex: maxBaselayerZIndex
-            }, {root: true});
-            zIndex = baselayerZIndex++;
+        if (isBaselayer) {
+            const maxBaselayerZIndex = Math.max(
+                ...rootGetters.layerConfigsByAttributes({baselayer: true, showInLayerTree: true}).map(l => l.zIndex)
+            );
+
+            dispatch("updateLayerConfigZIndex", {layerContainer: rootGetters.layerConfigsByAttributes({showInLayerTree: true}), maxZIndex: maxBaselayerZIndex}, {root: true});
+
+            zIndex = maxBaselayerZIndex + 1;
             baselayerHandler.checkAndAdd(rootGetters.singleBaselayer, rootGetters.visibleBaselayerConfigs, layerConfigs);
         }
 
@@ -36,7 +35,7 @@ const actions = {
                 id: layerId,
                 visibility: true,
                 showInLayerTree: true,
-                zIndex: zIndex
+                zIndex
             }
         });
 
