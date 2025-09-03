@@ -4,10 +4,7 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-- PrintModule: Add additional parameter `transferParameter` which is an object with its parameters spread for the mapFish. `transferParameter` can have two parameters: `pagename` and `footer`, which are both strings.
-
-### __Breaking Changes__
+## 2025-09-03 v3.14.0
 
 ### Added
 - Issue #1038: Added tooltips to display area of drawn polygons/squares and length of drawn lines, as in version 2.
@@ -24,6 +21,7 @@
 - UserManual: Added translation for user manual which is used in Gebeudewermeplannung Portal
 - SearchBar: Render images in search result if `imagePath` is provided in SearchBarSuggestionList and SearchBarResultListGeneralItem components.
 - Draw: Added square as geometryType.
+- PrintModule: Add additional parameter `transferParameter` which is an object with its parameters spread for the mapFish. `transferParameter` can have two parameters: `pagename` and `footer`, which are both strings.
 
 ### Changed
 - Orientation: Nearby: If in an iFrame and geolocation is not enabled through config parameter, geolocation option will not show.
@@ -36,7 +34,6 @@
     - devDependencies:
         - @masterportal/masterportalapi: 2.49.0 to 2.50.0 (This also raised ol to version 10.6.0)
 
-### Deprecated
 
 ### Removed
 - Removed configuration portal/layer.
