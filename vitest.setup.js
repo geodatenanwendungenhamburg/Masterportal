@@ -287,8 +287,3 @@ if (typeof global !== "undefined") {
     global.it = globalThis.it;
     global.test = globalThis.test;
 }
-
-if (!globalThis.__autoUnmountEnabled) {
-    enableAutoUnmount(globalThis.afterEach);
-    globalThis.__autoUnmountEnabled = true;
-}
