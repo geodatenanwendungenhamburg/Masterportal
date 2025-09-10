@@ -61,4 +61,3 @@ const viteConfig = mergeConfig({
     }
 });
 
-export default viteConfig;
