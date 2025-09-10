@@ -12,6 +12,7 @@ import mapCollection from "./core/maps/js/mapCollection.js";
 import MenuContainer from "./modules/menu/components/MenuContainer.vue";
 import MenuToggleButton from "./modules/menu/components/MenuToggleButton.vue";
 import addonsPlugin from "./plugins/addons.js";
+import i18next from "i18next";
 
 export default {
     name: "App",
@@ -104,6 +105,7 @@ export default {
         setGlobalVariables () {
             window.mapCollection = mapCollection;
             window.moduleCollection = {};
+            window.i18next = i18next;
         },
 
         /**
