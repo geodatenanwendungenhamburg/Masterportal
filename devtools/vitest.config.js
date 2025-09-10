@@ -49,4 +49,3 @@ const viteConfig = defineConfig({
     }
 });
 
-export default viteConfig;
