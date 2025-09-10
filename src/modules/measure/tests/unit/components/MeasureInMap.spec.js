@@ -98,6 +98,7 @@ describe("src/modules/measure/components/MeasureInMap.vue", () => {
         expect(wrapper.find("#measure-delete").exists()).to.be.true;
     });
 
+
     it("select element interaction produces expected mutations, actions, and updates", () => {
         wrapper = shallowMount(MeasureInMapComponent, {
             global: {
@@ -114,16 +115,14 @@ describe("src/modules/measure/components/MeasureInMap.vue", () => {
             .and.not.to.contain("²");
 
 
+        geometrySelect.element.value = "Polygon";
         geometrySelect.trigger("change");
-
         nextTick(async () => {
             expect(MeasureModule.mutations.setSelectedGeometry.calledOnce).to.be.true;
+            expect(MeasureModule.mutations.setSelectedGeometry.firstCall.args[1]).to.equals("Polygon");
 
             // draw interaction should have been remade on geometry change
             expect(MeasureModule.actions.createDrawInteraction.calledOnce).to.be.true;
-
-            // after changing to "Polygon", m²/km² are the units
-            expect(geometrySelect.element.value).equals("Polygon");
         });
 
         // check if changing unit produces expected effects

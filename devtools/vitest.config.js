@@ -21,7 +21,7 @@ const viteConfig = defineConfig({
       globals: true,
       environment: 'jsdom',
       include:['**/*.spec.js'],
-      // include:['src/**/*.spec.js'],
+      // include:['src/**/measure/**/*.spec.js'], //test runs sucessfully
       // include:['addons/**/*.spec.js'],
       transformMode: {
         web: [/.[tj]s$/],
