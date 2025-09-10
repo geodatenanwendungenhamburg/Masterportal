@@ -28,21 +28,7 @@ const env = window.location.pathname.split("/")[2],
         script.onerror = reject;
         script.async = true;
         script.src = configPath;
-    }),
-    main = {
-        /**
-         * Returns the app.
-         * @returns {Object} the app
-         */
-        // to circular dependency
-        getApp: () => app
-    };
-
-// import(`/portal/${env}/config.js`).then((config) => {
-//     const app = createApp(App)
-//     app.provide('config', config.default || config)
-//     app.mount('#app')
-// })
+    });
 
 // Wait until config.js is loaded
 loadConfigJs.then(() => {
@@ -67,6 +53,7 @@ loadConfigJs.then(() => {
     // }
 
     app.use(store);
+    store.$app = app;
     if (Config.matomo) {
         initiateMatomo(app);
     }
@@ -84,4 +71,4 @@ loadConfigJs.then(() => {
 import {Buffer} from "buffer";
 window.Buffer = Buffer;
 
-export default main;
+export default app;
