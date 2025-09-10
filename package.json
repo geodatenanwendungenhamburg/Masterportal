@@ -22,6 +22,7 @@
     "start": "vite --config devtools/vite.config.js",
     "start:ssl": "vite --config devtools/vite.config.js --https --cert devtools/certificate/localhost.pem --key devtools/certificate/localhost.key",
     "vitest": "vitest --config devtools/vitest.config.js --run",
+    "vitest:watch": "vitest --config devtools/vitest.config.js --watch",
     "test": "mocha --require devtools/tests/setupUnitTests.js \"./src/**/*.spec.js\" \"./addons/*/!(node_modules)/**/*.spec.js\"",
     "test:watch": "npm run test -- --watch",
     "test:single": "mochapack --recursive --webpack-config devtools/webpack.test.js --file devtools/tests/setupUnitTests.js",
