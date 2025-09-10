@@ -43,9 +43,9 @@ const layerTypes2d = {
  * Creates layer instances.
  * @param {Object} layerConf The layer configuration.
  * @param {String} mapMode The current map mode.
- * @returns {Promise<Layer>} The layer instance.
+ * @returns {Object} The layer instance.
  */
-export async function createLayer (layerConf, mapMode) {
+function createLayer (layerConf, mapMode) {
     let layer,
         typ;
 
@@ -59,9 +59,7 @@ export async function createLayer (layerConf, mapMode) {
         layer = new layerTypes2d[typ](layerConf, typ === "GROUP" ? this : undefined);
     }
     else if (mapMode === "3D" && layerTypes3d[typ]) {
-        const module = await layerTypes3d[typ]();
-
-        layer = new module.default(layerConf);
+        layer = new layerTypes3d[typ](layerConf);
     }
 
     return layer;
@@ -72,16 +70,19 @@ export async function createLayer (layerConf, mapMode) {
  * @returns {Array} The vectorLayer types as an array.
  */
 function getVectorLayerTypes () {
-    return [
-        "GEOJSON",
-        "OAF",
-        "SENSORTHINGS",
-        "VECTORBASE",
-        "WFS"
-    ];
+    const vectorLayerTypes = [];
+
+    Object.keys(layerTypes2d).forEach(layerTyp => {
+        if (layerTypes2d[layerTyp].prototype instanceof Layer2dVector) {
+            vectorLayerTypes.push(layerTyp);
+        }
+    });
+
+    return vectorLayerTypes;
 }
 
 export default {
     createLayer,
     getVectorLayerTypes
 };
+
