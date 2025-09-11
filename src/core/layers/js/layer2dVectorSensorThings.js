@@ -86,8 +86,9 @@ export default function Layer2dVectorSensorThings (attributes) {
     this.lastScale = null;
 
     this.registerInteractionMapResolutionListeners(this.get("scaleStyleByZoom"));
-    require("dayjs/locale/de.js");
-    dayjs.locale("de");
+    // todo vite: ohne das require wird die Sprache nicht auf de gewechselt. Warum soll das überhaupt sein?
+    // require("dayjs/locale/de.js");
+    // dayjs.locale("de");
     this.registerInteractionMapScaleListeners();
     this.prepareFeaturesFor3D(this.layer?.getSource().getFeatures());
 }
