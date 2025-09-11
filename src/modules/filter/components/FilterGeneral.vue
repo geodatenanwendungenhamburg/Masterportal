@@ -12,7 +12,7 @@ import isObject from "@shared/js/utils/isObject.js";
 import GeometryFilter from "./GeometryFilter.vue";
 import {getFeaturesOfAdditionalGeometries} from "../utils/getFeaturesOfAdditionalGeometries.js";
 import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
-import getFeature  from "@shared/js/api/wfs/getFeature.js";
+import getFeature from "@shared/js/api/wfs/getFeature.js";
 import {WFS} from "ol/format.js";
 import UrlHandler from "../utils/urlHandler.js";
 import Cluster from "ol/source/Cluster.js";
