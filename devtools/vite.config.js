@@ -142,7 +142,6 @@ export default defineConfig({
         ],
         exclude: [
             "@turf/turf", // used for addons
-            "@turf/helpers", // used for addons
             "@turf/boolean-point-in-polygon", // used for addons
             // add other @turf/* packages we use
             "d3-geo", // used for addons
