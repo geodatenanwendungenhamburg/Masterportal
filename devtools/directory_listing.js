@@ -3,7 +3,7 @@ import fs from "fs";
 
 export const directoryListing = {
     name: "directory-listing",
-    configureServer(server) {
+    configureServer (server) {
         server.middlewares.use((req, res, next) => {
             if (!req.url) {
                 next();
@@ -13,10 +13,10 @@ export const directoryListing = {
             const requestedPath = path.join(process.cwd(), req.url);
 
             if (fs.existsSync(requestedPath) && fs.statSync(requestedPath).isDirectory()) {
-                const files = fs.readdirSync(requestedPath).filter(file => !file.startsWith("."));
-                const currentDir = decodeURIComponent(req.url === "/" ? "/" : path.basename(req.url));
+                const files = fs.readdirSync(requestedPath).filter(file => !file.startsWith(".")),
+                    currentDir = decodeURIComponent(req.url === "/" ? "/" : path.basename(req.url)),
 
-                const html = generateHTML(currentDir, files, req.url);
+                    html = generateHTML(currentDir, files, req.url);
 
                 res.setHeader("Content-Type", "text/html");
                 res.end(html);
@@ -28,10 +28,14 @@ export const directoryListing = {
     }
 };
 
-function generateHTML(currentDir, files, baseUrl) {
+/**
+ *
+ */
+function generateHTML (currentDir, files, baseUrl) {
     const fileListHTML = files
         .map(file => {
             const filePath = path.join(baseUrl, file, "/");
+
             return `<li data-name="${file.toLowerCase()}"><a href="${filePath}">${file}</a></li>`;
         })
         .join("");
