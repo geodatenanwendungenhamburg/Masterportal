@@ -34,6 +34,26 @@ const viteConfig = defineConfig({
                 inline: [/ol[/\\]/, /olcs[/\\]/, /@geoblocks[/\\]/]
             }
         }
+    },
+    optimizeDeps: {
+        allowNodeBuiltins: true,
+        include: [
+            "vue",
+            "vuex",
+            "olcs",
+            "bootstrap",
+            "axios"
+        ],
+        exclude: [
+            "@turf/turf", // used for addons
+            "@turf/helpers", // used for addons
+            "@turf/boolean-point-in-polygon", // used for addons
+            // add other @turf/* packages we use
+            "d3-geo", // used for addons
+            "point-in-polygon-hao", // used for addons
+            "rollup-plugin-terser", // used for addons
+            "polyclip-ts"// used for addons
+        ]
     }
 });
 
