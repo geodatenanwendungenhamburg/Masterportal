@@ -101,13 +101,14 @@ export default {
             );
         }
     },
-    updated() {
+    updated () {
     // Refocus the search input after suggestions appear
         const input = document.getElementById("searchInput");
+
         if (input) {
             input.focus();
-    };
-}
+        }
+    }
 };
 </script>
 
