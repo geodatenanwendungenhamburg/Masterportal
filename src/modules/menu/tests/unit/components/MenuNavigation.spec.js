@@ -57,7 +57,9 @@ describe("src/core/menu/navigation/components/MenuNavigation.vue", () => {
         });
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     it("renders the navigation in the main menu side", () => {
         wrapper = mount(MenuNavigation, {

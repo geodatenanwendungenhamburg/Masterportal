@@ -25,7 +25,9 @@ describe("src/share-components/graphicalSelect/store/actionsGraphicalSelect", ()
         dispatch = sinon.stub();
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     it("updateDrawInteractionListener defines a drawstart and drawend function on the interaction", async () => {
         const layer = new VectorLayer({

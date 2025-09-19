@@ -12,7 +12,9 @@ describe("src/shared/components/LightButton.vue", () => {
         interactionSpy = sinon.spy();
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     it("should render a button with an icon and trigger the given interaction on click", () => {
         const iconString = "bi-list",

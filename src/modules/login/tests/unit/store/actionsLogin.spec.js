@@ -15,7 +15,9 @@ describe("src/modules/Modules/Login/store/actionsLogin.js", () => {
         commit = sinon.spy();
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe("logout", () => {
         it("resets the state", () => {
@@ -122,8 +124,6 @@ describe("src/modules/Modules/Login/store/actionsLogin.js", () => {
                 oidcScope
             };
 
-            window.localStorage = global.localStorage;
-
             getAuthCodeUrlStub.resolves(mockUrl);
 
             url = await actionsLogin.getAuthCodeUrl();
@@ -137,7 +137,9 @@ describe("src/modules/Modules/Login/store/actionsLogin.js", () => {
     });
 
     describe("checkLoggedIn", () => {
-        afterEach(sinon.restore);
+        afterEach(() => {
+            sinon.restore();
+        });
 
         it("should set loggedIn to true when token is present and valid", async () => {
             let result = null;

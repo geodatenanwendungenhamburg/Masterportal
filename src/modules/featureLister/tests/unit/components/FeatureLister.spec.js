@@ -57,7 +57,12 @@ describe("src/modules/featureLister/components/FeatureLister.vue", () => {
         sinon.restore();
     });
 
-    it("renders the Tabs", () => {
+    afterEach(() => {
+        sinon.restore();
+    });
+
+    it("renders list of visible vector layers", () => {
+        store.commit("Modules/FeatureLister/setLayerListView", true);
         wrapper = shallowMount(FeatureListerComponent, {global: {plugins: [store]}});
 
         expect(wrapper.find("#module-feature-lister-themeChooser").exists()).to.be.true;
