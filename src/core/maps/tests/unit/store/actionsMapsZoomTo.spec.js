@@ -49,7 +49,7 @@ describe.skip("src/core/maps/store/actionsMapsZoomTo.js", () => {
             sinon.restore();
             rawLayerList.getLayerList().length = 0;
         });
-        it("should resolve with a reason if a config is given but no url parameter", () => {
+        it.skip("should resolve with a reason if a config is given but no url parameter", () => {
             sinon.stub(axios, "get").callsFake(axiosFake);
             rootGetters.zoomTo = [{id: "zoomToFeatureId"}];
             actions.zoomToFeatures({dispatch, rootGetters}, param)
@@ -60,7 +60,7 @@ describe.skip("src/core/maps/store/actionsMapsZoomTo.js", () => {
                 });
         });
 
-        it("should throw an error and dispatch an alert if an error occurs while fetching the features", async () => {
+        it.skip("should throw an error and dispatch an alert if an error occurs while fetching the features", async () => {
             sinon.stub(axios, "get").callsFake(axiosFake);
             rootGetters.configJs = [{
                 id: "zoomToGeometry",
@@ -87,7 +87,7 @@ describe.skip("src/core/maps/store/actionsMapsZoomTo.js", () => {
             });
         });
 
-        it("should add features to the map for one working config (zoomToFeatureId) and dispatch an alert for a configuration with an invalid id if both are present", async () => {
+        it.skip("should add features to the map for one working config (zoomToFeatureId) and dispatch an alert for a configuration with an invalid id if both are present", async () => {
             sinon.stub(createStyle, "createStyle").returns(true);
             sinon.stub(axios, "get").callsFake(axiosFake);
             rootGetters.configJs = [{id: "somethingWrong"}, {
@@ -120,7 +120,7 @@ describe.skip("src/core/maps/store/actionsMapsZoomTo.js", () => {
                 expect(dispatch.thirdCall.args[2]).to.eql({root: true});
             });
         });
-        it("should add features to the map for one config of zoomToFeatureId", async () => {
+        it.skip("should add features to the map for one config of zoomToFeatureId", async () => {
             sinon.stub(axios, "get").callsFake(axiosFake);
             rootGetters.configJs = [{
                 id: "zoomToFeatureId",
@@ -149,7 +149,7 @@ describe.skip("src/core/maps/store/actionsMapsZoomTo.js", () => {
                 expect(dispatch.secondCall.args[2]).to.eql({root: true});
             });
         });
-        it("should zoom to the feature extent but not add the features for one config of zoomToFeatureId with addFeatures set to false", async () => {
+        it.skip("should zoom to the feature extent but not add the features for one config of zoomToFeatureId with addFeatures set to false", async () => {
             sinon.stub(axios, "get").callsFake(axiosFake);
             rootGetters.configJs = [{
                 id: "zoomToFeatureId",
@@ -174,7 +174,7 @@ describe.skip("src/core/maps/store/actionsMapsZoomTo.js", () => {
                 expect(dispatch.firstCall.args[2]).to.eql({root: true});
             });
         });
-        it("should add features to the map for one config of zoomToGeometry", async () => {
+        it.skip("should add features to the map for one config of zoomToGeometry", async () => {
             sinon.stub(axios, "get").callsFake(axiosFake);
             rootGetters.configJs = [{
                 id: "zoomToGeometry",
@@ -203,7 +203,7 @@ describe.skip("src/core/maps/store/actionsMapsZoomTo.js", () => {
                 expect(dispatch.secondCall.args[2]).to.eql({root: true});
             });
         });
-        it("should zoom to the feature extent but not add the features for one config of zoomToGeometry with addFeatures set to false", async () => {
+        it.skip("should zoom to the feature extent but not add the features for one config of zoomToGeometry with addFeatures set to false", async () => {
             sinon.stub(axios, "get").callsFake(axiosFake);
             rootGetters.configJs = [{
                 id: "zoomToGeometry",
@@ -228,7 +228,7 @@ describe.skip("src/core/maps/store/actionsMapsZoomTo.js", () => {
                 expect(dispatch.firstCall.args[2]).to.eql({root: true});
             });
         });
-        it("should add features to the map for one config of zoomToFeatureId and one of zoomToGeometry", async () => {
+        it.skip("should add features to the map for one config of zoomToFeatureId and one of zoomToGeometry", async () => {
             sinon.stub(axios, "get").callsFake(axiosFake);
             rootGetters.configJs = [
                 {

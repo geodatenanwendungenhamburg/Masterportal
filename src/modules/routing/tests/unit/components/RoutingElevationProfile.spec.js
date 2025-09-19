@@ -101,7 +101,7 @@ describe.skip("src/modules/routing/components/RoutingElevationProfileData.vue", 
         sinon.restore();
     });
 
-    it("should render the component", () => {
+    it.skip("should render the component", () => {
         wrapper = mount(RoutingElevationProfileData, {
             global: {
                 plugins: [store]
@@ -111,7 +111,7 @@ describe.skip("src/modules/routing/components/RoutingElevationProfileData.vue", 
         expect(wrapper.findComponent(RoutingElevationProfileData).exists()).to.be.true;
     });
 
-    it("computed directions should return routing directions", () => {
+    it.skip("computed directions should return routing directions", () => {
         wrapper = mount(RoutingElevationProfileData, {
             global: {
                 plugins: [store]
@@ -121,7 +121,7 @@ describe.skip("src/modules/routing/components/RoutingElevationProfileData.vue", 
         expect(wrapper.vm.directions).equals(routingDirections);
     });
 
-    it("computed directions should return tsr directions", () => {
+    it.skip("computed directions should return tsr directions", () => {
         activeRoutingToolOption = "TSR";
         wrapper = mount(RoutingElevationProfileData, {
             global: {
@@ -132,7 +132,7 @@ describe.skip("src/modules/routing/components/RoutingElevationProfileData.vue", 
         expect(wrapper.vm.directions).equals(tsrDirections);
     });
 
-    it("computed layerSource should return directions layer source", () => {
+    it.skip("computed layerSource should return directions layer source", () => {
         wrapper = mount(RoutingElevationProfileData, {
             global: {
                 plugins: [store]
@@ -142,7 +142,7 @@ describe.skip("src/modules/routing/components/RoutingElevationProfileData.vue", 
         expect(wrapper.vm.layerSource).equals(directionsElevationSource);
     });
 
-    it("computed layerSource should return tsr layer source", () => {
+    it.skip("computed layerSource should return tsr layer source", () => {
         activeRoutingToolOption = "TSR";
         wrapper = mount(RoutingElevationProfileData, {
             global: {
@@ -153,7 +153,7 @@ describe.skip("src/modules/routing/components/RoutingElevationProfileData.vue", 
         expect(wrapper.vm.layerSource).equals(tsrElevationSource);
     });
 
-    it("should extract directions data correctly", () => {
+    it.skip("should extract directions data correctly", () => {
         wrapper = mount(RoutingElevationProfileData, {
             global: {
                 plugins: [store]
@@ -167,7 +167,7 @@ describe.skip("src/modules/routing/components/RoutingElevationProfileData.vue", 
         expect(wrapper.vm.descent).equals("250");
     });
 
-    it("should extract tsr data correctly", () => {
+    it.skip("should extract tsr data correctly", () => {
         activeRoutingToolOption = "TSR";
         wrapper = mount(RoutingElevationProfileData, {
             global: {
@@ -182,7 +182,7 @@ describe.skip("src/modules/routing/components/RoutingElevationProfileData.vue", 
         expect(wrapper.vm.descent).equals("50");
     });
 
-    it("should call draw chart (DIRECTIONS)", () => {
+    it.skip("should call draw chart (DIRECTIONS)", () => {
         const drawChart = sinon.spy(RoutingElevationProfileData.methods, "drawChart");
 
         wrapper = mount(RoutingElevationProfileData, {
@@ -207,7 +207,7 @@ describe.skip("src/modules/routing/components/RoutingElevationProfileData.vue", 
         ]);
     });
 
-    it("should call draw chart (TSR)", () => {
+    it.skip("should call draw chart (TSR)", () => {
         activeRoutingToolOption = "TSR";
         const drawChart = sinon.spy(RoutingElevationProfileData.methods, "drawChart");
 

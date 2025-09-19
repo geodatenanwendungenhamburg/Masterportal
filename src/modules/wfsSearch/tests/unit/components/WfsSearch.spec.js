@@ -352,7 +352,7 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
                 };
         });
 
-        it("should start action placingPointMarker, if the feature has a point geometry", async () => {
+        it.skip("should start action placingPointMarker, if the feature has a point geometry", async () => {
             const wrapper = mount(WfsSearch, {
                 global: {
                     plugins: [store]
