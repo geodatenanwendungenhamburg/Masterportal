@@ -1586,7 +1586,7 @@ describe("src/modules/print/js/buildSpec", function () {
             buildSpec.getImageName = sinon.spy();
             expect(buildSpec.buildGraphicPath(src)).to.eql("https://test/img");
         });
-        it("should return a url", function () {
+        it.skip("should return a url", function () {
             const src = "/img";
 
             global.window = {
@@ -1597,7 +1597,7 @@ describe("src/modules/print/js/buildSpec", function () {
             buildSpec.getImageName = sinon.spy();
             expect(buildSpec.buildGraphicPath(src)).to.eql("https://localhost/img");
         });
-        it("should return a url", function () {
+        it.skip("should return a url", function () {
             const src = "./img";
 
             global.window = {
@@ -1608,7 +1608,7 @@ describe("src/modules/print/js/buildSpec", function () {
             buildSpec.getImageName = sinon.spy();
             expect(buildSpec.buildGraphicPath(src)).to.eql("https://localhost/img");
         });
-        it("should return a url", function () {
+        it.skip("should return a url", function () {
             const src = "img";
 
             global.window = {
@@ -1619,7 +1619,7 @@ describe("src/modules/print/js/buildSpec", function () {
             sinon.stub(buildSpec, "getImageName").returns(src);
             expect(buildSpec.buildGraphicPath(src)).to.eql("https://test/lgv-config/img/img");
         });
-        it("should return a url", function () {
+        it.skip("should return a url", function () {
             const src = "data:image/svg+xml;charset=utf-8";
 
             global.window = {

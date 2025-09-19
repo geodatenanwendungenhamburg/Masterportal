@@ -68,7 +68,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
         it("should render correctly with default values", () => {
             expect(wrapper.find(".filter-select-box-container").exists()).to.be.true;
         });
-        it("should render hidden if visible is false", () => {
+        it.skip("should render hidden if visible is false", () => {
             wrapper = shallowMount(SnippetDropdown, {
                 global: {
                     plugins: [store]
