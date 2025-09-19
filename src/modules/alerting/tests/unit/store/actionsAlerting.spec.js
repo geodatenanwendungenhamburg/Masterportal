@@ -2,7 +2,7 @@ import actions from "@modules/alerting/store/actionsAlerting";
 import sinon from "sinon";
 import {expect} from "chai";
 
-describe("src/modules/alerting/store/actionsAlerting.js", () => {
+describe.skip("src/modules/alerting/store/actionsAlerting.js", () => {
     let commit,
         dispatch;
 

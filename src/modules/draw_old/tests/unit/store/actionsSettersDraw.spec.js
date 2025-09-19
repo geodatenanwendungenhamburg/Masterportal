@@ -10,7 +10,9 @@ describe("src/modules/draw/store/actions/settersDraw.js", () => {
         dispatch = sinon.spy();
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     /**
      * @param {String} id id to use for drawType and options prefix

@@ -30,7 +30,9 @@ describe("src/modules/menu/MenuFolder.vue", () => {
     });
 
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     it("renders MenuContainerBodyRootItems in mainMenu", () => {
         wrapper = shallowMount(MenuFolder, {global: {

@@ -25,7 +25,9 @@ describe("src/modules/draw/store/actions/withoutGUIDraw.js", () => {
         };
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe("cancelDrawWithoutGUI", () => {
         it("should dispatch as intended", () => {
@@ -92,12 +94,12 @@ describe("src/modules/draw/store/actions/withoutGUIDraw.js", () => {
             expect(downloadedFeatures).to.eql(JSON.stringify(multiPolygonfeatColFromJson));
         });
     });
-    describe("downloadViaRemoteInterface", () => {
+    describe.skip("downloadViaRemoteInterface", () => {
         const geomType = Symbol(),
             result = Symbol();
 
         //  RemoteInterface needs to be implemented without Radio: see https://lgv-hamburg.atlassian.net/browse/BG-5171
-        it.skip("should dispatch as aspected", () => {
+        it("should dispatch as aspected", () => {
             dispatch = sinon.stub().resolves(result);
 
             actions.downloadViaRemoteInterface.call({$app: mockApp}, {dispatch}, geomType);

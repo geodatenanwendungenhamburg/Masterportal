@@ -7,6 +7,16 @@ import FreezeScreenUnfreeze from "@modules/controls/freeze/components/FreezeScre
 config.global.mocks.$t = key => key;
 
 describe("src/modules/controls/freeze/components/FreezeScreenUnfreeze.vue", () => {
+
+    beforeEach(() => {
+        const app = document.createElement("div");
+
+        app.id = "masterportal-container";
+         if (document.body) {
+            document.body.appendChild(app);
+        }
+    });
+
     it("renders the freeze-screen-unfreeze", () => {
         const wrapper = mount(FreezeScreenUnfreeze);
 

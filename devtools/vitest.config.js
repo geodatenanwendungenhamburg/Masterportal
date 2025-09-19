@@ -16,12 +16,28 @@ const viteConfig = defineConfig({
     ],
     css: false,
     test: {
-        reporters: "verbose",
+        pool: 'forks',
+            poolOptions: {
+            forks: {
+                execArgv: [
+                '--cpu-prof',
+                '--cpu-prof-dir=test-runner-profile',
+                '--heap-prof',
+                '--heap-prof-dir=test-runner-profile'
+                ],
+
+                // To generate a single profile
+                singleFork: true,
+            },
+        },
+        reporters: "default",
         // reporters: "html",
         globals: true,
         environment: "jsdom",
-        // include:['**/*.spec.js'],
-        // include:['src/**/measure/**/*.spec.js'], //test runs sucessfully
+        css:false,
+        // include:['src/**/*.spec.js'],
+        // include:['**/VerkehrsstaerkenTheme.spec.js'], //test runs sucessfully
+        // include:['addons/vpiDashboard/**/*.spec.js'], //test runs sucessfully
         // include:['addons/**/*.spec.js'],
         transformMode: {
             web: [/.[tj]s$/]

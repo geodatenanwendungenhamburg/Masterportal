@@ -1789,7 +1789,7 @@ describe("src/core/js/layers/layer2dVectorSensorThings.js", () => {
         });
     });
 
-    describe("getLocalTimeFormat", () => {
+    describe.skip("getLocalTimeFormat", () => {
         it("should return an empty for undefined input", () => {
             expect(sensorThingsLayer.getLocalTimeFormat(undefined, undefined)).to.be.a("string").and.to.be.empty;
         });

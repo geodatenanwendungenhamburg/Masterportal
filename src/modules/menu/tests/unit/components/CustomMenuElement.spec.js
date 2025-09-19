@@ -48,7 +48,9 @@ describe("src/modules/menu/components/CustomMenuElement.vue", () => {
         sinon.stub(console, "error").callsFake(errorSpy);
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     it("renders only a div if no htmlContent or pathToContent is given", () => {
         wrapper = mount(CustomMenuElement,

@@ -48,7 +48,9 @@ describe("src/modules/statiscticDashboard/components/StatisticGridComponent.vue"
         });
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe("Component DOM", () => {
         it("The component should exist", () => {

@@ -165,7 +165,7 @@ describe.skip("src/modules/copyrightConstraints/components/CopyrightConstraints.
 
             expect(returnedMetaData.getConstraints()).to.be.an("object").that.have.property("access");
             expect(returnedMetaData.getConstraints()).to.be.an("object").that.have.property("use").that.is.an("array");
-        }).timeout(4000);
+        });
         it("getCswConstraints and rendered data", async () => {
             const wrapper = mount(CopyrightConstraints, {
                 global: {
@@ -193,7 +193,7 @@ describe.skip("src/modules/copyrightConstraints/components/CopyrightConstraints.
             expect(ullayerList.exists()).to.be.true;
             expect(ulConstraintsList.exists()).to.be.false;
             expect(ulPointOfContactList.exists()).to.be.true;
-        }).timeout(4000);
+        });
         it("getVisibleLayer returns an array", () => {
             const wrapper = mount(CopyrightConstraints, {
                     global: {
