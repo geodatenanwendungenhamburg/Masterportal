@@ -77,14 +77,14 @@ describe.skip("src/core/js/layers/layer3dTileset.js", () => {
             };
         });
 
-        it("new Layer3dTileset should create an layer with warning", () => {
+        it.skip("new Layer3dTileset should create an layer with warning", () => {
             const layer3dTileset = new Layer3dTileset(attributes);
 
             expect(layer3dTileset).not.to.be.undefined;
             expect(warn.notCalled).to.be.true;
         });
 
-        it("createLayer shall create a tileset layer", function (done) {
+        it.skip("createLayer shall create a tileset layer", function (done) {
             const layer3dTileset = new Layer3dTileset(attributes),
                 layer = layer3dTileset.getLayer();
 
@@ -92,7 +92,7 @@ describe.skip("src/core/js/layers/layer3dTileset.js", () => {
             checkLayer(layer, layer3dTileset, attributes, done);
         });
 
-        it("createLayer shall create a visible tileset layer", function (done) {
+        it.skip("createLayer shall create a visible tileset layer", function (done) {
             Object.assign(attributes, {visibility: true});
 
             const layer3dTileset = new Layer3dTileset(attributes),
@@ -103,7 +103,7 @@ describe.skip("src/core/js/layers/layer3dTileset.js", () => {
             expect(fromUrlSpy.calledWithMatch("the_url/tileset.json", {maximumScreenSpaceError: 6})).to.equal(true);
             checkLayer(layer, layer3dTileset, attributes, done);
         });
-        it("createLayer shall add hidden features at visible layer", function (done) {
+        it.skip("createLayer shall add hidden features at visible layer", function (done) {
             attributes.hiddenFeatures = [
                 "DEHHALKAJ00011uJ",
                 "DEHHALKAJ0000yd2"
@@ -120,7 +120,7 @@ describe.skip("src/core/js/layers/layer3dTileset.js", () => {
         });
     });
     describe("style funtions", () => {
-        it("initStyle shall be called on creation and call createStyle if styleListLoaded=true", function () {
+        it.skip("initStyle shall be called on creation and call createStyle if styleListLoaded=true", function () {
             const createStyleSpy = sinon.spy(Layer3dTileset.prototype, "createStyle");
 global.Cesium
             store.getters = {
@@ -132,7 +132,7 @@ global.Cesium
             expect(createStyleSpy.calledOnce).to.be.true;
         });
 
-        it("initStyle shall be called on creation and not call createStyle if styleListLoaded=false", function () {
+        it.skip("initStyle shall be called on creation and not call createStyle if styleListLoaded=false", function () {
             const createStyleSpy = sinon.spy(Layer3dTileset.prototype, "createStyle");
 
             store.getters = {
@@ -144,7 +144,7 @@ global.Cesium
             expect(createStyleSpy.notCalled).to.be.true;
         });
 
-        it("createStyle shall set the style at attributes nd at tileset", async function () {
+        it.skip("createStyle shall set the style at attributes nd at tileset", async function () {
             style = [["true", "color"]];
             global.Cesium.Cesium3DTileStyle = sinon.stub().returns(style);
             sinon.stub(createStyle, "createStyle").returns(style);
@@ -174,7 +174,7 @@ global.Cesium
             };
         });
 
-        it("setVisible with visibility true and hiddenFeatures", function () {
+        it.skip("setVisible with visibility true and hiddenFeatures", function () {
             attributes.hiddenFeatures = [
                 "DEHHALKAJ00011uJ",
                 "DEHHALKAJ0000yd2"
@@ -191,7 +191,7 @@ global.Cesium
             expect(createLegendSpy.calledOnce).to.be.true;
             expect(showObjectsSpy.notCalled).to.be.true;
         });
-        it("setVisible with visibility false and hiddenFeatures", function () {
+        it.skip("setVisible with visibility false and hiddenFeatures", function () {
             attributes.hiddenFeatures = [
                 "DEHHALKAJ00011uJ",
                 "DEHHALKAJ0000yd2"
@@ -209,7 +209,7 @@ global.Cesium
             expect(showObjectsSpy.calledOnce).to.be.true;
             expect(showObjectsSpy.firstCall.args[0]).to.be.deep.equals(attributes.hiddenFeatures);
         });
-        it("setVisible with visibility true and no hiddenFeatures", function () {
+        it.skip("setVisible with visibility true and no hiddenFeatures", function () {
             const tilesetLayer = new Layer3dTileset(attributes);
 
             tilesetLayer.getLayer().setVisible = setVisibleSpy;
@@ -221,7 +221,7 @@ global.Cesium
             expect(createLegendSpy.calledOnce).to.be.true;
             expect(showObjectsSpy.notCalled).to.be.true;
         });
-        it("setVisible with visibility false and no hiddenFeatures", function () {
+        it.skip("setVisible with visibility false and no hiddenFeatures", function () {
             const tilesetLayer = new Layer3dTileset(attributes);
 
             tilesetLayer.getLayer().setVisible = setVisibleSpy;
@@ -235,7 +235,7 @@ global.Cesium
         });
     });
     describe("updateLayerValues", function () {
-        it("updateLayerValues shall call setVisible and setOpacity if visibility changed", function () {
+        it.skip("updateLayerValues shall call setVisible and setOpacity if visibility changed", function () {
             attributes.visibility = true;
             const tilesetLayer = new Layer3dTileset(attributes),
                 setVisibleSpy = sinon.spy(Layer3dTileset.prototype, "setVisible"),
@@ -247,7 +247,7 @@ global.Cesium
             expect(setOpacitySpy.calledOnce).to.be.true;
             expect(setOpacitySpy.firstCall.args[0]).to.be.equals(1);
         });
-        it("updateLayerValues shall call setOpacity if visibility not changed", function () {
+        it.skip("updateLayerValues shall call setOpacity if visibility not changed", function () {
             attributes.visibility = true;
             const tilesetLayer = new Layer3dTileset(attributes),
                 setVisibleSpy = sinon.spy(Layer3dTileset.prototype, "setVisible"),
@@ -260,7 +260,7 @@ global.Cesium
         });
     });
     describe("setOpacity", function () {
-        it("setOpacity 100 shall call setOpacity at layer", function () {
+        it.skip("setOpacity 100 shall call setOpacity at layer", function () {
             attributes.visibility = true;
             const tilesetLayer = new Layer3dTileset(attributes),
                 setOpacitySpy = sinon.spy();
@@ -271,7 +271,7 @@ global.Cesium
             expect(setOpacitySpy.calledOnce).to.be.true;
             expect(setOpacitySpy.firstCall.args[0]).to.be.equals(0);
         });
-        it("setOpacity 0 shall call setOpacity at layer", function () {
+        it.skip("setOpacity 0 shall call setOpacity at layer", function () {
             attributes.visibility = true;
             const tilesetLayer = new Layer3dTileset(attributes),
                 setOpacitySpy = sinon.spy();
@@ -284,7 +284,7 @@ global.Cesium
         });
     });
     describe("setCesiumSceneOptions", function () {
-        it("setCesiumSceneOptions updates the scene option depthTestAgainstTerrain of the cesium map to true", function () {
+        it.skip("setCesiumSceneOptions updates the scene option depthTestAgainstTerrain of the cesium map to true", function () {
             attributes.visibility = true;
             const tilesetLayer = new Layer3dTileset(attributes),
                 dispatchCalls = {},
@@ -322,7 +322,7 @@ global.Cesium
             tilesetLayer.setCesiumSceneOptions(sceneOptions, map);
             expect(dispatchCalls.replaceByIdInLayerConfig).to.deep.equal(replaceByIdInLayerConfig);
         });
-        it("setCesiumSceneOptions updates the scene option depthTestAgainstTerrain of the cesium map to false and resets the defaultDepthTestAgainstTerrrain to undefined", function () {
+        it.skip("setCesiumSceneOptions updates the scene option depthTestAgainstTerrain of the cesium map to false and resets the defaultDepthTestAgainstTerrrain to undefined", function () {
             attributes.visibility = true;
             attributes.defaultDepthTestAgainstTerrain = {
                 globe: {
@@ -361,7 +361,7 @@ global.Cesium
             tilesetLayer.setCesiumSceneOptions(sceneOptions, map);
             expect(dispatchCalls.replaceByIdInLayerConfig).to.deep.equal(replaceByIdInLayerConfig);
         });
-        it("setCesiumSceneOptions doesn't update the scene options depthTestAgainstTerrain of the cesium map if defaultDepthTestAgainstTerrrain is undefined", function () {
+        it.skip("setCesiumSceneOptions doesn't update the scene options depthTestAgainstTerrain of the cesium map if defaultDepthTestAgainstTerrrain is undefined", function () {
             attributes.visibility = true;
             const tilesetLayer = new Layer3dTileset(attributes),
                 dispatchCalls = {},
@@ -388,7 +388,7 @@ global.Cesium
         });
     });
     describe("featureExists", function () {
-        it("featureExists shall return true", function () {
+        it.skip("featureExists shall return true", function () {
             attributes.visibility = true;
             const tilesetLayer = new Layer3dTileset(attributes),
                 feature = {
@@ -404,7 +404,7 @@ global.Cesium
 
             expect(result).to.be.true;
         });
-        it("featureExists shall return false", function () {
+        it.skip("featureExists shall return false", function () {
             attributes.visibility = true;
             const tilesetLayer = new Layer3dTileset(attributes),
                 feature = {
@@ -422,7 +422,7 @@ global.Cesium
         });
     });
     describe("styleContent", function () {
-        it("should set lastUpdatedSymbol on the content on first call", function () {
+        it.skip("should set lastUpdatedSymbol on the content on first call", function () {
             attributes.hiddenFeatures = [
                 "DEHHALKAJ00011uJ",
                 "DEHHALKAJ0000yd2"
@@ -438,7 +438,7 @@ global.Cesium
         });
     });
     describe("addToHiddenObjects", function () {
-        it("add the id to the hiddenObjects and create an empty Set", function () {
+        it.skip("add the id to the hiddenObjects and create an empty Set", function () {
             const setFeatureVisibilityLastUpdatedSpy = sinon.spy(Layer3dTileset.prototype, "setFeatureVisibilityLastUpdated"),
                 tilesetLayer = new Layer3dTileset(attributes);
 
@@ -449,7 +449,7 @@ global.Cesium
         });
     });
     describe("showObjects", function () {
-        it("should remove the id from the hiddenObjects List", function () {
+        it.skip("should remove the id from the hiddenObjects List", function () {
             const tilesetLayer = new Layer3dTileset(attributes);
 
             tilesetLayer.addToHiddenObjects(["id"]);
@@ -459,7 +459,7 @@ global.Cesium
         });
     });
     describe("createLegend", function () {
-        it("createLegend shall create a legend", async function () {
+        it.skip("createLegend shall create a legend", async function () {
             attributes.legendURL = "https://legendUrl";
             const tilesetLayer = new Layer3dTileset(attributes),
                 legend = await tilesetLayer.createLegend();
@@ -468,7 +468,7 @@ global.Cesium
         });
     });
     describe("updateHiddenFeatureList", function () {
-        it("updateHiddenFeatureList", async function () {
+        it.skip("updateHiddenFeatureList", async function () {
             let tilesetLayer = null;
             const addToHiddenObjectsSpy = sinon.spy(),
                 hiddenFeatures1 = [
