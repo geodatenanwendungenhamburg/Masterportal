@@ -861,45 +861,51 @@ describe("src/modules/filter/components/LayerFilterSnippet.vue", () => {
                     snippetId: 0,
                     title: "Bezirk",
                     type: "dropdown",
-                    value: ["Altona"],
-                    prechecked: ["Altona"]
-                }];
+                    value: ["Altona"]
+                }],
+            precheckedSnippets = [{
+                operator: "EQ",
+                snippetId: 0,
+                title: "Bezirk",
+                type: "dropdown",
+                value: ["Altona"],
+                prechecked: ["Altona"]
+            }];
 
-            it("should not set prechecked value if param is not an array", async () => {
-                await wrapper.setData({
-                    snippets
-                });
-                wrapper.vm.setSnippetValueByState(undefined);
-                wrapper.vm.setSnippetValueByState(null);
-                wrapper.vm.setSnippetValueByState(123456);
-                wrapper.vm.setSnippetValueByState("string");
-                wrapper.vm.setSnippetValueByState(true);
-                wrapper.vm.setSnippetValueByState({});
-                expect(wrapper.vm.snippets).to.deep.equal(snippets);
+        it("should not set prechecked value if param is not an array", async () => {
+            await wrapper.setData({
+                snippets
             });
-            it("should not set prechecked value if given structure is not a rule", async () => {
-                await wrapper.setData({
-                    snippets
-                });
-                const isRuleStub = sinon.stub(wrapper.vm, "isRule").returns(false),
-                    noRule = [
-                        {
-                            something: "something"
-                        }
-                    ];
+            wrapper.vm.setSnippetValueByState(undefined);
+            wrapper.vm.setSnippetValueByState(null);
+            wrapper.vm.setSnippetValueByState(123456);
+            wrapper.vm.setSnippetValueByState("string");
+            wrapper.vm.setSnippetValueByState(true);
+            wrapper.vm.setSnippetValueByState({});
+            expect(wrapper.vm.snippets).to.deep.equal(snippets);
+        });
+        it("should not set prechecked value if given structure is not a rule", async () => {
+            await wrapper.setData({
+                snippets
+            });
+            const isRuleStub = sinon.stub(wrapper.vm, "isRule").returns(false),
+                noRule = [
+                    {
+                        something: "something"
+                    }
+                ];
 
-                wrapper.vm.setSnippetValueByState(noRule);
-                expect(wrapper.vm.snippets).to.deep.equal(snippets);
-                expect(isRuleStub.called).to.be.true;
-                sinon.restore();
+            wrapper.vm.setSnippetValueByState(noRule);
+            expect(wrapper.vm.snippets).to.deep.equal(snippets);
+            expect(isRuleStub.called).to.be.true;
+            sinon.restore();
+        });
+        it("should set prechecked value if correct filter rule is given", async () => {
+            await wrapper.setData({
+                snippets
             });
-            it("should set prechecked value if correct filter rule is given", async () => {
-                await wrapper.setData({
-                    snippets
-                });
-                wrapper.vm.setSnippetValueByState(filterRules);
-                expect(wrapper.vm.snippets).to.deep.equal(precheckedSnippets);
-            });
+            wrapper.vm.setSnippetValueByState(filterRules);
+            expect(wrapper.vm.snippets).to.deep.equal(precheckedSnippets);
         });
 
         describe("registerMapMoveListener", () => {
