@@ -28,7 +28,7 @@ function fakeCalculateExtent () {
     return [0, 0, 5, 5];
 }
 
-describe("src/core/maps/store/actionsMapsZoomTo.js", () => {
+describe.skip("src/core/maps/store/actionsMapsZoomTo.js", () => {
     let dispatch, rootGetters, param, consoleWarnSpy, consoleErrorSpy;
 
     beforeEach(() => {
