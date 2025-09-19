@@ -3,7 +3,7 @@ import api from "@masterportal/masterportalapi/src/maps/api.js";
 import {expect} from "chai";
 import sinon from "sinon";
 
-import {initializeMaps, load3DMap, create3DMap} from "@core/maps/js/maps.js";
+import maps from "@core/maps/js/maps.js";
 import store from "@appstore/index.js";
 
 
@@ -52,7 +52,7 @@ describe("src/core/js/maps/maps.js", () => {
                     config: "js"
                 };
 
-            initializeMaps(portalConfig, configJs);
+            maps.initializeMaps(portalConfig, configJs);
 
             expect(mapCollection.getMap("2D")).to.be.not.undefined;
             expect(load3DScriptSpy.calledOnce).to.be.true;
@@ -66,7 +66,7 @@ describe("src/core/js/maps/maps.js", () => {
                 };
 
             store.getters.controlsConfig.button3d = undefined;
-            initializeMaps(portalConfig, configJs);
+            maps.initializeMaps(portalConfig, configJs);
 
             expect(mapCollection.getMap("2D")).to.be.not.undefined;
             expect(load3DScriptSpy.notCalled).to.be.true;
@@ -82,7 +82,7 @@ describe("src/core/js/maps/maps.js", () => {
             store.getters.controlsConfig.button3d = false;
             store.getters.controlsConfig.expandable.button3d = true;
 
-            initializeMaps(portalConfig, configJs);
+            maps.initializeMaps(portalConfig, configJs);
 
             expect(mapCollection.getMap("2D")).to.be.not.undefined;
             expect(load3DScriptSpy.calledOnce).to.be.true;
@@ -99,7 +99,7 @@ describe("src/core/js/maps/maps.js", () => {
             store.getters.controlsConfig.button3d = false;
             store.getters.controlsConfig.expandable.button3d = false;
 
-            initializeMaps(portalConfig, configJs);
+            maps.initializeMaps(portalConfig, configJs);
 
             expect(mapCollection.getMap("2D")).to.be.not.undefined;
             expect(load3DScriptSpy.notCalled).to.be.true;
@@ -112,7 +112,7 @@ describe("src/core/js/maps/maps.js", () => {
                 config: "js"
             };
 
-            load3DMap(configJs);
+            maps.load3DMap(configJs);
 
             expect(load3DScriptSpy.calledOnce).to.be.true;
             expect(load3DScriptSpy.firstCall.args[0]).to.equals("path_to_cesium_library");
@@ -142,7 +142,7 @@ describe("src/core/js/maps/maps.js", () => {
             sinon.stub(api.map, "createMap").returns(map3d);
 
 
-            create3DMap();
+            maps.create3DMap();
 
             expect(viewSpy.firstCall.args[0]).to.equals("2D");
             expect(setZoomSpy.firstCall.args[0]).to.equals(7);
@@ -166,7 +166,7 @@ describe("src/core/js/maps/maps.js", () => {
             store.state.urlParams.CENTER = [564028.7954571751, 5934555.967867207];
             sinon.stub(api.map, "createMap").returns(map3d);
 
-            create3DMap();
+            maps.create3DMap();
 
             expect(viewSpy.firstCall.args[0]).to.equals("2D");
             expect(setCenterSpy.firstCall.args[0]).to.deep.equals([564028.7954571751, 5934555.967867207]);
@@ -190,7 +190,7 @@ describe("src/core/js/maps/maps.js", () => {
             sinon.stub(api.map, "createMap").returns(map3d);
 
 
-            create3DMap();
+            maps.create3DMap();
 
             expect(viewSpy.firstCall.args[0]).to.equals("2D");
             expect(setCenterSpy.firstCall.args[0]).to.deep.equals([564028.7954571751, 5934555.967867207]);

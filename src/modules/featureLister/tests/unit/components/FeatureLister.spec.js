@@ -79,7 +79,9 @@ describe.skip("src/modules/featureLister/components/FeatureLister.vue", () => {
         });
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     it("renders list of visible vector layers", () => {
         store.commit("Modules/FeatureLister/setLayerListView", true);
