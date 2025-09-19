@@ -16,26 +16,13 @@ const viteConfig = defineConfig({
     ],
     css: false,
     test: {
-        pool: 'forks',
-            poolOptions: {
-            forks: {
-                execArgv: [
-                '--cpu-prof',
-                '--cpu-prof-dir=test-runner-profile',
-                '--heap-prof',
-                '--heap-prof-dir=test-runner-profile'
-                ],
-
-                // To generate a single profile
-                singleFork: true,
-            },
-        },
         reporters: "default",
         // reporters: "html",
+        pool: 'threads',//--> performance, https://vitest.dev/guide/improving-performance.html
         globals: true,
         environment: "jsdom",
         css:false,// von inka
-        // include:['src/**/*.spec.js'],
+        include:['src/app-store/**/*.spec.js'],
         // include:['**/VerkehrsstaerkenTheme.spec.js'], //test runs sucessfully
         // include:['addons/vpiDashboard/**/*.spec.js'], //test runs sucessfully
         // include:['addons/**/*.spec.js'],
