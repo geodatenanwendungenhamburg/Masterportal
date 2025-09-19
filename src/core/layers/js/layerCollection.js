@@ -24,7 +24,7 @@ function addLayer (layer) {
 function removeLayerById (layerId) {
     const removeLayer = getLayerById(layerId);
 
-    if (layerTypes.getLayerTypes2d().includes(removeLayer.get("typ")?.toUpperCase())) {
+    if (layerTypes.getLayerTypes2d().includes(removeLayer?.get("typ")?.toUpperCase())) {
         mapCollection.getMap("2D")?.removeLayer(removeLayer.layer);
     }
     for (let i = 0; i < layerCollection.length; i++) {

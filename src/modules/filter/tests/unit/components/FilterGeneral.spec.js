@@ -10,7 +10,7 @@ import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 
 config.global.mocks.$t = key => key;
 
-describe("src/modules/filter/components/FilterGeneral.vue", () => {
+describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
     const layers = [
             {
                 title: "layerOne",

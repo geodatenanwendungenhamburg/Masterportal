@@ -21,7 +21,9 @@ describe("src/modules/draw/store/actions/actionsDownload.js", () => {
         proj4.defs("EPSG:25832", "+title=ETRS89/UTM 32N +proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe("convertFeatures", () => {
         // As these don't need to be transformed for this test, they are already in EPSG:4326

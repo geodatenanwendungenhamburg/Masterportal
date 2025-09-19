@@ -21,7 +21,9 @@ describe("src/modules/contact/store/actionsContact.js", () => {
             };
         });
 
-        afterEach(sinon.restore);
+        afterEach(() => {
+            sinon.restore();
+        });
 
         it("calls all expected commits and dispatches when configured to do so", done => {
             testAction(onSendSuccess, payload, state, {}, [
@@ -103,7 +105,9 @@ describe("src/modules/contact/store/actionsContact.js", () => {
             };
         });
 
-        afterEach(sinon.restore);
+        afterEach(() => {
+    sinon.restore();
+});
 
         it("creates httpClient call as expected", done => {
             sinon

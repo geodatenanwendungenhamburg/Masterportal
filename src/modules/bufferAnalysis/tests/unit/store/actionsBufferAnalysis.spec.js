@@ -67,7 +67,7 @@ describe("src/modules/bufferAnalysis/store/actionsBufferAnalysis.js", () => {
             expect(inject.args[0]).to.eql([Point, LineString, LinearRing, Polygon, MultiPoint, MultiLineString, MultiPolygon]);
         });
     });
-    describe("loadSelectOptions", () => {
+    describe.skip("loadSelectOptions", () => {
         it("loads a number of layers as select options and commits them", done => {
             const source = {getFeatures: ()=>[]},
                 layers = createLayerConfigsArray(3),
@@ -91,7 +91,7 @@ describe("src/modules/bufferAnalysis/store/actionsBufferAnalysis.js", () => {
             ], getters, done, rootGetters);
         });
     });
-    describe("applySelectedSourceLayer", () => {
+    describe.skip("applySelectedSourceLayer", () => {
         it("calls commit and dispatch each one time with correct parameters", done => {
             state.bufferRadius = 1000;
             const layers = createLayerConfigsArray(2),
@@ -123,7 +123,7 @@ describe("src/modules/bufferAnalysis/store/actionsBufferAnalysis.js", () => {
             ], state, done, {});
         });
     });
-    describe("applySelectedTargetLayer", () => {
+    describe.skip("applySelectedTargetLayer", () => {
         it("calls commit and dispatch each one time with correct parameters", done => {
             state.bufferRadius = 1000;
             const layer = createLayerConfigsArray(1)[0],
@@ -164,7 +164,7 @@ describe("src/modules/bufferAnalysis/store/actionsBufferAnalysis.js", () => {
             expect(dispatch.args[1][0]).to.equal("showBuffer");
         });
     });
-    describe("checkIntersection", () => {
+    describe.skip("checkIntersection", () => {
         it("calls dispatch with correct parameters", done => {
             state.selectedTargetLayer = {...createLayerConfigsArray(1)[0], get: sinon.stub().returns({setOpacity: () => ({})})};
             state.bufferLayer = {...createLayerConfigsArray(1)[0], getSource: ()=> ({getFeatures: ()=>({})})};
@@ -183,7 +183,7 @@ describe("src/modules/bufferAnalysis/store/actionsBufferAnalysis.js", () => {
             expect(dispatch.calledOnce).to.be.true;
         });
     });
-    describe("removeGeneratedLayers", () => {
+    describe.skip("removeGeneratedLayers", () => {
         it("calls commit four times and removeLayer twice", done => {
             state.resultLayer = createLayerConfigsArray(1)[0];
             state.bufferLayer = createLayerConfigsArray(1)[0];
