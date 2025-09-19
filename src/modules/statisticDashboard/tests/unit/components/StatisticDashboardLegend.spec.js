@@ -60,7 +60,9 @@ describe("src/modules/statiscticDashboard/components/StatisticDashboardLegend.vu
         });
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe("Component DOM", () => {
         it("should render title", () => {

@@ -12,7 +12,9 @@ describe("src/modules/layerTree/store/actionsLayerTree", function () {
         dispatch = sinon.spy();
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe("removeLayer", function () {
         it("removeLayer", function () {
