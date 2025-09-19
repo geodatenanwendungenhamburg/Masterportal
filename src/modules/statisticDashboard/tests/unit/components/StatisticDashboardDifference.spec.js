@@ -43,7 +43,9 @@ describe("src/modules/statiscticDashboard/components/StatisticDashboardDifferenc
         });
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe("Component DOM", () => {
         it("The title should exist", () => {

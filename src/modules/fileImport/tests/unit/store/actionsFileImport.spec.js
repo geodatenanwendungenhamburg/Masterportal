@@ -54,7 +54,9 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
         commit = sinon.spy();
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe("file import - file should add some features to the current draw layer", () => {
         it("preset \"auto\", correct kml file, correct filename", done => {

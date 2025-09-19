@@ -35,7 +35,9 @@ describe("src/modules/wfst/store/actionsWfst.js", () => {
         mapCollection.clear();
         mapCollection.addMap(map, "2D");
     });
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe("reset", () => {
         const featurePropertiesSymbol = Symbol("featureProperties"),

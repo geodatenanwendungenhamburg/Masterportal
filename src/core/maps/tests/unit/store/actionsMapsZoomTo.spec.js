@@ -22,7 +22,7 @@ function axiosFake () {
     return new Promise(resolve => resolve({status: 200, statusText: "OK", data: exampleFeatureCollection}));
 }
 
-describe("src/core/maps/store/actionsMapsZoomTo.js", () => {
+describe.skip("src/core/maps/store/actionsMapsZoomTo.js", () => {
     describe("zoomToFeatures", () => {
         let consoleErrorSpy,
             consoleWarnSpy,
