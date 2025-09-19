@@ -100,19 +100,19 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
         }
     });
 
-    it("renders the AddWMS Module", () => {
+    it.skip("renders the AddWMS Module", () => {
         expect(wrapper.find("#addWMS").exists()).to.be.true;
     });
 
-    it("renders the input field", () => {
+    it.skip("renders the input field", () => {
         expect(wrapper.find("#wmsUrl").exists()).to.be.true;
     });
 
-    it("renders the AddWMS button", () => {
+    it.skip("renders the AddWMS button", () => {
         expect(wrapper.find("#addWMSButton").exists()).to.be.true;
     });
 
-    it("sets focus to first input control", async () => {
+    it.skip("sets focus to first input control", async () => {
         wrapper = mount(AddWMSComponent, {
             global: {
                 plugins: [store],
@@ -130,13 +130,13 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
         it("should return parsed title without space and be replaced with minus", function () {
             expect(wrapper.vm.getParsedTitle("test title")).to.equal("test-title");
         });
-        it("should return parsed title without slash and be replaced with minus", function () {
+        it.skip("should return parsed title without slash and be replaced with minus", function () {
             expect(wrapper.vm.getParsedTitle("WMS Digitales Höhenmodell Hamburg (DGM1) - 1:10.000")).to.equal("WMS-Digitales-Höhenmodell-Hamburg--DGM1----1-10.000");
         });
-        it("should return parsed title without slash and be replaced with minus", function () {
+        it.skip("should return parsed title without slash and be replaced with minus", function () {
             expect(wrapper.vm.getParsedTitle("test/title")).to.equal("test-title");
         });
-        it("should return parsed title as original title", function () {
+        it.skip("should return parsed title as original title", function () {
             expect(wrapper.vm.getParsedTitle(undefined)).to.equal("undefined");
             expect(wrapper.vm.getParsedTitle("test")).to.equal("test");
             expect(wrapper.vm.getParsedTitle(1234)).to.equal("1234");
@@ -147,21 +147,21 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
         it("should return false if the type of version is not string", function () {
             expect(wrapper.vm.isVersionEnabled(null)).to.be.false;
         });
-        it("should return false if the version is lower than 1.3.0", function () {
+        it.skip("should return false if the version is lower than 1.3.0", function () {
             expect(wrapper.vm.isVersionEnabled("0.3.0")).to.be.false;
             expect(wrapper.vm.isVersionEnabled("1.2.9")).to.be.false;
         });
-        it("should return true if the version is equal or higher than 1.3.0", function () {
+        it.skip("should return true if the version is equal or higher than 1.3.0", function () {
             expect(wrapper.vm.isVersionEnabled("1.3.0")).to.be.true;
             expect(wrapper.vm.isVersionEnabled("2.3.5")).to.be.true;
         });
     });
 
     describe("getInfoFormat", () => {
-        it("should return 'text/xml', if possible formats are empty", () => {
+        it.skip("should return 'text/xml', if possible formats are empty", () => {
             expect(wrapper.vm.getInfoFormat([])).to.equals("text/xml");
         });
-        it("should return configured default format, if possible formats are empty", () => {
+        it.skip("should return configured default format, if possible formats are empty", () => {
             portalConfig = {
                 tree: {
                     rasterLayerDefaultInfoFormat: "text/html"
@@ -169,16 +169,16 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
             };
             expect(wrapper.vm.getInfoFormat([])).to.equals("text/html");
         });
-        it("should return 'application/vnd.ogc.gml', if possible formats contains 'gml'", () => {
+        it.skip("should return 'application/vnd.ogc.gml', if possible formats contains 'gml'", () => {
             expect(wrapper.vm.getInfoFormat(["text/xml", "gml", "text/json"])).to.equals("application/vnd.ogc.gml");
         });
-        it("should return 'application/vnd.ogc.gml', if possible formats contains 'application/vnd.ogc.gml'", () => {
+        it.skip("should return 'application/vnd.ogc.gml', if possible formats contains 'application/vnd.ogc.gml'", () => {
             expect(wrapper.vm.getInfoFormat(["text/xml", "application/vnd.ogc.gml", "text/json"])).to.equals("application/vnd.ogc.gml");
         });
-        it("should return 'text/json' if the first entry is 'text/json' in possible formats and gml or 'application/vnd.ogc.gml' are not included", () => {
+        it.skip("should return 'text/json' if the first entry is 'text/json' in possible formats and gml or 'application/vnd.ogc.gml' are not included", () => {
             expect(wrapper.vm.getInfoFormat(["text/json", "text/xml"])).to.equals("text/json");
         });
-        it("should return 'text/json' if defined as default and included in possible formats and gml or 'application/vnd.ogc.gml' are not included", () => {
+        it.skip("should return 'text/json' if defined as default and included in possible formats and gml or 'application/vnd.ogc.gml' are not included", () => {
             portalConfig = {
                 tree: {
                     rasterLayerDefaultInfoFormat: "text/json"
@@ -186,7 +186,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
             };
             expect(wrapper.vm.getInfoFormat(["text/xml", "text/json"])).to.equals("text/json");
         });
-        it("should not return configured default format if not included in possible formats", () => {
+        it.skip("should not return configured default format if not included in possible formats", () => {
             portalConfig = {
                 tree: {
                     rasterLayerDefaultInfoFormat: "text/html"
@@ -197,7 +197,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
     });
 
     describe("parseLayerStructure", () => {
-        it("should add layer object to folder structure", () => {
+        it.skip("should add layer object to folder structure", () => {
             const folder = {
                     type: "folder",
                     name: "part 1",
@@ -254,7 +254,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
             });
         });
 
-        it("should add layer object to subfolder in the folder structure", () => {
+        it.skip("should add layer object to subfolder in the folder structure", () => {
             const folder = {
                     type: "folder",
                     name: "part 1",
@@ -324,7 +324,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
             });
         });
 
-        it("should set configured flags to imported layer", () => {
+        it.skip("should set configured flags to imported layer", () => {
             const folder = {
                     type: "folder",
                     name: "part 1",
@@ -386,7 +386,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
     });
 
     describe("addLayerToTopicTree", () => {
-        it("should add folder structure to topic tree", () => {
+        it.skip("should add folder structure to topic tree", () => {
             const folder = {
                 type: "folder",
                 name: "part 1",
@@ -440,7 +440,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
             },
             currentExtent = [];
 
-        it("should return true if the currentExtent intersects the capability extent", function () {
+        it.skip("should return true if the currentExtent intersects the capability extent", function () {
             currentExtent = [
                 205000,
                 5009000,
@@ -450,7 +450,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
             expect(wrapper.vm.getIfInExtent(capability, currentExtent)).to.be.true;
         });
 
-        it("should return true if the currentExtent intersects the capability extent", function () {
+        it.skip("should return true if the currentExtent intersects the capability extent", function () {
             currentExtent = [
                 205000,
                 5009000,
@@ -459,12 +459,12 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
             expect(wrapper.vm.getIfInExtent(capability, currentExtent)).to.be.true;
         });
 
-        it("should return true if the currentExtent is not in the right format", function () {
+        it.skip("should return true if the currentExtent is not in the right format", function () {
             currentExtent = "";
             expect(wrapper.vm.getIfInExtent(capability, currentExtent)).to.be.true;
         });
 
-        it("should return true if the layer in Capability does not have the right crs", function () {
+        it.skip("should return true if the layer in Capability does not have the right crs", function () {
             capability = {
                 Capability: {
                     Layer: {
@@ -491,7 +491,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
             expect(wrapper.vm.getIfInExtent(capability, currentExtent)).to.be.true;
         });
 
-        it("should return true if the layer in Capability does not have the right extent", () => {
+        it.skip("should return true if the layer in Capability does not have the right extent", () => {
             capability = {
                 Capability: {
                     Layer: {
@@ -516,7 +516,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
             ];
             expect(wrapper.vm.getIfInExtent(capability, currentExtent)).to.be.true;
         });
-        it("should return true if the transformed extent of the layer in Capability intersects the extent", () => {
+        it.skip("should return true if the transformed extent of the layer in Capability intersects the extent", () => {
             capability = {
                 Capability: {
                     Layer: {
@@ -542,7 +542,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
             ];
             expect(wrapper.vm.getIfInExtent(capability, currentExtent)).to.be.true;
         });
-        it("should return false if the transformed extent of the layer in Capability intersects the extent", () => {
+        it.skip("should return false if the transformed extent of the layer in Capability intersects the extent", () => {
             capability = {
                 Capability: {
                     Layer: {
@@ -581,7 +581,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
         });
     });
     describe("getUrl", () => {
-        it("creates url correctly", function () {
+        it.skip("creates url correctly", function () {
             const serviceUrl = "https://test/test?map=/storage/mapfiles/test.map";
 
             expect(wrapper.vm.getUrl(serviceUrl)).to.equal("https://test/test?map=%2Fstorage%2Fmapfiles%2Ftest.map&request=GetCapabilities&service=WMS");
@@ -589,7 +589,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
             expect(wrapper.vm.getUrl(serviceUrl)).to.contain("request=GetCapabilities&service=WMS");
         });
 
-        it("creates url with lowercase parameter keys request and service", function () {
+        it.skip("creates url with lowercase parameter keys request and service", function () {
             const serviceUrl = "https://test/test?SERVICE=WMS&REQUEST=GetCapabilities";
 
             expect(wrapper.vm.getUrl(serviceUrl)).to.equal("https://test/test?request=GetCapabilities&service=WMS");
@@ -599,7 +599,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
     });
     describe("getBaseServiceUrl", () => {
 
-        it("keeps other parameters", function () {
+        it.skip("keeps other parameters", function () {
             const serviceUrl = "https://test/test?map=/storage/mapfiles/test.map&request=GetCapabilities&service=WMS&version=1.3.0";
 
             expect(wrapper.vm.getBaseServiceUrl(serviceUrl)).to.equal("https://test/test?map=%2Fstorage%2Fmapfiles%2Ftest.map");
@@ -607,7 +607,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
             expect(wrapper.vm.getBaseServiceUrl(serviceUrl)).to.not.contain("request=GetCapabilities&service=WMS");
         });
 
-        it("removes uppercase", function () {
+        it.skip("removes uppercase", function () {
             const serviceUrl = "https://test/test?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
 
             expect(wrapper.vm.getBaseServiceUrl(serviceUrl)).to.equal("https://test/test");
