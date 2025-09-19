@@ -329,13 +329,14 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
                 }
             });
 
-            map.activateLayer("filterId", () => {
-                called_onActivated = true;
-            });
+                map.activateLayer("filterId", () => {
+                    called_onActivated = true;
+                });
 
-            nextTick(() => {
-                expect(called_onActivated).to.be.true;
-                expect(store.getters.layerConfigById("filterId").showInLayerTree).to.be.true;
+                nextTick(() => {
+                    expect(called_onActivated).to.be.true;
+                    expect(store.getters.layerConfigById("filterId").showInLayerTree).to.be.true;
+                });
             });
 
         });
@@ -521,19 +522,20 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
                 }
             });
 
-            map.layers.filterId = {
-                get: () => false
-            };
-            map.filteredIds.filterId = [];
-            map.addItemsToLayer("filterId", [
-                {getId: () => 10},
-                {getId: () => 20},
-                {getId: () => 30}
-            ], false);
+                map.layers.filterId = {
+                    get: () => false
+                };
+                map.filteredIds.filterId = [];
+                map.addItemsToLayer("filterId", [
+                    {getId: () => 10},
+                    {getId: () => 20},
+                    {getId: () => 30}
+                ], false);
 
-            nextTick(() => {
-                expect(map.filteredIds.filterId).to.deep.equal([10, 20, 30]);
-                expect(called_showFeaturesByIds).to.deep.equal([10, 20, 30]);
+                nextTick(() => {
+                    expect(map.filteredIds.filterId).to.deep.equal([10, 20, 30]);
+                    expect(called_showFeaturesByIds).to.deep.equal([10, 20, 30]);
+                });
             });
         });
         it("should add items to layerSource if extern is true", () => {
