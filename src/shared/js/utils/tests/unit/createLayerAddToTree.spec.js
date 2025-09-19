@@ -129,8 +129,8 @@ describe("src/utils/createLayerAddToTree.js", () => {
             await createLayerAddToTreeModule.createLayerAddToTree(layerId, features, treeHighlightedFeatures);
             expect(setStyleSpy.notCalled).to.be.true;
         });
-        describe("skipped", () => {
-            it.skip("test create new layer - layer does not exist", () => {
+        describe.skip("skipped", () => {
+            it("test create new layer - layer does not exist", () => {
                 const layerId = "unknown",
                     features = [{featureId: "featureId"}];
 
