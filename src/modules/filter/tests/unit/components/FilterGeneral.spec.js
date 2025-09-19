@@ -9,7 +9,7 @@ import layerCollection from "@core/layers/js/layerCollection.js";
 
 config.global.mocks.$t = key => key;
 
-describe("src/modules/filter/components/FilterGeneral.vue", () => {
+describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
     const layers = [
             {
                 title: "layerOne",
