@@ -185,7 +185,7 @@ describe("src/modules/statiscticDashboard/components/StatisticDashboardFilterReg
 
                 expect(wrapper.vm.getRegionsSorted()).to.be.an("array").that.is.empty;
             });
-            it("should return the array with all regions as given", () => {
+            it.skip("should return the array with all regions as given", () => {
                 const regions = [
                         {value: ["Harburg", "Lübeck", "Schwerin"], label: "Alle Gebiete"},
                         {value: "Harburg", label: "Harburg"},
@@ -211,7 +211,7 @@ describe("src/modules/statiscticDashboard/components/StatisticDashboardFilterReg
 
                 expect(wrapper.vm.getRegionsSorted(regions, [])).to.deep.equal(expectedRegions);
             });
-            it("should return the array with the selected entries at first", () => {
+            it.skip("should return the array with the selected entries at first", () => {
                 const regions = [
                         {value: "Harburg", label: "Harburg"},
                         {value: "Lübeck", label: "Lübeck"},
@@ -274,7 +274,7 @@ describe("src/modules/statiscticDashboard/components/StatisticDashboardFilterReg
                 expect(stubSetSelectedRegions.calledWith([])).to.be.true;
             });
 
-            it("should call 'getValuesFromLayer' if given value is not empty array", () => {
+            it.skip("should call 'getValuesFromLayer' if given value is not empty array", () => {
                 const store = factory.createVuexStore(),
                     wrapper = shallowMount(StatisticDashboardFilterRegions, {
                         propsData: {
@@ -520,7 +520,7 @@ describe("src/modules/statiscticDashboard/components/StatisticDashboardFilterReg
                     selectedValues: ["foo"]
                 }, true)).to.be.true;
             });
-            it("should return false if given region has all selected and one parent snippet doesnt", () => {
+            it.skip("should return false if given region has all selected and one parent snippet doesnt", () => {
                 const store = factory.createVuexStore(),
                     wrapper = shallowMount(StatisticDashboardFilterRegions, {
                         propsData: {

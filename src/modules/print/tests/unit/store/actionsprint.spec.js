@@ -11,7 +11,7 @@ afterEach(() => {
 
 describe.skip("src/modules/print/store/actionsPrint", function () {
     describe("activatePrintStarted", function () {
-        it("should set activatePrintStarted to true", done => {
+        it.skip("should set activatePrintStarted to true", done => {
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
             testAction(activatePrintStarted, undefined, {}, {}, [
                 {type: "setPrintStarted", payload: true, commit: true}
@@ -20,7 +20,7 @@ describe.skip("src/modules/print/store/actionsPrint", function () {
     });
 
     describe("getMetaDataForPrint", function () {
-        it("should get metadata", done => {
+        it.skip("should get metadata", done => {
             const payload = {
                     getResponse: () => {
                         return true;
@@ -44,7 +44,7 @@ describe.skip("src/modules/print/store/actionsPrint", function () {
         });
     });
     describe("createPrintJob", function () {
-        it("should create a printJob", done => {
+        it.skip("should create a printJob", done => {
             const defaults = {
                     attributes: {title: "Mein Titel", map: {}, scale: "1:60000", showGfi: false, gfi: {}},
                     layout: "A4 Hochformat",
@@ -79,7 +79,7 @@ describe.skip("src/modules/print/store/actionsPrint", function () {
         });
     });
     describe("migratePayload", function () {
-        it("should migrate the for mapfish generated JSON to plotservice", done => {
+        it.skip("should migrate the for mapfish generated JSON to plotservice", done => {
             const payload = {
                     attributes: {
                         title: "Mein Titel",
@@ -116,7 +116,7 @@ describe.skip("src/modules/print/store/actionsPrint", function () {
         });
     });
     describe("waitForPrintJob", function () {
-        it("should start another print request", done => {
+        it.skip("should start another print request", done => {
             const state = {
                     serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/print/",
                     printAppId: "master"
@@ -138,7 +138,7 @@ describe.skip("src/modules/print/store/actionsPrint", function () {
                 {type: "sendRequest", payload: serviceRequest, dispatch: true}
             ], {}, done);
         });
-        it("should start another print request with service url without /print/", done => {
+        it.skip("should start another print request with service url without /print/", done => {
             const state = {
                     serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/",
                     printAppId: "master",
@@ -161,7 +161,7 @@ describe.skip("src/modules/print/store/actionsPrint", function () {
                 {type: "sendRequest", payload: serviceRequest, dispatch: true}
             ], {}, done);
         });
-        it("should trigger addSingleAlert when response.status is 'error'", done => {
+        it.skip("should trigger addSingleAlert when response.status is 'error'", done => {
             const state = {
                     serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/print/",
                     printAppId: "master"
@@ -185,7 +185,7 @@ describe.skip("src/modules/print/store/actionsPrint", function () {
             testAction(waitForPrintJobSuccess, response, state, {}, expectedActions, {}, done);
         });
     });
-    it("should trigger addSingleAlert when response.data.status is 'error'", done => {
+    it.skip("should trigger addSingleAlert when response.data.status is 'error'", done => {
         const state = {
                 serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/print/",
                 printAppId: "master"
@@ -220,7 +220,7 @@ describe.skip("src/modules/print/store/actionsPrint", function () {
         after(function () {
             clock.restore();
         });
-        it("is not done yet so it should start another print request", done => {
+        it.skip("is not done yet so it should start another print request", done => {
             const state = {
                     serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/print/",
                     printAppId: "master"
@@ -247,7 +247,7 @@ describe.skip("src/modules/print/store/actionsPrint", function () {
             ], {}, done);
             clock.tick(2001);
         });
-        it("is done so it should activate the download", done => {
+        it.skip("is done so it should activate the download", done => {
             const state = {
                     serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/print/",
                     printAppId: "master",
@@ -275,7 +275,7 @@ describe.skip("src/modules/print/store/actionsPrint", function () {
         });
 
         describe("downloadFile", function () {
-            it("should set parameters for one download file", done => {
+            it.skip("should set parameters for one download file", done => {
                 const state = {
                         serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/print/",
                         printAppId: "master",
@@ -294,7 +294,7 @@ describe.skip("src/modules/print/store/actionsPrint", function () {
                 ], {}, done);
             });
 
-            it("should set parameters for more than one download file", done => {
+            it.skip("should set parameters for more than one download file", done => {
                 const state = {
                         serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/print/",
                         printAppId: "master",
