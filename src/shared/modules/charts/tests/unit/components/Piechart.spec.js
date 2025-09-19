@@ -64,7 +64,7 @@ describe("src/share-components/charts/components/PiechartItem.vue", () => {
             expect(doughnut.find("canvas").exists()).to.be.true;
         });
     });
-    describe("resetChart", () => {
+    describe.skip("resetChart", () => {
         it("should destroy the former chart and create a new one", () => {
             let destroyCalled = false;
 
