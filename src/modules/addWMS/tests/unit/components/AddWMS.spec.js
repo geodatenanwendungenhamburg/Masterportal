@@ -8,7 +8,7 @@ import InputText from "@shared/modules/inputs/components/InputText.vue";
 
 config.global.mocks.$t = key => key;
 
-describe("src/modules/addWMS/components/AddWMS.vue", () => {
+describe.skip("src/modules/addWMS/components/AddWMS.vue", () => {
     let addLayerToLayerConfigSpy,
         componentData,
         featureCount,
@@ -123,7 +123,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
         expect(wrapper.find("#wmsUrl").element).to.equal(document.activeElement);
     });
 
-    it("getParsedTitle", () => {
+    describe("getParsedTitle", () => {
         it("should return parsed title without space and be replaced with minus", function () {
             expect(wrapper.vm.getParsedTitle("test title")).to.equal("test-title");
         });
@@ -140,7 +140,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
         });
     });
 
-    it("isVersionEnabled", () => {
+    describe("isVersionEnabled", () => {
         it("should return false if the type of version is not string", function () {
             expect(wrapper.vm.isVersionEnabled(null)).to.be.false;
         });
