@@ -61,7 +61,9 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
         };
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
     describe("chooseCurrentLayout", () => {
         it("should choose the current Layout", done => {
             const payload = [

@@ -35,7 +35,9 @@ describe("src/modules/featureLister/store/mutationsFeatureLister", () => {
         sinon.stub(layerCollection, "getLayerById").returns(layer);
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe("setGfiFeaturesOfLayer", () => {
         it("sets the gfiFeatures of a layer to state - no clustering", () => {

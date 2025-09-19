@@ -11,14 +11,14 @@ describe("src/shared/modules/buttons/components/ExportButtonCSV.vue", () => {
             debug: false
         });
     });
-    describe("createFilename", () => {
+    it("createFilename", () => {
         const wrapper = shallowMount(ExportButtonCSV, {
             propsData: {}
         });
 
         expect(wrapper.vm.createFilename("prefix", "YYYY")).to.equal("prefix" + String(new Date().getFullYear()) + ".csv");
     });
-    describe("template", () => {
+    it("template", () => {
         const wrapper = shallowMount(ExportButtonCSV, {
             propsData: {}
         });

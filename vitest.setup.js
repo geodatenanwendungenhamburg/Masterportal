@@ -131,9 +131,9 @@ vi.mock("@cesium/widgets", () => ({
  *
  */
 function createDoneCallbackWrapper (originalTestFn) {
-    return (name, fn, ...args) => {
+    return (name, fn, ...args) => {        
     // If no test function provided, just pass through
-        if (typeof fn !== "function") {
+        if (typeof fn !== "function") { 
             return originalTestFn(name, fn, ...args);
         }
 
@@ -167,7 +167,6 @@ function createDoneCallbackWrapper (originalTestFn) {
                     }
                 });
             }
-
             return originalTestFn(name, wrappedFn, ...args);
         }
         // No done callback expected, use original function as-is
@@ -192,7 +191,8 @@ globalThis.beforeEach = globalThis.beforeEach || vitestBeforeEach;
 globalThis.afterEach = globalThis.afterEach || vitestAfterEach;
 globalThis.mapCollection = mapCollection;
 globalThis.i18next = i18next;
-globalThis.Config = testConfig;
+globalThis.Config = testConfig.config;
+// globalThis.it.skip = createDoneCallbackWrapper(globalThis.it.skip || vitestIt.skip, "it.skip");
 globalThis.it = createDoneCallbackWrapper(globalThis.it || vitestIt, "it");
 globalThis.test = createDoneCallbackWrapper(globalThis.test || vitestTest, "test");
 
@@ -204,7 +204,7 @@ if (typeof window !== "undefined") {
     window.afterEach = globalThis.afterEach;
     window.mapCollection = globalThis.mapCollection;
     window.i18next = globalThis.i18next;
-    window.Config = globalThis.testConfig;
+    window.Config = globalThis.Config;
     window.it = globalThis.it;
     window.test = globalThis.test;
 }
@@ -217,7 +217,7 @@ if (typeof global !== "undefined") {
     global.afterEach = globalThis.afterEach;
     global.mapCollection = globalThis.mapCollection;
     global.i18next = globalThis.i18next;
-    global.Config = globalThis.testConfig;
+    global.Config = globalThis.Config;
     global.it = globalThis.it;
     global.test = globalThis.test;
 }
