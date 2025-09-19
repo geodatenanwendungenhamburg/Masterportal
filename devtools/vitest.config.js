@@ -34,7 +34,7 @@ const viteConfig = defineConfig({
         // reporters: "html",
         globals: true,
         environment: "jsdom",
-        css:false,
+        css:false,// von inka
         // include:['src/**/*.spec.js'],
         // include:['**/VerkehrsstaerkenTheme.spec.js'], //test runs sucessfully
         // include:['addons/vpiDashboard/**/*.spec.js'], //test runs sucessfully
