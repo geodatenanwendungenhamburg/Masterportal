@@ -51,7 +51,9 @@ describe("src/modules/featureLister/store/gettersFeatureLister", () => {
         );
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe("getGeometryType", () => {
         it("returns geometryType from state's layer", () => {

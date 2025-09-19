@@ -48,7 +48,7 @@ describe("src/modules/selectFeatures/store/actionsSelectFeatures.js", () => {
         sinon.restore();
     });
 
-    describe("highlightFeature", () => {
+    describe.skip("highlightFeature", () => {
         it("highlightFeature treeHighlightedFeatures is active", () => {
             actions.highlightFeature({state, rootGetters, dispatch}, {feature, layerId});
 

@@ -7,7 +7,9 @@ config.global.mocks.$t = key => key;
 
 describe("src/shared/components/InputText.vue", () => {
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     it("should render an input field", () => {
         const id = "input-awesome",

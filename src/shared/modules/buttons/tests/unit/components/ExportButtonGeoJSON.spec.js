@@ -11,14 +11,14 @@ describe("src/shared/modules/buttons/components/exportButtonGeoJSON.vue", () => 
             debug: false
         });
     });
-    describe("createFilename", () => {
+    it("createFilename", () => {
         const wrapper = shallowMount(ExportButtonGeoJSON, {
             propsData: {}
         });
 
         expect(wrapper.vm.createFilename("prefix", "YYYY")).to.equal("prefix" + String(new Date().getFullYear()));
     });
-    describe("template", () => {
+    it("template", () => {
         const wrapper = shallowMount(ExportButtonGeoJSON, {
             propsData: {}
         });

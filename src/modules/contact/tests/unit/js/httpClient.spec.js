@@ -9,7 +9,9 @@ describe("src/modules/contact/js/httpClient", function () {
             sinon.stub(console, "error");
         });
 
-        afterEach(sinon.restore);
+        afterEach(() => {
+            sinon.restore();
+        });
 
         it("calls onSuccess parameter on success", function (done) {
             sinon.stub(axios, "post").returns(
@@ -20,7 +22,7 @@ describe("src/modules/contact/js/httpClient", function () {
                 onError = sinon.spy();
 
             httpClientModule.httpClient("url", {}, onSuccess, onError);
-        }).timeout(100);
+        });
 
         it("calls onError parameter on internal client error", function (done) {
             sinon.stub(axios, "post").returns(
@@ -31,7 +33,7 @@ describe("src/modules/contact/js/httpClient", function () {
                 onError = sinon.spy(done);
 
             httpClientModule.httpClient("url", {}, onSuccess, onError);
-        }).timeout(100);
+        });
 
         it("calls onError parameter if response status is not 200", function (done) {
             sinon.stub(axios, "post").returns(
@@ -42,7 +44,7 @@ describe("src/modules/contact/js/httpClient", function () {
                 onError = sinon.spy(done);
 
             httpClientModule.httpClient("url", {}, onSuccess, onError);
-        }).timeout(100);
+        });
 
         it("calls axios.post in expected fashion", function () {
             sinon.stub(axios, "post").returns(

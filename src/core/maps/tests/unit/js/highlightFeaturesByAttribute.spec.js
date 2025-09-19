@@ -281,7 +281,6 @@ describe("src/core/maps/js/highlightFeaturesByAttribute", () => {
 
         afterEach(function () {
             sinon.restore();
-            spyErrorHandling.restore();
         });
 
         it("configHasErrors should return false", () => {

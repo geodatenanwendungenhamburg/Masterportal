@@ -93,7 +93,9 @@ describe("src/modules/draw_old/store/actions/drawInteractionOnDrawEvent.js", () 
             }
         };
     });
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe("drawInteractionOnDrawEvent", () => {
         it("drawInteractionOnDrawEvent no circle", () => {

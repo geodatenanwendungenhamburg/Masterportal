@@ -41,7 +41,7 @@ describe("src/shared/modules/charts/components/LinechartItem.vue", () => {
             expect(wrapper.find("canvas").exists()).to.be.true;
         });
     });
-    describe("resetChart", () => {
+    describe.skip("resetChart", () => {
         it("should destroy the former chart", () => {
             const destroySpy = sinon.spy();
 

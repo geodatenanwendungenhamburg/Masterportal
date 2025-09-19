@@ -102,7 +102,8 @@ describe("src/modules/StatisticDashboard.vue", () => {
                     actions: {
                         addNewLayerIfNotExists: () => {
                             return Promise.resolve({
-                                getSource: () => sourceStub
+                                getSource: () => sourceStub,
+                                setStyle: () => sinon.stub()
                             });
                         }
                     }

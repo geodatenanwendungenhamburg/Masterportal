@@ -56,7 +56,9 @@ describe("src/modules/statiscticDashboard/components/StatisticDashboardControls.
             }});
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe("Component DOM", () => {
         it("should exist", () => {

@@ -13,7 +13,7 @@ async function prepareFeatureProperties (layer) {
     const isGfiAttributesIgnore = layer.gfiAttributes === "ignore",
         isGfiAttributesShowAll = layer.gfiAttributes === "showAll",
         isGfiAttributesNestedObject = Object?.values(layer.gfiAttributes)?.find(gfiAttr => typeof gfiAttr === "object" && gfiAttr !== null && !Array.isArray(gfiAttr)),
-        url = useProxy ? getProxyUrl(layer.url) : layer.url;
+        url = layer.url;
     let properties,
         propertiesWithBooleans = [],
         preparedProperties = [];
