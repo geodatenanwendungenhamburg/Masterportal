@@ -54,7 +54,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
     });
 
     describe("Component DOM", () => {
-        it("should exist", () => {
+        it.skip("should exist", () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                 plugins: [store]
             }});
@@ -62,7 +62,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
             expect(wrapper.find("#filter").exists()).to.be.true;
         });
 
-        it("should render two accordions if two layer groups are present and layerSelectorVisible is true", () => {
+        it.skip("should render two accordions if two layer groups are present and layerSelectorVisible is true", () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                 plugins: [store]
             }});
@@ -70,7 +70,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
             expect(wrapper.findAll(".accordion-collapse")).to.have.lengthOf(2);
         });
 
-        it("should render no accordions if layer groups are present and layerSelectorVisible is false", async () => {
+        it.skip("should render no accordions if layer groups are present and layerSelectorVisible is false", async () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                 plugins: [store]
             }});
@@ -82,7 +82,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
             wrapper.vm.setLayerSelectorVisible(true);
         });
 
-        it("should render and open one accordion if its selected", async () => {
+        it.skip("should render and open one accordion if its selected", async () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                 plugins: [store]
             }});
@@ -94,7 +94,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
             expect(wrapper.findAll(".show")).to.have.lengthOf(1);
         });
 
-        it("should render url link if configured", async () => {
+        it.skip("should render url link if configured", async () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                 plugins: [store]
             }});
@@ -104,7 +104,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
             expect(wrapper.findAll("a").filter(w => w.attributes("href")?.includes("&FILTER="))).to.have.lengthOf(1);
         });
 
-        it("should not render url link if not configured", async () => {
+        it.skip("should not render url link if not configured", async () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                 plugins: [store]
             }});
@@ -115,7 +115,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
 
         });
 
-        it("should render an icon button if initialStartupReset is true", async () => {
+        it.skip("should render an icon button if initialStartupReset is true", async () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                 plugins: [store]
             }});
@@ -130,7 +130,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
             wrapper.vm.setLayerSelectorVisible(true);
         });
 
-        it("should not render an icon button if initialStartupReset is false", async () => {
+        it.skip("should not render an icon button if initialStartupReset is false", async () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                 plugins: [store]
             }});
@@ -142,7 +142,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
             wrapper.vm.setLayerSelectorVisible(true);
         });
 
-        it("should not render questionLink button by default", async () => {
+        it.skip("should not render questionLink button by default", async () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                 plugins: [store]
             }});
@@ -150,7 +150,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
             expect(wrapper.findComponent("[icon='bi bi-question-circle']").exists()).to.be.false;
         });
 
-        it("should render questionLink button if configured", async () => {
+        it.skip("should render questionLink button if configured", async () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                 plugins: [store]
             }});
@@ -163,7 +163,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
     });
 
     describe("updateSelectedGroups", () => {
-        it("should remove given index from selectedGroups if found in array", async () => {
+        it.skip("should remove given index from selectedGroups if found in array", async () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                 plugins: [store]
             }});
@@ -174,7 +174,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
             await wrapper.vm.$nextTick();
             expect(wrapper.vm.selectedGroups).to.deep.equal([1]);
         });
-        it("should add given index to selectedGroups if not found in array", async () => {
+        it.skip("should add given index to selectedGroups if not found in array", async () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                 plugins: [store]
             }});
@@ -187,7 +187,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
         });
     });
     describe("updateSelectedAccordions", () => {
-        it("should add filterIds to selectedAccordion if multiLayerSelector is false", async () => {
+        it.skip("should add filterIds to selectedAccordion if multiLayerSelector is false", async () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                     plugins: [store]
                 }}),
@@ -203,7 +203,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
             wrapper.vm.updateSelectedAccordions(0);
             expect(wrapper.vm.selectedAccordions).to.deep.equal(expected);
         });
-        it("should remove filterIds from selectedAccordion if multiLayerSelector is false", async () => {
+        it.skip("should remove filterIds from selectedAccordion if multiLayerSelector is false", async () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                 plugins: [store]
             }});
@@ -211,7 +211,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
             wrapper.vm.updateSelectedAccordions(0);
             expect(wrapper.vm.selectedAccordions).to.deep.equal([]);
         });
-        it("should not change the rule when adding and removing the filterId of selectedAccordion", async () => {
+        it.skip("should not change the rule when adding and removing the filterId of selectedAccordion", async () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                     plugins: [store]
                 }}),
@@ -238,7 +238,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
         });
     });
     describe("handleStateForAlreadyActiveLayers", () => {
-        it("should not do anything if if first param is not an object", () => {
+        it.skip("should not do anything if if first param is not an object", () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                 plugins: [store]
             }});
@@ -263,7 +263,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
             wrapper.vm.handleStateForAlreadyActiveLayers(param);
             expect(param).to.be.undefined;
         });
-        it("should not do anything if given param has no rulesOfFilters or selectedAccordions property", () => {
+        it.skip("should not do anything if given param has no rulesOfFilters or selectedAccordions property", () => {
             const param = {foo: "bar"},
                 wrapper = shallowMount(FilterGeneral, {global: {
                     plugins: [store]
@@ -272,7 +272,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
             wrapper.vm.handleStateForAlreadyActiveLayers(param);
             expect(param).to.deep.equal({foo: "bar"});
         });
-        it("should not remove rules of the given param if the matching layer is not activated", () => {
+        it.skip("should not remove rules of the given param if the matching layer is not activated", () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                     plugins: [store]
                 }}),
@@ -318,7 +318,7 @@ describe.skip("src/modules/filter/components/FilterGeneral.vue", () => {
             wrapper.vm.handleStateForAlreadyActiveLayers(param);
             expect(param).to.deep.equal({rulesOfFilters: [["foo", "bar", "buz"]], selectedAccordions: [{layerId: 0, filterId: 0}, {layerId: 1, filterId: 1}]});
         });
-        it("should remove rules of the given param if the matching layer is already activated", () => {
+        it.skip("should remove rules of the given param if the matching layer is already activated", () => {
             const wrapper = shallowMount(FilterGeneral, {global: {
                     plugins: [store]
                 }}),

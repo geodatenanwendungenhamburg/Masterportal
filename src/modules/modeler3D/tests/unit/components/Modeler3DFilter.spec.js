@@ -252,7 +252,7 @@ describe.skip("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () =
             expect(wrapper.vm.attributeValues[4].color).to.equal("#ffffff");
         });
 
-        it("should copy color values", () => {
+        it.skip("should copy color values", () => {
             wrapper.setData({
                 attributeValues: [
                     {id: 1, name: "attr1", color: "#000000"},
@@ -272,7 +272,7 @@ describe.skip("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () =
             ]);
         });
 
-        it("should apply style with recalculate", () => {
+        it.skip("should apply style with recalculate", () => {
             const populateLayerStylingConfigStub = sinon.stub(
                 wrapper.methods,
                 "populateLayerStylingConfig"
@@ -297,7 +297,7 @@ describe.skip("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () =
             expect(wrapper.vm.showModal).to.be.false;
         });
 
-        it("should apply style without recalculate", () => {
+        it.skip("should apply style without recalculate", () => {
             const populateLayerStylingConfigStub = sinon.stub(
                 wrapper.methods,
                 "populateLayerStylingConfig"
@@ -329,7 +329,7 @@ describe.skip("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () =
             expect(wrapper.vm.showModal).to.be.false;
         });
 
-        it("should populate layer styling config when layerList exists", () => {
+        it.skip("should populate layer styling config when layerList exists", () => {
             store.commit("Modules/Modeler3D/setFilterList", [
                 {
                     id: 0,
@@ -353,7 +353,7 @@ describe.skip("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () =
             ]);
         });
 
-        it("should populate layer styling config when layerList is empty", () => {
+        it.skip("should populate layer styling config when layerList is empty", () => {
             store.commit("Modules/Modeler3D/setFilterList", [
                 {
                     id: 0,
@@ -376,7 +376,7 @@ describe.skip("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () =
             ]);
         });
 
-        it("should move filter up", () => {
+        it.skip("should move filter up", () => {
             const applyStyleStub = sinon.stub(wrapper.vm, "applyStyle");
 
             store.commit("Modules/Modeler3D/setFilterList", [
@@ -395,7 +395,7 @@ describe.skip("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () =
             expect(applyStyleStub.calledOnce).to.be.true;
         });
 
-        it("should move filter down", () => {
+        it.skip("should move filter down", () => {
             const applyStyleStub = sinon.stub(wrapper.vm, "applyStyle");
 
             store.commit("Modules/Modeler3D/setFilterList", [
