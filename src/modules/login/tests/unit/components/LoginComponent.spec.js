@@ -167,7 +167,7 @@ describe("src/modules/Modules/Login/components/LoginComponent.vue", () => {
             await wrapper.vm.$nextTick();
 
             expect(wrapper.vm.loggedIn).to.be.true;
-        }).timeout(5000);
+        });
 
         it("should have values from cookies after Login renders", async function () {
             // Use the main sandbox to avoid double stubbing
@@ -223,7 +223,7 @@ describe("src/modules/Modules/Login/components/LoginComponent.vue", () => {
             expect(wrapper.vm.$store.state.Modules.Login.screenName).to.be.equal(fakeToken);
             expect(wrapper.vm.$store.state.Modules.Login.username).to.be.equal(fakeToken);
             expect(wrapper.vm.$store.state.Modules.Login.email).to.be.equal(fakeToken);
-        }).timeout(5000);
+        });
 
     });
 });
