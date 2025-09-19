@@ -13,7 +13,9 @@ describe("src/shared/components/FileUpload.vue", () => {
         interactionSpy = sinon.spy();
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     it("should render a drop area and input", () => {
         const id = "awesome-upload",
