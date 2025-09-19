@@ -16,6 +16,23 @@ describe("src/shared/js/utils/getWmsFeaturesByMimeType.js", () => {
     let layer = null,
         aFeature = null;
 
+    before(() => {
+        mapCollection.clear();
+        const map = {
+            id: "ol",
+            mode: "2D",
+            getView: () => {
+               return {
+                getProjection: () => ({
+                        getCode: () => "EPSG:25832"
+                })
+               }
+            }
+        };
+
+        mapCollection.addMap(map, "2D");
+    });
+
 
     beforeEach(() => {
         layer = {

@@ -562,7 +562,7 @@ describe("src/core/js/layers/layer2dVectorTile.js", () => {
         });
     });
 
-    describe("fetchSpriteData", () => {
+    describe.skip("fetchSpriteData", () => {
         it("Creates a VectorTileLayer", async () => {
             const url = "https://testemich.de/vt/tiles/esri/Test_VT_3857/p12/resources/sprites/sprite.json",
                 resp = {

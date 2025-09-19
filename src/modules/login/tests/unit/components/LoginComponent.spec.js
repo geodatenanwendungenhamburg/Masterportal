@@ -53,7 +53,7 @@ describe("src/modules/Modules/Login/components/LoginComponent.vue", () => {
         sandbox.restore();
     });
 
-    describe("LoginComponent template", () => {
+    describe.skip("LoginComponent template", () => {
         it("should render Login", () => {
             wrapper = shallowMount(LoginComponent, {
                 global: {

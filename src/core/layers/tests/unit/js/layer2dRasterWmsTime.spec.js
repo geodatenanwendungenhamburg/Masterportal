@@ -71,7 +71,10 @@ describe("src/core/js/layers/layer2dRasterWmsTime.js", () => {
             isModuleAvailable: sinon.stub().returns(false),
             "Modules/WmsTime/layerSwiper": () => {
                 true;
-            }
+            }, 
+            "Modules/WmsTime/timeSlider": () => {
+                true;
+            },
         };
     });
 

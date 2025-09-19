@@ -4,9 +4,10 @@ import sinon from "sinon";
 import {expect} from "chai";
 import {resetZIndex} from "../../js/getAndMergeRawLayer.js";
 import {treeTopicConfigKey, treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants.js";
-import actions from "../../actionsLayerConfig.js";
+import getActionsLayerConfig from "../../actionsLayerConfig.js";
 import buildTreeStructure from "../../js/buildTreeStructure.js";
 import replaceInNestedValuesModule from "@shared/js/utils/replaceInNestedValues.js";
+
 
 describe("src/app-store/actionsLayerConfig.js", () => {
     let commit,
@@ -269,7 +270,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 allLayerConfigsByParentKey: () => []
             };
 
-            actions.addLayerToLayerConfig({dispatch, getters, state}, {layerConfig: layerToAdd, parentKey: treeSubjectsKey});
+            getActionsLayerConfig().addLayerToLayerConfig({dispatch, getters, state}, {layerConfig: layerToAdd, parentKey: treeSubjectsKey});
             expect(dispatch.callCount).to.equals(2);
             expect(dispatch.firstCall.args[0]).to.equals("updateLayerConfigZIndex");
             expect(dispatch.firstCall.args[1]).to.deep.equals({
@@ -314,7 +315,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
             };
 
             expect(state.layerConfig[treeSubjectsKey]?.elements.length).to.equal(0);
-            actions.addLayerToLayerConfig({dispatch, getters, state}, {layerConfig: layerToAdd, parentKey: treeSubjectsKey});
+            getActionsLayerConfig().addLayerToLayerConfig({dispatch, getters, state}, {layerConfig: layerToAdd, parentKey: treeSubjectsKey});
             expect(dispatch.callCount).to.equals(2);
             expect(dispatch.firstCall.args[0]).to.equals("updateLayerConfigZIndex");
             expect(dispatch.firstCall.args[1]).to.deep.equals({
@@ -351,7 +352,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 allLayerConfigsByParentKey: () => []
             };
 
-            actions.addLayerToLayerConfig({dispatch, getters, state}, {layerConfig: layerToAdd, parentKey: treeBaselayersKey});
+            getActionsLayerConfig().addLayerToLayerConfig({dispatch, getters, state}, {layerConfig: layerToAdd, parentKey: treeBaselayersKey});
             expect(dispatch.callCount).to.equals(2);
             expect(dispatch.firstCall.args[0]).to.equals("updateLayerConfigZIndex");
             expect(dispatch.firstCall.args[1]).to.deep.equals({
@@ -380,7 +381,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 visibleSubjectDataLayerConfigs: []
             };
 
-            actions.addLayerToLayerConfig({dispatch, getters, state}, {layerConfig: layerToAdd, parentKey: "folder_3"});
+            getActionsLayerConfig().addLayerToLayerConfig({dispatch, getters, state}, {layerConfig: layerToAdd, parentKey: "folder_3"});
             expect(dispatch.callCount).to.equals(2);
             expect(dispatch.firstCall.args[0]).to.equals("updateLayerConfigZIndex");
             expect(dispatch.firstCall.args[1]).to.deep.equals({
@@ -409,7 +410,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 folderById: () => folder_3
             };
 
-            actions.addLayerToLayerConfig({dispatch, getters, state}, {layerConfig: layerToAdd, parentKey: "folder_3"});
+            getActionsLayerConfig().addLayerToLayerConfig({dispatch, getters, state}, {layerConfig: layerToAdd, parentKey: "folder_3"});
             expect(dispatch.callCount).to.equals(2);
             expect(dispatch.firstCall.args[0]).to.equals("updateLayerConfigZIndex");
             expect(dispatch.firstCall.args[1]).to.deep.equals({
@@ -429,7 +430,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 maxZIndex = 2,
                 resultZIndex = [1, 2, 4, 5, 6];
 
-            actions.updateLayerConfigZIndex({}, {layerContainer, maxZIndex});
+            getActionsLayerConfig().updateLayerConfigZIndex({}, {layerContainer, maxZIndex});
 
             layerContainer.forEach((layerContainerConf, index) => {
                 expect(layerContainerConf.zIndex).to.equals(resultZIndex[index]);
@@ -447,7 +448,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
         });
         it("extend layers for simple tree", () => {
             state.layerConfig = layerConfig;
-            actions.extendLayers({dispatch, getters, state});
+            getActionsLayerConfig().extendLayers({dispatch, getters, state});
 
             expect(dispatch.callCount).to.equals(2);
             expect(dispatch.firstCall.args[0]).to.equals("addBaselayerAttribute");
@@ -465,7 +466,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
         it("extend layer configs for custom tree", () => {
             state.layerConfig = layerConfigCustom;
             getters.showLayerAddButton = true;
-            actions.extendLayers({dispatch, getters, state});
+            getActionsLayerConfig().extendLayers({dispatch, getters, state});
 
             expect(dispatch.callCount).to.be.equals(2);
             expect(dispatch.firstCall.args[0]).to.equals("addBaselayerAttribute");
@@ -544,7 +545,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
 
             state.layerConfig = layerConfig;
 
-            actions.extendLayers({dispatch, getters, state});
+            getActionsLayerConfig().extendLayers({dispatch, getters, state});
             expect(setIdsAtFoldersSpy.calledOnce).to.be.true;
             expect(dispatch.callCount).to.be.equals(2);
             expect(dispatch.firstCall.args[0]).to.equals("addBaselayerAttribute");
@@ -565,7 +566,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                     allLayerConfigsByParentKey: () => layerConfig[treeBaselayersKey].elements
                 };
 
-                actions.addBaselayerAttribute({getters});
+                getActionsLayerConfig().addBaselayerAttribute({getters});
 
                 expect(layerConfig[treeBaselayersKey].elements).to.deep.equals([
                     {
@@ -609,7 +610,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 layerList.splice(3, 2);
                 layerList.splice(4, 3);
 
-                actions.processTreeTypeAuto({commit, getters, state}, layerConfig[treeBaselayersKey].elements);
+                getActionsLayerConfig().processTreeTypeAuto({commit, getters, state}, layerConfig[treeBaselayersKey].elements);
 
                 expect(commit.calledOnce).to.be.true;
                 expect(commit.firstCall.args[0]).to.equals("setLayerConfigByParentKey");
@@ -645,7 +646,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 layerList.splice(3, 2);
                 layerList.splice(4, 3);
 
-                actions.processTreeTypeAuto({commit, getters, state}, layerConfig[treeBaselayersKey].elements);
+                getActionsLayerConfig().processTreeTypeAuto({commit, getters, state}, layerConfig[treeBaselayersKey].elements);
 
                 expect(commit.calledOnce).to.be.true;
                 expect(commit.firstCall.args[0]).to.equals("setLayerConfigByParentKey");
@@ -680,7 +681,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
 
                 state.layerConfig = layerConfig;
 
-                actions.replaceByIdInLayerConfig({dispatch, getters, state}, {layerConfigs: [{layer: toReplace, id: "453"}]});
+                getActionsLayerConfig().replaceByIdInLayerConfig({dispatch, getters, state}, {layerConfigs: [{layer: toReplace, id: "453"}]});
 
                 expect(state.layerConfig[treeBaselayersKey].elements).to.be.an("array");
                 expect(state.layerConfig[treeBaselayersKey].elements.length).to.be.equals(2);
@@ -725,7 +726,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
 
                 state.layerConfig = layerConfig;
 
-                actions.replaceByIdInLayerConfig({dispatch, getters, state}, {layerConfigs: [{layer: toReplace, id: "453"}]});
+                getActionsLayerConfig().replaceByIdInLayerConfig({dispatch, getters, state}, {layerConfigs: [{layer: toReplace, id: "453"}]});
 
                 expect(state.layerConfig[treeBaselayersKey].elements).to.be.an("array");
                 expect(state.layerConfig[treeBaselayersKey].elements.length).to.be.equals(2);
@@ -770,7 +771,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 state.layerConfig = layerConfig;
                 stateCopy = {...state};
 
-                actions.replaceByIdInLayerConfig({dispatch, getters, state}, {layerConfigs: [{layer: toReplace, id: "unknown"}]});
+                getActionsLayerConfig().replaceByIdInLayerConfig({dispatch, getters, state}, {layerConfigs: [{layer: toReplace, id: "unknown"}]});
                 expect(state).to.be.deep.equals(stateCopy);
                 expect(determineZIndexSpy.calledOnce).to.be.true;
             });
@@ -785,7 +786,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 state.layerConfig = layerConfig;
                 stateCopy = {...state};
 
-                actions.replaceByIdInLayerConfig({dispatch, getters, state}, undefined);
+                getActionsLayerConfig().replaceByIdInLayerConfig({dispatch, getters, state}, undefined);
                 expect(state).to.be.deep.equals(stateCopy);
             });
         });
@@ -795,7 +796,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 getters = {
                     layerConfigById: () => null
                 };
-                expect(actions.addOrReplaceLayer({dispatch, getters}, {layerId: "unknown"})).to.be.false;
+                expect(getActionsLayerConfig().addOrReplaceLayer({dispatch, getters}, {layerId: "unknown"})).to.be.false;
             });
 
             it("layer is not contained in layerConfig but contained in rawLayerList, isBaseLayer:false", () => {
@@ -810,40 +811,41 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 expectedConfig.showInLayerTree = true;
                 expectedConfig.zIndex = 5;
 
-                actions.addOrReplaceLayer({dispatch, getters}, {layerId: "1132"});
+                getActionsLayerConfig().addOrReplaceLayer({dispatch, getters}, {layerId: "1132"});
                 expect(dispatch.calledOnce).to.be.true;
                 expect(dispatch.firstCall.args[0]).to.equals("addLayerToLayerConfig");
                 expect(dispatch.firstCall.args[1]).to.deep.equals({layerConfig: expectedConfig, parentKey: treeSubjectsKey});
             });
+            describe.skip("skipped", () => {
+                it("layer is not contained in layerConfig but contained in rawLayerList, isBaseLayer:false, add style to styleList", async () => {
+                    sinon.stub(styleList, "returnStyleObject").returns(undefined);
+                    getters = {
+                        configJs: () => {
+                            return {"foo": "bar"};
+                        },
+                        layerConfigById: () => null,
+                        determineZIndex: () => 5
+                    };
 
-            it.skip("layer is not contained in layerConfig but contained in rawLayerList, isBaseLayer:false, add style to styleList", async () => {
-                sinon.stub(styleList, "returnStyleObject").returns(undefined);
-                getters = {
-                    configJs: () => {
-                        return {"foo": "bar"};
-                    },
-                    layerConfigById: () => null,
-                    determineZIndex: () => 5
-                };
+                    const initStyleAndAddToListStub = sinon.stub(styleList, "initStyleAndAddToList").callsFake(() => {
+                            return Promise.resolve({id: "1132"});
+                        }),
+                        expectedConfig = layerList[2];
 
-                const initStyleAndAddToListStub = sinon.stub(styleList, "initStyleAndAddToList").callsFake(() => {
-                        return Promise.resolve({id: "1132"});
-                    }),
-                    expectedConfig = layerList[2];
+                    expectedConfig.visibility = true;
+                    expectedConfig.transparency = 0;
+                    expectedConfig.showInLayerTree = true;
+                    expectedConfig.zIndex = 5;
+                    expectedConfig.styleId = "1132";
 
-                expectedConfig.visibility = true;
-                expectedConfig.transparency = 0;
-                expectedConfig.showInLayerTree = true;
-                expectedConfig.zIndex = 5;
-                expectedConfig.styleId = "1132";
-
-                await actions.addOrReplaceLayer({dispatch, getters}, {layerId: "1132"});
-                expect(initStyleAndAddToListStub.calledOnce).to.be.true;
-                expect(initStyleAndAddToListStub.firstCall.args[0]).to.equals(getters.configJs);
-                expect(initStyleAndAddToListStub.firstCall.args[1]).to.equals(expectedConfig.styleId);
-                expect(dispatch.calledOnce).to.be.true;
-                expect(dispatch.firstCall.args[0]).to.equals("addLayerToLayerConfig");
-                expect(dispatch.firstCall.args[1]).to.deep.equals({layerConfig: expectedConfig, parentKey: treeSubjectsKey});
+                    await getActionsLayerConfig().addOrReplaceLayer({dispatch, getters}, {layerId: "1132"});
+                    expect(initStyleAndAddToListStub.calledOnce).to.be.true;
+                    expect(initStyleAndAddToListStub.firstCall.args[0]).to.equals(getters.configJs);
+                    expect(initStyleAndAddToListStub.firstCall.args[1]).to.equals(expectedConfig.styleId);
+                    expect(dispatch.calledOnce).to.be.true;
+                    expect(dispatch.firstCall.args[0]).to.equals("addLayerToLayerConfig");
+                    expect(dispatch.firstCall.args[1]).to.deep.equals({layerConfig: expectedConfig, parentKey: treeSubjectsKey});
+                });
             });
 
             it("layer is not contained in layerConfig but contained in rawLayerList, isBaseLayer:true", () => {
@@ -858,7 +860,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 expectedConfig.showInLayerTree = true;
                 expectedConfig.zIndex = 5;
 
-                actions.addOrReplaceLayer({dispatch, getters}, {layerId: "453", isBaseLayer: true});
+                getActionsLayerConfig().addOrReplaceLayer({dispatch, getters}, {layerId: "453", isBaseLayer: true});
                 expect(dispatch.calledOnce).to.be.true;
                 expect(dispatch.firstCall.args[0]).to.equals("addLayerToLayerConfig");
                 expect(dispatch.firstCall.args[1]).to.deep.equals({layerConfig: expectedConfig, parentKey: treeBaselayersKey});
@@ -881,7 +883,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 expectedConfig.zIndex = 5;
                 expectedConfig.time = undefined;
 
-                actions.addOrReplaceLayer({dispatch, getters}, {layerId: "1132"});
+                getActionsLayerConfig().addOrReplaceLayer({dispatch, getters}, {layerId: "1132"});
                 expect(dispatch.calledOnce).to.be.true;
                 expect(dispatch.firstCall.args[0]).to.equals("replaceByIdInLayerConfig");
                 expect(dispatch.firstCall.args[1]).to.deep.equals({layerConfigs: [{id: "1132", layer: expectedConfig}]});
@@ -906,7 +908,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 expectedConfig.zIndex = 5;
                 expectedConfig.time = undefined;
 
-                actions.addOrReplaceLayer({dispatch, getters}, {layerId: "1132", showInLayerTree: true});
+                getActionsLayerConfig().addOrReplaceLayer({dispatch, getters}, {layerId: "1132", showInLayerTree: true});
                 expect(dispatch.calledOnce).to.be.true;
                 expect(dispatch.firstCall.args[0]).to.equals("replaceByIdInLayerConfig");
                 expect(dispatch.firstCall.args[1]).to.deep.equals({layerConfigs: [{id: "1132", layer: expectedConfig}]});
@@ -926,7 +928,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                     layerAttribution: "This is the layer attribution!"
                 };
 
-                actions.showLayerAttributions({dispatch}, layerAttributes);
+                getActionsLayerConfig().showLayerAttributions({dispatch}, layerAttributes);
 
                 expect(dispatch.calledOnce).to.be.true;
                 expect(dispatch.firstCall.args[0]).to.equals("Alerting/addSingleAlert");
@@ -947,7 +949,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                     showInLayerTree: true
                 };
 
-                actions.showLayerAttributions({dispatch}, layerAttributes);
+                getActionsLayerConfig().showLayerAttributions({dispatch}, layerAttributes);
 
                 expect(dispatch.notCalled).to.be.true;
             });
@@ -961,7 +963,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                     showInLayerTree: true
                 };
 
-                actions.showLayerAttributions({dispatch}, layerAttributes);
+                getActionsLayerConfig().showLayerAttributions({dispatch}, layerAttributes);
 
                 expect(dispatch.notCalled).to.be.true;
             });
@@ -976,7 +978,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                     layerAttribution: "This is the layer attribution!"
                 };
 
-                actions.showLayerAttributions({dispatch}, layerAttributes);
+                getActionsLayerConfig().showLayerAttributions({dispatch}, layerAttributes);
 
                 expect(dispatch.notCalled).to.be.true;
             });
@@ -993,7 +995,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                     }
                 };
 
-                actions.updateAllZIndexes({dispatch, getters});
+                getActionsLayerConfig().updateAllZIndexes({dispatch, getters});
                 expect(layerConfig[treeBaselayersKey].elements[0].zIndex).to.be.undefined;
                 expect(layerConfig[treeBaselayersKey].elements[1].zIndex).to.be.undefined;
                 expect(layerConfig[treeSubjectsKey].elements[0].zIndex).to.be.undefined;
@@ -1014,7 +1016,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 layerConfig[treeBaselayersKey].elements[1].zIndex = 2;
                 layerConfig[treeSubjectsKey].elements[0].zIndex = 5;
                 layerConfig[treeSubjectsKey].elements[1].zIndex = 6;
-                actions.updateAllZIndexes({getters});
+                getActionsLayerConfig().updateAllZIndexes({getters});
 
                 expect(layerConfig[treeBaselayersKey].elements[0].zIndex).to.be.equals(1);
                 expect(layerConfig[treeBaselayersKey].elements[1].zIndex).to.be.equals(2);
@@ -1035,7 +1037,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 layerConfig[treeBaselayersKey].elements[0].zIndex = 1;
                 layerConfig[treeSubjectsKey].elements[0].zIndex = 5;
                 layerConfig[treeSubjectsKey].elements[1].zIndex = 6;
-                actions.updateAllZIndexes({getters});
+                getActionsLayerConfig().updateAllZIndexes({getters});
 
                 expect(layerConfig[treeBaselayersKey].elements[0].zIndex).to.be.equals(1);
                 expect(layerConfig[treeBaselayersKey].elements[1].zIndex).to.be.equals(undefined);
@@ -1078,7 +1080,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
             state.layerConfig = layerConfig;
         });
         it("changes the category to inspire", () => {
-            actions.changeCategory({commit, dispatch, getters, rootGetters, state}, categories[1]);
+            getActionsLayerConfig().changeCategory({commit, dispatch, getters, rootGetters, state}, categories[1]);
 
             expect(commit.calledTwice).to.be.true;
             expect(commit.firstCall.args[0]).to.equals("setLayerConfigByParentKey");
@@ -1096,7 +1098,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
         });
 
         it("changes the category to organisation", () => {
-            actions.changeCategory({commit, dispatch, getters, rootGetters, state}, categories[2]);
+            getActionsLayerConfig().changeCategory({commit, dispatch, getters, rootGetters, state}, categories[2]);
 
             expect(commit.calledTwice).to.be.true;
             expect(commit.firstCall.args[0]).to.equals("setLayerConfigByParentKey");
@@ -1151,7 +1153,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
 
                 }
             };
-            actions.updateLayerConfigs({dispatch, getters, state}, layerConfig[treeSubjectsKey].elements);
+            getActionsLayerConfig().updateLayerConfigs({dispatch, getters, state}, layerConfig[treeSubjectsKey].elements);
 
             expect(dispatch.callCount).to.equals(2);
             expect(dispatch.firstCall.args[0]).to.equals("replaceByIdInLayerConfig");
@@ -1244,7 +1246,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 showLayerAddButton: true
             };
             layerConfig[treeSubjectsKey].elements = [layer1];
-            actions.updateLayerConfigs({dispatch, getters, state}, layerConfig[treeSubjectsKey].elements);
+            getActionsLayerConfig().updateLayerConfigs({dispatch, getters, state}, layerConfig[treeSubjectsKey].elements);
 
             expect(replaceInNestedValuesSpy.calledOnce).to.be.true;
             expect(replaceInNestedValuesSpy.firstCall.args[0]).to.be.undefined;
