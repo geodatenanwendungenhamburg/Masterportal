@@ -192,7 +192,6 @@ globalThis.afterEach = globalThis.afterEach || vitestAfterEach;
 globalThis.mapCollection = mapCollection;
 globalThis.i18next = i18next;
 globalThis.Config = testConfig.config;
-// globalThis.it.skip = createDoneCallbackWrapper(globalThis.it.skip || vitestIt.skip, "it.skip");
 globalThis.it = createDoneCallbackWrapper(globalThis.it || vitestIt, "it");
 globalThis.test = createDoneCallbackWrapper(globalThis.test || vitestTest, "test");
 
