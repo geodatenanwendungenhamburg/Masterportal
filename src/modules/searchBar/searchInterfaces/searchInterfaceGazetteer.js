@@ -1,6 +1,6 @@
 import SearchInterface from "./searchInterface.js";
 import store from "@appstore/index.js";
-import {search, setGazetteerUrl, setShowGeographicIdentifier} from "@masterportal/masterportalapi/src/searchAddress";
+import {search, setGazetteerUrl, setShowGeographicIdentifier} from "@masterportal/masterportalapi/src/searchAddress/index.js";
 import proj4 from "proj4";
 import i18next from "i18next";
 /**
