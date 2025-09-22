@@ -1,5 +1,5 @@
 import {RoutingGeosearchResult} from "../classes/routing-geosearch-result.js";
-import {search} from "@masterportal/masterportalapi/src/searchAddress";
+import {search} from "@masterportal/masterportalapi/src/searchAddress/index.js";
 
 /**
  * Requests POIs from text from Gazetteer
