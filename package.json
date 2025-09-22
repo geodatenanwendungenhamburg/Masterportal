@@ -72,16 +72,10 @@
     "@masterportal/mpconfigparser": "^2.0.0",
     "@sinonjs/fake-timers": "^14.0.0",
     "@stylistic/eslint-plugin-js": "^2.13.0",
-<<<<<<< HEAD
     "@vitejs/plugin-vue": "^6.0.3",
     "@vitest/eslint-plugin": "^1.6.6",
     "@vitest/ui": "^4.0.16",
     "@vitest/web-worker": "^4.0.16",
-=======
-    "@vitejs/plugin-vue": "^6.0.0",
-    "@vitest/ui": "3.2.4",
-    "@vitest/web-worker": "^3.2.4",
->>>>>>> 6c000bfe42 (run tests with vitests - alias: globalThis.Config = testConfig; and global = globalThis)
     "@vue/compiler-sfc": "3.5.22",
     "@vue/devtools-api": "^7.7.2",
     "@vue/server-renderer": "3.5.22",
@@ -103,10 +97,6 @@
     "jsdoc-vuejs": "^4.0.0",
     "jsdom": "^26.0.0",
     "jsdom-worker": "^0.3.0",
-<<<<<<< HEAD
-=======
-    "mocha": "^10.8.2",
->>>>>>> 6c000bfe42 (run tests with vitests - alias: globalThis.Config = testConfig; and global = globalThis)
     "mock-local-storage": "^1.1.24",
     "regenerator-runtime": "^0.14.1",
     "replace-in-file": "8.3.0",
@@ -116,7 +106,6 @@
     "sinon": "19.0.2",
     "sinon-chai": "^4.0.0",
     "text-loader": "^0.0.1",
-<<<<<<< HEAD
     "vite": "^7.3.0",
     "vite-plugin-cp": "^6.0.3",
     "vite-plugin-dynamic-import": "^1.6.0",
@@ -125,15 +114,6 @@
     "vite-plugin-zip-pack": "^1.2.4",
     "vitest": "^4.0.16",
     "xmlserializer": "^0.6.1"
-=======
-    "vite": "^7.0.0",
-    "vite-plugin-dynamic-import": "^1.6.0",
-    "vite-plugin-html-purgecss": "^0.1.1",
-    "vite-plugin-node-polyfills": "^0.24.0",
-    "vitest": "^3.2.4",
-    "xmlserializer": "^0.6.1",
-    "zip-a-folder": "3.1.8"
->>>>>>> 6c000bfe42 (run tests with vitests - alias: globalThis.Config = testConfig; and global = globalThis)
   },
   "overrides": {
     "@cesium/engine": "npm:dry-uninstall",
