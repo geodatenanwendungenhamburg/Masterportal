@@ -22,7 +22,7 @@ const viteConfig = defineConfig({
         globals: true,
         environment: "jsdom",
         css:false,// von inka
-        include:['src/app-store/**/*.spec.js'],
+        // include:['src/app-store/**/*.spec.js'],
         // include:['**/VerkehrsstaerkenTheme.spec.js'], //test runs sucessfully
         // include:['addons/vpiDashboard/**/*.spec.js'], //test runs sucessfully
         // include:['addons/**/*.spec.js'],
