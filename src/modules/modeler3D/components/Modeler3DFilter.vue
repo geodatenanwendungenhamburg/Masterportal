@@ -684,7 +684,7 @@ export default {
                             :key="layer.id"
                             :value="layer"
                         >
-                            {{ layer.name }}
+                            {{ $t(layer.name) }}
                         </option>
                     </select>
                     <label for="layerSelect">

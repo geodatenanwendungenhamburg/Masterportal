@@ -170,7 +170,7 @@ export default {
                     :value="layer"
                     :selected="selectOptions[0].name"
                 >
-                    {{ layer.name }}
+                    {{ $t(layer.name) }}
                 </option>
             </select>
             <label for="tool-bufferAnalysis-selectSourceInput">
@@ -242,7 +242,7 @@ export default {
                     :key="layer.id"
                     :value="layer"
                 >
-                    {{ layer.name }}
+                    {{ $t(layer.name) }}
                 </option>
             </select>
             <label for="tool-bufferAnalysis-selectTargetInput">

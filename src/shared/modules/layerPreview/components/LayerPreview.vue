@@ -286,8 +286,8 @@ export default {
             'layerPreview'
         ]"
         :data-bs-toggle="!isMobile ? 'tooltip' : null"
-        :data-bs-original-title="layerName"
-        :title="layerName"
+        :data-bs-original-title="$t(layerName)"
+        :title="$t(layerName)"
         @click="clicked()"
         @keydown.enter="clicked()"
     >

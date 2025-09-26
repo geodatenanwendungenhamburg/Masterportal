@@ -225,7 +225,7 @@ export default {
                             :key="layer.name"
                             :value="layer"
                         >
-                            {{ layer.name }}
+                            {{ $t(layer.name) }}
                         </option>
                     </select>
                     <label
@@ -247,7 +247,7 @@ export default {
                             :key="layer.name"
                             :value="layer"
                         >
-                            {{ layer.name }}
+                            {{ $t(layer.name) }}
                         </option>
                     </select>
                     <label

@@ -858,7 +858,7 @@ const actions = {
                 LayerConfigAttributes = multiUpdate.find(item => item.layerId === layer.id).configAttributes;
                 LayerControlAttributes = multiUpdate.find(item => item.layerId === layer.id).controlAttributes;
 
-                additionalInfo = "</br></br>" + featurePropertiesBatch.length + i18next.t("common:modules.wfst.transaction.success.batchInfo", {layer: layer.name}) + "<ul>" +
+                additionalInfo = "</br></br>" + featurePropertiesBatch.length + i18next.t("common:modules.wfst.transaction.success.batchInfo", {layer: i18next.$t(layer.name)}) + "<ul>" +
                     featurePropertiesBatch
                         .map(batchItem => {
                             configValues = LayerConfigAttributes

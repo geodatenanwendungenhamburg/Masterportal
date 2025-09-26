@@ -220,7 +220,7 @@ export default {
                         href="#"
                         class="nav-link"
                         @click.prevent="switchToList(layer)"
-                    >{{ layer.name }}</a>
+                    >{{ $t(layer.name) }}</a>
                 </li>
             </ul>
         </div>
@@ -229,7 +229,7 @@ export default {
                 id="feature-lister-list-header"
                 class="panel-heading"
             >
-                <span>{{ layer.name }}</span>
+                <span>{{ $t(layer.name) }}</span>
             </div>
             <div
                 id="feature-lister-list"

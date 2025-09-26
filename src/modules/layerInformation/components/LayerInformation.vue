@@ -201,7 +201,7 @@ export default {
         createDropdownOptions () {
             this.dropdownOptions = this.layerInfo.layers.map((layer, index) => ({
                 value: index,
-                label: layer.name
+                label: this.$t(layer.name)
             }));
 
             if (this.dropdownOptions.length > 0) {
