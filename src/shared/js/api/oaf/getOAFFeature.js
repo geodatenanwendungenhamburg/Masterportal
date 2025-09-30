@@ -15,6 +15,7 @@ import {getUniqueValuesFromFetchedFeatures} from "@modules/filter/utils/fetchAll
  * @param {String} [options.filter] The filter. See https://ogcapi.ogc.org/features/ for more information.
  * @param {String} [options.filterCrs] The filter crs. Needs to be set if a filter is used.
  * @param {Number} [options.limit=400] The limit of features per request.
+ * @param {Object} [options.literalFilters] Additional literal filters as key-value pairs.
  * @param {String[]} [options.propertyNames] The property names to narrow the request.
  * @param {AbortSignal} [options.signal] An optional AbortSignal to cancel the request.
  * @param {boolean} [options.skipGeometry=false] If true, the geometries will not be returned.
@@ -28,6 +29,7 @@ async function getOAFFeatureGet (baseUrl, collection, {
     filter,
     filterCrs,
     limit = 400,
+    literalFilters,
     propertyNames,
     signal,
     skipGeometry = false
@@ -73,6 +75,9 @@ async function getOAFFeatureGet (baseUrl, collection, {
 
     if (typeof datetime === "string") {
         extendedUrl += `&datetime=${datetime}`;
+    }
+    for (const key in literalFilters) {
+        extendedUrl += `&${key}=${literalFilters[key]}`;
     }
 
     return this.oafRecursionHelper(result, extendedUrl, signal);
