@@ -89,7 +89,11 @@
     "vue-matomo": "^4.2.0",
     "vue-multiselect": "3.2.0",
     "vuedraggable": "^4.1.0",
+<<<<<<< HEAD
     "vuetify": "3.9.6",
+=======
+    "vuetify": "3.7.x",
+>>>>>>> b24df51a28 (Update Vuetify)
     "vuex": "^4.0.2"
   },
   "devDependencies": {
