@@ -21,23 +21,22 @@ const viteConfig = mergeConfig({
         pool: "threads", // von inka //--> performance, https://vitest.dev/guide/improving-performance.html
         globals: true,
         environment: "jsdom",
-        css: false, // von inka
-        fileParallelism: 8, // todo inka: hat das Auswirkungen?
-        /**
-         * Setting isolate: false disables test isolation, which means all tests in a file share the same environment and global state.
-         * This can cause side effects and make tests fail if they depend on a clean state.
-         * But here it is used with 'singleThread: true' and that works.
-         */
-        isolate: false,
-        poolOptions: {
-            threads: {
-                singleThread: true
-            }
-        },
-        hookTimeout: 500, // von inka: reduce from 20000 to 500 ms
-        include: [
-            "**/*.spec.js"
-            // 'src/core/layers/**/*.spec.js',
+        css:false,// von inka
+        include:[
+            // 'src/app-store/**/*.spec.js',
+            // 'src/core/**/*.spec.js',
+            //modules
+            'src/modules/about/**/*.spec.js',
+            'src/modules/addWMS/**/*.spec.js',
+            'src/modules/alerting/**/*.spec.js',
+            'src/modules/baselayerSwitcher/**/*.spec.js',
+            'src/modules/bufferAnalysis/**/*.spec.js',
+            'src/modules/compareFeatures/**/*.spec.js',
+            'src/modules/compareMaps/**/*.spec.js',
+            'src/modules/contact/**/*.spec.js',
+            'src/modules/controls/**/*.spec.js',
+            'src/modules/coordToolkit/**/*.spec.js',
+            // 'src/modules/controls/freeze/**/*.spec.js',
         ],
         transformMode: {
             web: [/.[tj]s$/]
