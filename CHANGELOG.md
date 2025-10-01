@@ -4,7 +4,7 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## 2025-10-01 v3.15.0
+## 2025-10-01 v3.15.0 (LTS)
 
 ### __Breaking Changes__
 - Dropped support for **Node.js 18.x**, **20.x** and **npm 9**. Minimum required is now **Node.js 22.19.0 (LTS)** with **npm 10.x**.
