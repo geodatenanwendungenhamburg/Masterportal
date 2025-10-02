@@ -190,7 +190,7 @@ describe("src/modules/draw/components/DrawItem.vue", () => {
         wrapper.vm.squareAreaComputed = 6.5;
         expect(wrapper.vm.styleSettings.squareArea).to.equal(6500);
     });
-describe.skip("skipped", () => {
+    describe.skip("skipped", () => {
         it("should hide layer and disable controls", async () => {
             wrapper = shallowMount(DrawItemComponent, {global: {plugins: [store]}, data: componentData});
             expect(wrapper.find("#tool-draw-drawLayerVisible").exists()).to.be.true;
