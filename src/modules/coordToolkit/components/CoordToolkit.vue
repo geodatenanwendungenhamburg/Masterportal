@@ -139,11 +139,11 @@ export default {
         /**
          * Do this in next tick, only then heightLayerId is in state
          */
-        this.$nextTick(() => {
-            if (this.heightLayerId !== null) {
+        if (this.heightLayerId !== null) {
+            this.$nextTick(() => {
                 this.initHeightLayer();
-            }
-        });
+            });
+        }
     },
     methods: {
         ...mapMutations("Modules/CoordToolkit", Object.keys(mutations)),

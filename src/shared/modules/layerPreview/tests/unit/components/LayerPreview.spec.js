@@ -490,36 +490,36 @@ describe("src/modules/layerPreview/components/LayerPreview.vue", () => {
         expect(loadSpy.firstCall.args[0].indexOf(layerWMS.url)).to.be.equals(0);
         expect(warnSpy.notCalled).to.be.true;
     });
-describe.skip("skipped", () => {
-    it("do render the LayerPreview with tooltip attributes", async () => {
-        const props = {
-            layerId: "WMS"
-        };
+    describe.skip("skipped", () => {
+        it("do render the LayerPreview with tooltip attributes", async () => {
+            const props = {
+                layerId: "WMS"
+            };
 
-        wrapper = shallowMount(LayerPreviewComponent, {
-            global: {
-                plugins: [store]
-            },
-            props: props
-        });
-        await wrapper.vm.$nextTick();
+            wrapper = shallowMount(LayerPreviewComponent, {
+                global: {
+                    plugins: [store]
+                },
+                props: props
+            });
+            await wrapper.vm.$nextTick();
 
-        expect(wrapper.find(".layerPreview").exists()).to.be.true;
-        expect(wrapper.find(".layerPreview").attributes()).to.deep.equals({
-            "data-v-601392fe": "",
-            role: "button",
-            tabindex: "0",
-            class: "layerPreview",
-            "data-bs-toggle": "tooltip",
-            "data-bs-original-title": "layerWMS",
-            title: "layerWMS"
+            expect(wrapper.find(".layerPreview").exists()).to.be.true;
+            expect(wrapper.find(".layerPreview").attributes()).to.deep.equals({
+                "data-v-601392fe": "",
+                role: "button",
+                tabindex: "0",
+                class: "layerPreview",
+                "data-bs-toggle": "tooltip",
+                "data-bs-original-title": "layerWMS",
+                title: "layerWMS"
+            });
+            expect(wrapper.find(".wrapperImg").attributes()).to.deep.equals({
+                "data-v-601392fe": "",
+                class: "wrapperImg",
+                title: ""
+            });
         });
-        expect(wrapper.find(".wrapperImg").attributes()).to.deep.equals({
-            "data-v-601392fe": "",
-            class: "wrapperImg",
-            title: ""
-        });
-    });
     });
 
 });
