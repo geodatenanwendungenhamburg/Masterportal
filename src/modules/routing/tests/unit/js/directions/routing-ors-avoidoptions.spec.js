@@ -4,7 +4,7 @@ import routingOrsAvoidOption from "@modules/routing/js/avoidoptions/routing-ors-
 
 describe.skip("should routingOrsAvoidOptions", () => {
     it("should lowercase preferences from configJson", async () => {
-        //todo please fix this test without importing app-store
+        // todo please fix this test without importing app-store
         store.getters["Modules/Routing/directionsSettings"] = {
             customAvoidFeatures: {
                 CYCLING: ["UNPAVEDROADS", "STEPS"]

@@ -117,7 +117,6 @@
     "jsdoc-vuejs": "^4.0.0",
     "jsdom": "^26.0.0",
     "jsdom-worker": "^0.3.0",
-    "mocha": "^10.8.2",
     "mock-local-storage": "^1.1.24",
     "regenerator-runtime": "^0.14.1",
     "replace-in-file": "8.3.0",
