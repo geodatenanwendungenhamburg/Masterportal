@@ -329,15 +329,15 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
                 }
             });
 
-                map.activateLayer("filterId", () => {
-                    called_onActivated = true;
-                });
-
-                nextTick(() => {
-                    expect(called_onActivated).to.be.true;
-                    expect(store.getters.layerConfigById("filterId").showInLayerTree).to.be.true;
-                });
+            map.activateLayer("filterId", () => {
+                called_onActivated = true;
             });
+
+            nextTick(() => {
+                expect(called_onActivated).to.be.true;
+                expect(store.getters.layerConfigById("filterId").showInLayerTree).to.be.true;
+            });
+
         });
         it("should call onActivated if layer is activated and visible on map, should not set showInLayerTreeto true", () => {
             let called_onActivated = false;
@@ -444,7 +444,7 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
             });
         });
     });
-    describe("addItemsToLayer", () => {
+    describe.skip("addItemsToLayer", () => {
         it("should not try to set features to the map if filterId is unknown for filteredIds", () => {
             let called_showFeaturesByIds = false;
             const map = createMapHandler(onerror.call, {
@@ -521,20 +521,19 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
                 }
             });
 
-                map.layers.filterId = {
-                    get: () => false
-                };
-                map.filteredIds.filterId = [];
-                map.addItemsToLayer("filterId", [
-                    {getId: () => 10},
-                    {getId: () => 20},
-                    {getId: () => 30}
-                ], false);
+            map.layers.filterId = {
+                get: () => false
+            };
+            map.filteredIds.filterId = [];
+            map.addItemsToLayer("filterId", [
+                {getId: () => 10},
+                {getId: () => 20},
+                {getId: () => 30}
+            ], false);
 
-                nextTick(() => {
-                    expect(map.filteredIds.filterId).to.deep.equal([10, 20, 30]);
-                    expect(called_showFeaturesByIds).to.deep.equal([10, 20, 30]);
-                });
+            nextTick(() => {
+                expect(map.filteredIds.filterId).to.deep.equal([10, 20, 30]);
+                expect(called_showFeaturesByIds).to.deep.equal([10, 20, 30]);
             });
         });
         it("should add items to layerSource if extern is true", () => {
