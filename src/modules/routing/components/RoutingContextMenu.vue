@@ -632,7 +632,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
 
 #context-menu-title, .context-menu-content {
     display: none;
@@ -648,7 +647,6 @@ export default {
 </style>
 
 <style lang="scss">
-@import "~variables";
 
 .routing-popover {
     width: 200px;
