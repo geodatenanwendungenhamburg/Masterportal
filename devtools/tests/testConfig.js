@@ -124,6 +124,6 @@ const config = {
     }]
 };
 
-export default{
+export default {
     config
-}
+};
