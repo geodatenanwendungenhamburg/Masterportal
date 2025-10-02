@@ -14,6 +14,8 @@ import RoutingSpeedProfileIcon from "../RoutingSpeedProfileIcon.vue";
 import RoutingAvoidFeatures from "../RoutingAvoidFeatures.vue";
 import RoutingRestrictionsInput from "../RoutingRestrictionsInput.vue";
 import RoutingElevationProfile from "../RoutingElevationProfile.vue";
+import RoutingContextMenu from "../RoutingContextMenu.vue";
+import InputText from "@shared/modules/inputs/components/InputText.vue";
 import * as constants from "../../store/directions/constantsDirections.js";
 import * as constantsRouting from "../../store/constantsRouting.js";
 import {Modal} from "bootstrap";

@@ -122,7 +122,8 @@ describe.skip("src/core/js/layers/layer3dTileset.js", () => {
     describe("style funtions", () => {
         it("initStyle shall be called on creation and call createStyle if styleListLoaded=true", function () {
             const createStyleSpy = sinon.spy(Layer3dTileset.prototype, "createStyle");
-global.Cesium
+
+            global.Cesium;
             store.getters = {
                 styleListLoaded: true
             };

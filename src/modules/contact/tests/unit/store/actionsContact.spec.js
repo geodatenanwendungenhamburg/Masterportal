@@ -106,8 +106,8 @@ describe("src/modules/contact/store/actionsContact.js", () => {
         });
 
         afterEach(() => {
-    sinon.restore();
-});
+            sinon.restore();
+        });
 
         it("creates httpClient call as expected", done => {
             sinon

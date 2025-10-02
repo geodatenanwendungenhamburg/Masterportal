@@ -22,11 +22,11 @@ describe("src/shared/js/utils/getWmsFeaturesByMimeType.js", () => {
             id: "ol",
             mode: "2D",
             getView: () => {
-               return {
-                getProjection: () => ({
+                return {
+                    getProjection: () => ({
                         getCode: () => "EPSG:25832"
-                })
-               }
+                    })
+                };
             }
         };
 

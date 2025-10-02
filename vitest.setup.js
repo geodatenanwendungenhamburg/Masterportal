@@ -27,6 +27,69 @@ if (!globalThis.ResizeObserver) {
     };
 }
 
+globalThis.fetch = async (url, options) => {
+    console.log("### ### fetch shall be mocked in tests: ", url);
+    return {
+        ok: true,
+        status: 200,
+        json: async () => ({ /* your mock data here */ }),
+        text: async () => ""
+        // add other methods if needed
+    };
+};
+
+globalThis.XMLHttpRequest = class {
+    /**
+     *
+     */
+    open () {
+        console.log("### ### XMLHttpRequest shall be mocked in tests!");
+    }
+    /**
+     *
+     */
+    send () {
+        this.onload && this.onload();
+    }
+    /**
+     *
+     */
+    setRequestHeader () {}
+    // add other methods/properties as needed
+    /**
+     *
+     */
+    get responseText () {
+        return "{\"mock\":\"data\"}";
+    }
+    /**
+     *
+     */
+    get status () {
+        return 200;
+    }
+};
+
+// Mock navigation methods to prevent jsdom errors
+if (typeof window !== "undefined") {
+    // Use a real Event constructor polyfill instead of vi.fn()
+    window.Event = window.Event || function (type, params) {
+        const event = document.createEvent("Event");
+
+        event.initEvent(type, params?.bubbles ?? false, params?.cancelable ?? false);
+        return event;
+    };
+
+    window.matchMedia = window.matchMedia || (() => ({
+        matches: false,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {}
+    }));
+
+    window.scrollTo = window.scrollTo || (() => {});
+}
+
 // renderStubDefaultSlot: https://test-utils.vuejs.org/migration/#shallowmount-and-renderstubdefaultslot
 config.global.renderStubDefaultSlot = true;
 
@@ -131,9 +194,9 @@ vi.mock("@cesium/widgets", () => ({
  *
  */
 function createDoneCallbackWrapper (originalTestFn) {
-    return (name, fn, ...args) => {        
+    return (name, fn, ...args) => {
     // If no test function provided, just pass through
-        if (typeof fn !== "function") { 
+        if (typeof fn !== "function") {
             return originalTestFn(name, fn, ...args);
         }
 
@@ -167,6 +230,10 @@ function createDoneCallbackWrapper (originalTestFn) {
                     }
                 });
             }
+            // so in etwa - todo Inka: bitte stehen lasssen
+            // if(originalTestFn.skip){
+            //     wrappedFn.skip = createDoneCallbackWrapper(originalTestFn.skip, "skip");
+            // }
             return originalTestFn(name, wrappedFn, ...args);
         }
         // No done callback expected, use original function as-is
@@ -219,4 +286,9 @@ if (typeof global !== "undefined") {
     global.Config = globalThis.Config;
     global.it = globalThis.it;
     global.test = globalThis.test;
+}
+
+if (!globalThis.__autoUnmountEnabled) {
+    enableAutoUnmount(globalThis.afterEach);
+    globalThis.__autoUnmountEnabled = true;
 }
