@@ -63,10 +63,10 @@ describe("src/core/js/layers/layer2dRasterWmsTime.js", () => {
         store.getters = {
             "Modules/WmsTime/layerSwiper": () => {
                 true;
-            }, 
+            },
             "Modules/WmsTime/timeSlider": () => {
                 true;
-            },
+            }
         };
     });
 
