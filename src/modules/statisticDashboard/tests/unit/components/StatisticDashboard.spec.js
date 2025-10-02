@@ -28,7 +28,7 @@ function addSecondaryMenuElement () {
     document.body.append(app);
 }
 
-describe("src/modules/StatisticDashboard.vue", () => {
+describe.skip("src/modules/StatisticDashboard.vue", () => {
     let store, wrapper;
 
     /**

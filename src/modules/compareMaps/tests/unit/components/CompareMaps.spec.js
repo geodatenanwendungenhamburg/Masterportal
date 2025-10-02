@@ -17,6 +17,7 @@ describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
             mode: "2D",
             removeLayer: sinon.spy(),
             on: sinon.stub(),
+            un: sinon.stub(),
             once: sinon.stub()
         };
 
@@ -85,7 +86,6 @@ describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
     });
 
     afterEach(() => {
-        mapCollection.clear();
         sinon.restore();
     });
 

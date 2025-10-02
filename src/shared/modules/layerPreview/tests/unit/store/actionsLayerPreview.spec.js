@@ -37,7 +37,7 @@ describe("src/modules/layerPreview/store/actionsLayerPreview", () => {
         mapCollection.addMap(map, "2D");
     });
 
-     afterEach(() => {
+    afterEach(() => {
         sinon.restore();
     });
 

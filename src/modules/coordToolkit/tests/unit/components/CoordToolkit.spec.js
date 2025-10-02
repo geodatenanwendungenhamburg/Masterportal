@@ -83,7 +83,7 @@ describe("src/modules/coordToolkit/components/CoordToolkit.vue", () => {
         isMobile = false;
 
         validateInputSpy = sinon.spy();
-        initHeightLayerSpy = sinon.spy();
+        initHeightLayerSpy = sinon.stub().returns();
         transformCoordinatesFromToSpy = sinon.spy();
         positionClickedSpy = sinon.spy();
 
@@ -223,7 +223,7 @@ describe("src/modules/coordToolkit/components/CoordToolkit.vue", () => {
             global: {
                 plugins: [store]
             }});
-
+        unregisterListenerSpy.resetHistory();
         wrapper.vm.$options.unmounted.call(wrapper.vm);
         await wrapper.vm.$nextTick();
 

@@ -17,8 +17,8 @@ describe("src/modules/compareFeatures/store/actionsCompareFeatures.js", () => {
     });
 
     afterEach(() => {
-    sinon.restore();
-});
+        sinon.restore();
+    });
 
     describe("isFeatureOnCompareList", () => {
         it("adds feature", () => {

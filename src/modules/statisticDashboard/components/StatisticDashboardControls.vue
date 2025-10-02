@@ -1108,7 +1108,6 @@ export default {
 }
 </style>
 <style lang="scss">
-@import "~variables";
 
 .static-dashboard .multiselect, .static-dashboard .multiselect__tags {
     font-family: inherit;

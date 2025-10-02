@@ -1,10 +1,10 @@
-import {defineConfig} from "vitest/config";
+import {mergeConfig} from "vitest/config";
 import Vue from "@vitejs/plugin-vue";
 import commonConfig from "./vite.config.js";
 import {nodePolyfills} from "vite-plugin-node-polyfills";
 
 
-const viteConfig = defineConfig({
+const viteConfig = mergeConfig({
     ...commonConfig,
     plugins: [
         Vue(),
@@ -16,16 +16,29 @@ const viteConfig = defineConfig({
     ],
     css: false,
     test: {
-        reporters: "default",
-        // reporters: "html",
-        pool: 'threads',//--> performance, https://vitest.dev/guide/improving-performance.html
+        reporters: ["default", "html"],
+        // reporters: "default",
+        pool: "threads", // von inka //--> performance, https://vitest.dev/guide/improving-performance.html
         globals: true,
         environment: "jsdom",
-        css:false,// von inka
-        include:['src/app-store/**/*.spec.js'],
-        // include:['**/VerkehrsstaerkenTheme.spec.js'], //test runs sucessfully
-        // include:['addons/vpiDashboard/**/*.spec.js'], //test runs sucessfully
-        // include:['addons/**/*.spec.js'],
+        css: false, // von inka
+        fileParallelism: 8, // todo inka: hat das Auswirkungen?
+        /**
+         * Setting isolate: false disables test isolation, which means all tests in a file share the same environment and global state.
+         * This can cause side effects and make tests fail if they depend on a clean state.
+         * But here it is used with 'singleThread: true' and that works.
+         */
+        isolate: false,
+        poolOptions: {
+            threads: {
+                singleThread: true
+            }
+        },
+        hookTimeout: 500, // von inka: reduce from 20000 to 500 ms
+        include: [
+            "**/*.spec.js"
+            // 'src/core/layers/**/*.spec.js',
+        ],
         transformMode: {
             web: [/.[tj]s$/]
         },

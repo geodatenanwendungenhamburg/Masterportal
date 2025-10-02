@@ -22,6 +22,13 @@ describe("src/modules/modeler3D/components/EntityList.vue", () => {
                 }
             }
         });
+        mapCollection.clear();
+        const map = {
+            id: "olcs",
+            mode: "3D"
+        };
+
+        mapCollection.addMap(map, "3D");
     });
 
     afterEach(() => {
