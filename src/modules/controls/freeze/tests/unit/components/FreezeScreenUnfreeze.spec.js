@@ -12,7 +12,7 @@ describe("src/modules/controls/freeze/components/FreezeScreenUnfreeze.vue", () =
         const app = document.createElement("div");
 
         app.id = "masterportal-container";
-         if (document.body) {
+        if (document.body) {
             document.body.appendChild(app);
         }
     });
