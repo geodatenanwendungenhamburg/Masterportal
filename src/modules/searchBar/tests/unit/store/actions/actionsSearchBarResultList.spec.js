@@ -49,6 +49,7 @@ describe("src/modules/searchBar/store/actions/actionsSearchBarResultList.js", ()
             searchInterfaceId: "elasticSearch",
             toolTip: "my tip"
         };
+
         describe.skip("skipped", () => {
             it("should dispatch the onClick event", () => {
                 const actionType = "onClick";
