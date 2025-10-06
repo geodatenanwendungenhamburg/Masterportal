@@ -11,6 +11,7 @@ import CoordToolkit from "../coordToolkit/store/indexCoordToolkit";
 import CopyrightConstraints from "../copyrightConstraints/store/indexCopyrightConstraints";
 import Draw from "../draw/store/indexDraw";
 import Draw_old from "../draw_old/store/indexDraw";
+import ExportItem from "@shared/modules/exportItem/store/indexExportItem";
 import FeatureLister from "../featureLister/store/indexFeatureLister";
 import FileImport from "../fileImport/store/indexFileImport";
 import Filter from "../filter/store/indexFilter";
@@ -63,6 +64,7 @@ export default {
         CopyrightConstraints: {...CopyrightConstraints},
         Draw: {...Draw},
         Draw_old: {...Draw_old},
+        ExportItem: {...ExportItem},
         FeatureLister: {...FeatureLister},
         FileImport: {...FileImport},
         Filter: {...Filter},

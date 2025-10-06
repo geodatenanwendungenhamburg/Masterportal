@@ -26,6 +26,7 @@ const mutations = {
      * @returns {void}
      */
     setDownloadDataString: (state, payload) => {
+        console.warn(payload);
         state.download.dataString = payload;
     },
     /**

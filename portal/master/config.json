@@ -127,10 +127,6 @@
           }
         }
       },
-      "mouseHover": {
-        "numFeaturesToShow": 2,
-        "infoText": "Exampletext"
-      },
       "startingMapMode": "2D",
       "zoomTo": [
         {
@@ -626,15 +622,16 @@
                 "active": false
               }
             },
-            "isochronesSettings": {
-              "type": "ORS",
-              "serviceId": "bkg_ors",
-              "speedProfile": "CAR",
-              "batchProcessing": {
-                "enabled": false,
-                "active": false
-              }
-            },
+            "isochronesSettings": { 
+              "type": "ORS", 
+              "serviceId": "bkg_ors", 
+              "speedProfile": "CAR", 
+              "attributes": ["area", "total_pop"], 
+              "batchProcessing": { 
+                "enabled": false, 
+                "active": false 
+                } 
+              },
             "tsrSettings": {
               "type": "TSR",
               "serviceId": "bkg_tsr",

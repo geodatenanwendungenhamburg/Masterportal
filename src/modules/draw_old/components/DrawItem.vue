@@ -1,6 +1,6 @@
 <script>
 import * as constants from "../store/constantsDraw";
-import DownloadItem from "../components/DownloadItem.vue";
+import ExportItem from "@shared/modules/exportItem/components/ExportItem.vue";
 import DrawItemFeaturesFilter from "./DrawItemFeaturesFilter.vue";
 import DrawItemAttributes from "./DrawItemAttributes.vue";
 import {mapActions, mapGetters, mapMutations} from "vuex";
@@ -44,7 +44,7 @@ export default {
     components: {
         DrawItemFeaturesFilter,
         DrawItemAttributes,
-        DownloadItem,
+        ExportItem,
         SwitchInput,
         InputText
     },
@@ -452,6 +452,11 @@ export default {
          */
         featuresFromDrawTool () {
             return this.getLayer().getSource().getFeatures().filter(feature => feature.get("masterportal_attributes").fromDrawTool);
+        }
+    },
+    watch: {
+        download () {
+            console.warn("HE");
         }
     },
     created () {
@@ -1496,7 +1501,12 @@ export default {
                     </button>
                 </div>
             </div>
-            <DownloadItem v-if="drawLayerVisible && download.enabled" />
+            <ExportItem
+                v-if="drawLayerVisible && download.enabled"
+                :formats="['KML', 'GEOJSON', 'GPX']"
+                :export-data="download.dataString"
+                pre-selected-format="KML"
+            />
         </div>
     </div>
 </template>

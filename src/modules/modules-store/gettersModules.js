@@ -10,6 +10,7 @@ import CompareFeatures from "../compareFeatures/components/CompareFeatures.vue";
 import CompareMaps from "../compareMaps/components/CompareMaps.vue";
 import Draw from "../draw/components/DrawModule.vue";
 import Draw_old from "../draw_old/components/DrawItem.vue";
+import ExportItem from "@shared/modules/exportItem/components/ExportItem.vue";
 import FeatureLister from "../featureLister/components/FeatureLister.vue";
 import FileImport from "../fileImport/components/FileImport.vue";
 import FilterGeneral from "../filter/components/FilterGeneral.vue";
@@ -62,6 +63,7 @@ const getters = {
             customMenuElement: CustomMenuElement,
             draw: Draw,
             draw_old: Draw_old,
+            exportItem: ExportItem,
             featureLister: FeatureLister,
             fileImport: FileImport,
             filter: FilterGeneral,
