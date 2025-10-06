@@ -177,7 +177,8 @@ export default {
                 name: this.name,
                 path: this.path,
                 side: this.side,
-                type: this.type
+                type: this.type,
+                properties: this.properties
             });
         }
     },

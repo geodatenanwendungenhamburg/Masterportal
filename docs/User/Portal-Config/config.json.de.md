@@ -1046,7 +1046,7 @@ Hier können die Menüeinträge jeweils für das MainMenu (in der Desktopansicht
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
-|currentComponent|nein|String|""|Definiert ein Modul, das initial geöffnet ist.|false|
+|currentComponent|nein|String|""|Definiert ein Modul, das initial geöffnet ist. Bitte beachten Sie, dass in Ordnern geschachtelte Module hiermit nicht geöffnet werden können. Wenn ein Modul mehrfach vorhanden ist, werden alle Instanzen in Reihenfolge des Erscheinens geöffnet, was zu unerwartetem Verhalten führen kann.|false|
 |expanded|nein|Boolean|false|Definiert ob das jeweilige Menü beim Starten des Portals aus- oder eingeklappt ist.|false|
 |width|nein|String|"25%"|Setzt die initiale Breite des jeweiligen Menüs als Prozentwert.|false|
 |showDescription|nein|Boolean||Definiert ob eine Beschreibung zu den Modulen im jeweiligen Menü angezeigt werden soll.|false|

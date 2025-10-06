@@ -1045,7 +1045,7 @@ Here you can configure the menu items for the `mainMenu` (in the desktop view on
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
-|currentComponent|no|String|""|Defines a module that is opened initially.|false|
+|currentComponent|no|String|""|Defines a module that is opened initially. Please mind that modules nested in folders can not be opened this way. If a module is present multiple times, all instances will be opened in order of appearence, which may result in unexpected behaviour.|false|
 |expanded|no|Boolean|false|Defines whether the respective menu is expanded or collapsed when the portal is started.|false|
 |width|no|String|"25%"|Sets the initial width of the respective menu as a percentage value.|false|
 |showDescription|no|Boolean||Defines whether a description of the modules should be displayed in the respective menu.|false|

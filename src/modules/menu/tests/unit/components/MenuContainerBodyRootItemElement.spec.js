@@ -112,7 +112,8 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
             name: name,
             path: path,
             side: path[0],
-            type: type
+            type: type,
+            properties: {type}
         });
     });
 
