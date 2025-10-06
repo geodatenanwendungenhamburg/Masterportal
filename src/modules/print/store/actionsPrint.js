@@ -169,7 +169,7 @@ const actions = {
         commit("setProgressWidth", "width: 25%");
         layerProvider.getVisibleLayer(state.printMapMarker);
 
-        const visibleLayerList = [...getters.visibleLayerList, ...getters.activeAdditionalLayers],
+        const visibleLayerList = Array.isArray(getters.activeAdditionalLayers) ? [...getters.visibleLayerList, ...getters.activeAdditionalLayers] : [...getters.visibleLayerList],
             attr = {
                 "layout": state.currentLayoutName,
                 "outputFilename": state.filename,
