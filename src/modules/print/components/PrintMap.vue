@@ -467,13 +467,19 @@ export default {
                     }
                     else if (name === "source") {
                         layoutAttributes[name] = [];
+                        layoutAttributes.sourceLinks = [];
                         this.visibleLayerList.forEach(layer => {
                             const foundRawLayer = rawLayerList.getLayerWhere({id: layer.get("id")});
 
                             if (foundRawLayer) {
-                                layoutAttributes[name].push(foundRawLayer?.datasets[0].show_doc_url + foundRawLayer.datasets[0].md_id);
+                                const hrefUrl = foundRawLayer?.datasets[0]?.show_doc_url + foundRawLayer?.datasets[0]?.md_id,
+                                    hrefName = foundRawLayer?.datasets[0]?.md_name;
+
+                                layoutAttributes.sourceLinks.push({url: hrefUrl, name: hrefName, table: {"columns": [], "data": []}});
+                                layoutAttributes[name].push(foundRawLayer?.datasets[0]?.show_doc_url + foundRawLayer.datasets[0]?.md_id);
                             }
                         });
+                        layoutAttributes.sourceLinks = Array.from(new Set(layoutAttributes.sourceLinks.map(JSON.stringify))).map(JSON.parse);
                         layoutAttributes[name] = layoutAttributes[name].join("\n");
                     }
                     else {
