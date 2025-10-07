@@ -58,7 +58,7 @@ export async function processLayerConfig (layerConfig, mapMode) {
         }
         else if (layerConf.visibility === true) {
             Object.assign(layerConf);
-            const layer = await layerFactory.createLayer(layerConf, mapMode);
+            const layer = layerFactory.createLayer(layerConf, mapMode); // Cannot be async because that would lead to layers being added twice
 
             processLayer(layer, mapMode);
         }

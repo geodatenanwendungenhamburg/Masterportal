@@ -37,6 +37,14 @@ function convertColor (color, dest = "rgba") {
         // [255, 255, 255, 1]
         transColor = color;
     }
+    else if (isRgbObject(color)) {
+        // {r:255, g:255, b:255}
+        transColor = [color.r, color.g, color.b, 1];
+    }
+    else if (isRgbaObject(color)) {
+        // {r:255, g:255, b:255, a:1}
+        transColor = [color.r, color.g, color.b, color.a];
+    }
     else if (isHexColorString(color)) {
         // "#ffffff"
         transColor = parseHexColorString(color);
@@ -121,6 +129,36 @@ function isRgbArray (color) {
         return false;
     }
     return true;
+}
+
+/**
+ * checks if the given color is an object with r, g, b properties (no alpha)
+ * @param {Object} color the color as object
+ * @returns {Boolean} true if this is recognized to be an rgb object or false if not
+ */
+function isRgbObject (color) {
+    return (
+        typeof color === "object" && color !== null &&
+        typeof color.r === "number" && color.r >= 0 && color.r <= 255 &&
+        typeof color.g === "number" && color.g >= 0 && color.g <= 255 &&
+        typeof color.b === "number" && color.b >= 0 && color.b <= 255 &&
+        (color.a === undefined)
+    );
+}
+
+/**
+ * checks if the given color is an object with r, g, b, a properties
+ * @param {Object} color the color as object
+ * @returns {Boolean} true if this is recognized to be an rgba object or false if not
+ */
+function isRgbaObject (color) {
+    return (
+        typeof color === "object" && color !== null &&
+        typeof color.r === "number" && color.r >= 0 && color.r <= 255 &&
+        typeof color.g === "number" && color.g >= 0 && color.g <= 255 &&
+        typeof color.b === "number" && color.b >= 0 && color.b <= 255 &&
+        typeof color.a === "number" && color.a >= 0 && color.a <= 1
+    );
 }
 
 /**
