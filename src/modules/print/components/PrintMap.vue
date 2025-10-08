@@ -73,6 +73,7 @@ export default {
             "mainMenu",
             "secondaryMenu"
         ]),
+        ...mapGetters("Modules/LayerInformation", ["dateRevision", "periodicityKey", "publisher"]),
 
         currentScale: {
             get () {
@@ -233,6 +234,7 @@ export default {
             "update3DResolutionScale"
         ]),
         ...mapActions("Alerting", ["addSingleAlert"]),
+        ...mapActions("Modules/LayerInformation", ["getAbstractInfo"]),
 
         /**
          * Waits until the features of Vector layers are loaded and then renders the canvas again.
@@ -324,12 +326,12 @@ export default {
          * Starts the print
          * @returns {void}
          */
-        print () {
+        async print () {
             const currentPrintLength = this.fileDownloads.filter(file => file.finishState === false).length;
 
             if (currentPrintLength <= 10) {
                 const index = this.fileDownloads.length,
-                    layoutAttributes = this.getLayoutAttributes(this.currentLayout, ["subtitle", "textField", "author", "overviewMap", "source"]);
+                    layoutAttributes = await this.getLayoutAttributes(this.currentLayout, ["subtitle", "textField", "author", "overviewMap", "source"]);
 
                 this.addFileDownload({
                     index: index,
@@ -432,41 +434,58 @@ export default {
          * @param {String[]} nameList - A list of attribute names.
          * @returns {Object} The layout attributes or an empty object.
          */
-        getLayoutAttributes (layout, nameList) {
+        async getLayoutAttributes (layout, nameList) {
             const layoutAttributes = {};
 
             if (!isObject(layout) || !Array.isArray(nameList)) {
                 return layoutAttributes;
             }
-            nameList.forEach(name => {
-                if (this.hasLayoutAttribute(layout, name)) {
-                    if (name === "overviewMap") {
-                        layoutAttributes[name] = {
-                            "layers": [BuildSpec.buildTileWms(layerCollection.getLayerById(this.getOverviewmapLayerId()).getLayer(), this.dpiForPdf)]
-                        };
-                    }
-                    else if (name === "source") {
-                        layoutAttributes[name] = [];
-                        layoutAttributes.sourceLinks = [];
-                        this.visibleLayerList.forEach(layer => {
-                            const foundRawLayer = rawLayerList.getLayerWhere({id: layer.get("id")});
-
-                            if (foundRawLayer) {
-                                const hrefUrl = foundRawLayer?.datasets[0]?.show_doc_url + foundRawLayer?.datasets[0]?.md_id,
-                                    hrefName = foundRawLayer?.datasets[0]?.md_name;
-
-                                layoutAttributes.sourceLinks.push({url: hrefUrl, name: hrefName, table: {"columns": [], "data": []}});
-                                layoutAttributes[name].push(foundRawLayer?.datasets[0]?.show_doc_url + foundRawLayer.datasets[0]?.md_id);
-                            }
-                        });
-                        layoutAttributes.sourceLinks = Array.from(new Set(layoutAttributes.sourceLinks.map(JSON.stringify))).map(JSON.parse);
-                        layoutAttributes[name] = layoutAttributes[name].join("\n");
-                    }
-                    else {
-                        layoutAttributes[name] = this[name];
-                    }
+            for (const name of nameList) {
+                if (!this.hasLayoutAttribute(layout, name)) {
+                    continue;
                 }
-            });
+                if (name === "overviewMap") {
+                    layoutAttributes[name] = {
+                        "layers": [BuildSpec.buildTileWms(layerCollection.getLayerById(this.getOverviewmapLayerId()).getLayer(), this.dpiForPdf)]
+                    };
+                }
+                else if (name === "source") {
+                    layoutAttributes[name] = [];
+                    layoutAttributes.sourceLinks = [];
+                    layoutAttributes.references = [];
+                    for (const layer of this.visibleLayerList) {
+                        const foundRawLayer = rawLayerList.getLayerWhere({id: layer.get("id")}),
+                            hrefUrl = foundRawLayer?.datasets[0]?.show_doc_url + foundRawLayer?.datasets[0]?.md_id,
+                            hrefName = foundRawLayer?.datasets[0]?.md_name,
+                            cswUrl = foundRawLayer?.datasets[0]?.csw_url,
+                            metaId = foundRawLayer?.datasets[0]?.md_id;
+
+                        if (!foundRawLayer) {
+                            continue;
+                        }
+
+                        if (cswUrl && metaId) {
+                            await this.getAbstractInfo({cswUrl, metaId});
+                            layoutAttributes.references.push({
+                                name: hrefName,
+                                publisher: this.publisher.name || "-",
+                                periodicity: this.$t(this.periodicityKey) || "-",
+                                dateRevision: this.dateRevision || "-",
+                                table: {columns: [], data: []}
+                            });
+                        }
+
+                        layoutAttributes.sourceLinks.push({url: hrefUrl, name: hrefName, table: {columns: [], data: []}});
+                        layoutAttributes[name].push(foundRawLayer?.datasets[0]?.show_doc_url + foundRawLayer.datasets[0]?.md_id);
+                    }
+                    layoutAttributes.references = Array.from(new Set(layoutAttributes.references.map(JSON.stringify))).map(JSON.parse);
+                    layoutAttributes.sourceLinks = Array.from(new Set(layoutAttributes.sourceLinks.map(JSON.stringify))).map(JSON.parse);
+                    layoutAttributes[name] = layoutAttributes[name].join("\n");
+                }
+                else {
+                    layoutAttributes[name] = this[name];
+                }
+            }
             return layoutAttributes;
         },
 
