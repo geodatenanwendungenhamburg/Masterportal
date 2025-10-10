@@ -47,8 +47,6 @@ plugins:
             - en
             - de
 
-    - tablestrip:
-          strip_word: "Expert"
     - mike:
           version_selector: true
 
@@ -92,6 +90,12 @@ extra:
             link: https://www.masterportal.org/
         -   icon: fontawesome/brands/bitbucket
             link: https://bitbucket.org/geowerkstatt-hamburg/masterportal/
+    version:
+        provider: mike
+        alias: true
+        default:
+        - latest
+
 
 extra_css:
     - '_docsCustomization/css/contentAreaFullWidth.css'
