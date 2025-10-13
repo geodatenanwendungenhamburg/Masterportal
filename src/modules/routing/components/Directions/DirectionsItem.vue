@@ -660,7 +660,7 @@ export default {
                     v-for="(segment, segmentIndex) of routingDirections.segments"
                     :key="'segment_header_' + segmentIndex"
                 >
-                    <div
+                    <button
                         class="d-flex step pl-2 py-4 btn-directions"
                         @mouseover="highlightRoute({fromWaypointIndex: segmentIndex, toWaypointIndex: segmentIndex + 1})"
                         @focus="highlightRoute({fromWaypointIndex: segmentIndex, toWaypointIndex: segmentIndex + 1})"
@@ -701,6 +701,7 @@ export default {
                                 <RoutingDistanceDisplay :distance="segment.distance" />
                             </div>
                         </span>
+                    </button>
 
                     <hr
                         class="m-0"
