@@ -20,11 +20,7 @@ describe("src/modules/routing/store/directions/actionsTSR.js", () => {
         sinon.stub(i18next, "t").callsFake((...args) => args);
 
         sinon.stub(axios, "post").returns(
-            new Promise((_, reject) => reject({
-                response: {
-                    status: 404
-                }
-            }))
+             Promise.resolve({status: 200, data: {success: true}})
         );
 
         tsrWaypointSource = new VectorSource();

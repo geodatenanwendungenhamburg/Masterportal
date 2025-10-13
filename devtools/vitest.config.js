@@ -22,7 +22,7 @@ const viteConfig = mergeConfig({
         globals: true,
         environment: "jsdom",
         css: false, // von inka
-        fileParallelism: 8, // todo inka: hat das Auswirkungen?
+        fileParallelism: false, // von inka
         /**
          * Setting isolate: false disables test isolation, which means all tests in a file share the same environment and global state.
          * This can cause side effects and make tests fail if they depend on a clean state.
