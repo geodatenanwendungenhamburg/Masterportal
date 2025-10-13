@@ -36,6 +36,7 @@ pipelines:
                     script:
                         - apt-get update && apt-get install zip && apt-get install -y curl wput jq  && apt-get install zip
                         - pip install -r devtools/docsValidation/python-dependencies.txt
+                        - mkdocs build
                         - mike deploy $BITBUCKET_TAG
                         - mv $BITBUCKET_CLONE_DIR/site $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG
                         -   pipe: atlassian/ftp-deploy:0.7.1
@@ -105,6 +106,7 @@ pipelines:
                         - pip install -r devtools/docsValidation/python-dependencies.txt
                         - git fetch --all --tags
                         - git checkout tags/$BITBUCKET_TAG
+                        - mkdocs build
                         - mike deploy $BITBUCKET_TAG
                         - mv $BITBUCKET_CLONE_DIR/site $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG
                         -   pipe: atlassian/ftp-deploy:0.7.1
@@ -130,6 +132,7 @@ pipelines:
                         - pip install -r devtools/docsValidation/python-dependencies.txt
                         - git fetch --all --tags
                         - git checkout tags/$BITBUCKET_TAG
+                        - mkdocs build
                         - mike deploy $BITBUCKET_TAG
                         - mv $BITBUCKET_CLONE_DIR/site $BITBUCKET_CLONE_DIR/$Latest
                         -   pipe: atlassian/ftp-deploy:0.7.1
@@ -166,6 +169,7 @@ pipelines:
                         - pip install -r devtools/docsValidation/python-dependencies.txt
                         - git fetch --all --tags
                         - git checkout tags/$BITBUCKET_TAG
+                        - mkdocs build
                         - mike deploy $BITBUCKET_TAG
                         - zip -r masterportal_docs.zip /opt/atlassian/pipelines/agent/build/site
                         - curl -X POST --user "$bbapi_name:$bbapi_key" "https://api.bitbucket.org/2.0/repositories/geowerkstatt-hamburg/masterportal/downloads/" --form files=@"masterportal_docs.zip" --verbose;
