@@ -79,7 +79,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+
 .legend-container {
     height: 25px;
     width: 50px;
