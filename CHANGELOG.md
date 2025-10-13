@@ -13,6 +13,10 @@
     - fixedColumnWithOrder in Props enable to insert the column with index.
     - fixedRow in Props enable to insert a row directly after the header.
 - Added config.json parameter `rasterLayerDefaultInfoFormat` to override global default in 2d raster layer.
+- The following packages have been added:
+    - devDependencies:
+         - madge: 8.0.0
+- PrepushHook: Added detection of circular dependencies in imports to prepushHook with `madge`.
 
 ### Changed
 - Shared TableComponent: Changes Props fixedData into fixedBottomData.
@@ -507,7 +511,6 @@
 ## 2025-01-02 v3.6.0
 
 ### Added
-Geobasiskarten: Added new Layers 33780, 33793, 33787, 33797.
 - SelectFeatures: Added click selection for features and added UI components to delete all or single features from the selection.
 - AddWMS: add the possibility to configure example URLs to display under the module.
 
