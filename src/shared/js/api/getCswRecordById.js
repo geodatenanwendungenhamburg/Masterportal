@@ -2,7 +2,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 
 import getNestedValues from "../utils/getNestedValues.js";
-import handleAxiosError from "../utils/handleAxiosError";
+import axiosErrorHandler from "@shared/js/utils/handleAxiosError.js";
 import xml2json from "../utils/xml2json";
 import {setWebLinks} from "../utils/urlHelper.js";
 import i18next from "i18next";
@@ -29,7 +29,7 @@ function getRecordById (url, metadataId, outputSchema = "http://www.isotc211.org
     })
         .then(response => xml2json(response.request.responseXML))
         .then(json => getMetadata(json))
-        .catch(error => handleAxiosError(error, "getRecordById"));
+        .catch(error => axiosErrorHandler.handleAxiosError(error, "getRecordById"));
 }
 
 /**
