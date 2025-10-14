@@ -23,6 +23,7 @@ import {getRulesForFeature} from "@masterportal/masterportalapi/src/vectorStyle/
 import layerCollection from "@core/layers/js/layerCollection.js";
 import {uniqueId} from "@shared/js/utils/uniqueId.js";
 import {buildHeatmapPng} from "../utils/buildHeatmapPng.js";
+import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
 
 const BuildSpecModel = {
     defaults: {
@@ -101,6 +102,7 @@ const BuildSpecModel = {
             layer.metaEmail = parsedData?.email ? parsedData.email : "n.N.";
             layer.metaTel = parsedData?.tel ? parsedData.tel : "n.N.";
             layer.metaUrl = parsedData?.url ? parsedData.url : "n.N.";
+            layer.metaPeriodicity = parsedData?.periodicity || "n.N";
         }
     },
     /**
@@ -1607,7 +1609,7 @@ const BuildSpecModel = {
      * @returns {void}
      */
     getMetaData: function (layerName, getResponse, index) {
-        const metadataLayer = layerCollection.find(layer => layer.attributes.name === layerName),
+        const metadataLayer = rawLayerList.getLayerWhere({name: layerName}),
             metaId = metadataLayer.datasets && metadataLayer.datasets[0] ? metadataLayer.datasets[0].md_id : null,
             uniqueIdRes = uniqueId(),
             cswObj = {};
