@@ -235,9 +235,7 @@ const actions = {
         const cswObj = cswObject;
         let metadata;
 
-        if (cswObj.layer.get("datasets") && Array.isArray(cswObj.layer.get("datasets")) && cswObj.layer.get("datasets")[0] !== null && typeof cswObj.layer.get("datasets")[0] === "object") {
-            cswObj.cswUrl = Object.prototype.hasOwnProperty.call(cswObj.layer.get("datasets")[0], "csw_url") ? cswObj.layer.get("datasets")[0].csw_url : null;
-        }
+        cswObj.cswUrl = cswObj.layer?.datasets?.[0]?.csw_url;
 
         cswObj.parsedData = {};
 
@@ -248,7 +246,7 @@ const actions = {
             cswObj.cswUrl = cswService.url;
         }
 
-        if (rootGetters.metadata.useProxy.includes(cswObj.cswUrl)) {
+        if (rootGetters.metadata?.useProxy?.includes(cswObj.cswUrl)) {
             metadata = await getCswRecordById.getRecordById(cswObj.cswUrl, cswObj.metaId);
         }
         else {
@@ -263,16 +261,16 @@ const actions = {
         }
         else {
             cswObj.parsedData = {};
-            cswObj.parsedData.orgaOwner = metadata.getOwner().name || "n.N.";
+            cswObj.parsedData.orgaOwner = metadata.getPublisher().name || "n.N.";
             cswObj.parsedData.address = {
-                street: metadata.getOwner().street || "",
+                street: metadata.getPublisher().street || "",
                 housenr: "",
-                postalCode: metadata.getOwner().postalCode || "",
-                city: metadata.getOwner().city || ""
+                postalCode: metadata.getPublisher().postalCode || "",
+                city: metadata.getPublisher().city || ""
             };
-            cswObj.parsedData.email = metadata.getOwner().email || "n.N.";
-            cswObj.parsedData.tel = metadata.getOwner().phone || "n.N.";
-            cswObj.parsedData.url = metadata.getOwner().link || "n.N.";
+            cswObj.parsedData.email = metadata.getPublisher().email || "n.N.";
+            cswObj.parsedData.tel = metadata.getPublisher().phone || "n.N.";
+            cswObj.parsedData.url = metadata.getPublisher().link || "n.N.";
 
             if (typeof metadata.getRevisionDate() !== "undefined") {
                 cswObj.parsedData.date = metadata.getRevisionDate();
@@ -283,6 +281,8 @@ const actions = {
             else if (typeof metadata.getCreationDate() !== "undefined") {
                 cswObj.parsedData.date = metadata.getCreationDate();
             }
+
+            cswObj.parsedData.periodicity = i18next.t(metadata.getFrequenzy()) || "n.N.";
         }
 
         BuildSpec.fetchedMetaData(cswObj);
