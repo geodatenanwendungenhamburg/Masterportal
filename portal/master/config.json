@@ -542,6 +542,9 @@
                 }
               }
             ]
+          },
+          {
+            "type": "copyrightConstraints"
           }
         ]
       ]
@@ -698,6 +701,11 @@
                 "DE_DHDN_3GK3, EPSG 31467: Bezugssystem DHDN, Abbildungsvorschrift Gauß-Krüger, 3. Meridianstreifen"
               ]
             }
+          },
+          {
+            "type": "draw_old",
+            "enableAttributesSelector": true,
+            "addIconsOfActiveLayers": true
           },
           {
             "type": "wfsSearch",
@@ -998,7 +1006,14 @@
     },
     "subjectlayer": {
       "elements": [
-       
+        {
+          "id": [ "20501", "20502", "20503", "20504" ],
+          "name": "Gruppe Freizeitrouten und Radfernwege (4 WFS Layer)",
+          "typ": "GROUP",
+          "styleId": "4515",
+          "visibility": true,
+          "showInLayerTree": true
+        },
         {
           "id": "34406",
           "styleId": "47",
