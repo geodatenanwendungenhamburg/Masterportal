@@ -57,6 +57,7 @@
     - Corrected description of 'map3dParameter'.
     - EditorConfig no longer strips two trailing spaces, which are intentional line breaks in Markdown.
     - Use Code block headers instead of inline comments for the VueJSAddon tutorial.
+    - Corrected devSetup to reflect on the use of 'npm ci' instead of the normal install.
 Migrator: Corrected 'infoText' of 'mouseHover' in created config.json.
 - Documentation: corrected usage of 'treeType' (version 2).
 - Documentation: EditorConfig no longer strips two trailing spaces, which are intentional line breaks in Markdown.

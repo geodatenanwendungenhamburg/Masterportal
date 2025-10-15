@@ -111,8 +111,10 @@ $ git clone https://bitbucket.org/geowerkstatt-hamburg/masterportal.git
 $ cd masterportal
 ```
 
+Due to recent supply-chain-attacks on the npm-ecosystem, we are currently working with fixed packages as defined in our package-lock.json, thus using ci instead of install in the following command:
+
 ```console title="Install the node_modules required for the Masterportal:"
-$ npm install
+$ npm ci
 ```
 
 Now all npm dependencies are installed.
