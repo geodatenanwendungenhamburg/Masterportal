@@ -705,6 +705,11 @@
             }
           },
           {
+            "type": "draw_old",
+            "enableAttributesSelector": true,
+            "addIconsOfActiveLayers": true
+          },
+          {
             "type": "wfsSearch",
             "description": "common:modules.wfsSearch.description_parcel",
             "zoomLevel": 7,
@@ -1003,7 +1008,14 @@
     },
     "subjectlayer": {
       "elements": [
-       
+        {
+          "id": [ "20501", "20502", "20503", "20504" ],
+          "name": "Gruppe Freizeitrouten und Radfernwege (4 WFS Layer)",
+          "typ": "GROUP",
+          "styleId": "4515",
+          "visibility": true,
+          "showInLayerTree": true
+        },
         {
           "id": "34406",
           "styleId": "47",
