@@ -79,7 +79,7 @@ export default {
          * @returns {void}
          */
         closeIconTriggered (event) {
-            if (event.type === "click" || event.which === 32 || event.which === 13) {
+            if (event.type === "click" || event.which === 32 || event.which === 13 || event.key === "Escape") {
                 this.hidePoi();
             }
         },
@@ -261,10 +261,12 @@ export default {
 </script>
 
 <template>
-    <button
+    <div
         id="surrounding_vectorfeatures"
         class="modal fade in poi"
-        @keydown.esc="hidePoi"
+        role="dialog"
+        aria-modal="true"
+        tabindex="-1"
     >
         <div class="modal-dialog">
             <div class="modal-content">
@@ -386,7 +388,7 @@ export default {
             has no semantic meaning, and other methods exist for keyboard users to leave
             the backdropped modal dialog.
         -->
-    </button>
+    </div>
 </template>
 
 <style lang="scss" scoped>

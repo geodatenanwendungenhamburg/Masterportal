@@ -319,7 +319,7 @@ export default {
 
         <div v-if="importedFileNames.length > 0">
             <div class="h-seperator" />
-            <p class="mb-3">
+            <div class="mb-3">
                 <label
                     class="successfullyImportedLabel"
                     for="succesfully-imported-files"
@@ -344,7 +344,7 @@ export default {
                         />
                     </li>
                 </ul>
-            </p>
+            </div>
             <div class="h-seperator" />
             <p
                 class="mb-3 introDrawTool"

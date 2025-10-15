@@ -77,6 +77,10 @@ export class SensorThingsMqttConnector {
             // see https://www.npmjs.com/package/mqtt
         }
 
+        if (this.isV50()) {
+            this.options.protocolVersion = 5;
+        }
+
         if (!this.options?.hostname) {
             this.options.hostname = this.options.host;
         }

@@ -13,7 +13,7 @@ export default {
         ScaleLine
     },
     computed: {
-        ...mapGetters(["isMobile"]),
+        ...mapGetters(["isMobile", "uiStyle"]),
         ...mapGetters("Modules/PortalFooter", [
             "configPaths",
             "scaleLine",
@@ -94,6 +94,7 @@ export default {
     <footer
         id="module-portal-footer"
         class="portal-footer px-2 py-1"
+        :class="{ 'portal-footer--with-menu': uiStyle !== 'SIMPLE' }"
     >
         <a
             v-if="aboutModuleSide && !hideImprintInFooter"
@@ -183,7 +184,7 @@ export default {
     }
 
     @include media-breakpoint-up(sm)  {
-        .portal-footer {
+        .portal-footer.portal-footer--with-menu {
             left: 47.25px; // width des Menucollapse-Button...
             width: calc( 100% + 94.5px); // zweimal den Menucollapse-Button...
         }

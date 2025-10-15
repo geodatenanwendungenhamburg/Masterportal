@@ -11,6 +11,7 @@
 - SearchBar: Added search status (min characters, loading, no results).
 - LayerSelection: Added search within current folder (requires `"filter": true"` in `config.json`).
 - Issue #1390: Added support for `.apng`, `.webp`,and `.svg` files in GFI window.
+- map3DParameter: Added new `shadowTime` configuration option to define a fixed time for shadow calculation in 3D mode.
 
 ### Changed
 - The following packages have been updated:
@@ -23,6 +24,14 @@
     - i18next-browser-languagedetector: ^8.0.3 to ^8.2.0
     - i18next-http-backend: ^2.7.3 to ^3.0.2
     - three: ^0.173.0 to ^0.180.0
+    - @vue/compiler-sfc: ^3.3.4 to ^3.5.22
+    - @vue/server-renderer: ^3.3.4 to ^3.5.22
+    - mqtt": 4.3.7 to ^5.14.1
+  - dependencies:
+    - vue: ^3.3.4 to ^3.5.22
+  - devDependencies:
+- Removed temporary `overrides` that pinned Vue core packages to 3.3.4.
+- Adjusted test webpack config for Vue 3.5 (aliases/loaders). 
 
 ### Deprecated
 
@@ -37,15 +46,25 @@
 - Issue #1385: Add missing internationalization calls for layer names.
 - Issue #1413: Fix legend toggle for featureless vector layers.
 - Issue #1422: Reset layers in CompareMaps on any deselection to avoid bugs regarding which layers are visible on what side of the comparison.
+- Issue #1472: Fix usage of tokens to always use freshest token from cookies. Also allow all acceptable first `fetch` parameters for intercepted URLs now.
+- Issue #1476: Fix automated scale adjustment in Print module getting stuck on receiving scale as url parameter.
 - Issue #1481: Fix error when configuring customMenuElement as currentComponent.
+- Issue #1485: Fix keyboard interaction in compareMaps.
+- Issue #1488: Prevent footer from being cut when using url parameter UISTYLE=simple.
 - LayerInformation: The addresses of the TileSet3D layer and the Terrain3D layer are displayed correctly.
 - Documentation: 
     - Corrected usage of 'treeType' (version 2).
     - Corrected description of 'map3dParameter'.
+    - EditorConfig no longer strips two trailing spaces, which are intentional line breaks in Markdown.
+    - Use Code block headers instead of inline comments for the VueJSAddon tutorial.
+Migrator: Corrected 'infoText' of 'mouseHover' in created config.json.
 - Documentation: corrected usage of 'treeType' (version 2).
 - Documentation: EditorConfig no longer strips two trailing spaces, which are intentional line breaks in Markdown.
 - Documentation: Use Code block headers instead of inline comments for the VueJSAddon tutorial.
-
+- LayerPills: Layout of layerPills now gets dynamically adjusted with regard to the current menu-state and re-adjusts on changes made to the menus.
+- Shared TableComponent: Fixed remove of row.
+- ControlBar: Fix pop-ups display above other elements.
+- Gazetteer: Restored correct click behavior in search results.
 
 ---
 
@@ -62,6 +81,7 @@
 - Added config.json parameter `rasterLayerDefaultInfoFormat` to override global default in 2d raster layer.
 
 ### Changed
+- Routing: Changed input fields for hgv parameters.
 - Shared TableComponent: Changes Props fixedData into fixedBottomData.
 - The following packages have been updated:
   - devDependencies:
@@ -77,6 +97,7 @@
 - Update the addon documentation to reflect the recent changes in the project structure and Vue3.
 - packages: To avoid security issues, all packages have been fixed in package.json. No versions of patch releases will be accepted.
 - WFSSearch: To provide configuration of version 2 it is possible to configure a zoom-button for resultlist with config parameter `zoomButtonInColumn` if column key `geometry` or `geom` is configured, default is true.
+- Documentation: Updated config.json.md and config.json.de.md for copyrightConstraints module.
 
 ### Fixed
 - Issue #1404: searchInterfaceVisibleVector: The Visible Vector Search now manually loads all features, ensuring that results are found even outside the bounding box.

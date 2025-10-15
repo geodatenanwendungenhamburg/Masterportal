@@ -1,6 +1,10 @@
 import {generateSimpleMutations} from "@shared/js/utils/generators";
 import tsrState from "./stateTSR";
 
+/**
+ * The mutations for the routing tsr.
+ * @module modules/routing/store/tsr/mutations
+ */
 const mutations = {
     /**
      * Creates from every state-key a setter.

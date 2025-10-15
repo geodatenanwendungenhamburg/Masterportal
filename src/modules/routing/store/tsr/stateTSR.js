@@ -12,7 +12,28 @@ import tsrElevationLayer from "../../js/map/tsr/elevation/tsrElevationLayer";
 
 import stateRouting from "../stateRouting";
 
-export default {
+/**
+ * State of tsr
+ * @module modules/routing/store/tsr/state
+ *
+ * @property {Object} tsrWaypointsSource The source of the tsr waypoints.
+ * @property {Object} tsrWaypointsLayer The layer of the tsr waypoints.
+ * @property {Object} tsrRouteSource The source of the tsr route.
+ * @property {Object} tsrRouteLayer The layer of the tsr route.
+ * @property {Object} tsrElevationSource The source of the tsr elevation hover point.
+ * @property {Object} tsrElevationLayer The layer of the tsr elevation hover pont.
+ * @property {Object} tsrWaypointsModifyInteraction The modify interaction of the tsr waypoints.
+ * @property {Object} tsrWaypointsSnapInteraction The snap interaction of the tsr waypoints.
+ * @property {Object} tsrWaypointsDrawInteraction The draw interaction of the tsr waypoints.
+ * @property {Object[]} waypoints The tsr waypoints.
+ * @property {Object} addStartEndPoint Defines whether a waypoint, startpoint or endpoint is to be added -> -1: default, no input field selected; >= 0: index of waypoint with input field selected
+ * @property {Object[]} tsrDirections The result of the tsr calculation.
+ * @property {Boolean} mapListenerAdded Determines whether or not map listener is added.
+ * @property {Boolean} isLoadingDirections Determines whether or not tsr directions are currently calculated.
+ * @property {String} mapInteractionMode The currently active map interaction mode.
+ * @property {Object} settings The routing tsr directions parameters.
+*/
+const state = {
     // Map State
     tsrWaypointsSource,
     tsrWaypointsLayer,
@@ -30,11 +51,6 @@ export default {
 
     // tsr Parameters
     waypoints: [],
-    // addStartEndPoint defines whether a waypoint,
-    // startpoint or endpoint is to be added.
-    // 0 - startpoint
-    // 1 - waypoint
-    // 2 - endpoint
     addStartEndPoint: 1,
     // Routing tsr Result
     tsrDirections: null,
@@ -45,3 +61,5 @@ export default {
     mapInteractionMode: "WAYPOINTS",
     settings: stateRouting.tsrSettings
 };
+
+export default state;

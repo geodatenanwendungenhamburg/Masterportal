@@ -7,6 +7,10 @@ import Point from "ol/geom/Point";
 import {toRaw} from "vue";
 import {fromCircle} from "ol/geom/Polygon";
 
+/**
+ * The actions for the routing directions.
+ * @module modules/routing/store/directions/actions
+ */
 export default {
     /**
      * Finds the route for the current waypoints.
@@ -21,6 +25,18 @@ export default {
             map = await mapCollection.getMap(rootState.Maps.mode),
             wgs84Coords = await dispatch("getDirectionsCoordinatesWgs84"),
             lineStringFeature = await dispatch("getRouteFeature");
+
+        if (!getters.allHGVRestrictionsValid && state.settings.speedProfile === "HGV") {
+            directionsRouteSource.getFeatures().forEach(feature => feature.getGeometry().setCoordinates([]));
+            commit("setRoutingDirections", null);
+            dispatch("Alerting/addSingleAlert", {
+                category: "error",
+                title: i18next.t("common:modules.routing.errors.titleErrorRouteFetch"),
+                content: i18next.t("common:modules.routing.errors.hgvRestrictionOutOfRange")
+            }, {root: true});
+
+            return;
+        }
 
         commit("setIsLoadingDirections", true);
         await dispatch("resetRoutingDirectionsResults");

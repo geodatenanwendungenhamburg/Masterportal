@@ -1,6 +1,10 @@
 import {generateSimpleMutations} from "@shared/js/utils/generators";
 import directionsState from "./stateDirections";
 
+/**
+ * The mutations for the routing directions.
+ * @module modules/routing/store/directions/mutations
+ */
 const mutations = {
     /**
      * Creates from every state-key a setter.
@@ -8,7 +12,17 @@ const mutations = {
      * {setKey:   (state, payload) => *   state[key] = payload * }
      * will be returned.
      */
-    ...generateSimpleMutations(directionsState)
+    ...generateSimpleMutations(directionsState),
+
+    /**
+     * set values for HGV restriction parameters.
+     * @param {Object} state state
+     * @param {String} name name of HGV parameter
+     * @param {Number} value value of HGV parameter
+     */
+    setRoutingRestrictionIsValid: (state, {name, value}) => {
+        state.routingRestrictionIsValid[name] = value;
+    }
 };
 
 export default mutations;

@@ -135,7 +135,7 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                 }
             });
 
-            expect(wrapper.find("#draw-types >draw-types-stub").exists()).to.be.true;
+            expect(wrapper.find("#draw-types > div > draw-types-stub").exists()).to.be.true;
         });
 
         it("renders the shared module drawTypes for selectedDrawTypeMain - geometries", () => {

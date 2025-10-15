@@ -116,8 +116,10 @@ export default {
         const configuredLayout = layouts.find(layout => layout.name === state.currentLayoutName),
             layoutToUse = configuredLayout || layouts[0];
 
-        commit("setCurrentLayout", layoutToUse);
-        commit("setCurrentLayoutName", layoutToUse.name);
+        if (layoutToUse) {
+            commit("setCurrentLayout", layoutToUse);
+            commit("setCurrentLayoutName", layoutToUse.name);
+        }
     },
 
     /**

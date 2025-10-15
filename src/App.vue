@@ -211,17 +211,24 @@ export default {
             v-if="allConfigsLoaded && addonsLoaded && mainMenu && uiStyle !== 'SIMPLE'"
             side="mainMenu"
         />
-        <div
-            v-if="allConfigsLoaded && addonsLoaded"
-            class="elements-positioned-over-map"
-        >
-            <component :is="componentMap.mouseHover" />
-            <ControlBar class="controls" />
-            <component :is="componentMap.wmsTime" />
-            <BaselayerSwitcher />
-            <component :is="componentMap.layerPills" />
-            <component :is="componentMap.portalFooter" />
-        </div>
+        <template v-if="allConfigsLoaded && addonsLoaded">
+            <div
+                class="elements-positioned-over-map"
+            >
+                <component :is="componentMap.mouseHover" />
+                <component :is="componentMap.wmsTime" />
+                <BaselayerSwitcher />
+                <component :is="componentMap.layerPills" />
+                <component :is="componentMap.portalFooter" />
+            </div>
+            <div
+                class="controls-element"
+            >
+                <ControlBar
+                    class="controls"
+                />
+            </div>
+        </template>
         <MenuToggleButton
             v-if="allConfigsLoaded && addonsLoaded && secondaryMenu && uiStyle !== 'SIMPLE'"
             side="secondaryMenu"
@@ -275,19 +282,28 @@ export default {
         overflow: hidden;
     }
 }
+.overlay-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none;
+  height: 100%;
+}
 .elements-positioned-over-map {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    z-index: 1;
-    pointer-events: none;
+    @extend .overlay-block;
     width: 100%;
-    height: 100%;
+    z-index: 1;
+}
+.controls-element{
+    @extend .overlay-block;
+    z-index: 3;
 
     .controls {
         flex-grow: 1;
+        z-index: 3;
     }
 }
+
 </style>
 
 <style lang="scss">

@@ -678,6 +678,7 @@ Weitere Attribute finden Sie unter **[Scene](https://cesium.com/learn/cesiumjs/r
 |globe|nein|**[globe](#portalconfigmapmap3dparameterglobe)**||Cesium Scene-Globus-Einstellungen im 3D-Modus.|false|
 |maximumScreenSpaceError|nein|Number|2.0|Detailstufe, in der Gelände-/Rasterkacheln abgerufen werden. 4/3 ist die höchste Qualitätsstufe.|false|
 |tileCacheSize|nein|Number|100|Gelände-/Rasterkachel-Cachegröße|false|
+|shadowTime|nein|String|"current time"|Legt die Zeit fest, die zur Berechnung der Schatten im 3D-Modus verwendet wird. Verwenden Sie das ISO-8601-String-Format. Wird kein Wert angegeben, werden die Schatten basierend auf der aktuellen Systemzeit berechnet. Nützlich, um Schatten für Präsentationen oder eine konsistente Darstellung auf ein bestimmtes Datum/Uhrzeit festzulegen.|false|
 
 **Beispiel**
 
@@ -697,6 +698,7 @@ Weitere Attribute finden Sie unter **[Scene](https://cesium.com/learn/cesiumjs/r
     },
     "maximumScreenSpaceError": 2,
     "tileCacheSize": 20,
+    "shadowTime": "2025-07-01T12:00:00Z"
 }
 ```
 
@@ -2079,13 +2081,20 @@ Koordinaten-Werkzeug: um zusätzlich zu den 2 dimensionalen Koordinaten die Höh
 
 Listet die Nutzungshinweise der aktiven Layer auf.
 
-| Name | Verpflichtend | Typ    | Default                | Beschreibung                                                   | Expert |
-|------|---------------|--------|------------------------|----------------------------------------------------------------|--------|
-| type | nein          | String | "copyrightConstraints" | Der type des Moduls. Definiert welches Modul konfiguriert ist. | false  |
+|Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
+|----|-------------|---|-------|------------|------|
+|name|nein|String|"common:modules.copyrightConstraints.name"|Titel, der im Menü angezeigt wird.|false|
+|icon|nein|String|"bi-c-circle"|Icon, das neben dem Titel angezeigt wird.|false|
+|type|nein|String|"copyrightConstraints"|Definiert den Modultyp.|false|
+|cswUrl|nein|String|"https://gdk.gdi-de.org/gdi-de/srv/ger/csw"|URL der CSW-Schnittstelle, die Nutzungshinweise/Metadaten bereitstellt.|false|
+
 
 ```json title="Beispiel"
 {
-    "type": "copyrightConstraints"
+    "name": "common:modules.copyrightConstraints.name",
+    "icon": "bi-c-circle",
+    "type": "copyrightConstraints",
+    "cswUrl": "https://gdk.gdi-de.org/gdi-de/srv/ger/csw"
 }
 ```
 

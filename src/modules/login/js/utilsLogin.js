@@ -68,7 +68,6 @@ export function handleLoginParameters () {
 function addAuthenticationBearerInterceptors (config) {
     const token = Cookie.get("token");
 
-
     if (token !== undefined) {
         const account = OIDC.parseJwt(token),
             expiry = account.exp ? account.exp * 1000 : Date.now() + 10000;
@@ -77,7 +76,7 @@ function addAuthenticationBearerInterceptors (config) {
             OIDC.eraseCookies();
         }
 
-        AxiosUtils.addInterceptor(token, config?.interceptorUrlRegex);
+        AxiosUtils.addInterceptor(config?.interceptorUrlRegex);
     }
 }
 

@@ -1,5 +1,7 @@
 /**
- * User type definition
+ * State of routing
+ * @module modules/routing/store/state
+ *
  * @typedef {Object} RoutingState
  * @property {String} description The description that should be shown in the button in the menu.
  * @property {String} type The type of the module.
@@ -17,7 +19,6 @@
  * @property {Object} directionsSettings Routing Direction Parameters. // type: "ORS",serviceId: "bkg_ors".
  * @property {Object} isochronesSettings Routing Isochrones Parameters. // type: "ORS",serviceId: "bkg_ors".
 */
-
 const state = {
     // mandatory
     type: "routing",

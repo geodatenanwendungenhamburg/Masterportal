@@ -4,6 +4,10 @@ import DirectionsItem from "../components/Directions/DirectionsItem.vue";
 import IsochronesItem from "../components/Isochrones/IsochronesItem.vue";
 import TsrItem from "../components/TSR/TsrItem.vue";
 
+/**
+ * The gettters for the routing module.
+ * @module modules/routing/store/getters
+ */
 const getters = {
     /**
      * Returns an object of simple getters for a state object, where

@@ -1,6 +1,10 @@
 import {generateSimpleMutations} from "@shared/js/utils/generators";
 import routingState from "./stateRouting";
 
+/**
+ * The mutations for the routing module.
+ * @module modules/routing/store/mutations
+ */
 const mutations = {
     /**
      * Creates from every state-key a setter.

@@ -74,7 +74,7 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceGazetteer.js", (
                         }
                     },
                     category: "modules.searchBar.type.street",
-                    id: "ResultName1modules.searchBar.type.street",
+                    id: "ResultName1",
                     icon: "bi-signpost-split",
                     name: "Result Name1"
                 }
@@ -121,7 +121,7 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceGazetteer.js", (
                         }
                     },
                     category: "modules.searchBar.type.address",
-                    id: "ResultName1modules.searchBar.type.address",
+                    id: "ResultName1",
                     icon: "bi-signpost-split",
                     name: "Result Name1"
                 }

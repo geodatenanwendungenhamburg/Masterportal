@@ -18,7 +18,8 @@ describe("src/modules/menu/MenuContainer.vue", () => {
         defaultComponent,
         closeMenuSpy,
         collapseMenuesSpy,
-        isMobile;
+        isMobile,
+        setActiveSpy;
 
     beforeEach(() => {
         currentMenuWidth = sinon.stub();
@@ -26,6 +27,7 @@ describe("src/modules/menu/MenuContainer.vue", () => {
         mergeMenuStateSpy = sinon.spy();
         collapseMenuesSpy = sinon.spy();
         isMobile = false;
+        setActiveSpy = sinon.spy();
 
         store = createStore({
             modules: {
@@ -33,7 +35,16 @@ describe("src/modules/menu/MenuContainer.vue", () => {
                     namespaced: true,
                     modules: {
                         namespaced: true,
-                        MenuContainer
+                        MenuContainer,
+                        LayerPills: {
+                            namespaced: true,
+                            getters: {
+                                active: () => true
+                            },
+                            mutations: {
+                                setActive: setActiveSpy
+                            }
+                        }
                     }
                 },
                 Menu: {
@@ -275,6 +286,81 @@ describe("src/modules/menu/MenuContainer.vue", () => {
                 menu: {id: "secondaryMenu"},
                 side: "secondaryMenu"
             });
+        });
+    });
+
+    describe("onResize", () => {
+        it("should trigger onResize when ResizeHandle emits resizing event", async () => {
+            const onResizeSpy = sinon.spy(MenuContainer.methods, "onResize"),
+                wrapper = shallowMount(MenuContainer, {
+                    global: {
+                        plugins: [store]
+                    },
+                    propsData: {side: "mainMenu"}
+                }),
+                eventData = {
+                    handleElement: {
+                        offsetWidth: 300
+                    }
+                };
+
+            await wrapper.findComponent({name: "ResizeHandle"}).vm.$emit("resizing", eventData);
+            expect(onResizeSpy.calledOnce).to.be.true;
+            expect(onResizeSpy.firstCall.args[0]).to.deep.equal(eventData);
+
+            onResizeSpy.restore();
+        });
+    });
+    describe("hideElementsForBiggerMenu", () => {
+        let wrapper, layerPillsMock, footerMock;
+
+        beforeEach(() => {
+            layerPillsMock = {style: {display: ""}};
+            footerMock = {style: {display: ""}};
+
+            sinon.stub(document, "getElementById").callsFake((id) => {
+                if (id === "layer-pills") {
+                    return layerPillsMock;
+                }
+                if (id === "module-portal-footer") {
+                    return footerMock;
+                }
+                return null;
+            });
+
+            wrapper = shallowMount(MenuContainer, {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {side: "secondaryMenu"}
+            });
+        });
+
+        afterEach(() => {
+            sinon.restore();
+        });
+
+        it("should hide footer when menuPercentWidth exceeds the breakpoint", () => {
+            wrapper.vm.hideElementsForBiggerMenu(0.8);
+
+            expect(footerMock.style.display).to.equal("none");
+        });
+
+        it("should show layerPills and footer when menuPercentWidth is below the breakpoint", () => {
+            wrapper.vm.hideElementsForBiggerMenu(0.4);
+
+            expect(layerPillsMock.style.display).to.equal("");
+            expect(footerMock.style.display).to.equal("");
+        });
+
+        it("should use the correct breakpoint based on viewport width", () => {
+            sinon.stub(document.documentElement, "clientWidth").value(1200);
+
+            wrapper.vm.hideElementsForBiggerMenu(0.6);
+            expect(footerMock.style.display).to.equal("");
+
+            wrapper.vm.hideElementsForBiggerMenu(0.8);
+            expect(footerMock.style.display).to.equal("none");
         });
     });
 

@@ -9,6 +9,7 @@ config.global.mocks.$t = key => key;
 describe("src/shared/modules/table/components/TableComponent.vue", () => {
     let store, wrapper;
 
+
     /**
      *
      */
@@ -1138,6 +1139,26 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                 wrapper.vm.removeFilter("buz", "foo");
                 expect(wrapper.vm.filterObject).to.deep.equal(result);
             });
+        });
+        describe("remove row", () => {
+            it("emits on remove", async () => {
+                wrapper = createWrapper({
+                    data: {
+                        headers: [{name: "foo", index: 0}, {name: "bar", index: 1}, {name: "buz", index: 2}],
+                        items: [
+                            {name: "foo", index: 0, id: 0, idLayer: "layer0"}, {name: "bar", index: 1, id: 1, idLayer: "layer1"}, {name: "buz", index: 2, id: 2, idLayer: "layer2"}
+                        ]
+                    }
+                });
+
+                await wrapper.vm.$nextTick();
+
+                wrapper.vm.remove(0);
+                expect(wrapper.emitted("removeItem")).to.exist;
+                expect(wrapper.emitted("removeItem")[0]).to.deep.equal([0, "layer0"]);
+            });
+
+
         });
         describe("getFilteredRows", () => {
             it("should return an empty array if first param is not an object", async () => {

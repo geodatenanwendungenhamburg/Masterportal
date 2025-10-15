@@ -6,18 +6,13 @@ import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 /**
  * Layer Pills: show enabled toplayers as Buttons on top of the map. Adds Ability to remove Layers and call Layerinformation without using Layertree or open Menu.
  * @module modules/LayerPills
- * @vue-data {Object} scrolled - the horizontal Scrollposition of the Element.
- * @vue-data {Object} showRightButton - indicates if Button on the right to scroll horizontally is to be shown.
  */
 export default {
     name: "LayerPills",
     components: {IconButton},
     data () {
         return {
-            scrolled: 0,
-            showRightbutton: false,
             showAllLayers: false,
-            showMorePill: true,
             showToggleButton: false
         };
     },
@@ -30,7 +25,18 @@ export default {
             "type",
             "visibleSubjectDataLayers"
         ]),
-        ...mapGetters("Maps", ["mode"])
+        ...mapGetters("Maps", ["mode"]),
+        ...mapGetters("Menu", ["currentSecondaryMenuWidth", "currentMainMenuWidth"]),
+        /**
+         * combinedMenuState keeps track of the state of menu, i.e. whether the menus are expanded and their current width.
+         * Enables the use of a single watcher on all four variables.
+         */
+        combinedMenuWidthState () {
+            return {
+                currentMainMenuWidth: this.currentMainMenuWidth,
+                currentSecondaryMenuWidth: this.currentSecondaryMenuWidth
+            };
+        }
     },
     watch: {
         /**
@@ -65,14 +71,21 @@ export default {
         */
         mode (value) {
             this.setVisibleLayers(this.visibleSubjectDataLayerConfigs, value);
+        },
+        /**
+         * Detects changes to the menu state and width to update the layerPills accordingly.
+         * Animation of menus opening or closing make the timeout necessary.
+         * @returns {void}
+         */
+        combinedMenuWidthState: {
+            handler () {
+                this.setToggleButtonVisibility();
+            }
         }
     },
     created () {
         this.initializeModule({configPaths: this.configPaths, type: this.type});
         this.setVisibleLayers(this.visibleSubjectDataLayerConfigs, this.mode);
-    },
-    mounted () {
-        this.setResizeObserver();
     },
     methods: {
         ...mapMutations("Modules/LayerPills", ["setVisibleSubjectDataLayers", "setActive"]),
@@ -134,60 +147,6 @@ export default {
             });
         },
         /**
-         * Scrolls Element horizontally the width of one Button to the given direction
-         * @param {String} direction Direction to be scrolled to.
-         * @returns {void}
-         */
-        moveLayerPills (direction) {
-            const value = direction === "right" ? 158 : -158;
-
-            this.scrolled = this.$el.scrollLeft;
-            if (!(this.scrolled === 0 && direction === "left") || !(this.scrollEnd && direction === "right")) {
-                this.$el.scrollBy({
-                    left: value,
-                    behavior: "smooth"
-                });
-
-                this.scrolled = this.scrolled + value < 0 ? 0 : this.scrolled + value;
-
-                // await transition...
-                setTimeout(() => {
-                    this.setRightButton();
-                }, 310);
-            }
-
-        },
-        /**
-         * sets the showRightbutton-value depending on available width and width of element.
-         * @returns {void}
-         */
-        setRightButton () {
-            const containerWidth = this.$el.offsetWidth,
-                scrollWidth = this.$el.scrollWidth;
-
-            if (containerWidth && scrollWidth) {
-                if (containerWidth >= scrollWidth) {
-                    this.showRightbutton = false;
-                }
-                else {
-                    this.showRightbutton = true;
-                }
-                this.showRightbutton = !(scrollWidth - this.$el.scrollLeft === containerWidth);
-
-            }
-        },
-        /**
-         * sets an Observer to the width of the element to react on resizing.
-         * @returns {void}
-         */
-        setResizeObserver () {
-            const resizeObserver = new ResizeObserver(this.setRightButton);
-
-            if (this.active && this.visibleSubjectDataLayers.length > 0) {
-                resizeObserver.observe(this.$el);
-            }
-        },
-        /**
          * starts the Module layerInformation for given Layer
          * @param {Object} layerConf Configuration-Object of the layer.
          * @returns {void}
@@ -198,8 +157,7 @@ export default {
             }
         },
         /**
-         * Updates the visibility state of the toggle button based on the multiline status of the pills list.
-         * Checks if the pills list spans multiple lines and sets the toggle button accordingly.
+         * Updates the visibility state of the toggle button based on the width available and the amount of layerpills present.
          * @returns {void}
          */
         setToggleButtonVisibility () {
@@ -207,17 +165,11 @@ export default {
                 const container = this.$refs.layerPillsContainer,
                     pills = container?.querySelectorAll(".nav-item");
 
-                if (container && pills) {
-                    const firstPillTop = pills[0]?.offsetTop || 0;
-                    let spansMultipleRows = false;
+                if (container && pills && pills[0]) {
+                    const pillWidth = (pills[0].offsetWidth + 10) * this.visibleSubjectDataLayers.length,
+                        containerWidth = container?.querySelectorAll(".nav-pills")[0].getBoundingClientRect().width;
 
-                    Array.from(pills).forEach((pill) => {
-                        if (pill.offsetTop !== firstPillTop) {
-                            spansMultipleRows = true;
-                        }
-                    });
-
-                    this.showToggleButton = spansMultipleRows;
+                    this.showToggleButton = pillWidth > containerWidth;
                 }
             });
         }
@@ -236,15 +188,6 @@ export default {
             {'mobileOnly': mobileOnly}
         ]"
     >
-        <IconButton
-            v-if="!isMobile"
-            :id="'layerpills-left-button'"
-            :aria="$t('modules.layerPill.previous')"
-            :class-array="['btn-primary', 'layerpills-left-button', 'shadow']"
-            :icon="'bi-chevron-left'"
-            :style="scrolled !== 0 ? '' : 'visibility:hidden'"
-            :interaction="() => moveLayerPills('left')"
-        />
         <TransitionGroup
             name="list"
             tag="ul"
@@ -297,15 +240,6 @@ export default {
                 />
             </button>
         </div>
-        <IconButton
-            v-if="!isMobile"
-            :id="'layerpills-right-button'"
-            :aria="$t('modules.layerPill.next')"
-            :class-array="['btn-primary', 'layerpills-right-button', 'shadow']"
-            :icon="'bi-chevron-right'"
-            :style="showRightbutton ? '' : 'visibility:hidden'"
-            :interaction="() => moveLayerPills('right')"
-        />
     </div>
 </template>
 
@@ -348,6 +282,7 @@ export default {
 
     .layer-pills-toggle-button {
         height: 35px;
+        margin-right: 30px;
         button {
             background: white;
             border-radius: 19px;
@@ -372,17 +307,6 @@ export default {
         cursor: pointer;
     }
 
-    .list-enter-active, .list-leave-active {
-      transition: width 0.3s ease;
-    }
-    .list-enter-to, .list-leave-from {
-        width: 148px;
-        transition: width 0.3s ease;
-    }
-    .list-enter-from, .list-leave-to{
-        width: 0;
-    }
-
     .custom-tooltip {
         font-size: 20px;
     }
@@ -392,18 +316,6 @@ export default {
         height: 2rem;
         font-size: 1.2rem;
         position: relative;
-    }
-
-    .layerpills-right-button {
-        flex-shrink: 0;
-        z-index: 3;
-        right: 0px;
-    }
-
-    .layerpills-left-button {
-        flex-shrink: 0;
-        z-index: 3;
-        left: 0px;
     }
 
     .mobileOnly {

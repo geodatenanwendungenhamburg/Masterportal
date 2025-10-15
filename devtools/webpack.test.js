@@ -37,6 +37,8 @@ module.exports = {
             // Custom path aliases to simplify imports across the project.
             // Make sure these aliases are also configured in jsconfig.json for proper IDE support.
             // NOTE: Aliases are defined manually here to ensure test environment resolves paths correctly.
+            "@vue/compiler-dom": "@vue/compiler-dom/dist/compiler-dom.cjs.js",
+            "@vue/compiler-core": "@vue/compiler-core/dist/compiler-core.cjs.js",
             "@appstore": path.resolve(__dirname, "../src/app-store"),
             "@shared": path.resolve(__dirname, "../src/shared"),
             "@core": path.resolve(__dirname, "../src/core"),
@@ -158,6 +160,10 @@ module.exports = {
                 test: /\.mjs$/,
                 include: /node_modules/,
                 type: "javascript/auto"
+            },
+            {
+                test: /@vue[\\/]server-renderer/,
+                use: "null-loader"
             }
         ]
     },

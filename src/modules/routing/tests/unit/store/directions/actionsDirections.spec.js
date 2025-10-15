@@ -16,7 +16,7 @@ import {RoutingDirections} from "@modules/routing/js/classes/routing-directions"
 import {RoutingGeosearchResult} from "@modules/routing/js/classes/routing-geosearch-result";
 
 describe("src/modules/routing/store/directions/actionsDirections.js", () => {
-    let state, commitSpy, commit, dispatchSpy, dispatch, dispatchMocks, getters, rootState, waypoints, wgs84Coordinates, routingDirectionsWaypointSource, routingDirectionsAvoidSource, routingDirectionsAvoidPointSource, routingDirectionsResult, routeFeature, highlightFeature, startWaypoint, endWaypoint, avoidPolygonCoordinates, avoidPointCenter;
+    let state, commitSpy, commit, dispatchSpy, dispatch, dispatchMocks, getters, rootState, waypoints, wgs84Coordinates, routingDirectionsWaypointSource, routingDirectionsAvoidSource, routingDirectionsAvoidPointSource, routingDirectionsResult, routeFeature, highlightFeature, startWaypoint, endWaypoint, avoidPolygonCoordinates, avoidPointCenter, routingRestrictionIsValid, allHGVRestrictionsValid;
 
     beforeEach(() => {
         avoidPolygonCoordinates = [[[8.1, 51.1], [8.2, 51.2], [8.3, 51.3], [8.1, 51.1]]];
@@ -66,6 +66,15 @@ describe("src/modules/routing/store/directions/actionsDirections.js", () => {
             lineStringWaypointIndex: [0, 2]
         });
 
+        routingRestrictionIsValid = {
+            length: true,
+            width: true,
+            height: true,
+            weight: true,
+            axleload: true
+        };
+        allHGVRestrictionsValid = true;
+
         commitSpy = sinon.spy();
         commit = (...args) => {
             commitSpy(...args);
@@ -93,7 +102,9 @@ describe("src/modules/routing/store/directions/actionsDirections.js", () => {
         };
         getters = {
             directionsCoordinates: wgs84Coordinates,
-            waypoints: waypoints
+            waypoints: waypoints,
+            routingRestrictionIsValid: routingRestrictionIsValid,
+            allHGVRestrictionsValid: allHGVRestrictionsValid
         };
 
         rootState = {

@@ -12,9 +12,9 @@ import {fetchRoutingGazetteerGeosearch} from "../js/geosearch/routing-gazetteer-
 import * as constantsRouting from "./constantsRouting";
 
 /**
- * @const {String} configPath an array of possible config locations. First one found will be used
+ * The actions for the routing module.
+ * @module modules/routing/store/actions
  */
-
 export default {
     /**
      * Called when the routing module is created.

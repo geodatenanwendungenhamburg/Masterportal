@@ -667,7 +667,9 @@ export default {
                         @mouseout="unHighlightRoute()"
                         @blur="unHighlightRoute()"
                     >
-                        <button
+                        <span
+                            role="button"
+                            tabindex="0"
                             class="d-flex btn-icon"
                             @click="segment.displayDetails = !segment.displayDetails"
                             @keydown.enter="segment.displayDetails = !segment.displayDetails"
@@ -682,9 +684,11 @@ export default {
                                     <i class="bi-chevron-right" />
                                 </span>
                             </b>
-                        </button>
+                        </span>
 
-                        <button
+                        <span
+                            role="button"
+                            tabindex="0"
                             class="d-flex flex-column ms-2 w-100 btn-directions"
                             @click="zoomToRoute({fromWaypointIndex: segmentIndex, toWaypointIndex: segmentIndex + 1})"
                             @keydown.enter="zoomToRoute({fromWaypointIndex: segmentIndex, toWaypointIndex: segmentIndex + 1})"
@@ -696,7 +700,7 @@ export default {
                                 <RoutingDurationDisplay :duration="segment.duration" />
                                 <RoutingDistanceDisplay :distance="segment.distance" />
                             </div>
-                        </button>
+                        </span>
                     </button>
 
                     <hr

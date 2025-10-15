@@ -4,6 +4,10 @@ import Point from "ol/geom/Point";
 import {fetchTSRDirections} from "../../js/tsr/routing-vroom-directions.js";
 import {toRaw} from "vue";
 
+/**
+ * The actions for the routing tsr.
+ * @module modules/routing/store/tsr/actions
+ */
 export default {
     /**
      * Finds route for current waypoints.

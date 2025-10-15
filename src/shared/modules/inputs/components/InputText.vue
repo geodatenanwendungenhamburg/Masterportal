@@ -119,7 +119,7 @@ export default {
         >{{ $t(label) }}</label>
         <span
             v-if="errorMessage"
-            id="input-help"
+            :id="id + '-input-help'"
             class="invalid-feedback"
         >
             {{ errorMessage }}

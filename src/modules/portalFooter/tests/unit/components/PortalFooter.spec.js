@@ -14,11 +14,13 @@ describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
         alias_mobile: "ABC"
     }];
     let isMobile,
+        uiStyle,
         store,
         hideImprint;
 
     beforeEach(() => {
         isMobile = false;
+        uiStyle = "default";
         hideImprint = false;
         store = createStore({
             modules: {
@@ -80,7 +82,8 @@ describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
                 }
             },
             getters: {
-                isMobile: () => isMobile
+                isMobile: () => isMobile,
+                uiStyle: () => uiStyle
             },
             actions: {
                 initializeModule: sinon.stub()

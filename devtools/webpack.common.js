@@ -196,6 +196,7 @@ module.exports = function () {
                 ADDONS: JSON.stringify(addonsRelPaths),
                 __VUE_OPTIONS_API__: true,
                 __VUE_PROD_DEVTOOLS__: false,
+                __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
                 VUE_ADDONS: JSON.stringify(vueAddonsRelPaths)
             })
         ]

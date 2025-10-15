@@ -12,7 +12,7 @@ export default {
      */
         initialTimeSliderObject: {
             type: Object,
-            default: () => ({})
+            default: () => ({keyboardMovement: 10})
         }
     },
     computed: {

@@ -209,6 +209,7 @@ export default {
                 this.setIsScaleSelectedManually(false);
                 this.setCurrentMapScale(this.scale);
                 this.setIsIncreased3DResolutionSelected(false);
+                this.updateCanvasLayer();
             }
         });
 

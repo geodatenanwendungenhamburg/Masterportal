@@ -11,7 +11,7 @@ import {RoutingTSRDirections} from "@modules/routing/js/classes/routing-directio
 
 config.global.mocks.$t = key => key;
 
-describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
+describe("src/modules/routing/components/TSR/TsrItem.vue", () => {
     let mapInteractionMode,
         tsrDirections,
         store,
@@ -73,7 +73,8 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
                                     actions: {
                                         createInteractionFromMapInteractionMode: sinon.stub(),
                                         initTSR: sinon.stub(),
-                                        isStartEndInput: sinon.stub()
+                                        isStartEndInput: sinon.stub(),
+                                        closeTSR: sinon.stub()
                                     }
                                 }
                             }
@@ -86,6 +87,8 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
                 }
             }
         });
+        sinon.stub(TsrComponent.methods, "removeModalFromBody");
+        sinon.stub(TsrComponent.methods, "appendModalToBody");
     });
 
     afterEach(() => {
@@ -93,7 +96,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
     });
 
     it("renders TSR", () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
         wrapper = shallowMount(TsrComponent, {global: {
             plugins: [store]
         }});
@@ -102,7 +104,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
     });
 
     it("renders TSR coordinate input (start- & endpoint)", () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
         wrapper = shallowMount(TsrComponent, {global: {
             plugins: [store]
         }});
@@ -116,7 +117,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
     });
 
     it("renders TSR coordinate input (start-, way- & endpoint)", () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
         store.getters["Modules/Routing/TSR/waypoints"].push({index: sinon.stub(), getDisplayName: () => sinon.stub()});
 
         wrapper = shallowMount(TsrComponent, {global: {
@@ -131,9 +131,8 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
         expect(wrapper.find(".endpoint-input").exists()).to.be.true;
     });
 
-    describe.skip("checks if findTSR are called", () => {
+    describe("checks if findTSR are called", () => {
         it("should not call on changeSpeedProfile", () => {
-            sinon.stub(TsrComponent.methods, "appendModalToBody");
             wrapper = shallowMount(TsrComponent, {global: {
                 plugins: [store]
             }});
@@ -145,7 +144,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
         });
 
         it("should call findTSR after clicking calculate button", () => {
-            sinon.stub(TsrComponent.methods, "appendModalToBody");
             wrapper = shallowMount(TsrComponent, {global: {
                 plugins: [store]
             }});
@@ -158,7 +156,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
     });
 
     it("should reset all user settings", async () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
         const removeWaypoint = sinon.spy(),
             setTsrDirections = sinon.spy();
 
@@ -175,7 +172,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
     });
 
     it("doesn't render tsr output", async () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
         wrapper = shallowMount(TsrComponent, {global: {
             plugins: [store]
         }});
@@ -184,7 +180,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
     });
 
     it("renders tsr output", async () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
         tsrDirections = new RoutingTSRDirections({
             distance: 12.34,
             duration: 61234,
@@ -200,7 +195,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
     });
 
     it("renders upload button", async () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
         wrapper = shallowMount(TsrComponent, {global: {
             plugins: [store]
         }});
@@ -209,7 +203,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
     });
 
     it("renders TsrUpload component", async () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
         wrapper = shallowMount(TsrComponent, {global: {
             plugins: [store]
         }});
@@ -218,7 +211,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
     });
 
     it("renders context menu", () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
         wrapper = shallowMount(TsrComponent, {global: {
             plugins: [store]
         }});
@@ -228,8 +220,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
 
 
     it("emits addStartEnd if input field for start point is clicked", async () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
-
         wrapper = shallowMount(TsrComponent, {global: {
             plugins: [store]
         }});
@@ -240,8 +230,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
     });
 
     it("emits addStartEnd if input field for endpoint is clicked", async () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
-
         wrapper = shallowMount(TsrComponent, {global: {
             plugins: [store]
         }});
@@ -252,8 +240,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
     });
 
     it("emits search-result-selected if search result is selected", async () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
-
         wrapper = shallowMount(TsrComponent, {global: {
             plugins: [store]
         }});
@@ -266,8 +252,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
 
 
     it("checks if csv header toggle is active", async () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
-
         wrapper = shallowMount(TsrComponent, {global: {
             plugins: [store]
         }});
@@ -281,8 +265,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
     });
 
     it("checks csvs headers value inital state", async () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
-
         wrapper = shallowMount(TsrComponent, {global: {
             plugins: [store]
         }});
@@ -294,8 +276,6 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
     });
 
     it("should update csvHeaders child prop after changing in parent component", async () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
-
         wrapper = shallowMount(TsrComponent, {global: {
             plugins: [store]
         }});

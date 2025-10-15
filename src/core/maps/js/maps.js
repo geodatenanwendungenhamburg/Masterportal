@@ -76,11 +76,21 @@ function load3DMap () {
  * @returns {void}
  */
 function create3DMap () {
-    const map3d = api.map.createMap({
-            cesiumParameter: store.getters.map3dParameter,
+    const map3dParameter = store.getters.map3dParameter,
+        shadowTimeFromConfig = map3dParameter?.shadowTime,
+        map3d = api.map.createMap({
+            cesiumParameter: map3dParameter,
             map2D: mapCollection.getMap("2D"),
             shadowTime: function () {
-                return this.time || Cesium.JulianDate.fromDate(new Date());
+                if (this.time) {
+                    return this.time;
+                }
+
+                if (shadowTimeFromConfig) {
+                    return Cesium.JulianDate.fromIso8601(shadowTimeFromConfig);
+                }
+
+                return Cesium.JulianDate.fromDate(new Date());
             }
         }, "3D"),
         view = mapCollection.getMapView("2D"),
@@ -93,11 +103,11 @@ function create3DMap () {
     if (store.state.urlParams.QUERY) {
         store.dispatch("Modules/SearchBar/startSearch", store.state.urlParams.QUERY);
     }
-    else if (!urlParamCenter && store.getters.map3dParameter.camera && store.getters["Maps/mode"] === "2D") {
+    else if (!urlParamCenter && map3dParameter.camera && store.getters["Maps/mode"] === "2D") {
         view.setZoom(store.getters["Maps/initialZoom"]);
         view.setCenter(store.getters["Maps/initialCenter"]);
     }
-    else if (urlParamCenter && store.getters.map3dParameter.camera && store.getters["Maps/mode"] === "2D") {
+    else if (urlParamCenter && map3dParameter.camera && store.getters["Maps/mode"] === "2D") {
         let center;
 
         if (Array.isArray(urlParamCenter)) {

@@ -115,16 +115,22 @@ SearchInterfaceGazetteer.prototype.normalizeResults = function (searchResults) {
 
     searchResults.forEach(searchResult => {
         const translatedType = this.getTranslationByType(searchResult.type),
-            name = searchResult.properties?.geographicIdentifier?._ || searchResult.name,
-            id = name.replace(/ /g, "") + translatedType;
+            displayName = searchResult.name,
+
+            uniqueIdParts = [
+                searchResult.name,
+                searchResult.properties?.geographicIdentifier?._
+            ].filter(Boolean),
+
+            id = uniqueIdParts.join("_").replace(/ /g, "");
 
         if (!normalizedResults.some(e => e.id === id)) {
             normalizedResults.push({
                 events: this.normalizeResultEvents(this.resultEvents, searchResult),
                 category: translatedType,
-                id: id,
+                id,
                 icon: "bi-signpost-split",
-                name: name
+                name: displayName
             });
         }
     });

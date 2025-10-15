@@ -816,8 +816,13 @@ export default {
         getClassForSelectedColumn (columnIdx) {
             return isObject(this.visibleHeaders[columnIdx]) && this.selectedColumn === this.visibleHeaders[columnIdx].name ? "selected" : "";
         },
-        remove (idFeature, idLayer) {
-            this.$emit("removeItem", idFeature, idLayer);
+        /**
+         * Removes the row with the given index.
+         * @param {Number} idx the index of the row
+         * @returns {void}
+         */
+        remove (idx) {
+            this.$emit("removeItem", this.originRows[idx].id, this.originRows[idx].idLayer);
         },
 
         /**
@@ -1202,13 +1207,14 @@ export default {
                     <td
                         v-if="removable"
                         :class="['p-2', fontSize === 'medium' ? 'medium-font-size' : '', fontSize === 'small' ? 'small-font-size' : '', 'pull-left']"
+                        @click.stop
                     >
                         <button
                             class="remove-row"
                             type="button"
                             :title="$t('common:modules.compareFeatures.removeFromList')"
-                            @click="remove(item.id, item.idLayer)"
-                            @keydown.enter="remove(item.id, item.idLayer)"
+                            @click.stop="remove(idx)"
+                            @keydown.enter.stop="remove(idx)"
                         >
                             <i class="bi-x-lg" />
                         </button>

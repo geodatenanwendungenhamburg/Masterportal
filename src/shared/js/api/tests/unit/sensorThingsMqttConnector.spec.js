@@ -572,5 +572,10 @@ describe("src/shared/js/api/sensorThingsMqttConnector.js", () => {
             expect(lastMessage).to.equal("response");
             expect(lastPacket).to.deep.equal(expectedPacket);
         });
+
+        it("should set protocolVersion 5 when mqttVersion is 5.0", () => {
+            mqttClient.setOptions({mqttVersion: "5.0"});
+            expect(mqttClient.options.protocolVersion).to.equal(5);
+        });
     });
 });

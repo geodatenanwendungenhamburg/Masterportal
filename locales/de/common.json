@@ -1020,10 +1020,12 @@
       },
       "errors": {
         "titleErrorRouteFetch": "Die Berechnung der Route ist fehlgeschlagen.",
+        "titleErrorIsochroneFetch": "Die Berechnung der Erreichbarkeit ist fehlgeschlagen.",
         "avoidAreaBig": "Die angegebenen Sperrflächen sind zu groß. Bitte korrigieren Sie Ihre Eingabe.",
         "errorIsochronesFetch": "Fehler bei Abfrage der Erreichbarkeit",
         "errorRouteFetch": "Fehler bei Abfrage der Route",
         "fetchingCoordinates": "Fehler bei Abfrage der Koordinaten",
+        "hgvRestrictionOutOfRange": "Die LKW-Parameter enthalten ungültige Werte. Bitte überprüfen Sie Ihre Eingaben.",
         "noRouteFound": "Leider konnte keine Route gefunden werden"
       },
       "exportAvoidAreas": {
@@ -1104,17 +1106,14 @@
       "resetSettings": "Einstellungen zurücksetzen",
       "restrictions": {
         "header": "LKW-Parameter",
-        "length": "Länge",
-        "lengthTooltip": "Länge des LKW. Akzeptierte Werte: 0 bis 30 Meter",
-        "width": "Breite",
-        "widthTooltip": "Breite des LKW. Akzeptierte Werte: 0 bis 3,5 Meter",
-        "height": "Höhe",
-        "heightTooltip": "Höhe des LKW. Akzeptierte Werte: 0 bis 5 Meter",
-        "weight": "Gewicht",
-        "weightTooltip": "Gewicht des LKW. Akzeptierte Werte: 0 bis 65 Tonnen",
-        "axleload": "Achslast",
-        "axleloadTooltip": "Achslast des LKW. Akzeptierte Werte: 0 bis 19 Tonnen",
-        "hazmat": "Gefahrgut"
+        "length": "Länge (m)",
+        "width": "Breite (m)",
+        "height": "Höhe (m)",
+        "weight": "Gewicht (t)",
+        "axleload": "Achslast (t)",
+        "hazmat": "Gefahrgut",
+        "tooltip": "Wert zwischen {{min}} und {{max}} gültig",
+        "placeholder": "Bitte Wert eingeben"
       },
       "settings": {
         "submit": "Bestätigen"

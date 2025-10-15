@@ -2,6 +2,10 @@ import {generateSimpleGetters} from "@shared/js/utils/generators";
 import tsrState from "./stateTSR";
 import * as constantsRouting from "../constantsRouting";
 
+/**
+ * The getters for the routing tsr.
+ * @module modules/routing/store/tsr/getters
+ */
 const getters = {
     /**
      * Returns an object of simple getters for a state object, where

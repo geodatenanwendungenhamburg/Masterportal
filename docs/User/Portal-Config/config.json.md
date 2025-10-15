@@ -677,6 +677,7 @@ For more attributes see **[Scene](https://cesium.com/learn/cesiumjs/ref-doc/Scen
 |globe|no|**[globe](#portalconfigmapmap3dparameterglobe)**||Cesium Scene globe settings in 3D mode.|false|
 |maximumScreenSpaceError|no|Number|2.0|Detail level in which terrain/raster tiles are fetched. 4/3 is the highest quality level.|false|
 |tileCacheSize|no|Number|100|terrain/raster tile cache size|false|
+|shadowTime|no|String|"current time"|Sets the time used to calculate shadows in 3D mode. Use the ISO-8601 string format. If not provided, shadows are calculated based on the current system time. Useful for freezing shadows for presentations or consistent visualization at a specific date/time.|false|
 
 **Example**
 
@@ -696,6 +697,7 @@ For more attributes see **[Scene](https://cesium.com/learn/cesiumjs/ref-doc/Scen
     },
     "maximumScreenSpaceError": 2,
     "tileCacheSize": 20,
+    "shadowTime": "2025-07-01T12:00:00Z"
 }
 ```
 
@@ -2076,13 +2078,19 @@ Coordinates tool: to display the height above sea level in addition to the 2 dim
 
 Lists the copyright constraints of active layers.
 
-| Name | Verpflichtend | Typ    | Default                | Beschreibung                                           | Expert |
-|------|---------------|--------|------------------------|--------------------------------------------------------|--------|
-| type | nein          | String | "copyrightConstraints" | The type of the module. Defines which module is added. | false  |
+|Name|Required|Type|Default|Description|Expert|
+|----|--------|----|-------|-----------|------|
+|name|nein|String|"common:modules.copyrightConstraints.name"|Title shown in the menu.|false|
+|icon|nein|String|"bi-c-circle"|Icon displayed next to the title.|false|
+|type|nein|String|"copyrightConstraints"|Defines the module type.|false|
+|cswUrl|nein|String|"https://gdk.gdi-de.org/gdi-de/srv/ger/csw"|URL of the CSW interface providing usage information and metadata.|false|
 
 ```json title="Example"
 {
-    "type": "copyrightConstraints"
+    "name": "common:modules.copyrightConstraints.name",
+    "icon": "bi-c-circle",
+    "type": "copyrightConstraints",
+    "cswUrl": "https://gdk.gdi-de.org/gdi-de/srv/ger/csw"
 }
 ```
 

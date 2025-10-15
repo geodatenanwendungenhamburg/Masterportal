@@ -6,6 +6,7 @@ import sinon from "sinon";
 import {initializeMaps, load3DMap, create3DMap} from "@core/maps/js/maps";
 import store from "@appstore";
 
+
 describe("src/core/js/maps/maps.js", () => {
     let load3DScriptSpy,
         origGetters;
@@ -15,8 +16,18 @@ describe("src/core/js/maps/maps.js", () => {
     });
 
     beforeEach(() => {
+        global.Cesium = {
+            JulianDate: {
+                fromIso8601: sinon.spy(() => "mocked JulianDate from ISO"),
+                fromDate: sinon.spy(() => "mocked JulianDate from Date")
+            }
+        };
+
         mapCollection.clear();
         load3DScriptSpy = sinon.spy(load3DScript, "load3DScript");
+        sinon.stub(store, "dispatch").callsFake(() => {
+            return Promise.resolve();
+        });
         store.getters = {
             cesiumLibrary: "path_to_cesium_library",
             controlsConfig: {
@@ -183,6 +194,31 @@ describe("src/core/js/maps/maps.js", () => {
 
             expect(viewSpy.firstCall.args[0]).to.equals("2D");
             expect(setCenterSpy.firstCall.args[0]).to.deep.equals([564028.7954571751, 5934555.967867207]);
+        });
+
+        it("should use the current system time if no shadowTime is configured", () => {
+            const map3d = {setEnabled: sinon.spy()},
+                setZoomSpy = sinon.spy(),
+                setCenterSpy = sinon.spy(),
+                mapView = {setZoom: setZoomSpy, setCenter: setCenterSpy};
+
+            Cesium.JulianDate.fromIso8601.resetHistory();
+            Cesium.JulianDate.fromDate.resetHistory();
+
+
+            sinon.stub(mapCollection, "getMapView").withArgs("2D").returns(mapView);
+
+            store.getters.map3dParameter = {camera: {}};
+
+            sinon.stub(api.map, "createMap").callsFake(options => {
+                options.shadowTime();
+                return map3d;
+            });
+
+            create3DMap();
+
+            expect(Cesium.JulianDate.fromDate.calledOnce).to.be.true;
+            expect(Cesium.JulianDate.fromIso8601.notCalled).to.be.true;
         });
     });
 });

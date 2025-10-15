@@ -11,7 +11,27 @@ import isochronesAreaLayer from "../../js/map/isochrones/area/isochronesAreaLaye
 
 import stateRouting from "../stateRouting";
 
-export default {
+/**
+ * State of routing isochrones
+ * @module modules/routing/store/isochrones/state
+ *
+ * @property {Object} isochronesPointSource The source of the isochrones starting point.
+ * @property {Object} isochronesPointLayer The layer of the isochrones starting point.
+ * @property {Object} isochronesPointDrawInteraction The draw interaction of the isochrones starting point.
+ * @property {Object} isochronesPointModifyInteraction The modify interaction of the isochrones starting point.
+ * @property {Object} isochronesPointSnapInteraction The snap interaction of the isochrones starting point.
+ * @property {Object} isochronesAreaSource The source of the isochrones areas.
+ * @property {Object} isochronesAreaLayer The layerof the isochrones areas.
+ * @property {Boolean} mapListenerAdded Determines whether or not map listener is added.
+ * @property {Object} waypoint The starting point of the isochrones.
+ * @property {Object} isochronesRestrictionsInputData The values of the HGV parameters sent to the ORS.
+ * @property {Object} isochronesRestrictionIsValid Determines whether or not the HGV parameters are valid.
+ * @property {Object} routingIsochrones The result of the isochrones calculation.
+ * @property {Boolean} isLoadingIsochrones Determines whether or not isochrones are currently calculated.
+ * @property {String[]} routingAvoidFeaturesOptions The selected avoid feature options.
+ * @property {Object} settings The routing isochrones parameters.
+*/
+const state = {
     isochronesPointSource,
     isochronesPointLayer,
     isochronesPointDrawInteraction,
@@ -32,10 +52,18 @@ export default {
         axleload: 6,
         hazmat: false
     },
-    // Routing Isochrones Result
+    isochronesRestrictionIsValid: {
+        length: true,
+        width: true,
+        height: true,
+        weight: true,
+        axleload: true
+    },
     routingIsochrones: null,
     isLoadingIsochrones: false,
     routingAvoidFeaturesOptions: [],
-
     settings: stateRouting.isochronesSettings
 };
+
+export default state;
+
