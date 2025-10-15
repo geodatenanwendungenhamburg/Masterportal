@@ -229,6 +229,7 @@ Orientation nutzt die geolocation des Browsers zur Standortbestimmung des Nutzer
 |iconGeolocate|nein|String|"bi-geo-alt"|Icon das im Controls-Menü für das Control Standpunkt angezeigt wird. Zur Auswahl siehe **[Bootstrap Icons](https://icons.getbootstrap.com/)**|false|
 |iconGeolocatePOI|nein|String|"bi-record-circle"|Icon das im Controls-Menü für das Control "In meiner Nähe" angezeigt wird. Zur Auswahl siehe **[Bootstrap Icons](https://icons.getbootstrap.com/)**|false|
 |iconGeolocationMarker|nein|String|"bi-circle-fill"|Icon das in der Karte die aktuelle Position in der Karte markiert. Zur Auswahl siehe **[Bootstrap Icons](https://icons.getbootstrap.com/)**|false|
+|iFrameGeolocationEnabled|nein|Boolean|false|Wenn 'iFrameGeolocationEnabled' true ist, wird innerhalb eines iFrames versucht, die Geolocation auszuführen. Innerhalb von Iframes funktioniert dies nur, wenn das iFrame-Tag der übergeordneten Seite das Attribut allow="geolocation" beinaltet.|false|
 |onlyFilteredFeatures|nein|boolean|false|Wenn 'onlyFilteredFeatures' true ist, werden in der Ergebnissanzeige von poi nur über den Filter gefilterte Features berücksichtigt.|false|
 |poiDistances|nein|Boolean/Integer[]|true|Bei poiDistances=true werden die Defaultwerte verwendet. Legt fest, ob "In meiner Nähe" geladen wird und zeigt eine Liste von Features in der Umgebung an. Bei Angabe eines Array werden die darin definierten Abstände in Metern angeboten. Bei Angabe von true werden diese Abstände angeboten: [500,1000,2000].|false|
 |supportedDevices|nein|String|["Desktop", "Mobile"]|Geräte auf denen das Modul verwendbar ist und im Menü angezeigt wird.|false|
@@ -666,17 +667,17 @@ Layerpills sind Buttons, die oberhalb der Karte die ausgewählten Layer anzeigen
 ***
 
 #### portalConfig.map.map3dParameter {data-toc-label='Map 3D Parameter'}
-Cesium Scene settings in 3D mode.
-For more attributes see **[Scene](https://cesium.com/learn/cesiumjs/ref-doc/Scene.html?classFilter=scene)**
+Cesium Scene Einstellungen im 3D-Modus.
+Weitere Attribute finden Sie unter **[Scene](https://cesium.com/learn/cesiumjs/ref-doc/Scene.html?classFilter=scene)**
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
-|camera|nein|**[camera](#portalconfigmapmap3dparametercamera)**||Cesium Scene camera settings in 3D mode.|false|
-|fog|nein|**[fog](#portalconfigmapmap3dparameterfog)**||Cesium Scene fog settings in 3D mode.|false|
+|camera|nein|**[camera](#portalconfigmapmap3dparametercamera)**||Cesium Scene Kamera Einstellungen im 3D-Modus.|false|
+|fog|nein|**[fog](#portalconfigmapmap3dparameterfog)**||Cesium Scene Nebel Einstellungen im 3D-Modus.|false|
 |fxaa|nein|Boolean|true|activates *fast approximate anti-aliasing*|false|
-|globe|nein|**[globe](#portalconfigmapmap3dparameterglobe)**||Cesium Scene globe settings in 3D mode.|false|
-|maximumScreenSpaceError|nein|Number|2.0|Detail level in which terrain/raster tiles are fetched. 4/3 is the highest quality level.|false|
-|tileCacheSize|nein|Number|100|terrain/raster tile cache size|false|
+|globe|nein|**[globe](#portalconfigmapmap3dparameterglobe)**||Cesium Scene-Globus-Einstellungen im 3D-Modus.|false|
+|maximumScreenSpaceError|nein|Number|2.0|Detailstufe, in der Gelände-/Rasterkacheln abgerufen werden. 4/3 ist die höchste Qualitätsstufe.|false|
+|tileCacheSize|nein|Number|100|Gelände-/Rasterkachel-Cachegröße|false|
 
 **Beispiel**
 
@@ -702,17 +703,21 @@ For more attributes see **[Scene](https://cesium.com/learn/cesiumjs/ref-doc/Scen
 ***
 
 ##### portalConfig.map.map3dParameter.camera {data-toc-label='Camera'}
-Cesium Scene camera settings in 3D mode.
-The camera is defined by a position, orientation, and view frustum.
-For more attributes see **[Scene](https://cesium.com/learn/cesiumjs/ref-doc/Camera.html)**
+
+Cesium Scene-Kameraeinstellungen im 3D-Modus.
+Die Kamera wird durch eine Position, Ausrichtung und einen Sichtkegel definiert.
+Weitere Attribute finden Sie unter **[Scene](https://cesium.com/learn/cesiumjs/ref-doc/Camera.html)**
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
-|altitude|nein|Number||Camera's initial height in meters|false|
-|heading|nein|Number||Camera's initial heading in radians|false|
-|tilt|nein|Number||Camera's initial tile in radians|false|
+|altitude|nein|Number|0|Initiale Höhe der Kamera in Metern. Wird nicht verwendet, wenn `cameraPosition` festgelegt ist.|false|
+|cameraPosition|nein|enum||Kameraposition mit Längen- und Breitengrad sowie Höhe in Metern über dem Ellipsoid. Wenn diese Option aktiviert ist, werden `pitch` und `roll` zur Erstellung der Richtung verwendet. `Altitude` und `tilt` werden dann nicht verwendet.|false|
+|heading|nein|Number|0|Die anfängliche Ausrichtung der Kamera in Radianten. Wird immer verwendet.|false|
+|pitch|nein|Number|0|Initialer Neigungswert der Kamera. Wird nur verwendet, wenn `cameraPosition` festgelegt ist.|false|
+|roll|nein|Number|0|Initialer Rollwert der Kamera. Wird nur verwendet, wenn `cameraPosition` festgelegt ist.|false|
+|tilt|nein|Number|0|Initiale Ausrichtung der Kamera in Radianten. Wird nicht verwendet, wenn `cameraPosition` festgelegt ist.|false|
 
-**Beispiel**
+**Beispiel mit tilt**
 
 ```json
 {
@@ -724,16 +729,28 @@ For more attributes see **[Scene](https://cesium.com/learn/cesiumjs/ref-doc/Came
 }
 ```
 
+**Beispiel mit cameraPosition**
+
+```json
+{
+    "camera": {
+        "heading": 0.5094404418943017,
+        "pitch": -40.0515352133474,
+        "cameraPosition": [9.9914497197391, 53.545716220545344, 421.1102528528311]
+    }
+}
+```
+
 ***
 
 ##### portalConfig.map.map3dParameter.fog {data-toc-label='Fog'}
-Cesium Scene fog settings in 3D mode.
-Blends the atmosphere to geometry far from the camera for horizon views.
-For more attributes see **[Scene](https://cesium.com/learn/cesiumjs/ref-doc/Fog.html)**
+Cesium Scene-Nebeleinstellungen im 3D-Modus.
+Mischt die Atmosphäre mit der Geometrie weit entfernt von der Kamera für Horizontansichten.
+Weitere Attribute finden Sie unter **[Scene](https://cesium.com/learn/cesiumjs/ref-doc/Fog.html)**
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
-|enabled|nein|Boolean|false|True if fog is enabled.|false|
+|enabled|nein|Boolean|false|True, wenn Nebel aktiviert ist.|false|
 
 **Beispiel**
 
@@ -748,13 +765,13 @@ For more attributes see **[Scene](https://cesium.com/learn/cesiumjs/ref-doc/Fog.
 ***
 
 ##### portalConfig.map.map3dParameter.globe {data-toc-label='Globe'}
-Cesium Scene globe settings in 3D mode.
-The globe rendered in the scene, including its terrain and imagery layers.
-For more attributes see **[Scene](https://cesium.com/learn/cesiumjs/ref-doc/Globe.html)**
+Cesium Scene-Globus-Einstellungen im 3D-Modus.
+Der in der Szene gerenderte Globus, einschließlich seiner Gelände- und Bildschichten.
+Weitere Attribute finden Sie unter **[Scene](https://cesium.com/learn/cesiumjs/ref-doc/Globe.html)**
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
-|enableLighting|nein|Boolean|false|Activates light effects on the map based on the sun's position.|false|
+|enableLighting|nein|Boolean|false|Aktiviert Lichteffekte auf der Karte basierend auf dem Stand der Sonne.|false|
 
 **Beispiel**
 
@@ -963,10 +980,12 @@ Aktiviert die MouseHover-Funktion für Vektorlayer, z.B. WFS oder GeoJSON. Für 
 |numFeaturesToShow|nein|Integer|2|Maximale Menge an Elementinformationen pro Tooltip; bei Überschreitung informiert ein Informationstext den Benutzer über den abgeschnittenen Inhalt.|false|
 |fontFamily|nein|String|"common:modules.mouseHover.fontFamily"|Schriftart für die Beschreibung|false|
 |fontStyle|nein|String|"common:modules.mouseHover.fontStyle"|Schriftstil für die Beschreibung|false|
+|fontWeight|nein|String|"common:modules.mouseHover.fontWeight"|Schriftstärke für die Beschreibung|false|
 |fontSize|nein|String|"common:modules.mouseHover.fontSize"|Schriftgröße für die Beschreibung|false|
 |fontColor|nein|String|"common:modules.mouseHover.fontColor"|Schriftfarbe für die Beschreibung|false|
 |titleFontFamily|nein|String|"common:modules.mouseHover.titleFontFamily"|Schriftart für den Titel|false|
 |titleFontStyle|nein|String|"common:modules.mouseHover.titleFontStyle"|Schriftstil für den Titel|false|
+|titleFontWeight|nein|String|"common:modules.mouseHover.titleFontWeight"|Schriftstärke für den Titel|false|
 |titleFontSize|nein|String|"common:modules.mouseHover.titleFontSize"|Schriftgröße für den Titel|false|
 |titleFontColor|nein|String|"common:modules.mouseHover.titleFontColor"|Schriftfarbe für den Titel|false|
 |infoBorderRadius|nein|Integer|"common:modules.mouseHover.infoBorderRadius"|Abrundung der Tooltip-Ecken|false|
@@ -980,10 +999,12 @@ Aktiviert die MouseHover-Funktion für Vektorlayer, z.B. WFS oder GeoJSON. Für 
     "infoText": "Beispieltext",
     "fontFamily": "Arial",
     "fontStyle": "Italic",
+    "fontWeight": "Normal",
     "fontSize": 12,
     "fontColor": "#FF0000",
 	"titleFontFamily": "Helvetica",
-	"titleFontStyle": "Bold",
+	"titleFontStyle": "Normal",
+    "titleFontWeight": "Bold",
 	"titleFontSize": 16,
 	"titleFontColor": "#1A43BF",
 	"infoBorderRadius": 4,
@@ -1041,7 +1062,7 @@ Hier können die Menüeinträge jeweils für das MainMenu (in der Desktopansicht
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
-|currentComponent|nein|String|""|Definiert ein Modul, das initial geöffnet ist.|false|
+|currentComponent|nein|String|""|Definiert ein Modul, das initial geöffnet ist. Bitte beachten Sie, dass in Ordnern geschachtelte Module hiermit nicht geöffnet werden können. Wenn ein Modul mehrfach vorhanden ist, werden alle Instanzen in Reihenfolge des Erscheinens geöffnet, was zu unerwartetem Verhalten führen kann.|false|
 |expanded|nein|Boolean|false|Definiert ob das jeweilige Menü beim Starten des Portals aus- oder eingeklappt ist.|false|
 |width|nein|String|"25%"|Setzt die initiale Breite des jeweiligen Menüs als Prozentwert.|false|
 |showDescription|nein|Boolean||Definiert ob eine Beschreibung zu den Modulen im jeweiligen Menü angezeigt werden soll.|false|
@@ -1684,7 +1705,7 @@ Module lassen sich in Abschnitte (Sections) unterteilen. Im Menü werden Abschni
 |about|nein|**[about](#portalconfigmenusectionsmodulesabout)**||Mit diesem Modul lassen sich spezifische Portalinformationen anzeigen wie z.B. Beschreibungstext, Masterportalversion, Metadaten.|true|
 |addWMS|nein|**[addWMS](#portalconfigmenusectionsmodulesaddwms)**||Mit diesem Modul lassen sich Layer eines WMS laden. Die Angabe erfolgt über eine URL. Es werden alle Layer des Dienstes geladen und im Themenbaum angezeigt.|true|
 |bufferAnalysis|nein|**[bufferAnalysis](#portalconfigmenusectionsmodulesbufferanalysis)**||In der Buffer-Analyse muss ein Quell-Layer, ein Buffer-Radius und ein Ziel-Layer ausgewählt werden. Buffer-Radien werden um die Features des Quell-Layers dargestellt. Sobald ein Ziel-Layer gewählt wurde, werden nur die Features dieses Layers hervorgehoben, welche sich außerhalb der Buffer-Radien befinden. Auch eine invertierte Anzeige ist möglich. Bei dieser werden nur die Features des Ziel-Layers innerhalb der Radien hervorgehoben.|false|
-|compareFeatures|nein|**[compareFeatures](#markdown-header-portalconfigmenutoolcomparefeatures)**|| Bietet eine Vergleichsmöglichkeit von Vektor-Features. In der getFeatureInfo lassen sich Features über das Stern-Symbol auf die Vergleichliste setzen. Funktioniert in Verbindung mit dem GFI-Theme **Default**!|false|
+|compareFeatures|nein|**[compareFeatures](#portalconfigmenusectionsmodulescomparefeatures)**|| Bietet eine Vergleichsmöglichkeit von Vektor-Features. In der getFeatureInfo lassen sich Features über das Stern-Symbol auf die Vergleichliste setzen. Funktioniert in Verbindung mit dem GFI-Theme **Default**!|false|
 |contact|nein|**[contact](#portalconfigmenusectionsmodulescontact)**||Das Kontaktformular bietet dem Benutzer die Möglichkeit an das konfigurierte Postfach eine Nachricht zu senden. Es können beispielsweise Fehler oder Wünsche und Anregungen gemeldet und Screenshots können beigefügt werden.|false|
 |compareMaps|nein|**[compareMaps](#portalconfigmenusectionsmodulescomparemaps)**||Dieses Tool ermöglicht es Benutzern, zwei Layer nebeneinander mit einem Layer-Swiper zu vergleichen.|false|
 |coordToolkit|nein|**[coordToolkit](#portalconfigmenusectionsmodulescoordtoolkit)**||Koordinatenabfrage: Werkzeug um Koordinaten und Höhe per Maus-Klick abzufragen: Bei Klick in die Karte werden die Koordinaten in der Anzeige eingefroren und können auch direkt in die Zwischenablage kopiert werden. Koordinatensuche: Über eine Eingabemaske können das Koordinatensystem und die Koordinaten eingegeben werden. Das Werkzeug zoomt dann auf die entsprechende Koordinate und setzt einen Marker darauf. Die Koordinatensysteme werden aus der config.js bezogen.|false|
@@ -1699,7 +1720,7 @@ Module lassen sich in Abschnitte (Sections) unterteilen. Im Menü werden Abschni
 |layerSlider|nein|**[layerSlider](#portalconfigmenusectionsmoduleslayerslider)**||Mit dem Layerslider lassen sich beliebige Dienste in einer Reihenfolge abspielen. Zum Beispiel geeignet für Luftbilder aus verschiedenen Jahrgängen.|false|
 |login|nein|**[login](#portalconfigmenusectionsmoduleslogin)**||Konfiguration der Anmeldung bei einem OIDC-Server.|false|
 |measure|nein|**[measure](#portalconfigmenusectionsmodulesmeasure)**||Messwerkzeug um Flächen oder Strecken zu messen. Dabei kann zwischen den Einheiten m/km/nm bzw m²/ha/km² gewechselt werden.|false|
-|modeler3D|nein|**[modeler3D](#portalconfigmenusectionsmodulesmodeler3D)**||Der 3D Modeller erlaubt es 3D Modelle in den Formaten .gltf, .dae und .obj zu importieren, sowie Linien und extrudierbare 3D Polygone zu zeichnen.|false|
+|modeler3D|nein|**[modeler3D](#portalconfigmenusectionsmodulesmodeler3d)**||Der 3D Modeller erlaubt es 3D Modelle in den Formaten .gltf, .dae und .obj zu importieren, sowie Linien und extrudierbare 3D Polygone zu zeichnen.|false|
 |news|nein|**[news](#portalconfigmenusectionsmodulesnews)**||Dieses Modul zeigt alle Meldungen aus der newsFeedPortalAlerts.json und der config.json des aktuellen Portals unabhängig des "gelesen" Status.|false|
 |openConfig|nein|**[openConfig](#portalconfigmenusectionsmodulesopenconfig)**||Mit diesem Modul lässt sich eine Konfigurationsdatei (config.json) zur Laufzeit neu laden. Die Module und Karte werden an die neue Konfiguration angepasst.|false|
 |print|nein|**[print](#portalconfigmenusectionsmodulesprint)**||Druckmodul mit dem die Karte als PDF exportiert werden kann.|false|
@@ -2670,7 +2691,7 @@ Sollten Sie dieses Modul in Verbindung mit externer Filterung nutzen (`extern`: 
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
-|additionalGeometries|nein|Boolean|false|Geometrien aus einem Layer können dem Filter über die Layer-ID hinzugefügt werden. Zusätzlich muss ein Attribut für den Namen der Geometrie angegeben werden.|false|
+|additionalGeometries|nein|Boolean|false|Geometrien aus einem Layer können dem Filter über die Layer-ID hinzugefügt werden. Zusätzlich muss ein Attribut für den Namen der Geometrie angegeben werden. Derzeit nur mit WFS-Layer möglich.|false|
 |circleSides|nein|Number|256|Die Geometrie "Circle" wird aus technischen Gründen in ein Polygon konvertiert. Dies ist die Anzahl der Polygon-Punkte der resultierenden Geometrie.|false|
 |defaultBuffer|nein|Number|20|Der Geometrie "LineString" wird ein Buffer (in Metern) gegeben, um aus dem LineString einen "Schlauch" zu machen. Dies ist der Standard-Abstand von der Mitte zum Rand in Metern.|false|
 |fillColor|nein|String|"rgba(0, 0, 0, 0.33)"|Die Füll-Farbe des Außenbereiches (bzw. der Geometry bei `invertGeometry` = `false`).|false|
@@ -3034,9 +3055,9 @@ Diese Zeichnungen können exportiert und georeferenziert wieder in die Karte gel
 |----|--------|----|-------|-----------|------|
 |gmlIdPath|nein|String|"gmlid"|Bestimmen Sie den Pfad der GML ID im GFI für Gebäude in 3D Layern.|false|
 |updateAllLayers|nein|Boolean|true|Bestimmen Sie, ob beim Ausblenden von Gebäuden, alle Layer aktualisiert werden sollen.|false|
-|highlightStyle|nein|**[highlightStyle](#markdown-header-portalConfigmenusectionsmodulesmodeler3dhighlightstyle)**||Bestimmen Sie die Füllfarbe, Transparenz, Umrissfarbe und Umrissdicke.|false|
+|highlightStyle|nein|**[highlightStyle](#portalconfigmenusectionsmodulesmodeler3dhighlightstyle)**||Bestimmen Sie die Füllfarbe, Transparenz, Umrissfarbe und Umrissdicke.|false|
 |allowedAttributes|nein|String[]|["Wertbezeichnung", "Gebaeudefunktion"]|Bestimmen Sie welche GFI Attribute zum Filtern verwendet werden können.|false|
-|pvoColors|nein|**[pvoColors](#markdown-header-portalConfigmenusectionsmodulesmodeler3dpvocolors)**||Bestimmen Sie die Farben der PlanzeichenVO|false|
+|pvoColors|nein|**[pvoColors](#portalconfigmenusectionsmodulesmodeler3dpvocolors)**||Bestimmen Sie die Farben der PlanzeichenVO|false|
 |buildingSource|nein|String|"ALKIS"|Bestimmen Sie die Quelle der Gebäudefunktionsdaten (aktuell nur ALKIS).|false|
 |buildingFunctionURL|nein|String|"https://repository.gdi-de.org/schemas/adv/citygml/Codelisten/BuildingFunctionTypeAdV.xml"|Bestimmen Sie die URL von welcher die Gebäudefunktionen bezogen werden sollen.|false|
 |type|ja|String|"modeler3D"|Der type des Moduls. Definiert welches Modul konfiguriert ist.|false|
@@ -3184,6 +3205,7 @@ Druckmodul. Konfigurierbar für 2 Druckdienste: den High Resolution PlotService 
 |printServiceId|ja|String||Id des Druckdienstes der verwendet werden soll. Wird in der rest-services.json abgelegt.|false|
 |showInvisibleLayerInfo|nein|Boolean|true|Definiert, ob eine Infobox angezeigt werden soll, wenn Layer aufgrund des Maßstabs unsichtbar sind und nicht mitgedruckt werden.|false|
 |title|nein|String|"PrintResult"|Titel des Dokuments. Erscheint als Kopfzeile.|false|
+|transferParameter|nein|**[transferParameter](#portalconfigmenusectionsmodulesprinttransferparameter)**|{}|Ermöglicht die Übertragung einer beliebigen Anzahl frei definierbarer Parameter. Das Layout-Design (JRXML) muss dann vom Benutzer sinnvoll angepasst werden.|false|
 |type|nein|String|"print"|Der type des Moduls. Definiert welches Modul konfiguriert ist.|false|
 
 **Beispiel Konfiguration mit High Resolution PlotService**
@@ -3220,6 +3242,23 @@ Druckmodul. Konfigurierbar für 2 Druckdienste: den High Resolution PlotService 
     "title": "Mein Titel"
 }
 ```
+***
+
+###### portalConfig.menu.sections.modules.print.transferParameter {data-toc-label='Print Transfer-Parameter'}
+Object with parameters.
+
+|Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
+|----|-------------|---|-------|------------|------|
+|exampleParameter1|nein|String|""|Enthält Parameter für den Transfer.|false|
+
+**Beispiel Transfer Parameter**
+
+```json"
+"transferParameter": {
+        "exampleParameter1": "example placeholder",
+        "exampleParameter2": "example placeholder 2"
+    }
+```
 
 ***
 ###### portalConfig.menu.sections.modules.print.additionalLayers {data-toc-label='Print additionalLayers'}
@@ -3254,6 +3293,24 @@ Liste von Layouts und Formaten, welche die Antwort vom Druckdienst in der jeweil
     "layouts": ["A4 Hochformat", "A3 Hochformat"],
     "outputFormats": ["PDF"]
 }
+```
+
+***
+###### portalConfig.menu.sections.modules.print.transferParameter {data-toc-label='Transfer Parameter'}
+Beliebig viele Parameter, die an den MapFish übergeben können. `exampleParameter` ist nur ein Beispiel.
+Es können beliebige Namen für die Variablen gewählt werden und beliebige Werte vom Typ String enthalten.
+
+|Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
+|----|-------------|---|-------|------------|------|
+|exampleParameter1|nein|String||Beispiel für einen String.|false|
+|exampleParameter2|nein|String||Beispiel für einen String.|false|
+
+**Beispiel transferParameter:**
+```json
+"transferParameter": {
+        "exampleParameter1": "example placeholder",
+        "exampleParameter2": "example placeholder 2"
+    }
 ```
 
 ***
@@ -3301,7 +3358,7 @@ Routing-Werkzeug. Ermöglicht Nutzern das Planen von Routen zwischen mehreren Pu
 |geosearchReverse|nein|**[geosearchReverse](#portalconfigmenusectionsmodulesroutinggeosearchreverse)**||Geosuchereverseoptionen|false|
 |directionsSettings|nein|**[directionsSettings](#portalconfigmenusectionsmodulesroutingdirectionssettings)**||Routenplanungoptionen|false|
 |isochronesSettings|nein|**[isochronesSettings](#portalconfigmenusectionsmodulesroutingisochronessettings)**||Erreichbarkeitsanalysenoptionen|false|
-|tsrSettings|nein|**[tsrSettings](#markdown-header-portalconfigmenusectionsmodulesroutingtsrsettings)**||Travelling Salesman Routing Optionen|false|
+|tsrSettings|nein|**[tsrSettings](#portalconfigmenusectionsmodulesroutingtsrsettings)**||Travelling Salesman Routing Optionen|false|
 
 **Beispiel**
 
@@ -3694,7 +3751,7 @@ TSR-tool Optionen.
 |speedProfile|nein|String|"CAR"|Welches Geschwindigkeitsprofil verwendet werden soll.|false|
 |elevation|nein|Boolean|false|Aktivierung des Höhenprofils der berechneten Route.|false|
 |tsrPointLimit|nein|Number|50|Limit der TSR-Punkte|false|
-|styleRoute|nein|**[StyleRoute](#markdown-header-datatypesstyleroute)**||Stylerouteoptions|false|
+|styleRoute|nein|**[StyleRoute](#datatypesstyleroute)**||Stylerouteoptions|false|
 
 
 **Beispiel**
@@ -3883,11 +3940,12 @@ Das ShadowTool bietet eine Oberfläche zur Definition einer Zeitangabe. Über Sl
 |active|nein|Boolean|false|Wenn `true`, wird das Tool nach der Initialisierung des Portals geöffnet.|false|
 |data|ja|**[data](#portalconfigmenusectionsmodulesstatisticdashboarddata)**|""|Daten für das statistic Dashboard Werkzeug.|false|
 |classificationMode|nein|String|"quantiles"|Methode zur Klassenbildung für Choroplethen und Legende: "quantiles", "equalIntervals" oder "benutzerdefiniert"|false|
+|decimalPlaces|nein|Number|2|Anzahl der Dezimalstellen für statistische Werte.|false|
 |allowPositiveNegativeMix|nein|Boolean|false|Ob bei der Klassenbildung für Choroplethen und Legende Klassen mit sowohl negativen als auch positiven Werten erlaubt sind.|false|
 |minNumberOfClasses|nein|Number|2|Minimal auswählbare Zahl der Klassen für Choroplethen und Legende. Mindestens 2.|false|
 |maxNumberOfClasses|nein|Number|5|Maximal auswählbare Zahl der Klassen für Choroplethen und Legende. Mindestens 3.|false|
 |numberOfClasses|nein|Number|5|Aktuell ausgewählte Zahl der Klassen für Choroplethen und Legende.|false|
-|selectableColorPalettes|nein|**[selectableColorPalettes](#portalconfigmenusectionsmodulesstatisticdashboardselectablecolorpalettes)**|{"label": "Blau", "baseColor": [8, 81, 156]}|Optionen für die Farbpalette der Choroplethen.|false|
+|selectableColorPalettes|nein|**[selectableColorPalettes](#portalconfigmenusectionsmodulesstatisticdashboardselectablecolorpalettes)**|[]|Optionen für die Farbpalette der Choroplethen.|false|
 |downloadFilename|nein|String|"Statistic Dashboard Download"|Der Titel der exportierten CSV Datei.|false|
 
 **Beispiel**
@@ -3989,7 +4047,7 @@ Das ShadowTool bietet eine Oberfläche zur Definition einer Zeitangabe. Über Sl
 {
         {
             "label": "Blau",
-            "baseColor": [8, 81, 156]
+            "key": "Blues"
         }
 }
 ```
@@ -4338,7 +4396,8 @@ Eine Instanz der WFS Suche, welche durch ein Dropdown Menü im Werkzeug ausgewä
 |title|ja|String||Der Titel der Suche, welcher in einem Dropdown im Werkzeug dargestellt wird. Kann ein Übersetzungsschlüssel sein.|false|
 |userHelp|nein|String||Informationstext hinsichtlich des Suchformulars, welches oberhalb des Formulars für die Nutzenden angezeigt werden soll. Wenn der Parameter nicht gegeben ist, dann wird die Struktur aus der Konfiguration abgeleitet. Kann ein Übersetzungsschlüssel sein. Falls der Wert explizit auf `hide` gesetzt wurde, dann wird keine Beschreibung der Struktur des Formulars angezeigt.|false|
 |resultDialogTitle|nein|String||Überschrift der Ergebnisliste. Wenn dies nicht konfiguriert ist, wird der Name `WFS Suche` angezeigt. Kann ein Übersetzungsschlüssel sein.|false|
-|resultList|nein|**[ResultList](#datatypesresultlist)**||Einstellungen für die Ausgabe der gefundenen Features in der Ergebnisliste. Wenn keine resultList konfiguriert ist, wird beim Ausführen der Suche direkt auf das erste gefundene Feature gezoomt.|true|
+|resultList|nein|**[ResultList](#datatypesresultlist)**||Einstellungen für die Ausgabe der gefundenen Features in der Ergebnisliste. Wenn keine resultList konfiguriert ist, wird beim Ausführen der Suche direkt auf das erste gefundene Feature gezoomt. Sonst wird bei Klick auf eine Spalte im Suchergebnis zum Feature gezoomt.|true|
+|zoomButtonInColumn|nein|Boolean||Wenn konfiguriert, dann wird ein Zoom-Button in der Spalte `geometry` oder `geom` angezeigt. Das angegebene Feld muss am Feature vorhanden sein.|true|
 
 **Beispiel**
 
@@ -4349,8 +4408,10 @@ Eine Instanz der WFS Suche, welche durch ein Dropdown Menü im Werkzeug ausgewä
     },
     "resultList": {
         "schulname": "Schulname",
-        "abschluss": "Abschluss"
+        "abschluss": "Abschluss",
+        "geometry": "Zoomen"
     },
+    "zoomButtonInColumn": true,
     "selectSource": "https://geoportal-hamburg.de/lgv-config/gemarkungen_hh.json",
     "title": "Flurstücksuche",
     "literals": [
@@ -4406,6 +4467,7 @@ Beim Bearbeiten eines Features / Hinzufügen von Attributen zu einem neuen Featu
 |toggleLayer|nein|Boolean|false|Legt fest, ob die Feature des ausgewählten Layers weiterhin angezeigt werden sollen, wenn neue Feature hinzugefügt werden.|false|
 |type|nein|String|"wfst"|Der type des Moduls. Definiert welches Modul konfiguriert ist.|false|
 |update|nein|[TransactionConfig](#portalconfigmenusectionsmoduleswfsttransactionconfig)/Boolean|false|Legt fest, welche der zu `layerIds` zugehörigen Layer das Bearbeiten von Geometrien erlauben.|false|
+|multiUpdate|nein|[multiUpdate](#portalconfigmenusectionsmoduleswfstmultiupdate)[]|[]|Definiert, für welche Layer die gleichzeitige Aktualisierung mehrerer Features möglich ist.|false|
 
 **Beispiel**
 
@@ -4440,7 +4502,86 @@ Beim Bearbeiten eines Features / Hinzufügen von Attributen zu einem neuen Featu
             "layerId": "4389",
             "available": true
         }
+    ],  
+    "multiUpdate": [
+        {
+            "layerId": "4389",
+            "available": true,
+            "configAttributes": ["name", "description"],
+            "controlAttributes": ["gemeinde"],
+            "warningText": "common:modules.wfst.multiUpdate.warningText",
+		    "selectTypes": ["pen"],
+            "selectIcons":
+                {
+                    "pen": "bi-pencil-fill",
+                    "box": "fa-vector-square",
+                    "select": "fa-mouse-pointer"
+                }
+        }
     ]
+}
+```
+
+***
+
+###### portalConfig.menu.sections.modules.wfst.multiUpdate {data-toc-label='multiUpdate'}
+
+[inherits]: # (portalConfig.menu.sections.modules.wfst)
+
+Definiert die Konfiguration für die gleichzeitige Aktualisierung mehrerer Features.
+
+|Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
+|----|-------------|---|-------|------------|------|
+|layerId|ja|String||Die ID des Layers aus der `services.json`, für den die Multiupdate-Funktion konfiguriert wird.|false|
+|available|nein|Boolean|false|Eine Flag, das festlegt, ob die Funktion für diesen Layer verfügbar ist.|false|
+|configAttributes|nein|String[]|[]|Ein Array von Attributnamen, deren Werte im Multiupdate-Formular angezeigt und nicht editierbar sind.|false|
+|controlAttributes|nein|String[]|[]|Ein Array von Attributnamen, deren Werte zur Steuerung des Multiupdate-Prozesses und editierbar sind.|false|
+|warningText|nein|String||Ein optionaler Text, der beim Auswählen von Features als Warnung angezeigt wird.|false|
+|selectTypes|nein|String[]|["pen"]|Definiert, welche Werkzeuge zum Auswählen von Features zur Verfügung stehen.|false|
+|selectIcons|nein|[selectIcons](#portalconfigmenusectionsmoduleswfstmultiupdateselecticons)|{}|Ein Objekt, das die Icons für die in selectTypes festgelegten Auswahlwerkzeuge definiert.|false|
+
+**Beispiele**
+
+```json
+"multiUpdate": [
+    {
+        "layerId": "4389",
+        "available": true,
+        "configAttributes": ["name", "description"],
+        "controlAttributes": ["gemeinde"],
+        "warningText": "common:modules.wfst.multiUpdate.warningText",
+        "selectTypes": ["pen"],
+        "selectIcons": {
+            "pen": "bi-pencil-fill",
+            "box": "fa-vector-square",
+            "select": "fa-mouse-pointer"
+        }
+    }
+]
+```
+
+***
+
+###### portalConfig.menu.sections.modules.wfst.multiUpdate.selectIcons {data-toc-label='selectIcons'}
+
+[inherits]: # (portalConfig.menu.sections.modules.wfst.multiUpdate)
+
+Definiert die Zuordnung von Auswahlwerkzeugen zu den entsprechenden Symbolen.
+
+|Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
+|----|--------|----|-------|-----------|------|
+|pen|nein|String|"bi-pencil-fill"|Der Icon-Name, der für das Auswahlwerkzeug pen verwendet wird.|false|
+|box|nein|String|"fa-vector-square"|Der Icon-Name, der für das Rechteck-Auswahlwerkzeug verwendet wird.|false|
+|select|nein|String|"fa-mouse-pointer"|Der Icon-Name der für das Klick-Auswahlwerkzeug verwendet wird.|false|
+
+
+**Example**
+
+```json
+"selectIcons": {
+        "pen": "bi-pencil-fill",
+        "box": "fa-vector-square",
+        "select": "fa-mouse-pointer"
 }
 ```
 
@@ -4573,9 +4714,10 @@ Möglichkeit, um Einstellungen für den Themenbaum vorzunehmen. Die Layer werden
 |layerIDsToStyle|nein|**[layerIDsToStyle](#portalconfigtreelayeridstostyle)**[]||Spezielle Implementierung für einen HVV-Dienst (Hamburger Verkehrsbetriebe). Enthält Objekte zur Abfrage verschiedener Stile einer Layer-ID.|true|
 |metaIDsToIgnore|nein|String[]||Alle in der `services.json` gefundenen Layer, die diesen Meta-IDs entsprechen, werden nicht im Baum und in der Karte angezeigt. Nur für den tree.type `auto`.|false|
 |metaIDsToMerge|nein|String[]||Alle in der `services.json` gefundenen Layer, die diesen Meta-IDs entsprechen, werden zu einer einzigen Layer im Baum zusammengeführt. Nur für den tree.type `auto`.|true|
+|rasterLayerDefaultInfoFormat|nein|String|"`text/xml`"|InfoFormat für Raster-Layer wenn nicht in der Layer-Konfiguration spezifiziert.|false|
 |showFolderPath|nein|Boolean|false|Legt fest, ob die Ordnerstruktur von sichtbaren Layern unter 'weitere Funktionen' angezeigt wird.|false|
 |singleBaselayer|nein|Boolean|false|Legt fest, ob nur ein Baselayer gleichzeitig ausgewählt werden kann.|false|
-|type|nein|enum["auto"]||Der Themenbaum ist in der gleichen Struktur aufgebaut wie die **[layerConfig](#layerconfig)**. Wenn der Typ `auto` konfiguriert ist, werden alle Ebenen aus der [services.json](../Global-Config/services.json.md) im Baum angeboten, strukturiert durch ihre Metadaten (Geo-Online).|false|
+|type|nein|enum["auto"]||Der Themenbaum ist in der gleichen Struktur aufgebaut wie die **[layerConfig](#layerconfig)**. Wenn der Typ `auto` konfiguriert ist, werden alle Ebenen aus der [services.json](../Global-Config/services.json.md) im Baum angeboten, strukturiert durch ihre Metadaten (Geoportal-Hamburg).|false|
 |validLayerTypesAutoTree|nein|enum|["WMS", "SENSORTHINGS", "TERRAIN3D", "TILESET3D", "OBLIQUE"]|Layer Typen die bei dem tree.type `auto` verwendet werden sollen.|false|
 |hideBackgroundsHeader|nein|Boolean|false|Auf true setzen, um die Überschrift für Hintergründe auszublenden.|false|
 |backgroundsHeaderText|nein|String||Alternative Überschrift für Hintergründe. Wenn gesetzt, ist eine nicht leere Zeichenkette erforderlich. Eine leere Zeichenfolge ("") gibt die Standard-i18n-Zeichenfolge/Übersetzung aus.|false|
@@ -4652,10 +4794,10 @@ Konfiguration des addLayerButton zur Auswahl von Layern.
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
 |active|ja|Boolean||Gibt an, ob addLayerButton initial aktiv ist.|false|
-|searchBar|nein|**[searchBar](#markdown-header-portalconfigtreeaddlayerbuttonsearchbar)**/Boolean|false|Konfiguration der Suche in der Themen Auswahl.|false|
+|searchBar|nein|**[searchBar](#portalconfigtreeaddlayerbuttonsearchbar)**/Boolean|false|Konfiguration der Suche in der Themen Auswahl.|false|
 |buttonTitle|nein|String||Legt den Titel der Schaltfläche mit benutzerdefiniertem Text fest.|false|
-|searchInterfaceInstanceId|nein|String||Deprecated in next major release - use **[searchInterfaceInstances](#markdown-header-portalconfigtreeaddLayerButtonsearchBarsearchInterfaceInstances) []** instead. Id des search interfaces. Konfiguriert an dem search interface am Parameter 'searchInterfaceId'.|true|
-|searchCategory|nein|String||Deprecated in next major release - use **[searchInterfaceInstances](#markdown-header-portalconfigtreeaddLayerButtonsearchBarsearchInterfaceInstances) []** instead. Die Kategorie der Suche.|true|
+|searchInterfaceInstanceId|nein|String||Deprecated in next major release - use **[searchInterfaceInstances](#portalconfigtreeaddlayerbuttonsearchbarsearchinterfaceinstances) []** instead. Id des search interfaces. Konfiguriert an dem search interface am Parameter 'searchInterfaceId'.|true|
+|searchCategory|nein|String||Deprecated in next major release - use **[searchInterfaceInstances](#portalconfigtreeaddlayerbuttonsearchbarsearchinterfaceinstances) []** instead. Die Kategorie der Suche.|true|
 
 **Beispiel**
 
@@ -4704,9 +4846,10 @@ Es wird eine Themensuche innerhalb des konfigurierten SearchInterfaces und Searc
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
 |active|ja|Boolean||Gibt an, ob die Suche angezeigt wird.|false|
-|searchInterfaceInstances|ja|**[searchInterfaceInstances](#markdown-header-portalconfigtreeaddLayerButtonsearchBarsearchInterfaceInstances) []**||Liste der search interfaces aus der searchbar, die hier genutzt werden sollen.|true|
+|searchInterfaceInstances|ja|**[searchInterfaceInstances](#portalconfigtreeaddlayerbuttonsearchbarsearchinterfaceinstances) []**||Liste der search interfaces aus der searchbar, die hier genutzt werden sollen.|true|
+|filter|nein|Boolean|false|Aktiviert die clientseitige Filterung von Layern und Ordnern in der Themen-Auswahl basierend auf der Sucheingabe. <br>**Hinweis:** <br>Ist `searchInterfaceInstances` gesetzt, hat `filter: true` **Priorität** und führt zur lokalen Filterung **anstatt** der SearchInterface-Nutzung.|false|
 
-**Beispiel**
+**Beispiel mit `searchInterfaceInstances`**
 
 ```json
 {
@@ -4722,6 +4865,16 @@ Es wird eine Themensuche innerhalb des konfigurierten SearchInterfaces und Searc
                 "searchCategory": "Thema"
             }
         ]
+    }
+}
+```
+**Beispiel mit `filter`**
+
+```json
+{
+    "searchBar": {
+        "active": true,
+        "filter": true
     }
 }
 ```

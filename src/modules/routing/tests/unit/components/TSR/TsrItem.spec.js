@@ -5,6 +5,7 @@ import {config, shallowMount} from "@vue/test-utils";
 import TsrComponent from "@modules/routing/components/TSR/TsrItem.vue";
 import TsrUploadComponent from "@modules/routing/components/TSR/TsrUpload.vue";
 import RoutingCoordinateInputComponent from "@modules/routing/components/RoutingCoordinateInput.vue";
+import RoutingContextMenuComponent from "../../../../components/RoutingContextMenu.vue";
 import TsrOutputComponent from "@modules/routing/components/TSR/TsrOutput.vue";
 import {RoutingTSRDirections} from "@modules/routing/js/classes/routing-directions-tsr";
 
@@ -215,6 +216,16 @@ describe.skip("src/modules/routing/components/TSR/TsrItem.vue", () => {
 
         expect(wrapper.findComponent(TsrUploadComponent).exists()).to.be.true;
     });
+
+    it("renders context menu", () => {
+        sinon.stub(TsrComponent.methods, "appendModalToBody");
+        wrapper = shallowMount(TsrComponent, {global: {
+            plugins: [store]
+        }});
+
+        expect(wrapper.findComponent(RoutingContextMenuComponent).exists()).to.be.true;
+    });
+
 
     it("emits addStartEnd if input field for start point is clicked", async () => {
         sinon.stub(TsrComponent.methods, "appendModalToBody");

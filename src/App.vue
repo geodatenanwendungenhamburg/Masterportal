@@ -49,7 +49,7 @@ export default {
     watch: {
         async allConfigsLoaded (value) {
             if (value) {
-                await addonsPlugin.loadAddons(Config.addons);
+                await addonsPlugin.loadAddons(this.$.appContext.app, Config.addons);
                 this.addonsLoaded = true;
                 this.extendLayers();
                 this.initializeVectorStyle();

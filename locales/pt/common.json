@@ -507,8 +507,7 @@
       "serviceFour": "Serviço 4",
       "sliderTypeHandle": "",
       "sliderTypePlayer": "",
-      "title": "Simulação de um exemplo WMS",
-      "titleNotConfigured": "Título não configurado"
+      "title": "Simulação de um exemplo WMS"
     },
     "layerTree": {
       "addLayer": "",
@@ -854,6 +853,21 @@
     "wmsTime": {
       "layerSwiper": {
         "title": "Confrontare gli strati"
+      }
+    },
+    "pagination": {
+      "aria": {
+        "previous": "Página anterior",
+        "next": "Próxima página",
+        "go": "Ir para a página"
+      },
+      "input": {
+        "label": "Página",
+        "placeholder": "Página",
+        "tooltip": "Digite o número da página e pressione Enter ou clique na seta para pular para essa página"
+      },
+      "button": {
+        "goTooltip": "Pular para a página digitada"
       }
     }
   },

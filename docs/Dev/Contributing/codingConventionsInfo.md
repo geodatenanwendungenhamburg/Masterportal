@@ -69,7 +69,8 @@ Extend the `.md` file documentation by following these rules.
 
 It is recommended to preview the generated documentation by launching the mkdocs preview server.
 
-If you set up the development environment like described in [setupDev.md](./setupDev.md#python-dependencies), you can start the preview server with the following commands:
+If you set up the docs development environment like described in [setupDev.md](./setupDev.md#local-documentation-preview),
+you can start the preview server with the following commands:
 
 === "Windows"
     ```bash
@@ -102,8 +103,10 @@ If you set up the development environment like described in [setupDev.md](./setu
 The row `Expert` is only required in **[config.json.md](../../User/Portal-Config/config.json.md)**.
 * Each parameter in a `.md` file ends on a horizontal separation line produced by e.g. `***` or `---`.
 * The heading to be used depends on the parameter nesting. The top level starts with `#`, the next level with `##`, and so on. Please mind that Markdown only supports up to six chapter levels.
-* Configuration parameters describing an object containing further parameters are modelled in separate chapters and are each linked and described.
-* For complex configuration parameters, an example configuration is required.
+* Configuration parameters describing an object containing further parameters are modeled in separate chapters and are each linked and described.
+    * The resulting nested structure is reflected in the headings. This pollutes the table of contents with irrelevant information.
+      Use this syntax to override the heading label in the table of contents: `### my.nested.WMSParameter {data-toc-label='WMSParameter'}`
+    * For complex configuration parameters, an example configuration is required.
 * Also extend the files **[services.json.md](../../User/Global-Config/services.json.md)**, **[rest-services.json.md](../../User/Global-Config/rest-services.json.md)**, and **[style.json.md](../../User/Global-Config/style.json.md)**, if you add or change parameters to these global configuration files.
 
 For a more formal definition of the **[config.json.md](../../User/Portal-Config/config.json.md)** requirements, see [Masterportal configuration parser](https://bitbucket.org/geowerkstatt-hamburg/mpconfigparser/src/master/README.md).
@@ -117,8 +120,8 @@ Some general description content here...
 // Table of Contents Level 1
 Actual page content...
 
-### portalConfig.map
-// Table of Contents Level 2 / Nested below "portalConfig"
+### portalConfig.map {data-toc-label='Map'}
+// Table of Contents Level 2 / Nested below "portalConfig", Side-Bar Table of Contents Label overridden to "Map"
 Content about the map settings...
 ```
 
@@ -131,8 +134,8 @@ Content about the map settings...
 
 ***
 
-### portalConfig.controls
-// This setting of the "portalConfig" section is nested in a different heading level
+### portalConfig.controls {data-toc-label='Controls'}
+// This setting of the "portalConfig" section is nested in a different heading level, Side-Bar Table of Contents Label overridden to "Controls"
 ```
 
 ```json title="Example of a complex configuration"

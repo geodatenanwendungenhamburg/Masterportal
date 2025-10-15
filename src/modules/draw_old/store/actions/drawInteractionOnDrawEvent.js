@@ -1,6 +1,6 @@
 import createStyleModule from "@modules/draw_old/js/style/createStyle";
 import circleCalculations from "@modules/draw_old/js/circleCalculations";
-import main from "@modules/draw_old/js/main";
+import squareCalculations from "../../js/squareCalculations";
 
 const errorBorder = "#E10019";
 
@@ -16,10 +16,16 @@ export function drawInteractionOnDrawEvent ({state, commit, dispatch}, drawInter
     // we need a clone of styleSettings each time a draw event is called, otherwise the copy will influence former drawn objects
     // using "{styleSettings} = getters," would lead to a copy not a clone - don't use getters for styleSettings here
     const styleSettings = JSON.parse(JSON.stringify(state[state.drawType.id + "Settings"])),
-        circleMethod = styleSettings.circleMethod;
+        circleMethod = styleSettings.circleMethod,
+        squareMethod = styleSettings.squareMethod;
 
-    commit("setAddFeatureListener", main.getApp().config.globalProperties.$layer.getSource().once("addfeature", event => dispatch("handleDrawEvent", event)));
+    commit("setAddFeatureListener", this.$app.config.globalProperties.$layer.getSource().once("addfeature", event => dispatch("handleDrawEvent", event)));
     if (state.currentInteraction === "draw" && circleMethod === "defined" && state.drawType.geometry === "Circle") {
+        const interaction = state["drawInteraction" + drawInteraction];
+
+        interaction.finishDrawing();
+    }
+    if (state.currentInteraction === "draw" && squareMethod === "defined" && state.drawType.geometry === "Square") {
         const interaction = state["drawInteraction" + drawInteraction];
 
         interaction.finishDrawing();
@@ -35,9 +41,10 @@ export function drawInteractionOnDrawEvent ({state, commit, dispatch}, drawInter
 export function handleDrawEvent ({state, commit, dispatch, rootState}, event) {
     const stateKey = state.drawType.id + "Settings",
         drawType = state.drawType,
-        layerSource = main.getApp().config.globalProperties.$layer.getSource(),
+        layerSource = this.$app.config.globalProperties.$layer.getSource(),
         styleSettings = JSON.parse(JSON.stringify(state[stateKey])),
-        circleMethod = styleSettings.circleMethod;
+        circleMethod = styleSettings.circleMethod,
+        squareMethod = styleSettings.squareMethod;
 
     event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {"fromDrawTool": true}));
     dispatch("updateUndoArray", {remove: false, feature: event.feature});
@@ -111,6 +118,27 @@ export function handleDrawEvent ({state, commit, dispatch, rootState}, event) {
                 state.outerBorderColor = "";
             }
             state.innerBorderColor = "";
+        }
+    }
+    else if (squareMethod === "defined" && drawType.geometry === "Square") {
+        const squareArea = !isNaN(styleSettings.squareArea) ? parseFloat(styleSettings.squareArea) : null;
+
+        if (squareArea === 0) {
+            dispatch("Alerting/addSingleAlert", i18next.t("common:modules.draw_old.undefinedSquareArea"), {root: true});
+            layerSource.removeFeature(event.feature);
+        }
+        else {
+            const feature = event.feature,
+                coordinates = feature.getGeometry().getCoordinates(),
+                minX = coordinates[0][0][0],
+                minY = coordinates[0][0][1],
+                maxX = coordinates[0][2][0],
+                maxY = coordinates[0][2][1],
+                centerX = (minX + maxX) / 2,
+                centerY = (minY + maxY) / 2,
+                centerCoordinate = [centerX, centerY];
+
+            squareCalculations.calculateSquare(feature, centerCoordinate, squareArea);
         }
     }
 

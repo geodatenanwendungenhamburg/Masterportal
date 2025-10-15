@@ -1,6 +1,6 @@
 import SearchInterface from "./searchInterface";
 import store from "@appstore";
-import layerFactory from "@core/layers/js/layerFactory";
+import layerTypes from "@core/layers/js/layerTypes";
 
 /**
  * The search interface to the topic tree.
@@ -77,7 +77,7 @@ SearchInterfaceTopicTree.prototype.searchInLayers = function (layerConfigs, sear
     const foundLayers = [];
 
     layerConfigs.forEach(layer => {
-        if (store.getters["Maps/mode"] === "3D" || !layerFactory.getLayerTypes3d().includes(layer?.typ?.toUpperCase())) {
+        if (store.getters["Maps/mode"] === "3D" || !layerTypes.getLayerTypes3d().includes(layer?.typ?.toUpperCase())) {
             const datasets = layer.datasets;
             let searchString = "",
                 datasetsExist = false;

@@ -1,0 +1,4 @@
+/* This adds an underline to all links to meet the WCAG 2.2 (A) - 1.4.1 accessibility requirement */
+.md-typeset a {
+    text-decoration: underline;
+}

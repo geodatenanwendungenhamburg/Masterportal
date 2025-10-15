@@ -47,7 +47,8 @@ export default {
                 visibility: true,
                 version: rawLayer.version,
                 url: rawLayer.url,
-                featureType: rawLayer.featureType
+                featureType: rawLayer.featureType,
+                isDynamic: true
             },
             parentKey: treeSubjectsKey
         }, {root: true});

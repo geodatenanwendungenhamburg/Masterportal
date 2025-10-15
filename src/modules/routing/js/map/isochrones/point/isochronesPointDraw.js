@@ -5,7 +5,7 @@ import isochronesPointSource from "./isochronesPointSource";
 export default new Draw({
     source: isochronesPointSource,
     type: "Point",
-    style: isochronesPointStyle
+    style: isochronesPointStyle,
     // allow only left click
-    // condition: e => e.pointerEvent.buttons === 1
+    condition: e => e.originalEvent.buttons === 1
 });

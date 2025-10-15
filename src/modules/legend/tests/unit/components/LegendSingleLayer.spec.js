@@ -28,10 +28,10 @@ describe("src/modules/legend/components/LegendSingleLayer.vue", () => {
             }
         });
     });
+
     afterEach(() => {
         sinon.restore();
     });
-
 
     describe("LegendSingleLayerComponent.vue rendering", () => {
         describe("renders legend with pdf", () => {
@@ -45,15 +45,13 @@ describe("src/modules/legend/components/LegendSingleLayer.vue", () => {
                 };
 
                 wrapper = shallowMount(LegendSingleLayerComponent, {
-                    global: {
-                        plugins: [store]
-                    },
+                    global: {plugins: [store]},
                     propsData
                 });
 
-                expect(wrapper.find(".layer-legend > div:nth-child(1) a").exists()).to.be.true;
-                expect(wrapper.find(".layer-legend > div:nth-child(1) a").attributes().href).to.equal("https://link_to_pdf.pdf");
+                expect(wrapper.find("a[href=\"https://link_to_pdf.pdf\"]").exists()).to.be.true;
             });
+
             it("renders the legends with pdf from array of strings", () => {
                 const propsData = {
                     legendObj: {
@@ -64,70 +62,57 @@ describe("src/modules/legend/components/LegendSingleLayer.vue", () => {
                 };
 
                 wrapper = shallowMount(LegendSingleLayerComponent, {
-                    global: {
-                        plugins: [store]
-                    },
+                    global: {plugins: [store]},
                     propsData
                 });
-                expect(wrapper.find(".layer-legend > div:nth-child(1) a").exists()).to.be.true;
-                expect(wrapper.find(".layer-legend > div:nth-child(1) a").attributes().href).to.equal("https://link_to_pdf.pdf");
-                expect(wrapper.find(".layer-legend > div:nth-child(2) a").exists()).to.be.true;
-                expect(wrapper.find(".layer-legend > div:nth-child(2) a").attributes().href).to.equal("https://another_link_to_pdf.pdf");
+
+                expect(wrapper.find("a[href=\"https://link_to_pdf.pdf\"]").exists()).to.be.true;
+                expect(wrapper.find("a[href=\"https://another_link_to_pdf.pdf\"]").exists()).to.be.true;
             });
+
             it("renders the legend with pdf from array with single object", () => {
                 const propsData = {
                     legendObj: {
                         name: "myLayer",
-                        legend: [{
-                            name: "foobar",
-                            graphic: "https://link_to_pdf.pdf"
-                        }],
+                        legend: [{name: "foobar", graphic: "https://link_to_pdf.pdf"}],
                         position: 1
                     }
                 };
 
                 wrapper = shallowMount(LegendSingleLayerComponent, {
-                    global: {
-                        plugins: [store]
-                    },
+                    global: {plugins: [store]},
                     propsData
                 });
 
-                expect(wrapper.find(".layer-legend > div:nth-child(1) a").exists()).to.be.true;
-                expect(wrapper.find(".layer-legend > div:nth-child(1) a").attributes().href).to.equal("https://link_to_pdf.pdf");
-                expect(wrapper.find(".layer-legend > div:nth-child(1) span").text()).to.equal("foobar");
+                expect(wrapper.find("a[href=\"https://link_to_pdf.pdf\"]").exists()).to.be.true;
+                expect(wrapper.find(".layer-legend-container span").text()).to.equal("foobar");
             });
+
             it("renders the legends with pdf from array of objects", () => {
                 const propsData = {
                     legendObj: {
                         name: "myLayer",
-                        legend: [{
-                            name: "foobar",
-                            graphic: "https://link_to_pdf.pdf"
-                        },
-                        {
-                            name: "barfoo",
-                            graphic: "https://another_link_to_pdf.pdf"
-                        }],
+                        legend: [
+                            {name: "foobar", graphic: "https://link_to_pdf.pdf"},
+                            {name: "barfoo", graphic: "https://another_link_to_pdf.pdf"}
+                        ],
                         position: 1
                     }
                 };
 
                 wrapper = shallowMount(LegendSingleLayerComponent, {
-                    global: {
-                        plugins: [store]
-                    },
+                    global: {plugins: [store]},
                     propsData
                 });
-                expect(wrapper.find(".layer-legend > div:nth-child(1) a").exists()).to.be.true;
-                expect(wrapper.find(".layer-legend > div:nth-child(1) a").attributes().href).to.equal("https://link_to_pdf.pdf");
-                expect(wrapper.find(".layer-legend > div:nth-child(1) span").text()).to.equal("foobar");
-                expect(wrapper.find(".layer-legend > div:nth-child(2) a").exists()).to.be.true;
-                expect(wrapper.find(".layer-legend > div:nth-child(2) a").attributes().href).to.equal("https://another_link_to_pdf.pdf");
-                expect(wrapper.find(".layer-legend > div:nth-child(2) span").text()).to.equal("barfoo");
+
+                expect(wrapper.find("a[href=\"https://link_to_pdf.pdf\"]").exists()).to.be.true;
+                expect(wrapper.find("a[href=\"https://another_link_to_pdf.pdf\"]").exists()).to.be.true;
+                expect(wrapper.findAll(".layer-legend-container span")[0].text()).to.equal("foobar");
+                expect(wrapper.findAll(".layer-legend-container span")[1].text()).to.equal("barfoo");
             });
         });
     });
+
     describe("renders legend with img", () => {
         it("renders the legend with img from array with single string", () => {
             const propsData = {
@@ -139,15 +124,13 @@ describe("src/modules/legend/components/LegendSingleLayer.vue", () => {
             };
 
             wrapper = shallowMount(LegendSingleLayerComponent, {
-                global: {
-                    plugins: [store]
-                },
+                global: {plugins: [store]},
                 propsData
             });
 
-            expect(wrapper.find(".layer-legend > div:nth-child(1) img").exists()).to.be.true;
-            expect(wrapper.find(".layer-legend > div:nth-child(1) img").attributes().src).to.equal("some_string_interpreted_as_image");
+            expect(wrapper.find("img[src=\"some_string_interpreted_as_image\"]").exists()).to.be.true;
         });
+
         it("renders the legends with img from array of strings", () => {
             const propsData = {
                 legendObj: {
@@ -158,68 +141,55 @@ describe("src/modules/legend/components/LegendSingleLayer.vue", () => {
             };
 
             wrapper = shallowMount(LegendSingleLayerComponent, {
-                global: {
-                    plugins: [store]
-                },
+                global: {plugins: [store]},
                 propsData
             });
-            expect(wrapper.find(".layer-legend > div:nth-child(1) img").exists()).to.be.true;
-            expect(wrapper.find(".layer-legend > div:nth-child(1) img").attributes().src).to.equal("some_string_interpreted_as_image");
-            expect(wrapper.find(".layer-legend > div:nth-child(2) img").exists()).to.be.true;
-            expect(wrapper.find(".layer-legend > div:nth-child(2) img").attributes().src).to.equal("another_string_interpreted_as_image");
+
+            expect(wrapper.find("img[src=\"some_string_interpreted_as_image\"]").exists()).to.be.true;
+            expect(wrapper.find("img[src=\"another_string_interpreted_as_image\"]").exists()).to.be.true;
         });
+
         it("renders the legend with img from array with single object", () => {
             const propsData = {
                 legendObj: {
                     name: "myLayer",
-                    legend: [{
-                        name: "foobar",
-                        graphic: "some_string_interpreted_as_image"
-                    }],
+                    legend: [{name: "foobar", graphic: "some_string_interpreted_as_image"}],
                     position: 1
                 }
             };
 
             wrapper = shallowMount(LegendSingleLayerComponent, {
-                global: {
-                    plugins: [store]
-                },
+                global: {plugins: [store]},
                 propsData
             });
 
-            expect(wrapper.find(".layer-legend > div:nth-child(1) img").exists()).to.be.true;
-            expect(wrapper.find(".layer-legend > div:nth-child(1) img").attributes().src).to.equal("some_string_interpreted_as_image");
-            expect(wrapper.find(".layer-legend > div:nth-child(1) span").text()).to.equal("foobar");
+            expect(wrapper.find("img[src=\"some_string_interpreted_as_image\"]").exists()).to.be.true;
+            expect(wrapper.find(".layer-legend-container span").text()).to.equal("foobar");
         });
+
         it("renders the legends with img from array of objects", () => {
             const propsData = {
                 legendObj: {
                     name: "myLayer",
-                    legend: [{
-                        name: "foobar",
-                        graphic: "some_string_interpreted_as_image"
-                    },
-                    {
-                        name: "barfoo",
-                        graphic: "another_string_interpreted_as_image"
-                    }],
+                    legend: [
+                        {name: "foobar", graphic: "some_string_interpreted_as_image"},
+                        {name: "barfoo", graphic: "another_string_interpreted_as_image"}
+                    ],
                     position: 1
                 }
             };
 
             wrapper = shallowMount(LegendSingleLayerComponent, {
-                global: {
-                    plugins: [store]
-                },
+                global: {plugins: [store]},
                 propsData
             });
-            expect(wrapper.find(".layer-legend > div:nth-child(1) img").exists()).to.be.true;
-            expect(wrapper.find(".layer-legend > div:nth-child(1) img").attributes().src).to.equal("some_string_interpreted_as_image");
-            expect(wrapper.find(".layer-legend > div:nth-child(1) span").text()).to.equal("foobar");
-            expect(wrapper.find(".layer-legend > div:nth-child(2) img").exists()).to.be.true;
-            expect(wrapper.find(".layer-legend > div:nth-child(2) img").attributes().src).to.equal("another_string_interpreted_as_image");
-            expect(wrapper.find(".layer-legend > div:nth-child(2) span").text()).to.equal("barfoo");
+
+            expect(wrapper.find("img[src=\"some_string_interpreted_as_image\"]").exists()).to.be.true;
+            expect(wrapper.findAll(".layer-legend-container span")[0].text()).to.equal("foobar");
+            expect(wrapper.find("img[src=\"another_string_interpreted_as_image\"]").exists()).to.be.true;
+            expect(wrapper.findAll(".layer-legend-container span")[1].text()).to.equal("barfoo");
         });
+
         it("renders the legend with img with sldVersion request", () => {
             const propsData = {
                 id: "legend_myLayer",
@@ -231,14 +201,14 @@ describe("src/modules/legend/components/LegendSingleLayer.vue", () => {
             };
 
             wrapper = shallowMount(LegendSingleLayerComponent, {
-                global: {
-                    plugins: [store]
-                },
+                global: {plugins: [store]},
                 propsData
             });
-            expect(wrapper.find("#legend_myLayer > div:nth-child(1) img").attributes().src).includes("&sld_version=1.1.0");
+            expect(wrapper.find("#legend_myLayer img").exists()).to.be.true;
+            expect(wrapper.find("#legend_myLayer img").attributes().src).to.include("&sld_version=1.1.0");
         });
     });
+
     describe("renders legend with svg", () => {
         it("renders the legend with svg from array with single object", () => {
             const propsData = {
@@ -246,83 +216,51 @@ describe("src/modules/legend/components/LegendSingleLayer.vue", () => {
                     name: "myLayer",
                     legend: [{
                         name: "foobar",
-                        graphic: null
+                        graphic: "data:image/svg+xml;charset=utf-8," +
+                            "<svg height='35' width='35' version='1.1' xmlns='http://www.w3.org/2000/svg'>" +
+                            "<polygon points='5,5 30,5 30,30 5,30' style='fill:rgba(255,0,0);fill-opacity:0;stroke:rgba(0,0,255);stroke-opacity:0;stroke-width:1;'/>" +
+                            "</svg>"
                     }],
                     position: 1
                 }
             };
-            let svg = "data:image/svg+xml;charset=utf-8,";
-
-            svg += "<svg height='35' width='35' version='1.1' xmlns='http://www.w3.org/2000/svg'>";
-            svg += "<polygon points='5,5 30,5 30,30 5,30' style='fill:";
-            svg += "rgba(255,0,0)";
-            svg += ";fill-opacity:";
-            svg += "0";
-            svg += ";stroke:";
-            svg += "rgba(0,0,255)";
-            svg += ";stroke-opacity:";
-            svg += "0";
-            svg += ";stroke-width:";
-            svg += "1";
-            svg += ";'/>";
-            svg += "</svg>";
-            propsData.legendObj.legend[0].graphic = svg;
-
 
             wrapper = shallowMount(LegendSingleLayerComponent, {
-                global: {
-                    plugins: [store]
-                },
+                global: {plugins: [store]},
                 propsData
             });
 
-            expect(wrapper.find(".layer-legend > div:nth-child(1) img").exists()).to.be.true;
-            expect(wrapper.find(".layer-legend > div:nth-child(1) span").text()).to.equal("foobar");
+            expect(wrapper.find("img").exists()).to.be.true;
+            expect(wrapper.find(".layer-legend-container span").text()).to.equal("foobar");
         });
+
         it("renders the legends with svg from array of objects", () => {
-            const propsData = {
-                legendObj: {
-                    name: "myLayer",
-                    legend: [{
-                        name: "foobar",
-                        graphic: null
-                    },
-                    {
-                        name: "barfoo",
-                        graphic: null
-                    }],
-                    position: 1
-                }
-            };
-            let svg = "data:image/svg+xml;charset=utf-8,";
+            const svg = "data:image/svg+xml;charset=utf-8," +
+                "<svg height='35' width='35' version='1.1' xmlns='http://www.w3.org/2000/svg'>" +
+                "<polygon points='5,5 30,5 30,30 5,30' style='fill:rgba(255,0,0);fill-opacity:0;stroke:rgba(0,0,255);stroke-opacity:0;stroke-width:1;'/>" +
+                "</svg>",
 
-            svg += "<svg height='35' width='35' version='1.1' xmlns='http://www.w3.org/2000/svg'>";
-            svg += "<polygon points='5,5 30,5 30,30 5,30' style='fill:";
-            svg += "rgba(255,0,0)";
-            svg += ";fill-opacity:";
-            svg += "0";
-            svg += ";stroke:";
-            svg += "rgba(0,0,255)";
-            svg += ";stroke-opacity:";
-            svg += "0";
-            svg += ";stroke-width:";
-            svg += "1";
-            svg += ";'/>";
-            svg += "</svg>";
-            propsData.legendObj.legend[0].graphic = svg;
-            propsData.legendObj.legend[1].graphic = svg;
+                propsData = {
+                    legendObj: {
+                        name: "myLayer",
+                        legend: [
+                            {name: "foobar", graphic: svg},
+                            {name: "barfoo", graphic: svg}
+                        ],
+                        position: 1
+                    }
+                };
 
             wrapper = shallowMount(LegendSingleLayerComponent, {
-                global: {
-                    plugins: [store]
-                },
+                global: {plugins: [store]},
                 propsData
             });
-            expect(wrapper.find(".layer-legend > div:nth-child(1) img").exists()).to.be.true;
-            expect(wrapper.find(".layer-legend > div:nth-child(1) span").text()).to.equal("foobar");
-            expect(wrapper.find(".layer-legend > div:nth-child(2) img").exists()).to.be.true;
-            expect(wrapper.find(".layer-legend > div:nth-child(2) span").text()).to.equal("barfoo");
+
+            expect(wrapper.find("img").exists()).to.be.true;
+            expect(wrapper.findAll(".layer-legend-container span")[0].text()).to.equal("foobar");
+            expect(wrapper.findAll(".layer-legend-container span")[1].text()).to.equal("barfoo");
         });
+
         it("renders the legends with graphic is an array", () => {
             const propsData = {
                 legendObj: {
@@ -338,19 +276,19 @@ describe("src/modules/legend/components/LegendSingleLayer.vue", () => {
             };
 
             wrapper = shallowMount(LegendSingleLayerComponent, {
-                global: {
-                    plugins: [store]
-                },
+                global: {plugins: [store]},
                 propsData
             });
-            expect(wrapper.findAll(".layer-legend > div:nth-child(1) img")[0].exists()).to.be.true;
-            expect(wrapper.findAll(".layer-legend > div:nth-child(1) img")[0].attributes().src).to.equal("some_string_interpreted_as_image2");
-            expect(wrapper.findAll(".layer-legend > div:nth-child(1) img")[0].attributes().style).to.equal("width: 60px; height: 60px; margin: 10px;");
-            expect(wrapper.find(".layer-legend > div:nth-child(1) span").text()).to.equal("foobar");
-            expect(wrapper.findAll(".layer-legend > div:nth-child(1) img")[1].exists()).to.be.true;
-            expect(wrapper.findAll(".layer-legend > div:nth-child(1) img")[1].attributes().src).to.equal("some_string_interpreted_as_image1");
+
+            expect(wrapper.find("img.first-image").exists()).to.be.true;
+            expect(wrapper.find("img.first-image").attributes().src).to.equal("some_string_interpreted_as_image2");
+            expect(wrapper.find("img.first-image").attributes().style).to.equal("width: 60px; height: 60px; margin: 10px;");
+            expect(wrapper.find(".layer-legend-container span").text()).to.equal("foobar");
+            expect(wrapper.find("img.second-image").exists()).to.be.true;
+            expect(wrapper.find("img.second-image").attributes().src).to.equal("some_string_interpreted_as_image1");
         });
     });
+
     describe("filteredLegend", () => {
         it("returns an empty array if legendObj or legendObj.legend is undefined", () => {
             const propsData = {legendObj: undefined};
@@ -365,9 +303,7 @@ describe("src/modules/legend/components/LegendSingleLayer.vue", () => {
 
         it("returns all legend entries if selectedLayer is null and legend is not grouped", () => {
             const propsData = {
-                legendObj: {
-                    legend: ["legend1", "legend2"]
-                },
+                legendObj: {legend: ["legend1", "legend2"]},
                 selectedLayer: null
             };
 
@@ -381,9 +317,7 @@ describe("src/modules/legend/components/LegendSingleLayer.vue", () => {
 
         it("returns the legend entry for the selected layer index when legend is not grouped", () => {
             const propsData = {
-                legendObj: {
-                    legend: ["legend1", "legend2", "legend3"]
-                },
+                legendObj: {legend: ["legend1", "legend2", "legend3"]},
                 selectedLayer: 1
             };
 
@@ -397,9 +331,7 @@ describe("src/modules/legend/components/LegendSingleLayer.vue", () => {
 
         it("returns an empty array if selectedLayer index is out of bounds and legend is not grouped", () => {
             const propsData = {
-                legendObj: {
-                    legend: ["legend1", "legend2"]
-                },
+                legendObj: {legend: ["legend1", "legend2"]},
                 selectedLayer: 5
             };
 
@@ -495,5 +427,4 @@ describe("src/modules/legend/components/LegendSingleLayer.vue", () => {
             expect(wrapper.vm.filteredLegend).to.deep.equal([]);
         });
     });
-
 });

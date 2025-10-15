@@ -19,6 +19,9 @@ describe("src/modules/mouseHover/components/MouseHover.vue", () => {
             ...MouseHover.actions,
             initialize: sinon.stub()
         };
+        MouseHover.mutations = {
+            ...MouseHover.mutations
+        };
         store = createStore({
             namespaced: true,
             modules: {
@@ -34,12 +37,22 @@ describe("src/modules/mouseHover/components/MouseHover.vue", () => {
                 }
             },
             getters: {
-                mobile: () => false
+                mobile: () => false,
+                mouseHover: () => ({
+                    numFeaturesToShow: 2,
+                    infoText: "Test info"
+                })
             },
             actions: {
                 initializeModule: sinon.stub()
             }
         });
+    });
+
+    afterEach(() => {
+        if (wrapper) {
+            wrapper.unmount();
+        }
     });
 
     it("renders mouseHover module", () => {

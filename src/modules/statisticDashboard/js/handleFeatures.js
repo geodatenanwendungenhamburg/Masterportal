@@ -21,44 +21,45 @@ function filterFeaturesByKeyValue (features, key, value) {
 }
 
 /**
- * Styles the features by values in the statistics.
+ * Gets a style function to be used for the statistics visualization layer.
  * The number of colors in the scheme indicates the number of classes for the styling.
- * @param {ol/Feature[]} features - The features that are styled.
  * @param {Object} statisticData - The statistic whose values are visualized.
  * @param {Number[][]} colorScheme - The color scheme used for styling.
  * @param {String} date - The date for which the values are visualized
  * @param {String} regionKey - The key to the region in the feature.
  * @param {Number[]} stepValues - The step values used as thresholds for classification.
- * @returns {void}
+ * @param {String} [refRegion=null] - The reference region in difference mode, or null.
+ * @param {*} [refColor=null] - The color for the reference region, or null.
+ * @returns {Function} An OpenLayers style function for the layer.
  */
-function styleFeaturesByStatistic (features, statisticData, colorScheme, date, regionKey, stepValues) {
-    if (!Array.isArray(features) || !Array.isArray(colorScheme) || !Array.isArray(stepValues)) {
-        return;
-    }
-    Object.keys(statisticData).forEach((region) => {
-        const index = stepValues.findLastIndex(e => statisticData[region][date] >= e),
-            foundFeature = features.find(feature => feature.get(regionKey) === region);
+function getStyleFunction (statisticData, colorScheme, date, regionKey, stepValues, refRegion = null, refColor = null) {
+    const styleCache = {};
 
-        styleFeature(foundFeature, colorScheme[index]);
-    });
-}
+    return function (feature) {
+        const region = feature.get(regionKey),
+            value = statisticData[region]?.[date],
+            index = stepValues.findLastIndex(e => value >= e),
+            color = colorScheme[index] || [255, 255, 255, 0.9],
+            colorKey = color.join("-");
 
-/**
- * Sets a feature style.
- * @param {ol/Feature} feature - The feature to style.
- * @param {Number[]} [fillColor = [255, 255, 255, 0.9]] - The fill color.
- * @returns {void}
- */
-function styleFeature (feature, fillColor = [255, 255, 255, 0.9]) {
-    feature?.setStyle?.(new Style({
-        fill: new Fill({
-            color: fillColor
-        }),
-        stroke: new Stroke({
-            color: [166, 166, 166, 1],
-            width: 1
-        })
-    }));
+        if (region === refRegion) {
+            return new Style({
+                fill: new Fill({color: refColor}),
+                stroke: new Stroke({color: [166, 166, 166, 1], width: 1})
+            });
+        }
+        if (typeof value === "undefined") {
+            return null;
+        }
+
+        if (!styleCache[colorKey]) {
+            styleCache[colorKey] = new Style({
+                fill: new Fill({color}),
+                stroke: new Stroke({color: [166, 166, 166, 1], width: 1})
+            });
+        }
+        return styleCache[colorKey];
+    };
 }
 
 /**
@@ -68,12 +69,13 @@ function styleFeature (feature, fillColor = [255, 255, 255, 0.9]) {
  * @param {String} date - The date for which the values are visualized
  * @param {string} [classificationMode="quantiles"] - Method of dividing values into classes. "quantiles" or "equalIntervals".
  * @param {Boolean} [allowPositiveNegativeClasses=false] If a class may contain both negative and positive values.
+ * @param {Number} [decimalPlaces=1] - The number of decimal places to round the values.
  * @returns {Number[]} The step values calculated for the given statistic settings.
  */
-function getStepValue (statisticData, numberOfClasses, date, classificationMode = "quantiles", allowPositiveNegativeClasses = false) {
+function getStepValue (statisticData, numberOfClasses, date, classificationMode = "quantiles", allowPositiveNegativeClasses = false, decimalPlaces = 1) {
     const statisticsValues = getStatisticValuesByDate(statisticData, date);
 
-    return calcStepValues(statisticsValues, numberOfClasses, classificationMode, allowPositiveNegativeClasses);
+    return calcStepValues(statisticsValues, numberOfClasses, classificationMode, allowPositiveNegativeClasses, decimalPlaces);
 }
 
 /**
@@ -82,9 +84,10 @@ function getStepValue (statisticData, numberOfClasses, date, classificationMode 
  * @param {Number} [numberOfClasses=5] The number of classes.
  * @param {String} [classificationMode="quantiles"] Method of dividing values into classes. "quantiles" or "equalIntervals".
  * @param {Boolean} [allowPositiveNegativeClasses=false] If a class may contain both negative and positive values.
+ * @param {Number} [decimalPlaces=1] The number of decimal places to round the values.
  * @return {Number[]} The calculated values.
  */
-function calcStepValues (values, numberOfClasses = 5, classificationMode = "quantiles", allowPositiveNegativeClasses = false) {
+function calcStepValues (values, numberOfClasses = 5, classificationMode = "quantiles", allowPositiveNegativeClasses = false, decimalPlaces = 1) {
 
     if (!Array.isArray(values)
         || !values.every(e => isNumber(e))
@@ -108,9 +111,7 @@ function calcStepValues (values, numberOfClasses = 5, classificationMode = "quan
     if (classificationMode === "equalIntervals") {
         const interval = (maxValue - minValue) / numberOfClasses;
 
-        for (let i = 0; i < numberOfClasses; i++) {
-            result.push(minValue + i * interval);
-        }
+        result = Array.from({length: numberOfClasses}, (_, i) => Number((minValue + i * interval).toFixed(decimalPlaces)));
     }
     else if (classificationMode === "quantiles") {
 
@@ -127,12 +128,17 @@ function calcStepValues (values, numberOfClasses = 5, classificationMode = "quan
 
     if (!allowPositiveNegativeClasses && minValue < 0 && maxValue > 0 && !result.includes(0)) {
         const indexOfFirstPositiveStep = result.findIndex(e => e > 0),
-            indexOfLastNegativeStep = indexOfFirstPositiveStep - 1,
+            indexOfLastNegativeStep =
+                indexOfFirstPositiveStep === -1 ? result.length - 1 : indexOfFirstPositiveStep - 1,
             firstPositiveStep = result[indexOfFirstPositiveStep],
             lastNegativeStep = result[indexOfLastNegativeStep],
             numberOfStrictlyNegativeClasses = indexOfLastNegativeStep,
-            isMixClassRatherNegative = Math.abs(lastNegativeStep) > firstPositiveStep,
-            requiredNumberOfNegativeClasses = numberOfStrictlyNegativeClasses + (isMixClassRatherNegative ? 1 : 0) || 1,
+            isMixClassRatherPositive = firstPositiveStep > Math.abs(lastNegativeStep),
+            isMixClassRatherNegative = !isMixClassRatherPositive,
+            requiredNumberOfNegativeClasses = Math.min(
+                Math.max(numberOfStrictlyNegativeClasses + (isMixClassRatherNegative ? 1 : 0), 1),
+                result.length - 1
+            ),
             requiredNumberOfPositiveClasses = result.length - requiredNumberOfNegativeClasses;
 
         result = [
@@ -207,22 +213,37 @@ function prepareLegendForPolygon (legendObj, style) {
 /**
  * Gets the Legend value
  * @param {Object} val - The raw value of legend
+ * @param {Number} [decimalPlaces=2] - The number of decimal places to round the value.
+ * @param {Boolean} [withoutValue=false] - true if there are feature without value.
  * @returns {Object[]} the legend Value
  */
-function getLegendValue (val) {
+function getLegendValue (val, decimalPlaces = 2, withoutValue = false) {
+    const legengValue = [];
+
+    if (withoutValue) {
+        const legendObj = {
+                "name": i18next.t("common:modules.statisticDashboard.legend.noValue")
+            },
+            style = {
+                "polygonFillColor": [255, 255, 255, 0.9],
+                "polygonStrokeColor": [166, 166, 166, 1],
+                "polygonStrokeWidth": 1
+            };
+
+        legengValue.push(prepareLegendForPolygon(legendObj, style));
+    }
+
     if (!isObject(val) || !val?.color || !val?.value) {
-        return [];
+        return legengValue;
     }
 
     if (!Array.isArray(val.color) || !Array.isArray(val.value)) {
-        return [];
+        return legengValue;
     }
 
     if (val.color.length < val.value.length) {
-        return [];
+        return legengValue;
     }
-
-    const legengValue = [];
 
     val.value.forEach((data, index) => {
         if (!isNaN(data) && isFinite(data)) {
@@ -231,7 +252,7 @@ function getLegendValue (val) {
 
             if (index === val.value.length - 1) {
                 legendObj = {
-                    "name": i18next.t("common:modules.statisticDashboard.legend.from") + " " + thousandsSeparator(Number(Number(data).toFixed(2)))
+                    "name": i18next.t("common:modules.statisticDashboard.legend.from") + " " + thousandsSeparator(Number(Number(data).toFixed(decimalPlaces)))
                 };
                 style = {
                     "polygonFillColor": val.color[index],
@@ -241,7 +262,7 @@ function getLegendValue (val) {
             }
             else {
                 legendObj = {
-                    "name": i18next.t("common:modules.statisticDashboard.legend.between", {minimum: thousandsSeparator(Number(Number(data).toFixed(2))), maximum: thousandsSeparator(Number(Number(val.value[index + 1]).toFixed(2)))})
+                    "name": i18next.t("common:modules.statisticDashboard.legend.between", {minimum: thousandsSeparator(Number(Number(data).toFixed(decimalPlaces))), maximum: thousandsSeparator(Number(Number(val.value[index + 1]).toFixed(decimalPlaces)))})
                 };
                 style = {
                     "polygonFillColor": val.color[index],
@@ -250,7 +271,7 @@ function getLegendValue (val) {
                 };
             }
 
-            legengValue[index] = prepareLegendForPolygon(legendObj, style);
+            legengValue.push(prepareLegendForPolygon(legendObj, style));
         }
     });
 
@@ -259,8 +280,7 @@ function getLegendValue (val) {
 
 export default {
     filterFeaturesByKeyValue,
-    styleFeaturesByStatistic,
-    styleFeature,
+    getStyleFunction,
     calcStepValues,
     getStatisticValuesByDate,
     getStepValue,

@@ -78,6 +78,17 @@ describe("src/modules/statiscticDashboard/components/StatisticDashboardDifferenc
 
             expect(wrapper.findComponent(Multiselect).exists()).to.be.true;
         });
+
+        it("should find a des element", () => {
+            const wrapper = shallowMount(StatisticDashboardDifference, {
+                propsData: propsData,
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.find(".des").exists()).to.be.true;
+        });
     });
 
     describe("Methods", () => {

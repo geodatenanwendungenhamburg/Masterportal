@@ -232,7 +232,6 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 }
             }
         };
-        global.XMLHttpRequest = sinon.useFakeXMLHttpRequest();
         sinon.stub(rawLayerList, "getLayerWhere").callsFake(function (searchAttributes) {
             return layerList.find(entry => Object.keys(searchAttributes).every(key => entry[key] === searchAttributes[key])) || null;
         });

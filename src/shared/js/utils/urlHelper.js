@@ -24,9 +24,9 @@ export function isWebLink (value) {
  * @returns {Boolean}  true if the input is recognized as image
  */
 export function isImage (value) {
-    const regExp = new RegExp(/\.jpe?g|\.png|\.gif|\.bmp/i);
+    const regExp = new RegExp(/\.(jpe?g|a?png|gif|webp|bmp|svg)$/i);
 
-    return regExp.test(value);
+    return regExp.test(value?.split?.("?")?.[0]);
 }
 
 /**

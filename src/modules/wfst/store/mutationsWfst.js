@@ -30,6 +30,37 @@ const mutations = {
         featurePropertiesBatch.forEach(featureProperties => {
             featureProperties.find(property => property.key === key).value = value;
         });
+    },
+    /**
+     * Adds a processed MultiPolygon.
+     *
+     * @param {Object} context the Vuex context
+     * @param {Array<Array<Object>>} context.processedMultiPolygons an array of all processed MultiPolygons
+     * @param {Object} value The feature to be added to the processedMultiPolygon Array
+     * @returns {void}
+     */
+    addProcessedMultiPolygon ({processedMultiPolygons}, value) {
+        processedMultiPolygons.add(value);
+    },
+    /**
+     * Sets the void Modal visible
+     *
+     * @param {Object} state the Vuex state
+     * @param {*} payload the payload of the modal
+     */
+    setShowVoidModal (state, payload) {
+        state.showVoidModal = true; // Ensure the modal is displayed
+        state.voidModalCallback = payload; // Store the callbacks and modal data
+    },
+    /**
+     * Removes the void Modal
+     *
+     * @param {Object} state the Vuex state
+     * @param {*} payload the payload of the modal
+     */
+    setHideVoidModal (state) {
+        state.showVoidModal = false;
+        state.voidModalCallback = null;
     }
 };
 

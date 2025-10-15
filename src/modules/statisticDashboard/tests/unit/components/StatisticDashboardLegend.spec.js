@@ -134,6 +134,29 @@ describe("src/modules/statiscticDashboard/components/StatisticDashboardLegend.vu
 
             expect(wrapper.findAll("#value-ranges").length).to.equal(5);
         });
+
+        it("should not render a reset button if classification mode is not 'custom'", () => {
+            const wrapper = shallowMount(StatisticDashboardLegend, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.find("#reset-legend").exists()).to.be.false;
+        });
+
+        it("should render a reset button if classification mode is 'custom'", async () => {
+            const wrapper = shallowMount(StatisticDashboardLegend, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            wrapper.vm.setClassificationMode("custom");
+            await wrapper.vm.$nextTick();
+
+            expect(wrapper.find("#reset-legend").exists()).to.be.true;
+        });
     });
     describe("Number of classes", () => {
         it("should show correct default status according to store", async () => {
@@ -231,7 +254,7 @@ describe("src/modules/statiscticDashboard/components/StatisticDashboardLegend.vu
     });
     describe("Custom classification", () => {
         it("should show correct step values according to store", async () => {
-            const wrapper = shallowMount(StatisticDashboardLegend, {
+            const wrapper = mount(StatisticDashboardLegend, {
                 global: {
                     plugins: [store]
                 }
@@ -242,9 +265,11 @@ describe("src/modules/statiscticDashboard/components/StatisticDashboardLegend.vu
             wrapper.vm.setClassificationMode("custom");
             await wrapper.vm.$nextTick();
 
-            expect(wrapper.getComponent("#value-range1").vm.value).to.equal("0");
-            expect(wrapper.getComponent("#value-range21").vm.value).to.equal("10");
-            expect(wrapper.getComponent("#value-range2").vm.value).to.equal("10");
+
+            expect(wrapper.find("input#value-range1").element.value).to.equal("0");
+            expect(wrapper.find("input#value-range21").element.value).to.equal("10");
+            expect(wrapper.find("input#value-range2").element.value).to.equal("10");
+
         });
         it("should change value in store correctly when changed", async () => {
             const wrapper = mount(StatisticDashboardLegend, {
@@ -253,6 +278,7 @@ describe("src/modules/statiscticDashboard/components/StatisticDashboardLegend.vu
                 }
             });
 
+            wrapper.vm.setStepValuesDebounced = wrapper.vm.setStepValues; // to avoid issues with the debounce in tests
             wrapper.vm.setNumberOfClasses(2);
             wrapper.vm.setStepValues([0, 10]);
             wrapper.vm.setClassificationMode("custom");
@@ -264,7 +290,7 @@ describe("src/modules/statiscticDashboard/components/StatisticDashboardLegend.vu
             expect(wrapper.vm.stepValues).to.deep.equal([3, 10]);
         });
         it("should show correct color value according to store", async () => {
-            const wrapper = shallowMount(StatisticDashboardLegend, {
+            const wrapper = mount(StatisticDashboardLegend, {
                 global: {
                     plugins: [store]
                 }
@@ -276,8 +302,8 @@ describe("src/modules/statiscticDashboard/components/StatisticDashboardLegend.vu
             wrapper.vm.setColorPalette([[255, 0, 0], [0, 255, 0]]);
             await wrapper.vm.$nextTick();
 
-            expect(wrapper.getComponent("#color-range1").vm.value).to.equal("#ff0000");
-            expect(wrapper.getComponent("#color-range2").vm.value).to.equal("#00ff00");
+            expect(wrapper.find("input#color-range1").element.value).to.equal("#ff0000");
+            expect(wrapper.find("input#color-range2").element.value).to.equal("#00ff00");
         });
         it("should change value in store correctly when changed", async () => {
             const wrapper = mount(StatisticDashboardLegend, {
@@ -286,6 +312,7 @@ describe("src/modules/statiscticDashboard/components/StatisticDashboardLegend.vu
                 }
             });
 
+            wrapper.vm.setColorPaletteDebounced = wrapper.vm.setColorPalette; // to avoid issues with the debounce in tests
             wrapper.vm.setNumberOfClasses(2);
             wrapper.vm.setStepValues([0, 10]);
             wrapper.vm.setClassificationMode("custom");

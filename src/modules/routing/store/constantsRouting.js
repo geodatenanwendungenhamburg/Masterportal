@@ -1,6 +1,3 @@
-import DirectionsItem from "../components/Directions/DirectionsItem.vue";
-import IsochronesItem from "../components/Isochrones/IsochronesItem.vue";
-import TsrItem from "../components/TSR/TsrItem.vue";
 
 const speedProfileOptions = [
         "CAR", "HGV", "CYCLING", "FOOT", "WHEELCHAIR"
@@ -11,11 +8,6 @@ const speedProfileOptions = [
         {id: "FERRIES", availableProfiles: ["CAR", "HGV", "CYCLING", "FOOT", "WHEELCHAIR"]},
         {id: "STEPS", availableProfiles: ["CYCLING", "FOOT", "WHEELCHAIR"]},
         {id: "BORDERS", availableProfiles: ["CAR", "HGV"]}
-    ],
-    routingToolOptions = [
-        {id: "DIRECTIONS", component: DirectionsItem},
-        {id: "ISOCHRONES", component: IsochronesItem},
-        {id: "TSR", component: TsrItem}
     ],
     downloadFormatOptions = [
         "KML", "GEOJSON", "GPX"
@@ -34,4 +26,4 @@ const speedProfileOptions = [
         "isochronesSettings.serviceId"
     ];
 
-export {speedProfileOptions, avoidSpeedProfileOptions, routingToolOptions, downloadFormatOptions, downloadFormatOptionsTSR, nonOptionalConfigFields};
+export {speedProfileOptions, avoidSpeedProfileOptions, downloadFormatOptions, downloadFormatOptionsTSR, nonOptionalConfigFields};

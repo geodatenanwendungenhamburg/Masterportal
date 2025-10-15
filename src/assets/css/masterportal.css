@@ -84,13 +84,6 @@ label {
     margin-bottom: 0;
 }
 
-.cluster {
-    font-size:25px;
-    border-radius:30px!important;
-    float:left;
-    margin:10px;
-}
-
 /* For center anything in the unknown */
 .centered-box-wrapper {
     text-align: center;

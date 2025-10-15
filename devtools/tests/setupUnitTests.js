@@ -75,6 +75,10 @@ global.CanvasPattern = canvas.CanvasPattern;
  */
 enableAutoUnmount(afterEach);
 
+beforeEach(() => {
+    sinon.restore();
+});
+
 // root hook to run after every test (even in other files)
 afterEach(function () {
     sinon.restore();

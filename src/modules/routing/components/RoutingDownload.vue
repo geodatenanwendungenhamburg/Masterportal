@@ -7,6 +7,7 @@ import directionsRouteStyle from "../js/map/directions/route/directionsRouteStyl
 import tsrRouteStyle from "../js/map/tsr/route/tsrRouteStyle";
 import Feature from "ol/Feature";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
+import InputText from "@shared/modules/inputs/components/InputText.vue";
 
 /**
  * RoutingDownload
@@ -19,7 +20,8 @@ import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 export default {
     name: "RoutingDownload",
     components: {
-        FlatButton
+        FlatButton,
+        InputText
     },
     props: {
         hideGpx: {
@@ -377,13 +379,12 @@ export default {
             >{{ $t('common:modules.routing.download.filename') }}</label>
 
             <div class="col-md-8">
-                <input
+                <InputText
                     id="routing-download-filename"
                     v-model="download.fileName"
-                    type="text"
-                    class="form-control"
-                    :placeholder="$t('common:modules.routing.download.filenamePlaceholder')"
-                >
+                    :label="$t('common:modules.routing.download.filename')"
+                    :placeholder="$t('common:modules.routing.download.filename')"
+                />
             </div>
         </div>
 

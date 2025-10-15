@@ -55,7 +55,7 @@ export default {
      */
     prepareFeatureListToShow: function ({state, commit}, gfiAttributes) {
         const list = [],
-            layerId = parseInt(gfiAttributes.layerId.split("_")[0], 10),
+            layerId = gfiAttributes.layerId,
             featureList = state.layerFeatures[layerId],
             lengths = [],
             listHeaders = [],

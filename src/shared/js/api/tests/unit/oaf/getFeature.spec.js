@@ -67,10 +67,10 @@ describe("src/shared/js/api/oaf", () => {
             expect(catchError).to.not.be.null;
             expect(catchError).to.deep.equal(new Error(`Please provide a collection! Got ${undefined}`));
         });
-        it("should returns a promise which rejects if last param is undefined and fourth param is set", async () => {
+        it("should returns a promise which rejects if param filterCrs is undefined and param filter is set", async () => {
             let catchError = null;
 
-            await getOAFFeature.getOAFFeatureGet("", "", undefined, {}, undefined).catch(error => {
+            await getOAFFeature.getOAFFeatureGet("", "", {filter: ""}).catch(error => {
                 catchError = error;
             });
 
@@ -96,7 +96,7 @@ describe("src/shared/js/api/oaf", () => {
                 param5 = "filterCrs",
                 param6 = undefined;
 
-            await getOAFFeature.getOAFFeatureGet(param1, param2, param3, param4, param5, param6);
+            await getOAFFeature.getOAFFeatureGet(param1, param2, {limit: param3, filter: param4, filterCrs: param5, crs: param6});
             expect(oafRecursionHelperStub.calledWith([], `${param1}/collections/${param2}/items?limit=${param3}&filter=${param4}&filter-crs=${param5}`)).to.be.true;
             sinon.restore();
         });
@@ -109,7 +109,7 @@ describe("src/shared/js/api/oaf", () => {
                 param5 = "filterCrs",
                 param6 = "crs";
 
-            await getOAFFeature.getOAFFeatureGet(param1, param2, param3, param4, param5, param6);
+            await getOAFFeature.getOAFFeatureGet(param1, param2, {limit: param3, filter: param4, filterCrs: param5, crs: param6});
             expect(oafRecursionHelperStub.calledWith([], `${param1}/collections/${param2}/items?limit=${param3}&filter=${param4}&filter-crs=${param5}&crs=${param6}`)).to.be.true;
             sinon.restore();
         });
@@ -195,6 +195,55 @@ describe("src/shared/js/api/oaf", () => {
                 {href: "hrefD", rel: "next", type: "application/geo+json"},
                 {href: "hrefE", rel: "this is not a next page"}
             ]})).to.equal("hrefD");
+        });
+    });
+    describe("getOAFFeatureStream", () => {
+        it("should return a ReadableStream", () => {
+            const stream = getOAFFeature.getOAFFeatureStream();
+
+            expect(stream).to.be.instanceOf(ReadableStream);
+        });
+
+        it("should enqueue the correct number of features", async () => {
+            sinon.stub(axios, "get").resolves({
+                data: {
+                    features: [
+                        {type: "Feature", geometry: null, properties: {id: 1}},
+                        {type: "Feature", geometry: null, properties: {id: 2}}
+                    ]
+                }
+            });
+
+            const stream = getOAFFeature.getOAFFeatureStream("http://test"),
+                reader = stream.getReader(),
+                features = [];
+            let done, value;
+
+            do {
+                ({done, value} = await reader.read());
+                if (value) {
+                    features.push(value);
+                }
+            } while (!done);
+
+            expect(features.length).to.equal(2);
+            sinon.restore();
+        });
+
+        it("should request the nextUrl if present", async () => {
+            const axiosGetStub = sinon.stub(axios, "get");
+
+            getOAFFeature.getOAFFeatureStream();
+
+            axiosGetStub.onFirstCall().resolves({
+                data: {
+                    links: [{rel: "next", href: "http://next"}]
+                }
+            }).onSecondCall().callsFake(() => {
+                expect(axiosGetStub.secondCall.args[0]).to.equal("http://next");
+            });
+
+            sinon.restore();
         });
     });
     describe("getUniqueValuesByScheme", () => {

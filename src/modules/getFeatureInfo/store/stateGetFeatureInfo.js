@@ -22,7 +22,8 @@
  * * @property {Object} [globeEventHandler=null] - The event handler for managing user interactions with the map (e.g., for highlighting 3D tiles).
  * This handler is created when user interaction with the map is needed (e.g., a left-click to highlight a feature).
  * @property {Object} [lastPickedFeatureId=null] The ID of the last feature that was picked or interacted with by the user.
- */
+ * @property {Boolean|null} [menuExpandedBeforeGfi=null] - Tracks whether the menu was expanded before opening GFI. Used to restore the menu state correctly when no GFI features are found.
+*/
 export default {
     centerMapToClickPoint: false,
     clickCoordinates: [],
@@ -43,5 +44,6 @@ export default {
     type: "getFeatureInfo",
     visible: false,
     globeEventHandler: null,
-    lastPickedFeatureId: null
+    lastPickedFeatureId: null,
+    menuExpandedBeforeGfi: null
 };

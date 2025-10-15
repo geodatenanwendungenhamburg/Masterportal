@@ -4,9 +4,6 @@ import sinon from "sinon";
 import {config, shallowMount} from "@vue/test-utils";
 import {createStore} from "vuex";
 
-const Storage = require("dom-storage");
-
-global.localStorage = new Storage(null, {strict: true});
 
 config.global.mocks.$t = key => key;
 config.global.mocks.$i18n = {
@@ -17,6 +14,53 @@ config.global.mocks.$i18n = {
         }
     }
 };
+/**
+ * Mock class for localStorage (used in tests)
+ */
+class LocalStorageMock {
+    /**
+     * Internal store object
+     * @type {Object}
+     */
+    constructor () {
+        this.store = {};
+    }
+    /**
+   * Clear all stored keys
+   */
+    clear () {
+        this.store = {};
+    }
+    /**
+   * Get an item by key
+   * @param {string} key
+   */
+    getItem (key) {
+        /**
+   * @returns {string|null}
+   */
+        return Object.prototype.hasOwnProperty.call(this.store, key)
+            ? this.store[key]
+            : null;
+    }
+    /**
+   * Set an item by key
+   * @param {string} key
+   * @param {string} value
+   */
+    setItem (key, value) {
+        this.store[key] = String(value);
+    }
+    /**
+   * Remove an item by key
+   * @param {string} key
+   */
+    removeItem (key) {
+        delete this.store[key];
+    }
+}
+
+global.localStorage = new LocalStorageMock();
 
 describe("src/modules/alerting/components/AlertingItem.vue", () => {
     let alerts,

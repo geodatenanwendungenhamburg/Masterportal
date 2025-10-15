@@ -85,6 +85,20 @@ export default {
             });
 
             this.setShowAllResults(true);
+        },
+        /**
+         * Returns the first search result object belonging to the given category.
+         * Useful for accessing category-specific properties such as `imagePath` or `icon`.
+         *
+         * @param {String} category - The category name to search for.
+         * @returns {Object|undefined} The first search result matching the category, or `undefined` if none is found.
+         */
+        getFirstByCategory (category) {
+            const results = this.limitedSortedSearchResults.results;
+
+            return Object.values(results).find(
+                (item) => item?.category === category
+            );
         }
     }
 };
@@ -106,12 +120,13 @@ export default {
                 :title="$t('common:modules.searchBar.searchResultsFrom') + limitedSortedSearchResults.results.categoryProvider[categoryItem] + '-' + $t('common:modules.searchBar.search')"
             >
                 <img
-                    v-if="limitedSortedSearchResults.results[categoryItem + 'ImgPath']"
+                    v-if="getFirstByCategory(categoryItem)?.imagePath"
                     alt="search result image"
-                    src="searchResult.imgPath"
+                    class="search-bar-suggestion-image"
+                    :src="getFirstByCategory(categoryItem).imagePath"
                 >
                 <i
-                    v-if="!limitedSortedSearchResults.results[categoryItem + 'ImgPath']"
+                    v-if="!getFirstByCategory(categoryItem)?.imagePath"
                     :class="limitedSortedSearchResults.results[categoryItem + 'Icon']"
                 />
 
@@ -162,5 +177,14 @@ button {
     display: flex;
     justify-content: right;
     align-items: right;
+}
+.search-bar-suggestion-image{
+    float: left;
+    max-width: 21px;
+    max-height: 21px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    margin-right: 0.5rem;
 }
 </style>

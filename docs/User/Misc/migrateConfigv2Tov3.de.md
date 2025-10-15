@@ -2,7 +2,7 @@
 
 1.  Klonen des aktuellen Masterportal Git Repositories (falls noch nicht vorhanden).
 ```json
-git clone https://fmlgv@bitbucket.org/geowerkstatt-hamburg/masterportal.git
+git clone https://bitbucket.org/geowerkstatt-hamburg/masterportal.git
 ```
 
 2. Auschecken des aktuellen Masterportal 3.0.0 Entwicklungsbranches per Git.
@@ -13,8 +13,28 @@ git checkout dev
 ```json
 npm run migrateConfig help
 ```
-
-4. MigrateConfig script ohne Parameter: Die Angaben in der Konsole leiten durch die Dateikonvertierung. Es wird nach den Pfaden des zu migrierenden Portals gefragt.
+4. Für die Migration sind gewisse Packages auf gewissen Versionen zwingend erforderlich. Dabei handelt es sich um node und npm mit den in der package.json definierten Versionsnummern. In der Masterportal Version 3.13.0 steht dort:
+```json
+  "engines": {
+    "node": "^22.19.0",
+    "npm": "^10.5.0"
+  }
+```
+Ob die packages schon installiert sind und auf welcher Version lässt sich über folgende Befehle herausfinden:
+```json
+npm -v
+```
+```json
+node -v
+```
+Falls diese Versionen nicht korrekt sind, lassen sich die korrekten Versionen mit folgenden Befehlen installieren:
+```json
+npm install -g npm@10.5.0
+```
+```json
+npm install -g node@20.19.0
+```
+5. MigrateConfig script ohne Parameter: Die Angaben in der Konsole leiten durch die Dateikonvertierung. Es wird nach den Pfaden des zu migrierenden Portals gefragt.
 ```json
 npm run migrateConfig
 ```
@@ -35,7 +55,7 @@ The paths to the portal or folder with portals must start from "[...]/masterport
  (portal/destination)portal/testportal_v3
 ```
 
-5. MigrateConfig mit Parametern aufrufen.
+6. MigrateConfig mit Parametern aufrufen.
 
 - Migration eines Portals:
 ```json

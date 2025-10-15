@@ -1,6 +1,7 @@
 import layerCollection from "@core/layers/js/layerCollection";
 import {treeSubjectsKey} from "@shared/js/utils/constants";
 import store from "@appstore";
+import {resetRenderListeners} from "@shared/js/utils/resetRenderListeners";
 
 export default {
     windowWidthChanged ({commit, dispatch, state, getters, rootGetters}) {
@@ -126,15 +127,8 @@ export default {
             const targetLayer = layerCollection.getLayerById(secondId),
                 sourceLayer = layerCollection.getLayerById(id);
 
-            targetLayer?.getLayer().un("prerender", renderEvent => dispatch("drawLayer", renderEvent));
-            targetLayer?.getLayer().un("postrender", ({context}) => {
-                context.restore();
-            });
-
-            sourceLayer?.getLayer().un("prerender", renderEvent => dispatch("drawLayer", renderEvent));
-            sourceLayer?.getLayer().un("postrender", ({context}) => {
-                context.restore();
-            });
+            resetRenderListeners(targetLayer);
+            resetRenderListeners(sourceLayer);
 
             // If the button of the "original" window is clicked, it is assumed, that the time value selected in the added window is desired to be further displayed.
             if (!id.endsWith(state.layerAppendix)) {
@@ -161,7 +155,8 @@ export default {
                     layer: {
                         id: secondId,
                         visibility: false,
-                        showInLayerTree: false
+                        showInLayerTree: false,
+                        zIndex: layer.attributes.zIndex
                     }
                 }]
             }, {root: true});

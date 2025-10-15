@@ -99,6 +99,10 @@ export default {
                 return layer.get("gfiAttributes") !== "ignore";
             });
 
+        if (getters.menuExpandedBeforeGfi === null) {
+            commit("setMenuExpandedBeforeGfi", rootGetters["Menu/expanded"](getters.menuSide));
+        }
+
         Promise.all(gfiWmsLayerList.map(layer => {
             const gfiParams = {
                 INFO_FORMAT: layer.get("infoFormat"),
@@ -140,7 +144,21 @@ export default {
                 }
                 else {
                     commit("setGfiFeatures", null);
+
+                    const currentComponent = rootGetters["Menu/currentComponent"](getters.menuSide),
+                        isGfiActive = currentComponent?.type === "getFeatureInfo";
+
+                    if (!isGfiActive) {
+                        return;
+                    }
+
                     commit("Menu/switchToPreviousComponent", getters.menuSide, {root: true});
+
+                    if (!getters.menuExpandedBeforeGfi) {
+                        commit("Menu/setExpandedBySide", {expanded: false, side: getters.menuSide}, {root: true});
+                    }
+
+                    commit("setMenuExpandedBeforeGfi", null);
                 }
             })
             .catch(error => {

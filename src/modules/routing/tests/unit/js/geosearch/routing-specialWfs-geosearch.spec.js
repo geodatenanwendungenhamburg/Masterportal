@@ -42,7 +42,8 @@ describe("src/modules/routing/js/geosearch/routing-specialWfs-geosearch.js", () 
     beforeEach(() => {
         sinon.stub(i18next, "t").callsFake((...args) => args);
         store.getters = {
-            restServiceById: () => ({url: "tmp"})
+            restServiceById: () => ({url: "tmp"}),
+            directionsWaypointsSource: () => []
         };
         store.state.Modules.Routing.geosearch.propertyNames = ["ms:LABEL_TEXT"];
         store.state.Modules.Routing.geosearch.typeName = "ms:strasse_nr";

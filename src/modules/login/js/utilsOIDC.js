@@ -296,26 +296,30 @@ async function renewTokenIfNecessary (access_token, refresh_token, config) {
  * @param {String} token jwt token to be parsed
  * @returns {String} parsed jwt token as object
  */
+/**
+ * Parses jwt token. This function does *not* validate the token.
+ * @param {String} token jwt token to be parsed
+ * @returns {Object} parsed jwt token as object
+ */
 function parseJwt (token) {
     try {
-        if (!token) {
+        const parts = token.split("."),
+            payload = parts[1],
+            base64 = payload ? payload.replace(/-/g, "+").replace(/_/g, "/") : "",
+            padded = payload ? base64 + "=".repeat((4 - (base64.length % 4)) % 4) : "",
+            json = payload ? Buffer.from(padded, "base64").toString("utf8") : "";
+
+        if (!token || typeof token !== "string") {
             return {};
         }
 
-        const base64Url = token.split(".")[1],
-            base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/"),
-            jsonPayload = decodeURIComponent(window.atob(base64).split("").map(function (c) {
-                return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(""));
-
-        if (!base64Url) {
+        if (!payload) {
             return {};
         }
 
-        return JSON.parse(jsonPayload);
+        return JSON.parse(json);
     }
     catch (e) {
-        // Bei ungültigen Token oder anderen Fehlern, geben Sie ein leeres Objekt zurück
         return {};
     }
 }

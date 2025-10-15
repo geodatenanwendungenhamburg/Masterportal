@@ -98,7 +98,7 @@ export default {
         this.setBaselayers(baselayerConfigs);
 
         document.addEventListener("click", event => {
-            const baselayerSwitcher = document.getElementById("baselayer-switcher"),
+            const baselayerSwitcher = this.$refs["baselayer-switcher"],
                 isClickInside = baselayerSwitcher ? baselayerSwitcher.contains(event.target) : false;
 
             if (!isClickInside) {
@@ -149,6 +149,7 @@ export default {
     <div
         v-if="baselayers.length > 0 && active"
         id="baselayer-switcher"
+        ref="baselayer-switcher"
         class="btn-group-vertical my-5 btn-group-background-switcher shadow"
         role="group"
     >

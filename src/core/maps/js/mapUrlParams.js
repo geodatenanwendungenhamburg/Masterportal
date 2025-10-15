@@ -231,12 +231,15 @@ function highlightFeature (params) {
  * @returns {void}
  */
 function highlightFeaturesByAttributes (params) {
+    if (!params.ATTRIBUTENAME && !params.ATTRIBUTEVALUE && !params.ATTRIBUTEQUERY || !params.WFSID) {
+        return;
+    }
     const attributeName = params.ATTRIBUTENAME,
         attributeValue = params.ATTRIBUTEVALUE,
         attributeQuery = params.ATTRIBUTEQUERY,
         wfsId = params.WFSID;
 
-    if (attributeName && attributeValue && wfsId) {
+    if (attributeName && attributeValue && attributeQuery && wfsId) {
         highlightFeaturesByAttribute.highlightFeaturesByAttribute(
             store.dispatch,
             store.getters,

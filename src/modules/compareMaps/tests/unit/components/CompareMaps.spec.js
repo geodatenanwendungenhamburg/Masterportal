@@ -9,7 +9,7 @@ import mutations from "@modules/compareMaps/store/mutationsCompareMaps";
 config.global.mocks.$t = key => key;
 
 describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
-    let store, rootCommitSpy, wrapper, map;
+    let store, rootCommitSpy, rootDispatchSpy, wrapper, map;
 
     beforeEach(() => {
         map = {
@@ -23,6 +23,7 @@ describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
         mapCollection.clear();
         mapCollection.addMap(map, "2D");
         rootCommitSpy = sinon.spy();
+        rootDispatchSpy = sinon.spy();
 
         store = createStore({
             modules: {
@@ -33,6 +34,10 @@ describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
                             namespaced: true,
                             mutations: {
                                 ...mutations
+                            },
+                            actions: {
+                                activateSwiper: sinon.stub(),
+                                deactivateSwiper: sinon.stub()
                             },
                             getters: {
                                 layerNames: () => [{name: "Layer 1", id: "layer1"}, {name: "Layer 2", id: "layer2"}],
@@ -79,6 +84,7 @@ describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
         });
 
         store.commit = rootCommitSpy;
+        store.dispatch = rootDispatchSpy;
     });
 
     afterEach(() => {
@@ -120,11 +126,9 @@ describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
         expect(wrapper.vm.selectedLayer1).to.be.null;
         expect(wrapper.vm.selectedLayer2).to.be.null;
 
+        expect(rootDispatchSpy.calledWith("Modules/CompareMaps/deactivateSwiper")).to.be.true;
         expect(rootCommitSpy.calledWith("Modules/CompareMaps/setSelectedLayer1Id", "", undefined)).to.be.true;
         expect(rootCommitSpy.calledWith("Modules/CompareMaps/setSelectedLayer2Id", "", undefined)).to.be.true;
-        expect(rootCommitSpy.calledWith("Modules/LayerSwiper/setSourceLayerId", "", undefined)).to.be.true;
-        expect(rootCommitSpy.calledWith("Modules/LayerSwiper/setTargetLayerId", "", undefined)).to.be.true;
-        expect(rootCommitSpy.calledWith("Modules/LayerSwiper/setActive", false, undefined)).to.be.true;
     });
 
     it("render labels for vertical split", async () => {

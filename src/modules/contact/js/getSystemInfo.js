@@ -20,7 +20,7 @@ function getSystemInfo (title) {
         portalTitle: title || document.title,
         referrer: window.location.href,
         platform,
-        cookieEnabled,
+        cookieEnabled: Boolean(cookieEnabled),
         userAgent
     };
 }

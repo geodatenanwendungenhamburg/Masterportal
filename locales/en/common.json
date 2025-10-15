@@ -54,6 +54,12 @@
       "accessibilityStatement": "Accessibility statement",
       "contactButton": "Get in contact"
     },
+    "additional": {
+      "userManual": {
+        "name": "Instructions",
+        "fileTitle": "Instructions for using the tool"
+      }
+    },
     "addWMS": {
       "alertTitleSuccess": "Layer added successfully",
       "alreadyAdded": "The layers of the requested WMS have already been added.",
@@ -172,6 +178,7 @@
       "orientation": {
         "distanceUnit": "meters",
         "geolocationDeniedText": "Localisation is not available",
+        "iFrameGeolocationError": "Localisation within an iFrame is currently not possible, please open this <a href='#' target=`_blank`>portal</a> in a new Tab or Window",
         "imgAlt": "picture for point of interest",
         "poiChoiceCurrentPosition": "Current location",
         "poiChoiceCustomPosition": "Search address or set point in map",
@@ -296,8 +303,10 @@
         "attributeDuplicatedKeyError": "Key already exists!",
         "attributeKeyError": "Attribute key must be set!",
         "input": {
-          "key": "New attribute key",
-          "value": "New attribute value"
+          "key": "Attribute Key",
+          "value": "Attribute Value",
+          "newKey": "New attribute key",
+          "newValue": "New attribute value"
         },
         "noFeatureSelected": "Please select a feature!",
         "remove": "Delete",
@@ -347,7 +356,8 @@
         "drawDoubleCircle": "Double circle",
         "drawLine": "Line",
         "drawSymbol": "Symbol",
-        "writeText": "Text"
+        "writeText": "Text",
+        "drawSquare": "Square"
       },
       "fontName": "Font",
       "fontSize": "Font size",
@@ -377,9 +387,14 @@
       "transparencyOutline": "Transparency Outline",
       "undefinedInnerCircle": "Please also define the inner circle.",
       "undefinedOuterCircle": "Please also define the outer circle.",
+      "undefinedSquareArea": "Please define the area of the square.",
       "undefinedRadius": "Please specify a radius.",
       "undefinedTwoCircles": "Please define both circles.",
-      "unit": "Unit"
+      "unit": "Unit",
+      "squareDefinedInfo": " (without taking into account the curvature of the earth)",
+      "areaLabel": "Area",
+      "squareSideLengthLabel": "Side Length",
+      "lineLengthLabel": "Total Length"
     },
     "featureLister": {
       "chooseTheme": "Choose theme",
@@ -641,7 +656,8 @@
       "deselectAll": "Remove all",
       "selectedSubjectsCount_other": "Please select a topic",
       "addSelectedSubjectsToMap_one": "Add selected topic to the map",
-      "addSelectedSubjectsToMap_other": "Add {{count}} selected topics to the map"
+      "addSelectedSubjectsToMap_other": "Add {{count}} selected topics to the map",
+      "noResults": "No results found for \"{{filterText}}\"."
     },
     "layerSlider": {
       "description": "Start a slideshow",
@@ -653,8 +669,7 @@
       "serviceFour": "Service 4",
       "sliderTypeHandle": "Slidermode",
       "sliderTypePlayer": "Playermode",
-      "title": "Simulation of example services",
-      "titleNotConfigured": "Title not configured"
+      "title": "Simulation of example services"
     },
     "layerTree": {
       "addLayer": "Add layer",
@@ -896,7 +911,9 @@
       "vtlWarning": "Since MapFish 3 does not support Vector Tile Layers, the following active layers will not appear in the print view:",
       "waitForPrintErrorMessage": "Printout creation has failed.<br>Please try again at a later time or contact the portal operator.",
       "withInfoLabel": "With information",
-      "withLegendLabel": "With legend"
+      "withLegendLabel": "With legend",
+      "predefinedLegendInfo": "The layer \"{{layerName}}\" contains a predefined legend.",
+      "predefinedLegendDownload": "This legend cannot be added to the print. You can download the predefined legend separately from the download menu."
     },
     "routing": {
       "addWaypoint": "Add Waypoint",
@@ -921,6 +938,16 @@
         "structure": "Structure",
         "uploadFile": "Upload File"
       },
+      "contextMenu": {
+        "addAvoidPoint": "Add barrier point",
+        "addEndpoint": "Add endpoint",
+        "addStartpoint": "Add startpoint",
+        "addWaypoint": "Add waypoint",
+        "avoidPointModalTitle": "Radius of barrier point",
+        "header": "Actions",
+        "removeAvoidPoint": "Remove barrier point",
+        "removePoint": "Remove point"
+      },
       "coordinateInputHelp": "Find a place or add a point by clicking on the map",
       "deleteWaypoint": "Delete Waypoint",
       "description": "Find out the fastest way to get to your destination or set a search radius",
@@ -941,6 +968,7 @@
           "errorSomeFailed": "{{countFailed}} Results could not be calculated correctly. The result file contains empty cells at these positions.",
           "errorToManyEntriesInFile": "Maximum number of lines exceeded ({{limit}})",
           "errorToManyEntriesInRow": "Line {{row}} contains more than 5 entries, please note the File-Structure (ID;lon(Startpoint);lat(Startpoint);lon(Endpoint);lat(Endpoint))",
+          "errorContextMenuSetPoint": "No point could be set here.",
           "structure": "ID;lon(Startpoint);lat(Startpoint);lon(Endpoint);lat(Endpoint)"
         },
         "deleteRestrictedAreas": "Delete Barrier areas",
@@ -1049,7 +1077,14 @@
           "area": "Area:"
         },
         "interval": "Interval",
-        "legend": "Legend",
+        "legend": {
+          "area": "Area",
+          "color": "Color",
+          "distance": "Distance",
+          "population": "Population",
+          "time": "Time",
+          "title": "Legend"
+        },
         "maxDistance": "Maximum distance",
         "maxTraveltime": "Maximum travel time",
         "optimization": {
@@ -1078,6 +1113,9 @@
         "axleload": "Axleload",
         "axleloadTooltip": "Truck axle load. Accepted values: 0 to 19 tons",
         "hazmat": "Hazardous materials"
+      },
+      "settings": {
+        "submit": "Submit"
       },
       "speedprofiles": {
         "CAR": "Car",
@@ -1157,6 +1195,7 @@
         "addressDistrict": "Search address, district",
         "addressHospitalBplan": "Search for Address/Hospital/B-Plan",
         "addressTopic": "Search address, district, topics",
+        "addressOrTopic": "Search address or topics",
         "addressTopicParcel": "Search address, district, topics, parcel",
         "startWithAddress": "Start here with address!"
       },
@@ -1178,6 +1217,8 @@
       "searchResultsFrom": "search results from: ",
       "mark": "Select the topic",
       "add": "Add Topic",
+      "minCharHint": "Please enter at least {{min}} characters to start the search.",
+      "noResults": "No results found.",
       "type": {
         "address": "address",
         "county": "county",
@@ -1218,20 +1259,29 @@
       "headings": {
         "mrhstatistics": "MRH Statistics",
         "mrhstatisticsTooltip": "Link to the metadata",
-        "addFilter": "Add Filter"
+        "addFilter": "Add Filter",
+        "filter": "Filter",
+        "addStatisticalData": "Select statistical data",
+        "addArea": "Select areas",
+        "addTime": "Select time period"
       },
-      "infoText": "Note: For many areas, only a part is initially shown in the diagram (based on the table sorting). Additional areas can be added using the field at the bottom.",
+      "infoText": "Note: For many areas, only a part is initially shown in the diagram. Additional areas can be added using the field at the bottom.",
+      "infoTextNoData": "No or not all necessary filters have been added yet. To display statistical data in tables and diagrams, the data must first be filtered.",
       "button": {
         "difference": "Difference",
         "table": "Table",
         "chart": "Chart",
-        "add": "Add",
+        "add": "Add Filter",
+        "edit": "Edit Filter",
         "reset": "Delete All",
         "filter": "Filter",
         "showMore": "show more...",
         "showLess": "show less...",
         "done": "Done",
-        "all": "All"
+        "all": "All",
+        "statistics": "Statistics",
+        "geographical": "Geographical filters",
+        "timeBased": "Time-based filters"
       },
       "label": {
         "category": "Category",
@@ -1248,10 +1298,15 @@
         "additional": "Additional"
       },
       "reference": {
-        "title": "Reference type",
+        "title": "Difference mode",
+        "optionDate": "Which year should be used as reference?",
+        "optionArea": "Which area should be used as reference?",
         "description": "Differential values, related to a reference year or area.",
         "placeholder": "Please choose at least one option!",
-        "tagLabel": "Reference"
+        "tagLabel": "Reference",
+        "year": "Reference year {{value}}",
+        "region": "Reference region {{value}}",
+        "difference": "Difference"
       },
       "legend": {
         "under": "under",
@@ -1260,6 +1315,8 @@
         "nodata": "Visualization of data from multiple statistics on the map is not available.",
         "legend": "Map legend",
         "edit": "Edit",
+        "arrowLeft": "Slide to left",
+        "arrowRight": "Slide to right",
         "editClassification": "Edit classification",
         "classification": "Classification",
         "numberOfClasses": "Number of classes",
@@ -1273,10 +1330,14 @@
         "quantile": "Equal class sizes (quantiles)",
         "customized": "Customized",
         "andAbove": "and above",
-        "invalidCustomStepsAlert": "Warning: Threshold values for classification must be ascending numbers!"
+        "invalidCustomStepsAlert": "Warning: Threshold values for classification must be ascending numbers!",
+        "noValue": "Missing values are in white color",
+        "previewLegend": "Preview classification"
       },
-      "totalHint": "Attention: The sum function does not distinguish between absolute numbers, percentages, mean values or relative values (e.g. inhabitants per square meter). The totals are therefore not always interpretable. Please note in the context of the selected statistics.",
-      "backToOverview": "Overview of Diagrams"
+      "totalHint": "Attention: The sum function does not distinguish between absolute numbers, percentages, mean values or relative values (e.g. inhabitants per square meter). The totals are therefore not always interpretable. Please note in the context of the selected statistics. Missing values are not included in the calculation.",
+      "backToOverview": "Overview of Diagrams",
+      "filterHint": "All fields must be completed in order to display the filter results.",
+      "backToStatisticDashboard":"Back to Overview"
     },
     "shadow": {
       "name": "Shadows",
@@ -1368,7 +1429,8 @@
         "point": "Add point",
         "polygon": "Add area",
         "update": "Edit",
-        "multiUpdate": "Edit"
+        "multiUpdate": "Edit",
+        "multiPolygon": "Add multipolygon"
       },
       "multiUpdate": {
         "oneSelected": "Object was selected:",
@@ -1385,6 +1447,10 @@
               "box": "activate rectangle selection"
             }
         }
+      },
+      "confirmVoidFeatureCreation": {
+        "textContent": "Would you like to create a multipolygon with a void (donut polygon)?",
+        "headline": "Polygon creation with void"
       },
       "layerSelectLabel": "Current layer:",
       "name": "WFS-T Tool",
@@ -1423,6 +1489,21 @@
           "play": "Playback of all points in time of the layer, starting from the currently selected point in time."
         },
         "inputRangeLabel": "Choose a point in time"
+      }
+    },
+    "pagination": {
+      "aria": {
+        "previous": "Previous page",
+        "next": "Next page",
+        "go": "Go to page"
+      },
+      "input": {
+        "label": "Page",
+        "placeholder": "Page",
+        "tooltip": "Enter page number and press Enter or click the arrow to jump to that page"
+      },
+      "button": {
+        "goTooltip": "Jump to the entered page"
       }
     }
   },
@@ -1540,7 +1621,8 @@
         "fullscreenViewActiveToolTip": "Switch to a smaller table view",
         "settingsTooltip": "Filter table contents",
         "resetToolTip": "Reset table filters",
-        "fullscreenView": "Fullscreen view"
+        "fullscreenView": "Fullscreen view",
+        "fullscreenViewActive": "Compact view"
       }
     }
   },

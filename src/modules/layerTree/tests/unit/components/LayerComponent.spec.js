@@ -3,7 +3,7 @@ import {config, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
 
-import layerFactory from "@core/layers/js/layerFactory";
+import layerTypes from "@core/layers/js/layerTypes";
 import LayerComponent from "@modules/layerTree/components/LayerComponent.vue";
 
 config.global.mocks.$t = key => key;
@@ -33,7 +33,7 @@ describe("src/modules/layerTree/components/LayerComponent.vue", () => {
         };
 
         replaceByIdInLayerConfigSpy = sinon.spy();
-        sinon.stub(layerFactory, "getLayerTypes3d").returns(["TERRAIN3D"]);
+        sinon.stub(layerTypes, "getLayerTypes3d").returns(["TERRAIN3D"]);
         store = createStore({
             modules: {
                 Modules: {

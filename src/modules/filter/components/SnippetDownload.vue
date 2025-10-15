@@ -1,6 +1,7 @@
 <script>
 import ExportButtonCSV from "@shared/modules/buttons/components/ExportButtonCSV.vue";
 import ExportButtonGeoJSON from "@shared/modules/buttons/components/ExportButtonGeoJSON.vue";
+import InputText from "@shared/modules/inputs/components/InputText.vue";
 import openlayerFunctions from "../utils/openlayerFunctions";
 import isObject from "@shared/js/utils/isObject";
 import {GeoJSON} from "ol/format.js";
@@ -23,7 +24,8 @@ export default {
     name: "SnippetDownload",
     components: {
         ExportButtonCSV,
-        ExportButtonGeoJSON
+        ExportButtonGeoJSON,
+        InputText
     },
     props: {
         filteredItems: {
@@ -195,14 +197,14 @@ export default {
                     {{ $t("common:modules.filter.download.filename") }}
                 </label>
                 <div class="col-md-7">
-                    <input
+                    <InputText
                         id="tool-filter-download-filename"
                         v-model="filename"
-                        type="text"
-                        class="form-control form-control-sm"
+                        :class-obj="['form-control-sm']"
                         :placeholder="$t('common:modules.filter.download.enterFilename')"
+                        :label="$t('common:modules.filter.download.filename')"
                         @keyup="enableDownloadBtn"
-                    >
+                    />
                 </div>
             </div>
             <div v-if="enableFileDownload && selectedFormat==='CSV'">

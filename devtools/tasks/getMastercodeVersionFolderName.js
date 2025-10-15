@@ -10,7 +10,7 @@ const path = require("path"),
  *
  * @module utilities/getMastercodeVersionFolderName
  * @returns {String} A unique folder name string, formatted with the stable version,
- *                   branch, Git last commit date, and creation date.
+ *                   branch, Git last commit date.
  *
  * @requires path - Node's path module for handling and transforming file paths.
  * @requires gitRevSync - A module for synchronously retrieving Git information (`gitRevSync.date()` provides the date of the current commit).
@@ -23,12 +23,11 @@ module.exports = function getMastercodeVersionFolderName () {
         long = gitRevSync.long();
 
     if (stableVersionNumber !== tag || !branch.includes(long)) {
-        const gitLastCommitDate = dayjs(gitRevSync.date()).format("YYYY-MM-DD__HH-mm-ss"),
-            createdAtDate = dayjs().format("YYYY-MM-DD__HH-mm");
+        const gitLastCommitDate = dayjs(gitRevSync.date()).format("YYYY-MM-DD__HH-mm-ss");
 
 
-        folderName += `_${gitRevSync.branch()}_git_last_commit_at_${gitLastCommitDate }_created_at_${createdAtDate}`;
+        folderName += `_${gitRevSync.branch()}_git_last_commit_at_${gitLastCommitDate }`;
     }
 
-    return folderName.replace(/[\s:]+/g, "");
+    return folderName.replace(/[\s:]+/g, "").replace(/#/g, "");
 };

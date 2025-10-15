@@ -2,6 +2,7 @@ import {generateSimpleGetters} from "@shared/js/utils/generators";
 import shareViewState from "./stateShareView";
 import stateSearchBar from "../../searchBar/store/stateSearchBar";
 import layerSelectionState from "../../layerSelection/store/stateLayerSelection";
+import layerCollection from "@core/layers/js/layerCollection";
 
 /**
  * Checks if the attributes can be converted to a string. if not, an error message is displayed and the attributes are removed from the params.
@@ -36,7 +37,7 @@ const simpleGetters = {
      * @returns {String} The Url that can be copied by the user.
      */
     url (state, getters, rootState, rootGetters) {
-        const layerParams = rootGetters.layerUrlParams,
+        const layerParams = rootGetters.layerUrlParams.filter(layer => !isDynamicLayer(layer.id)),
             mapParams = rootGetters["Maps/urlParams"],
             menuParams = rootGetters["Menu/urlParams"],
             componentTypes = [shareViewState.type, layerSelectionState.type, stateSearchBar.type, "borisComponent"],
@@ -75,5 +76,16 @@ const simpleGetters = {
         return shareUrl.origin + shareUrl.pathname + "?" + Array.from(shareUrl.searchParams).map(searchParam => searchParam[0] + "=" + searchParam[1]).join("&");
     }
 };
+
+/**
+ * Tests if a layer is dynamic using the isDynamic attribute.
+ * @param {String} layerId ID of the layer.
+ * @returns {Boolean} True, if layer is a dynamic layer created in highlightFeaturesByAttribute.js.
+ */
+function isDynamicLayer (layerId) {
+    const layer = layerCollection.getLayerById(layerId);
+
+    return layer?.attributes?.isDynamic === true;
+}
 
 export default simpleGetters;

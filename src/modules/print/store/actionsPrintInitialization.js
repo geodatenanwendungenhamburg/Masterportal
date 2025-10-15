@@ -10,16 +10,6 @@ import thousandsSeparator from "@shared/js/utils/thousandsSeparator";
 import {autoDrawMask} from "olcs/lib/olcs/print/drawCesiumMask.js";
 import {computeRectangle} from "olcs/lib/olcs/print/computeRectangle.js";
 
-let lastPrintedExtent;
-
-/**
- * Return last printed extent
- * @returns {Extent} OL extent
- */
-export function getLastPrintedExtent () {
-    return lastPrintedExtent;
-}
-
 export default {
     /**
      * Gets the capabilities for a specific print configuration
@@ -444,7 +434,8 @@ export default {
         // Keep the print extent available for later use
         extendCoordinate(extent, c1);
         extendCoordinate(extent, c2);
-        lastPrintedExtent = extent;
+        BuildSpec.setLastPrintedExtent(extent);
+
     },
 
     /**

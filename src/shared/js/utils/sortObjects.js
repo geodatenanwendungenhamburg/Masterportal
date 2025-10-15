@@ -6,7 +6,6 @@
  * @returns {void}
  */
 export function sortObjects (objects, nestedAttribute, order = "asc") {
-
     objects.sort((a, b) => {
         let firstElement,
             secondElement;
@@ -80,7 +79,7 @@ export function sortByLayerSequence (objects) {
             return a.layerSequence - b.layerSequence;
         }
 
-        return 0;
+        return b.zIndex - a.zIndex;
     });
     objects.forEach((object) => {
         object.zIndex = --objectLength;

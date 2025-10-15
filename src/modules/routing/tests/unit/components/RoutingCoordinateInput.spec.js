@@ -32,7 +32,8 @@ describe("src/modules/routing/components/RoutingCoordinateInput.vue", () => {
                                 Directions: {
                                     namespaced: true,
                                     getters: {
-                                        waypoints: sinon.stub()
+                                        waypoints: sinon.stub(),
+                                        isAwaitingRouteModifyEnd: () => false
                                     }
                                 }
                             }

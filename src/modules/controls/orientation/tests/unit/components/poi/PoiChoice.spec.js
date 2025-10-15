@@ -21,7 +21,8 @@ describe("src/modules/controls/orientation/components/PoiChoice.vue", () => {
                             namespaced: true,
                             getters: {
                                 poiMode: sinon.stub(),
-                                customPosition: () => "common:modules.controls.orientation.poiChoiceCustomPosition"
+                                customPosition: () => "common:modules.controls.orientation.poiChoiceCustomPosition",
+                                iFrameGeolocationEnabled: () => false
                             },
                             mutations: {
                                 setShowPoiChoice: sinon.stub()

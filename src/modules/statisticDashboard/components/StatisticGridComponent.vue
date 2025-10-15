@@ -1,5 +1,5 @@
 <script>
-import {mapMutations} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 export default {
     name: "StatisticGridComponent",
     props: {
@@ -18,6 +18,10 @@ export default {
             required: false,
             default: undefined
         }
+    },
+    emits: ["showChartsInGrid"],
+    computed: {
+        ...mapGetters("Modules/StatisticDashboard", ["chosenStatisticName"])
     },
     methods: {
         ...mapMutations("Modules/StatisticDashboard", ["setChosenStatisticName"])
@@ -42,7 +46,7 @@ export default {
             >
                 <div
                     v-if="titles"
-                    class="title m-2 fs-6"
+                    class="title m-2"
                 >
                     {{ titles[idx] }}
                 </div>
@@ -60,10 +64,11 @@ export default {
                 v-for="idx in chartsCount"
                 :key="idx"
                 class="flex-item"
+                :class="chosenStatisticName === titles[idx - 1] ? 'active' : ''"
                 role="button"
                 tabindex="0"
-                @click="setChosenStatisticName(titles[idx - 1])"
-                @keydown="setChosenStatisticName(titles[idx - 1])"
+                @click="setChosenStatisticName(titles[idx - 1]), $emit('showChartsInGrid', false)"
+                @keydown="setChosenStatisticName(titles[idx - 1]), $emit('showChartsInGrid', false)"
             >
                 <slot
                     name="chartContainers"
@@ -86,6 +91,7 @@ export default {
     margin-top: 30px;
     .title {
         font-family: $font_family_accent;
+        font-size: $font_size_big;
     }
 }
 
@@ -100,18 +106,10 @@ export default {
         cursor: pointer;
     }
 }
-
-.flex-container .mx-5 {
-    margin-top: 0px !important;
-    margin-bottom: 0px !important;
-    margin-right: 0px !important;
-    margin-left: 0px !important;
+.active {
+    border: 1px solid $light_grey;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
-.flex-container .my-5 {
-    margin-top: 0px !important;
-    margin-bottom: 0px !important;
-    margin-left: 0px !important;
-    margin-left: 0px !important;
-}
+
 </style>

@@ -53,16 +53,30 @@ export default {
                 .filter(layer => layer.get("renderer") === "webgl")
                 .forEach(layer => {
                     if (layer.get("gfiAttributes") && layer.get("gfiAttributes") !== "ignore") {
-                        /**
-                         * use OL resolution based buffer to adjust the hitTolerance (in m) for lower zoom levels
-                         */
-                        const hitBox = buffer(
-                            new Point(clickCoordinate).getExtent(),
-                            (layer.get("hitTolerance") || 1) * Math.sqrt(mapCollection.getMapView("2D").getResolution())
-                        );
+                        const map = mapCollection.getMap("2D"),
+                            resolution = mapCollection.getMapView("2D").getResolution(),
+
+                            hitBox = buffer(
+                                new Point(clickCoordinate).getExtent(),
+                                (layer.get("hitTolerance") || 1) * Math.sqrt(resolution)
+                            );
 
                         if (layer.get("typ") === "VectorTile" && layer.get("renderer") === "webgl") {
-                            const features = layer.getSource()?.getFeaturesInExtent(hitBox);
+                            const topLeft = map.getPixelFromCoordinate([hitBox[0], hitBox[3]]),
+                                bottomRight = map.getPixelFromCoordinate([hitBox[2], hitBox[1]]),
+                                features = [];
+
+                            for (let x = topLeft[0]; x <= bottomRight[0]; x++) {
+                                for (let y = topLeft[1]; y <= bottomRight[1]; y++) {
+                                    map.forEachFeatureAtPixel([x, y], (feature, candidateLayer) => {
+                                        if (candidateLayer === layer && !features.includes(feature)) {
+                                            features.push(feature);
+                                        }
+                                    }, {
+                                        layerFilter: l => l === layer
+                                    });
+                                }
+                            }
 
                             features.forEach(feature => {
                                 featuresAtPixel.push(createGfiFeature(

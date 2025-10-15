@@ -1,7 +1,7 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
-import layerFactory from "@core/layers/js/layerFactory";
+import layerTypes from "@core/layers/js/layerTypes";
 import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
 import LayerInfoContactButton from "./LayerInfoContactButton.vue";
 
@@ -42,7 +42,7 @@ export default {
          * @returns {Boolean} Supports transparency.
          */
         supportedTransparency () {
-            const unSupportedLayerTypes = layerFactory.getLayerTypes3d().filter(layerType => layerType !== "TILESET3D");
+            const unSupportedLayerTypes = layerTypes.getLayerTypes3d().filter(layerType => layerType !== "TILESET3D");
 
             return !unSupportedLayerTypes.includes(this.layerConf.typ?.toUpperCase());
         },

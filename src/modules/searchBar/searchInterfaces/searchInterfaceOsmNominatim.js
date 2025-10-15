@@ -75,7 +75,7 @@ SearchInterfaceOsmNominatim.prototype.search = async function (searchInput) {
     else {
         await new Promise(resolve => {
             setTimeout(async () => {
-                if (searchInput === store.getters["SearchBar/searchInput"]) {
+                if (searchInput === store.getters["Modules/SearchBar/searchInput"]) {
                     resolve(await this.search(searchInput));
                 }
             }, 1000);

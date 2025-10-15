@@ -176,6 +176,7 @@ const actions = {
                 "outputFormat": state.currentFormat,
                 "attributes": {
                     "title": state.title,
+                    ...state.transferParameter,
                     "map": {
                         "dpi": state.dpiForPdf,
                         "projection": mapCollection.getMapView("2D").getProjection().getCode(),

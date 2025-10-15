@@ -1,5 +1,4 @@
 import store from "@appstore";
-import main from "../main";
 
 export default {
     install (app, options) {
@@ -29,7 +28,7 @@ export default {
             }
         });
 
-        main.getApp().config.globalProperties.$remoteInterface = {
+        app.config.globalProperties.$remoteInterface = {
             sendMessage: params => {
                 if (params instanceof Object === false) {
                     console.error("RemoteInterface sendMessage error: Given param is not an Object.");

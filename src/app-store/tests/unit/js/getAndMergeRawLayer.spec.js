@@ -1,7 +1,7 @@
 import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList";
 import {addAdditional, getAndMergeAllRawLayers, getAndMergeRawLayer, resetZIndex} from "@appstore/js/getAndMergeRawLayer";
 import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants";
-import layerFactory from "@core/layers/js/layerFactory";
+import layerTypes from "@core/layers/js/layerTypes";
 import {expect} from "chai";
 import sinon from "sinon";
 
@@ -10,7 +10,7 @@ describe("src/app-store/js/getAndMergeRawLayer.js", () => {
         warnSpy;
 
     before(() => {
-        sinon.stub(layerFactory, "getLayerTypes3d").returns(["TERRAIN3D"]);
+        sinon.stub(layerTypes, "getLayerTypes3d").returns(["TERRAIN3D"]);
     });
 
     beforeEach(() => {

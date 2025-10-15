@@ -1,25 +1,24 @@
 import {expect} from "chai";
 import sinon from "sinon";
 import addons from "@plugins/addons";
-import main from "../../../main";
 import store from "@appstore";
 
 
 describe("src/plugins/addons.js", () => {
-    let globalProperties,
-        warnSpy,
+    let warnSpy,
         loadAddonStub,
         origCommit,
         origRegisterModule,
         gfiThemeAddons,
         loadAddonRet,
-        searchInterfaceAddons;
+        searchInterfaceAddons,
+        mockApp;
 
     beforeEach(() => {
         gfiThemeAddons = [];
         searchInterfaceAddons = [];
         global.moduleCollection = {};
-        globalProperties = {
+        mockApp = {
             config: {
                 globalProperties: {
                     $gfiThemeAddons: gfiThemeAddons,
@@ -28,7 +27,6 @@ describe("src/plugins/addons.js", () => {
             },
             component: sinon.stub()
         };
-        sinon.stub(main, "getApp").returns(globalProperties);
         loadAddonRet = {name: "name", component: {name: "Component"}, store};
         loadAddonStub = sinon.stub(addons, "loadAddon").resolves(new Promise(resolve => resolve(loadAddonRet)));
         warnSpy = sinon.spy();
@@ -61,7 +59,7 @@ describe("src/plugins/addons.js", () => {
         });
 
         it("if config is undefined nothing happens", async () => {
-            await addons.loadAddons([undefined]);
+            await addons.loadAddons(mockApp, [undefined]);
             expect(await stubLoadControls.notCalled).to.be.true;
             expect(await stubLoadGfiThemes.notCalled).to.be.true;
             expect(await stubLoadSearchInterfaces.notCalled).to.be.true;
@@ -71,7 +69,7 @@ describe("src/plugins/addons.js", () => {
         it("load addon control", async () => {
             const config = ["AddonControl"];
 
-            await addons.loadAddons(config);
+            await addons.loadAddons(mockApp, config);
             expect(stubLoadControls.calledOnce).to.be.true;
             expect(stubLoadControls.firstCall.args[0]).to.be.equals("AddonControl");
             expect(stubLoadGfiThemes.notCalled).to.be.true;
@@ -82,7 +80,7 @@ describe("src/plugins/addons.js", () => {
         it("load addon gfiTheme", async () => {
             const config = ["AddonGFITheme"];
 
-            await addons.loadAddons(config);
+            await addons.loadAddons(mockApp, config);
             expect(stubLoadGfiThemes.calledOnce).to.be.true;
             expect(stubLoadGfiThemes.firstCall.args[0]).to.be.equals("AddonGFITheme");
             expect(stubLoadControls.notCalled).to.be.true;
@@ -93,7 +91,7 @@ describe("src/plugins/addons.js", () => {
         it("load addon searchInterface", async () => {
             const config = ["SearchAddon"];
 
-            await addons.loadAddons(config);
+            await addons.loadAddons(mockApp, config);
             expect(stubLoadSearchInterfaces.calledOnce).to.be.true;
             expect(stubLoadSearchInterfaces.firstCall.args[0]).to.be.equals("SearchAddon");
             expect(stubLoadControls.notCalled).to.be.true;
@@ -105,7 +103,7 @@ describe("src/plugins/addons.js", () => {
         it("load addon tool", async () => {
             const config = ["ToolAddon"];
 
-            await addons.loadAddons(config);
+            await addons.loadAddons(mockApp, config);
             expect(stubLoadToolAddons.calledOnce).to.be.true;
             expect(stubLoadToolAddons.firstCall.args[0]).to.be.equals("ToolAddon");
             expect(stubLoadControls.notCalled).to.be.true;
@@ -117,7 +115,7 @@ describe("src/plugins/addons.js", () => {
         it("load addon javascript", async () => {
             const config = ["JavaScriptAddon"];
 
-            await addons.loadAddons(config);
+            await addons.loadAddons(mockApp, config);
             expect(stubLoadJavascriptAddons.calledOnce).to.be.true;
             expect(stubLoadJavascriptAddons.firstCall.args[0]).to.be.equals("JavaScriptAddon");
             expect(stubLoadControls.notCalled).to.be.true;
@@ -143,7 +141,7 @@ describe("src/plugins/addons.js", () => {
 
     describe("loadGfiThemes", () => {
         it("load addon type gfiTheme", async () => {
-            await addons.loadGfiThemes("AddonGFITheme");
+            await addons.loadGfiThemes("AddonGFITheme", mockApp);
 
             expect(loadAddonStub.calledOnce).to.be.true;
             expect(loadAddonStub.firstCall.args[0]).to.be.equals("AddonGFITheme");
@@ -160,7 +158,7 @@ describe("src/plugins/addons.js", () => {
 
     describe("loadSearchInterfaces", () => {
         it("load addon type searchInterface", async () => {
-            await addons.loadSearchInterfaces("SearchAddon");
+            await addons.loadSearchInterfaces("SearchAddon", mockApp);
 
             expect(loadAddonStub.calledOnce).to.be.true;
             expect(loadAddonStub.firstCall.args[0]).to.be.equals("SearchAddon");

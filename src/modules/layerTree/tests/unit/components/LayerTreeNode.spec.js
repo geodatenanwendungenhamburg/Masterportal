@@ -336,6 +336,30 @@ describe("src/modules/layerTree/components/LayerTreeNode.vue", () => {
             expect(removeLayerSpy.calledOnce).to.be.true;
             expect(setRemoveOnSpillSpy.notCalled).to.be.true;
         });
+
+        it("hideTooltip - should hide the corresponding tooltip of the event item", async () => {
+            wrapper = mount(LayerTreeNode, {
+                global: {
+                    plugins: [store]
+                }
+            });
+            const eventItem = document.createElement("div"),
+                eventItemChild = document.createElement("span"),
+                tooltipDiv = document.createElement("div");
+
+            tooltipDiv.setAttribute("id", "tooltip1234");
+            tooltipDiv.style.display = "block";
+            document.body.appendChild(tooltipDiv);
+            eventItemChild.classList.add("layer-checkbox-tooltip");
+            eventItemChild.setAttribute("aria-describedby", "tooltip1234");
+            eventItem.appendChild(eventItemChild);
+
+            wrapper.vm.hideTooltip({item: eventItem});
+
+            expect(document.getElementById("tooltip1234").style.display).to.equal("none");
+            document.body.removeChild(tooltipDiv);
+        });
+
         it("checkMove - should always allow moving base layer over base layer", () => {
             const checkMoveSpy = sinon.spy(wrapper.vm, "checkMove"),
                 draggedLayer = {id: "1", baselayer: true},

@@ -49,8 +49,16 @@ describe("src/modules/statisticDashboard/utils/handleFeatures.js", () => {
             expect(FeatureHandler.calcStepValues([-2, 0, 2, 4], 2, "equalIntervals", true)).to.deep.equal([-2, 1]);
             expect(FeatureHandler.calcStepValues([-2, 0, 2, 4], 2, "equalIntervals", false)).to.deep.equal([-2, 0]);
         });
+        it("should return expected array according to decimalPlaces", () => {
+            expect(FeatureHandler.calcStepValues([0.12345, 2.12345], 2, "quantiles", false, 2)).to.deep.equal([0.12345, 1.12345]);
+            expect(FeatureHandler.calcStepValues([0.12345, 2.12345], 2, "equalIntervals", false, 3)).to.deep.equal([0.123, 1.123]);
+        });
+        it("should correctly calculate step values with several negative and one positive value", () => {
+            expect(FeatureHandler.calcStepValues([-5, -3, 1], 3, "quantiles", true)).to.deep.equal([-5, -4, -1]);
+            expect(FeatureHandler.calcStepValues([-5, -3, 1], 3, "quantiles", false)).to.deep.equal([-5, -3, 0]);
+        });
     });
-    describe("styleFeaturesByStatistic", () => {
+    describe("getStyleFunction", () => {
         it("should set the styles correctly according to the values from the features", () => {
             const feature1 = new Feature({
                     region: "Cuxhaven"
@@ -94,17 +102,18 @@ describe("src/modules/statisticDashboard/utils/handleFeatures.js", () => {
                     "Stade": {
                         "2018": 99
                     }
-                };
+                },
+                styleFunction = FeatureHandler.getStyleFunction(statisticData, colorScheme, "2018", "region", [0, 80, 100]);
 
-            FeatureHandler.styleFeaturesByStatistic([feature1, feature2, feature3], statisticData, colorScheme, "2018", "region", [0, 80, 100]);
+            expect(feature3.get("noValue")).to.be.undefined;
 
-            expect(feature1.getStyle().getStroke()).to.be.deep.equals(stroke);
-            expect(feature2.getStyle().getStroke()).to.be.deep.equals(stroke);
-            expect(feature3.getStyle().getStroke()).to.be.deep.equals(stroke);
+            expect(styleFunction(feature1).getStroke()).to.be.deep.equals(stroke);
+            expect(styleFunction(feature2).getStroke()).to.be.deep.equals(stroke);
+            expect(styleFunction(feature3).getStroke()).to.be.deep.equals(stroke);
 
-            expect(feature1.getStyle().getFill()).to.be.deep.equals(fill3);
-            expect(feature2.getStyle().getFill()).to.be.deep.equals(fill1);
-            expect(feature3.getStyle().getFill()).to.be.deep.equals(fill2);
+            expect(styleFunction(feature1).getFill()).to.be.deep.equals(fill3);
+            expect(styleFunction(feature2).getFill()).to.be.deep.equals(fill1);
+            expect(styleFunction(feature3).getFill()).to.be.deep.equals(fill2);
         });
     });
     describe("filterFeaturesByKeyValue", () => {
@@ -194,6 +203,29 @@ describe("src/modules/statisticDashboard/utils/handleFeatures.js", () => {
             expect(FeatureHandler.getLegendValue({"color": []})).to.be.deep.equals([]);
             expect(FeatureHandler.getLegendValue({"value": []})).to.be.deep.equals([]);
             expect(FeatureHandler.getLegendValue({"color": [], "value": ["test"]})).to.be.deep.equals([]);
+        });
+
+        it("should return the legend value with no-value feature", () => {
+            const val = {
+                    "color": [[198, 219, 239, 0.9], [158, 202, 225, 0.9]],
+                    "value": [80, 90]
+                },
+                expectedVal = [
+                    {
+                        "graphic": "data:image/svg+xml;charset=utf-8,<svg height='35' width='35' version='1.1' xmlns='http://www.w3.org/2000/svg'><polygon points='5,5 30,5 30,30 5,30' style='fill:rgb(255, 255, 255);fill-opacity:0.9;stroke:rgb(166, 166, 166);stroke-opacity:1;stroke-width:1;stroke-linecap:round;stroke-dasharray:;'/></svg>",
+                        "name": "modules.statisticDashboard.legend.noValue"
+                    },
+                    {
+                        "graphic": "data:image/svg+xml;charset=utf-8,<svg height='35' width='35' version='1.1' xmlns='http://www.w3.org/2000/svg'><polygon points='5,5 30,5 30,30 5,30' style='fill:rgb(198, 219, 239);fill-opacity:0.9;stroke:rgb(198, 219, 239);stroke-opacity:0.9;stroke-width:3;stroke-linecap:round;stroke-dasharray:;'/></svg>",
+                        "name": "modules.statisticDashboard.legend.between"
+                    },
+                    {
+                        "graphic": "data:image/svg+xml;charset=utf-8,<svg height='35' width='35' version='1.1' xmlns='http://www.w3.org/2000/svg'><polygon points='5,5 30,5 30,30 5,30' style='fill:rgb(158, 202, 225);fill-opacity:0.9;stroke:rgb(158, 202, 225);stroke-opacity:0.9;stroke-width:3;stroke-linecap:round;stroke-dasharray:;'/></svg>",
+                        "name": "modules.statisticDashboard.legend.from 90"
+                    }
+                ];
+
+            expect(FeatureHandler.getLegendValue(val, 2, true)).to.be.deep.equals(expectedVal);
         });
 
         it("should return the legend value", () => {

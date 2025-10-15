@@ -4,13 +4,18 @@ import getters from "@modules/shareView/store/gettersShareView";
 import shareViewState from "@modules/shareView/store/stateShareView";
 
 describe("src/modules/shareView/store/gettersShareView.js", () => {
-    let rootGetters, circular;
+    let rootGetters,
+        circular;
 
     const testLocation = "https://test.de/app.html?existingKey=existingValue&layerids=abc123";
 
     beforeEach(() => {
         rootGetters = {
-            layerUrlParams: {layerIds: ["layerA", "layerB"]},
+            layerUrlParams: [
+                {id: "layer1", visibility: true},
+                {id: "highlight_point_layer", visibility: true, isDynamic: true},
+                {id: "layer2", visibility: false}
+            ],
             "Maps/urlParams": "zoom=5&center=10,10",
             "Menu/urlParams": {
                 main: {

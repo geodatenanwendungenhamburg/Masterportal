@@ -3,6 +3,8 @@ import {mapGetters, mapMutations} from "vuex";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 import {convertColor} from "@shared/js/utils/convertColor";
+import debounce from "@shared/js/utils/debounce";
+
 export default {
     name: "StatisticDashboardLegend",
     components: {
@@ -10,6 +12,12 @@ export default {
         InputText
     },
     emits: ["changeLegendView"],
+    data () {
+        return {
+            setColorPaletteDebounced: debounce(this.setColorPalette, 300),
+            setStepValuesDebounced: debounce(this.setStepValues, 300)
+        };
+    },
     computed: {
         ...mapGetters("Modules/StatisticDashboard", [
             "classificationMode",
@@ -58,7 +66,7 @@ export default {
                 return;
             }
             values[index] = number;
-            this.setStepValues(values);
+            this.setStepValuesDebounced(values);
         },
 
         /**
@@ -71,7 +79,7 @@ export default {
             const palette = [...this.colorPalette];
 
             palette[index] = value;
-            this.setColorPalette(palette);
+            this.setColorPaletteDebounced(palette);
         },
 
         /**
@@ -87,8 +95,8 @@ export default {
 </script>
 
 <template>
-    <div>
-        <h5 class="mb-5">
+    <div class="col-sm">
+        <h5 class="mb-3">
             {{ $t('common:modules.statisticDashboard.legend.editClassification') }}
         </h5>
         <div class="form-floating mb-5">
@@ -133,7 +141,7 @@ export default {
                 :max="maxNumberOfClasses"
                 list="numbers"
                 :value="numberOfClasses"
-                @input="setNumberOfClasses(parseInt($event.target.value))"
+                @change="setNumberOfClasses(parseInt($event.target.value))"
             >
             <datalist id="numbers">
                 <option
@@ -147,7 +155,7 @@ export default {
             </datalist>
         </div>
         <div v-if="classificationMode !== 'custom'">
-            <div class="form-check">
+            <div class="form-check mb-3">
                 <input
                     id="allowPosNegMix"
                     class="form-check-input"
@@ -175,7 +183,7 @@ export default {
                         :value="i"
                         :selected="i === selectedColorPaletteIndex"
                     >
-                        {{ scheme.label }}
+                        {{ scheme.label || scheme.key }}
                     </option>
                 </select>
                 <label for="custom-color-palette">
@@ -191,20 +199,20 @@ export default {
                 v-for="index in numberOfClasses"
                 id="value-ranges"
                 :key="index"
-                class="row"
+                class="row gx-0"
             >
                 <InputText
                     :id="'value-range' + index"
                     :label="$t('common:modules.statisticDashboard.legend.range') + ' ' + index"
                     :class="['col', 'col-3']"
                     :placeholder="$t('common:modules.statisticDashboard.legend.range')"
-                    type="number"
+                    type="text"
                     :disabled="index > stepValues.length + 1"
-                    :value="stepValues[index - 1]?.toString()"
-                    :change="value => changeStepValues(index - 1, value)"
+                    :model-value="stepValues[index - 1]?.toString()"
+                    @update:modelValue="value => changeStepValues(index - 1, value)"
                 />
                 <div
-                    class="col col-auto align-self-center my-0"
+                    class="col col-auto align-self-center mb-3 mx-3"
                 >
                     {{ index === numberOfClasses ?
                         $t('common:modules.statisticDashboard.legend.andAbove') :
@@ -219,8 +227,8 @@ export default {
                     :placeholder="$t('common:modules.statisticDashboard.legend.range')"
                     type="number"
                     :disabled="index > stepValues.length"
-                    :value="stepValues[index]?.toString()"
-                    :change="value => changeStepValues(index, value)"
+                    :model-value="stepValues[index]?.toString()"
+                    @update:modelValue="value => changeStepValues(index, value)"
                 />
                 <InputText
                     :id="'color-range' + index"
@@ -229,16 +237,21 @@ export default {
                     :placeholder="$t('common:modules.statisticDashboard.legend.color')"
                     type="color"
                     :disabled="index > stepValues.length"
-                    :value="convertColor(colorPalette?.[index - 1], 'hex')"
-                    :input="value => changeOneColor(index - 1, convertColor(value, 'rgb'))"
+                    :model-value="convertColor(colorPalette?.[index - 1], 'hex')"
+                    @update:modelValue="value => changeOneColor(index - 1, convertColor(value, 'rgb'))"
                 />
             </div>
             <div
                 v-if="!areStepValuesAscending"
-                class="alert alert-danger"
-                role="alert"
+                class="row justify-content-center my-3"
             >
-                {{ $t('common:modules.statisticDashboard.legend.invalidCustomStepsAlert') }}
+                <div
+                    class="col col-md-9 d-flex align-items-center alert alert-danger"
+                    role="alert"
+                >
+                    <i class="bi bi-exclamation-circle me-4" />
+                    {{ $t('common:modules.statisticDashboard.legend.invalidCustomStepsAlert') }}
+                </div>
             </div>
         </div>
         <div class="form-floating mb-5">
@@ -271,7 +284,10 @@ export default {
                 :disabled="!areStepValuesAscending"
             />
         </div>
-        <div class="d-flex justify-content-center">
+        <div
+            v-if="classificationMode === 'custom'"
+            class="d-flex justify-content-center"
+        >
             <FlatButton
                 id="reset-legend"
                 :aria-label="$t('common:modules.statisticDashboard.legend.reset')"

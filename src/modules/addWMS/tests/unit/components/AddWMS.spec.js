@@ -1,9 +1,10 @@
 import {createStore} from "vuex";
-import {config, shallowMount} from "@vue/test-utils";
+import {config, shallowMount, mount} from "@vue/test-utils";
 import {expect} from "chai";
 import crs from "@masterportal/masterportalapi/src/crs";
 import sinon from "sinon";
 import AddWMSComponent from "@modules/addWMS/components/AddWMS.vue";
+import InputText from "@shared/modules/inputs/components/InputText.vue";
 
 config.global.mocks.$t = key => key;
 
@@ -14,7 +15,8 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
         visibility,
         showInLayerTree,
         store,
-        wrapper;
+        wrapper,
+        portalConfig;
 
     beforeEach(() => {
         crs.registerProjections();
@@ -23,6 +25,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
         visibility = false;
         showInLayerTree = false;
         featureCount = undefined;
+        portalConfig = {};
 
         store = createStore({
             modules: {
@@ -63,12 +66,15 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
             },
             actions: {
                 addLayerToLayerConfig: addLayerToLayerConfigSpy
+            },
+            getters: {
+                portalConfig: () => portalConfig
             }
         });
 
         componentData = () => {
             return {
-                treeTyp: "custom"
+                treeTyp: ""
             };
         };
 
@@ -79,7 +85,8 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
         }
         wrapper = shallowMount(AddWMSComponent, {
             global: {
-                plugins: [store]
+                plugins: [store],
+                components: {InputText}
             },
             data: componentData,
             attachTo: elem
@@ -94,7 +101,7 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
         expect(wrapper.find("#addWMS").exists()).to.be.true;
     });
 
-    it("renders the iput field", () => {
+    it("renders the input field", () => {
         expect(wrapper.find("#wmsUrl").exists()).to.be.true;
     });
 
@@ -103,6 +110,14 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
     });
 
     it("sets focus to first input control", async () => {
+        wrapper = mount(AddWMSComponent, {
+            global: {
+                plugins: [store],
+                components: {InputText}
+            },
+            data: componentData,
+            attachTo: document.body
+        });
         wrapper.vm.setFocusToFirstControl();
         await wrapper.vm.$nextTick();
         expect(wrapper.find("#wmsUrl").element).to.equal(document.activeElement);
@@ -143,6 +158,14 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
         it("should return 'text/xml', if possible formats are empty", () => {
             expect(wrapper.vm.getInfoFormat([])).to.equals("text/xml");
         });
+        it("should return configured default format, if possible formats are empty", () => {
+            portalConfig = {
+                tree: {
+                    rasterLayerDefaultInfoFormat: "text/html"
+                }
+            };
+            expect(wrapper.vm.getInfoFormat([])).to.equals("text/html");
+        });
         it("should return 'application/vnd.ogc.gml', if possible formats contains 'gml'", () => {
             expect(wrapper.vm.getInfoFormat(["text/xml", "gml", "text/json"])).to.equals("application/vnd.ogc.gml");
         });
@@ -150,7 +173,23 @@ describe("src/modules/addWMS/components/AddWMS.vue", () => {
             expect(wrapper.vm.getInfoFormat(["text/xml", "application/vnd.ogc.gml", "text/json"])).to.equals("application/vnd.ogc.gml");
         });
         it("should return 'text/json' if the first entry is 'text/json' in possible formats and gml or 'application/vnd.ogc.gml' are not included", () => {
-            expect(wrapper.vm.getInfoFormat(["text/xml", "text/json"])).to.equals("text/xml");
+            expect(wrapper.vm.getInfoFormat(["text/json", "text/xml"])).to.equals("text/json");
+        });
+        it("should return 'text/json' if defined as default and included in possible formats and gml or 'application/vnd.ogc.gml' are not included", () => {
+            portalConfig = {
+                tree: {
+                    rasterLayerDefaultInfoFormat: "text/json"
+                }
+            };
+            expect(wrapper.vm.getInfoFormat(["text/xml", "text/json"])).to.equals("text/json");
+        });
+        it("should not return configured default format if not included in possible formats", () => {
+            portalConfig = {
+                tree: {
+                    rasterLayerDefaultInfoFormat: "text/html"
+                }
+            };
+            expect(wrapper.vm.getInfoFormat(["text/json", "text/xml"])).to.equals("text/json");
         });
     });
 

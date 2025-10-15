@@ -84,6 +84,137 @@ Options to integrate tracking via matomo. Besides following options further opti
 
 ***
 
+## mouseHover
+
+|Name|Required|Type|Default|Description|
+|----|--------|----|-------|-----------|
+|minShift|no|Integer|`5`|Minimum mouse position movement required to render a new tooltip; in pixels.|
+|numFeaturesToShow|no|Integer|`2`|Maximum amount of element information per tooltip; when exceeded, an information text informs the user of cut content.|
+|infoText|no|String|`"(Further objects. Please zoom.)"`|Information text shown when `numFeaturesToShow` is exceeded.|
+|highlightOnHover|no|Boolean|false|If hovered features should be highlighted|
+|highlightVectorRulesPolygon|no|Object||Specify the fill color and outline color and stroke width for highlighting the polygon features as well as a zoom parameter.|
+|highlightVectorRulesPointLine|no|Object||Specify outline color and stroke width for highlighting lines and fill color and scale factor for highlighting points as well as a zoom parameter.|
+
+**Example:**
+
+```json
+{
+    "mouseHover": {
+        "numFeaturesToShow": 2,
+        "infoText": "The Info Text",
+        "highlightOnHover": true,
+        "highlightVectorRulesPolygon": {
+            "fill": {
+                "color": [255, 255, 255, 0.5]
+            },
+            "stroke": {
+                "width": 4,
+                "color": [255, 0, 0, 0.9]
+            }
+        },
+        "highlightVectorRulesPointLine": {
+            "stroke": {
+                "width": 8,
+                "color": [255, 0, 255, 0.9]
+            },
+            "image": {
+                "scale": 2
+            }
+        }
+    },
+}
+```
+
+### mouseHover.highlightVectorRulesPolygon
+
+Specify the fill color and outline color and stroke width for highlighting the polygon features as well as a zoom level.
+
+|Name|Required|Type|Default|Description|Expert|
+|----|--------|----|-------|-----------|------|
+|fill|no|**[fill](#mousehoverhighlightvectorrulespolygonfill)**||Possible setting: color|false|
+|stroke|no|**[stroke](#mousehoverhighlightvectorrulespolygonstroke)**||Possible setting: width|false|
+
+***
+
+### mouseHover.highlightVectorRulesPolygon.fill
+|Name|Required|Type|Default|Description|Expert|
+|----|--------|----|-------|-----------|------|
+|color|no|Float[]|[255, 255, 255, 0.5]|Possible setting: color (RGBA)|false|
+
+```json
+"fill": {
+    "color": [215, 102, 41, 0.9]
+}
+```
+
+***
+
+### mouseHover.highlightVectorRulesPolygon.stroke
+|Name|Required|Type|Default|Description|Expert|
+|----|--------|----|-------|-----------|------|
+|width|no|Integer|1|Possible setting: width|false|
+|color|no|Float[]|[255, 0, 0, 0.9]|Possible setting: color (RGBA)|false|
+
+```json
+"stroke": {
+    "width": 4 ,
+    "color": [255, 0, 255, 0.9]
+}
+```
+
+***
+
+
+### mouseHover.highlightVectorRulesPointLine
+
+Specify outline color and stroke width for highlighting lines and fill color and scale factor for highlighting points. Also a zoom level.
+
+|Name|Required|Type|Default|Description|Expert|
+|----|--------|----|-------|-----------|------|
+|fill|no|**[fill](#mousehoverhighlightvectorrulespointlinefill)**||Possible setting: color|false|
+|stroke|no|**[stroke](#mousehoverhighlightvectorrulespointlinestroke)**||Possible setting: width|false|
+|image|no|**[image](#mousehoverhighlightvectorrulespointlineimage)**||Possible setting: scale|false|
+
+***
+### mouseHover.highlightVectorRulesPointLine.fill
+|Name|Required|Type|Default|Description|Expert|
+|----|--------|----|-------|-----------|------|
+|color|no|Float[]|[255, 255, 255, 0.5]|Possible setting: color (RGBA)|false|
+
+```json
+"fill": {
+    "color": [215, 102, 41, 0.9]
+}
+```
+
+***
+
+### mouseHover.highlightVectorRulesPointLine.stroke
+|Name|Required|Type|Default|Description|Expert|
+|----|-------------|---|-------|------------|------|
+|width|no|Integer|1|Possible setting: width|false|
+|color|no|Float[]|[255, 255, 255, 0.5]|Possible setting: color (RGBA)|false|
+
+```json
+"stroke": {
+    "width": 4 ,
+    "color": [255, 0, 255, 0.9]
+}
+```
+
+***
+
+### mouseHover.highlightVectorRulesPointLine.image
+|Name|Required|Type|Default|Description|Expert|
+|----|--------|----|-------|-----------|------|
+|scale|no|Integer|1.5|Possible setting: scale|false|
+
+```json
+"image": {
+    "scale": 2
+}
+```
+
 ## portalLanguage
 Settings for multilingualism of the portal interface.
 

@@ -11,7 +11,7 @@ if exist .venv/Scripts/activate.bat (
     echo "1. Install Python"
     echo "2. Run 'python -m venv .venv' to create a virtual environment"
     echo "3. Activate the venv by running 'call .venv/Scripts/activate.bat'"
-    echo "4. Run 'pip install -r .\python-dependencies.txt'"
+    echo "4. Run 'pip install -r ./devtools/docsValidation/python-dependencies.txt'"
     echo "Now the virtual environment is setup and you can rerun this npm task."
     exit 1
 )

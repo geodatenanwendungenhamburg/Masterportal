@@ -1,6 +1,6 @@
 import {rawLayerList} from "@masterportal/masterportalapi/src";
 import {updateProxyUrl} from "./getProxyUrl";
-import layerFactory from "@core/layers/js/layerFactory";
+import layerTypes from "@core/layers/js/layerTypes";
 import store from "@appstore";
 
 let zIndex = 1;
@@ -69,7 +69,7 @@ function splitId (id, seperator = ".") {
  */
 export function addAdditional (rawLayer, showAllLayerInTree = false) {
     if (rawLayer) {
-        const layerTypes3d = layerFactory.getLayerTypes3d();
+        const layerTypes3d = layerTypes.getLayerTypes3d();
 
         rawLayer.type = "layer";
 

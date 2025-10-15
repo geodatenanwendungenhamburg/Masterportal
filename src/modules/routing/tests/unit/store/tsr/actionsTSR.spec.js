@@ -10,12 +10,22 @@ import {RoutingWaypoint} from "@modules/routing/js/classes/routing-waypoint";
 import {RoutingTSRDirections} from "@modules/routing/js/classes/routing-directions-tsr";
 import {RoutingGeosearchResult} from "@modules/routing/js/classes/routing-geosearch-result";
 import tsrWaypointsLayer from "@modules/routing/js/map/tsr/waypoints/tsrWaypointsLayer";
+import axios from "axios";
 
 describe("src/modules/routing/store/directions/actionsTSR.js", () => {
+
     let state, commitSpy, commit, dispatchSpy, dispatch, dispatchMocks, getters, rootState, waypoints, wgs84Coordinates, tsrWaypointSource, routingTSRResult, routeFeature, startPoint, waypoint1, waypoint2, endPoint, tsrRouteSource;
 
     beforeEach(() => {
         sinon.stub(i18next, "t").callsFake((...args) => args);
+
+        sinon.stub(axios, "post").returns(
+            new Promise((_, reject) => reject({
+                response: {
+                    status: 404
+                }
+            }))
+        );
 
         tsrWaypointSource = new VectorSource();
         tsrRouteSource = new VectorSource();

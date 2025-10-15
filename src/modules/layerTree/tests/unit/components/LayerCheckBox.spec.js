@@ -4,7 +4,7 @@ import {expect} from "chai";
 import sinon from "sinon";
 
 import escapeId from "@shared/js/utils/escapeId";
-import layerFactory from "@core/layers/js/layerFactory";
+import layerTypes from "@core/layers/js/layerTypes";
 import LayerCheckBox from "@modules/layerTree/components/LayerCheckBox.vue";
 import baselayerHandler from "@modules/layerSelection/js/handleSingleBaselayer";
 
@@ -43,7 +43,7 @@ describe("src/modules/layerTree/components/LayerCheckBox.vue", () => {
         replaceByIdInLayerConfigSpy = sinon.spy();
         changeVisibilitySpy = sinon.spy();
         baselayerHandlerSpy = sinon.spy(baselayerHandler, "checkAndAdd");
-        sinon.stub(layerFactory, "getLayerTypes3d").returns(["TERRAIN3D"]);
+        sinon.stub(layerTypes, "getLayerTypes3d").returns(["TERRAIN3D"]);
         store = createStore({
             modules: {
                 Modules: {

@@ -9,6 +9,7 @@ import layerFactory from "@core/layers/js/layerFactory";
 import openlayerFunctions from "@modules/filter/utils/openlayerFunctions.js";
 import SnippetDropdown from "@modules/filter/components/SnippetDropdown.vue";
 import sinon from "sinon";
+import mapCollection from "@core/maps/js/mapCollection";
 
 config.global.mocks.$t = key => key;
 
@@ -72,19 +73,26 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                 global: {
                     plugins: [store]
                 },
-                propsData: {
+                props: {
                     visible: false
                 }
             });
 
-            expect(wrapper.find(".snippetDropdownContainer").element.style._values.display).to.be.equal("none");
+            const el = wrapper.find(".snippetDropdownContainer");
+
+            if (el.exists()) {
+                expect(el.isVisible()).to.be.false;
+            }
+            else {
+                expect(el.exists()).to.be.false;
+            }
         });
         it("should render but also be disabled", () => {
             wrapper = shallowMount(SnippetDropdown, {
                 global: {
                     plugins: [store]
                 },
-                propsData: {
+                props: {
                     disabled: true
                 }
             });
@@ -97,7 +105,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                 global: {
                     plugins: [store]
                 },
-                propsData: {
+                props: {
                     title: "foobar"
                 }
             });
@@ -109,7 +117,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                 global: {
                     plugins: [store]
                 },
-                propsData: {
+                props: {
                     title: false
                 }
             });
@@ -121,7 +129,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                 global: {
                     plugins: [store]
                 },
-                propsData: {
+                props: {
                     api: {},
                     autoInit: false
                 }
@@ -134,7 +142,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                 global: {
                     plugins: [store]
                 },
-                propsData: {
+                props: {
                     operator: "operator"
                 }
             });
@@ -146,7 +154,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                 global: {
                     plugins: [store]
                 },
-                propsData: {
+                props: {
                     value: ["Altona", "Eimsbüttel", "Bergedorf"],
                     dropdownValue: []
                 }
@@ -166,7 +174,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                 global: {
                     plugins: [store]
                 },
-                propsData: {
+                props: {
                     snippetId: 1234,
                     visible: false,
                     attrName: "attrName",
@@ -195,7 +203,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                 global: {
                     plugins: [store]
                 },
-                propsData: {
+                props: {
                     snippetId: 1234,
                     visible: false,
                     attrName: "attrName",
@@ -233,7 +241,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                 global: {
                     plugins: [store]
                 },
-                propsData: {
+                props: {
                     snippetId: 1234
                 }
             });
@@ -251,7 +259,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                 global: {
                     plugins: [store]
                 },
-                propsData: {
+                props: {
                     "type": "dropdown",
                     "attrName": "kapitelbezeichnung",
                     "display": "list",
@@ -270,7 +278,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                 global: {
                     plugins: [store]
                 },
-                propsData: {
+                props: {
                     "type": "dropdown",
                     "attrName": "kapitelbezeichnung",
                     "display": "list",
@@ -289,7 +297,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                 global: {
                     plugins: [store]
                 },
-                propsData: {
+                props: {
                     "type": "dropdown",
                     "attrName": "kapitelbezeichnung",
                     "display": "list",
@@ -355,6 +363,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                 });
                 typ = "WFS";
                 setVisibleSpy = sinon.spy();
+                onceSpy = sinon.spy();
                 layerConfig = {
                     typ: typ
                 };
@@ -398,7 +407,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                         global: {
                             plugins: [store]
                         },
-                        propsData: {
+                        props: {
                             renderIcons: "fromLegend"
                         }
                     });
@@ -416,7 +425,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                         global: {
                             plugins: [store]
                         },
-                        propsData: {
+                        props: {
                             renderIcons: "fromLegend"
                         }
                     });
@@ -434,7 +443,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                         global: {
                             plugins: [store]
                         },
-                        propsData: {
+                        props: {
                             renderIcons: "fromLegend"
                         }
                     });
@@ -452,7 +461,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                         global: {
                             plugins: [store]
                         },
-                        propsData: {
+                        props: {
                             renderIcons: "fromLegend",
                             layerId: "layerId"
                         }
@@ -471,7 +480,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                         global: {
                             plugins: [store]
                         },
-                        propsData: {
+                        props: {
                             renderIcons: "fromLegend",
                             layerId: "layerId"
                         }
@@ -546,7 +555,7 @@ describe("src/modules/filter/components/SnippetDropdown.vue", () => {
                     global: {
                         plugins: [store]
                     },
-                    propsData: {
+                    props: {
                         dropdownValue: ["Altona", "Eimsbüttel", "Bergedorf"]
                     },
                     data: () => {

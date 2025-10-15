@@ -22,7 +22,7 @@ describe("src/modules/filter/components/FilterList.vue", () => {
                 Alerting: {
                     namespaced: true,
                     actions: {
-                        addSingleAlert: sinon.stub()
+                        addSingleAlert: sinon.spy()
                     }
                 }
             }

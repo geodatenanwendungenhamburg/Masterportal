@@ -507,8 +507,7 @@
       "serviceFour": "Servizio 4",
       "sliderTypeHandle": "",
       "sliderTypePlayer": "",
-      "title": "Esempio simulazione WMS",
-      "titleNotConfigured": "Titolo non configurato"
+      "title": "Esempio simulazione WMS"
     },
     "layerTree": {
       "addLayer": "",
@@ -869,6 +868,21 @@
           "play": "Riproduzione automatica di tutti i punti temporali, a partire dal punto temporale attualmente selezionato"
         },
         "inputRangeLabel": "Selezionare un orario"
+      }
+    },
+    "pagination": {
+      "aria": {
+        "previous": "Pagina precedente",
+        "next": "Pagina successiva",
+        "go": "Vai alla pagina"
+      },
+      "input": {
+        "label": "Pagina",
+        "placeholder": "Pagina",
+        "tooltip": "Inserisci il numero di pagina e premi Invio o fai clic sulla freccia per saltare a quella pagina"
+      },
+      "button": {
+        "goTooltip": "Salta alla pagina inserita"
       }
     }
   },

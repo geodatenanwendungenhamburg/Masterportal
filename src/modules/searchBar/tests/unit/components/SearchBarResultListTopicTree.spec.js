@@ -55,7 +55,7 @@ describe("src/modules/searchBar/components/SearchBarResultListTopicTree.vue", ()
                 name: "The topic",
                 searchInterfaceId: "topicTree",
                 displayedInfo: "",
-                icon: "bi-signpost",
+                icon: "",
                 imagePath: "",
                 toolTip: "",
                 events: {
@@ -136,7 +136,6 @@ describe("src/modules/searchBar/components/SearchBarResultListTopicTree.vue", ()
                 "topicTree": [
                     {
                         id: "ABC",
-                        imgPath: "https://imgPath",
                         length: 1
                     }
                 ]
@@ -158,7 +157,6 @@ describe("src/modules/searchBar/components/SearchBarResultListTopicTree.vue", ()
 
             expect(wrapper.find(".results-topic-tree-container").exists()).to.be.true;
             expect(wrapper.findAll("search-bar-result-list-topic-tree-item-stub").length).to.equals(3);
-            expect(wrapper.findAll("h5 > img").length).to.equals(1);
             expect(wrapper.findAll("h5 > i").length).to.equals(2);
         });
     });

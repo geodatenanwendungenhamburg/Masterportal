@@ -4,6 +4,7 @@ import sortBy from "@shared/js/utils/sortBy";
 import xml2json from "@shared/js/utils/xml2json";
 import changeCase from "@shared/js/utils/changeCase";
 import axios from "axios";
+import {buildMetaURLs} from "@shared/js/utils/metaUrlHelper";
 
 /**
  * The actions for the layerInformation.
@@ -194,26 +195,11 @@ export default {
      * @returns {void}
      */
     setMetadataURL ({state, commit, rootGetters}, metaId) {
-        const metaURLs = [],
-            metaDataCatalogueId = state.metaDataCatalogueId;
-        let metaURL = "",
-            service = null;
-
-        service = rootGetters.restServiceById(metaDataCatalogueId);
-
-        if (typeof state.layerInfo.showDocUrl !== "undefined" && state.layerInfo.showDocUrl !== null) {
-            metaURL = state.layerInfo.showDocUrl + metaId;
-        }
-        else if (service !== undefined) {
-            metaURL = service.url + metaId;
-        }
-        else {
-            console.warn("Rest Service with the ID " + metaDataCatalogueId + " is not configured in rest-services.json!");
-        }
-
-        if (metaId !== null && metaId !== "" && metaURLs.indexOf(metaURL) === -1) {
-            metaURLs.push(metaURL);
-        }
+        const metaURLs = buildMetaURLs(metaId, {
+            layerInfo: state.layerInfo,
+            metaDataCatalogueId: state.metaDataCatalogueId,
+            restServiceById: rootGetters.restServiceById
+        });
 
         commit("setMetaURLs", metaURLs);
     },

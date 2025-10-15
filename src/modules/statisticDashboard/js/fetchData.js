@@ -114,16 +114,10 @@ function getUniqueValuesFromFeatures (features, attributes) {
  * @param {Number} [limit=400] The limit per request.
  * @returns {ol/Feature[]} An array of openlayer features.
  */
-async function getOAFFeatures (baseUrl, collection, propertyNames, featureProjection, crs, dataProjection, filter, filterCrs, limit = 400) {
+async function getOAFFeatures (baseUrl, collection, propertyNames, featureProjection, crs, dataProjection, filter, filterCrs, signal) {
     let features = [];
 
-    try {
-        features = await getOAFFeature.getOAFFeatureGet(baseUrl, collection, limit, filter, filterCrs, crs, propertyNames);
-    }
-    catch (error) {
-        console.error(error);
-        return [];
-    }
+    features = await getOAFFeature.getOAFFeatureGet(baseUrl, collection, {signal, filter, filterCrs, crs, propertyNames});
 
     return getOAFFeature.readAllOAFToGeoJSON(features, {featureProjection, dataProjection});
 }

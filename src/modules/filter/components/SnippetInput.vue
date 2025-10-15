@@ -1,5 +1,6 @@
 <script>
 import {translateKeyWithPlausibilityCheck} from "@shared/js/utils/translateKeyWithPlausibilityCheck.js";
+import InputText from "@shared/modules/inputs/components/InputText.vue";
 import {getDefaultOperatorBySnippetType} from "../utils/getDefaultOperatorBySnippetType.js";
 import SnippetInfo from "./SnippetInfo.vue";
 
@@ -29,7 +30,8 @@ import SnippetInfo from "./SnippetInfo.vue";
 export default {
     name: "SnippetInput",
     components: {
-        SnippetInfo
+        SnippetInfo,
+        InputText
     },
     props: {
         attrName: {
@@ -208,24 +210,19 @@ export default {
                 :translation-key="translationKey"
             />
         </div>
-        <div class="input-container">
-            <label
-                v-if="title !== false"
-                :for="'snippetInput-' + snippetId"
-                class="snippetInputLabel left"
-            >{{ titleText }}</label>
-            <input
+        <div class=" form-floating">
+            <InputText
                 :id="'snippetInput-' + snippetId"
                 v-model="value"
+                :class-obj="['snippetInput']"
                 :aria-label="ariaLabelInput"
-                class="snippetInput form-control"
-                type="text"
                 name="input"
                 :disabled="disabled"
                 :placeholder="placeholder"
+                :label="title !== false ? titleText : ''"
                 @blur="inputChanged()"
                 @keyup.enter="inputChanged()"
-            >
+            />
         </div>
     </div>
 </template>

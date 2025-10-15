@@ -1,6 +1,5 @@
 import {Group as LayerGroup} from "ol/layer.js";
 import Layer2d from "./layer2d";
-import layerFactory from "./layerFactory";
 
 /**
  * Creates a 2d layer group.
@@ -11,11 +10,12 @@ import layerFactory from "./layerFactory";
  * @param {Object} attributes The attributes of the layer configuration.
  * @returns {void}
  */
-export default function Layer2dGroup (attributes) {
+export default function Layer2dGroup (attributes, factory) {
     const defaultAttributes = {
     };
 
     this.attributes = Object.assign(defaultAttributes, attributes);
+    this.layerFactory = factory;
     if (!Array.isArray(attributes.children)) {
         console.warn("Wrong configuration for Grouplayer: children are missing.", attributes);
     }
@@ -40,7 +40,7 @@ Layer2dGroup.prototype.createLayer = function (attributes) {
     let groupLayer = null;
 
     attributes.children.forEach(rawLayer => {
-        const layer = layerFactory.createLayer(rawLayer, "2D");
+        const layer = this.layerFactory.createLayer(rawLayer, "2D");
 
         olLayers.push(layer.getLayer());
         sourceLayers.push(layer);

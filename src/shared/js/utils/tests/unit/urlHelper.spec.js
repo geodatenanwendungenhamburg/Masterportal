@@ -80,25 +80,35 @@ describe("src/shared/js/utils/urlHelper.js", () => {
         });
 
         it("should respond to a string with png with boolean true", () => {
-            expect(isWebLink("http://porta.de/thema/Bilder/Bile.png")).to.be.true;
+            expect(isImage("http://porta.de/thema/Bilder/Bile.png")).to.be.true;
         });
-        it("should respond to a string with PNG with boolean true", () => {
-            expect(isWebLink("http://porta.de/thema/Bilder/Bile.PNG")).to.be.true;
+        it("should respond to a string with (A)PNG with boolean true", () => {
+            expect(isImage("http://porta.de/thema/Bilder/Bile.Apng")).to.be.true;
+            expect(isImage("http://porta.de/thema/Bilder/Bile.PNG")).to.be.true;
         });
         it("should respond to a string with jpg with boolean true", () => {
-            expect(isWebLink("http://porta.de/thema/Bilder/Bile.jpg?width=200&height=150&keepRatio=true")).to.be.true;
+            expect(isImage("http://porta.de/thema/Bilder/Bile.jpg?width=200&height=150&keepRatio=true")).to.be.true;
         });
         it("should respond to a string with JPG with boolean true", () => {
-            expect(isWebLink("http://porta.de/thema/Bilder/Bile.JPG")).to.be.true;
+            expect(isImage("http://porta.de/thema/Bilder/Bile.JPG")).to.be.true;
         });
         it("should respond to a string with jpeg with boolean true", () => {
-            expect(isWebLink("http://porta.de/thema/Bilder/Bile.jpeg")).to.be.true;
+            expect(isImage("http://porta.de/thema/Bilder/Bile.jpeg")).to.be.true;
         });
         it("should respond to a string with gif with boolean true", () => {
-            expect(isWebLink("http://porta.de/thema/Bilder/Bile.gif")).to.be.true;
+            expect(isImage("http://porta.de/thema/Bilder/Bile.gif")).to.be.true;
         });
         it("should respond to a string with bmp with boolean true", () => {
-            expect(isWebLink("http://porta.de/thema/Bilder/Bile.bmp")).to.be.true;
+            expect(isImage("http://porta.de/thema/Bilder/Bile.bmp")).to.be.true;
+        });
+        it("should respond to a string with svg with boolean true", () => {
+            expect(isImage("http://porta.de/thema/Bilder/Bile.svg")).to.be.true;
+        });
+        it("should respond to a string with WebP with boolean true", () => {
+            expect(isImage("http://porta.de/thema/Bilder/Bile.webP")).to.be.true;
+        });
+        it("should respond to a string with WebP that's not an image with boolean false", () => {
+            expect(isImage("http://porta.de/thema/Bilder/Bile.webP.html?Bile.webP")).to.be.false;
         });
     });
 

@@ -518,70 +518,16 @@
             "elements": [
               {
                 "name": "3D-Gebäudemodell (LoD3.0- HH)",
-                "type": "folder",
-                "elements": [
-                  {
-                    "id": "24050",
-                    "name": "Area1"
-                  },
-                  {
-                    "id": "31117",
-                    "name": "Area2",
-                    "visibility": true
-                  },
-                  {
-                    "id": "24122",
-                    "name": "Area3",
-                    "visibility": true
-                  },
-                  {
-                    "id": "31172",
-                    "name": "Area4",
-                    "visibility": true
-                  },
-                  {
-                    "id": "29082",
-                    "name": "Area5",
-                    "visibility": true
-                  }
-                ]
+                "id": "34570",
+                "visibility": true
               },
               {
                 "name": "3D-Gebäudemodell (LoD3.0- HH) untexturiert",
-                "type": "folder",
-                "elements": [
-                  {
-                    "id": "33111",
-                    "name": "Area1 untexturiert"
-                  },
-                  {
-                    "id": "33112",
-                    "name": "Area2 untexturiert"
-                  },
-                  {
-                    "id": "33113",
-                    "name": "Area3 untexturiert"
-                  },
-                  {
-                    "id": "33114",
-                    "name": "Area4 untexturiert"
-                  },
-                  {
-                    "id": "33115",
-                    "name": "Area5 untexturiert"
-                  }
-                ]
+                "id": "34573"
               },
               {
                 "name": "3D-Gebäudemodell (LoD3.0- HH) hochauflösend",
-                "type": "folder",
-                "elements": [
-                  {
-                    "id": "24078",
-                    "name": "Area1 hochauflösend",
-                    "visibility": true
-                  }
-                ]
+                "id": "34572"
               },
               {
                 "id": "12884",

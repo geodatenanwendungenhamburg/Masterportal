@@ -74,8 +74,8 @@ describe("src/modules/layerSlider/components/LayerSliderPlayer.vue", () => {
             expect(button.attributes("id")).equals(buttonIds[index]);
         });
 
-        expect(wrapper.find("#module-layer-slider-player > div.input-group > label").exists()).to.be.true;
-        expect(wrapper.find("#module-layer-slider-player > div.input-group > input#title").exists()).to.be.true;
+        expect(wrapper.find("#module-layer-slider-player > div.input-group > label[for='title']").exists()).to.be.true;
+        expect(wrapper.findComponent({name: "InputText"}).exists()).to.be.true;
     });
 
     it("renders the input-group button pause if play is clicked", async () => {

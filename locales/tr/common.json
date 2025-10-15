@@ -40,7 +40,7 @@
       "alreadyAdded": "",
       "completeMessage": "Istenilen WMS'nin katmanları, menü öğesinin altındaki konu ağacına <strong>Externe Fachdaten</strong> eklendi!",
       "errorHttpsMessage": "talep ettiğiniz WMS bir http url'sinin altında yer almaktadır. Masterportal, WMS'yi yalnızca https (SSL) aracılığıyla entegre edebilir.",
-      "errorMessage": "Belirtilen hizmet yüklenemedi. Lütfen URL’nin doğru girildiğinden emin olun.<br><br> Sorun devam ederse, lütfen aşağıdaki notla servis operatörüyle iletişime geçin:<br><strong> Hizmet için bir CORS başlığının ayarlanması sağlanmalıdır.Bu <a target='_blank' href='https://www.gdi-de.org/download/AK_Geodienste_Architektur_GDI-DE_Bereitstellung_Darstellungsdienste.pdf'>GDI-DE</a> 4.7.1 Bölümde tavsiye edilir.</strong>",
+      "errorMessage": "Belirtilen hizmet yüklenemedi. Lütfen URL'nin doğru girildiğinden emin olun.<br><br> Sorun devam ederse, lütfen aşağıdaki notla servis operatörüyle iletişime geçin:<br><strong> Hizmet için bir CORS başlığının ayarlanması sağlanmalıdır.Bu <a target='_blank' href='https://www.gdi-de.org/download/AK_Geodienste_Architektur_GDI-DE_Bereitstellung_Darstellungsdienste.pdf'>GDI-DE</a> 4.7.1 Bölümde tavsiye edilir.</strong>",
       "errorTitle": "",
       "ifInExtent": "WMS aracılığıyla kullanıma sunulan coğrafi veriler, görüntülenebilir alanın dışındadır. WMS eklenemiyor.",
       "name": "WMS ekle",
@@ -507,8 +507,7 @@
       "serviceFour": "hizmet 4",
       "sliderTypeHandle": "",
       "sliderTypePlayer": "",
-      "title": "Örnek WMS simülasyonu",
-      "titleNotConfigured": "Başlık yapılandırılmadı"
+      "title": "Örnek WMS simülasyonu"
     },
     "layerTree": {
       "addLayer": "",
@@ -865,6 +864,21 @@
           "play": "O anda seçili olan zaman noktasına göre zaman içindeki tüm noktaların otomatik olarak yeniden oynatılması"
         },
         "inputRangeLabel": "Bir zaman dilimi seçin"
+      }
+    },
+    "pagination": {
+      "aria": {
+        "previous": "Önceki sayfa",
+        "next": "Sonraki sayfa",
+        "go": "Sayfaya git"
+      },
+      "input": {
+        "label": "Sayfa",
+        "placeholder": "Sayfa",
+        "tooltip": "Sayfa numarasını girin ve Enter tuşuna basın veya o sayfaya atlamak için oka tıklayın"
+      },
+      "button": {
+        "goTooltip": "Girilen sayfaya atla"
       }
     }
   },

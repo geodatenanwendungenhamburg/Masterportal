@@ -27,7 +27,7 @@ describe("src/modules/generalFilter/components/SnippetDate.vue", () => {
         });
         it("should render correctly with prechecked as set value", async () => {
             const wrapper = shallowMount(SnippetDate, {
-                propsData: {
+                props: {
                     format: "DD_YYYY_MM",
                     prechecked: "24_2021_12"
                 }
@@ -37,18 +37,18 @@ describe("src/modules/generalFilter/components/SnippetDate.vue", () => {
             await wrapper.vm.$nextTick();
             expect(wrapper.find(".snippetDate").element.value).to.be.equal("2021-12-24");
         });
-        it("should render hidden if visible is false", () => {
-            const wrapper = shallowMount(SnippetDate, {
-                propsData: {
-                    visible: false
-                }
-            });
+        it("should render hidden if visible is false", async () => {
+            const wrapper = shallowMount(SnippetDate, {props: {visible: false}}),
+                el = wrapper.find(".snippetDateContainer").element,
+                inlineDisplay = el.style && el.style.display,
+                computedDisplay = typeof getComputedStyle === "function" ? getComputedStyle(el).display : undefined;
 
-            expect(wrapper.find(".snippetDateContainer").element.style._values.display).to.be.equal("none");
+            await wrapper.vm.$nextTick();
+            expect(inlineDisplay || computedDisplay).to.equal("none");
         });
         it("should render but also be disabled", () => {
             const wrapper = shallowMount(SnippetDate, {
-                propsData: {
+                props: {
                     disabled: true
                 }
             });
@@ -58,7 +58,7 @@ describe("src/modules/generalFilter/components/SnippetDate.vue", () => {
         });
         it("should render with a title if the title is a string", () => {
             const wrapper = shallowMount(SnippetDate, {
-                propsData: {
+                props: {
                     title: "foobar"
                 }
             });
@@ -67,7 +67,7 @@ describe("src/modules/generalFilter/components/SnippetDate.vue", () => {
         });
         it("should render without a title if title is a boolean and false", () => {
             const wrapper = shallowMount(SnippetDate, {
-                propsData: {
+                props: {
                     title: false
                 }
             });
@@ -76,7 +76,7 @@ describe("src/modules/generalFilter/components/SnippetDate.vue", () => {
         });
         it("should set both minimumValue and maximumValue from properties if given", async () => {
             const wrapper = await shallowMount(SnippetDate, {
-                propsData: {
+                props: {
                     format: "DD_YYYY_MM",
                     minValue: "24_2021_12",
                     maxValue: "24_2022_12"
@@ -90,7 +90,7 @@ describe("src/modules/generalFilter/components/SnippetDate.vue", () => {
         });
         it("should set both minimumValue and maximumValue from properties and value from prechecked if given", async () => {
             const wrapper = shallowMount(SnippetDate, {
-                propsData: {
+                props: {
                     format: "DD_YYYY_MM",
                     minValue: "24_2021_12",
                     maxValue: "24_2022_12",
@@ -105,7 +105,7 @@ describe("src/modules/generalFilter/components/SnippetDate.vue", () => {
         });
         it("should ask the api for minimumValue or maximumValue if minValue and maxValue are not given", async () => {
             const wrapper = shallowMount(SnippetDate, {
-                propsData: {
+                props: {
                     format: "DD_YYYY_MM",
                     api: {
                         getMinMax (attrName, onsuccess) {
@@ -127,7 +127,7 @@ describe("src/modules/generalFilter/components/SnippetDate.vue", () => {
             let lastMinOnly = false,
                 lastMaxOnly = false;
             const wrapper = shallowMount(SnippetDate, {
-                propsData: {
+                props: {
                     format: "DD_YYYY_MM",
                     maxValue: "24_2022_12",
                     api: {
@@ -153,7 +153,7 @@ describe("src/modules/generalFilter/components/SnippetDate.vue", () => {
             let lastMinOnly = false,
                 lastMaxOnly = false;
             const wrapper = shallowMount(SnippetDate, {
-                propsData: {
+                props: {
                     format: "DD_YYYY_MM",
                     minValue: "24_2021_12",
                     api: {
@@ -177,7 +177,7 @@ describe("src/modules/generalFilter/components/SnippetDate.vue", () => {
         });
         it("should not emit the current rule on startup, if no prechecked is given", async () => {
             const wrapper = await shallowMount(SnippetDate, {
-                propsData: {
+                props: {
                     format: "DD_YYYY_MM",
                     minValue: "24_2021_12",
                     maxValue: "24_2022_12"
@@ -188,7 +188,7 @@ describe("src/modules/generalFilter/components/SnippetDate.vue", () => {
         });
         it("should not use the given operator if an invalid operator is given", () => {
             const wrapper = shallowMount(SnippetDate, {
-                propsData: {
+                props: {
                     operator: "operator"
                 }
             });
@@ -200,7 +200,7 @@ describe("src/modules/generalFilter/components/SnippetDate.vue", () => {
     describe("emitCurrentRule", () => {
         it("should emit changeRule function with the expected values", () => {
             const wrapper = shallowMount(SnippetDate, {
-                propsData: {
+                props: {
                     snippetId: 1234,
                     visible: false,
                     attrName: "attrName",
@@ -228,7 +228,7 @@ describe("src/modules/generalFilter/components/SnippetDate.vue", () => {
     describe("deleteCurrentRule", () => {
         it("should emit deleteRule function with its snippetId", () => {
             const wrapper = shallowMount(SnippetDate, {
-                propsData: {
+                props: {
                     snippetId: 1234
                 }
             });
@@ -243,7 +243,7 @@ describe("src/modules/generalFilter/components/SnippetDate.vue", () => {
     describe("resetSnippet", () => {
         it("should reset the snippet to prechecked value if prechecked is set", async () => {
             const wrapper = shallowMount(SnippetDate, {
-                propsData: {
+                props: {
                     format: "DD_YYYY_MM",
                     prechecked: "24_2021_12"
                 }
@@ -260,7 +260,7 @@ describe("src/modules/generalFilter/components/SnippetDate.vue", () => {
         });
         it("should reset the snippet value and call the given onsuccess handler", async () => {
             const wrapper = shallowMount(SnippetDate, {
-                propsData: {
+                props: {
                     format: "DD_YYYY_MM"
                 }
             });

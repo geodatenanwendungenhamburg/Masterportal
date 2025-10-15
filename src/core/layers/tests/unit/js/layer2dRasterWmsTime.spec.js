@@ -60,6 +60,10 @@ describe("src/core/js/layers/layer2dRasterWmsTime.js", () => {
                 default: "1997"
             }
         };
+        store.getters = {
+            "Modules/WmsTime/layerSwiper": () => {
+                true;
+            }};
     });
 
     afterEach(() => {

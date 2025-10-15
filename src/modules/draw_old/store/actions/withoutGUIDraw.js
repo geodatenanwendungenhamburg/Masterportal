@@ -7,7 +7,6 @@ import MultiLine from "ol/geom/MultiLineString.js";
 import MultiPoint from "ol/geom/MultiPoint.js";
 import MultiPolygon from "ol/geom/MultiPolygon.js";
 import * as setters from "./settersDraw";
-import main from "@modules/draw_old/js/main";
 
 /**
  * Resets and deactivates the Draw Tool.
@@ -61,8 +60,8 @@ function downloadFeaturesWithoutGUI ({rootState}, payload) {
         targetProjection = payload.prmObject.targetProjection;
     }
 
-    if (main.getApp().config.globalProperties.$layer !== undefined && main.getApp().config.globalProperties.$layer !== null) {
-        features = main.getApp().config.globalProperties.$layer.getSource().getFeatures();
+    if (this.$app.config.globalProperties.$layer !== undefined && this.$app.config.globalProperties.$layer !== null) {
+        features = this.$app.config.globalProperties.$layer.getSource().getFeatures();
 
         if (payload?.currentFeature !== undefined && features.every(feature => feature.get("masterportal_attributes").styleId !== payload?.currentFeature.get("masterportal_attributes").styleId)) {
             features.push(payload.currentFeature);
@@ -200,7 +199,7 @@ async function initializeWithoutGUI ({state, commit, dispatch, getters, rootStat
     commit("setFreeHand", false);
     commit("setWithoutGUI", true);
 
-    if (["Point", "LineString", "Polygon", "Circle"].indexOf(drawType) > -1) {
+    if (["Point", "LineString", "Polygon", "Circle", "Square"].indexOf(drawType) > -1) {
         const {styleSettings} = getters;
         let layerExists = false;
 
@@ -222,10 +221,10 @@ async function initializeWithoutGUI ({state, commit, dispatch, getters, rootStat
             setters.setStyleSettings({getters, commit}, styleSettings);
         }
 
-        layerExists = dispatch("Maps/checkLayer", main.getApp().config.globalProperties.$layer, {root: true});
+        layerExists = dispatch("Maps/checkLayer", this.$app.config.globalProperties.$layer, {root: true});
 
         if (!layerExists) {
-            dispatch("Maps/addLayer", main.getApp().config.globalProperties.$layer, {root: true});
+            dispatch("Maps/addLayer", this.$app.config.globalProperties.$layer, {root: true});
         }
 
         dispatch("createDrawInteractionAndAddToMap", {active: true, maxFeatures});
@@ -252,11 +251,11 @@ async function initializeWithoutGUI ({state, commit, dispatch, getters, rootStat
                 }
 
                 if (featJSON.length > 0) {
-                    main.getApp().config.globalProperties.$layer.setStyle(createStyleModule.createStyle(state, styleSettings));
-                    main.getApp().config.globalProperties.$layer.getSource().addFeatures(featJSON);
+                    this.$app.config.globalProperties.$layer.setStyle(createStyleModule.createStyle(state, styleSettings));
+                    this.$app.config.globalProperties.$layer.getSource().addFeatures(featJSON);
                 }
                 if (featJSON.length > 0 && zoomToExtent) {
-                    dispatch("Maps/zoomToExtent", {extent: main.getApp().config.globalProperties.$layer.getSource().getExtent()}, {root: true});
+                    dispatch("Maps/zoomToExtent", {extent: this.$app.config.globalProperties.$layer.getSource().getExtent()}, {root: true});
                 }
             }
             catch (e) {
@@ -290,6 +289,8 @@ function getDrawId (drawType) {
             return "drawSymbol";
         case "Polygon":
             return "drawArea";
+        case "Square":
+            return "drawSquare";
         default:
             return "draw";
     }

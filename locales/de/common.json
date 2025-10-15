@@ -54,6 +54,12 @@
       "accessibilityStatement": "Barrierefreiheitserklärung",
       "contactButton": "Kontakt aufnehmen"
     },
+    "additional": {
+      "userManual": {
+        "name": "Anleitung",
+        "fileTitle": "Anleitung zur Nutzung des Tools"
+      }
+    },
     "addWMS": {
       "alertTitleSuccess": "Layer erfolgreich hinzugefügt",
       "alreadyAdded": "Die Layer des angeforderten WMS wurden bereits hinzugefügt.",
@@ -172,6 +178,7 @@
       "orientation": {
         "distanceUnit": "Meter",
         "geolocationDeniedText": "Lokalisierung nicht verfügbar",
+        "iFrameGeolocationError": "Die Geolokalisierung innerhalb eines Iframes ist aktuell nicht verfügbar.<br/>Bitte öffnen Sie das <a href='#' target=`_blank`>Portal</a> in einem neuen Tab oder Fenster.",
         "imgAlt": "Bild für Point of Interest",
         "poiChoiceCurrentPosition": "Standort",
         "poiChoiceCustomPosition": "Adresssuche oder Punkt in Karte setzen",
@@ -295,8 +302,10 @@
         "attributeDuplicatedKeyError": "Der Attribut-Schlüssel existiert bereits.",
         "attributeKeyError": "Bitte einen Schlüssel fürs Attribut angeben.",
         "input": {
-          "key": "Neuer Schlüssel",
-          "value": "Neuer Wert"
+          "key": "Attributschlüssel",
+          "value": "Attributwert",
+          "newKey": "Neuer Schlüssel",
+          "newValue": "Neuer Wert"
         },
         "noFeatureSelected": "Derzeit ist noch kein Feature ausgewählt. Bitte wählen Sie ein Feature aus!",
         "remove": "Löschen",
@@ -341,6 +350,7 @@
       "drawLayerVisible": "Zeichnung sichtbar",
       "drawTypeOptions": {
         "drawArea": "Fläche",
+        "drawSquare": "Quadrat",
         "drawCircle": "Kreis",
         "drawCurve": "Freihandlinie",
         "drawDoubleCircle": "Doppelkreis",
@@ -376,9 +386,14 @@
       "transparencyOutline": "Transparenz Umriss",
       "undefinedInnerCircle": "Bitte definieren Sie auch den inneren Kreis.",
       "undefinedOuterCircle": "Bitte definieren Sie auch den äußeren Kreis.",
+      "undefinedSquareArea": "Bitte definieren Sie den Flächeninhalt des Quadrats.",
       "undefinedRadius": "Bitte geben Sie einen Radius an.",
       "undefinedTwoCircles": "Bitte definieren Sie beide Kreise.",
-      "unit": "Einheit"
+      "unit": "Einheit",
+      "squareDefinedInfo": " (ohne Berücksichtung der Erdkrümmung)",
+      "areaLabel": "Flächeninhalt",
+      "squareSideLengthLabel": "Seitenlänge",
+      "lineLengthLabel": "Gesamtlänge"
     },
     "featureLister": {
       "chooseTheme": "Thema wählen",
@@ -640,7 +655,8 @@
       "deselectAll": "Alle entfernen",
       "selectedSubjectsCount_other": "Bitte wählen sie ein Thema aus",
       "addSelectedSubjectsToMap_one": "Ausgewähltes Thema der Karte hinzufügen",
-      "addSelectedSubjectsToMap_other": "{{count}} ausgewählte Themen der Karte hinzufügen"
+      "addSelectedSubjectsToMap_other": "{{count}} ausgewählte Themen der Karte hinzufügen",
+      "noResults": "Keine Ergebnisse für \"{{filterText}}\" gefunden."
     },
     "layerSlider": {
       "description": "Starten Sie eine Slideshow",
@@ -652,8 +668,7 @@
       "serviceFour": "Dienst 4",
       "sliderTypeHandle": "Slider-Modus",
       "sliderTypePlayer": "Player-Modus",
-      "title": "Simulation von Beispiel-Diensten",
-      "titleNotConfigured": "Titel nicht konfiguriert"
+      "title": "Simulation von Beispiel-Diensten"
     },
     "layerTree": {
       "addLayer": "Themen hinzufügen",
@@ -898,7 +913,9 @@
       "vtlWarning": "Da MapFish 3 keine Vector Tile Layer unterstützt, werden die folgenden aktiven Layer nicht in der Printansicht erscheinen:",
       "waitForPrintErrorMessage": "Die Erstellung des Ausdrucks ist fehlgeschlagen.<br>Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut oder wenden Sie sich an den Betreiber des Portal.",
       "withInfoLabel": "Mit Informationen",
-      "withLegendLabel": "Mit Legende"
+      "withLegendLabel": "Mit Legende",
+      "predefinedLegendInfo": "Der Layer \"{{layerName}}\" enthält eine vordefinierte Legende.",
+      "predefinedLegendDownload": "Die Legende kann nicht zum Ausdruck hinzugefügt werden. Sie können die vordefinierte Legende separat über das Download-Menü herunterladen."
     },
     "routing": {
       "addWaypoint": "Wegpunkt hinzufügen",
@@ -923,6 +940,16 @@
         "structure": "Struktur",
         "uploadFile": "Datei hochladen"
       },
+      "contextMenu": {
+        "addAvoidPoint": "Sperrpunkt hinzufügen",
+        "addEndpoint": "Zielpunkt hinzufügen",
+        "addStartpoint": "Startpunkt hinzufügen",
+        "addWaypoint": "Wegpunkt hinzufügen",
+        "avoidPointModalTitle": "Radius des Sperrpunktes",
+        "header": "Aktionen",
+        "removeAvoidPoint": "Sperrfläche entfernen",
+        "removePoint": "Punkt entfernen"
+      },
       "coordinateInputHelp": "Suchen Sie einen Ort oder fügen Sie einen Punkt durch Klick in die Karte hinzu",
       "deleteWaypoint": "Wegpunkt löschen",
       "description": "Finden Sie heraus, wie Sie am schnellsten zu ihrem Ziel kommen oder legen Sie einen Suchradius fest",
@@ -943,6 +970,7 @@
           "errorSomeFailed": "Es konnten {{countFailed}} Ergebnisse nicht korrekt errechnet werden. Die Ergebnisdatei enthält an diesen Stellen Leerzellen.",
           "errorToManyEntriesInFile": "Maximale Anzahl an Zeilen überschritten ({{limit}})",
           "errorToManyEntriesInRow": "Zeile {{row}} enthält mehr als 5 Einträge, bitte beachten Sie die Struktur (ID;lon(Startpunkt);lat(Startpunkt);lon(Endpunkt);lat(Endpunkt))",
+          "errorContextMenuSetPoint": "An dieser Stelle konnte kein Punkt gesetzt werden.",
           "structure": "ID;lon(Startpunkt);lat(Startpunkt);lon(Endpunkt);lat(Endpunkt)"
         },
         "deleteRestrictedAreas": "Sperrflächen löschen",
@@ -1051,7 +1079,14 @@
           "area": "Fläche:"
         },
         "interval": "Intervall",
-        "legend": "Legende",
+        "legend": {
+          "area": "Fläche",
+          "color": "Farbe",
+          "distance": "Distanz",
+          "population": "Bevölkerung",
+          "time": "Zeit",
+          "title": "Legende"
+        },
         "maxDistance": "Maximale Entfernung",
         "maxTraveltime": "Maximale Reisedauer",
         "optimization": {
@@ -1080,6 +1115,9 @@
         "axleload": "Achslast",
         "axleloadTooltip": "Achslast des LKW. Akzeptierte Werte: 0 bis 19 Tonnen",
         "hazmat": "Gefahrgut"
+      },
+      "settings": {
+        "submit": "Bestätigen"
       },
       "speedprofiles": {
         "CAR": "PKW",
@@ -1159,6 +1197,7 @@
         "addressDistrict": "Suche Adresse, Stadtteil",
         "addressHospitalBplan": "Suche nach Adresse/Krankenhaus/B-Plan",
         "addressTopic": "Suche Adresse, Stadtteil, Thema",
+        "addressOrTopic": "Suche nach Adressen oder Themen",
         "addressTopicParcel": "Suche Adresse, Stadtteil, Thema, Flurstück",
         "startWithAddress": "Hier mit Adresse starten!"
       },
@@ -1169,6 +1208,8 @@
       "searchResultsFrom": "Suchergebnisse von: ",
       "mark": "Wähle das Thema aus",
       "add": "Thema hinzufügen",
+      "minCharHint": "Bitte geben Sie mindestens {{min}} Zeichen ein, um die Suche zu starten.",
+      "noResults": "Keine Ergebnisse gefunden.",
       "type": {
         "address": "Adresse",
         "county": "Bezirk",
@@ -1220,20 +1261,31 @@
       "headings": {
         "mrhstatistics": "Zahlen, Daten, Fakten der MRH - Regionalstatistik",
         "mrhstatisticsTooltip": "Link zu den Metadaten",
-        "addFilter": "Filter hinzufügen"
+        "addFilter": "Filter hinzufügen",
+        "filter": "Filter",
+        "addStatisticalData": "Statistische Daten auswählen",
+        "addArea": "Gebiete auswählen",
+        "addTime": "Zeitraum auswählen"
       },
-      "infoText": "Hinweis: Bei vielen Gebieten wird zunächst nur ein Teil im Diagramm gezeigt (basierend auf der Tabellensortierung). Über das untere Feld lassen sich weitere Gebiete hinzufügen.",
+      "infoText": "Hinweis: Bei vielen Gebieten wird zunächst nur ein Teil im Diagramm gezeigt. Über das untere Feld lassen sich weitere Gebiete hinzufügen.",
+      "infoTextNoData": "Es wurden noch keine oder nicht alle notwendigen Filter hinzugefügt. Um statistische Daten in Tabellen und Diagrammen anzeigen zu lassen, müssen die Daten erst gefiltert werden.",
       "button": {
         "difference": "Differenz",
         "table": "Tabelle",
         "chart": "Diagramm",
-        "add": "Hinzufügen",
+        "add": "Filter hinzufügen",
+        "edit": "Filter ändern",
+        "arrowLeft": "Nach links blättern",
+        "arrowRight": "Nach rechts blättern",
         "reset": "Alle entfernen",
         "filter": "Filter",
         "showMore": "weitere anzeigen...",
         "showLess": "weniger anzeigen...",
         "done": "Fertig",
-        "all": "Alle"
+        "all": "Alle",
+        "statistics": "Statistiken",
+        "geographical": "Geografische Filter",
+        "timeBased": "Zeitbezogene Filter"
       },
       "label": {
         "category": "Kategorie",
@@ -1250,10 +1302,15 @@
         "additional": "Sonstiges"
       },
       "reference": {
-        "title": "Referenzart",
+        "title": "Differenzmodus",
+        "optionDate": "Welches Jahr soll als Referenz dienen?",
+        "optionArea": "Welches Gebiet soll als Referenz dienen?",
         "description": "Differenzwerte darstellen, bezogen auf ein Referenzjahr oder Gebiet",
         "placeholder": "Bitte wählen Sie mind. eine Option!",
-        "tagLabel": "Referenz"
+        "tagLabel": "Referenz",
+        "year": "Referenzjahr {{value}}",
+        "region": "Referenzgebiet {{value}}",
+        "difference": "Differenz"
       },
       "legend": {
         "under": "unter",
@@ -1275,10 +1332,14 @@
         "quantile": "gleiche Klassengrößen (Quantile)",
         "customized": "benutzerdefiniert",
         "andAbove": "und darüber",
-        "invalidCustomStepsAlert": "Achtung: Die gewählten Bereichsgrenzen bilden keine aufsteigende Zahlenreihe!"
+        "invalidCustomStepsAlert": "Achtung: Die gewählten Bereichsgrenzen bilden keine aufsteigende Zahlenreihe!",
+        "noValue": "Gebiete mit fehlendem Wert sind weiß eingefärbt",
+        "previewLegend": "Vorschau Klasseneinteilung"
       },
-      "totalHint": "Achtung: Die Summenfunktion unterscheidet nicht zwischen absoluten Zahlen, Prozenten, Mittelwerten oder relativen Größen (z.B. Einwohner pro Quadratmeter). Die Summen sind daher nicht immer interpretierbar. Bitte im Kontext der ausgewählten Statistik beachten.",
-      "backToOverview": "Diagrammübersicht"
+      "totalHint": "Achtung: Die Summenfunktion unterscheidet nicht zwischen absoluten Zahlen, Prozenten, Mittelwerten oder relativen Größen (z.B. Einwohner pro Quadratmeter). Die Summen sind daher nicht immer interpretierbar. Bitte im Kontext der ausgewählten Statistik beachten. Fehlende Werte werden bei der Berechnung nicht berücksichtigt.",
+      "filterHint": "Alle Felder müssen vollständig ausgefüllt sein, um die Filterergebnisse anzuzeigen.",
+      "backToOverview": "Diagrammübersicht",
+      "backToStatisticDashboard":"Zurück zur Übersicht"
     },
     "shadow": {
       "name": "Schatten",
@@ -1370,7 +1431,8 @@
         "point": "Punkt erfassen",
         "polygon": "Fläche erfassen",
         "update": "Bearbeiten",
-        "multiUpdate": "Bearbeiten"
+        "multiUpdate": "Bearbeiten",
+        "multiPolygon": "Multipolygon erfassen"
       },
       "multiUpdate": {
         "oneSelected": "Objekt wurde ausgewählt:",
@@ -1387,6 +1449,10 @@
             "box": "Rechteckauswahl aktivieren"
           }
         }
+      },
+      "confirmVoidFeatureCreation": {
+        "textContent": "Möchten Sie ein Multipolygon mit einem void (Donut-Polygon) erstellen?",
+        "headline": "Polygon Erstellung mit void"
       },
       "layerSelectLabel": "Aktueller Layer:",
       "name": "WFS-T Tool",
@@ -1424,6 +1490,21 @@
           "play": "Ein automatisches Abspielen aller Zeitpunkte, ausgehend vom aktuell ausgewählten Zeitpunkt"
         },
         "inputRangeLabel": "Einen Zeitpunkt auswählen"
+      }
+    },
+    "pagination": {
+      "aria": {
+        "previous": "Vorherige Seite",
+        "next": "Nächste Seite",
+        "go": "Gehe zu Seite"
+      },
+      "input": {
+        "label": "Seite",
+        "placeholder": "Seite",
+        "tooltip": "Seitenzahl eingeben und Enter drücken oder auf den Pfeil klicken, um zu dieser Seite zu springen"
+      },
+      "button": {
+        "goTooltip": "Zu der eingegebenen Seite springen"
       }
     }
   },
@@ -1541,7 +1622,8 @@
         "fullscreenViewActiveToolTip": "Zur kleineren Tabellenansicht wechseln",
         "settingsTooltip": "Tabelleninhalte filtern",
         "resetToolTip": "Tabellenfilter zurücksetzen",
-        "fullscreenView": "Vollbildansicht"
+        "fullscreenView": "Vollbildansicht",
+        "fullscreenViewActive": "Kompaktansicht"
       }
     }
   },

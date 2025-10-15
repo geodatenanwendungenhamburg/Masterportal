@@ -46,7 +46,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
                             namespaced: true,
                             state: {
                                 layerInfo: {
-                                    typ: ["WMS", "WFS", "GeoJSON"],
+                                    typ: "WMS",
                                     metaIdArray: [],
                                     url: "https://wfs.example.org/?evil=1"
                                 }
@@ -118,7 +118,8 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
             getters: {
                 isModuleAvailable: () => () => true,
                 configJs: () => sinon.stub(),
-                layerConfigById: () => () => layerConfig
+                layerConfigById: () => () => layerConfig,
+                restServiceById: () => sinon.stub()
             }
         });
 
@@ -182,7 +183,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
             }),
             link = wrapper.find("#url div.pt-5 a");
 
-        expect(link.attributes("href")).to.include("https://wfs.example.org/?evil=1&SERVICE=WMS%2CWFS%2CGeoJSON&REQUEST=GetCapabilities");
+        expect(link.attributes("href")).to.include("https://wfs.example.org/?evil=1&SERVICE=WMS&REQUEST=GetCapabilities");
     });
 
     it("should show point of contact accordion  using content from pointOfContact", () => {
@@ -325,9 +326,9 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
             typ: "GROUP",
             metaIdArray: ["sample-meta-id"],
             layers: [
-                {name: "Layer 1", metaID: "test", type: "WFS", url: "#"},
-                {name: "Layer 2", metaID: "test", type: "SensorThings", url: "#"},
-                {name: "Layer 3", metaID: "test", type: "WMS", url: "#"}
+                {name: "Layer 1", metaID: "test", typ: "WFS", url: "#"},
+                {name: "Layer 2", metaID: "test", typ: "SensorThings", url: "#"},
+                {name: "Layer 3", metaID: "test", typ: "WMS", url: "#"}
             ]
         };
 
@@ -357,9 +358,9 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
             typ: "GROUP",
             metaIdArray: ["sample-meta-id"],
             layers: [
-                {name: "Layer 1", metaID: "test", type: "WFS", url: "#"},
-                {name: "Layer 2", metaID: "test", type: "SensorThings", url: "#"},
-                {name: "Layer 3", metaID: "test", type: "WMS", url: "#"}
+                {name: "Layer 1", metaID: "test", typ: "WFS", url: "#"},
+                {name: "Layer 2", metaID: "test", typ: "SensorThings", url: "#"},
+                {name: "Layer 3", metaID: "test", typ: "WMS", url: "#"}
             ]
         };
 
@@ -377,7 +378,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
     });
 
     describe("methods", () => {
-        it("getGetCapabilitiesUrl test WMS with origUrl", () => {
+        it("getLayerAddress test WMS with origUrl", () => {
             layerConfig.origUrl = "/origUrl";
             layerConfig.url = "/orig_url";
             const wrapper = mount(LayerInformationComponent, {
@@ -391,17 +392,17 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
                     typ: "WMS"
                 },
                 expectedUrl = new URL(layerConfig.origUrl, location.href);
-            let capabilitiesUrl = null;
+            let addressUrl = null;
 
             expectedUrl.searchParams.set("SERVICE", layerInfo.typ);
             expectedUrl.searchParams.set("REQUEST", "GetCapabilities");
 
-            capabilitiesUrl = wrapper.vm.getGetCapabilitiesUrl(layerInfo);
+            addressUrl = wrapper.vm.getLayerAddress(layerInfo);
 
-            expect(capabilitiesUrl).to.be.equals(expectedUrl.href);
+            expect(addressUrl).to.be.equals(expectedUrl.href);
         });
 
-        it("getGetCapabilitiesUrl test WMS without origUrl", () => {
+        it("getLayerAddress test WMS without origUrl", () => {
             layerConfig.url = "/url";
             const wrapper = mount(LayerInformationComponent, {
                     global: {
@@ -414,17 +415,17 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
                     typ: "WMS"
                 },
                 expectedUrl = new URL(layerConfig.url, location.href);
-            let capabilitiesUrl = null;
+            let addressUrl = null;
 
             expectedUrl.searchParams.set("SERVICE", layerInfo.typ);
             expectedUrl.searchParams.set("REQUEST", "GetCapabilities");
 
-            capabilitiesUrl = wrapper.vm.getGetCapabilitiesUrl(layerInfo);
+            addressUrl = wrapper.vm.getLayerAddress(layerInfo);
 
-            expect(capabilitiesUrl).to.be.equals(expectedUrl.href);
+            expect(addressUrl).to.be.equals(expectedUrl.href);
         });
 
-        it("getGetCapabilitiesUrl test OAF without origUrl", () => {
+        it("getLayerAddress test OAF without origUrl", () => {
             layerConfig.url = "/url";
             const wrapper = mount(LayerInformationComponent, {
                     global: {
@@ -437,9 +438,185 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
                     typ: "OAF"
                 },
                 expectedUrl = new URL(layerConfig.url, location.href),
-                capabilitiesUrl = wrapper.vm.getGetCapabilitiesUrl(layerInfo);
+                addressUrl = wrapper.vm.getLayerAddress(layerInfo);
 
-            expect(capabilitiesUrl).to.be.equals(expectedUrl.href);
+            expect(addressUrl).to.be.equals(expectedUrl.href);
+        });
+
+        it("getLayerAddress for 3D tileset layer with slash at url", () => {
+            layerConfig.url = "https://daten.de/gdi3d/objects/";
+            const wrapper = mount(LayerInformationComponent, {
+                    global: {
+                        plugins: [store]
+                    }
+                }),
+                layerInfo = {
+                    id: "id",
+                    url: layerConfig.url,
+                    typ: "TileSet3D"
+                },
+                expectedUrl = new URL(layerConfig.url, location.href),
+                addressUrl = wrapper.vm.getLayerAddress(layerInfo);
+
+            expect(addressUrl).to.be.equals(expectedUrl.href + "tileset.json");
+        });
+
+        it("getLayerAddress for 3D tileset layer with json file included", () => {
+            layerConfig.url = "https://daten.de/gdi3d/objects/tileset.json";
+            const wrapper = mount(LayerInformationComponent, {
+                    global: {
+                        plugins: [store]
+                    }
+                }),
+                layerInfo = {
+                    id: "id",
+                    url: layerConfig.url,
+                    typ: "TileSet3D"
+                },
+                expectedUrl = new URL(layerConfig.url, location.href),
+                addressUrl = wrapper.vm.getLayerAddress(layerInfo);
+
+            expect(addressUrl).to.be.equals(expectedUrl.href);
+        });
+
+        it("getLayerAddress for 3D tileset layer without slash at url", () => {
+            layerConfig.url = "https://daten.de/gdi3d/objects";
+            const wrapper = mount(LayerInformationComponent, {
+                    global: {
+                        plugins: [store]
+                    }
+                }),
+                layerInfo = {
+                    id: "id",
+                    url: layerConfig.url,
+                    typ: "TileSet3D"
+                },
+                expectedUrl = new URL(layerConfig.url, location.href),
+                addressUrl = wrapper.vm.getLayerAddress(layerInfo);
+
+            expect(addressUrl).to.be.equals(expectedUrl.href + "/tileset.json");
+        });
+
+        it("getLayerAddress for 3D tileset layer with questionmark at url", () => {
+            layerConfig.url = "https://daten.de/gdi3d/objects?";
+            const wrapper = mount(LayerInformationComponent, {
+                    global: {
+                        plugins: [store]
+                    }
+                }),
+                layerInfo = {
+                    id: "id",
+                    url: layerConfig.url,
+                    typ: "TileSet3D"
+                },
+                expectedUrl = new URL(layerConfig.url.slice(0, -1), location.href),
+                addressUrl = wrapper.vm.getLayerAddress(layerInfo);
+
+            expect(addressUrl).to.be.equals(expectedUrl.href + "/tileset.json");
+        });
+
+        it("getLayerAddress for 3D terrain layer with slash at url", () => {
+            layerConfig.url = "https://daten.de/gdi3d/terrain/";
+            const wrapper = mount(LayerInformationComponent, {
+                    global: {
+                        plugins: [store]
+                    }
+                }),
+                layerInfo = {
+                    id: "id",
+                    url: layerConfig.url,
+                    typ: "Terrain3D"
+                },
+                expectedUrl = new URL(layerConfig.url, location.href),
+                addressUrl = wrapper.vm.getLayerAddress(layerInfo);
+
+            expect(addressUrl).to.be.equals(expectedUrl.href + "layer.json");
+        });
+
+        it("getLayerAddress for 3D terrain layer without slash at url", () => {
+            layerConfig.url = "https://daten.de/gdi3d/terrain";
+            const wrapper = mount(LayerInformationComponent, {
+                    global: {
+                        plugins: [store]
+                    }
+                }),
+                layerInfo = {
+                    id: "id",
+                    url: layerConfig.url,
+                    typ: "Terrain3D"
+                },
+                expectedUrl = new URL(layerConfig.url, location.href),
+                addressUrl = wrapper.vm.getLayerAddress(layerInfo);
+
+            expect(addressUrl).to.be.equals(expectedUrl.href + "/layer.json");
+        });
+
+        it("getLayerAddress for 3D terrain layer with questionmark at url", () => {
+            layerConfig.url = "https://daten.de/gdi3d/terrain?";
+            const wrapper = mount(LayerInformationComponent, {
+                    global: {
+                        plugins: [store]
+                    }
+                }),
+                layerInfo = {
+                    id: "id",
+                    url: layerConfig.url,
+                    typ: "Terrain3D"
+                },
+                expectedUrl = new URL(layerConfig.url.slice(0, -1), location.href),
+                addressUrl = wrapper.vm.getLayerAddress(layerInfo);
+
+            expect(addressUrl).to.be.equals(expectedUrl.href + "/layer.json");
+        });
+
+        it("cleanUrl: questionmark", () => {
+            const url = "https://daten.de/gdi3d/terrain?",
+                wrapper = mount(LayerInformationComponent, {
+                    global: {
+                        plugins: [store]
+                    }
+                }),
+                cleanedUrl = wrapper.vm.cleanUrl(url);
+
+            expect(cleanedUrl.endsWith("?")).to.be.false;
+        });
+
+        it("cleanUrl: slash", () => {
+            const url = "https://daten.de/gdi3d/terrain/",
+                wrapper = mount(LayerInformationComponent, {
+                    global: {
+                        plugins: [store]
+                    }
+                }),
+                cleanedUrl = wrapper.vm.cleanUrl(url);
+
+            expect(cleanedUrl.endsWith("/")).to.be.false;
+        });
+
+        it("cleanUrl: slash and questionmark", () => {
+            const url = "https://daten.de/gdi3d/terrain/?",
+                wrapper = mount(LayerInformationComponent, {
+                    global: {
+                        plugins: [store]
+                    }
+                }),
+                cleanedUrl = wrapper.vm.cleanUrl(url);
+
+            expect(cleanedUrl.endsWith("/")).to.be.false;
+            expect(cleanedUrl.endsWith("?")).to.be.false;
+        });
+
+        it("cleanUrl: nothing", () => {
+            const url = "https://daten.de/gdi3d/terrain",
+                wrapper = mount(LayerInformationComponent, {
+                    global: {
+                        plugins: [store]
+                    }
+                }),
+                cleanedUrl = wrapper.vm.cleanUrl(url);
+
+            expect(cleanedUrl.endsWith("/")).to.be.false;
+            expect(cleanedUrl.endsWith("?")).to.be.false;
         });
     });
 });

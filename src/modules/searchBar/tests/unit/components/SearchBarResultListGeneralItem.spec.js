@@ -114,4 +114,45 @@ describe("src/modules/searchBar/components/SearchBarResultListGeneralItem.vue", 
             expect(wrapper.findAll("action-button-stub").length).to.be.equals(0);
         });
     });
+    describe("test rendering of searchResult image", () => {
+        it("renders an <img> if imagePath is provided", () => {
+            const searchResultWithImage = {
+                ...searchResults[0],
+                id: "WithImage",
+                imagePath: "http://example.com/test.png"
+            };
+
+            wrapper = shallowMount(SearchBarResultListGeneralItemComponent, {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {
+                    searchResult: searchResultWithImage
+                }
+            });
+
+            expect(wrapper.find("img.search-bar-result-list-general-image").exists()).to.be.true;
+            expect(wrapper.find("img.search-bar-result-list-general-image").attributes("src")).to.equal("http://example.com/test.png");
+            expect(wrapper.find("img.search-bar-result-list-general-image").attributes("alt")).to.equal("search result image");
+        });
+
+        it("does not render an <img> if imagePath is empty", () => {
+            const searchResultWithoutImage = {
+                ...searchResults[0],
+                id: "WithoutImage",
+                imagePath: ""
+            };
+
+            wrapper = shallowMount(SearchBarResultListGeneralItemComponent, {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {
+                    searchResult: searchResultWithoutImage
+                }
+            });
+
+            expect(wrapper.find("img.search-bar-result-list-general-image").exists()).to.be.false;
+        });
+    });
 });

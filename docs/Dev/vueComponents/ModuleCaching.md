@@ -1,4 +1,4 @@
-# Module caching
+# Module Caching
 
 Masterportal modules aren't cached by default. Each time a module is opened in the menu, it's mounted again.
 Each time it's closed, it's unmounted. Every time, this results in a new instance of the module.

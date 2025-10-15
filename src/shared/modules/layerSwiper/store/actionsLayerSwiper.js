@@ -49,23 +49,30 @@ const actions = {
             await mapCollection.getMap(rootGetters["Maps/mode"]).render();
         }
 
-        if (!targetLayer?.listenerAdded) {
-            targetLayer.getLayer().on("prerender", renderEvent => dispatch("drawLayer", renderEvent));
-            targetLayer.getLayer().on("postrender", ({context}) => {
+        if (targetLayer && !targetLayer?._onPrerenderListener && !targetLayer?._onPostrenderListener) {
+            targetLayer._onPrerenderListener = renderEvent => {
+                dispatch("drawLayer", renderEvent);
+            };
+
+            targetLayer._onPostrenderListener = ({context}) => {
                 context.restore();
-            });
-            targetLayer.listenerAdded = true;
+            };
+
+            targetLayer.getLayer().on("prerender", targetLayer._onPrerenderListener);
+            targetLayer.getLayer().on("postrender", targetLayer._onPostrenderListener);
         }
 
-        if (!sourceLayer?.listenerAdded) {
-            sourceLayer.getLayer().on("prerender", renderEvent => dispatch("drawLayer", renderEvent));
-            sourceLayer.getLayer().on("postrender", ({context}) => {
+        if (sourceLayer && !sourceLayer?._onPrerenderListener && !sourceLayer?._onPostrenderListener) {
+            sourceLayer._onPrerenderListener = renderEvent => {
+                dispatch("drawLayer", renderEvent);
+            };
+
+            sourceLayer._onPostrenderListener = ({context}) => {
                 context.restore();
-                if (!state.active) {
-                    mapCollection.getMap(rootGetters["Maps/mode"]).render();
-                }
-            });
-            sourceLayer.listenerAdded = true;
+            };
+
+            sourceLayer.getLayer().on("prerender", sourceLayer._onPrerenderListener);
+            sourceLayer.getLayer().on("postrender", sourceLayer._onPostrenderListener);
         }
     },
 
@@ -78,6 +85,10 @@ const actions = {
  * @returns {void}
  */
     drawLayer ({state, rootGetters}, renderEvent) {
+        if (!state.sourceLayerId && !state.targetLayerId) {
+            return;
+        }
+
         const {context} = renderEvent,
             mapSize = mapCollection.getMap(rootGetters["Maps/mode"]).getSize(),
             isSecondLayer = renderEvent.target.get("id").endsWith(rootGetters["Modules/WmsTime/layerAppendix"]);

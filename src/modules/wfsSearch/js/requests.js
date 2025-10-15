@@ -204,14 +204,22 @@ function createUrl (urlString, typeName, filter, fromServicesJson, storedQueryId
  *                    If an error occurs (e.g. the service is not reachable or there was no such feature) the error is caught and the message is displayed as an alert.
  */
 function sendRequest (store, {url, typeName}, filter, fromServicesJson, storedQueryId, maxFeatures = 8, featureType = null) {
-    const requestUrl = createUrl(url, typeName, filter, fromServicesJson, storedQueryId, maxFeatures, featureType);
+    const requestUrl = createUrl(url, typeName, filter, fromServicesJson, storedQueryId, maxFeatures, featureType),
+        currentInstance = store.getters["Modules/WfsSearch/currentInstance"],
+        currentLayerId = currentInstance?.requestConfig?.layerId;
+
+    let layer = null;
+
+    if (currentLayerId) {
+        layer = store.getters.allLayerConfigs.find(l => l.id === currentLayerId);
+    }
 
     if (currentRequest) {
         currentRequest.cancel();
     }
     currentRequest = axios.CancelToken.source();
 
-    return axios.get(decodeURI(requestUrl))
+    return axios.get(decodeURI(requestUrl), {withCredentials: layer?.isSecured ?? false})
         .then(response => handleAxiosResponse(response, "WfsSearch, searchFeatures, sendRequest"))
         .catch(error => store.dispatch("Alerting/addSingleAlert", i18next.t("common:modules.wfsSearch.searchError", {error})));
 }

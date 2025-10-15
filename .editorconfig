@@ -13,3 +13,7 @@ insert_final_newline = true
 
 [*.{json,yaml}]
 indent_size = 2
+
+[*.md]
+# In markdown, two trailing spaces are a line break
+trim_trailing_whitespace = false

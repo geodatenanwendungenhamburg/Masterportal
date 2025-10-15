@@ -52,6 +52,7 @@
  * @property {Object} defaultCapabilitiesFilter If there is no key set in capabilitiesFilter, the key from this object is taken
  * @property {String} overviewmapLayerId the layer id for the overviewmap
  * @property {Boolean} [showInvisibleLayerInfo=true] Defines whether an infobox is shown when layers will not be printed because they are invisible due to scale.
+ * @property {Object} transferParameter transmits additional parameters for the print job
  */
 const state = {
     description: "common:modules.print.description",
@@ -122,6 +123,7 @@ const state = {
     showInvisibleLayerInfo: true,
     serviceUrl: "",
     serviceId: "",
+    transferParameter: {},
     visibleLayer: [],
     visibleLayerList: [],
     zoomLevel: null

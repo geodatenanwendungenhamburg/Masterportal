@@ -12,8 +12,17 @@ export default {
     name: "PoiChoice",
     emits: ["track"],
     computed: {
-        ...mapGetters("Controls/Orientation", ["poiMode", "customPosition"]),
+        ...mapGetters("Controls/Orientation", ["poiMode", "customPosition", "iFrameGeolocationEnabled"]),
         choices () {
+            const inIframe = window.self !== window.top,
+                iFrameGeolocationEnabled = this.iFrameGeolocationEnabled === true;
+
+            if (inIframe && !iFrameGeolocationEnabled) {
+                this.setPoiMode("customPosition");
+                return {
+                    customPosition: this.$t(this.customPosition)
+                };
+            }
             return {
                 currentPosition: this.$t("common:modules.controls.orientation.poiChoiceCurrentPosition"),
                 customPosition: this.$t(this.customPosition)

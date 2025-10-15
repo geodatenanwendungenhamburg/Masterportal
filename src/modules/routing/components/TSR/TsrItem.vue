@@ -3,6 +3,7 @@ import {mapGetters, mapActions, mapMutations} from "vuex";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 import RoutingCoordinateInput from "../RoutingCoordinateInput.vue";
 import RoutingSpeedProfileIcon from "../RoutingSpeedProfileIcon.vue";
+import RoutingContextMenu from "../RoutingContextMenu.vue";
 import * as constantsRouting from "../../store/constantsRouting";
 import TsrUpload from "./TsrUpload.vue";
 import TsrOutput from "./TsrOutput.vue";
@@ -20,6 +21,7 @@ export default {
         IconButton,
         RoutingCoordinateInput,
         RoutingSpeedProfileIcon,
+        RoutingContextMenu,
         TsrUpload,
         TsrOutput
     },
@@ -108,7 +110,7 @@ export default {
          * @returns {void}
          */
         afterFileValidation () {
-            const modalElement = document.getElementById("uploadModal"),
+            const modalElement = this.$refs.uploadModal,
                 modal = Modal.getInstance(modalElement);
 
             modal.hide();
@@ -118,14 +120,14 @@ export default {
          * @returns {void}
          */
         appendModalToBody () {
-            document.body.appendChild(document.getElementById("uploadModal"));
+            document.body.appendChild(this.$refs.uploadModal);
         },
         /**
          * Removes modal from body
          * @returns {void}
          */
         removeModalFromBody () {
-            document.body.removeChild(document.getElementById("uploadModal"));
+            document.body.removeChild(this.$refs.uploadModal);
         }
     }
 };
@@ -255,6 +257,7 @@ export default {
         <!-- Modal -->
         <div
             id="uploadModal"
+            ref="uploadModal"
             class="modal fade"
             tabindex="-1"
             aria-labelledby="uploadModalLabel"
@@ -310,6 +313,7 @@ export default {
             </div>
         </div>
     </div>
+    <RoutingContextMenu />
 </template>
 
 

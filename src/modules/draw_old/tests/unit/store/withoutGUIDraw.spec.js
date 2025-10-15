@@ -4,21 +4,32 @@ import actions from "@modules/draw_old/store/actionsDraw";
 import Feature from "ol/Feature";
 import Polygon from "ol/geom/Polygon";
 import MultiPolygon from "ol/geom/MultiPolygon";
-import main from "@modules/draw_old/js/main";
 
 describe("src/modules/draw/store/actions/withoutGUIDraw.js", () => {
-    let commit, dispatch, state, getters;
+    let commit, dispatch, state, getters, mockApp;
 
     beforeEach(() => {
         commit = sinon.spy();
         dispatch = sinon.spy();
+        mockApp = {
+            config: {
+                globalProperties: {
+                    $layer: {
+                        getSource: () => ({
+                            // once: onceSpy,
+                            // removeFeature: removeFeatureSpy
+                        })
+                    }
+                }
+            }
+        };
     });
 
     afterEach(sinon.restore);
 
     describe("cancelDrawWithoutGUI", () => {
         it("should dispatch as intended", () => {
-            actions.cancelDrawWithoutGUI({commit, dispatch});
+            actions.cancelDrawWithoutGUI.call({$app: mockApp}, {commit, dispatch});
 
             expect(commit.calledOnce).to.be.true;
             expect(commit.firstCall.args).to.eql(["setWithoutGUI", true]);
@@ -61,13 +72,13 @@ describe("src/modules/draw/store/actions/withoutGUIDraw.js", () => {
                     mode: "2D"
                 }
             };
-            main.getApp().config.globalProperties.$layer = {
+            mockApp.config.globalProperties.$layer = {
                 getSource: () => ({getFeatures: () => [item]})
             };
         });
 
         it("should return a FeatureCollection for normal geometries", () => {
-            downloadedFeatures = actions.downloadFeaturesWithoutGUI({state, rootState});
+            downloadedFeatures = actions.downloadFeaturesWithoutGUI.call({$app: mockApp}, {state, rootState});
 
             expect(downloadedFeatures).to.eql(JSON.stringify(featureCollectionFromJson));
         });
@@ -76,7 +87,7 @@ describe("src/modules/draw/store/actions/withoutGUIDraw.js", () => {
             item = new Feature({
                 geometry: new MultiPolygon([coordinates])
             });
-            downloadedFeatures = actions.downloadFeaturesWithoutGUI({state, rootState}, {"geomType": "multiGeometry"});
+            downloadedFeatures = actions.downloadFeaturesWithoutGUI.call({$app: mockApp}, {state, rootState}, {"geomType": "multiGeometry"});
 
             expect(downloadedFeatures).to.eql(JSON.stringify(multiPolygonfeatColFromJson));
         });
@@ -89,7 +100,7 @@ describe("src/modules/draw/store/actions/withoutGUIDraw.js", () => {
         it.skip("should dispatch as aspected", () => {
             dispatch = sinon.stub().resolves(result);
 
-            actions.downloadViaRemoteInterface({dispatch}, geomType);
+            actions.downloadViaRemoteInterface.call({$app: mockApp}, {dispatch}, geomType);
 
             expect(dispatch.calledOnce).to.be.true;
             expect(dispatch.firstCall.args).to.eql(["downloadFeaturesWithoutGUI", geomType]);
@@ -97,7 +108,7 @@ describe("src/modules/draw/store/actions/withoutGUIDraw.js", () => {
     });
     describe("editFeaturesWithoutGUI", () => {
         it("should dispatch as aspected", () => {
-            actions.editFeaturesWithoutGUI({dispatch});
+            actions.editFeaturesWithoutGUI.call({$app: mockApp}, {dispatch});
 
             expect(dispatch.calledOnce).to.be.true;
             expect(dispatch.firstCall.args).to.eql(["toggleInteraction", "modify"]);
@@ -138,7 +149,7 @@ describe("src/modules/draw/store/actions/withoutGUIDraw.js", () => {
 
         it("should commit and dispatch as intended if the given drawType is not a Point, LineString, Polygon or Circle", () => {
             getters = createGetters("test");
-            actions.initializeWithoutGUI({state, commit, dispatch, getters, rootState}, {drawType});
+            actions.initializeWithoutGUI.call({$app: mockApp}, {state, commit, dispatch, getters, rootState}, {drawType});
 
             expect(commit.callCount).to.equal(2);
             expect(commit.firstCall.args).to.eql(["setFreeHand", false]);
@@ -147,7 +158,7 @@ describe("src/modules/draw/store/actions/withoutGUIDraw.js", () => {
         it("should commit and dispatch as intended if the given drawType is a Point, LineString, Polygon or Circle", async () => {
             drawType = "Point";
             getters = createGetters(drawType);
-            await actions.initializeWithoutGUI({state, commit, dispatch, getters, rootState}, {drawType, maxFeatures});
+            await actions.initializeWithoutGUI.call({$app: mockApp}, {state, commit, dispatch, getters, rootState}, {drawType, maxFeatures});
 
             expect(commit.callCount).to.equal(3);
             expect(commit.firstCall.args).to.eql(["setFreeHand", false]);
@@ -161,7 +172,7 @@ describe("src/modules/draw/store/actions/withoutGUIDraw.js", () => {
         it("should commit and dispatch as intended if the given drawType is a Point, LineString, Polygon or Circle and the color is defined", async () => {
             drawType = "LineString";
             getters = createGetters(drawType, {color: null, colorContour: null});
-            await actions.initializeWithoutGUI({state, commit, dispatch, getters, rootState}, {drawType, color, maxFeatures});
+            await actions.initializeWithoutGUI.call({$app: mockApp}, {state, commit, dispatch, getters, rootState}, {drawType, color, maxFeatures});
 
             expect(commit.callCount).to.equal(4);
             expect(commit.firstCall.args).to.eql(["setFreeHand", false]);
@@ -179,7 +190,7 @@ describe("src/modules/draw/store/actions/withoutGUIDraw.js", () => {
             drawType = "Polygon";
             getters = createGetters(drawType, {color: [0, 1, 2, 0], opacity: 0});
 
-            await actions.initializeWithoutGUI({state, commit, dispatch, getters, rootState}, {drawType, opacity, maxFeatures});
+            await actions.initializeWithoutGUI.call({$app: mockApp}, {state, commit, dispatch, getters, rootState}, {drawType, opacity, maxFeatures});
 
             expect(commit.callCount).to.equal(4);
             expect(commit.firstCall.args).to.eql(["setFreeHand", false]);

@@ -1,4 +1,3 @@
-import Cluster from "ol/source/Cluster";
 import layerCollection from "@core/layers/js/layerCollection";
 import validator from "../js/validator";
 import legendDraw from "../js/legendDraw";
@@ -14,18 +13,9 @@ const actions = {
         const allLayers = layerCollector.getLayerHolder();
 
         allLayers.forEach(layerHolder => {
-            const layer = layerHolder.layer;
+            const {layer, visibility} = layerHolder;
 
-            if (typeof layer.layerSource?.getFeatures === "function" && layer.getLayerSource().getFeatures().length === 0) {
-                const layerSource = layer.getLayerSource() instanceof Cluster ? layer.getLayerSource().getSource() : layer.getLayerSource();
-
-                layerSource.on("featuresloadend", () => {
-                    dispatch("toggleLayerInLegend", {layer, visibility: layerHolder.visibility});
-                });
-            }
-            else {
-                dispatch("toggleLayerInLegend", {layer, visibility: layerHolder.visibility});
-            }
+            dispatch("toggleLayerInLegend", {layer, visibility});
         });
     },
 

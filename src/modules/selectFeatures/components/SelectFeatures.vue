@@ -120,9 +120,6 @@ export default {
             if (this.selectedFeatures) {
                 this.selectedFeatures.forEach(feature => feature.setStyle(null));
                 this.setSelectedFeatures([]);
-                if (this.selectedFeatures.length === 0) {
-                    this.resetInteractions();
-                }
             }
             this.setSelectedFeaturesWithRenderInformation([]);
         },

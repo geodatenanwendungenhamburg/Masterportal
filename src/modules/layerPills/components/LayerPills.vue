@@ -1,6 +1,6 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import layerFactory from "@core/layers/js/layerFactory";
+import layerTypes from "@core/layers/js/layerTypes";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 
 /**
@@ -90,7 +90,7 @@ export default {
         setVisibleLayers (visibleLayers, mapMode, newValues = []) {
             if (visibleLayers) {
                 if (mapMode === "2D") {
-                    const layerTypes3d = layerFactory.getLayerTypes3d(),
+                    const layerTypes3d = layerTypes.getLayerTypes3d(),
                         visible2DLayers = visibleLayers.filter(layer => {
                             return !layerTypes3d.includes(layer.typ?.toUpperCase());
                         });

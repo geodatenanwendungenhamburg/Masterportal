@@ -96,10 +96,4 @@ describe("src/core/js/layers/layerFactory.js", () => {
             expect(layerFactory.getVectorLayerTypes()).to.deep.equals(["GEOJSON", "OAF", "SENSORTHINGS", "VECTORBASE", "WFS"]);
         });
     });
-
-    describe("getLayerTypesNotVisibleIn3d", () => {
-        it("should return all vector layer types not visible in 3D", () => {
-            expect(layerFactory.getLayerTypesNotVisibleIn3d()).to.deep.equals(["VECTORTILE"]);
-        });
-    });
 });

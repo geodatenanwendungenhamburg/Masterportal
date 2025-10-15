@@ -4,6 +4,7 @@ import {mapActions, mapGetters, mapMutations} from "vuex";
 import WfsSearchLiteral from "./WfsSearchLiteral.vue";
 import {createUserHelp} from "../js/literalFunctions";
 import requestProvider from "../js/requests";
+import getGeometry from "../js/getGeometry.js";
 import isObject from "@shared/js/utils/isObject";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 
@@ -44,7 +45,8 @@ export default {
     },
     data () {
         return {
-            noResultsFound: false
+            noResultsFound: false,
+            zoomToSlotName: "cell-geometry"
         };
     },
     computed: {
@@ -63,6 +65,9 @@ export default {
             "requiredFields"
         ]),
         ...mapGetters("Modules/Language", ["currentLocale"]),
+        zoomButtonInColumn () {
+            return this.currentInstance.zoomButtonInColumn !== false;
+        },
         headers () {
             if (this.results.length === 0) {
                 return null;
@@ -223,9 +228,7 @@ export default {
          * * @returns {ol/geom/Geometry} The geometry of the row.
          */
         returnGeometryFromRow (row) {
-            const geometry = row.geometry || row.geom || null;
-
-            return geometry;
+            return getGeometry(this.results, row);
         }
     }
 };
@@ -333,7 +336,22 @@ export default {
                     const geometry = returnGeometryFromRow(row);
                     if (geometry) markerAndZoom(geometry);
                 }"
-            />
+            >
+                <template
+                    v-if="zoomButtonInColumn"
+                    #[zoomToSlotName]
+                >
+                    <FlatButton
+                        id="zoom-to-btn"
+                        :aria-label="$t('common:modules.searchBar.actions.zoomToResult')"
+                        :interaction="() => {
+                            const geometry = returnGeometryFromRow(row);
+                            if (geometry) markerAndZoom(geometry);
+                        }"
+                        :text="$t('common:modules.searchBar.actions.zoomToResult')"
+                    />
+                </template>
+            </TableComponent>
         </div>
         <div v-else-if="noResultsFound">
             {{ $t("common:modules.wfsSearch.noResults") }}

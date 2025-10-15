@@ -488,11 +488,11 @@ $handle_size: 6px;
     }
 }
 
-.resize-handle:focus, .resize-handle:hover, .resize-handle:active {
+.resize-handle:focus, .resize-handle:hover, .resize-handle:active, .resize-handle:focus-within {
     background-color: $gray-400 !important;
-        padding: 3px;
-        border: none !important
-    }
+    padding: 3px;
+    border: none;
+}
 
 button:not(:disabled).resize-handle-cursor {
     &-nwse-resize {

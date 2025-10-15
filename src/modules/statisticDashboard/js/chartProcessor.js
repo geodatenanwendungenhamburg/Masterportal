@@ -26,15 +26,15 @@ function createLineChart (topic, preparedData, canvas, colors, renderSimple = fa
                 responsive: !renderSimple,
                 maintainAspectRatio: renderSimple,
                 aspectRatio: 1,
-                layout: {
-                    padding: {
-                        right: renderSimple ? 20 : 10
-                    }
-                },
                 interaction: {
                     mode: "nearest",
                     axis: "xy",
                     intersect: false
+                },
+                layout: {
+                    padding: {
+                        right: renderSimple ? 20 : 10
+                    }
                 },
                 plugins: {
                     legend: {
@@ -108,7 +108,7 @@ function createBarChart (topic, preparedData, direction, canvas, differenceMode,
                     data: dataValues,
                     borderColor: dataColors,
                     backgroundColor: dataColors,
-                    hoverBackgroundColor: "rgb(214, 227, 255)"
+                    hoverBackgroundColor: "rgb(60, 95, 148)"
                 }]
             },
             options: {
@@ -315,6 +315,63 @@ function splitTextByWordAndChunkSize (text, chunkSize) {
     }
     return chunks;
 }
+/**
+ * Sets the tooltips for all bar charts in grid.
+ * @param {HTMLInputEvent} event The mouse event.
+ * @param {Object} barchart The current chart.
+ * @param {Object} direction The direction of the bar chart.
+ * @returns {void}
+ */
+function setTooltips (evt, barchart, direction) {
+    const point = barchart?.getElementsAtEventForMode(evt, "index", {
+        axis: direction === "vertical" ? "x" : "y", intersect: false}, true);
+
+    Object.values(Chart?.instances).forEach(chart => {
+        const tooltip = chart.tooltip;
+
+        if (point[0]) {
+            const datapoint = point[0].index,
+                dataset = point[0].datasetIndex;
+
+            if (datapoint !== undefined) {
+                const chartArea = chart.chartArea;
+
+                tooltip.setActiveElements([
+                    {
+                        datasetIndex: dataset,
+                        index: datapoint
+                    }
+                ],
+                {
+                    x: (chartArea.left + chartArea.right) / 2,
+                    y: (chartArea.top + chartArea.bottom) / 2
+                });
+            }
+        }
+        else {
+            tooltip.setActiveElements([], {x: 0, y: 0});
+        }
+        chart.update();
+    });
+}
+/**
+ * Removes the tooltips for all charts in grid.
+ * @param {HTMLInputEvent} event The mouse event.
+ * @returns {void}
+ */
+function removeTooltips (evt) {
+    Object.values(Chart.instances).forEach(chart => {
+        const point = chart.getElementsAtEventForMode(evt, "index", {
+            intersect: false}, true);
+
+        if (point[0] === undefined) {
+            const tooltip = chart.tooltip;
+
+            tooltip.setActiveElements([], {x: 0, y: 0});
+        }
+        chart.update;
+    });
+}
 
 const simpleChartOptions = {
     legend: {display: false},
@@ -335,6 +392,8 @@ const simpleChartOptions = {
 export default {
     createLineChart,
     createBarChart,
+    setTooltips,
+    removeTooltips,
     parsePreparedDataToLineChartFormat,
     parsePreparedDataToBarChartFormat,
     getYearFromPreparedData,

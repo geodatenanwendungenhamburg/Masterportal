@@ -6,6 +6,7 @@ import crs from "@masterportal/masterportalapi/src/crs";
 import axios from "axios";
 import {treeSubjectsKey} from "@shared/js/utils/constants";
 import {deleteParams} from "@shared/js/utils/deleteUrlParams";
+import InputText from "@shared/modules/inputs/components/InputText.vue";
 import buildTreeStructure from "@appstore/js/buildTreeStructure";
 
 /**
@@ -19,6 +20,9 @@ import buildTreeStructure from "@appstore/js/buildTreeStructure";
  */
 export default {
     name: "AddWMS",
+    components: {
+        InputText
+    },
     data () {
         return {
             uniqueId: 100,
@@ -31,7 +35,7 @@ export default {
     computed: {
         ...mapGetters("Modules/AddWMS", ["exampleURLs", "featureCount", "visibility", "showInLayerTree"]),
         ...mapGetters("Maps", ["projection", "mode"]),
-        ...mapGetters(["mapViewSettings"])
+        ...mapGetters(["mapViewSettings", "portalConfig"])
     },
     mounted () {
         this.setFocusToFirstControl();
@@ -209,13 +213,17 @@ export default {
          * @returns {String} The infoFormat.
          */
         getInfoFormat: function (possibleFormats) {
-            let infoFormat = "text/xml";
+            let infoFormat = this.portalConfig?.tree?.rasterLayerDefaultInfoFormat;
 
             if (possibleFormats?.includes("gml") || possibleFormats?.includes("application/vnd.ogc.gml")) {
                 infoFormat = "application/vnd.ogc.gml";
             }
-            else if (possibleFormats?.length > 0) {
+            else if (possibleFormats?.length > 0 && !possibleFormats.includes(infoFormat)) {
                 infoFormat = possibleFormats[0];
+            }
+
+            if (infoFormat === undefined) {
+                infoFormat = "text/xml";
             }
 
             return infoFormat;
@@ -288,14 +296,14 @@ export default {
                         content: this.showInLayerTree ? this.$t("common:modules.addWMS.completeMessageShowInLayerTree") : this.$t("common:modules.addWMS.completeMessage"),
                         category: "success",
                         title: this.$t("common:modules.addWMS.alertTitleSuccess")});
-                    this.$refs.wmsUrl.value = "";
+                    this.wmsUrl = "";
                 }
                 else {
                     this.addSingleAlert({
                         content: this.$t("common:modules.addWMS.alreadyAdded"),
                         category: "warning",
                         title: this.$t("common:modules.addWMS.errorTitle")});
-                    this.$refs.wmsUrl.value = "";
+                    this.wmsUrl = "";
                 }
             });
         },
@@ -401,15 +409,15 @@ export default {
         class="row"
     >
         <div>
-            <input
+            <InputText
                 id="wmsUrl"
                 ref="wmsUrl"
+                v-model="wmsUrl"
                 aria-label="WMS-Url"
-                type="text"
-                class="form-control wmsUrlsChanged"
+                :label="$t('common:modules.addWMS.placeholder')"
                 :placeholder="$t('common:modules.addWMS.placeholder')"
                 @keydown.enter="inputUrl"
-            >
+            />
             <button
                 id="addWMSButton"
                 type="button"

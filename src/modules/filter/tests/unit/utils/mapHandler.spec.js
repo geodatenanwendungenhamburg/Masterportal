@@ -10,6 +10,67 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
     let lastError = false,
         onerror = null;
 
+    /**
+     * Creates a MapHandler instance with default handlers, which can be overridden or extended
+     * by the provided extra handlers.
+     *
+     * @param {function(Error): void} onError - Callback function to handle errors.
+     * @param {Object} [extraHandlers={}] - Additional or overriding handler functions for the MapHandler.
+     * @param {function} [extraHandlers.getLayerByLayerId] - Function to get a layer by its layer ID.
+     * @param {function} [extraHandlers.showFeaturesByIds] - Function to show features by their IDs.
+     * @param {function} [extraHandlers.zoomToFilteredFeatures] - Function to zoom to filtered features.
+     * @param {function} [extraHandlers.zoomToExtent] - Function to zoom to a specific extent.
+     * @param {function} [extraHandlers.getLayers] - Function to retrieve all layers.
+     * @param {function} [extraHandlers.setParserAttributeByLayerId] - Function to set parser attributes by layer ID.
+     * @returns {MapHandler} A new MapHandler instance with the provided handlers.
+     */
+    function createMapHandler (onError, extraHandlers = {}) {
+        const defaultHandlers = {
+            getLayerByLayerId: () => false,
+            showFeaturesByIds: () => false,
+            zoomToFilteredFeatures: () => false,
+            zoomToExtent: () => false,
+            getLayers: () => false,
+            setParserAttributeByLayerId: () => false
+        };
+
+        return new MapHandler(
+            {...defaultHandlers, ...extraHandlers},
+            onError
+        );
+    }
+
+    /**
+     * Creates a stub for the layerCollection.getLayerById function, returning a default
+     * layer object which can be overridden.
+     *
+     * @param {Object} [overrides={}] - Optional object to override default stub values.
+     * @param {Object} [overrides.layer] - Overrides for the layer object.
+     * @param {function} [overrides.getLayerSource] - Override for the getLayerSource function.
+     * @returns {sinon.SinonStub} A Sinon stub for layerCollection.getLayerById.
+     */
+    function stubGetLayerById (overrides = {}) {
+        const defaultStub = {
+            layer: {
+                getVisible: () => false,
+                getSource: () => ({
+                    once: (eventname, handler) => handler && handler(),
+                    getFeatures: () => [{id: 1}]
+                })
+            },
+            getLayerSource: () => false
+        };
+
+        return sinon.stub(layerCollection, "getLayerById").returns({
+            ...defaultStub,
+            ...overrides,
+            layer: {
+                ...defaultStub.layer,
+                ...overrides.layer || {}
+            }
+        });
+    }
+
     beforeEach(() => {
         lastError = false;
         onerror = {
@@ -84,29 +145,13 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
             expect(lastError).to.be.an.instanceof(Error);
         });
         it("should set empty internal structure for layers", () => {
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                changeLayerVisibility: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {changeLayerVisibility: () => false});
 
             expect(lastError).to.not.be.an.instanceof(Error);
             expect(map.layers).to.be.an("object").and.to.be.empty;
         });
         it("should set empty internal structure for filteredIds", () => {
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                changeLayerVisibility: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {changeLayerVisibility: () => false});
 
             expect(lastError).to.not.be.an.instanceof(Error);
             expect(map.filteredIds).to.be.an("object").and.to.be.empty;
@@ -114,17 +159,11 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
     });
     describe("initializeLayer", () => {
         it("should try to add the layer by layer id if the current layer does not include the wanted layer", () => {
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
+            const map = createMapHandler(onerror.call, {
                 changeLayerVisibility: () => false,
                 getLayers: () => {
                     return {};
-                },
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+                }});
 
             map.initializeLayer("filterId", "layerId", false, onerror.call);
 
@@ -136,11 +175,8 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
             let called_layerId = false;
             const called_key = [],
                 called_value = [],
-                map = new MapHandler({
+                map = createMapHandler(onerror.call, {
                     getLayerByLayerId: () => "layerModel",
-                    showFeaturesByIds: () => false,
-                    zoomToFilteredFeatures: () => false,
-                    zoomToExtent: () => false,
                     changeLayerVisibility: () => false,
                     getLayers: () => {
                         return {
@@ -154,8 +190,7 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
                         called_layerId = layerId;
                         called_key.push(key);
                         called_value.push(value);
-                    }
-                }, onerror.call);
+                    }});
 
             map.initializeLayer("filterId", "layerId", false, onerror.call);
             nextTick(() => {
@@ -171,11 +206,7 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
             let called_layerId = false,
                 called_key = false,
                 called_value = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
+            const map = createMapHandler(onerror.call, {
                 changeLayerVisibility: () => false,
                 getLayers: () => {
                     return {};
@@ -184,8 +215,7 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
                     called_layerId = layerId;
                     called_key = key;
                     called_value = value;
-                }
-            }, onerror.call);
+                }});
 
             map.initializeLayer("filterId", "layerId", true, onerror.call);
 
@@ -199,28 +229,13 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
     });
     describe("getAmountOfFilteredItemsByFilterId", () => {
         it("should return the number of features", () => {
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {});
 
             map.filteredIds.filterId = [1, 2, 3];
             expect(map.getAmountOfFilteredItemsByFilterId("filterId")).to.equal(3);
         });
         it("should return the number of features without duplicates", () => {
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                createLayerIfNotExists: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {createLayerIfNotExists: () => false});
 
             map.filteredIds.filterId = [1, 2, 3, 2, 1];
             expect(map.getAmountOfFilteredItemsByFilterId("filterId")).to.equal(3);
@@ -228,14 +243,7 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
     });
     describe("isLayerActivated", () => {
         it("should return true if the layer is visible", () => {
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {});
 
             map.layers.filterId = {
                 visibility: true
@@ -246,14 +254,7 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
     describe("activateLayer", () => {
         it("should not call onActivated if no layer model was found", () => {
             let called_onActivated = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {});
 
             map.activateLayer("filterId", () => {
                 called_onActivated = true;
@@ -262,35 +263,22 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
         });
         it("should set featuresloadend event once, set showInLayerTree to true if layer is not activated yet", () => {
             let called_onceEvent = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {});
 
             map.layers.filterId = {
                 type: "WFS",
                 id: "filterId"
             };
-            sinon.stub(layerCollection, "getLayerById").returns(
-                {
-                    layer: {
-                        getSource: () => {
-                            return {
-                                once: () =>eventname => {
-                                    called_onceEvent = eventname;
-                                },
-                                getFeatures: () => {
-                                    return [];
-                                }
-                            };
-                        }
-                    }
+            stubGetLayerById({
+                layer: {
+                    getSource: () => ({
+                        once: eventname => {
+                            called_onceEvent = eventname;
+                        },
+                        getFeatures: () => []
+                    })
                 }
-            );
+            });
             map.activateLayer("filterId");
 
             nextTick(() => {
@@ -300,38 +288,20 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
         });
         it("should call onActivated with once event if the layer is not activated yet", () => {
             let called_onActivated = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {});
 
             map.layers.filterId = {
                 type: "WFS",
                 id: "filterId"
             };
-            sinon.stub(layerCollection, "getLayerById").returns(
-                {
-                    layer: {
-                        getVisible: () => {
-                            return false;
-                        },
-                        getSource: () => {
-                            return {
-                                once: (eventname, handler) => {
-                                    handler();
-                                },
-                                getFeatures: () => {
-                                    return [];
-                                }
-                            };
-                        }
-                    }
+            stubGetLayerById({
+                layer: {
+                    getSource: () => ({
+                        once: (eventname, handler) => handler(),
+                        getFeatures: () => []
+                    })
                 }
-            );
+            });
 
             map.activateLayer("filterId", () => {
                 called_onActivated = true;
@@ -342,43 +312,21 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
         });
         it("should call onActivated and set showInLayerTree to true if layer is activated but not visible on the map yet", () => {
             let called_onActivated = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {});
 
             map.layers.filterId = {
                 type: "WFS",
                 id: "filterId",
                 isVisibleInMap: "false"
             };
-            sinon.stub(layerCollection, "getLayerById").returns(
-                {
-                    layer: {
-                        getVisible: () => {
-                            return false;
-                        },
-                        getSource: () => {
-                            return {
-                                once: (eventname, handler) => {
-                                    handler();
-                                },
-                                getFeatures: () => {
-                                    return [
-                                        {
-                                            id: 1
-                                        }
-                                    ];
-                                }
-                            };
-                        }
-                    }
+            stubGetLayerById({
+                layer: {
+                    getSource: () => ({
+                        once: (eventname, handler) => handler(),
+                        getFeatures: () => [{id: 1}]
+                    })
                 }
-            );
+            });
 
             map.activateLayer("filterId", () => {
                 called_onActivated = true;
@@ -391,43 +339,21 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
         });
         it("should call onActivated if layer is activated and visible on map, should not set showInLayerTreeto true", () => {
             let called_onActivated = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {});
 
             map.layers.filterId = {
                 type: "WFS",
                 id: "filterId",
                 isVisibleInMap: "true"
             };
-            sinon.stub(layerCollection, "getLayerById").returns(
-                {
-                    layer: {
-                        getVisible: () => {
-                            return false;
-                        },
-                        getSource: () => {
-                            return {
-                                once: (eventname, handler) => {
-                                    handler();
-                                },
-                                getFeatures: () => {
-                                    return [
-                                        {
-                                            id: 1
-                                        }
-                                    ];
-                                }
-                            };
-                        }
-                    }
+            stubGetLayerById({
+                layer: {
+                    getSource: () => ({
+                        once: (eventname, handler) => handler(),
+                        getFeatures: () => [{id: 1}]
+                    })
                 }
-            );
+            });
 
             map.activateLayer("filterId", () => {
                 called_onActivated = true;
@@ -441,14 +367,7 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
     });
     describe("deactivateLayer", () => {
         it("should set isSelected and isVisible to false", () => {
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {});
 
             map.layers.filterId = {
                 type: "WFS",
@@ -465,44 +384,24 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
     describe("clearLayer", () => {
         it("should empty the array with filteredIds and call showFeaturesByIds to empty the map if extern is false", () => {
             let called_ids = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
+            const map = createMapHandler(onerror.call, {
                 showFeaturesByIds: (layerId, ids) => {
                     called_ids = ids;
-                },
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+                }
+            });
 
             map.layers.filterId = {
                 id: "filterId"
             };
-            sinon.stub(layerCollection, "getLayerById").returns(
-                {
-                    layer: {
-                        getVisible: () => {
-                            return false;
-                        },
-                        getSource: () => {
-                            return {
-                                once: (eventname, handler) => {
-                                    handler();
-                                },
-                                getFeatures: () => {
-                                    return [
-                                        {
-                                            id: 1
-                                        }
-                                    ];
-                                }
-                            };
-                        }
-                    },
-                    getLayerSource: () => false
-                }
-            );
+            stubGetLayerById({
+                layer: {
+                    getSource: () => ({
+                        once: (eventname, handler) => handler(),
+                        getFeatures: () => [{id: 1}]
+                    })
+                },
+                getLayerSource: () => false
+            });
             map.filteredIds.filterId = [1, 2, 3];
 
             map.clearLayer("filterId", false);
@@ -514,48 +413,24 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
         });
         it("should empty the array with filteredIds and call the layerSource to clear the map, if extern is true", () => {
             let called_clear = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {});
 
             map.layers.filterId = {
                 id: "filterId"
             };
-            sinon.stub(layerCollection, "getLayerById").returns(
-                {
-                    layer: {
-                        getVisible: () => {
-                            return false;
-                        },
-                        getSource: () => {
-                            return {
-                                once: (eventname, handler) => {
-                                    handler();
-                                },
-                                getFeatures: () => {
-                                    return [
-                                        {
-                                            id: 1
-                                        }
-                                    ];
-                                }
-                            };
-                        }
-                    },
-                    getLayerSource: () => {
-                        return {
-                            clear: () => {
-                                called_clear = true;
-                            }
-                        };
+            stubGetLayerById({
+                layer: {
+                    getSource: () => ({
+                        once: (eventname, handler) => handler(),
+                        getFeatures: () => [{id: 1}]
+                    })
+                },
+                getLayerSource: () => ({
+                    clear: () => {
+                        called_clear = true;
                     }
-                }
-            );
+                })
+            });
 
             map.filteredIds.filterId = [1, 2, 3];
 
@@ -570,16 +445,11 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
     describe("addItemsToLayer", () => {
         it("should not try to set features to the map if filterId is unknown for filteredIds", () => {
             let called_showFeaturesByIds = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
+            const map = createMapHandler(onerror.call, {
                 showFeaturesByIds: () => {
                     called_showFeaturesByIds = true;
-                },
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+                }
+            });
 
             map.addItemsToLayer();
 
@@ -587,16 +457,11 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
         });
         it("should not try to set features to the map if items are not given as an array", () => {
             let called_showFeaturesByIds = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
+            const map = createMapHandler(onerror.call, {
                 showFeaturesByIds: () => {
                     called_showFeaturesByIds = true;
-                },
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+                }
+            });
 
             map.filteredIds.filterId = [];
             map.addItemsToLayer("filterId");
@@ -605,16 +470,11 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
         });
         it("should not try to set features to the map if there is not layer found for filterId", () => {
             let called_showFeaturesByIds = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
+            const map = createMapHandler(onerror.call, {
                 showFeaturesByIds: () => {
                     called_showFeaturesByIds = true;
-                },
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+                }
+            });
 
             map.layers.filterId = false;
             map.filteredIds.filterId = [];
@@ -624,17 +484,12 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
         });
         it("should push items to filteredIds but with the unique id of the feature and not the ol feature id", () => {
             let called_showFeaturesByIds = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
+            const map = createMapHandler(onerror.call, {
                 showFeaturesByIds: (layerId, ids) => {
                     called_showFeaturesByIds = ids;
                 },
-                createLayerIfNotExists: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+                createLayerIfNotExists: () => false
+            });
 
             sinon.stub(layerCollection, "getLayerById").returns(
                 sinon.createStubInstance(Layer2dVectorTile)
@@ -658,17 +513,11 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
         });
         it("should push items to filteredIds and try to set them on the map if extern is false", () => {
             let called_showFeaturesByIds = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
+            const map = createMapHandler(onerror.call, {
                 showFeaturesByIds: (layerId, ids) => {
                     called_showFeaturesByIds = ids;
-                },
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
-
+                }
+            });
 
             map.layers.filterId = {
                 get: () => false
@@ -687,34 +536,20 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
         });
         it("should add items to layerSource if extern is true", () => {
             let called_items = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {});
 
             map.layers.filterId = {
                 id: "filterId"
             };
-            sinon.stub(layerCollection, "getLayerById").returns(
-                {
-                    layer: {
-                        getVisible: () => {
-                            return false;
-                        },
-                        getSource: () => {
-                            return {
-                                addFeatures: items => {
-                                    called_items = items;
-                                }
-                            };
+            stubGetLayerById({
+                layer: {
+                    getSource: () => ({
+                        addFeatures: items => {
+                            called_items = items;
                         }
-                    }
+                    })
                 }
-            );
+            });
             map.filteredIds.filterId = [];
             map.addItemsToLayer("filterId", [
                 {getId: () => 10},
@@ -729,17 +564,12 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
     describe("zoomToFilteredFeature", () => {
         it("should not pass an error or start zoomToFilteredFeatures if isZooming is flagged", () => {
             let called_zoomToFilteredFeatures = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
+            const map = createMapHandler(onerror.call, {
                 zoomToFilteredFeatures: () => {
                     called_zoomToFilteredFeatures = true;
                 },
-                changeLayerVisibility: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+                changeLayerVisibility: () => false
+            });
 
             map.isZooming = true;
 
@@ -750,16 +580,11 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
         });
         it("should pass an error if minScale is not a number", () => {
             let called_zoomToFilteredFeatures = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
+            const map = createMapHandler(onerror.call, {
                 zoomToFilteredFeatures: () => {
                     called_zoomToFilteredFeatures = true;
-                },
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+                }
+            });
 
             map.zoomToFilteredFeature("filterId", "minScale", onerror.call);
             expect(lastError).to.be.an.instanceof(Error);
@@ -768,17 +593,12 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
         });
         it("should try to zoom", () => {
             let called_zoomToFilteredFeatures = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
+            const map = createMapHandler(onerror.call, {
                 zoomToFilteredFeatures: () => {
                     called_zoomToFilteredFeatures = true;
                 },
-                changeLayerVisibility: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+                changeLayerVisibility: () => false
+            });
 
             map.layers.filterId = {
                 get: () => false
@@ -796,20 +616,15 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
                 called_filteredFeatureIds = false,
                 called_layerId = false,
                 called_callback = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
+            const map = createMapHandler(onerror.call, {
                 zoomToFilteredFeatures: (minScale, filteredFeatureIds, layerId, callback) => {
                     called_minScale = minScale;
                     called_filteredFeatureIds = filteredFeatureIds;
                     called_layerId = layerId;
                     called_callback = callback;
                 },
-                zoomToExtent: () => false,
-                changeLayerVisibility: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+                changeLayerVisibility: () => false
+            });
 
             map.layers.filterId = {
                 id: "layerId"
@@ -834,17 +649,12 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
     describe("zoomToGeometry", () => {
         it("should not pass an error or start zoomToExtent if isZooming is flagged", () => {
             let called_zoomToExtent = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
+            const map = createMapHandler(onerror.call, {
                 zoomToExtent: () => {
                     called_zoomToExtent = true;
                 },
-                changeLayerVisibility: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+                changeLayerVisibility: () => false
+            });
 
             map.isZooming = true;
 
@@ -855,16 +665,11 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
         });
         it("should pass an error if minScale is not a number", () => {
             let called_zoomToExtent = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
+            const map = createMapHandler(onerror.call, {
                 zoomToExtent: () => {
                     called_zoomToExtent = true;
-                },
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+                }
+            });
 
             map.zoomToGeometry("geometry", "minScale", onerror.call);
             expect(lastError).to.be.an.instanceof(Error);
@@ -873,16 +678,11 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
         });
         it("should pass an error if geometry has no function getExtent", () => {
             let called_zoomToExtent = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
+            const map = createMapHandler(onerror.call, {
                 zoomToExtent: () => {
                     called_zoomToExtent = true;
-                },
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+                }
+            });
 
             map.zoomToGeometry({getExtent: false}, "minScale", onerror.call);
             expect(lastError).to.be.an.instanceof(Error);
@@ -891,17 +691,12 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
         });
         it("should try to zoom", () => {
             let called_zoomToExtent = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
+            const map = createMapHandler(onerror.call, {
                 zoomToExtent: () => {
                     called_zoomToExtent = true;
                 },
-                changeLayerVisibility: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+                changeLayerVisibility: () => false
+            });
 
             map.zoomToGeometry({getExtent: () => false}, 0, onerror.call);
 
@@ -913,19 +708,14 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
             let called_extent = false,
                 called_minScale = false,
                 called_callback = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
+            const map = createMapHandler(onerror.call, {
                 zoomToExtent: (extent, minScale, callback) => {
                     called_extent = extent;
                     called_minScale = minScale;
                     called_callback = callback;
                 },
-                changeLayerVisibility: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+                changeLayerVisibility: () => false
+            });
 
             expect(map.isZooming).to.be.false;
 
@@ -944,14 +734,7 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
     describe("setObserverAutoInterval", () => {
         it("should set the given handler as observer", () => {
             let last_observer = false;
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {});
 
             map.layers.filterId = {
                 setObserverAutoInterval: observer => {
@@ -965,14 +748,7 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
     });
     describe("hasAutoRefreshInterval", () => {
         it("should return false if the layer has no autoRefresh set", () => {
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {});
 
             map.layers.filterId = {
                 id: "filterId"
@@ -981,14 +757,7 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
             expect(map.hasAutoRefreshInterval("filterId", "handler")).to.be.false;
         });
         it("should return true if the layer has an autoRefresh set", () => {
-            const map = new MapHandler({
-                getLayerByLayerId: () => false,
-                showFeaturesByIds: () => false,
-                zoomToFilteredFeatures: () => false,
-                zoomToExtent: () => false,
-                getLayers: () => false,
-                setParserAttributeByLayerId: () => false
-            }, onerror.call);
+            const map = createMapHandler(onerror.call, {});
 
             map.layers.filterId = {
                 id: "filterId",

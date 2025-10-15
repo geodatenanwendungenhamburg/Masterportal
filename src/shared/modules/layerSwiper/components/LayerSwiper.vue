@@ -51,7 +51,7 @@ export default {
          */
         initializeSwiper () {
             const mapSize = mapCollection.getMap(this.mode).getSize(),
-                target = document.getElementById("layerSwiper-button");
+                target = this.$refs["layerSwiper-button"];
 
             if (this.splitDirection === "vertical") {
                 this.setLayerSwiperValueX(mapSize[0] / 2);
@@ -100,6 +100,7 @@ export default {
 <template>
     <button
         id="layerSwiper-button"
+        ref="layerSwiper-button"
         class="btn"
         :class="splitDirection"
         :title="$t('common:modules.wmsTime.layerSwiper.title')"

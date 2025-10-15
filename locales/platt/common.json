@@ -526,8 +526,7 @@
       "serviceFour": "Dienst 4",
       "sliderTypeHandle": "",
       "sliderTypePlayer": "",
-      "title": "Simulation von Beispiel-WMS",
-      "titleNotConfigured": "Titel nich konfiguriert"
+      "title": "Simulation von Beispiel-WMS"
     },
     "layerTree": {
       "addLayer": "",
@@ -884,6 +883,21 @@
           "play": "Ein automatisches Abspielen aller Zeitpunkte, ausgehend vom aktuell ausgewählten Zeitpunkt"
         },
         "inputRangeLabel": "Einen Zeitpunkt auswählen"
+      }
+    },
+    "pagination": {
+      "aria": {
+        "previous": "Vörige Sied",
+        "next": "Nakamen Sied",
+        "go": "Gah na Sied"
+      },
+      "input": {
+        "label": "Sied",
+        "placeholder": "Sied",
+        "tooltip": "Giv de Siedentall in un drück Enter oder klick op den Piel um to disse Sied to hüppen"
+      },
+      "button": {
+        "goTooltip": "Hüpp to de ingeven Sied"
       }
     }
   },

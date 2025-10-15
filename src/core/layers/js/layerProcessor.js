@@ -139,8 +139,19 @@ function setMinMaxResolution (layer, groupLayer) {
         const resoByMaxScale = store.getters["Maps/getResolutionByScale"](layer.get("maxScale"), "max"),
             resoByMinScale = store.getters["Maps/getResolutionByScale"](layer.get("minScale"), "min");
 
-        layer.getLayer().setMaxResolution(resoByMaxScale + (resoByMaxScale / 100));
-        layer.getLayer().setMinResolution(resoByMinScale);
+        if (layer.getLayer && typeof layer.getLayer().setMaxResolution === "function") {
+            layer.getLayer().setMaxResolution(resoByMaxScale + resoByMaxScale / 100);
+            layer.getLayer().setMinResolution(resoByMinScale);
+        }
+        else if (layer.tileset) {
+            const maxDistance = layer.get("maxScale") / 10,
+                minDistance = layer.get("minScale") / 10;
+
+            layer.tileset.show = true;
+            layer.tileset.minimumDistance = minDistance;
+            layer.tileset.maximumDistance = maxDistance;
+        }
+
     }
 }
 

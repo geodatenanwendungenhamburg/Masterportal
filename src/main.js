@@ -26,14 +26,7 @@ const configPath = globalUrlParams.getConfigJsPath() === null ? window.location.
         script.onerror = reject;
         script.async = true;
         script.src = configPath;
-    }),
-    main = {
-        /**
-         * Returns the app.
-         * @returns {Object} the app
-         */
-        getApp: () => app
-    };
+    });
 
 
 // Wait until config.js is loaded
@@ -52,6 +45,7 @@ loadConfigJs.then(() => {
 
     initiateVueI18Next(app);
     app.use(store);
+    store.$app = app;
 
     if (Config.matomo) {
         initiateMatomo(app);
@@ -64,4 +58,4 @@ loadConfigJs.then(() => {
         });
 });
 
-export default main;
+export default app;

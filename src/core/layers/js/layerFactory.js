@@ -26,15 +26,12 @@ const layerTypes2d = {
         WFS: Layer2dVectorWfs,
         WMS: Layer2dRasterWms,
         WMTS: Layer2dRasterWmts,
-        WMSTime: Layer2dRasterWmsTime
+        WMSTIME: Layer2dRasterWmsTime
     },
     layerTypes3d = {
         ENTITIES3D: Layer3dEntities,
         TERRAIN3D: Layer3dTerrain,
         TILESET3D: Layer3dTileset
-    },
-    layerTypesNotVisible3d = {
-        VECTORTILE: Layer2dVectorTile
     };
 
 /**
@@ -48,14 +45,13 @@ function createLayer (layerConf, mapMode) {
         typ;
 
     if (layerConf?.typ?.toUpperCase() === "WMS" && layerConf?.time) {
-        typ = "WMSTime";
+        typ = "WMSTIME";
     }
     else {
         typ = layerConf?.typ?.toUpperCase();
     }
-
     if (layerTypes2d[typ]) {
-        layer = new layerTypes2d[typ](layerConf);
+        layer = new layerTypes2d[typ](layerConf, typ === "GROUP" ? this : undefined);
     }
     else if (mapMode === "3D" && layerTypes3d[typ]) {
         layer = new layerTypes3d[typ](layerConf);
@@ -68,22 +64,6 @@ function createLayer (layerConf, mapMode) {
     }
 
     return layer;
-}
-
-/**
- * Return 3D layer types
- * @returns {Array} The 3D layer types as an array.
- */
-function getLayerTypes3d () {
-    return Object.keys(layerTypes3d);
-}
-
-/**
- * Return layer types not visible in 3D.
- * @returns {Array} layer types not visible in 3D.
- */
-function getLayerTypesNotVisibleIn3d () {
-    return Object.keys(layerTypesNotVisible3d);
 }
 
 /**
@@ -104,7 +84,5 @@ function getVectorLayerTypes () {
 
 export default {
     createLayer,
-    getLayerTypes3d,
-    getLayerTypesNotVisibleIn3d,
     getVectorLayerTypes
 };

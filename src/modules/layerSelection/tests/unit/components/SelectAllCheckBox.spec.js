@@ -3,7 +3,7 @@ import {config, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
 
-import layerFactory from "@core/layers/js/layerFactory";
+import layerTypes from "@core/layers/js/layerTypes";
 import SelectAllCheckBox from "@modules/layerSelection/components/SelectAllCheckBox.vue";
 import layerCollection from "@core/layers/js/layerCollection";
 
@@ -36,7 +36,7 @@ describe("src/modules/layerTree/components/SelectAllCheckBox.vue", () => {
         };
 
         changeVisibilitySpy = sinon.spy();
-        sinon.stub(layerFactory, "getLayerTypes3d").returns(["TERRAIN3D"]);
+        sinon.stub(layerTypes, "getLayerTypes3d").returns(["TERRAIN3D"]);
         store = createStore({
             namespaced: true,
             modules: {

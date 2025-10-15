@@ -63,6 +63,7 @@ const state = {
         preference: "RECOMMENDED",
         elevation: false,
         avoidRadius: 0.005,
+        maxAvoidRadius: 12,
         defaultAvoidRadius: 0.005,
         styleRoute: {
             fillColor: [255, 44, 0, 1],

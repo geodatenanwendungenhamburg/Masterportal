@@ -611,8 +611,7 @@
         "serviceFour": "Dienst 4",
         "sliderTypeHandle": "Slider-modus",
         "sliderTypePlayer": "Spelermodus",
-        "title": "Simulatie van voorbeelddiensten",
-        "titleNotConfigured": "Titel niet geconfigureerd"
+        "title": "Simulatie van voorbeelddiensten"
       },
       "layerTree": {
         "addLayer": "Voeg onderwerpen toe",
@@ -1152,7 +1151,7 @@
           "andAbove": "en hoger",
           "invalidCustomStepsAlert": "Let op: De geselecteerde bereikgrenzen vormen geen oplopende getallenreeks!"
         },
-        "totalHint": "Let op: De somfunctie maakt geen onderscheid tussen absolute aantallen, percentages, gemiddelde waarden of relatieve groottes (bijvoorbeeld inwoners per vierkante meter). ",
+        "totalHint": "Let op: De somfunctie maakt geen onderscheid tussen absolute aantallen, percentages, gemiddelde waarden of relatieve groottes (bijvoorbeeld inwoners per vierkante meter). Ontbrekende waarden worden niet meegenomen in de berekening.",
         "backToOverview": "Grafiekoverzicht"
       },
       "shadow": {
@@ -1273,7 +1272,22 @@
           },
           "inputRangeLabel": "Kies een tijdstip"
         }
+      },
+          "pagination": {
+      "aria": {
+        "previous": "Vorige pagina",
+        "next": "Volgende pagina",
+        "go": "Ga naar pagina"
+      },
+      "input": {
+        "label": "Pagina",
+        "placeholder": "Pagina",
+        "tooltip": "Voer het paginanummer in en druk op Enter of klik op de pijl om naar die pagina te springen"
+      },
+      "button": {
+        "goTooltip": "Spring naar de ingevoerde pagina"
       }
+    }
     },
     "shared": {
       "js": {

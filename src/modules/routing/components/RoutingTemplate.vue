@@ -23,7 +23,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/Routing", ["activeRoutingToolOption", "routingToolOptions", "taskHandler", "filteredRoutingToolOptions"]),
+        ...mapGetters("Modules/Routing", ["activeRoutingToolOption", "taskHandler", "filteredRoutingToolOptions"]),
         ...mapGetters("Modules/Routing/Directions", ["isLoadingDirections"]),
         ...mapGetters("Modules/Routing/Isochrones", ["isLoadingIsochrones"]),
         /**

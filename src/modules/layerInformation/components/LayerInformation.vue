@@ -3,6 +3,7 @@ import LegendSingleLayer from "../../legend/components/LegendSingleLayer.vue";
 import {mapActions, mapGetters, mapMutations} from "vuex";
 import {isWebLink} from "@shared/js/utils/urlHelper";
 import AccordionItem from "@shared/modules/accordion/components/AccordionItem.vue";
+import {buildMetaURLs} from "@shared/js/utils/metaUrlHelper";
 import LayerInfoContactButton from "../../layerTree/components/LayerInfoContactButton.vue";
 
 /**
@@ -61,6 +62,8 @@ export default {
             "mainMenu",
             "secondaryMenu"
         ]),
+        ...mapGetters(["restServiceById"]),
+
         showAdditionalMetaData () {
             return this.layerInfo.metaURL !== null && typeof this.abstractText !== "undefined" && this.abstractText !== this.noMetadataLoaded;
         },
@@ -87,6 +90,19 @@ export default {
             }
             return this.layerInfo.url && this.layerInfo.typ !== "SensorThings" && this.showUrlGlobal !== false && this.layerInfo.urlIsVisible !== false;
         },
+        selectedMetaURLs () {
+            if (this.layerInfo.typ === "GROUP" && Array.isArray(this.layerInfo.layers)) {
+                const selectedLayer = this.layerInfo.layers[this.selectedOption],
+                    metaID = selectedLayer?.metaID;
+
+                return buildMetaURLs(metaID, {
+                    layerInfo: this.layerInfo,
+                    metaDataCatalogueId: this.configJs?.metaDataCatalogueId,
+                    restServiceById: this.restServiceById
+                });
+            }
+            return this.metaURLs || [];
+        },
         showAttachFile () {
             return this.downloadLinks?.length > 1;
         },
@@ -96,9 +112,9 @@ export default {
             if (layer.typ === "GROUP" && layer.layers) {
                 const selectedLayer = layer.layers[this.selectedOption];
 
-                return selectedLayer ? this.getGetCapabilitiesUrl(selectedLayer) : "";
+                return selectedLayer ? this.getLayerAddress(selectedLayer) : "";
             }
-            return layer.url ? this.getGetCapabilitiesUrl(layer) : "";
+            return layer.url ? this.getLayerAddress(layer) : "";
         },
         legendURL  () {
             return this.layerInfo.legendURL;
@@ -185,7 +201,7 @@ export default {
         createDropdownOptions () {
             this.dropdownOptions = this.layerInfo.layers.map((layer, index) => ({
                 value: index,
-                label: layer.name
+                label: this.$t(layer.name)
             }));
 
             if (this.dropdownOptions.length > 0) {
@@ -257,19 +273,45 @@ export default {
             return {active: this.isActiveTab(tab), show: this.isActiveTab(tab), "tab-pane": true, fade: true};
         },
         /**
-         * generates a GetCapabilities URL from a given service base address and type
+         * Removes slash or questionmark from the end of the url.
+         * @param {String} url the url to clean
+         * @returns {String} the cleaned URL
+         */
+        cleanUrl (url) {
+            let baseUrl = url.split("?")[0];
+
+            if (baseUrl.endsWith("/")) {
+                baseUrl = baseUrl.slice(0, -1);
+            }
+            return baseUrl;
+        },
+        /**
+         * Generates a GetCapabilities URL from a given service base address and type vor 2D layers or
+         * Appends 'tileset.json' to TileSet3D layers url, if not exists.
+         * Appends always 'layer.json' to Terrain3D layers url.
          * @param {Object} param payload
          * @param {String} param.url service base URL
          * @param {String} param.typ service type (e.g., WMS)
-         * @returns {String} GetCapabilities URL
+         * @returns {String} the created URL
          */
-        getGetCapabilitiesUrl (layerInfo) {
+        getLayerAddress (layerInfo) {
             const typ = layerInfo.typ,
-                config = this.layerConfigById(layerInfo.id),
-                url = config.origUrl ? config.origUrl : layerInfo.url,
+                config = this.layerConfigById(layerInfo.id);
+            let url = config?.origUrl ? config.origUrl : layerInfo.url,
                 urlObject = new URL(url, location.href);
 
-            if (typ !== "OAF") {
+            if (typ.toUpperCase() === "TILESET3D") {
+                const baseUrl = this.cleanUrl(url);
+
+                // if no json-file is provided in masterportalAPI src/layer/tileset.js "/tileset.json" is appended
+                url = baseUrl + (baseUrl.endsWith(".json") ? "" : "/tileset.json");
+                urlObject = new URL(url, location.href);
+            }
+            else if (typ.toUpperCase() === "TERRAIN3D") {
+                // terrain layer: in Cesium "/layer.json" is appended to url
+                urlObject = new URL(this.cleanUrl(url) + "/layer.json", location.href);
+            }
+            else if (typ !== "OAF") {
                 urlObject.searchParams.set("SERVICE", typ);
                 urlObject.searchParams.set("REQUEST", "GetCapabilities");
             }
@@ -343,9 +385,9 @@ export default {
             :layer-name="layerName"
             previous-component="layerInformation"
         />
-        <div v-if="showAdditionalMetaData">
+        <div v-if="selectedMetaURLs.length">
             <p
-                v-for="url in metaURLs"
+                v-for="url in selectedMetaURLs"
                 :key="url"
                 class="float-end"
             >

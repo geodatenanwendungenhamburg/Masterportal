@@ -23,7 +23,7 @@ Please be aware of the following:
 ## Roadmap
 Our further Roadmap is to work further on Masterportal Version 3. Support and bug fixing ended for V2.x in the end of 2024.
 ### Masterportal 3.x
-* 01.10.2025: New LTS Release MP (Including functionality based on v3.15.0)
+* 01.10.2026: New LTS Release MP (Including functionality based on v3.27.0)
 ### Masterportal Releases
 #### Monthly Releases
 We release a minor version on the first Wednesday of every month.

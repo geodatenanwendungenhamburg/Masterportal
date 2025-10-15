@@ -246,13 +246,17 @@ export default {
      * @param {String} side secondary or main Menu
      * @returns {void}
      */
-    resetMenu ({commit, dispatch, getters, state}, side) {
+    resetMenu ({commit, dispatch, getters, state, rootGetters}, side) {
         if (getters.currentComponent(side).type === state.currentMouseMapInteractionsComponent && getters.currentComponent(side).type !== state.defaultComponent) {
             dispatch("changeCurrentMouseMapInteractionsComponent", {type: state.defaultComponent, side});
         }
 
         if (getters.currentComponent(side).type === "layerInformation") {
             dispatch("Modules/LayerSelection/reset", null, {root: true});
+        }
+
+        if (getters.currentComponent(side).type === "getFeatureInfo" && rootGetters["Modules/GetFeatureInfo/menuExpandedBeforeGfi"] === false) {
+            commit("setExpandedBySide", {expanded: false, side: side});
         }
 
         commit("switchToRoot", side);

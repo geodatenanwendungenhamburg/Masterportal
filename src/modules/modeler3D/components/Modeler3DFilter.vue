@@ -3,6 +3,7 @@ import {mapGetters, mapMutations, mapActions} from "vuex";
 import ModalItem from "@shared/modules/modals/components/ModalItem.vue";
 import AccordionItem from "@shared/modules/accordion/components/AccordionItem.vue";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
+import InputText from "@shared/modules/inputs/components/InputText.vue";
 
 import {uniqueId} from "@shared/js/utils/uniqueId";
 
@@ -31,7 +32,8 @@ export default {
     components: {
         AccordionItem,
         ModalItem,
-        FlatButton
+        FlatButton,
+        InputText
     },
     data () {
         return {
@@ -560,16 +562,12 @@ export default {
             </template>
             <div>
                 <div class="form-floating mb-3">
-                    <input
+                    <InputText
                         id="filterName"
                         v-model="filterName"
-                        class="form-control"
-                        type="text"
-                        placeholder="{{ $t('modules.modeler3D.filter.captions.filterName') }}"
-                    >
-                    <label for="filterName">
-                        {{ $t('modules.modeler3D.filter.captions.filterName') }}
-                    </label>
+                        :placeholder="$t('modules.modeler3D.filter.captions.filterName')"
+                        :label="$t('modules.modeler3D.filter.captions.filterName')"
+                    />
                 </div>
                 <div class="form-check">
                     <input
@@ -686,7 +684,7 @@ export default {
                             :key="layer.id"
                             :value="layer"
                         >
-                            {{ layer.name }}
+                            {{ $t(layer.name) }}
                         </option>
                     </select>
                     <label for="layerSelect">

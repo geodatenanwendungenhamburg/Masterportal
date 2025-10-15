@@ -29,7 +29,8 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
         subjectDataLayers,
         wrapper,
         treeType,
-        externalSubjectdata;
+        externalSubjectdata,
+        filterInLayerSelection = false;
 
     beforeEach(() => {
         lastFolderNames = [];
@@ -163,8 +164,8 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
                                 placeholder: () => "",
                                 configPaths: () => "",
                                 showSearchResultsInTree: () => showInTree,
-                                type: () => ""
-
+                                type: () => "",
+                                searchIsLoading: () => false
                             },
                             mutations: {
                                 setSearchSuggestions: () => "",
@@ -181,7 +182,8 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
                 Menu: {
                     namespaced: true,
                     getters: {
-                        currentComponent: () => () => "root"
+                        currentComponent: () => () => "root",
+                        previousNavigationEntryText: () => () => "common:modules.layerSelection.addSubject"
                     }
                 },
                 Maps: {
@@ -208,7 +210,8 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
                             type: treeType
                         }
                     };
-                }
+                },
+                filterInLayerSelection: () => filterInLayerSelection
             },
             actions: {
                 changeCategory: changeCategorySpy,
@@ -269,12 +272,12 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
         showAllResults = false;
         LayerSelection.state.lastFolderNames = ["root"];
         subjectDataLayers.push(externalSubjectdata);
+
         store.commit("Modules/LayerSelection/setSubjectDataLayerConfs", subjectDataLayers);
         wrapper = shallowMount(LayerSelectionComponent, {
             global: {
                 plugins: [store]
             }});
-
         expect(wrapper.findAll("layer-selection-tree-node-stub").length).to.be.equals(2);
     });
 
@@ -757,6 +760,43 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
             await wrapper.vm.$nextTick();
 
             expect(wrapper.vm.deactivateShowAllCheckbox).to.be.false;
+        });
+    });
+    describe("filter functionality", () => {
+        it("filters layers based on search input", async () => {
+            searchInput = "2D";
+
+            wrapper = await shallowMount(LayerSelectionComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            await wrapper.vm.$nextTick();
+
+            expect(wrapper.find("#layer-selection").exists()).to.be.true;
+            expect(wrapper.vm.filteredLayerConfs.length).to.equal(1);
+            expect(JSON.stringify(wrapper.vm.filteredLayerConfs).toLowerCase()).to.include("layer2d_1");
+            expect(JSON.stringify(wrapper.vm.filteredLayerConfs).toLowerCase()).to.include("layer2d_2");
+            expect(JSON.stringify(wrapper.vm.filteredLayerConfs).toLowerCase()).to.include("layer2d_3");
+        });
+
+        it("shows no layers if search input does not match any layer", async () => {
+            searchInput = "nonExistingLayer";
+            showAllResults = true;
+            filterInLayerSelection = true;
+
+            wrapper = shallowMount(LayerSelectionComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            await wrapper.vm.$nextTick();
+
+            expect(wrapper.find("#layer-selection").exists()).to.be.true;
+            expect(wrapper.vm.filteredLayerConfs.length).to.equal(0);
+            expect(wrapper.findAll("layer-selection-tree-node-stub").length).to.equal(0);
         });
     });
 });

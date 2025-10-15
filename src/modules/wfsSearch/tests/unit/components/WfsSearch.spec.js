@@ -94,6 +94,12 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
                     actions: {
                         addSingleAlert: sinon.stub()
                     }
+                },
+                Menu: {
+                    namespaced: true,
+                    getters: {
+                        currentSecondaryMenuWidth: () => sinon.stub().returns(0.25)
+                    }
                 }
             },
             getters: {

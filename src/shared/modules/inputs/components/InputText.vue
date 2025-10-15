@@ -14,19 +14,13 @@ export default {
             type: String,
             required: true
         },
-        value: {
-            type: String,
-            default: null,
-            required: false
-        },
-        model: {
-            type: String,
-            default: null,
-            required: false
+        modelValue: {
+            type: null,
+            default: ""
         },
         type: {
             type: String,
-            default: null,
+            default: "text",
             required: false
         },
         maxLength: {
@@ -34,12 +28,12 @@ export default {
             default: null,
             required: false
         },
-        input: {
+        onInput: {
             type: Function,
             default: null,
             required: false
         },
-        change: {
+        onChange: {
             type: Function,
             default: null,
             required: false
@@ -58,6 +52,38 @@ export default {
             type: Object,
             default: null,
             required: false
+        },
+        min: {
+            type: Number,
+            default: null,
+            required: false
+        },
+        max: {
+            type: Number,
+            default: null,
+            required: false
+        },
+        step: {
+            type: Number,
+            default: null,
+            required: false
+        },
+        errorMessage: {
+            type: String,
+            default: null,
+            required: false
+        }
+    },
+    emits: ["update:modelValue", "focus", "blur", "click"],
+    methods: {
+        /**
+         * Sets focus to the input element of the component.
+         * Can be called from parent components using $refs.
+         * @public
+         * @returns {void}
+         */
+        focus () {
+            this.$refs.input?.focus();
         }
     }
 };
@@ -67,23 +93,37 @@ export default {
     <div class="form-floating mb-3">
         <input
             :id="id"
+            ref="input"
             :type="type"
-            :v-model="model"
             class="form-control"
             :class="classObj"
             :placeholder="placeholder"
             :aria-label="placeholder"
-            :value="value"
+            :value="modelValue"
             :readonly="readonly"
             :maxLength="maxLength"
             :disabled="disabled"
-            @input="event => input?.(event.target.value)"
-            @change="event => change?.(event.target.value)"
+            :min="min"
+            :max="max"
+            :step="step"
+            :error-message="errorMessage"
+            @input="$emit('update:modelValue', $event.target.value); onInput?.($event.target.value)"
+            @change="event => onChange?.(event.target.value)"
+            @focus="$emit('focus', $event)"
+            @blur="$emit('blur', $event)"
+            @click="$emit('click', $event)"
         >
         <label
             class="input-label"
             :for="id"
         >{{ $t(label) }}</label>
+        <span
+            v-if="errorMessage"
+            id="input-help"
+            class="invalid-feedback"
+        >
+            {{ errorMessage }}
+        </span>
         <slot />
     </div>
 </template>

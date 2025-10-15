@@ -260,4 +260,54 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
             expect(wrapper.vm.currentShowAllList[0]).to.deep.equal(searchResults[0]);
         });
     });
+
+    describe("test the method getFirstByCategory and template rendering", () => {
+        it("getFirstByCategory returns the first result of the category", async () => {
+            wrapper = await mount(SearchBarSuggestionListComponent, {
+                props: {
+                    limitedSortedSearchResults
+                },
+                global: {
+                    plugins: [store]
+                }
+            });
+            const result = wrapper.vm.getFirstByCategory("Straße");
+
+            expect(result).to.deep.equal(searchResults[0]);
+        });
+
+        it("renders <img> if first result has imagePath", async () => {
+            const customResults = [
+                    {
+                        ...searchResults[0],
+                        imagePath: "http://example.com/test.png"
+                    }
+                ],
+                customLimitedSortedSearchResults = {
+                    results: {
+                        0: customResults[0],
+                        availableCategories: ["Straße"],
+                        categoryProvider: {
+                            "Straße": "gazetteer"
+                        },
+                        StraßeCount: 1,
+                        StraßeIcon: "bi-signpost"
+                    },
+                    currentShowAllList: customResults
+                };
+
+            wrapper = await mount(SearchBarSuggestionListComponent, {
+                props: {
+                    limitedSortedSearchResults: customLimitedSortedSearchResults
+                },
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.find("img.search-bar-suggestion-image").exists()).to.be.true;
+            expect(wrapper.find("img.search-bar-suggestion-image").attributes("src")).to.equal("http://example.com/test.png");
+            expect(wrapper.find("i.bi-signpost").exists()).to.be.false;
+        });
+    });
 });

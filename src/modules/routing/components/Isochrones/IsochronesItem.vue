@@ -13,6 +13,7 @@ import RoutingSpeedProfileIcon from "../RoutingSpeedProfileIcon.vue";
 import RoutingAvoidFeatures from "../RoutingAvoidFeatures.vue";
 import RoutingRestrictionsInput from "../RoutingRestrictionsInput.vue";
 import IsochronesHoverData from "./IsochronesHoverData.vue";
+import IsochronesLegend from "./IsochronesLegend.vue";
 
 /**
  * IsochronesItem
@@ -34,7 +35,8 @@ export default {
         RoutingAvoidFeatures: RoutingAvoidFeatures,
         RoutingSpeedProfileIcon,
         RoutingRestrictionsInput,
-        IsochronesHoverData
+        IsochronesHoverData,
+        IsochronesLegend
     },
     data () {
         return {
@@ -322,20 +324,7 @@ export default {
                 >
                     <hr class="w-100">
 
-                    <span class="mb-2">{{ $t('common:modules.routing.isochrones.legend') }}</span>
-                    <div
-                        v-for="(area, index) of routingIsochrones.getAreas()"
-                        :key="'result-area-' + index"
-                        class="d-flex mb-2 ms-2"
-                    >
-                        <div
-                            class="legend-container px-2"
-                            :style="{backgroundColor: area.getColorRgbString()}"
-                        >
-                            <span>{{ area.getDisplayValue() }}</span>
-                            <span>{{ area.getOptimization() === 'DISTANCE' ? 'km' : 'min' }}</span>
-                        </div>
-                    </div>
+                    <IsochronesLegend />
 
                     <hr class="w-100">
 

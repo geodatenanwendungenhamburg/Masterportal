@@ -15,7 +15,7 @@ describe("src/modules/selectFeatures/store/actionsSelectFeatures.js", () => {
         createLayerAddToTreeStub = sinon.spy(createLayerAddToTreeModule, "createLayerAddToTree");
         rootGetters = {
             "treeHighlightedFeatures": {active: true},
-            "treeType": "custom"
+            "treeType": ""
         };
         state = {...stateSelectFeatures};
         layerId = "visibleLayer";
@@ -69,7 +69,7 @@ describe("src/modules/selectFeatures/store/actionsSelectFeatures.js", () => {
             expect(createLayerAddToTreeStub.calledOnce).to.be.true;
             expect(createLayerAddToTreeStub.firstCall.args[0]).to.be.deep.equals(layerId);
             expect(createLayerAddToTreeStub.firstCall.args[1]).to.be.deep.equals([feature]);
-            expect(createLayerAddToTreeStub.firstCall.args[2]).to.be.equals("custom");
+            expect(createLayerAddToTreeStub.firstCall.args[2]).to.be.equals("");
             expect(createLayerAddToTreeStub.firstCall.args[3]).to.be.deep.equals(rootGetters.treeHighlightedFeatures);
         });
 

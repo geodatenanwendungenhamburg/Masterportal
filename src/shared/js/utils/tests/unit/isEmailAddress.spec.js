@@ -8,6 +8,13 @@ describe("src/shared/js/utils/isEmailAddress.js", () => {
         expect(isEmailAddress(incomingString)).to.be.true;
     });
 
+    it("returns false for invalid or unsupported email values", () => {
+        expect(isEmailAddress({})).to.be.false;
+        expect(isEmailAddress("")).to.be.false;
+        expect(isEmailAddress("a@b.c")).to.be.false;
+        expect(isEmailAddress("a".repeat(255))).to.be.false;
+    });
+
     it("detects email addresses in an incoming string with various second level domains", () => {
         expect(isEmailAddress("example@email.de")).to.be.true;
         expect(isEmailAddress("example@email.net")).to.be.true;

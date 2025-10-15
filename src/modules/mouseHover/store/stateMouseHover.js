@@ -10,6 +10,8 @@ import Overlay from "ol/Overlay.js";
  * @property {String} titleFontFamily The font that will be used for the title in the popup.
  * @property {String} fontStyle The font style that will be used in the popup.
  * @property {String} titleFontStyle The font style that will be used for the title in the popup.
+ * @property {String} fontWeight The font weight that will be used in the popup.
+ * @property {String} titleFontWeight The font weight that will be used for the title in the popup.
  * @property {Number} fontSize The font size that will be used in the popup.
  * @property {Number} titleFontSize The font size that will be used for the title in the popup.
  * @property {String} fontColor The color of the font that will be used in the popup.
@@ -23,6 +25,9 @@ import Overlay from "ol/Overlay.js";
  * @property {Array} infoBox Array with the Infos from the currently hovered feature/s.
  * @property {Array} hoverPosition Array with coordinates of the currently hovered feature/s.
  * @property {Boolean} pleaseZoom True if more features are being hovered than the configured max in numFeaturesToShow.
+ * @property {Boolean} highlightOnHover True if it highlights on hover.
+ * @property {Object} highlightVectorRulesPolygon Rules for highlighting polygon features.
+ * @property {Object} highlightVectorRulesPointLine Rules for highlighting point and line features.
  * @property {String} type The type of the mouseHover component.
  */
 export default {
@@ -39,6 +44,8 @@ export default {
     titleFontFamily: "common:modules.mouseHover.titleFontFamily",
     fontStyle: "common:modules.mouseHover.fontStyle",
     titleFontStyle: "common:modules.mouseHover.titleFontStyle",
+    fontWeight: "common:modules.mouseHover.fontWeight",
+    titleFontWeight: "common:modules.mouseHover.titleFontWeight",
     fontSize: "common:modules.mouseHover.fontSize",
     titleFontSize: "common:modules.mouseHover.titleFontSize",
     fontColor: "common:modules.mouseHover.fontColor",
@@ -51,6 +58,24 @@ export default {
     infoBox: null,
     hoverPosition: null,
     pleaseZoom: false,
-    isActive: true,
+    highlightOnHover: false,
+    highlightVectorRulesPolygon: {
+        "fill": {
+            "color": [255, 255, 255, 0.5]
+        },
+        "stroke": {
+            "width": 4,
+            "color": [255, 0, 0, 0.9]
+        }
+    },
+    highlightVectorRulesPointLine: {
+        "stroke": {
+            "width": 2,
+            "color": [255, 0, 255, 0.9]
+        },
+        "image": {
+            "scale": 2
+        }
+    },
     type: "mouseHover"
 };

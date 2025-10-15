@@ -33,7 +33,6 @@ describe("src/app-store/actions.js", () => {
                 }
             }
         };
-        global.XMLHttpRequest = sinon.useFakeXMLHttpRequest();
         axiosMock = sinon.stub(axios, "get").returns(Promise.resolve({request: {status: 200, data: []}}));
         initializeLayerListSpy = sinon.spy(rawLayerList, "initializeLayerList");
         initializeStyleListSpy = sinon.spy(styleList, "initializeStyleList");

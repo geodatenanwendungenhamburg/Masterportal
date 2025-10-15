@@ -58,7 +58,8 @@ export default {
             "showDescription",
             "expanded",
             "currentComponent",
-            "currentComponentName"
+            "currentComponentName",
+            "navigationHistory"
         ]),
 
         ...mapGetters([
@@ -120,22 +121,38 @@ export default {
          * for each unique set of visible layers defined by child elements.
          */
         visibleLayerConfigs: {
-            handler () {
+            handler (newVal, oldVal) {
                 if (!Array.isArray(this.properties.elements)) {
                     return;
                 }
 
+                const oldVisibleIds = (oldVal || [])
+                        .filter(layer => layer.visibility)
+                        .map(layer => layer.id),
+                    newVisibleIds = (newVal || [])
+                        .filter(layer => layer.visibility)
+                        .map(layer => layer.id);
+
                 for (const element of this.properties.elements) {
                     const requiredLayerIds = element.showOnlyByLayersVisible || [],
-                        allVisible = this.areLayersVisible(requiredLayerIds);
+                        newlyVisible = requiredLayerIds.some(
+                            id => newVisibleIds.includes(id) && !oldVisibleIds.includes(id)
+                        );
 
-                    if (allVisible) {
-                        if (this.properties.showEntryDirectly === true && this.type === "folder" && this.currentComponent(this.side).type === "root") {
+                    if (requiredLayerIds.length === 0) {
+                        continue;
+                    }
+
+
+                    if (newlyVisible && this.areLayersVisible(requiredLayerIds)) {
+                        if (this.properties.showEntryDirectly === true && this.type === "folder") {
                             if (!this.expanded(this.side)) {
                                 this.toggleMenu(this.side);
                             }
-
-                            if (this.currentComponent(this.side)?.props?.name !== this.name) {
+                            if (
+                                this.currentComponent(this.side)?.props?.name !== this.name &&
+                        !this.navigationHistory(this.side)?.some(entry => entry?.props?.name === this.name)
+                            ) {
                                 this.changeCurrentComponent({
                                     type: this.type,
                                     side: this.side,
@@ -143,7 +160,6 @@ export default {
                                 });
                             }
                         }
-
                         break;
                     }
                 }
@@ -161,7 +177,8 @@ export default {
                 name: this.name,
                 path: this.path,
                 side: this.side,
-                type: this.type
+                type: this.type,
+                properties: this.properties
             });
         }
     },

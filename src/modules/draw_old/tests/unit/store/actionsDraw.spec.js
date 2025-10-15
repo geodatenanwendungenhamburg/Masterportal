@@ -6,10 +6,9 @@ import Draw from "ol/interaction/Draw";
 import Feature from "ol/Feature";
 import Polygon from "ol/geom/Polygon";
 import LineString from "ol/geom/LineString";
-import main from "@modules/draw_old/js/main";
 
 describe("src/modules/draw/store/actionsDraw.js", () => {
-    let commit, state, dispatch, addInteraction;
+    let commit, state, dispatch, addInteraction, mockApp;
 
     beforeEach(() => {
         commit = sinon.spy();
@@ -28,6 +27,14 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         };
 
         mapCollection.addMap(map, "2D");
+        mockApp = {
+            config: {
+                globalProperties: {
+                    $layer: null
+                }
+            }
+        };
+
     });
     afterEach(sinon.restore);
 
@@ -35,7 +42,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         it("calls map's addInteraction function with a given interaction", () => {
             const interactionSymbol = Symbol();
 
-            actions.addInteraction({dispatch}, interactionSymbol);
+            actions.addInteraction.call({$app: mockApp}, {dispatch}, interactionSymbol);
 
             expect(dispatch.calledOnce).to.be.true;
             expect(dispatch.firstCall.args[1]).to.equal(interactionSymbol);
@@ -45,11 +52,11 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         it("calls the clear function of the state's layer", () => {
             const clear = sinon.spy();
 
-            main.getApp().config.globalProperties.$layer = {
+            mockApp.config.globalProperties.$layer = {
                 getSource: () => ({clear})
             };
 
-            actions.clearLayer({state, dispatch});
+            actions.clearLayer.call({$app: mockApp}, {state, dispatch});
 
             expect(clear.calledOnce).to.be.true;
             expect(dispatch.calledOnce).to.be.true;
@@ -72,7 +79,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         });
 
         it("should return the center point of a polygon with the projection EPSG:4326", () => {
-            centerPoint = actions.createCenterPoint({rootState}, {feature: polygonFeat, targetProjection});
+            centerPoint = actions.createCenterPoint.call({$app: mockApp}, {rootState}, {feature: polygonFeat, targetProjection});
 
             centerPoint[0] = Math.round(centerPoint[0] * 1000) / 1000;
             centerPoint[1] = Math.round(centerPoint[1] * 1000) / 1000;
@@ -80,7 +87,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
             expect(centerPoint).to.eql([9.987, 53.556]);
         });
         it("should return the center point of a line with the projection EPSG:4326", () => {
-            centerPoint = actions.createCenterPoint({rootState}, {feature: lineFeat, targetProjection});
+            centerPoint = actions.createCenterPoint.call({$app: mockApp}, {rootState}, {feature: lineFeat, targetProjection});
 
             centerPoint[0] = Math.round(centerPoint[0] * 1000) / 1000;
             centerPoint[1] = Math.round(centerPoint[1] * 1000) / 1000;
@@ -88,12 +95,12 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
             expect(centerPoint).to.eql([9.997, 53.558]);
         });
         it("should return the center point of a polygon in the map's projection", () => {
-            centerPoint = actions.createCenterPoint({rootState}, {feature: polygonFeat});
+            centerPoint = actions.createCenterPoint.call({$app: mockApp}, {rootState}, {feature: polygonFeat});
 
             expect(centerPoint).to.eql([565392.1853131973, 5934542.75368001]);
         });
         it("should return center point of line in the map's projection", () => {
-            centerPoint = actions.createCenterPoint({rootState}, {feature: lineFeat});
+            centerPoint = actions.createCenterPoint.call({$app: mockApp}, {rootState}, {feature: lineFeat});
 
             expect(centerPoint).to.eql([566036.8402080259, 5934811.915946803]);
         });
@@ -139,7 +146,10 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
             };
 
         it("commits and dispatches as expected", () => {
-            actions.createDrawInteractionAndAddToMap({
+            mockApp.config.globalProperties.$layer = {
+                getSource: () => sinon.stub()
+            };
+            actions.createDrawInteractionAndAddToMap.call({$app: mockApp}, {
                 state: getState("drawCircle"),
                 commit,
                 dispatch,
@@ -164,7 +174,10 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         });
 
         it("commits and dispatches a second set of information for drawDoubleCircle", () => {
-            actions.createDrawInteractionAndAddToMap({state: getState("drawDoubleCircle"), commit, dispatch, getters}, {active: activeSymbol, maxFeatures: maxFeaturesSymbol});
+            mockApp.config.globalProperties.$layer = {
+                getSource: () => sinon.stub()
+            };
+            actions.createDrawInteractionAndAddToMap.call({$app: mockApp}, {state: getState("drawDoubleCircle"), commit, dispatch, getters}, {active: activeSymbol, maxFeatures: maxFeaturesSymbol});
 
             // commits setDrawInteraction
             expect(commit.calledTwice).to.be.true;
@@ -186,7 +199,10 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         });
 
         it("commits and dispatches a text", () => {
-            actions.createDrawInteractionAndAddToMap(
+            mockApp.config.globalProperties.$layer = {
+                getSource: () => sinon.stub()
+            };
+            actions.createDrawInteractionAndAddToMap.call({$app: mockApp},
                 {
                     state: getState("text"),
                     commit,
@@ -230,7 +246,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         });
 
         it("defines a drawstart and drawend function on the interaction", () => {
-            actions.createDrawInteractionListener({state, dispatch}, {
+            actions.createDrawInteractionListener.call({$app: mockApp}, {state, dispatch}, {
                 isOuterCircle: false,
                 drawInteraction: ""
             });
@@ -240,7 +256,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         });
 
         it("defines a second drawstart function when maxFeatures is set", () => {
-            actions.createDrawInteractionListener({state, dispatch}, {
+            actions.createDrawInteractionListener.call({$app: mockApp}, {state, dispatch}, {
                 isOuterCircle: false,
                 drawInteraction: "",
                 maxFeatures: 5
@@ -258,7 +274,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
 
             dispatch = sinon.spy(async () => geoJSONSymbol);
 
-            actions.createDrawInteractionListener({state, dispatch}, {
+            actions.createDrawInteractionListener.call({$app: mockApp}, {state, dispatch}, {
                 doubleCircle: doubleCircleSymbol,
                 drawInteraction: ""
             });
@@ -291,7 +307,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
                     }
                 };
 
-            actions.createDrawInteractionListener({state, dispatch}, {
+            actions.createDrawInteractionListener.call({$app: mockApp}, {state, dispatch}, {
                 isOuterCircle: isOuterCircleSymbol,
                 drawInteraction: ""
             });
@@ -304,13 +320,13 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         it("enables the maxFeatures drawstart to dispatch, does so on maxFeatures reached", () => {
             let featureArray = [];
 
-            main.getApp().config.globalProperties.$layer = {
+            mockApp.config.globalProperties.$layer = {
                 getSource: () => ({
                     getFeatures: () => featureArray
                 })
             };
 
-            actions.createDrawInteractionListener({state, dispatch}, {
+            actions.createDrawInteractionListener.call({$app: mockApp}, {state, dispatch}, {
                 isOuterCircle: Symbol(),
                 drawInteraction: "",
                 maxFeatures: 5
@@ -335,13 +351,13 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         it("commits and dispatches as expected", () => {
             const activeSymbol = Symbol();
 
-            main.getApp().config.globalProperties.$layer = {
+            mockApp.config.globalProperties.$layer = {
                 getSource: () => ({
                     getFeatures: () => [],
                     addEventListener: () => ({})
                 })};
 
-            actions.createModifyInteractionAndAddToMap(
+            actions.createModifyInteractionAndAddToMap.call({$app: mockApp},
                 {state, commit, dispatch},
                 activeSymbol
             );
@@ -381,7 +397,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         });
 
         it("should define a modifyend function on the interaction", () => {
-            actions.createModifyInteractionListener({state, dispatch, commit});
+            actions.createModifyInteractionListener.call({$app: mockApp}, {state, dispatch, commit});
 
             expect(definedFunctions.modifyend).to.have.length(1);
         });
@@ -392,7 +408,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
                 geoJSONSymbol = Symbol();
 
             dispatch = sinon.spy(() => geoJSONSymbol);
-            actions.createModifyInteractionListener({state, dispatch});
+            actions.createModifyInteractionListener.call({$app: mockApp}, {state, dispatch});
 
             Config.inputMap = {targetProjection: "mock"};
             definedFunctions.modifyend[0]({feature: {featureSymbol}});
@@ -419,7 +435,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         });
 
         it("should define a select function on the interaction", () => {
-            actions.createSelectInteractionModifyListener({state, dispatch});
+            actions.createSelectInteractionModifyListener.call({$app: mockApp}, {state, dispatch});
 
             expect(definedFunctions.select).to.have.length(1);
         });
@@ -428,13 +444,13 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         it("commits and dispatches as expected", () => {
             const activeSymbol = Symbol();
 
-            main.getApp().config.globalProperties.$layer = {
+            mockApp.config.globalProperties.$layer = {
                 getSource: () => ({
                     getFeatures: () => [],
                     addEventListener: () => ({})
                 })};
 
-            actions.createSelectInteractionAndAddToMap(
+            actions.createSelectInteractionAndAddToMap.call({$app: mockApp},
                 {state, commit, dispatch},
                 activeSymbol
             );
@@ -466,20 +482,20 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
                     getFeatures: () => ({clear})
                 }
             };
-            main.getApp().config.globalProperties.$layer = {
+            mockApp.config.globalProperties.$layer = {
                 getSource: () => ({removeFeature})
             };
         });
 
         it("should define a select function on the interaction", () => {
-            actions.createSelectInteractionListener({state, dispatch});
+            actions.createSelectInteractionListener.call({$app: mockApp}, {state, dispatch});
 
             expect(definedFunctions.select).to.have.length(1);
         });
         it("should enable the select to call the functions removeFeature from the layerSource and clear from the features", () => {
             const selectedSymbol = Symbol();
 
-            actions.createSelectInteractionListener({state, dispatch});
+            actions.createSelectInteractionListener.call({$app: mockApp}, {state, dispatch});
             definedFunctions.select[0]({selected: [selectedSymbol]});
 
             expect(removeFeature.calledOnce).to.be.true;
@@ -519,7 +535,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         });
 
         it("should push the interactions to an array if they are an instance of Draw and are not yet added", () => {
-            actions.deactivateDrawInteractions({state, rootState});
+            actions.deactivateDrawInteractions.call({$app: mockApp}, {state, rootState});
 
             expect(state.deactivatedDrawInteractions.indexOf(drawOne)).to.be.greaterThan(-1);
             expect(state.deactivatedDrawInteractions.indexOf(drawTwo)).to.be.greaterThan(-1);
@@ -552,13 +568,13 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
             delete state.drawInteractionTwo;
 
             interaction = "draw";
-            actions.manipulateInteraction({state}, {interaction, active});
+            actions.manipulateInteraction.call({$app: mockApp}, {state}, {interaction, active});
 
             expect(setActive.calledOnce).to.be.true;
             expect(setActive.firstCall.args).to.eql([active]);
         });
         it("should call the 'setActive' method of both draw interactions with the given 'active' value if it is not null and the given interaction equals 'draw'", () => {
-            actions.manipulateInteraction({state}, {interaction, active});
+            actions.manipulateInteraction.call({$app: mockApp}, {state}, {interaction, active});
 
             expect(setActive.calledTwice).to.be.true;
             expect(setActive.firstCall.args).to.eql([active]);
@@ -566,14 +582,14 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         });
         it("should call the 'setActive' method of the modify interaction with the given 'active' value if it is not null and the given interaction equals 'modify'", () => {
             interaction = "modify";
-            actions.manipulateInteraction({state}, {interaction, active});
+            actions.manipulateInteraction.call({$app: mockApp}, {state}, {interaction, active});
 
             expect(setActive.calledOnce).to.be.true;
             expect(setActive.firstCall.args).to.eql([active]);
         });
         it("should call the 'setActive' method of the select interaction with the given 'active' value if it is not null and the given interaction equals 'delete'", () => {
             interaction = "delete";
-            actions.manipulateInteraction({state}, {interaction, active});
+            actions.manipulateInteraction.call({$app: mockApp}, {state}, {interaction, active});
 
             expect(setActive.calledOnce).to.be.true;
             expect(setActive.firstCall.args).to.eql([active]);
@@ -593,7 +609,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
                 redoArray: [],
                 undoArray: []
             };
-            main.getApp().config.globalProperties.$layer = {
+            mockApp.config.globalProperties.$layer = {
                 getSource: () => ({
                     addFeature,
                     getFeatureById: () => ({setStyle})
@@ -606,7 +622,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
 
             state.redoArray.push(featureToRestore);
 
-            actions.redoLastStep({state, commit, dispatch});
+            actions.redoLastStep.call({$app: mockApp}, {state, commit, dispatch});
 
             expect(setId.calledOnce).to.be.true;
             expect(setId.firstCall.args).to.eql([0]);
@@ -638,7 +654,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         });
 
         it("should call the 'removeInteration' method of the map of the rootState", () => {
-            actions.removeInteraction({dispatch}, interactionSymbol);
+            actions.removeInteraction.call({$app: mockApp}, {dispatch}, interactionSymbol);
 
             expect(dispatch.calledOnce).to.be.true;
             expect(dispatch.firstCall.args[1]).to.eql(interactionSymbol);
@@ -671,9 +687,9 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
                 modifyAttributesInteraction,
                 selectInteractionModifyAttributes
             };
-            main.getApp().config.globalProperties.$layer = {getSource: () => ({un})};
+            mockApp.config.globalProperties.$layer = {getSource: () => ({un})};
 
-            actions.resetModule({state, commit, dispatch, getters});
+            actions.resetModule.call({$app: mockApp}, {state, commit, dispatch, getters});
 
             expect(un.calledOnce).to.be.true;
             expect(un.firstCall.args).to.eql(["addFeature", listener]);
@@ -711,7 +727,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         it("should enable the draw interactions and disable the other interactions if the given interaction equals 'draw'", () => {
             interaction = "draw";
 
-            actions.toggleInteraction({getters, commit, dispatch}, interaction);
+            actions.toggleInteraction.call({$app: mockApp}, {getters, commit, dispatch}, interaction);
 
             expect(commit.calledThrice).to.be.true;
             expect(commit.firstCall.args).to.eql(["setFormerInteraction", "none"]);
@@ -727,7 +743,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         it("should enable the modify interaction and disable the other interactions if the given interaction equals 'modify'", () => {
             interaction = "modify";
 
-            actions.toggleInteraction({getters, commit, dispatch}, interaction);
+            actions.toggleInteraction.call({$app: mockApp}, {getters, commit, dispatch}, interaction);
 
             expect(commit.calledThrice).to.be.true;
             expect(commit.firstCall.args).to.eql(["setFormerInteraction", "none"]);
@@ -742,7 +758,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         it("should enable the select interaction and disable the other interactions if the given interaction equals 'delete'", () => {
             interaction = "delete";
 
-            actions.toggleInteraction({getters, commit, dispatch}, interaction);
+            actions.toggleInteraction.call({$app: mockApp}, {getters, commit, dispatch}, interaction);
 
             expect(commit.calledThrice).to.be.true;
             expect(commit.firstCall.args).to.eql(["setFormerInteraction", "none"]);
@@ -765,20 +781,20 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
             state = {
                 undoArray: []
             };
-            main.getApp().config.globalProperties.$layer = {
+            mockApp.config.globalProperties.$layer = {
                 getSource: () => ({getFeatures, removeFeature})
             };
         });
 
         it("should do nothing if the type of featureToRemove is 'undefined'", () => {
-            actions.undoLastStep({state, dispatch});
+            actions.undoLastStep.call({$app: mockApp}, {state, dispatch});
 
             expect(dispatch.notCalled).to.be.true;
             expect(removeFeature.notCalled).to.be.true;
         });
         it("should dispatch the correct methods and remove the feature if the type of featureToRemove is not 'undefined'", () => {
             state.undoArray.push(feature);
-            actions.undoLastStep({state, dispatch});
+            actions.undoLastStep.call({$app: mockApp}, {state, dispatch});
 
             expect(dispatch.calledTwice).to.be.true;
             expect(dispatch.firstCall.args).to.eql(["updateRedoArray", {remove: false, feature}]);
@@ -797,7 +813,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         });
 
         it("should create a uniqueID without a prefix is none is given and commit as intended", () => {
-            unique = actions.uniqueID({state, commit});
+            unique = actions.uniqueID.call({$app: mockApp}, {state, commit});
 
             expect(commit.calledOnce).to.be.true;
             expect(commit.firstCall.args).to.be.eql(["setIdCounter", 1]);
@@ -806,7 +822,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         it("should crate a uniqueID with a prefix if it is given and commit as intended", () => {
             const prefix = "id_";
 
-            unique = actions.uniqueID({state, commit}, prefix);
+            unique = actions.uniqueID.call({$app: mockApp}, {state, commit}, prefix);
 
             expect(commit.calledOnce).to.be.true;
             expect(commit.firstCall.args).to.be.eql(["setIdCounter", 1]);
@@ -825,7 +841,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         });
 
         it("should commit and dispatch as intended", () => {
-            actions.updateDrawInteraction({state, commit, dispatch, getters});
+            actions.updateDrawInteraction.call({$app: mockApp}, {state, commit, dispatch, getters});
 
             expect(commit.calledOnce).to.be.true;
             expect(commit.firstCall.args).to.eql(["setDrawInteraction", null]);
@@ -836,7 +852,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         it("should also dispatch and commit for the second drawInteraction if its type is not 'undefined'", () => {
             state.drawInteractionTwo = drawInteractionTwo;
 
-            actions.updateDrawInteraction({state, commit, dispatch, getters});
+            actions.updateDrawInteraction.call({$app: mockApp}, {state, commit, dispatch, getters});
 
             expect(commit.calledTwice).to.be.true;
             expect(commit.firstCall.args).to.eql(["setDrawInteraction", null]);
@@ -861,7 +877,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
             remove = true;
             state.redoArray.push(feature);
 
-            actions.updateRedoArray({state, commit}, {remove});
+            actions.updateRedoArray.call({$app: mockApp}, {state, commit}, {remove});
 
             expect(state.redoArray.length).to.equal(0);
             expect(commit.calledOnce).to.be.true;
@@ -870,7 +886,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         it("should push the given feature onto the redoArray if remove is set to 'false' and commit as intended", () => {
             remove = false;
 
-            actions.updateRedoArray({state, commit}, {remove, feature});
+            actions.updateRedoArray.call({$app: mockApp}, {state, commit}, {remove, feature});
 
             expect(state.redoArray.length).to.equal(1);
             expect(commit.calledOnce).to.be.true;

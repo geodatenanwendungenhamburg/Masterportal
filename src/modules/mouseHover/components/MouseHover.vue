@@ -18,13 +18,16 @@ export default {
             "titleFontFamily",
             "fontStyle",
             "titleFontStyle",
+            "fontWeight",
+            "titleFontWeight",
             "fontSize",
             "titleFontSize",
             "fontColor",
             "titleFontColor",
             "infoBorderRadius",
             "lineHeight"
-        ])
+        ]),
+        ...mapGetters(["mouseHover"])
     },
     mounted () {
         this.initializeModule({configPaths: this.configPaths, type: this.type});
@@ -39,6 +42,7 @@ export default {
 
 <template>
     <div
+        v-if="mouseHover && Object.keys(mouseHover).length > 0"
         id="mousehover-overlay"
     >
         <div
@@ -47,6 +51,7 @@ export default {
             :style="{
                 '--mousehover-font-family': fontFamily,
                 '--mousehover-font-style': fontStyle,
+                '--mousehover-font-weight': fontWeight,
                 '--mousehover-font-size': fontSize + 'px',
                 '--mousehover-font-color': fontColor,
                 '--mousehover-border-radius': infoBorderRadius + 'px',
@@ -69,6 +74,7 @@ export default {
                                 'font-family': titleFontFamily,
                                 'font-style': titleFontStyle,
                                 'font-size': titleFontSize + 'px',
+                                'font-weight': titleFontWeight,
                                 'color': titleFontColor
                             }"
                             v-html="text"
@@ -98,6 +104,7 @@ export default {
     font-size: var(--mousehover-font-size, $font-size-base);
     font-family: var(--mousehover-font-family, $font_family_default);
     font-style: var(--mousehover-font-style, normal);
+    font-weight: var(--mousehover-font-weight, normal);
     line-height: var(--mousehover-line-height);
     text-align: left;
     max-width: inherit;

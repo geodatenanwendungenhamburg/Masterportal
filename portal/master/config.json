@@ -34,7 +34,8 @@
             ]
           },
           "freeze": true,
-          "fullScreen": true
+          "fullScreen": true,
+          "exampleControl": true
         }
       },
       "featureViaURL": {
@@ -711,6 +712,23 @@
               {
                 "title": "common:modules.wfsSearch.parcelSearch",
                 "userHelp": "hide",
+                "zoomButtonInColumn": true,
+                "resultList": {
+                  "gemarkungsname": "Gemarkungsname",
+                  "gemarkung": "Gemarkung",
+                  "flurstuecksnummer": "Flurstücknummer",
+                  "flurstueck_lang": "Flurstücknummer - lang",
+                  "flurstuecksflaeche": "Flurstückfläche",
+                  "verwaltungsart": "Verwaltungsart",
+                  "gemeindename": "Gemeindename",
+                  "gemeinde": "Gemeinde",
+                  "kreisname": "Kreisname",
+                  "kreis": "Kreis",
+                  "land": "Land",
+                  "regierungsbezirk": "Regierungsbezirk",
+                  "status": "Status",
+                  "geometry": "Zoomen"
+              },
                 "requestConfig": {
                   "gazetteer": {
                     "namespaces": [
@@ -805,6 +823,7 @@
         "active": true,
         "searchBar": {
           "active": true,
+          "filter": true,
           "searchInterfaceInstances": [
             {
               "id":"elasticSearch_0",
@@ -1017,10 +1036,9 @@
           "typ": "SensorThings"
         },
         {
-          "id": "4538",
-          "name": "ek pv",
+          "id": "30916",
+          "name": "Solarpotenzialflächen",
           "typ": "WMS",
-          "gfiTheme": "solaratlas",
           "visibility": false
         },
         {
@@ -1034,7 +1052,8 @@
               "isFilterable": true,
               "isSortable": true,
               "enableDownload": true,
-              "exportFileName": "Schwermetallmessungen"
+              "exportFileName": "Schwermetallmessungen",
+              "fullViewEnabled": true
             }
           }
         },

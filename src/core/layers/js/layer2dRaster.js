@@ -1,4 +1,5 @@
 import Layer2d from "./layer2d";
+import store from "@appstore";
 
 /**
  * Creates a 2d raster layer.
@@ -11,7 +12,7 @@ import Layer2d from "./layer2d";
  */
 export default function Layer2dRaster (attributes) {
     const defaultAttributes = {
-        infoFormat: "text/xml"
+        infoFormat: store.getters.portalConfig?.tree?.rasterLayerDefaultInfoFormat || "text/xml"
     };
 
     this.attributes = Object.assign(defaultAttributes, attributes);

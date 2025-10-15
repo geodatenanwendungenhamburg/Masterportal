@@ -18,8 +18,8 @@ const getters = {
     currentInteractionConfig (state, {currentLayerId}) {
         const configuration = deepCopy(defaultInteractionConfig);
 
-        ["LineString", "Point", "Polygon", "update", "multiUpdate", "delete"].forEach(val => {
-            const isGeometryConfiguration = ["LineString", "Point", "Polygon"].includes(val);
+        ["LineString", "Point", "Polygon", "MultiPolygon", "update", "multiUpdate", "delete"].forEach(val => {
+            const isGeometryConfiguration = ["LineString", "Point", "Polygon", "MultiPolygon"].includes(val);
             let interactionConfiguration,
                 layerConfiguration = null;
 
@@ -41,7 +41,6 @@ const getters = {
                 configuration[val].available = true;
                 return;
             }
-
             layerConfiguration = interactionConfiguration.find(({layerId}) => layerId === currentLayerId);
             if (layerConfiguration === undefined) {
                 return;

@@ -7,7 +7,6 @@ import {setCsvAttributes} from "@modules/draw_old/js/setCsvAttributes.js";
 import {setKmlAttributes} from "@modules/draw_old/js/setKmlAttributes.js";
 import transform from "@modules/draw_old/js/download/transform.js";
 import {transformGeometry} from "@modules/draw_old/js/download/transformGeometry";
-import main from "@modules/draw_old/js/main";
 
 /**
  * Converts the features from OpenLayers Features to features in the chosen format.
@@ -133,7 +132,7 @@ function prepareDownload ({state, commit, dispatch}) {
  */
 function setDownloadFeatures ({state, commit, dispatch, rootGetters}) {
     const downloadFeatures = [],
-        drawnFeatures = main.getApp().config.globalProperties.$layer.getSource().getFeatures();
+        drawnFeatures = this.$app.config.globalProperties.$layer.getSource().getFeatures();
 
     drawnFeatures?.forEach(drawnFeature => {
         const feature = drawnFeature.clone(),
@@ -178,12 +177,12 @@ function setDownloadFeatures ({state, commit, dispatch, rootGetters}) {
  * @param {HTMLInputElement} event.currentTarget The HTML input element for the name of the file.
  * @returns {void}
  */
-function setDownloadFileName ({commit, dispatch}, {currentTarget}) {
-    const {value} = currentTarget;
-
+function setDownloadFileName ({commit, dispatch}, value) {
     commit("setDownloadFileName", value);
 
-    if (main.getApp().config.globalProperties.$layer.getSource().getFeatures().length > 0) {
+    const features = this.$app.config.globalProperties?.$layer?.getSource()?.getFeatures?.() || [];
+
+    if (features.length > 0) {
         dispatch("prepareDownload");
     }
 }
@@ -199,7 +198,7 @@ function setDownloadFileName ({commit, dispatch}, {currentTarget}) {
 async function setDownloadSelectedFormat ({commit, dispatch}, value) {
 
     commit("setDownloadSelectedFormat", value);
-    if (main.getApp().config.globalProperties.$layer.getSource().getFeatures().length > 0) {
+    if (this.$app.config.globalProperties.$layer.getSource().getFeatures().length > 0) {
         await dispatch("setDownloadFeatures");
         await dispatch("prepareData");
         dispatch("prepareDownload");
@@ -211,14 +210,15 @@ async function setDownloadSelectedFormat ({commit, dispatch}, value) {
  * @returns {String} Returns the filename including the suffix of the chosen format; returns and empty String if either the filename or the format has not been chosen yet.
  */
 function validateFileName ({state}) {
-    const {fileName, selectedFormat} = state.download;
+    const {fileName, selectedFormat} = state.download,
+        suffix = `.${selectedFormat.toLowerCase()}`;
 
-    if (fileName.length > 0 && selectedFormat.length > 0) {
-        const suffix = `.${selectedFormat.toLowerCase()}`;
-
-        return fileName.toLowerCase().endsWith(suffix) ? fileName : fileName + suffix;
+    if (!fileName || !selectedFormat) {
+        return "";
     }
-    return "";
+
+
+    return fileName.toLowerCase().endsWith(suffix) ? fileName : fileName + suffix;
 }
 
 export {

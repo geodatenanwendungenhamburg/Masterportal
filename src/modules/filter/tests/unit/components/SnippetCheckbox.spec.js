@@ -25,18 +25,20 @@ describe("src/modules/filter/components/SnippetCheckbox.vue", () => {
 
             expect(wrapper.find("input").classes("snippetCheckbox")).to.be.true;
         });
-        it("should render hidden if visible is false", () => {
+        it("should render hidden if visible is false", async () => {
             const wrapper = shallowMount(SnippetCheckbox, {
-                propsData: {
+                props: {
                     visible: false
                 }
             });
 
-            expect(wrapper.find(".snippetCheckboxContainer").element.style._values.display).to.be.equal("none");
+            await wrapper.vm.$nextTick();
+
+            expect(wrapper.find(".snippetCheckboxContainer").element.style.display).to.equal("none");
         });
         it("should render with checked box if prechecked is true", () => {
             const wrapper = shallowMount(SnippetCheckbox, {
-                propsData: {
+                props: {
                     prechecked: true
                 }
             });
@@ -45,7 +47,7 @@ describe("src/modules/filter/components/SnippetCheckbox.vue", () => {
         });
         it("should render but also be disabled", () => {
             const wrapper = shallowMount(SnippetCheckbox, {
-                propsData: {
+                props: {
                     disabled: true
                 }
             });
@@ -56,7 +58,7 @@ describe("src/modules/filter/components/SnippetCheckbox.vue", () => {
         });
         it("should render with a title if the title is a string", () => {
             const wrapper = shallowMount(SnippetCheckbox, {
-                propsData: {
+                props: {
                     title: "foobar"
                 }
             });
@@ -65,7 +67,7 @@ describe("src/modules/filter/components/SnippetCheckbox.vue", () => {
         });
         it("should render without a title if title is a boolean and false", () => {
             const wrapper = shallowMount(SnippetCheckbox, {
-                propsData: {
+                props: {
                     title: false
                 }
             });
@@ -74,7 +76,7 @@ describe("src/modules/filter/components/SnippetCheckbox.vue", () => {
         });
         it("should not render the info button if info is a boolean and false", () => {
             const wrapper = shallowMount(SnippetCheckbox, {
-                propsData: {
+                props: {
                     info: false
                 }
             });
@@ -83,7 +85,7 @@ describe("src/modules/filter/components/SnippetCheckbox.vue", () => {
         });
         it("should not use the given operator if an invalid operator is given", () => {
             const wrapper = shallowMount(SnippetCheckbox, {
-                propsData: {
+                props: {
                     operator: "operator"
                 }
             });
@@ -95,7 +97,7 @@ describe("src/modules/filter/components/SnippetCheckbox.vue", () => {
     describe("emitCurrentRule", () => {
         it("should emit changeRule function with the expected values if parameter is true", () => {
             const wrapper = shallowMount(SnippetCheckbox, {
-                propsData: {
+                props: {
                     snippetId: 1234,
                     visible: false,
                     attrName: "attrName",
@@ -119,7 +121,7 @@ describe("src/modules/filter/components/SnippetCheckbox.vue", () => {
         });
         it("should emit changeRule function with the expected values if parameter is not the second element of value", () => {
             const wrapper = shallowMount(SnippetCheckbox, {
-                propsData: {
+                props: {
                     snippetId: 1234,
                     visible: false,
                     attrName: "attrName",
@@ -148,7 +150,7 @@ describe("src/modules/filter/components/SnippetCheckbox.vue", () => {
     describe("deleteCurrentRule", () => {
         it("should emit deleteRule function with its snippetId", () => {
             const wrapper = shallowMount(SnippetCheckbox, {
-                propsData: {
+                props: {
                     snippetId: 1234
                 }
             });
@@ -174,7 +176,7 @@ describe("src/modules/filter/components/SnippetCheckbox.vue", () => {
                     }
                 }),
                 wrapper = shallowMount(SnippetCheckbox, {
-                    propsData: {
+                    props: {
                         prechecked: true
                     },
                     global: {

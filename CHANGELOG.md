@@ -5,26 +5,178 @@
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
 ## Unreleased - in development
-- MouseHover: Add additional parameters for configuration. Parameters can be set in the portal configuration to overwrite default values. If no values are set, the usual defaults are used.
+### __Breaking Changes__
+
+### Added
+- SearchBar: Added search status (min characters, loading, no results).
+- LayerSelection: Added search within current folder (requires `"filter": true"` in `config.json`).
+- Issue #1390: Added support for `.apng`, `.webp`,and `.svg` files in GFI window.
+
+### Changed
+- The following packages have been updated:
+  - devDependencies:
+    - axios: ^1.7.9 to ^1.12.2
+    - bootstrap: ^5.3.3 to ^5.3.8
+    - bootstrap-icons: ^1.11.3 to ^1.13.1
+    - chart.js: ^4.4.8 to ^4.5.0
+    - i18next: ^24.2.2 to ^25.5.2
+    - i18next-browser-languagedetector: ^8.0.3 to ^8.2.0
+    - i18next-http-backend: ^2.7.3 to ^3.0.2
+    - three: ^0.173.0 to ^0.180.0
+
+### Deprecated
+
+### Removed
+- The following packages have been removed:
+  - devDependencies:
+    - dom-storage
+    - html2canvas
+    - bootstrap-sass
+
+### Fixed
+- Issue #1385: Add missing internationalization calls for layer names.
+- Issue #1413: Fix legend toggle for featureless vector layers.
+- Issue #1422: Reset layers in CompareMaps on any deselection to avoid bugs regarding which layers are visible on what side of the comparison.
+- Issue #1481: Fix error when configuring customMenuElement as currentComponent.
+- LayerInformation: The addresses of the TileSet3D layer and the Terrain3D layer are displayed correctly.
+- Documentation: 
+    - Corrected usage of 'treeType' (version 2).
+    - Corrected description of 'map3dParameter'.
+- Documentation: corrected usage of 'treeType' (version 2).
+- Documentation: EditorConfig no longer strips two trailing spaces, which are intentional line breaks in Markdown.
+- Documentation: Use Code block headers instead of inline comments for the VueJSAddon tutorial.
+
+
+---
+
+## 2025-10-01 v3.15.0 (LTS)
 
 ### __Breaking Changes__
+- Dropped support for **Node.js 18.x**, **20.x** and **npm 9**. Minimum required is now **Node.js 22.19.0 (LTS)** with **npm 10.x**.
+
+### Added
+- Routing: Added enhanced isochrones legend.
+- Shared TableComponent:
+    - fixedColumnWithOrder in Props enable to insert the column with index.
+    - fixedRow in Props enable to insert a row directly after the header.
+- Added config.json parameter `rasterLayerDefaultInfoFormat` to override global default in 2d raster layer.
+
+### Changed
+- Shared TableComponent: Changes Props fixedData into fixedBottomData.
+- The following packages have been updated:
+  - devDependencies:
+    - canvas: ^2.11.2 to ^3.1.2
+- Temporarily pinned Vue core packages via `overrides` to `3.3.4`:
+    - @vue/compiler-sfc
+    - @vue/server-renderer
+    - @vue/compiler-dom
+    - @vue/compiler-core
+    - @vue/shared
+    - @vue/runtime-dom
+    - @vue/runtime-core
+- Update the addon documentation to reflect the recent changes in the project structure and Vue3.
+- packages: To avoid security issues, all packages have been fixed in package.json. No versions of patch releases will be accepted.
+- WFSSearch: To provide configuration of version 2 it is possible to configure a zoom-button for resultlist with config parameter `zoomButtonInColumn` if column key `geometry` or `geom` is configured, default is true.
+
+### Fixed
+- Issue #1404: searchInterfaceVisibleVector: The Visible Vector Search now manually loads all features, ensuring that results are found even outside the bounding box.
+- Issue #1416: Dragging a node of the layerTree now hides its tooltip. This ensures it won't be dropped on the tooltip, which lead to disabling the node in the layer tree.
+- Issue #1419: SearchInterfaceSpecialWfs: handle multisurface geometries like multipolygon, to ensure correct extraction of interior and exterior surfaces.
+- Issue #1467: Print: The info message for printing layers with a predefined legend is now also available in German.
+- Issue #1469: Fix menu expansion state after collecting GFI features.
+- Issue #1475: LayerInformation: Added additional metadata in group layers.
+- Issue  #1482, #1484: WFSSearch with resultlist provides zoom on row-click by default and zoom with button.
+- wfsSearch: secured layers can now be searched.
+- TableComponent: Fixed right alignment for numeric string values.
+- thousandsSeparator: Added optional skipFourDigitYear parameter to prevent formatting plain 4-digit years (e.g., 2025 stays 2025 instead of 2.025).
+- HighlightFeaturesByAttribute: Resolved console warning that appeared repeatedly when opening URL with highlight parameters.
+- Min/MaxScale: 3D Layers now work with minScale and maxScale attributes in the configuration.
+- Mousehover: The element is not highlighted when the mouse is no longer over it and there is no highlight for routing and elements with no highlightStyle.
+- draw_old:
+    - Fixed a bug where the download would return the portals index.js instead of the desired output after a specific sequence of interactions.
+    - Hide drawing makes the drawn layer not visible.
+- Issue #1479: Legend is loaded for WMTS with optionsFromCapabilities.
+- DOCS: Reverted Markdown table formatting as it was not compatible with soft line wrapping.
+- DOCS: Minor fixes in JSON and venv setup documentation.
+- SelectFeatures: unmounts correctly.
+
+---
+
+## 2025-09-03 v3.14.0
+
+### Added
+- Issue #1038: Added tooltips to display area of drawn polygons/squares and length of drawn lines, as in version 2.
+- WFS-T: Enables layers to support the insertion, update, and deletion of multipolygon geometries
+- WFS-T: Added confirmation dialogue for creating multipolygons with voids
+- Orientation: added parameter iFrameGeolocationEnabled to configure iFrame-Geolocation. If omitted or disabled, the errors within an iFrame now are more helpful.
+- StatisticDashboard: Added config parameter `decimalPlaces` to set the number of decimal places for the statistic values.
+- CustomMenuElement: Added support for configuring multiple viewpoint folders with the properties "showOnlyByLayersVisible" and "showEntryDirectly".
+- MouseHover: Added highlighting Vector Layers on mouseHover as in Version 2.
+- MouseHover: Configurable in config.js
+- MouseHover: Added an active value that allows enabling or disabling MouseHover through the configuration.
+- MouseHover: Added font weight options for desciption and title.
+- Added Shared Component for pagination.
+- UserManual: Added translation for user manual which is used in Gebeudewermeplannung Portal
+- SearchBar: Render images in search result if `imagePath` is provided in SearchBarSuggestionList and SearchBarResultListGeneralItem components.
+- Draw: Added square as geometryType.
+- PrintModule: Add additional parameter `transferParameter` which is an object with its parameters spread for the mapFish. `transferParameter` can have two parameters: `pagename` and `footer`, which are both strings.
+- Routing: Added context menu to for setting and deleting waypoints as well as barrier points via right mouse button.
+- Documentation: Now includes a search bar for cross-site search.
+
+### Changed
+- Orientation: Nearby: If in an iFrame and geolocation is not enabled through config parameter, geolocation option will not show.
+- VectorTile, WebGL: Feature detection for MouseHover/GFI uses forEachFeatureAtPixel to support WebGL-rendered layers and avoid issues with getFeaturesInExtent.
+- InputText: Replace input text with InputText.
+- HTML input elements: Replaced HTML input elements of type text with shared modules component InputText.
+- Shared utils: Optimized function isEmailAddress to return early to avoid running the regex for invalid input values.
+- Documentation: Links are now underlined to improve visibility (WCAG 2.2 (A) - 1.4.1).
+- The following packages have been updated:
+    - devDependencies:
+        - @masterportal/masterportalapi: 2.49.0 to 2.50.0 (This also raised ol to version 10.6.0)
+
+### Removed
+- Removed configuration portal/layer.
+
+### Fixed
+- Issue #1435: Filter: Fixed an issue where additionalGeometries did not work when geometries from a WFS layer with version 2.0.0 were used as a filter area.
+- Issue #1444: WMS-Time: Time-based WMS layers are now correctly reset when the comparison layer is removed.
+- Issue #1451: CompareMaps: Both maps are now still visible after reset.
+- Issue #1453: WfsSearch: The geometry cell in the search results table is now displayed as a button that allows users to zoom to the parcel coordinates.
+- Issue #1454: MkDocs: Added instructions for packages needed to run the portalconfig-migrator.
+- CompareFeatures: Fixed failing for layers with alphanumeric IDs.
+- sortObjects: Ensure stable sortByLayerSequence order in Chrome/Firefox.
+- Housekeeping: Multiple important css-rules have been refactored to not use important.
+- Housekeeping: Multiple Occurences of document.getElementById() have been replaced by vue-ref-logic.
+- WFS-T Tool: Fixed an issue when the module is set as the currentComponent of a menu in the portal config.
+- WFS-T Tool: The multiUpdate form now correctly displays checkboxes.
+- Tests: Fixed vuex warnings and stubbed console warnings end errors.
+- InputText: Fixed missing suggestions in input fields.
+- SearchInterfaceOsmNominatim: Fixed getter path in debounce check.
+- GroupLayer: Fixed errors when opening layer info for layers within a group.
+- wfsSearch: secured layers can now be searched.
+- Issue #1410: Legend – Fixed ordering of legend entries to match the style configuration.
+
+---
+
+## 2025-08-06 v3.13.0
 
 ### Added
 - AddWMS: added parameters showInLayerTree and visibility to set the flags for imported layers.
 - Orientation: added parameter iconGeolocationMarker to configure the icon used for the current position in the map.
 - WFS-T: Save button is disabled when user gave no input.
-- TableComponent: Implemented Fullscreen-View-Button of the table component within secondaryMenu with compressed table columns.
+- TableComponent: Implemented configurable Fullscreen-View-Button of the table component within secondaryMenu with compressed table columns.
 - MainMenu: Refactored Portal Title behavior for smaller menu sizes. Title now moves below logo when space is limited.
+- MouseHover: Add additional parameters for configuration. Parameters can be set in the portal configuration to overwrite default values. If no values are set, the usual defaults are used.
 
 ### Changed
 - WFS-T: Success save message is changed.
-- WFS-T: Info message is configurable and is visssible in the multiupdate so that users know that they can overwrite things.
+- WFS-T: Info message is configurable and is visible in the multiupdate so that users know that they can overwrite things.
 - WFS-T: Multiedit name is changed to Edit.
 - WFS-T: Box selection was removed from default ones for multiupdate.
-
-### Deprecated
-
-### Removed
+- StatisticDashboard:
+  - Replaced the old color scheme generating algorithm with the colorbrewer schemes.
+  - Enabled colored map for more than one selected statistic.
+  - A loading spinner shows before the styled features are loaded.
 
 ### Fixed
 - Routing/Nominatim-Geosearch: Reverse nominatim results to [lon, lat] (previously [lat, lon]) analogous to BKG geosearch; add correct EPSG code to result; prevent double URI-encoding for search string since axios already encodes the query implicitly
@@ -37,6 +189,9 @@
 - Routing: Fixed addition of waypoints during route modification. Waypoints added when modifying route are now geocoded correctly.
 - Alerting: Fixed alerts showing for layers hidden via link, even if set as visible in config.
 - About: Ensure the primary contact is displayed in the imprint, fallback to the publisher if no contact is defined.
+- BuildPortal: Fixed mastercodeVersionFolderName to prevent time conflicts and avoid hashtags in folder name.
+- Layer2dVector: should also filter for null geometries, not only undefined.
+- Tests: Fixed failing tests for WMTS layers without capabilities.
 
 ## 2025-07-08 v3.12.1
 
@@ -64,7 +219,7 @@
 - WFS-T: Errorhandling informs user of slow fetch-time for layer-information.
 - WFS-T: Transaction buttons are disabled for fetch-time at module start and when the user saves new values to fields.
 - Routing:
-    - button for adding a new waypoint was moved between start and endpoint 
+    - button for adding a new waypoint was moved between start and endpoint
     - reset button was moved to the bottom of the menu
     - consistent button design in avoid area menu
 
@@ -83,6 +238,7 @@
 - WFS-T: Multisave doesn't overwrite configAttribute.
 - WFS-T: A Bug that mistakenly showed empty fields was fixed.
 - Layer tree: fixed function sortObjects.
+- Circular dependencies in imports are removed.
 
 ---
 

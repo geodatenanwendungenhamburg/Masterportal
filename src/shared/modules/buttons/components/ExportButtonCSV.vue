@@ -274,13 +274,12 @@ export default {
         class="btn btn-primary exportButton"
         @click="download()"
     >
-        <span
-            id="bootstrap-icon"
-            class="bootstrap-icon"
-        >
+        <span class="bootstrap-icon">
             <i class="bi-cloud-arrow-down-fill" />
         </span>
-        {{ $t(title) }}
+        <span class="btn-texts">
+            {{ $t(title) }}
+        </span>
     </button>
     <button
         v-else
@@ -288,13 +287,12 @@ export default {
         class="btn btn-primary exportButton"
         disabled
     >
-        <span
-            id="bootstrap-icon"
-            class="bootstrap-icon spin-animation"
-        >
+        <span class="bootstrap-icon spin-animation">
             <i class="bi-cloud-arrow-down-fill" />
         </span>
-        {{ $t(title) }}
+        <span class="btn-texts">
+            {{ $t(title) }}
+        </span>
     </button>
 </template>
 
@@ -310,6 +308,12 @@ export default {
 
     .exportButton {
         outline:none;
+        padding-right: 1.5rem;
+        padding-left: 1rem;
+        .btn-texts {
+            white-space: normal;
+            margin-left: .5rem;
+        }
     }
     .exportButton > .spin-animation {
         animation: exportButtonLoaderSpinAnimation 1s 0.1s ease-in-out infinite both;

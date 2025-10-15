@@ -8,6 +8,7 @@ import RoutingBatchProcessingCheckboxComponent from "@modules/routing/components
 import RoutingDownloadComponent from "@modules/routing/components/RoutingDownload.vue";
 import RoutingRestrictionsInputComponent from "@modules/routing/components/RoutingRestrictionsInput.vue";
 import RoutingElevationProfileComponent from "@modules/routing/components/RoutingElevationProfile.vue";
+import RoutingContextMenuComponent from "../../../../components/RoutingContextMenu.vue";
 
 config.global.mocks.$t = key => key;
 
@@ -16,6 +17,7 @@ describe("src/modules/routing/components/Directions/DirectionsItem.vue", () => {
         batchProcessingEnabled,
         directionsAvoidSource,
         directionsAvoidPointSource,
+        directionsWaypointsSourceSpy,
         mapInteractionMode,
         routingDirections,
         setMapInteractionModeSpy,
@@ -31,6 +33,9 @@ describe("src/modules/routing/components/Directions/DirectionsItem.vue", () => {
         routingDirections = null;
         activeSpeedProfile = "CAR";
         elevation = false;
+        directionsWaypointsSourceSpy = sinon.spy(() => ({
+            getFeatures: sinon.stub().returns([])
+        }));
 
         mapCollection.clear();
         mapCollection.addMap({
@@ -58,6 +63,7 @@ describe("src/modules/routing/components/Directions/DirectionsItem.vue", () => {
                                                 getFeatures: () => []
                                             };
                                         },
+                                        directionsWaypointsSource: directionsWaypointsSourceSpy,
                                         isInputDisabled: () => false,
                                         mapInteractionMode: () => mapInteractionMode,
                                         routingAvoidFeaturesOptions: () => [],
@@ -296,6 +302,17 @@ describe("src/modules/routing/components/Directions/DirectionsItem.vue", () => {
         await wrapper.vm.$nextTick();
         expect(wrapper.findComponent(RoutingElevationProfileComponent).exists()).to.be.false;
     });
+
+    it("renders context menu", async () => {
+        batchProcessingEnabled = false;
+        wrapper = shallowMount(DirectionsComponent, {global: {
+            plugins: [store]
+        }});
+
+        await wrapper.vm.$nextTick();
+        expect(wrapper.findComponent(RoutingContextMenuComponent).exists()).to.be.true;
+    });
+
 
     describe("checks if findDirections are called", () => {
         it("should call on changeSpeedProfile", () => {

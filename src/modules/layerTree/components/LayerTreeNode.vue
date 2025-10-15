@@ -108,6 +108,21 @@ export default {
         },
 
         /**
+         * Hides the tooltip of dragged layer.
+         * Ensures that the dragged layer won't be removed via onSpill when dropped onto its tooltip.
+         *
+         * @param {Event} event The drag start event.
+         * @returns {void}
+         */
+        hideTooltip (event) {
+            const tooltipId = event.item.querySelector(".layer-checkbox-tooltip").getAttribute("aria-describedby");
+
+            if (tooltipId) {
+                document.getElementById(tooltipId).style.display = "none";
+            }
+        },
+
+        /**
          * Validates the movement of a dragged layer to a target layer.
          * Ensures that base layers cannot be moved above non-base layers and vice versa.
          *
@@ -152,6 +167,7 @@ export default {
         :touch-start-threshold="touchStartThreshold"
         :onSpill="removeLayerOnSpill"
         :move="checkMove"
+        @start="hideTooltip"
     >
         <template #item="{ element }">
             <li>

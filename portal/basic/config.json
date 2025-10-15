@@ -127,7 +127,8 @@
             "layerIds": [
               "lgvpolygon",
               "lgvpoint",
-              "lgvline"
+              "lgvline",
+              "1122"
             ],
             "toggleLayer": false,
             "lineButton": [
@@ -145,6 +146,12 @@
             "polygonButton": [
               {
                 "layerId": "lgvpolygon",
+                "available": true
+              }
+            ],
+            "multipolygonButton": [ 
+              { 
+                "layerId": "1122", 
                 "available": true
               }
             ]
@@ -254,6 +261,12 @@
         {
           "id": "lgvpolygon",
           "name": "wfst_polygon_test",
+          "visibility": false,
+          "typ": "WFS"
+        },
+        {
+          "id": "1122",
+          "name": "Test WFS-T LGV + Multipolygon",
           "visibility": false,
           "typ": "WFS"
         },

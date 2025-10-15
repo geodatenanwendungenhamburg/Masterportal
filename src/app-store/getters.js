@@ -419,6 +419,15 @@ export default {
     },
 
     /**
+     * Returns the configured value for mouseHover.
+     * @param {Object} state state of the app-store.
+     * @returns {Array} value for mouseHover or false if not configured
+     */
+    mouseHover: state => {
+        return state.portalConfig?.map?.mouseHover || false;
+    },
+
+    /**
      * Returns the named projections from config.js.
      * @param {Object} state state of the app-store.
      * @returns {Array}  the named projections from config.js
@@ -476,6 +485,17 @@ export default {
      */
     showLayerAddButton: state => {
         return typeof state?.portalConfig?.tree?.addLayerButton === "object" ? state.portalConfig.tree.addLayerButton.active : state?.portalConfig?.tree?.type === "auto";
+    },
+
+    /**
+     * Returns whether the layer selection tree uses client-side filtering.
+     * This checks the `portalConfig.tree.searchBar.filter` value.
+     * If the value is not explicitly set, it defaults to `false`.
+     * @param {Object} state state of the app-store.
+     * @returns {boolean} true if filtering is enabled, otherwise false.
+     */
+    filterInLayerSelection: state => {
+        return state?.portalConfig?.tree?.addLayerButton?.searchBar?.filter ? state?.portalConfig?.tree?.addLayerButton?.searchBar?.filter : false;
     },
 
     /**

@@ -30,7 +30,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
         });
         it("should render the component with set min and max values if configured", async () => {
             const wrapper = shallowMount(SnippetSlider, {
-                propsData: {
+                props: {
                     minValue: 0,
                     maxValue: 1000,
                     prechecked: 50
@@ -51,7 +51,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
                     shouldClearNativeTimers: true
                 }),
                 wrapper = shallowMount(SnippetSlider, {
-                    propsData: {
+                    props: {
                         minValue: 20,
                         maxValue: 100,
                         timeoutInput: 0
@@ -75,7 +75,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
         });
         it("should set input value by slider", async () => {
             const wrapper = shallowMount(SnippetSlider, {
-                    propsData: {
+                    props: {
                         minValue: 20,
                         maxValue: 100
                     }
@@ -101,16 +101,25 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
         });
         it("should render hidden if visible is false", () => {
             const wrapper = shallowMount(SnippetSlider, {
-                propsData: {
-                    visible: false
-                }
-            });
+                    props: {
+                        visible: false
+                    }
+                }),
 
-            expect(wrapper.find(".snippetSliderContainer").element.style._values.display).to.be.equal("none");
+                el = wrapper.find(".snippetSliderContainer");
+
+            if (el.exists()) {
+                // v-show
+                expect(el.isVisible()).to.be.false;
+            }
+            else {
+                // v-if
+                expect(el.exists()).to.be.false;
+            }
         });
         it("should render but also be disabled", () => {
             const wrapper = shallowMount(SnippetSlider, {
-                propsData: {
+                props: {
                     disabled: true
                 }
             });
@@ -121,7 +130,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
         });
         it("should render with a title if the title is a string", () => {
             const wrapper = shallowMount(SnippetSlider, {
-                propsData: {
+                props: {
                     title: "foobar"
                 }
             });
@@ -130,7 +139,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
         });
         it("should render without a title if title is a boolean and false", () => {
             const wrapper = shallowMount(SnippetSlider, {
-                propsData: {
+                props: {
                     title: false
                 }
             });
@@ -139,7 +148,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
         });
         it("should set both currentSliderMin and currentSliderMax from properties if given", async () => {
             const wrapper = shallowMount(SnippetSlider, {
-                propsData: {
+                props: {
                     minValue: 1,
                     maxValue: 3
                 }
@@ -154,7 +163,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
         });
         it("should set both currentSliderMin and currentSliderMax from properties and value from prechecked if given", async () => {
             const wrapper = shallowMount(SnippetSlider, {
-                propsData: {
+                props: {
                     minValue: 1,
                     maxValue: 3,
                     prechecked: 2
@@ -170,7 +179,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
         });
         it("should ask the api for currentSliderMin or currentSliderMax if minValue and maxValue are not given", async () => {
             const wrapper = shallowMount(SnippetSlider, {
-                propsData: {
+                props: {
                     api: {
                         getMinMax (attrName, onsuccess) {
                             onsuccess({
@@ -193,7 +202,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
             let lastMinOnly = false,
                 lastMaxOnly = false;
             const wrapper = shallowMount(SnippetSlider, {
-                propsData: {
+                props: {
                     maxValue: 22,
                     api: {
                         getMinMax (attrName, onsuccess, onerror, minOnly, maxOnly) {
@@ -220,7 +229,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
             let lastMinOnly = false,
                 lastMaxOnly = false;
             const wrapper = shallowMount(SnippetSlider, {
-                propsData: {
+                props: {
                     minValue: 30,
                     api: {
                         getMinMax (attrName, onsuccess, onerror, minOnly, maxOnly) {
@@ -245,7 +254,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
         });
         it("should not emit the current rule on startup, if no prechecked is given", async () => {
             const wrapper = await shallowMount(SnippetSlider, {
-                propsData: {
+                props: {
                     minValue: 40,
                     maxValue: 42
                 }
@@ -255,7 +264,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
         });
         it("should not use the given operator if an invalid operator is given", () => {
             const wrapper = shallowMount(SnippetSlider, {
-                propsData: {
+                props: {
                     operator: "operator"
                 }
             });
@@ -267,7 +276,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
     describe("emitCurrentRule", () => {
         it("should emit changeRule function with the expected values", () => {
             const wrapper = shallowMount(SnippetSlider, {
-                propsData: {
+                props: {
                     snippetId: 1234,
                     visible: false,
                     attrName: "attrName",
@@ -293,7 +302,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
     describe("deleteCurrentRule", () => {
         it("should emit deleteRule function with its snippetId", () => {
             const wrapper = shallowMount(SnippetSlider, {
-                propsData: {
+                props: {
                     snippetId: 1234
                 }
             });
@@ -308,7 +317,7 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
     describe("resetSnippet", () => {
         it("should reset the snippet value and call the given onsuccess handler", async () => {
             const wrapper = shallowMount(SnippetSlider, {
-                propsData: {
+                props: {
                     prechecked: 50
                 }
             });
@@ -340,28 +349,28 @@ describe("src/modules/filter/components/SnippetSlider.vue", () => {
 
     describe("isSelfSnippetId", () => {
         it("should return false if the given snippetId does not equal its snippetId", () => {
-            const wrapper = shallowMount(SnippetSlider, {propsData: {
+            const wrapper = shallowMount(SnippetSlider, {props: {
                 snippetId: 1
             }});
 
             expect(wrapper.vm.isSelfSnippetId(0)).to.be.false;
         });
         it("should return false if the given snippetId does not include its snippetId", () => {
-            const wrapper = shallowMount(SnippetSlider, {propsData: {
+            const wrapper = shallowMount(SnippetSlider, {props: {
                 snippetId: 1
             }});
 
             expect(wrapper.vm.isSelfSnippetId([0, 2, 3])).to.be.false;
         });
         it("should return true if the given snippetId equals its snippetId", () => {
-            const wrapper = shallowMount(SnippetSlider, {propsData: {
+            const wrapper = shallowMount(SnippetSlider, {props: {
                 snippetId: 1
             }});
 
             expect(wrapper.vm.isSelfSnippetId(1)).to.be.true;
         });
         it("should return false if the given snippetId includes its snippetId", () => {
-            const wrapper = shallowMount(SnippetSlider, {propsData: {
+            const wrapper = shallowMount(SnippetSlider, {props: {
                 snippetId: 1
             }});
 

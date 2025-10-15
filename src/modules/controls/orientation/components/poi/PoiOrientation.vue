@@ -96,9 +96,12 @@ export default {
                 el.style.display = "block";
                 el.classList.add("show");
                 el.classList.remove("fade");
-                backdrop.style.display = "block";
-                backdrop.classList.add("show");
-                backdrop.classList.remove("fade");
+                if (backdrop) {
+                    backdrop.style.display = "block";
+                    backdrop.classList.add("show");
+                    backdrop.classList.remove("fade");
+                }
+
             }
         },
 

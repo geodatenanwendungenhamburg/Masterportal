@@ -65,6 +65,22 @@
 	"urlIsVisible":true
   },
   {
+    "id": "1122",
+    "visibility": true,
+    "name": "Test WFS-T LGV + Multipolygon",
+    "url": "https://masterportal.schulung.deegree.pro/core-services/services/wfstlgv",
+    "typ": "WFS",
+    "featurePrefix": "sf",
+    "featureType": "wfstlgv",
+    "version": "1.1.0",
+    "featureNS": "http://cite.opengeospatial.org/gmlsf",
+    "gfiAttributes": "showAll",
+    "layerAttribution": "nicht vorhanden",
+    "legend": false,
+    "isSecured": false,
+    "datasets": []
+  },
+  {
     "id": "lgvpoint",
     "name": "de.hh.up:deetest punkte",
     "url": "https://qs-geodienste.hamburg.de/HH_WFS_deetest",

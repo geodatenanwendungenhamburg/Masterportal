@@ -91,4 +91,29 @@ describe("src/modules/mouseHover/store/actionsMouseHover", () => {
             expect(commit.args[3]).to.eql(["setInfoBox", [["erstesFeature", "123"], ["zweitesFeature", "456"]]]);
         });
     });
+    describe("highlightFeature", () => {
+        it("highlights a feature depending on its geometryType", () => {
+            const feature = {
+                    id: "feature",
+                    getId: () => "feature",
+                    getGeometry: () => sinon.spy({
+                        getType: () => "Point",
+                        getCoordinates: () => [100, 100]
+                    }),
+                    getProperties: () => []
+                },
+                layer = {
+                    id: "layerId",
+                    values_: {
+                        id: "layerId"
+                    },
+                    get: (key) => {
+                        return key;
+                    }
+                };
+
+            actions.highlightFeature({state, dispatch}, {feature, layer});
+            expect(dispatch.firstCall.args[0]).to.equal("Maps/highlightFeature");
+        });
+    });
 });

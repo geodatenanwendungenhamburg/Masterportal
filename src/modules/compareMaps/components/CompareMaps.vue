@@ -55,26 +55,34 @@ export default {
         /**
          * Watcher for the first selected layer.
          * @param {Object} newValue - The new value of the selected layer.
+         * @param {Object} oldValue - The old value of the selected layer.
          * @returns {void}
          */
-        selectedLayer1 (newValue) {
+        selectedLayer1 (newValue, oldValue) {
             if (newValue) {
                 this.setSelectedLayer1Id(newValue.id);
                 if (this.selectedLayer2) {
                     this.updateCompareMaps();
                 }
             }
+            if (oldValue) {
+                this.resetLayer(oldValue.id);
+            }
         },
         /**
          * Watcher for the second selected layer.
          * @param {Object} newValue - The new value of the selected layer.
+         * @param {Object} oldValue - The old value of the selected layer.
          * @returns {void}
          */
-        selectedLayer2 (newValue) {
+        selectedLayer2 (newValue, oldValue) {
             if (newValue) {
                 this.setSelectedLayer2Id(newValue.id);
 
                 this.updateCompareMaps();
+            }
+            if (oldValue) {
+                this.resetLayer(oldValue.id);
             }
         },
         /**
@@ -105,8 +113,6 @@ export default {
         ...mapActions("Modules/LayerSelection", ["changeVisibility"]),
         ...mapActions("Alerting", ["addSingleAlert"]),
         ...mapMutations("Modules/LayerSwiper", {
-            setSourceLayerId: "setSourceLayerId",
-            setTargetLayerId: "setTargetLayerId",
             setLayerSwiperActive: "setActive",
             setLayerSwiperSplitDirection: "setSplitDirection",
             setLayerSwiperValueY: "setLayerSwiperValueY",
@@ -114,7 +120,7 @@ export default {
         }),
         ...mapActions("Modules/LayerSwiper", ["updateMap"]),
         ...mapMutations("Modules/CompareMaps", Object.keys(mutations)),
-        ...mapActions("Modules/CompareMaps", ["initialize", "activateSwiper"]),
+        ...mapActions("Modules/CompareMaps", ["initialize", "activateSwiper", "deactivateSwiper", "resetLayer"]),
 
         /**
          * Updates the visible layers based on the provided configurations.
@@ -135,14 +141,11 @@ export default {
          * @returns {void}
          */
         resetSelection () {
-
+            this.deactivateSwiper();
             this.selectedLayer1 = null;
             this.selectedLayer2 = null;
             this.setSelectedLayer1Id("");
             this.setSelectedLayer2Id("");
-            this.setSourceLayerId("");
-            this.setTargetLayerId("");
-            this.setLayerSwiperActive(false);
             this.setLayerSwiperValueX(null);
             this.setLayerSwiperValueY(null);
 
@@ -164,7 +167,9 @@ export default {
          */
         updateCompareMaps () {
             if (this.selectedLayer1Id === this.selectedLayer2Id) {
-                this.selectedLayer2Id = "";
+                this.deactivateSwiper();
+                this.updateMap();
+                this.setSelectedLayer2Id("");
                 this.selectedLayer2 = null;
                 return;
             }
@@ -225,7 +230,7 @@ export default {
                             :key="layer.name"
                             :value="layer"
                         >
-                            {{ layer.name }}
+                            {{ $t(layer.name) }}
                         </option>
                     </select>
                     <label
@@ -247,7 +252,7 @@ export default {
                             :key="layer.name"
                             :value="layer"
                         >
-                            {{ layer.name }}
+                            {{ $t(layer.name) }}
                         </option>
                     </select>
                     <label

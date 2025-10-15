@@ -173,7 +173,7 @@ SearchInterfaceSpecialWfs.prototype.fillHitList = function (xml, result, request
         propertyNames = requestConfig.propertyNames,
         geometryName = requestConfig.geometryName ? requestConfig.geometryName : this.geometryName,
         icon = requestConfig.icon ? requestConfig.icon : this.icon,
-        multiGeometries = ["MULTIPOLYGON"],
+        multiGeometries = ["MULTIPOLYGON", "MULTISURFACE"],
         parser = new DOMParser(),
         xmlData = parser.parseFromString(xml, "application/xml"),
         elements = xmlData.getElementsByTagNameNS("*", typeName.split(":")[1]),
@@ -270,7 +270,11 @@ SearchInterfaceSpecialWfs.prototype.getInteriorAndExteriorPolygonMembers = funct
         }
         else {
             for (const key in Object.keys(posListPolygonMembers)) {
-                coords.push(posListPolygonMembers[key].textContent);
+                const trimmedTextContent = posListPolygonMembers[key].textContent.trim();
+
+                if (trimmedTextContent !== "") {
+                    coords.push(trimmedTextContent);
+                }
             }
             coords.forEach(coordArray => coordinateArray.push(Object.values(coordArray.replace(/\s\s+/g, " ").split(" "))));
         }

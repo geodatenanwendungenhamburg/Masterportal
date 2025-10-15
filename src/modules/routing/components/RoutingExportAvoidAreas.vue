@@ -37,7 +37,7 @@ export default {
          * @returns {void}
          */
         appendModalToBody () {
-            const exportModal = document.getElementById("exportAvoidAreasModal");
+            const exportModal = this.$refs.exportAvoidAreasModal;
 
             if (exportModal) {
                 document.body.appendChild(exportModal);
@@ -50,7 +50,7 @@ export default {
          * @returns {void}
          */
         async submitDownload () {
-            const modalElement = document.getElementById("exportAvoidAreasModal"),
+            const modalElement = this.$refs.exportAvoidAreasModal,
                 modal = Modal.getInstance(modalElement);
 
             this.avoidPolygons = await this.getAvoidPolygonsWgs84();
@@ -221,6 +221,7 @@ export default {
     <!-- Modal -->
     <div
         id="exportAvoidAreasModal"
+        ref="exportAvoidAreasModal"
         class="modal"
         tabindex="-1"
         aria-labelledby="exportAvoidAreasModalLabel"

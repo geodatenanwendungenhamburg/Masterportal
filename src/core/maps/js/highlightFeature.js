@@ -49,39 +49,41 @@ export default {
      * @returns {void}
      */
     async highlightPointTypes ({commit, dispatch}, highlightObject) {
-        const newStyle = highlightObject.highlightStyle,
-            feature = highlightObject.feature,
-            styleObjectPayload = {highlightObject, feature, returnFirst: feature.getGeometry().getType() !== "MultiPoint"},
-            originalStyle = await dispatch("fetchAndApplyStyle", styleObjectPayload) || undefined;
+        if (highlightObject.highlightStyle) {
+            const newStyle = highlightObject.highlightStyle,
+                feature = highlightObject.feature,
+                styleObjectPayload = {highlightObject, feature, returnFirst: feature.getGeometry().getType() !== "MultiPoint"},
+                originalStyle = await dispatch("fetchAndApplyStyle", styleObjectPayload) || undefined;
 
-        if (originalStyle) {
-            commit("Maps/addHighlightedFeature", feature, {root: true});
-            commit("Maps/addHighlightedFeatureStyle", feature.getStyle(), {root: true});
+            if (originalStyle) {
+                commit("Maps/addHighlightedFeature", feature, {root: true});
+                commit("Maps/addHighlightedFeatureStyle", feature.getStyle(), {root: true});
 
-            if (Array.isArray(originalStyle)) {
-                const clonedStyles = originalStyle.map(style => {
-                    const clonedStyle = style.clone();
+                if (Array.isArray(originalStyle)) {
+                    const clonedStyles = originalStyle.map(style => {
+                        const clonedStyle = style.clone();
+
+                        applyStyleProperties(clonedStyle, newStyle);
+                        return clonedStyle;
+                    });
+
+                    feature.setStyle(clonedStyles);
+                }
+                else {
+                    const clonedStyle = originalStyle.clone();
 
                     applyStyleProperties(clonedStyle, newStyle);
-                    return clonedStyle;
-                });
-
-                feature.setStyle(clonedStyles);
+                    feature.setStyle(clonedStyle);
+                }
             }
-            else {
-                const clonedStyle = originalStyle.clone();
+            else if (highlightObject.layer.id === "importDrawLayer") {
+                const clonedStyle = typeof feature.getStyle() === "object" ? feature.getStyle()?.clone() : undefined;
 
-                applyStyleProperties(clonedStyle, newStyle);
-                feature.setStyle(clonedStyle);
+                dispatch("setHighlightStyleToFeature", {feature, clonedStyle, newStyle});
             }
-        }
-        else if (highlightObject.layer.id === "importDrawLayer") {
-            const clonedStyle = typeof feature.getStyle() === "object" ? feature.getStyle()?.clone() : undefined;
-
-            dispatch("setHighlightStyleToFeature", {feature, clonedStyle, newStyle});
         }
         else {
-            dispatch("Maps/placingPolygonMarker", feature, {root: true});
+            dispatch("Maps/placingPolygonMarker", highlightObject.feature, {root: true});
         }
     },
 
@@ -97,39 +99,41 @@ export default {
      * @returns {void}
      */
     async highlightPolygonTypes ({commit, dispatch}, highlightObject) {
-        const newStyle = highlightObject.highlightStyle,
-            feature = highlightObject.feature,
-            styleObjectPayload = {highlightObject, feature, returnFirst: feature.getGeometry().getType() !== "MultiPolygon"},
-            originalStyle = await dispatch("fetchAndApplyStyle", styleObjectPayload) || undefined;
+        if (highlightObject.highlightStyle) {
+            const newStyle = highlightObject.highlightStyle,
+                feature = highlightObject.feature,
+                styleObjectPayload = {highlightObject, feature, returnFirst: feature.getGeometry().getType() !== "MultiPolygon"},
+                originalStyle = await dispatch("fetchAndApplyStyle", styleObjectPayload) || undefined;
 
-        if (originalStyle) {
-            commit("Maps/addHighlightedFeature", feature, {root: true});
-            commit("Maps/addHighlightedFeatureStyle", feature.getStyle(), {root: true});
+            if (originalStyle) {
+                commit("Maps/addHighlightedFeature", feature, {root: true});
+                commit("Maps/addHighlightedFeatureStyle", feature.getStyle(), {root: true});
 
-            if (Array.isArray(originalStyle)) {
-                const clonedStyles = originalStyle.map(style => {
-                    const clonedStyle = style.clone();
+                if (Array.isArray(originalStyle)) {
+                    const clonedStyles = originalStyle.map(style => {
+                        const clonedStyle = style.clone();
+
+                        applyStyleProperties(clonedStyle, newStyle);
+                        return clonedStyle;
+                    });
+
+                    feature.setStyle(clonedStyles);
+                }
+                else {
+                    const clonedStyle = originalStyle.clone();
 
                     applyStyleProperties(clonedStyle, newStyle);
-                    return clonedStyle;
-                });
-
-                feature.setStyle(clonedStyles);
+                    feature.setStyle(clonedStyle);
+                }
             }
-            else {
-                const clonedStyle = originalStyle.clone();
+            else if (highlightObject.layer.id === "importDrawLayer") {
+                const clonedStyle = typeof feature.getStyle() === "object" ? feature.getStyle()?.clone() : undefined;
 
-                applyStyleProperties(clonedStyle, newStyle);
-                feature.setStyle(clonedStyle);
+                dispatch("setHighlightStyleToFeature", {feature, clonedStyle, newStyle});
             }
-        }
-        else if (highlightObject.layer.id === "importDrawLayer") {
-            const clonedStyle = typeof feature.getStyle() === "object" ? feature.getStyle()?.clone() : undefined;
-
-            dispatch("setHighlightStyleToFeature", {feature, clonedStyle, newStyle});
         }
         else {
-            dispatch("Maps/placingPolygonMarker", feature, {root: true});
+            dispatch("Maps/placingPolygonMarker", highlightObject.feature, {root: true});
         }
     },
 
@@ -144,39 +148,41 @@ export default {
      * @returns {void}
      */
     async highlightLineTypes ({commit, dispatch}, highlightObject) {
-        const newStyle = highlightObject.highlightStyle,
-            feature = highlightObject.feature,
-            styleObjectPayload = {highlightObject, feature, returnFirst: feature.getGeometry().getType() !== "MultiLineString"},
-            originalStyle = await dispatch("fetchAndApplyStyle", styleObjectPayload) || undefined;
+        if (highlightObject.highlightStyle) {
+            const newStyle = highlightObject.highlightStyle,
+                feature = highlightObject.feature,
+                styleObjectPayload = {highlightObject, feature, returnFirst: feature.getGeometry().getType() !== "MultiLineString"},
+                originalStyle = await dispatch("fetchAndApplyStyle", styleObjectPayload) || undefined;
 
-        if (originalStyle) {
-            commit("Maps/addHighlightedFeature", feature, {root: true});
-            commit("Maps/addHighlightedFeatureStyle", feature.getStyle(), {root: true});
+            if (originalStyle) {
+                commit("Maps/addHighlightedFeature", feature, {root: true});
+                commit("Maps/addHighlightedFeatureStyle", feature.getStyle(), {root: true});
 
-            if (Array.isArray(originalStyle)) {
-                const clonedStyles = originalStyle.map(style => {
-                    const clonedStyle = style.clone();
+                if (Array.isArray(originalStyle)) {
+                    const clonedStyles = originalStyle.map(style => {
+                        const clonedStyle = style.clone();
+
+                        applyStyleProperties(clonedStyle, newStyle);
+                        return clonedStyle;
+                    });
+
+                    feature.setStyle(clonedStyles);
+                }
+                else {
+                    const clonedStyle = originalStyle.clone();
 
                     applyStyleProperties(clonedStyle, newStyle);
-                    return clonedStyle;
-                });
-
-                feature.setStyle(clonedStyles);
+                    feature.setStyle(clonedStyle);
+                }
             }
-            else {
-                const clonedStyle = originalStyle.clone();
+            else if (highlightObject.layer.id === "importDrawLayer") {
+                const clonedStyle = typeof feature.getStyle() === "object" ? feature.getStyle()?.clone() : undefined;
 
-                applyStyleProperties(clonedStyle, newStyle);
-                feature.setStyle(clonedStyle);
+                dispatch("setHighlightStyleToFeature", {feature, clonedStyle, newStyle});
             }
-        }
-        else if (highlightObject.layer.id === "importDrawLayer") {
-            const clonedStyle = typeof feature.getStyle() === "object" ? feature.getStyle()?.clone() : undefined;
-
-            dispatch("setHighlightStyleToFeature", {feature, clonedStyle, newStyle});
         }
         else {
-            dispatch("Maps/placingPolygonMarker", feature, {root: true});
+            dispatch("Maps/placingPolygonMarker", highlightObject.feature, {root: true});
         }
     },
 

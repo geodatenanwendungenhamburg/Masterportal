@@ -17,6 +17,7 @@
  * @property {(ButtonConfig[]|Boolean)} lineButton Configuration of the different layers whether they should display the button to add lines.
  * @property {(ButtonConfig[]|Boolean)} pointButton Configuration of the different layers whether they should display the button to add points.
  * @property {(ButtonConfig[]|Boolean)} polygonButton Configuration of the different layers whether they should display the button to add polygons.
+ * @property {(ButtonConfig[]|Boolean)} multiPolygonButton Configuration of the different layers whether they should display the button to add multiPolygons.
  * @property {Boolean} transactionProcessing Flag if a process like delete, update is currently active with axios post,get.
  * @property {Boolean} showConfirmModal Flag if the modal dialog should be shown.
  * @property {Boolean} toggleLayer Whether the already added features should be displayed while inserting new features.
@@ -29,6 +30,7 @@
  * @property {Boolean} isFormDisabled if true then feature form inputs are invalid and form data cannot be saved to backend
  * @property {Boolean} buttonsDisabled Whether the interaction buttons should be disabled during feature-fetch.
  * @property {("singleUpdate"|"multiUpdate"|null)} selectedUpdate Which update is currently active, if any.
+ * @property {Set} processedMultiPolygons Set of already processed Multipolygon Features
  */
 const state = {
     // General configuration
@@ -48,8 +50,11 @@ const state = {
     lineButton: [],
     pointButton: [],
     polygonButton: [],
+    multipolygonButton: [],
     transactionProcessing: false,
     showConfirmModal: false,
+    showVoidModal: false,
+    voidModalCallback: {},
     toggleLayer: false,
     // Actual state
     currentLayerIndex: -1,
@@ -59,8 +64,12 @@ const state = {
     layerInformation: [],
     selectedInteraction: null,
     isFormDisabled: false,
+    active: false,
     buttonsDisabled: false,
-    selectedUpdate: null
+    selectedUpdate: null,
+    processedMultiPolygons: new Set(),
+    isDrawMode: false,
+    lastModifiedMultipolygon: null
 };
 
 export default state;

@@ -260,6 +260,18 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
 
             expect(wrapper.find(".total").exists()).to.be.true;
         });
+        it("should not render fixed row", () => {
+            wrapper = createWrapper();
+
+            expect(wrapper.find(".fixed-row").exists()).to.be.false;
+        });
+        it("should render fixed row", async () => {
+            wrapper = createWrapper();
+
+            await wrapper.setData({fixedTopData: {}});
+
+            expect(wrapper.find(".fixed-row").exists()).to.be.true;
+        });
     });
     describe("column visibility", () => {
         it("should render all checkboxes and include them in 'visibleHeaders'", async () => {
@@ -519,6 +531,40 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                         "bar": "1"
                     }],
                     expectItems = [
+                        {
+                            "bar": "1"
+                        },
+                        {
+                            "bar": "2"
+                        },
+                        {
+                            "bar": "11"
+                        }
+                    ],
+                    sortedItems = wrapper.vm.getSortedItems(items, "bar", "asc");
+
+                expect(sortedItems).to.deep.equal(expectItems);
+            });
+            it("should sort combination of number strings and strings by their value if prop is set", () => {
+                wrapper = createWrapper({
+                    sortByNumericValue: true
+                });
+                const items = [{
+                        "bar": "2"
+                    },
+                    {
+                        "bar": "11"
+                    },
+                    {
+                        "bar": "-"
+                    },
+                    {
+                        "bar": "1"
+                    }],
+                    expectItems = [
+                        {
+                            "bar": "-"
+                        },
                         {
                             "bar": "1"
                         },
@@ -813,13 +859,13 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                     column = "foo";
 
                 await wrapper.vm.$nextTick();
-                sinon.stub(wrapper.vm, "moveColumnToFirstPlace");
+                sinon.stub(wrapper.vm, "moveColumnToPlace");
                 wrapper.vm.toggleColumnFix(column);
                 expect(wrapper.vm.fixedColumn).to.be.equal(column);
                 sinon.restore();
             });
         });
-        describe("moveColumnToFirstPlace", () => {
+        describe("moveColumnToPlace", () => {
             it("should not update the draggableHeaders if parameter is not type of string", async () => {
                 // eslint-disable-next-line no-shadow
                 const wrapper = shallowMount(TableComponent, {
@@ -838,19 +884,19 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                     expected = wrapper.vm.draggableHeader;
 
                 await wrapper.vm.$nextTick();
-                wrapper.vm.moveColumnToFirstPlace(undefined);
+                wrapper.vm.moveColumnToPlace(undefined);
                 expect(wrapper.vm.draggableHeader).to.deep.equal(expected);
-                wrapper.vm.moveColumnToFirstPlace(null);
+                wrapper.vm.moveColumnToPlace(null);
                 expect(wrapper.vm.draggableHeader).to.deep.equal(expected);
-                wrapper.vm.moveColumnToFirstPlace({});
+                wrapper.vm.moveColumnToPlace({});
                 expect(wrapper.vm.draggableHeader).to.deep.equal(expected);
-                wrapper.vm.moveColumnToFirstPlace([]);
+                wrapper.vm.moveColumnToPlace([]);
                 expect(wrapper.vm.draggableHeader).to.deep.equal(expected);
-                wrapper.vm.moveColumnToFirstPlace(true);
+                wrapper.vm.moveColumnToPlace(true);
                 expect(wrapper.vm.draggableHeader).to.deep.equal(expected);
-                wrapper.vm.moveColumnToFirstPlace(false);
+                wrapper.vm.moveColumnToPlace(false);
                 expect(wrapper.vm.draggableHeader).to.deep.equal(expected);
-                wrapper.vm.moveColumnToFirstPlace(1234);
+                wrapper.vm.moveColumnToPlace(1234);
                 expect(wrapper.vm.draggableHeader).to.deep.equal(expected);
             });
             it("should update the draggableHeader as expected", async () => {
@@ -874,7 +920,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
 
                 await wrapper.vm.$nextTick();
                 wrapper.vm.draggableHeader = [{name: "foo", index: 0}, {name: "bar", index: 1}, {name: "buz", index: 2}];
-                wrapper.vm.moveColumnToFirstPlace("bar");
+                wrapper.vm.moveColumnToPlace("bar");
                 expect(wrapper.vm.draggableHeader).to.deep.equal([{name: "bar", index: 0}, {name: "foo", index: 1}, {name: "buz", index: 2}]);
             });
         });
@@ -1245,6 +1291,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                         items: [
                             {foo: "Total", bar: 1, buz: 1},
                             {foo: "Total", bar: 2, buz: 2},
+                            {foo: "Total", bar: "-", buz: "-"},
                             {foo: "Total", bar: 3, buz: 3}
                         ]
                     },
@@ -1354,7 +1401,8 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                         data: {
                             headers: ["foo"],
                             items: [["bar"]]
-                        }
+                        },
+                        fullViewEnabled: true
                     }
                 });
 
@@ -1472,6 +1520,47 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                 expect(footer.style.display).to.equal("");
                 expect(fullViewSpy.calledTwice).to.be.true;
                 expect(toggleMenuStub.calledOnce).to.be.true;
+            });
+            it("should render the full view button when fullViewEnabled is true", () => {
+                const flatButton = wrapper.findComponent({name: "FlatButton"});
+
+                expect(flatButton.exists()).to.be.true;
+            });
+            it("should not render the full view button when fullViewEnabled is false", async () => {
+                await wrapper.setProps({fullViewEnabled: false});
+
+                const flatButton = wrapper.findComponent({name: "FlatButton"});
+
+                expect(flatButton.exists()).to.be.false;
+            });
+        });
+        describe("getFixedRowTitle", () => {
+            it("should return undefined", () => {
+                wrapper = createWrapper();
+                const title = wrapper.vm.getFixedRowTitle("origin");
+
+                expect(title).to.be.undefined;
+            });
+
+            it("should return the title", async () => {
+                wrapper = mount(TableComponent, {
+                    global: {
+                        plugins: [store]
+                    },
+                    props: {
+                        data: {
+                            headers: [{name: "foo", index: 0}]
+                        },
+                        fixedRow: {
+                            name: "column",
+                            title: "title"
+                        },
+                        enableSettings: true
+                    }
+                });
+                const title = wrapper.vm.getFixedRowTitle("column");
+
+                expect(title).to.be.equal("title");
             });
         });
     });

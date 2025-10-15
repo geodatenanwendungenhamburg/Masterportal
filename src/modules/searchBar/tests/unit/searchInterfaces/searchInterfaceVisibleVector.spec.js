@@ -65,6 +65,10 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceVisibleVector.js
                 additionalInfoField: "street",
                 name: "The layer",
                 searchField: "name",
+                url: "https://example.com/wfs",
+                version: "1.1.0",
+                featureType: "exampleFeatureType",
+                crs: "EPSG:4326",
                 style: () => {
                     return {
                         getImage: () => sinon.stub()
@@ -104,7 +108,11 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceVisibleVector.js
                 const visibleVectorLayerConfigs = [{
                         id: "123",
                         name: "The layer",
-                        searchField: "name"
+                        searchField: "name",
+                        url: "https://example.com/wfs",
+                        version: "1.1.0",
+                        featureType: "exampleFeatureType",
+                        crs: "EPSG:4326"
                     }],
                     searchInput = "hos",
                     matchingFeatures = SearchInterface1.findMatchingFeatures(visibleVectorLayerConfigs, searchInput);
@@ -163,6 +171,10 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceVisibleVector.js
                         additionalInfoField: "street",
                         name: "The layer",
                         searchField: "name",
+                        url: "https://example.com/wfs",
+                        version: "1.1.0",
+                        featureType: "exampleFeatureType",
+                        crs: "EPSG:4326",
                         style: () => {
                             return {
                                 getImage: () => sinon.stub()
@@ -184,7 +196,11 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceVisibleVector.js
                 const visibleVectorLayerConfigs = [{
                         id: "789",
                         name: "The layer",
-                        searchField: "name"
+                        searchField: "name",
+                        url: "https://example.com/wfs",
+                        version: "1.1.0",
+                        featureType: "exampleFeatureType",
+                        crs: "EPSG:4326"
                     }],
                     searchInput = "scho";
 

@@ -149,6 +149,8 @@ function addSearchbar (data, mainMenu) {
         }
 
         Object.entries(oldSearchbar).forEach(([searchName, searchConfig]) => {
+            let addToNewConfig = true;
+
             if (typeof searchConfig === "object") {
                 let searchType = searchName;
 
@@ -191,14 +193,17 @@ function addSearchbar (data, mainMenu) {
                     }
                 }
                 if (searchName.toLowerCase() === "visiblewfs") {
-                    searchType = "visibleWfs";
+                    console.warn("--- WARNING: " + searchType + " seems to be a very old configuration, this type is not supported. It will not be migrated, you can use visibleVector instead and configure it by hand!");
+                    addToNewConfig = false;
                 }
-                searchConfig.type = searchType;
-                console.info("   searchbar entry " + searchType);
-                if (searchConfig.zoomToResult !== undefined) {
-                    console.info("--- HINT: " + searchType + " removed deprecated property zoomToResult, configure resultEvents instead.");
+                if (addToNewConfig) {
+                    searchConfig.type = searchType;
+                    console.info("   searchbar entry " + searchType);
+                    if (searchConfig.zoomToResult !== undefined) {
+                        console.info("--- HINT: " + searchType + " removed deprecated property zoomToResult, configure resultEvents instead.");
+                    }
+                    newSearchbar.searchInterfaces.push(searchConfig);
                 }
-                newSearchbar.searchInterfaces.push(searchConfig);
             }
         });
         mainMenu.searchBar = newSearchbar;

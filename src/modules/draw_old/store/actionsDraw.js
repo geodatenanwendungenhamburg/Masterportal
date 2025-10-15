@@ -16,7 +16,6 @@ import getDrawTypeByGeometryType from "../js/getDrawTypeByGeometryType";
 import postDrawEnd from "../js/postDrawEnd";
 
 import stateDraw from "./stateDraw";
-import main from "../js/main";
 
 const initialState = JSON.parse(JSON.stringify(stateDraw)),
     actions = {
@@ -46,23 +45,27 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
             }
 
             feature.set("masterportal_attributes", Object.assign(feature.get("masterportal_attributes") ?? {}, {"drawState": {
-                strokeWidth: styleSettingsCopy.strokeWidth,
-                opacity: styleSettingsCopy.opacity,
-                opacityContour: styleSettingsCopy.opacityContour,
-                font: styleSettingsCopy.font,
-                fontSize: parseInt(styleSettingsCopy.fontSize, 10),
-                text: styleSettingsCopy.text,
+                area: styleSettingsCopy.area,
                 circleMethod: styleSettingsCopy.circleMethod,
-                circleRadius: styleSettingsCopy.circleRadius,
                 circleOuterRadius: styleSettingsCopy.circleOuterRadius,
-                drawType,
-                symbol,
-                zIndex,
-                imgPath,
-                pointSize,
+                circleRadius: styleSettingsCopy.circleRadius,
                 color: styleSettingsCopy.color,
                 colorContour: styleSettingsCopy.colorContour,
-                outerColorContour: styleSettingsCopy.outerColorContour
+                drawType,
+                font: styleSettingsCopy.font,
+                fontSize: parseInt(styleSettingsCopy.fontSize, 10),
+                imgPath,
+                lineLength: styleSettingsCopy.length,
+                opacity: styleSettingsCopy.opacity,
+                opacityContour: styleSettingsCopy.opacityContour,
+                outerColorContour: styleSettingsCopy.outerColorContour,
+                pointSize,
+                squareArea: styleSettingsCopy.squareArea,
+                squareMethod: styleSettingsCopy.squareMethod,
+                strokeWidth: styleSettingsCopy.strokeWidth,
+                symbol,
+                text: styleSettingsCopy.text,
+                zIndex
             }}), false);
 
         },
@@ -81,7 +84,7 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
          * @returns {void}
          */
         clearLayer ({dispatch}) {
-            main.getApp().config.globalProperties.$layer.getSource().clear();
+            this.$app.config.globalProperties.$layer.getSource().clear();
             dispatch("setDownloadFeatures");
         },
         /**
@@ -156,7 +159,7 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
          */
         createDrawInteractionAndAddToMap ({state, commit, dispatch, getters}, {active, maxFeatures}) {
             const {styleSettings} = getters,
-                drawInteraction = createDrawInteraction(state, styleSettings);
+                drawInteraction = createDrawInteraction(state, styleSettings, this.$app);
 
             if (state.selectInteractionModify?.getFeatures()?.getArray()?.length > 0) {
                 state.selectInteractionModify.getFeatures().clear();
@@ -170,7 +173,7 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
 
             // NOTE: This leads to the creation of a second (the outer) circle instead of a MultiPolygon right now.
             if (state.drawType.id === "drawDoubleCircle") {
-                const drawInteractionTwo = createDrawInteraction(state, styleSettings);
+                const drawInteractionTwo = createDrawInteraction(state, styleSettings, this.$app);
 
                 commit("setDrawInteractionTwo", drawInteractionTwo);
                 dispatch("manipulateInteraction", {interaction: "draw", active: active});
@@ -195,16 +198,23 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
                 event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {"isOuterCircle": isOuterCircle, "isVisible": true}));
                 dispatch("drawInteractionOnDrawEvent", drawInteraction);
 
-                if (!tooltip && state?.drawType?.id === "drawCircle" || state?.drawType?.id === "drawDoubleCircle") {
-                    tooltip = createTooltipOverlay({getters, commit, dispatch});
-                    mapCollection.getMap(rootState.Maps.mode).addOverlay(tooltip);
-                    mapCollection.getMap(rootState.Maps.mode).on("pointermove", tooltip.get("mapPointerMoveEvent"));
+                const drawTypeId = state?.drawType?.id;
+
+                if (drawTypeId === "drawSquare") {
+                    commit("setSquareSide", 0);
+                }
+                if (drawTypeId === "drawCircle" || drawTypeId === "drawDoubleCircle" || drawTypeId === "drawSquare" || drawTypeId === "drawArea" || drawTypeId === "drawLine") {
+                    tooltip = createTooltipOverlay({state, getters, commit, dispatch}, mapCollection.getMap("2D").getView().getProjection());
+                    const map = mapCollection.getMap(rootState.Maps.mode);
+
+                    map.addOverlay(tooltip);
+                    map.on("pointermove", tooltip.get("mapPointerMoveEvent"));
                     event.feature.getGeometry().on("change", tooltip.get("featureChangeEvent"));
                 }
             });
             if (maxFeatures && maxFeatures > 0) {
                 interaction.on("drawstart", () => {
-                    const featureCount = main.getApp().config.globalProperties.$layer.getSource().getFeatures().length;
+                    const featureCount = this.$app.config.globalProperties.$layer.getSource().getFeatures().length;
 
                     if (featureCount > maxFeatures - 1) {
                         const alert = {
@@ -258,8 +268,8 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
          * @returns {void}
          */
         createModifyAttributesInteractionAndAddToMap ({commit, dispatch}, active) {
-            const modifyInteraction = createModifyAttributesInteraction(main.getApp().config.globalProperties.$layer),
-                selectInteractionModify = createSelectInteraction(main.getApp().config.globalProperties.$layer, 10);
+            const modifyInteraction = createModifyAttributesInteraction(this.$app.config.globalProperties.$layer),
+                selectInteractionModify = createSelectInteraction(this.$app.config.globalProperties.$layer, 10);
 
             commit("setModifyAttributesInteraction", modifyInteraction);
             dispatch("manipulateInteraction", {interaction: "modifyAttributes", active: active});
@@ -283,6 +293,9 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
                 if (state.selectedFeature) {
                     commit("setSelectedFeature", null);
                 }
+                if (state.drawType.id === "drawSquare") {
+                    commit("setSquareSide", "-");
+                }
 
                 event.features.getArray().forEach(feature => {
                     let center = null;
@@ -297,15 +310,23 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
                         changeInProgress = true;
 
                         if (!state.selectedFeature || state.selectedFeature.ol_uid !== feature.ol_uid) {
+                            const map = mapCollection.getMap(rootState.Maps.mode);
+
                             await dispatch("saveAsCurrentFeatureAndApplyStyleSettings", feature);
 
-                            if (!tooltip && (state.drawType.id === "drawCircle" || state.drawType.id === "drawDoubleCircle")) {
+                            if (!tooltip && ["drawCircle", "drawDoubleCircle"].includes(state.drawType.id)) {
                                 if (center === JSON.stringify(feature.getGeometry().getCenter())) {
-                                    tooltip = createTooltipOverlay({getters, commit, dispatch});
-                                    mapCollection.getMap(rootState.Maps.mode).addOverlay(tooltip);
-                                    mapCollection.getMap(rootState.Maps.mode).on("pointermove", tooltip.get("mapPointerMoveEvent"));
+                                    tooltip = createTooltipOverlay({state, getters, commit, dispatch}, mapCollection.getMap("2D").getView().getProjection());
+                                    map.addOverlay(tooltip);
+                                    map.on("pointermove", tooltip.get("mapPointerMoveEvent"));
                                     state.selectedFeature.getGeometry().on("change", tooltip.get("featureChangeEvent"));
                                 }
+                            }
+                            else if (!tooltip && state.drawType.id === "drawSquare" || state.drawType.id === "drawArea" || state.drawType.id === "drawLine") {
+                                tooltip = createTooltipOverlay({state, getters, commit, dispatch}, mapCollection.getMap("2D").getView().getProjection());
+                                map.addOverlay(tooltip);
+                                map.on("pointermove", tooltip.get("mapPointerMoveEvent"));
+                                state.selectedFeature.getGeometry().on("change", tooltip.get("featureChangeEvent"));
                             }
                         }
                     });
@@ -338,8 +359,8 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
          * @returns {void}
          */
         createModifyInteractionAndAddToMap ({commit, dispatch}, active) {
-            const modifyInteraction = createModifyInteraction(main.getApp().config.globalProperties.$layer),
-                selectInteractionModify = createSelectInteraction(main.getApp().config.globalProperties.$layer, 10);
+            const modifyInteraction = createModifyInteraction(this.$app.config.globalProperties.$layer),
+                selectInteractionModify = createSelectInteraction(this.$app.config.globalProperties.$layer, 10);
 
             commit("setModifyInteraction", modifyInteraction);
             dispatch("manipulateInteraction", {interaction: "modify", active: active});
@@ -383,7 +404,7 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
 
                             if (!tooltip && (state.drawType.id === "drawCircle" || state.drawType.id === "drawDoubleCircle")) {
                                 if (center === JSON.stringify(feature.getGeometry().getCenter())) {
-                                    tooltip = createTooltipOverlay({getters, commit, dispatch});
+                                    tooltip = createTooltipOverlay({state, getters, commit, dispatch}, mapCollection.getMap("2D").getView().getProjection());
                                     mapCollection.getMap(rootState.Maps.mode).addOverlay(tooltip);
                                     mapCollection.getMap(rootState.Maps.mode).on("pointermove", tooltip.get("mapPointerMoveEvent"));
                                     state.selectedFeature.getGeometry().on("change", tooltip.get("featureChangeEvent"));
@@ -493,7 +514,7 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
          * @returns {void}
          */
         createSelectInteractionAndAddToMap ({commit, dispatch}, active) {
-            const selectInteraction = createSelectInteraction(main.getApp().config.globalProperties.$layer);
+            const selectInteraction = createSelectInteraction(this.$app.config.globalProperties.$layer);
 
             commit("setSelectInteraction", selectInteraction);
             dispatch("manipulateInteraction", {interaction: "delete", active: active});
@@ -508,7 +529,7 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
         createSelectInteractionListener ({state, dispatch}) {
             state.selectInteraction.on("select", event => {
                 // remove feature from source
-                main.getApp().config.globalProperties.$layer.getSource().removeFeature(event.selected[0]);
+                this.$app.config.globalProperties.$layer.getSource().removeFeature(event.selected[0]);
                 // remove feature from interaction
                 state.selectInteraction.getFeatures().clear();
                 // remove feature from array of downloadable features
@@ -585,8 +606,8 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
 
                 featureToRestore.setId(featureId);
                 commit("setFId", state.fId + 1);
-                main.getApp().config.globalProperties.$layer.getSource().addFeature(featureToRestore);
-                main.getApp().config.globalProperties.$layer.getSource().getFeatureById(featureId).setStyle(featureToRestore.getStyle());
+                this.$app.config.globalProperties.$layer.getSource().addFeature(featureToRestore);
+                this.$app.config.globalProperties.$layer.getSource().getFeatureById(featureId).setStyle(featureToRestore.getStyle());
                 dispatch("updateRedoArray", {remove: true});
                 dispatch("updateUndoArray", {remove: false, feature: featureToRestore});
             }
@@ -644,7 +665,7 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
             commit("setDownloadSelectedFormat", initialState.download.selectedFormat);
 
             if (state.addFeatureListener.listener) {
-                main.getApp().config.globalProperties.$layer.getSource().un("addFeature", state.addFeatureListener.listener);
+                this.$app.config.globalProperties.$layer.getSource().un("addFeature", state.addFeatureListener.listener);
             }
         },
         /**
@@ -756,7 +777,7 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
          */
         undoLastStep ({state, dispatch}) {
             /**
-             * NOTE: main.getApp().config.globalProperties.$layer.getSource().getFeatures() doesn't return the features in the order they were added.
+             * NOTE: this.$app.config.globalProperties.$layer.getSource().getFeatures() doesn't return the features in the order they were added.
              * Therefore it is necessary to keep an array with the features in the right order.
              */
             const features = state.undoArray,
@@ -765,7 +786,7 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
             if (typeof featureToRemove !== "undefined" && featureToRemove !== null) {
                 dispatch("updateRedoArray", {remove: false, feature: featureToRemove});
                 dispatch("updateUndoArray", {remove: true});
-                main.getApp().config.globalProperties.$layer.getSource().removeFeature(featureToRemove);
+                this.$app.config.globalProperties.$layer.getSource().removeFeature(featureToRemove);
             }
         },
         /**
@@ -852,10 +873,8 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
          * @param {Boolean} value The value to set.
          * @returns {void}
          */
-        updateDrawLayerVisible: ({getters, commit, dispatch}, value) => {
-            if (typeof getters?.layer?.setVisible === "function") {
-                getters.layer.setVisible(value);
-            }
+        updateDrawLayerVisible: ({getters, commit, dispatch}, {value, layer}) => {
+            layer?.setVisible(value);
 
             if (value) {
                 if (getters.formerInteraction) {

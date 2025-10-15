@@ -2,6 +2,7 @@ import {createStore} from "vuex";
 import {config, shallowMount} from "@vue/test-utils";
 import LayerFilterSnippet from "@modules/filter/components/LayerFilterSnippet.vue";
 import SnippetDownload from "@modules/filter/components/SnippetDownload.vue";
+import InputText from "@shared/modules/inputs/components/InputText.vue";
 import SnippetCheckboxFilterInMapExtent from "@modules/filter/components/SnippetCheckboxFilterInMapExtent.vue";
 import {expect} from "chai";
 import MapHandler from "@modules/filter/utils/mapHandler.js";
@@ -51,7 +52,8 @@ describe("src/modules/filter/components/LayerFilterSnippet.vue", () => {
         });
         wrapper = shallowMount(LayerFilterSnippet, {
             global: {
-                plugins: [store]
+                plugins: [store],
+                components: {InputText}
             },
             propsData: {
                 layerConfig: {

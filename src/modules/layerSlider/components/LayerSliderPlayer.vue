@@ -1,5 +1,6 @@
 <script>
 import {mapGetters, mapMutations, mapActions} from "vuex";
+import InputText from "../../../shared/modules/inputs/components/InputText.vue";
 
 /**
  * Layer Slider Player
@@ -7,6 +8,9 @@ import {mapGetters, mapMutations, mapActions} from "vuex";
  */
 export default {
     name: "LayerSliderPlayer",
+    components: {
+        InputText
+    },
     computed: {
         ...mapGetters("Modules/LayerSlider", [
             "activeLayer",
@@ -179,14 +183,13 @@ export default {
                 </span>
             </button>
             <label for="title" />
-            <input
+            <InputText
                 id="title"
-                type="text"
-                class="form-control"
-                :placeholder="$t('common:modules.layerSlider.titleNotConfigured')"
-                :value="$t(activeLayer.title)"
-                readonly="true"
-            >
+                :placeholder="$t('common:modules.layerSlider.title')"
+                :label="$t('common:modules.layerSlider.title')"
+                :model-value="activeLayer?.title ? $t(activeLayer.title) : ''"
+                readonly
+            />
         </div>
     </div>
 </template>
@@ -221,6 +224,9 @@ export default {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+        .input-group > .btn {
+            height: calc(3.5rem + calc(var(--bs-border-width) * 2));
         }
     }
 </style>

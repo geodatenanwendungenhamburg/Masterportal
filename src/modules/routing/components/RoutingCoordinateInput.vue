@@ -2,6 +2,7 @@
 import {mapActions, mapGetters} from "vuex";
 import {RoutingGeosearchResult} from "../js/classes/routing-geosearch-result";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
+import InputText from "@shared/modules/inputs/components/InputText.vue";
 
 /**
  * RoutingCoordinateInput
@@ -26,7 +27,7 @@ import IconButton from "@shared/modules/buttons/components/IconButton.vue";
  */
 export default {
     name: "RoutingCoordinateInput",
-    components: {IconButton},
+    components: {IconButton, InputText},
     props: {
         waypoint: {
             type: Object,
@@ -264,17 +265,18 @@ export default {
                 :for="'routingCoordinateInput_' + waypoint.index"
                 class="d-flex flex-row pr-0 pl-0"
             >
-                <input
+                <InputText
                     :id="'routingCoordinateInput_' + waypoint.index"
                     v-model="search"
-                    type="text"
-                    class="col-md-11 form-control form-control-sm"
+                    :class-obj="['form-control-sm', 'col-md-12']"
+                    class="w-100"
                     :placeholder="getPlaceholder()"
+                    :label="getPlaceholder()"
                     autocomplete="off"
                     @focus="isFocused = true"
                     @blur="isFocused = false"
                     @click="removeAvoidInteraction"
-                >
+                />
                 <button
                     v-if="search.length > 0 && search !== waypointDisplayName"
                     class="btn-icon input-icon reset-button"

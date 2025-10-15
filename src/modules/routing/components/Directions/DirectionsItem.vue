@@ -14,6 +14,8 @@ import RoutingSpeedProfileIcon from "../RoutingSpeedProfileIcon.vue";
 import RoutingAvoidFeatures from "../RoutingAvoidFeatures.vue";
 import RoutingRestrictionsInput from "../RoutingRestrictionsInput.vue";
 import RoutingElevationProfile from "../RoutingElevationProfile.vue";
+import RoutingContextMenu from "../RoutingContextMenu.vue";
+import InputText from "@shared/modules/inputs/components/InputText.vue";
 import * as constants from "../../store/directions/constantsDirections";
 import * as constantsRouting from "../../store/constantsRouting";
 import {Modal} from "bootstrap";
@@ -25,7 +27,6 @@ import {Modal} from "bootstrap";
  * @vue-data {*} constantsRouting - The constants routing.
  * @vue-data {*} defaultpreference - default preference.
  * @vue-data {*} avoidRadius - Radius of avoid points.
- * @vue-data {*} maxAvoidRadius - maximum Radius of avoid points.
  * @vue-computed {Boolean} isMapInteractionModeAvoidAreasEdit - Shows if current map mode is "AVOID_AREAS".
  * @vue-computed {Boolean} isMapInteractionModeAvoidPointsEdit - Shows if current map mode is "AVOID_POINTS".
  * @vue-computed {Boolean} isMapInteractionModeAvoidAreasDelete - Shows if current map mode is "DELETE_AVOID_AREAS".
@@ -46,7 +47,9 @@ export default {
         RoutingSpeedProfileIcon,
         RoutingRestrictionsInput,
         RoutingElevationProfile,
-        LightButton
+        LightButton,
+        RoutingContextMenu,
+        InputText
     },
     data () {
         return {
@@ -54,7 +57,6 @@ export default {
             constantsRouting,
             defaultPreference: null,
             avoidRadius: 0,
-            maxAvoidRadius: 12,
             showAvoidAreaButtons: false
         };
     },
@@ -100,7 +102,7 @@ export default {
          * @return {Boolean} true if radius is valid.
          */
         isRadiusValid () {
-            return this.avoidRadius !== "" && this.avoidRadius <= this.maxAvoidRadius && this.avoidRadius >= 0;
+            return this.avoidRadius !== "" && this.avoidRadius <= this.settings.maxAvoidRadius && this.avoidRadius >= 0;
         }
     },
     watch: {
@@ -275,7 +277,7 @@ export default {
          * @returns {void}
          */
         afterFileValidation () {
-            const modalElement = document.getElementById("uploadModal"),
+            const modalElement = this.$refs.uploadModal,
                 modal = Modal.getInstance(modalElement);
 
             modal.hide();
@@ -285,7 +287,7 @@ export default {
          * @returns {void}
          */
         appendModalToBody () {
-            const uploadModal = document.getElementById("uploadModal");
+            const uploadModal = this.$refs.uploadModal;
 
             if (uploadModal) {
                 document.body.appendChild(uploadModal);
@@ -296,10 +298,10 @@ export default {
          * @returns {void}
          */
         removeModalFromBody () {
-            const uploadModal = document.getElementById("uploadModal");
+            const uploadModal = this.$refs.uploadModal;
 
             if (uploadModal) {
-                document.body.removeChild(document.getElementById("uploadModal"));
+                document.body.removeChild(uploadModal);
             }
         },
         /**
@@ -514,24 +516,20 @@ export default {
                         class="d-flex flex-row mb-3"
                     >
                         <div class="form-floating mb-3 w-100 mt-3">
-                            <input
+                            <InputText
+                                :id="'avoidRadius'"
                                 v-model="avoidRadius"
                                 type="number"
-                                :class="'w-100 form-control' + (isRadiusValid ? ' is-valid': ' is-invalid')"
+                                :class-obj="['form-control' + (isRadiusValid ? ' is-valid': ' is-invalid')]"
+                                class="w-100"
                                 :aria-describedby="`avoidPointRadius-input-help`"
-                                min="0"
-                                max="12"
-                                step="0.1"
-                            >
-                            <label for="avoidPointRadiusInput">
-                                {{ $t('common:modules.routing.directions.avoidAreas.avoidPointRadius') }}
-                            </label>
-                            <span
-                                id="avoidPointRadius-input-help"
-                                class="invalid-feedback"
-                            >
-                                {{ $t('common:modules.routing.directions.avoidAreas.avoidPointRadiusOutOfRangeKm') }}
-                            </span>
+                                :label="$t('common:modules.routing.directions.avoidAreas.avoidPointRadius')"
+                                :placeholder="$t('common:modules.routing.directions.avoidAreas.avoidPointRadiusOutOfRangeKm')"
+                                :min="0"
+                                :max="12"
+                                :step="0.1"
+                                :error-message="$t('common:modules.routing.directions.avoidAreas.avoidPointRadiusOutOfRangeKm')"
+                            />
                         </div>
                     </div>
                     <div class="form-floating mb-3">
@@ -553,6 +551,7 @@ export default {
                 <!-- Modal -->
                 <div
                     id="uploadModal"
+                    ref="uploadModal"
                     class="modal fade"
                     tabindex="-1"
                     aria-labelledby="uploadModalLabel"
@@ -796,6 +795,7 @@ export default {
             </span>
         </div>
     </div>
+    <RoutingContextMenu />
 </template>
 
 <style lang="scss" scoped>
@@ -875,5 +875,8 @@ export default {
 }
 .invalid-feedback {
     max-width: fit-content;
+}
+#draw-avoidPoint-settings {
+  background-image: none;
 }
 </style>

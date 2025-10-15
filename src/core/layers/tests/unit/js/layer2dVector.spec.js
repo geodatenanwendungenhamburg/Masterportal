@@ -184,6 +184,10 @@ describe("src/core/js/layers/layer2dVector.js", () => {
                 {
                     id: "2",
                     getGeometry: () => undefined
+                },
+                {
+                    id: "3",
+                    getGeometry: () => null
                 }];
 
             expect(layer2d.featuresFilter(attributes, features).length).to.be.equals(1);
@@ -885,5 +889,73 @@ describe("src/core/js/layers/layer2dVector.js", () => {
             expect(vectorLayer.filterUniqueLegendInfo(features, rules, legendInfos.legendInformation)).to.deep.equal(expectedUniqueLegendInfo);
             expect(vectorLayer.filterUniqueLegendInfo(features, rules, legendInfos.legendInformation).length).to.deep.equal(3);
         });
+
+        it("supports array schema for conditions.properties ([{attrName, value}])", () => {
+            const vectorLayer = new Layer2dVector({}),
+                f1 = {get: (k) => k === "type" ? "A" : undefined},
+                f2 = {get: (k) => k === "type" ? "B" : undefined},
+                features = [f1, f2],
+                rules = [
+                    {conditions: {properties: [{attrName: "type", value: "A"}]}, style: {legendValue: "Type A"}},
+                    {conditions: {properties: [{attrName: "type", value: "B"}]}, style: {legendValue: "Type B"}}
+                ],
+                legendInfos = [
+                    {label: "Type A", id: "la"},
+                    {label: "Type B", id: "lb"}
+                ],
+                expected = [
+                    {label: "Type A", id: "la"},
+                    {label: "Type B", id: "lb"}
+                ];
+
+            expect(vectorLayer.filterUniqueLegendInfo(features, rules, legendInfos)).to.deep.equal(expected);
+        });
+
+        it("enforces rule order even if legendInfos come unordered", () => {
+            const vectorLayer = new Layer2dVector({}),
+                f = {get: (k) => k === "cat" ? "Y" : undefined},
+                features = [f],
+                rules = [
+                    {conditions: {properties: {cat: "Y"}}, style: {legendValue: "Y"}},
+                    {conditions: {properties: {cat: "X"}}, style: {legendValue: "X"}}
+                ],
+                legendInfos = [
+                    {label: "X", id: "x"},
+                    {label: "Y", id: "y"}
+                ],
+                expected = [{label: "Y", id: "y"}];
+
+            expect(vectorLayer.filterUniqueLegendInfo(features, rules, legendInfos)).to.deep.equal(expected);
+        });
+
+        it("matches numeric rule against string feature value (e.g., '3' vs 3)", () => {
+            const vectorLayer = new Layer2dVector({}),
+                f1 = {get: (k) => k === "level" ? "3" : undefined},
+                f2 = {get: (k) => k === "level" ? "2" : undefined},
+                features = [f1, f2],
+                rules = [
+                    {conditions: {properties: {level: 3}}, style: {legendValue: "L3"}}
+                ],
+                legendInfos = [{label: "L3", id: "l3"}],
+                expected = [{label: "L3", id: "l3"}];
+
+            expect(vectorLayer.filterUniqueLegendInfo(features, rules, legendInfos)).to.deep.equal(expected);
+        });
+
+        it("falls back to legendInfos when no rule matches", () => {
+            const vectorLayer = new Layer2dVector({}),
+                f = {get: (k) => k === "status" ? "open" : undefined},
+                features = [f],
+                rules = [
+                    {conditions: {properties: {status: "closed"}}, style: {legendValue: "Closed"}}
+                ],
+                legendInfos = [
+                    {label: "Open", id: "o"},
+                    {label: "Closed", id: "c"}
+                ];
+
+            expect(vectorLayer.filterUniqueLegendInfo(features, rules, legendInfos)).to.deep.equal(legendInfos);
+        });
+
     });
 });

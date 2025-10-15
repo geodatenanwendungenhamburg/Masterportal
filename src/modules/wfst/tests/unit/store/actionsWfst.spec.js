@@ -288,7 +288,7 @@ describe("src/modules/wfst/store/actionsWfst.js", () => {
             await actionsWfst.prepareInteraction({dispatch, getters, rootGetters, commit}, interaction);
 
             expect(dispatch.calledWith("clearInteractions")).to.be.true;
-            expect(commit.calledWith("setSelectedUpdate", null)).to.be.true;
+            expect(commit.calledWith("setSelectedUpdate", "insert")).to.be.true;
             expect(dispatch.calledWith("handleDrawInteraction")).to.be.true;
         });
 

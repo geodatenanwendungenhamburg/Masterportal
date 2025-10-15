@@ -18,7 +18,7 @@ export default {
         }
     },
     mounted () {
-        const subMenuButton = document.getElementById("collapse-sub-menu-" + this.layerConf.id.split(".").join("_"));
+        const subMenuButton = this.$refs["collapse-sub-menu"];
 
         if (subMenuButton) {
             subMenuButton.addEventListener("show.bs.collapse", () => {
@@ -39,6 +39,7 @@ export default {
 <template lang="html">
     <div
         :id="'layer-component-icon-sub-menu-' + layerConf.id"
+        ref="collapse-sub-menu"
         class="layer-component-icon-sub-menu"
     >
         <IconButton

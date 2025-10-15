@@ -20,6 +20,8 @@
  * @property {Number} maxNumberOfClasses - Maximum Number of classes selectable when editing the legend.
  * @property {Number} numberOfClasses - Current number of classes selected in range.
  * @property {Object[]} selectableColorPalettes - Available options for color palettes.
+ * @property {String} selectableColorPalettes[].label - The label of the color palette option. If not set, key is used.
+ * @property {String} selectableColorPalettes[].key - The key of the colorbrewer scheme.
  * @property {Number} selectedColorPaletteIndex - Index of chosen color palette option.
  * @property {Number[]} stepValues - The values defining the thresolds for classification.
  * @property {Number[][]} colorPalette - The current set of colors used for classification.
@@ -30,6 +32,7 @@
  * @property {Number} barLimit The number of bars from which the line diagram is limited.
  * @property {String} downloadFilename the exported file name.
  * @property {String} chosenStatisticName the clicked chosen statistic name.
+ * @property {Boolean} isFeatureLoaded If true, the features of layer will be loaded.
  */
 const state = {
     id: "statisticDashboard",
@@ -53,15 +56,11 @@ const state = {
     selectedStatistics: {},
     classificationMode: "quantiles",
     allowPositiveNegativeClasses: false,
-    minNumberOfClasses: 2,
-    maxNumberOfClasses: 5,
+    decimalPlaces: 1,
+    minNumberOfClasses: 3,
+    maxNumberOfClasses: 9,
     numberOfClasses: 5,
-    selectableColorPalettes: [
-        {
-            label: "Blau",
-            baseColor: [8, 81, 156]
-        }
-    ],
+    selectableColorPalettes: [],
     selectedColorPaletteIndex: 0,
     stepValues: [],
     colorPalette: [],
@@ -72,7 +71,8 @@ const state = {
     lineLimit: null,
     downloadFilename: "Statistic Dashboard Download",
     barLimit: null,
-    chosenStatisticName: ""
+    chosenStatisticName: "",
+    isFeatureLoaded: true
 };
 
 export default state;

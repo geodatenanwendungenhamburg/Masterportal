@@ -7,14 +7,31 @@ import {getUniqueValuesFromFetchedFeatures} from "@modules/filter/utils/fetchAll
  * Gets all features of given collection.
  * @param {String} baseUrl The base url.
  * @param {String} collection The collection.
- * @param {Number} limit The limit of features per request.
- * @param {String} [filter] The filter. See https://ogcapi.ogc.org/features/ for more information.
- * @param {String} [filterCrs] The filter crs. Needs to be set if a filter is used.
- * @param {String} [crs] The coordinate reference system of the response geometries.
- * @param {String[]} [propertyNames] The property names to narrow the request.
+ * @param {Object} [options={}] Additional options.
+ * @param {String} [options.bbox] The bounding box to filter the features.
+ * @param {String} [options.bboxCrs] The coordinate reference system of the bounding box.
+ * @param {String} [options.crs] The coordinate reference system of the response geometries.
+ * @param {String} [options.datetime] An optional datetime string to filter the features temporally.
+ * @param {String} [options.filter] The filter. See https://ogcapi.ogc.org/features/ for more information.
+ * @param {String} [options.filterCrs] The filter crs. Needs to be set if a filter is used.
+ * @param {Number} [options.limit=400] The limit of features per request.
+ * @param {String[]} [options.propertyNames] The property names to narrow the request.
+ * @param {AbortSignal} [options.signal] An optional AbortSignal to cancel the request.
+ * @param {boolean} [options.skipGeometry=false] If true, the geometries will not be returned.
  * @returns {Promise} An promise which resolves an array of oaf features.
  */
-async function getOAFFeatureGet (baseUrl, collection, limit = 400, filter = undefined, filterCrs = undefined, crs = undefined, propertyNames = undefined, skipGeometry = false) {
+async function getOAFFeatureGet (baseUrl, collection, {
+    bbox,
+    bboxCrs,
+    crs,
+    datetime,
+    filter,
+    filterCrs,
+    limit = 400,
+    propertyNames,
+    signal,
+    skipGeometry = false
+} = {}) {
     if (typeof baseUrl !== "string") {
         return new Promise((resolve, reject) => {
             reject(new Error(`Please provide a valid base url! Got ${baseUrl}`));
@@ -30,10 +47,17 @@ async function getOAFFeatureGet (baseUrl, collection, limit = 400, filter = unde
             reject(new Error(`Please provide a valid crs for the oaf filter! Got ${filterCrs}`));
         });
     }
+    if (typeof bbox !== "undefined" && typeof bboxCrs === "undefined") {
+        return Promise.reject(new Error(`Please provide a valid crs for the bbox! Got ${bboxCrs}`));
+    }
     const url = `${baseUrl}/collections/${collection}/items?limit=${limit}`,
         result = [];
 
-    let extendedUrl = filter ? `${url}&filter=${filter}&filter-crs=${filterCrs}` : `${url}`;
+    let extendedUrl = filter ? `${url}&filter=${encodeURIComponent(filter)}&filter-crs=${filterCrs}` : `${url}`;
+
+    if (typeof bbox === "string") {
+        extendedUrl += `&bbox=${bbox}&bbox-crs=${bboxCrs}`;
+    }
 
     if (typeof crs === "string") {
         extendedUrl += `&crs=${crs}`;
@@ -47,7 +71,11 @@ async function getOAFFeatureGet (baseUrl, collection, limit = 400, filter = unde
         extendedUrl += `&skipGeometry=${skipGeometry}`;
     }
 
-    return this.oafRecursionHelper(result, extendedUrl);
+    if (typeof datetime === "string") {
+        extendedUrl += `&datetime=${datetime}`;
+    }
+
+    return this.oafRecursionHelper(result, extendedUrl, signal);
 }
 
 /**
@@ -56,12 +84,13 @@ async function getOAFFeatureGet (baseUrl, collection, limit = 400, filter = unde
  * @param {String} url The url to call.
  * @returns {Promise} an promise which resolves all oaf features as geojson.
  */
-async function oafRecursionHelper (result, url) {
+async function oafRecursionHelper (result, url, signal) {
     return new Promise((resolve, reject) => {
         axios.get(url, {
             headers: {
                 accept: "application/geo+json"
-            }
+            },
+            signal: signal
         }).then(async (response) => {
             const nextLink = this.getNextLinkFromFeatureCollection(response?.data);
 
@@ -70,7 +99,7 @@ async function oafRecursionHelper (result, url) {
             }
             if (typeof nextLink === "string") {
                 try {
-                    resolve(await this.oafRecursionHelper(result, nextLink, onerror));
+                    resolve(await this.oafRecursionHelper(result, nextLink, signal));
                 }
                 catch (error) {
                     reject(error);
@@ -80,6 +109,44 @@ async function oafRecursionHelper (result, url) {
                 resolve(result);
             }
         }).catch(error => reject(error));
+    });
+}
+
+/**
+ * Fetches OAF features as a readable stream, following next links.
+ * @param {String} url - The initial OAF endpoint URL.
+ * @param {Object} searchParams - OAF-specific search parameters.
+ * @returns {ReadableStream} - A readable stream of features.
+ */
+function getOAFFeatureStream (url, searchParams = {}) {
+    const geoJSON = new GeoJSON();
+
+    return new ReadableStream({
+        async start (controller) {
+            let nextUrl = url,
+                params = {...searchParams};
+
+            try {
+                while (nextUrl) {
+                    const response = await axios.get(nextUrl, {params}),
+                        nextLink = response.data.links?.find(link => link.rel === "next");
+
+                    response.data.features.forEach(feature => {
+                        const olFeature = geoJSON.readFeature(feature);
+
+                        controller.enqueue(olFeature);
+                    });
+
+                    nextUrl = nextLink ? nextLink.href : null;
+                    params = {};
+                }
+
+                controller.close();
+            }
+            catch (err) {
+                controller.error(err);
+            }
+        }
     });
 }
 
@@ -161,7 +228,7 @@ function getNextLinkFromFeatureCollection (featureCollection) {
  */
 async function getUniqueValuesFromCollection (baseUrl, collection, limit, propertiesToGetValuesFor) {
     return new Promise((resolve, reject) => {
-        this.getOAFFeatureGet(baseUrl, collection, limit, undefined, undefined, undefined, propertiesToGetValuesFor, true).then(features => {
+        this.getOAFFeatureGet(baseUrl, collection, {limit, propertyNames: propertiesToGetValuesFor, skipGeometry: true}).then(features => {
             resolve(getUniqueValuesFromFetchedFeatures(features.map(feature => feature?.properties), propertiesToGetValuesFor, true));
         }).catch(error => reject(error));
     });
@@ -260,6 +327,7 @@ async function getTemporalExtent (baseUrl, collection) {
 export default {
     getCollectionSchema,
     getOAFFeatureGet,
+    getOAFFeatureStream,
     readAllOAFToGeoJSON,
     oafRecursionHelper,
     getNextLinkFromFeatureCollection,

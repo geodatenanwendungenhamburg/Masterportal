@@ -21,6 +21,9 @@ describe("src/modules/getFeatureInfo/store/actionsGetFeatureInfo.js", () => {
         const map3D = {
                 id: "1",
                 mode: "3D",
+                getLayers: () => ({
+                    getArray: () => []
+                }),
                 getCesiumScene: () => {
                     return {
                         primitives: {
@@ -39,6 +42,9 @@ describe("src/modules/getFeatureInfo/store/actionsGetFeatureInfo.js", () => {
             map2D = {
                 id: "ol",
                 mode: "2D",
+                getLayers: () => ({
+                    getArray: () => []
+                }),
                 getPixelFromCoordinate: sinon.stub().returns(clickPixel)
             };
 
@@ -279,6 +285,66 @@ describe("src/modules/getFeatureInfo/store/actionsGetFeatureInfo.js", () => {
             expect(dispatch.secondCall.args[1]).to.be.deep.equals({currentComponent: {type: getters.type}, componentName, side: getters.menuSide});
             expect(dispatch.thirdCall.args[0]).to.equal("Menu/updateComponentState");
             expect(dispatch.thirdCall.args[1]).to.be.deep.equals({type: componentName, attributes});
+        });
+    });
+    describe("collectGfiFeatures", () => {
+        let gfiFeaturesAtPixelStub;
+
+        beforeEach(() => {
+            gfiFeaturesAtPixelStub = sinon.stub().returns([]);
+            getters = {
+                gfiFeaturesAtPixel: gfiFeaturesAtPixelStub,
+                menuSide: "secondaryMenu",
+                menuExpandedBeforeGfi: null
+            };
+            rootGetters = {
+                "Maps/clickCoordinate": [100, 200],
+                "Maps/resolution": 1,
+                "Maps/projection": "EPSG:25832",
+                "Maps/clickPixel": [10, 20],
+                "Maps/mode": "2D",
+                layerConfigById: () => ({zIndex: 0}),
+                visibleSubjectDataLayerConfigs: [],
+                visibleBaselayerConfigs: [],
+                "Menu/expanded": sinon.stub().returns(true),
+                "Menu/currentComponent": sinon.stub().returns({type: "getFeatureInfo"})
+            };
+            sinon.stub(layerCollection, "getLayerById");
+        });
+
+        afterEach(() => {
+            sinon.restore();
+        });
+
+        it("commits menuExpandedBeforeGfi when features exist", async () => {
+            gfiFeaturesAtPixelStub.returns([{getLayerId: () => "layer1"}]);
+
+            await actions.collectGfiFeatures({getters, commit, dispatch, rootGetters});
+
+            const setMenuExpandedCall = commit.getCalls().find(c => c.args[0] === "setMenuExpandedBeforeGfi");
+
+            expect(setMenuExpandedCall).to.not.be.undefined;
+            expect(setMenuExpandedCall.args[1]).to.equal(true);
+        });
+
+        it("switches to previous component but does not close menu if it was expanded before", async () => {
+            getters.menuExpandedBeforeGfi = true;
+
+            await actions.collectGfiFeatures({getters, commit, dispatch, rootGetters});
+
+            expect(commit.calledWith("Menu/switchToPreviousComponent", getters.menuSide, {root: true})).to.be.true;
+            expect(commit.calledWith("Menu/setExpandedBySide")).to.be.false;
+            expect(commit.calledWith("setMenuExpandedBeforeGfi", null)).to.be.true;
+        });
+
+        it("switches to previous component and closes menu if it was not expanded before", async () => {
+            getters.menuExpandedBeforeGfi = false;
+
+            await actions.collectGfiFeatures({getters, commit, dispatch, rootGetters});
+
+            expect(commit.calledWith("Menu/switchToPreviousComponent", getters.menuSide, {root: true})).to.be.true;
+            expect(commit.calledWith("Menu/setExpandedBySide", {expanded: false, side: getters.menuSide}, {root: true})).to.be.true;
+            expect(commit.calledWith("setMenuExpandedBeforeGfi", null)).to.be.true;
         });
     });
 });

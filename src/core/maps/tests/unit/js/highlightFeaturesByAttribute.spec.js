@@ -111,7 +111,8 @@ describe("src/core/maps/js/highlightFeaturesByAttribute", () => {
                     visibility: true,
                     featureType: rawLayer.featureType,
                     url: rawLayer.url,
-                    version: rawLayer.version
+                    version: rawLayer.version,
+                    isDynamic: true
                 },
                 parentKey: "subjectlayer"
             });

@@ -53,6 +53,12 @@ export default {
                 @mouseover="activateActions({searchResult: searchResult, actionType: 'onHover'})"
                 @focus="activateActions({searchResult: searchResult, actionType: 'onHover'})"
             >
+                <img
+                    v-if="searchResult?.imagePath"
+                    alt="search result image"
+                    class="search-bar-result-list-general-image"
+                    :src="searchResult?.imagePath"
+                >
                 <span class="btn-title">
                     {{ searchResult.name }}
                 </span>
@@ -86,5 +92,14 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+}
+
+.search-bar-result-list-general-image{
+    max-width: 21px;
+    max-height: 21px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    margin-right: 0.5rem;
 }
 </style>

@@ -220,7 +220,7 @@ export default {
                         href="#"
                         class="nav-link"
                         @click.prevent="switchToList(layer)"
-                    >{{ layer.name }}</a>
+                    >{{ $t(layer.name) }}</a>
                 </li>
             </ul>
         </div>
@@ -229,7 +229,7 @@ export default {
                 id="feature-lister-list-header"
                 class="panel-heading"
             >
-                <span>{{ layer.name }}</span>
+                <span>{{ $t(layer.name) }}</span>
             </div>
             <div
                 id="feature-lister-list"
@@ -374,8 +374,8 @@ export default {
     }
 }
 .feature-lister-list-table-container {
-    border-left: 1px solid $light_grey !important;
-    border-right: 1px solid $light_grey !important;
+    border-left: 1px solid $light_grey;
+    border-right: 1px solid $light_grey;
 }
 #feature-lister-list-table {
     overflow: auto;

@@ -53,13 +53,13 @@ describe("src/core/js/layers/Layer2dGroup.js", () => {
     describe("createLayer", () => {
         it("new Layer2dGroup without children shall call warn", () => {
             attributes.children = undefined;
-            const groupLayer = new Layer2dGroup(attributes);
+            const groupLayer = new Layer2dGroup(attributes, layerFactory);
 
             expect(groupLayer).not.to.be.undefined;
             expect(warn.calledOnce).to.be.true;
         });
         it("new Layer2dGroup with attributes should create an layer with 2 grouped layers in source", () => {
-            const groupLayer = new Layer2dGroup(attributes);
+            const groupLayer = new Layer2dGroup(attributes, layerFactory);
 
             expect(groupLayer).not.to.be.undefined;
             expect(groupLayer.getLayer()).to.be.an.instanceof(LayerGroup);
@@ -75,7 +75,7 @@ describe("src/core/js/layers/Layer2dGroup.js", () => {
 
     describe("setLayerSource", () => {
         it("setLayerSource shall be called on creation", () => {
-            const groupLayer = new Layer2dGroup(attributes);
+            const groupLayer = new Layer2dGroup(attributes, layerFactory);
 
             expect(groupLayer).not.to.be.undefined;
             expect(groupLayer.getLayer()).to.be.an.instanceof(LayerGroup);
@@ -86,7 +86,7 @@ describe("src/core/js/layers/Layer2dGroup.js", () => {
 
     describe("getLayerSource", () => {
         it("getLayerSource shall return 2 grouped layers", () => {
-            const groupLayer = new Layer2dGroup(attributes);
+            const groupLayer = new Layer2dGroup(attributes, layerFactory);
 
             expect(groupLayer).not.to.be.undefined;
             expect(groupLayer.getLayer()).to.be.an.instanceof(LayerGroup);
@@ -98,7 +98,7 @@ describe("src/core/js/layers/Layer2dGroup.js", () => {
     describe("addErrorListener", () => {
         it("addErrorListener shall call addErrorListener at each grouped layer on creation", () => {
             const addErrorListenerSpy = sinon.spy(Layer2d.prototype, "addErrorListener"),
-                groupLayer = new Layer2dGroup(attributes);
+                groupLayer = new Layer2dGroup(attributes, layerFactory);
 
             expect(groupLayer).not.to.be.undefined;
             expect(groupLayer.getLayer()).to.be.an.instanceof(LayerGroup);
