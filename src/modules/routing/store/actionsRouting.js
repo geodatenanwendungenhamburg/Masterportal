@@ -119,7 +119,7 @@ export default {
                     );
 
                     geosearchResult.setCoordinates(coordinatesLocal);
-                    geosearchResult.setEpsg(rootGetters["Maps/projectionCode"].replace("EPSG:", "")); // set EPSG code to portal CRS
+                    geosearchResult.setEpsg(rootGetters["Maps/projectionCode"].replace("EPSG:", ""));
                 });
             }
             catch (err) {
@@ -182,7 +182,7 @@ export default {
                 );
 
                 geosearchResult.setCoordinates(coordinatesLocal);
-                geosearchResult.setEpsg(rootGetters["Maps/projectionCode"].replace("EPSG:", "")); // set EPSG code to portal CRS
+                geosearchResult.setEpsg(rootGetters["Maps/projectionCode"].replace("EPSG:", ""));
             });
         }
         catch (err) {
