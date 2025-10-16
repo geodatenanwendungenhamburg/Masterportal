@@ -3445,6 +3445,7 @@ Print module, configurable for 2 print services: *High Resolution PlotService* a
 |capabilitiesFilter|no|**[capabilitiesFilter](#portalconfigmenusectionsmodulesprintcapabilitiesfilter)**||Filter for the response of the configured print service. Possible keys are layouts and outputFormats.|false|
 |currentLayoutName|no|String|"A4 Hochformat"|Defines which layout is the default layout on opening the print tool, e.g. "A4 portrait format". If the given layout is not available oder none is provided, the first layout mentioned in the Capabilities is used.|false|
 |defaultCapabilitiesFilter|no|**[capabilitiesFilter](#portalconfigmenusectionsmodulesprintcapabilitiesfilter)**||If there is no key set in capabilitiesFilter, the key from this object is taken.|false|
+|legendText|no|String|"Mit Legende"|Descriptive text for the legend print checkbox.|false|
 |dpiForPdf|no|Number|200|DPI resolution for the map in the PDF file.|false|
 |filename|no|String|"report"|Print result file name.|false|
 |icon|no|String|"bi-printer"|Icon that is shown in front of the module-name in the menu. For selection see **[Bootstrap Icons](https://icons.getbootstrap.com/)**.|false|

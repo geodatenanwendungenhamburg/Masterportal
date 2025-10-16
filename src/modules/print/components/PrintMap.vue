@@ -58,6 +58,7 @@ export default {
             "isLegendAvailable",
             "isLegendSelected",
             "isScaleSelectedManually",
+            "legendLabel",
             "layoutMapInfo",
             "layoutList",
             "overviewmapLayerId",
@@ -731,9 +732,10 @@ export default {
                 <div class="form-check form-switch mb-3 d-flex align-items-center">
                     <SwitchInput
                         :id="'printLegend'"
-                        :aria="$t('common:modules.print.withLegendLabel')"
+                        :key="legendLabel"
+                        :aria="legendLabel"
                         :interaction="($event) => setIsLegendSelected($event.target.checked)"
-                        :label="$t('common:modules.print.withLegendLabel')"
+                        :label="legendLabel"
                         :checked="isLegendSelected"
                     />
                 </div>
