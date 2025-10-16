@@ -60,7 +60,7 @@ export default {
             :aria-label="aria"
             :class="classArray"
             :disabled="disabled"
-            @click="interaction"
+            @click.stop="interaction"
             @keydown.enter="interaction"
         >
             <i
