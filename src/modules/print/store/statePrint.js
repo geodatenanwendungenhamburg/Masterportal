@@ -36,6 +36,7 @@
  * @property {Boolean} isScaleAvailable true if the current layout supports scale
  * @property {Boolean} isScaleFixed true if the current layout supports scale
  * @property {Boolean} isMapAvailable true if the Map is available
+ * @property {Sring} legendLabel the legend label.
  * @property {Object} mapAttribute Attributes from the Map set from the layout
  * @property {Array} layoutMapInfo width and height of the map
  * @property {Array} optimalScale the optimal scale for the print
@@ -99,6 +100,7 @@ const state = {
     isMetadataAvailable: false,
     isScaleAvailable: false,
     isScaleSelectedManually: false,
+    legendLabel: "common:modules.print.withLegendLabel",
     layoutList: [],
     layoutMapInfo: [],
     layoutNameList: [],
