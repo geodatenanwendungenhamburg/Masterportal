@@ -703,6 +703,61 @@ describe("src/modules/print/js/buildSpec", function () {
                 tileSize: [512, 512]
             });
         });
+
+        it("should handle imported WMS layer when LAYERS is an array", function () {
+            const layerWithArray = new Tile({
+                    source: new TileWMS({
+                        url: "https://example.com/wms",
+                        params: {
+                            LAYERS: ["PS.ProtectedSitesGSG"],
+                            FORMAT: "image/png",
+                            TRANSPARENT: true,
+                            WIDTH: 256,
+                            HEIGHT: 256
+                        },
+                        tileGrid: new TileGrid({
+                            extent: [510000.0, 5850000.0, 625000.4, 6000000.0],
+                            resolutions: [78271.51696401172, 305.7481131406708],
+                            tileSize: [256, 256]
+                        })
+                    }),
+                    opacity: 0.8
+                }),
+
+                result = buildSpec.buildTileWms(layerWithArray);
+
+            expect(result.layers).to.deep.equal(["PS.ProtectedSitesGSG"]);
+            expect(result.type).to.equal("tiledwms");
+            expect(result.imageFormat).to.equal("image/png");
+            expect(result.customParams).to.have.property("TRANSPARENT", true);
+        });
+
+        it("should handle imported WMS layer when LAYERS is a proxy-like object", function () {
+            const layerWithProxy = new Tile({
+                    source: new TileWMS({
+                        url: "https://example.com/wms",
+                        params: {
+                            LAYERS: {value: ["PS.ProtectedSitesGSG"]},
+                            FORMAT: "image/png",
+                            TRANSPARENT: false,
+                            WIDTH: 512,
+                            HEIGHT: 512
+                        },
+                        tileGrid: new TileGrid({
+                            extent: [510000.0, 5850000.0, 625000.4, 6000000.0],
+                            resolutions: [78271.51696401172, 305.7481131406708],
+                            tileSize: [512, 512]
+                        })
+                    }),
+                    opacity: 0.5
+                }),
+
+                result = buildSpec.buildTileWms(layerWithProxy);
+
+            expect(result.layers).to.deep.equal(["PS.ProtectedSitesGSG"]);
+            expect(result.customParams).to.have.property("DPI");
+            expect(result.imageFormat).to.equal("image/png");
+        });
     });
 
     describe("buildImageWms", function () {

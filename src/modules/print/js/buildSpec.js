@@ -383,12 +383,13 @@ const BuildSpecModel = {
      * @param {ol.layer.Tile} layer tile layer with tile wms source
      * @param {Number} [dpi] The dpi to use instead of the dpi from store.
      * @returns {Object} - wms layer spec
-     */
+    */
     buildTileWms: function (layer, dpi) {
         const source = layer.getSource(),
             isPlotservice = store.state.Modules.Print.printService === "plotservice";
         let mapObject = null,
-            styles;
+            styles,
+            layersParam = source.getParams().LAYERS;
 
         if (source.getParams().STYLES) {
             if (typeof source.getParams().STYLES === "string") {
@@ -397,12 +398,33 @@ const BuildSpecModel = {
             else if (Array.isArray(source.getParams().STYLES)) {
                 styles = source.getParams().STYLES;
             }
+            else if (source.getParams().STYLES && typeof source.getParams().STYLES === "object" && "value" in source.getParams().STYLES) {
+                styles = Array.isArray(source.getParams().STYLES.value)
+                    ? source.getParams().STYLES.value
+                    : String(source.getParams().STYLES.value).split(",");
+            }
         }
+
+        if (!Array.isArray(layersParam)) {
+            if (typeof layersParam === "string") {
+                layersParam = layersParam.split(",");
+            }
+            else if (layersParam && typeof layersParam === "object" && "value" in layersParam) {
+                layersParam = Array.isArray(layersParam.value)
+                    ? layersParam.value
+                    : String(layersParam.value).split(",");
+            }
+            else {
+                console.warn("Unexpected LAYERS param format:", layersParam);
+                layersParam = [];
+            }
+        }
+
         mapObject = {
             baseURL: source.getUrls()[0],
             opacity: layer.getOpacity(),
             type: source.getParams().SINGLETILE || isPlotservice ? "WMS" : "tiledwms",
-            layers: source.getParams().LAYERS.split(","),
+            layers: layersParam,
             styles: styles,
             imageFormat: source.getParams().FORMAT,
             customParams: {
@@ -411,7 +433,7 @@ const BuildSpecModel = {
             }
         };
 
-        if (store.state.Modules.Print.printService === "plotservice") {
+        if (isPlotservice) {
             mapObject.title = layer.get("name");
         }
         if (!source.getParams().SINGLETILE) {
