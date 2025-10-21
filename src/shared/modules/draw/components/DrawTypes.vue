@@ -269,20 +269,19 @@ export default {
                 return "";
             }
 
-            const labelEntry = this.drawTypeLabels.find(label => label.type === drawType);
+            const labelEntry = this.drawTypeLabels.find(label => label.type === drawType),
+                drawTypesGeometrie = this.drawTypesGeometrie,
+                drawTypesMain = this.drawTypesMain,
+                allDrawTypes = [...drawTypesGeometrie, ...drawTypesMain];
 
-            if (!labelEntry) {
-                const drawTypesGeometrie = this.drawTypesGeometrie,
-                    drawTypesMain = this.drawTypesMain,
-                    allDrawTypes = [...drawTypesGeometrie, ...drawTypesMain];
-
-                if (!allDrawTypes.includes(drawType)) {
-                    return "";
-                }
-                return this.$t(`common:shared.modules.draw.drawTypes.${drawType}`);
+            if (labelEntry && labelEntry.label) {
+                return this.$t(labelEntry.label) || "";
             }
 
-            return labelEntry.label || "";
+            if (allDrawTypes.includes(drawType)) {
+                return this.$t(`common:shared.modules.draw.drawTypes.${drawType}`);
+            }
+            return "";
         }
     }
 };
