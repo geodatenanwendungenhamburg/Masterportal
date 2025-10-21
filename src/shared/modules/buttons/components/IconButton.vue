@@ -84,7 +84,7 @@ export default {
 @import "~mixins";
 
 .btn-wrapper {
-    width: 5rem;
+    width: 6rem;
 }
 
 .btn-wrapper > .btn-label {
