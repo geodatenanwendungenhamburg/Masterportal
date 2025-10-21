@@ -14,11 +14,11 @@ import store from "./app-store/index.js";
 
 import {initiateMatomo} from "./plugins/matomo.js";
 
-const isDev = import.meta.env.MODE === "development";
+
 let app;
 
 window.__appMounted = window.__appMounted || false;
-const env = window.location.pathname.split("/")[2],
+const isDev = import.meta.env.MODE === "development",
     configPath = globalUrlParams.getConfigJsPath() === null ? window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1) + "config.js" : globalUrlParams.getConfigJsPath(),
     loadConfigJs = new Promise((resolve, reject) => {
         const script = document.createElement("script");
@@ -65,7 +65,6 @@ loadConfigJs.then(() => {
             app.mount("#masterportal-root");
             window.__appMounted = true;
         });
-}).catch((err) => {
 });
 
 

@@ -33,11 +33,13 @@ export default {
             sendMessage: params => {
                 if (params instanceof Object === false) {
                     console.error("RemoteInterface sendMessage error: Given param is not an Object.");
-                    return;
+
                 }
 
-        //         parent.postMessage(params, options.postMessageUrl);
-        //     }
-        // };
+                //         parent.postMessage(params, options.postMessageUrl);
+                //     }
+                // };
+            }
+        };
     }
 };

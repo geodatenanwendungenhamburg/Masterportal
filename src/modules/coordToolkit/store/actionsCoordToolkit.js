@@ -63,10 +63,7 @@ export default {
             layerConfig = rootGetters.layerConfigById(state.heightLayerId);
 
             if (layerConfig) {
-
-                layerFactory.createLayer(layerConfig).then((layer) => {
-                    commit("setHeightLayer", layer);
-                }).catch(error => console.error(error));
+                commit("setHeightLayer", layerFactory.createLayer(layerConfig));
             }
         }
         if (!layerConfig) {
