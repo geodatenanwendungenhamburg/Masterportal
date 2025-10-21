@@ -13,6 +13,7 @@ import Layer3dEntities from "./layer3dEntities.js";
 import Layer3dTerrain from "./layer3dTerrain.js";
 import Layer3dTileset from "./layer3dTileset.js";
 import removeHtmlTags from "@shared/js/utils/removeHtmlTags.js";
+import Layer2dVector from "./layer2dVector.js";
 
 /**
  * Dynamic import registry for layers.
