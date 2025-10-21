@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import store from "@appstore/index.js";
+import objectHash from "object-hash";
 
 dayjs.extend(duration);
 
@@ -111,8 +112,10 @@ export default {
      * @returns {void}
      */
     addSingleAlert: function ({state, commit}, newAlert) {
-        const objectHash = () => import("object-hash"),
-            newAlertObj = typeof newAlert === "string" ? {content: newAlert} : newAlert,
+        /**
+         *
+         */
+        const newAlertObj = typeof newAlert === "string" ? {content: newAlert} : newAlert,
             alertProtoClone = {...state.alertProto},
             hasInitAlert = state.alerts.some(function (alert) {
                 return alert.initial === true;
