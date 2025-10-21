@@ -264,19 +264,7 @@ export default {
          * @returns {String} - The Label of the button.
          */
         getButtonLabel (drawType) {
-            if (this.drawTypeLabels.length === 0 || typeof drawType !== "string" || drawType === "") {
-                return "";
-            }
-            let label = "";
-
-            for (let i = 0; i < this.drawTypeLabels.length; i++) {
-                if (this.drawTypeLabels[i].type === drawType) {
-                    label = this.drawTypeLabels[i].label;
-                    break;
-                }
-            }
-
-            return this.$t(label);
+            return this.$t(`common:shared.modules.draw.drawTypes.${drawType}`);
         }
     }
 };
