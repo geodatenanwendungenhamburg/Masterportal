@@ -8,7 +8,6 @@ import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 
 import highlightFeaturesByAttribute from "@core/maps/js/highlightFeaturesByAttribute.js";
-import handleAxiosError from "@shared/js/utils/handleAxiosError.js";
 
 describe("src/core/maps/js/highlightFeaturesByAttribute", () => {
     const expectedEqualToOGC = `<ogc:PropertyIsEqualTo matchCase='false' wildCard='%' singleChar='#' escapeChar='!'>
@@ -269,14 +268,12 @@ describe("src/core/maps/js/highlightFeaturesByAttribute", () => {
                 escapeChar: "!",
                 singleChar: "#"
             },
-            spyErrorHandling,
             error;
         const wfsId = "123";
 
         beforeEach(function () {
             error = sinon.spy();
             sinon.stub(console, "error").callsFake(error);
-            spyErrorHandling = sinon.spy(handleAxiosError, "handleAxiosError");
         });
 
         afterEach(function () {

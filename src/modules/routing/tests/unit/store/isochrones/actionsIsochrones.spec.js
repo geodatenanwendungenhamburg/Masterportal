@@ -1,6 +1,6 @@
 import sinon from "sinon";
 import {expect} from "chai";
-// import actionsIsochrones from "@modules/routing/store/isochrones/actionsIsochrones";
+import actionsIsochrones from "@modules/routing/store/isochrones/actionsIsochrones";
 import Feature from "ol/Feature";
 import Point from "ol/geom/Point";
 import VectorSource from "ol/source/Vector";

@@ -485,6 +485,4 @@ describe("src/modules/layerPreview/components/LayerPreview.vue", () => {
             });
         });
     });
-    });
-
 });

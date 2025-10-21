@@ -20,7 +20,7 @@ import Multiselect from "vue-multiselect";
 import TableComponent from "@shared/modules/table/components/TableComponent.vue";
 import isNumber from "@shared/js/utils/isNumber.js";
 import isObject from "@shared/js/utils/isObject.js";
-import {rawLayerList} from "@masterportal/masterportalapi";
+import {rawLayerList} from "@masterportal/masterportalapi/src/index.js";
 import sortBy from "@shared/js/utils/sortBy.js";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
 import StatisticsHandler from "../js/handleStatistics.js";
