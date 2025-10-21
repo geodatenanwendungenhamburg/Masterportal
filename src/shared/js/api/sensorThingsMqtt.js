@@ -1,4 +1,4 @@
-import mqtt from "mqtt/dist/mqtt";
+import * as mqtt from "mqtt";
 import {SensorThingsHttp} from "./sensorThingsHttp.js";
 import {SensorThingsMqttConnector} from "./sensorThingsMqttConnector.js";
 
