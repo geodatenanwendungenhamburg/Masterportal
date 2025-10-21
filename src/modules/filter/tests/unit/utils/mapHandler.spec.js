@@ -333,6 +333,11 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
                 called_onActivated = true;
             });
 
+            nextTick(() => {
+                expect(called_onActivated).to.be.true;
+                expect(store.getters.layerConfigById("filterId").showInLayerTree).to.be.true;
+            });
+
         });
         it("should call onActivated if layer is activated and visible on map, should not set showInLayerTreeto true", () => {
             let called_onActivated = false;

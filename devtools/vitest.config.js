@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {defineConfig, mergeConfig} from "vitest/config";
 import Vue from "@vitejs/plugin-vue";
 import viteConfig from "./vite.config.js";

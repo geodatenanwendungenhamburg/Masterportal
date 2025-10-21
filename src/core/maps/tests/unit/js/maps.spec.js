@@ -215,7 +215,7 @@ describe("src/core/js/maps/maps.js", () => {
                 return map3d;
             });
 
-            create3DMap();
+            maps.create3DMap();
 
             expect(Cesium.JulianDate.fromDate.calledOnce).to.be.true;
             expect(Cesium.JulianDate.fromIso8601.notCalled).to.be.true;
