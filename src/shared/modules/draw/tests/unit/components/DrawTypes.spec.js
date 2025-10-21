@@ -50,6 +50,13 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
                     getters: {
                         projection: () => "EPSG:4326"
                     }
+                },
+                Draw: {
+                    namespaced: true,
+                    state: {
+                        drawTypesGeometrie: ["line", "box", "polygon", "circle", "doubleCircle"],
+                        drawTypesMain: ["pen", "geometries", "symbols"]
+                    }
                 }
             }
         });
