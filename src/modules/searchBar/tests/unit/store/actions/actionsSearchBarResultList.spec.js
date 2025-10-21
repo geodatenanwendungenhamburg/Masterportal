@@ -50,9 +50,6 @@ describe("src/modules/searchBar/store/actions/actionsSearchBarResultList.js", ()
             toolTip: "my tip"
         };
 
-        describe.skip("skipped", () => {
-            it("should dispatch the onClick event", () => {
-                const actionType = "onClick";
 
         describe.skip("skipped", () => {
             it("should dispatch the onClick event", () => {

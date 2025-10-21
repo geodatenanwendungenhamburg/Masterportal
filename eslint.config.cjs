@@ -348,6 +348,8 @@ module.exports = [
             "**/jsdoc/",
             "**/docHtml/",
             "**/.git/",
+            "**/build/",
+            "**/html/",
             "portal/*",
             "!portal/basic",
             "!portal/master",

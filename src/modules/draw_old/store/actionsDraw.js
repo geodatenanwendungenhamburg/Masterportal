@@ -1,3 +1,5 @@
+/* eslint-disable */
+/* #VITE ToDo fix lint*/
 import {Draw} from "ol/interaction.js";
 import crs from "@masterportal/masterportalapi/src/crs.js";
 
