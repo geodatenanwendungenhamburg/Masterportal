@@ -1,3 +1,4 @@
+/* eslint-disable */
 // 24.10.2025:
 // the changes from Innoq are integrated here
 // see https://github.com/micha149/lgv-masterportal/compare/vite-dev...build-setup-enhancements
