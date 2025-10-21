@@ -1,6 +1,6 @@
 <script>
 import drawInteraction from "@masterportal/masterportalapi/src/maps/interactions/drawInteraction.js";
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapGetters, mapState} from "vuex";
 import IconButton from "../../buttons/components/IconButton.vue";
 import {nextTick} from "vue";
 
@@ -128,7 +128,8 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Maps", ["projection"])
+        ...mapGetters("Maps", ["projection"]),
+        ...mapState("Modules/Draw", ["drawTypesGeometrie", "drawTypesMain"])
     },
     watch: {
         "circleOptions.interactive" () {
@@ -264,7 +265,24 @@ export default {
          * @returns {String} - The Label of the button.
          */
         getButtonLabel (drawType) {
-            return this.$t(`common:shared.modules.draw.drawTypes.${drawType}`);
+            if (!drawType || typeof drawType !== "string") {
+                return "";
+            }
+
+            const labelEntry = this.drawTypeLabels.find(label => label.type === drawType);
+
+            if (!labelEntry) {
+                const drawTypesGeometrie = this.drawTypesGeometrie,
+                    drawTypesMain = this.drawTypesMain,
+                    allDrawTypes = [...drawTypesGeometrie, ...drawTypesMain];
+
+                if (!allDrawTypes.includes(drawType)) {
+                    return "";
+                }
+                return this.$t(`common:shared.modules.draw.drawTypes.${drawType}`);
+            }
+
+            return labelEntry.label || "";
         }
     }
 };
