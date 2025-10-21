@@ -861,251 +861,245 @@ describe("src/modules/filter/components/LayerFilterSnippet.vue", () => {
                     snippetId: 0,
                     title: "Bezirk",
                     type: "dropdown",
-                    value: ["Altona"]
-                }],
-            precheckedSnippets = [{
-                operator: "EQ",
-                snippetId: 0,
-                title: "Bezirk",
-                type: "dropdown",
-                value: ["Altona"],
-                prechecked: ["Altona"]
-            }];
+                    value: ["Altona"],
+                    prechecked: ["Altona"]
+                }];
 
-        it("should not set prechecked value if param is not an array", async () => {
-            await wrapper.setData({
-                snippets
+            it("should not set prechecked value if param is not an array", async () => {
+                await wrapper.setData({
+                    snippets
+                });
+                wrapper.vm.setSnippetValueByState(undefined);
+                wrapper.vm.setSnippetValueByState(null);
+                wrapper.vm.setSnippetValueByState(123456);
+                wrapper.vm.setSnippetValueByState("string");
+                wrapper.vm.setSnippetValueByState(true);
+                wrapper.vm.setSnippetValueByState({});
+                expect(wrapper.vm.snippets).to.deep.equal(snippets);
             });
-            wrapper.vm.setSnippetValueByState(undefined);
-            wrapper.vm.setSnippetValueByState(null);
-            wrapper.vm.setSnippetValueByState(123456);
-            wrapper.vm.setSnippetValueByState("string");
-            wrapper.vm.setSnippetValueByState(true);
-            wrapper.vm.setSnippetValueByState({});
-            expect(wrapper.vm.snippets).to.deep.equal(snippets);
-        });
-        it("should not set prechecked value if given structure is not a rule", async () => {
-            await wrapper.setData({
-                snippets
-            });
-            const isRuleStub = sinon.stub(wrapper.vm, "isRule").returns(false),
-                noRule = [
-                    {
-                        something: "something"
-                    }
-                ];
+            it("should not set prechecked value if given structure is not a rule", async () => {
+                await wrapper.setData({
+                    snippets
+                });
+                const isRuleStub = sinon.stub(wrapper.vm, "isRule").returns(false),
+                    noRule = [
+                        {
+                            something: "something"
+                        }
+                    ];
 
-            wrapper.vm.setSnippetValueByState(noRule);
-            expect(wrapper.vm.snippets).to.deep.equal(snippets);
-            expect(isRuleStub.called).to.be.true;
-            sinon.restore();
-        });
-        it("should set prechecked value if correct filter rule is given", async () => {
-            await wrapper.setData({
-                snippets
+                wrapper.vm.setSnippetValueByState(noRule);
+                expect(wrapper.vm.snippets).to.deep.equal(snippets);
+                expect(isRuleStub.called).to.be.true;
+                sinon.restore();
             });
-            wrapper.vm.setSnippetValueByState(filterRules);
-            expect(wrapper.vm.snippets).to.deep.equal(precheckedSnippets);
-        });
-
-        describe("registerMapMoveListener", () => {
-            it("should not call the function registerMapMoveListener", () => {
-                expect(wrapper.emitted()).to.not.have.property("registerMapMoveListener");
+            it("should set prechecked value if correct filter rule is given", async () => {
+                await wrapper.setData({
+                    snippets
+                });
+                wrapper.vm.setSnippetValueByState(filterRules);
+                expect(wrapper.vm.snippets).to.deep.equal(precheckedSnippets);
             });
 
-            it("should trigger registerMapMoveListener event if filterOnMove is configured", async () => {
-                wrapper = shallowMount(LayerFilterSnippet, {
-                    global: {
-                        plugins: [store]
-                    },
-                    propsData: {
-                        layerConfig: {
-                            service: {
-                                type: "something external"
-                            },
-                            strategy: "active",
-                            filterOnMove: true
-                        },
-                        mapHandler,
-                        openMultipleAccordeons: false
-                    }
+            describe("registerMapMoveListener", () => {
+                it("should not call the function registerMapMoveListener", () => {
+                    expect(wrapper.emitted()).to.not.have.property("registerMapMoveListener");
                 });
 
-                await wrapper.vm.$nextTick();
-                expect(wrapper.emitted()).to.have.property("registerMapMoveListener");
-            });
-        });
-
-        describe("checkZoomLevel", () => {
-            it("should not call the function checkZoomLevel", async () => {
-                const checkZoomLevel = sinon.stub(wrapper.vm, "checkZoomLevel");
-
-                LayerFilterSnippet.methods.checkZoomLevel = checkZoomLevel;
-                wrapper = shallowMount(LayerFilterSnippet, {
-                    global: {
-                        plugins: [store]
-                    },
-                    propsData: {
+                it("should trigger registerMapMoveListener event if filterOnMove is configured", async () => {
+                    wrapper = shallowMount(LayerFilterSnippet, {
                         global: {
                             plugins: [store]
                         },
-                        layerConfig: {
-                            service: {
-                                type: "something external"
+                        propsData: {
+                            layerConfig: {
+                                service: {
+                                    type: "something external"
+                                },
+                                strategy: "active",
+                                filterOnMove: true
+                            },
+                            mapHandler,
+                            openMultipleAccordeons: false
+                        }
+                    });
+
+                    await wrapper.vm.$nextTick();
+                    expect(wrapper.emitted()).to.have.property("registerMapMoveListener");
+                });
+            });
+
+            describe("checkZoomLevel", () => {
+                it("should not call the function checkZoomLevel", async () => {
+                    const checkZoomLevel = sinon.stub(wrapper.vm, "checkZoomLevel");
+
+                    LayerFilterSnippet.methods.checkZoomLevel = checkZoomLevel;
+                    wrapper = shallowMount(LayerFilterSnippet, {
+                        global: {
+                            plugins: [store]
+                        },
+                        propsData: {
+                            global: {
+                                plugins: [store]
+                            },
+                            layerConfig: {
+                                service: {
+                                    type: "something external"
+                                }
+                            },
+                            mapHandler
+                        }
+                    });
+                    await wrapper.vm.$nextTick();
+
+                    expect(wrapper.vm.checkZoomLevel).to.be.a("function");
+                    expect(checkZoomLevel.notCalled).to.be.true;
+                });
+                it("should call the function checkZoomLevel", async () => {
+                    const checkZoomLevel = sinon.stub(wrapper.vm, "checkZoomLevel");
+
+                    LayerFilterSnippet.methods.checkZoomLevel = checkZoomLevel;
+                    wrapper = shallowMount(LayerFilterSnippet, {
+                        global: {
+                            plugins: [store]
+                        },
+                        propsData: {
+                            layerConfig: {
+                                service: {
+                                    type: "something external"
+                                },
+                                minZoom: 15,
+                                maxZoom: 18
+                            },
+                            mapHandler
+                        }
+                    });
+                    await wrapper.vm.$nextTick();
+                    expect(checkZoomLevel.called).to.be.true;
+                });
+            });
+
+            describe("checkOutOfZoomLevel", () => {
+                it("should set the variable outOfZoom false", () => {
+                    expect(wrapper.vm.checkOutOfZoomLevel(undefined, undefined, undefined)).to.be.false;
+                    expect(wrapper.vm.checkOutOfZoomLevel(undefined, undefined, 17)).to.be.false;
+                    expect(wrapper.vm.checkOutOfZoomLevel(undefined, 18, 17)).to.be.false;
+                    expect(wrapper.vm.checkOutOfZoomLevel(10, undefined, 17)).to.be.false;
+                    expect(wrapper.vm.checkOutOfZoomLevel(10, 18, 17)).to.be.false;
+                });
+                it("should set the variable outOfZoom true", () => {
+                    expect(wrapper.vm.checkOutOfZoomLevel(10, 16, 17)).to.be.true;
+                    expect(wrapper.vm.checkOutOfZoomLevel(10, 18, 7)).to.be.true;
+                    expect(wrapper.vm.checkOutOfZoomLevel(10, undefined, 7)).to.be.true;
+                    expect(wrapper.vm.checkOutOfZoomLevel(undefined, 16, 17)).to.be.true;
+                });
+            });
+
+            describe("deleteAllRules", () => {
+                it("should emit the deleteAllRules function", async () => {
+                    wrapper.vm.deleteAllRules();
+                    await wrapper.vm.$nextTick();
+                    expect(wrapper.emitted().deleteAllRules).to.be.an("array").with.lengthOf(1);
+                });
+                it("should call handleActiveStrategy if strategy is active", async () => {
+                    const spyHandleActiveStrategy = sinon.spy(wrapper.vm, "handleActiveStrategy");
+
+                    await wrapper.setProps({layerConfig: {strategy: "active"}});
+                    wrapper.vm.deleteAllRules();
+                    await wrapper.vm.$nextTick();
+                    expect(spyHandleActiveStrategy.calledOnce).to.be.true;
+                });
+            });
+
+            describe("hasChildSnippets", () => {
+                it("should return false if anything but an array is given", () => {
+                    expect(wrapper.vm.hasChildSnippets(undefined)).to.be.false;
+                    expect(wrapper.vm.hasChildSnippets(null)).to.be.false;
+                    expect(wrapper.vm.hasChildSnippets({})).to.be.false;
+                    expect(wrapper.vm.hasChildSnippets(true)).to.be.false;
+                    expect(wrapper.vm.hasChildSnippets(false)).to.be.false;
+                    expect(wrapper.vm.hasChildSnippets(1234)).to.be.false;
+                    expect(wrapper.vm.hasChildSnippets("1234")).to.be.false;
+                });
+                it("should return false if the given array has no snippets at all", () => {
+                    expect(wrapper.vm.hasChildSnippets([])).to.be.false;
+                    expect(wrapper.vm.hasChildSnippets(["foo", "bar"])).to.be.false;
+                });
+                it("should return true if the given array has child snippets", () => {
+                    expect(wrapper.vm.hasChildSnippets([{children: "foo"}])).to.be.true;
+                });
+            });
+
+            describe("updateSnippetUniqueValues", () => {
+                it("should not call any listener if outOfZoom is true", async () => {
+                    let foo = false;
+
+                    wrapper.setData({
+                        uniqueValuesOnMoveListeners: {
+                            0: () => {
+                                foo = true;
                             }
                         },
-                        mapHandler
-                    }
+                        outOfZoom: true
+                    });
+                    wrapper.vm.updateSnippetUniqueValues();
+                    await wrapper.vm.$nextTick();
+                    expect(foo).to.be.false;
                 });
-                await wrapper.vm.$nextTick();
+                it("should call any listener if outOfZoom is false", async () => {
+                    let foo = false;
 
-                expect(wrapper.vm.checkZoomLevel).to.be.a("function");
-                expect(checkZoomLevel.notCalled).to.be.true;
-            });
-            it("should call the function checkZoomLevel", async () => {
-                const checkZoomLevel = sinon.stub(wrapper.vm, "checkZoomLevel");
-
-                LayerFilterSnippet.methods.checkZoomLevel = checkZoomLevel;
-                wrapper = shallowMount(LayerFilterSnippet, {
-                    global: {
-                        plugins: [store]
-                    },
-                    propsData: {
-                        layerConfig: {
-                            service: {
-                                type: "something external"
-                            },
-                            minZoom: 15,
-                            maxZoom: 18
+                    wrapper.setData({
+                        uniqueValuesOnMoveListeners: {
+                            0: () => {
+                                foo = true;
+                            }
                         },
-                        mapHandler
-                    }
+                        outOfZoom: false
+                    });
+                    wrapper.vm.updateSnippetUniqueValues();
+                    await wrapper.vm.$nextTick();
+                    expect(foo).to.be.true;
                 });
-                await wrapper.vm.$nextTick();
-                expect(checkZoomLevel.called).to.be.true;
             });
-        });
 
-        describe("checkOutOfZoomLevel", () => {
-            it("should set the variable outOfZoom false", () => {
-                expect(wrapper.vm.checkOutOfZoomLevel(undefined, undefined, undefined)).to.be.false;
-                expect(wrapper.vm.checkOutOfZoomLevel(undefined, undefined, 17)).to.be.false;
-                expect(wrapper.vm.checkOutOfZoomLevel(undefined, 18, 17)).to.be.false;
-                expect(wrapper.vm.checkOutOfZoomLevel(10, undefined, 17)).to.be.false;
-                expect(wrapper.vm.checkOutOfZoomLevel(10, 18, 17)).to.be.false;
-            });
-            it("should set the variable outOfZoom true", () => {
-                expect(wrapper.vm.checkOutOfZoomLevel(10, 16, 17)).to.be.true;
-                expect(wrapper.vm.checkOutOfZoomLevel(10, 18, 7)).to.be.true;
-                expect(wrapper.vm.checkOutOfZoomLevel(10, undefined, 7)).to.be.true;
-                expect(wrapper.vm.checkOutOfZoomLevel(undefined, 16, 17)).to.be.true;
-            });
-        });
-
-        describe("deleteAllRules", () => {
-            it("should emit the deleteAllRules function", async () => {
-                wrapper.vm.deleteAllRules();
-                await wrapper.vm.$nextTick();
-                expect(wrapper.emitted().deleteAllRules).to.be.an("array").with.lengthOf(1);
-            });
-            it("should call handleActiveStrategy if strategy is active", async () => {
-                const spyHandleActiveStrategy = sinon.spy(wrapper.vm, "handleActiveStrategy");
-
-                await wrapper.setProps({layerConfig: {strategy: "active"}});
-                wrapper.vm.deleteAllRules();
-                await wrapper.vm.$nextTick();
-                expect(spyHandleActiveStrategy.calledOnce).to.be.true;
-            });
-        });
-
-        describe("hasChildSnippets", () => {
-            it("should return false if anything but an array is given", () => {
-                expect(wrapper.vm.hasChildSnippets(undefined)).to.be.false;
-                expect(wrapper.vm.hasChildSnippets(null)).to.be.false;
-                expect(wrapper.vm.hasChildSnippets({})).to.be.false;
-                expect(wrapper.vm.hasChildSnippets(true)).to.be.false;
-                expect(wrapper.vm.hasChildSnippets(false)).to.be.false;
-                expect(wrapper.vm.hasChildSnippets(1234)).to.be.false;
-                expect(wrapper.vm.hasChildSnippets("1234")).to.be.false;
-            });
-            it("should return false if the given array has no snippets at all", () => {
-                expect(wrapper.vm.hasChildSnippets([])).to.be.false;
-                expect(wrapper.vm.hasChildSnippets(["foo", "bar"])).to.be.false;
-            });
-            it("should return true if the given array has child snippets", () => {
-                expect(wrapper.vm.hasChildSnippets([{children: "foo"}])).to.be.true;
-            });
-        });
-
-        describe("updateSnippetUniqueValues", () => {
-            it("should not call any listener if outOfZoom is true", async () => {
-                let foo = false;
-
-                wrapper.setData({
-                    uniqueValuesOnMoveListeners: {
-                        0: () => {
-                            foo = true;
-                        }
-                    },
-                    outOfZoom: true
+            describe("isInitialValue", () => {
+                it("should return true if the parameter is not right", () => {
+                    expect(wrapper.vm.isInitialValue(null, [""])).to.be.true;
+                    expect(wrapper.vm.isInitialValue(0, [""])).to.be.true;
+                    expect(wrapper.vm.isInitialValue(true, [""])).to.be.true;
+                    expect(wrapper.vm.isInitialValue({}, [""])).to.be.true;
+                    expect(wrapper.vm.isInitialValue([], [""])).to.be.true;
+                    expect(wrapper.vm.isInitialValue("", [""])).to.be.true;
+                    expect(wrapper.vm.isInitialValue(undefined, [""])).to.be.true;
+                    expect(wrapper.vm.isInitialValue([""], 0)).to.be.true;
+                    expect(wrapper.vm.isInitialValue([""], true)).to.be.true;
+                    expect(wrapper.vm.isInitialValue([""], {})).to.be.true;
+                    expect(wrapper.vm.isInitialValue([""], [])).to.be.true;
+                    expect(wrapper.vm.isInitialValue([""], "")).to.be.true;
+                    expect(wrapper.vm.isInitialValue([""], undefined)).to.be.true;
                 });
-                wrapper.vm.updateSnippetUniqueValues();
-                await wrapper.vm.$nextTick();
-                expect(foo).to.be.false;
-            });
-            it("should call any listener if outOfZoom is false", async () => {
-                let foo = false;
 
-                wrapper.setData({
-                    uniqueValuesOnMoveListeners: {
-                        0: () => {
-                            foo = true;
-                        }
-                    },
-                    outOfZoom: false
+                it("should return true if two value are the same, but the value of startup is false", () => {
+                    const ruleA = [{value: "a", startup: false}],
+                        ruleB = [{value: "a", startup: false}];
+
+                    expect(wrapper.vm.isInitialValue(ruleA, ruleB)).to.be.true;
                 });
-                wrapper.vm.updateSnippetUniqueValues();
-                await wrapper.vm.$nextTick();
-                expect(foo).to.be.true;
-            });
-        });
 
-        describe("isInitialValue", () => {
-            it("should return true if the parameter is not right", () => {
-                expect(wrapper.vm.isInitialValue(null, [""])).to.be.true;
-                expect(wrapper.vm.isInitialValue(0, [""])).to.be.true;
-                expect(wrapper.vm.isInitialValue(true, [""])).to.be.true;
-                expect(wrapper.vm.isInitialValue({}, [""])).to.be.true;
-                expect(wrapper.vm.isInitialValue([], [""])).to.be.true;
-                expect(wrapper.vm.isInitialValue("", [""])).to.be.true;
-                expect(wrapper.vm.isInitialValue(undefined, [""])).to.be.true;
-                expect(wrapper.vm.isInitialValue([""], 0)).to.be.true;
-                expect(wrapper.vm.isInitialValue([""], true)).to.be.true;
-                expect(wrapper.vm.isInitialValue([""], {})).to.be.true;
-                expect(wrapper.vm.isInitialValue([""], [])).to.be.true;
-                expect(wrapper.vm.isInitialValue([""], "")).to.be.true;
-                expect(wrapper.vm.isInitialValue([""], undefined)).to.be.true;
-            });
+                it("should return false if two value are different", () => {
+                    const ruleA = [{value: "a", startup: true}],
+                        ruleB = [{value: "b", startup: true}];
 
-            it("should return true if two value are the same, but the value of startup is false", () => {
-                const ruleA = [{value: "a", startup: false}],
-                    ruleB = [{value: "a", startup: false}];
+                    expect(wrapper.vm.isInitialValue(ruleA, ruleB)).to.be.false;
+                });
 
-                expect(wrapper.vm.isInitialValue(ruleA, ruleB)).to.be.true;
-            });
+                it("should return false if two value are different", () => {
+                    const ruleA = [{value: "a", startup: true}],
+                        ruleB = [{value: "b", startup: true}];
 
-            it("should return false if two value are different", () => {
-                const ruleA = [{value: "a", startup: true}],
-                    ruleB = [{value: "b", startup: true}];
-
-                expect(wrapper.vm.isInitialValue(ruleA, ruleB)).to.be.false;
-            });
-
-            it("should return false if two value are different", () => {
-                const ruleA = [{value: "a", startup: true}],
-                    ruleB = [{value: "b", startup: true}];
-
-                expect(wrapper.vm.isInitialValue(ruleA, ruleB)).to.be.false;
+                    expect(wrapper.vm.isInitialValue(ruleA, ruleB)).to.be.false;
+                });
             });
         });
     });
