@@ -86,7 +86,7 @@ export default {
 <template lang="html">
     <div
         id="modules-draw-module"
-        class="d-flex flex-column"
+        class="d-flex flex-column drawtypes-container"
     >
         <div
             id="draw-edit"
@@ -104,7 +104,7 @@ export default {
             id="draw-types"
             class="mb-5"
         >
-            <div class="d-flex mb-5 align-items-center">
+            <div class="d-flex mb-5 drawtypes-container">
                 <DrawTypes
                     :circle-options="circleOptions"
                     :current-layout="currentLayout"
@@ -123,7 +123,7 @@ export default {
             </div>
             <div
                 v-if="selectedDrawTypeMain === 'geometries' || selectedDrawTypeMain === 'symbols'"
-                class="d-flex mb-5 align-items-center"
+                class="d-flex mb-5"
             >
                 <DrawTypes
                     v-if="selectedDrawTypeMain === 'geometries'"
@@ -185,3 +185,11 @@ export default {
         </div>
     </div>
 </template>
+
+<style lang="scss" scoped>
+
+.drawtypes-container {
+    align-items: left;
+}
+
+</style>

@@ -300,6 +300,6 @@ export default {
         :interaction="(event) => regulateInteraction(drawType)"
         :icon="drawIcons[drawType]"
         :label="getButtonLabel(drawType)"
-        class="d-flex align-items-center"
+        class="d-flex"
     />
 </template>
