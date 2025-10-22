@@ -283,6 +283,13 @@ const actions = {
             }
 
             cswObj.parsedData.periodicity = i18next.t(metadata.getFrequenzy()) || "n.N.";
+
+            const showDocUrl = cswObj.layer?.datasets?.[0]?.show_doc_url,
+                mdId = cswObj.layer?.datasets?.[0]?.md_id;
+
+            if (showDocUrl && mdId) {
+                cswObj.parsedData.catalogueLink = showDocUrl + mdId;
+            }
         }
 
         BuildSpec.fetchedMetaData(cswObj);
