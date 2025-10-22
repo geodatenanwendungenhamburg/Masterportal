@@ -102,7 +102,8 @@ const BuildSpecModel = {
             layer.metaEmail = parsedData?.email ? parsedData.email : "n.N.";
             layer.metaTel = parsedData?.tel ? parsedData.tel : "n.N.";
             layer.metaUrl = parsedData?.url ? parsedData.url : "n.N.";
-            layer.metaPeriodicity = parsedData?.periodicity || "n.N";
+            layer.metaPeriodicity = parsedData?.periodicity || "n.N.";
+            layer.metaCatalogueLink = parsedData?.catalogueLink || "";
         }
     },
     /**
