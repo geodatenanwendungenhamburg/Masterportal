@@ -463,8 +463,7 @@ export default {
         :interaction="(event) => regulateInteraction(drawType)"
         :icon="drawIcons[drawType] || 'bi-circle-square'"
         :label="getButtonLabel(drawType)"
-        class="d-flex align-items-center"
-        :draw-layout="drawLayout"
+        class="d-flex"
     />
 </template>
 
