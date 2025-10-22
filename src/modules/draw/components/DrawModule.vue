@@ -131,7 +131,6 @@ export default {
             class="mb-2"
         >
             <div
-                id="main-drawtypes-container"
                 class="d-flex mb-2 drawtypes-container"
             >
                 <DrawTypes
@@ -215,8 +214,8 @@ export default {
                 />
             </div>
             <div
-                id="draw-layouts"
-                class="mb-2"
+                v-if="selectedDrawTypeMain === 'geometries' || selectedDrawTypeMain === 'symbols'"
+                class="d-flex mb-5"
             >
                 <DrawLayout
                     v-if="selectedDrawType !== ''"
@@ -243,26 +242,6 @@ export default {
 
 .drawtypes-container {
     align-items: left;
-}
-
-.selected-drawtypes-container {
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: 1rem;
-    width: auto;
-    overflow-x: scroll;
-    > div {
-        width: 5rem;
-    }
-}
-
-#draw-layouts {
-    margin-left: 0.2rem;
-    margin-top: 0.5rem;
-}
-
-#main-drawtypes-container {
-    margin-left: 0.65rem;
 }
 
 </style>
