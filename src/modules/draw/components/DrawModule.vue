@@ -130,9 +130,7 @@ export default {
             id="draw-types"
             class="mb-2"
         >
-            <div
-                class="d-flex mb-2 drawtypes-container"
-            >
+            <div class="d-flex mb-5 drawtypes-container">
                 <DrawTypes
                     :circle-options="circleOptions"
                     :current-layout="currentLayout"
@@ -242,22 +240,6 @@ export default {
 
 .drawtypes-container {
     align-items: left;
-}
-
-.selected-drawtypes-container {
-    gap: 1.4rem;
-    width: 5rem;
-    margin-top: 1rem;
-    margin-left: 0.85rem;
-}
-
-#draw-layouts {
-    margin-left: 0.2rem;
-    margin-top: 0.5rem;
-}
-
-#main-drawtypes-container {
-    margin-left: 0.65rem;
 }
 
 </style>
