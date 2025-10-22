@@ -54,12 +54,6 @@
       "accessibilityStatement": "Accessibility statement",
       "contactButton": "Get in contact"
     },
-    "additional": {
-      "userManual": {
-        "name": "Instructions",
-        "fileTitle": "Instructions for using the tool"
-      }
-    },
     "addWMS": {
       "alertTitleSuccess": "Layer added successfully",
       "alreadyAdded": "The layers of the requested WMS have already been added.",

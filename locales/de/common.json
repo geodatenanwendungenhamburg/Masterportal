@@ -54,12 +54,6 @@
       "accessibilityStatement": "Barrierefreiheitserklärung",
       "contactButton": "Kontakt aufnehmen"
     },
-    "additional": {
-      "userManual": {
-        "name": "Anleitung",
-        "fileTitle": "Anleitung zur Nutzung des Tools"
-      }
-    },
     "addWMS": {
       "alertTitleSuccess": "Layer erfolgreich hinzugefügt",
       "alreadyAdded": "Die Layer des angeforderten WMS wurden bereits hinzugefügt.",

@@ -77,7 +77,6 @@
 - MouseHover: Added an active value that allows enabling or disabling MouseHover through the configuration.
 - MouseHover: Added font weight options for desciption and title.
 - Added Shared Component for pagination.
-- UserManual: Added translation for user manual which is used in Gebeudewermeplannung Portal
 - SearchBar: Render images in search result if `imagePath` is provided in SearchBarSuggestionList and SearchBarResultListGeneralItem components.
 - Draw: Added square as geometryType.
 - PrintModule: Add additional parameter `transferParameter` which is an object with its parameters spread for the mapFish. `transferParameter` can have two parameters: `pagename` and `footer`, which are both strings.
@@ -173,7 +172,6 @@
     - selecting a waypoint input field and adding a point by clicking into the map, the new waypoint is added into the previously selected field instead of the first empty field on the list
 
 ### Changed
-- Replaced layer 452, which will be deleted.
 - Webpack: Replaced relative import paths with Webpack aliases to enhance code maintainability and readability.
 - LayerPills: Added toggle button to show multiple lines of LayerPills. When toggled, they are shown in multiple lines and do not disappear off-screen.
 - WFS-T: Errorhandling informs user of slow fetch-time for layer-information.
