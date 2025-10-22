@@ -73,12 +73,12 @@ export default {
 
 <template>
     <div
-        :class="[label ? 'btn-wrapper flex-column d-flex align-items-center': '']"
+        :class="[label ? 'btn-wrapper flex-column d-flex': '']"
     >
         <button
             :id="id"
             tabindex="0"
-            class="btn d-flex align-items-center justify-items-center mb-auto"
+            class="btn d-flex justify-items-center mb-auto"
             type="button"
             :title="aria"
             :aria-label="aria"
@@ -93,7 +93,7 @@ export default {
         </button>
         <label
             v-if="label"
-            class="text-center btn-label"
+            class="btn-label"
             :for="id"
             :aria-label="label"
         >
@@ -106,11 +106,17 @@ export default {
 
 
 .btn-wrapper {
-    width: 6rem;
+    margin-right: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 3rem;
 }
 
 .btn-wrapper > .btn-label {
     font-size: 0.9rem;
+    align-items: left;
+    margin-top: 0.5rem;
 }
 
  .btn {
