@@ -1375,21 +1375,60 @@ const BuildSpecModel = {
      * @return {Promise<void>}
      */
     async processLegendImage (legendObj, hashMap) {
-        if (legendObj.legend?.[0]) {
-            const imageUrl = legendObj.legend[0],
-                hash = await this.hashImage(imageUrl);
+        const imageUrl = this.getLegendImageUrl(legendObj),
+            hash = imageUrl ? await this.hashImage(imageUrl) : null;
 
-            if (hash) {
-                if (hashMap[hash]) {
-                    hashMap[hash].names.push(legendObj.name);
-                }
-                else {
-                    hashMap[hash] = {
-                        names: [legendObj.name],
-                        values: this.prepareLegendAttributes(legendObj.legend, store.getters["Modules/Legend/sldVersion"])
-                    };
-                }
-            }
+        if (!imageUrl) {
+            console.warn("No valid image URL for legend:", legendObj.name);
+            return;
+        }
+
+        if (!hash) {
+            console.warn("[Legend] Failed to generate hash for image:", imageUrl, " (layer:", legendObj.name, ")");
+            return;
+        }
+
+        this.updateHashMap(hashMap, hash, legendObj);
+    },
+
+    /**
+     * Extracts a valid image URL from the legend object.
+     * @param {Object} legendObj - The legend object.
+     * @returns {string|null} The image URL, or null if not found.
+     */
+    getLegendImageUrl (legendObj) {
+        const firstLegend = legendObj.legend?.[0];
+
+        if (!firstLegend) {
+            console.warn("[Legend] Missing legend entry for:", legendObj.name);
+            return null;
+        }
+
+        if (typeof firstLegend === "string") {
+            return firstLegend;
+        }
+
+        return firstLegend?.graphic || null;
+    },
+
+    /**
+     * Updates the hash map with the given legend information.
+     * @param {Object} hashMap - The hash map.
+     * @param {string} hash - The image hash.
+     * @param {Object} legendObj - The legend object.
+     */
+    updateHashMap (hashMap, hash, legendObj) {
+        if (hashMap[hash]) {
+            hashMap[hash].names.push(legendObj.name);
+        }
+        else {
+            hashMap[hash] = {
+                names: [legendObj.name],
+                values: this.prepareLegendAttributes(
+                    legendObj.legend,
+                    store.getters["Modules/Legend/sldVersion"]
+                )
+            };
         }
     },
 

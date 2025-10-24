@@ -552,6 +552,69 @@ describe("src/modules/print/js/buildSpec", function () {
 
                 expect(mockStore._actions["Modules/Print/createPrintJob"]).to.exist;
             });
+
+            it("getLegendImageUrl returns string URL if legend[0] is string", () => {
+                const legendObj = {legend: ["image.png"]},
+                    result = buildSpec.getLegendImageUrl(legendObj);
+
+                expect(result).to.equal("image.png");
+            });
+
+            it("getLegendImageUrl returns graphic if legend[0] is object", () => {
+                const legendObj = {legend: [{graphic: "img.png"}]},
+                    result = buildSpec.getLegendImageUrl(legendObj);
+
+                expect(result).to.equal("img.png");
+            });
+
+            it("getLegendImageUrl returns null if legend is empty", () => {
+                const legendObj = {legend: []},
+                    result = buildSpec.getLegendImageUrl(legendObj);
+
+                expect(result).to.be.null;
+            });
+
+            it("updateHashMap creates new entry if hash does not exist", () => {
+                const hashMap = {},
+                    legendObj = {name: "Layer A", legend: ["a.png"]};
+
+                sinon.stub(buildSpec, "prepareLegendAttributes").returns(["prepared"]);
+
+                buildSpec.updateHashMap(hashMap, "hash1", legendObj);
+
+                expect(hashMap.hash1.names).to.include("Layer A");
+                expect(hashMap.hash1.values).to.deep.equal(["prepared"]);
+            });
+
+            it("updateHashMap appends name if hash already exists", () => {
+                const hashMap = {hash1: {names: ["Layer A"], values: ["prepared"]}},
+                    legendObj = {name: "Layer B", legend: ["b.png"]};
+
+                buildSpec.updateHashMap(hashMap, "hash1", legendObj);
+
+                expect(hashMap.hash1.names).to.deep.equal(["Layer A", "Layer B"]);
+            });
+
+            it("processLegendImage adds new legend to hashMap", async () => {
+                const legendObj = {name: "Layer 1", legend: ["image1.png"]},
+                    hashMap = {};
+
+                await buildSpec.processLegendImage(legendObj, hashMap);
+
+                expect(hashMap.hash1.names).to.include("Layer 1");
+            });
+
+            it("processLegendImage skips adding when hashImage returns null", async () => {
+                buildSpec.hashImage.restore();
+                sinon.stub(buildSpec, "hashImage").resolves(null);
+
+                const legendObj = {name: "Layer 4", legend: ["image.png"]},
+                    hashMap = {};
+
+                await buildSpec.processLegendImage(legendObj, hashMap);
+
+                expect(hashMap).to.be.empty;
+            });
         });
     });
 
