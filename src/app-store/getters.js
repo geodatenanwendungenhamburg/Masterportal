@@ -151,6 +151,15 @@ export default {
     },
 
     /**
+     * Returns path to the XeoKit SDK library for bimViewer module.
+     * @param {Object} state state of the app-store.
+     * @returns {String} The XeoKit SDK library path.
+     */
+    xeoKitSdkLibrary: state => {
+        return state.configJs?.xeoKitSdkLibrary || "https://geoportal-hamburg.de/Mastercode/xeokit/releases/2.6.93/xeokit-sdk.min.es.js";
+    },
+
+    /**
      * Returns the configured value for twoFingerPan.
      * @param {Object} state state of the app-store.
      * @returns {Boolean} value for twoFingerPan

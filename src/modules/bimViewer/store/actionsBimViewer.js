@@ -14,11 +14,44 @@ const actions = {
      * This is required to ensure, that separate js files are generated and
      * loaded during the webpack build process.
      *
-     * @returns {Promise<void>}
+     * @returns {void}
      */
-    async initializeBimViewer () {
-        XeoKitSdk = await import(/* webpackChunkName: "bim-viewer_xeokit-sdk" */ "@xeokit/xeokit-sdk");
+    async initializeBimViewer ({dispatch}) {
+        XeoKitSdk = await dispatch("loadXeokitSdk");
         WebIFC = await import(/* webpackChunkName: "bim-viewer_web-ifc-api" */ "web-ifc/web-ifc-api.js");
+    },
+
+    /**
+     * Load XeoKit SDK dynamically from an URL.
+     *
+     * @param {Object} context actions context object.
+     * @returns {Promise<Object>}
+     */
+    async loadXeokitSdk ({rootGetters}) {
+        return new Promise((resolve) => {
+            const script = document.createElement("script");
+
+            script.type = "module";
+            script.textContent = `
+                import * as XeoKitSdk from '${rootGetters.xeoKitSdkLibrary}';
+                window.XeoKitSdk = XeoKitSdk;
+                window.__xeokitSdkLoaded = true;
+            `;
+            document.head.appendChild(script);
+
+            // Poll for the global variable to be set
+            // eslint-disable-next-line
+            const checkLoaded = () => {
+                if (window.__xeokitSdkLoaded && window.XeoKitSdk) {
+                    resolve(window.XeoKitSdk);
+                }
+                else {
+                    setTimeout(checkLoaded, 50);
+                }
+            };
+
+            checkLoaded();
+        });
     },
     /**
      * Load scene configs from server. Contains multiple scenes each with models, camera settings, sao settings, etc.
@@ -82,6 +115,9 @@ const actions = {
             IfcAPI = new WebIFC.IfcAPI(),
             queryString = window.location.search,
             urlParams = new URLSearchParams(queryString);
+
+        // Fix for annotation rendering outside of canvas, set occlusion tests to 1 tick (default 20 ticks)
+        xeokitViewer.scene.ticksPerOcclusionTest = 1;
 
         // Set Wasm (WebAssembly) path. These bytecode files are loaded via HTTP.
         IfcAPI.SetWasmPath(getters.wasmUrl, true);
