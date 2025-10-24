@@ -1,15 +1,20 @@
+// 24.10.2025:
+// the changes from Innoq are integrated here
+// see https://github.com/micha149/lgv-masterportal/compare/vite-dev...build-setup-enhancements
 import {defineConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
 import path from "path";
+import glob from "fast-glob";
 import fs from "fs";
 import {nodePolyfills} from "vite-plugin-node-polyfills";
-import dynamicImport from "vite-plugin-dynamic-import";
+import {viteStaticCopy} from "vite-plugin-static-copy";
+import stringReplace from "vite-plugin-string-replace";
 import htmlExtFallback from "./html-ext-fallback.js";
 import {directoryListing} from "./directory_listing.js";
-
+import getMastercodeVersionFolderName from "./tasks/getMastercodeVersionFolderName.mjs";
+import addonModules from "./tasks/addon-modules-plugin.js";
 
 const rootPath = path.resolve(__dirname, "../"),
-    entryPoints = htmlExtFallback({rootDir: rootPath}),
     httpsConfig = {
         cert: fs.existsSync("devtools/certificate/localhost.pem")
             ? fs.readFileSync("devtools/certificate/localhost.pem")
@@ -17,11 +22,22 @@ const rootPath = path.resolve(__dirname, "../"),
         key: fs.existsSync("devtools/certificate/localhost.key")
             ? fs.readFileSync("devtools/certificate/localhost.key")
             : undefined
-    };
+    },
+
+    portalEntries = glob.sync("./portal/*/index.html", {cwd: rootPath}).map(file => {
+        const portalName = file.split("/").at(-2); // Ordername des Portals
+
+        return [`portal-${portalName}`, path.resolve(rootPath, file)];
+    });
+
+console.log("portalEntries", portalEntries);
+
+
+const mastercodeVersionFolderName = getMastercodeVersionFolderName();
 
 
 let proxyConfig = {},
-    addonsRelPaths = await collectAddons();
+    {vueAddons, plainAddons} = await collectAddons();
 
 if (fs.existsSync("./devtools/proxyconf.json")) {
     proxyConfig = JSON.parse(fs.readFileSync("./devtools/proxyconf.json", "utf-8"));
@@ -30,188 +46,247 @@ else if (fs.existsSync("./devtools/proxyconf_example.json")) {
     proxyConfig = JSON.parse(fs.readFileSync("./devtools/proxyconf_example.json", "utf-8"));
 }
 
-export default defineConfig({
-    root: rootPath,
-    logLevel: "info",
-    base: "/",
-    resolve: {
-        alias: {
-            "@": path.resolve(rootPath, "src"),
-            "mixins": path.resolve(rootPath, "src/assets/css/mixins.scss"),
-            "variables": path.resolve(rootPath, "src/assets/css/variables.scss"),
-            "olcs": path.resolve(rootPath, "node_modules/olcs"),
-            "@appstore": path.resolve(rootPath, "src/app-store"),
-            "@shared": path.resolve(rootPath, "src/shared"),
-            "@core": path.resolve(rootPath, "src/core"),
-            "@modules": path.resolve(rootPath, "src/modules"),
-            "@plugins": path.resolve(rootPath, "src/plugins"),
-            "@devtools": path.resolve(rootPath, "devtools")
+const isWin = process.platform === "win32",
+    slash = (p) => typeof p === "string" ? isWin ? p.replace(/\\/g, "/") : p : String(p || "");
 
-        }
-    },
-    plugins:
-    [
-        vue(),
-        nodePolyfills({
-            exclude: [
-                "fs" // Excludes the polyfill for `fs` and `node:fs`.
-            ]
-        }),
-        dynamicImport(), // used for dynamic import of addons in src\plugins\addons.js
-        htmlExtFallback({
-            rootDir: __dirname
-        }),
-        directoryListing
-    ],
-    css: {
-        devSourcemap: false, // Disable CSS source maps in development for faster build and reload times
-        preprocessorOptions: {
-            scss: {
-                additionalData: "@import \"@/assets/css/global.scss\";"
+
+export default defineConfig(({mode}) => {
+    const isProd = mode === "production",
+        base = isProd
+            ? `mastercode/${mastercodeVersionFolderName}`
+            : "";
+
+    console.log("base:", base);
+
+    return {
+        root: rootPath,
+        logLevel: "info",
+
+        resolve: {
+            alias: {
+                "@": path.resolve(rootPath, "src"),
+                "mixins": path.resolve(rootPath, "src/assets/css/mixins.scss"),
+                "variables": path.resolve(rootPath, "src/assets/css/variables.scss"),
+                "olcs": path.resolve(rootPath, "node_modules/olcs"),
+                "@appstore": path.resolve(rootPath, "src/app-store"),
+                "@shared": path.resolve(rootPath, "src/shared"),
+                "@core": path.resolve(rootPath, "src/core"),
+                "@modules": path.resolve(rootPath, "src/modules"),
+                "@plugins": path.resolve(rootPath, "src/plugins"),
+                "@devtools": path.resolve(rootPath, "devtools")
             }
-        }
-    },
-    esbuild: {
-        exclude: [
-            ".git",
-            "addons/.git"
-        ]
-    },
-    server: {
-        port: 9001,
-        https: httpsConfig.cert && httpsConfig.key ? httpsConfig : false,
-        fs: {
-            strict: false,
-            allow: [
-                path.resolve(rootPath, "src"),
-                path.resolve(rootPath, "portal/master")
-            ]
         },
-        headers: {
-            "Access-Control-Allow-Origin": "*"
-        },
-        proxy: Object.fromEntries(
-            Object.entries(proxyConfig).map(([key, config]) => {
-                const proxyEntry = [
-                    key,
-                    {
-                        target: config.target,
-                        changeOrigin: true,
-                        rewrite: somePath => {
-                            const rewrittenPath = somePath.replace(new RegExp(`^${key}`), "");
 
-                            return rewrittenPath;
-                        },
-                        secure: false
-                    }
-                ];
 
-                return proxyEntry;
-            })
-        )
-    },
-    build: {
-        sourcemap: false,
-        outDir: path.resolve(__dirname, "../dist/"),
-        // input: entryPoints,
-        assetsDir: "js",
-        cssCodeSplit: true,
-        rollupOptions: {
-            // input: entryPoints,
-            output: {
-                entryFileNames: "js/[name].js",
-                chunkFileNames: "js/[name].js",
-                assetFileNames: "css/[name].[ext]"
-                // format: "es" ? brint das was?
-            }
-        }
-    },
-    define: {
-        __VUE_OPTIONS_API__: true,
-        __VUE_PROD_DEVTOOLS__: false,
-        VUE_ADDONS: JSON.stringify(addonsRelPaths)
-    },
-    optimizeDeps: {
-        allowNodeBuiltins: true,
-        include: [
-            "vue",
-            "vuex",
-            "olcs",
-            "bootstrap",
-            "axios"
+        plugins: [
+            vue(),
+            nodePolyfills({
+                exclude: ["fs"]
+            }),
+            htmlExtFallback({
+                rootDir: __dirname
+            }),
+            directoryListing,
+            addonModules({
+                configPath: "addons/addonsConf.json",
+                baseDir: "addons"
+            }),
+            viteStaticCopy({
+                targets: [{
+                    src: "locales/**/*",
+                    dest: `mastercode/${mastercodeVersionFolderName}`
+                }],
+                silent: false,
+                structured: true
+            }),
+            stringReplace([
+                {
+                    todofileName: "main.js",
+                    search: "\"/locales/{{lng}}/{{ns}}.json\"",
+                    replace: `"/mastercode/${mastercodeVersionFolderName}/locales/{{lng}}/{{ns}}.json"`
+                }
+            ])
         ],
-        exclude: [
-            "@turf/turf", // used for addons
-            "@turf/helpers", // used for addons
-            "@turf/boolean-point-in-polygon", // used for addons
-            // add other @turf/* packages we use
-            "d3-geo", // used for addons
-            "point-in-polygon-hao", // used for addons
-            "rollup-plugin-terser", // used for addons
-            "polyclip-ts"// used for addons
-        ]
-    }
+
+        css: {
+            devSourcemap: false,
+            preprocessorOptions: {
+                scss: {
+                    additionalData: "@import \"@/assets/css/global.scss\";"
+                }
+            }
+        },
+
+        esbuild: {
+            exclude: [
+                ".git",
+                "addons/.git"
+            ]
+        },
+
+        server: {
+            port: 9001,
+            https: httpsConfig.cert && httpsConfig.key ? httpsConfig : false,
+            fs: {
+                strict: false,
+                allow: [
+                    path.resolve(rootPath, "src"),
+                    path.resolve(rootPath, "portal/master"),
+                    path.resolve(rootPath, "addons")
+                ]
+            },
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            },
+            proxy: Object.fromEntries(
+                Object.entries(proxyConfig).map(([key, config]) => {
+                    const proxyEntry = [
+                        key,
+                        {
+                            target: config.target,
+                            changeOrigin: true,
+                            rewrite: somePath => {
+                                const rewrittenPath = somePath.replace(new RegExp(`^${key}`), "");
+
+                                return rewrittenPath;
+                            },
+                            secure: false
+                        }
+                    ];
+
+                    return proxyEntry;
+                })
+            )
+        },
+
+        build: {
+            sourcemap: false,
+            cssCodeSplit: true,
+            rollupOptions: {
+                input: Object.fromEntries(portalEntries),
+                output: {
+                    entryFileNames: (entry) => {
+                        if (entry.name.startsWith("addon-")) {
+                            return `${base}/addons/${entry.name.substring(6)}.js`;
+                        }
+
+                        return `${base}/assets/[name].js`;
+                    },
+                    chunkFileNames: `${base}/assets/[name].js`,
+                    assetFileNames: `${base}/assets/[name].[ext]`
+                },
+                external (id) {
+                    const pid = slash(id);
+
+                    if (pid.includes("/addons/") && pid.includes("/node_modules/")) {
+                        return true;
+                    }
+                    if (pid.endsWith("/rollup.config.js")) {
+                        return true;
+                    }
+                    if (pid.endsWith("/bin.js") && pid.includes("/node_modules/")) {
+                        return true;
+                    }
+                    if ((/^rollup-plugin-terser($|\/)/).test(pid)) {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+        },
+
+        // CHANGED: it is equel DefinePlugin in Webpack.common + Webpack.test
+        define: {
+            __VUE_OPTIONS_API__: true,
+            __VUE_PROD_DEVTOOLS__: false,
+            VUE_ADDONS: JSON.stringify(vueAddons)
+        },
+
+        optimizeDeps: {
+            allowNodeBuiltins: true,
+            include: [
+                "vue",
+                "vuex",
+                "olcs",
+                "bootstrap",
+                "axios"
+            ],
+            exclude: [
+                "sinon",
+                "chai",
+                "@turf/turf", // used for addons
+                "@turf/helpers", // used for addons
+                "@turf/boolean-point-in-polygon", // used for addons
+                // add other @turf/* packages we use
+                "d3-geo", // used for addons
+                "point-in-polygon-hao", // used for addons
+                "rollup-plugin-terser", // used for addons
+                "polyclip-ts"// used for addons
+            ]
+        }
+    };
 });
 
 /**
  * Collects addons from 'addonsConf.json'.
- * @returns {Object} configured addons
+ * Returns both Vue and plain addons to mimic Webpack's DefinePlugin(ADDONS, VUE_ADDONS).
  */
 async function collectAddons () {
     const rootPath = path.resolve(__dirname, "../"),
         addonBasePath = path.resolve(rootPath, "addons"),
         addonConfigPath = path.resolve(addonBasePath, "addonsConf.json"),
-        addonsRelPaths = {};
+        vueAddons = {},
+        plainAddons = {};
 
     if (!fs.existsSync(addonConfigPath)) {
         console.warn("NOTICE: " + addonConfigPath + " not found. Skipping all addons.");
+        return {vueAddons, plainAddons};
     }
-    else {
-        const data = fs.readFileSync(addonConfigPath, "utf8"),
-            addonEntryPoints = JSON.parse(data);
 
-        for (const addonName in addonEntryPoints) {
-            let isVueAddon = false,
-                addonPath = addonName,
-                entryPointFileName = "";
+    const data = fs.readFileSync(addonConfigPath, "utf8"),
+        addonEntryPoints = JSON.parse(data);
 
-            if (typeof addonEntryPoints[addonName] === "string") {
-                entryPointFileName = addonEntryPoints[addonName];
+    for (const addonName in addonEntryPoints) {
+        let isVueAddon = false,
+            addonPath = addonName,
+            entryPointFileName = "";
+
+        if (typeof addonEntryPoints[addonName] === "string") {
+            entryPointFileName = addonEntryPoints[addonName];
+        }
+
+        // An addon is recognized as Vue-Addon, if:
+        // - its configuration value is an object
+        // - with at least a key named "type"
+        if (typeof addonEntryPoints[addonName] === "object" && addonEntryPoints[addonName].type !== undefined) {
+            isVueAddon = true;
+            if (typeof addonEntryPoints[addonName].entryPoint === "string") {
+                entryPointFileName = addonEntryPoints[addonName].entryPoint;
+            }
+            else {
+                entryPointFileName = "index.js";
             }
 
-            // An addon is recognized as Vue-Addon, if:
-            // - its configuration value is an object
-            // - with at least a key named "type"
-            if (typeof addonEntryPoints[addonName] === "object" && addonEntryPoints[addonName].type !== undefined) {
-                isVueAddon = true;
-
-                if (typeof addonEntryPoints[addonName].entryPoint === "string") {
-                    entryPointFileName = addonEntryPoints[addonName].entryPoint;
-                }
-                else {
-                    entryPointFileName = "index.js";
-                }
-
-                if (typeof addonEntryPoints[addonName].path === "string") {
-                    addonPath = addonEntryPoints[addonName].path;
-                }
-            }
-
-            const addonCombinedRelpath = [addonPath, entryPointFileName].join("/");
-
-            // Now check if file exists
-            if (!fs.existsSync(path.resolve(addonBasePath, addonCombinedRelpath))) {
-                console.error("############\n------------");
-                throw new Error("ERROR: FILE DOES NOT EXIST \"" + path.resolve(addonBasePath, addonCombinedRelpath) + "\"\nABORTED...");
-            }
-
-            if (isVueAddon) {
-                addonsRelPaths[addonName] = Object.assign({
-                    "entry": addonCombinedRelpath
-                }, addonEntryPoints[addonName]);
+            if (typeof addonEntryPoints[addonName].path === "string") {
+                addonPath = addonEntryPoints[addonName].path;
             }
         }
-        console.info("provided addons:", Object.keys(addonsRelPaths));
-        return addonsRelPaths;
+
+        const addonCombinedRelpath = [addonPath, entryPointFileName].join("/");
+
+        if (!fs.existsSync(path.resolve(addonBasePath, addonCombinedRelpath))) {
+            console.error("############\n------------");
+            throw new Error(`ERROR: FILE DOES NOT EXIST "${path.resolve(addonBasePath, addonCombinedRelpath)}"\nABORTED...`);
+        }
+
+        if (isVueAddon) {
+            vueAddons[addonName] = Object.assign({"entry": addonCombinedRelpath}, addonEntryPoints[addonName]);
+        }
+        else {
+            plainAddons[addonName] = addonCombinedRelpath;
+        }
     }
+
+    console.info("provided addons:", Object.keys(vueAddons));
+    return {vueAddons, plainAddons};
 }
