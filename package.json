@@ -28,7 +28,8 @@
     "lint": "eslint \"./**/*.{vue,js}\"",
     "lint:fix": "eslint --fix \"./**/*.{vue,js}\"",
     "migrateConfig": "node devtools/tasks/migrator/migrate.js",
-    "build": "vite build --config  devtools/vite.config.js",
+    "buildWebpack": "node devtools/tasks/build.js",
+    "build": "vite build --config devtools/vite.config.js && mv dist/portal/* dist/ && rm -rf dist/portal",
     "buildPortal": "vite build --config devtools/vite.portal.config.js",
     "buildExamples": "node devtools/tasks/exampleBuild.js && node devtools/tasks/exampleCopy.js",
     "buildJsDoc": "node devtools/tasks/buildJsDoc.js",
@@ -130,6 +131,8 @@
     "vite-plugin-dynamic-import": "^1.6.0",
     "vite-plugin-html-purgecss": "^0.1.1",
     "vite-plugin-node-polyfills": "^0.24.0",
+    "vite-plugin-static-copy": "^3.1.2",
+    "vite-plugin-string-replace": "^1.1.5",
     "vitest": "^3.2.4",
     "xmlserializer": "^0.6.1",
     "zip-a-folder": "3.1.8"
