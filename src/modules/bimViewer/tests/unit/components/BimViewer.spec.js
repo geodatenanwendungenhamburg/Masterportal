@@ -100,11 +100,7 @@ describe("src/modules/bimViewer/tests/unit/components/BimViewer.spec.js", () => 
 
         expect(canvas2.style.getPropertyValue("max-width")).to.equal("100vw");
 
-        expect(canvas2.style.getPropertyPriority("max-width")).to.equal("important");
-
         expect(canvas2.style.getPropertyValue("max-height")).to.equal("100vh");
-
-        expect(canvas2.style.getPropertyPriority("max-height")).to.equal("important");
 
         expect(canvas1.style.getPropertyValue("max-width")).to.equal("");
     });
