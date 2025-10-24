@@ -1,5 +1,5 @@
-import mapCollection from "./src/core/maps/js/mapCollection.js";
-import testConfig from "./devtools/tests/testConfig.js";
+import mapCollection from "@core/maps/js/mapCollection.js";
+import testConfig from "./testConfig.js";
 import i18next from "i18next";
 import {config, enableAutoUnmount} from "@vue/test-utils";
 import {vi, beforeAll as vitestBeforeAll, afterAll as vitestAfterAll, beforeEach as vitestBeforeEach, afterEach as vitestAfterEach, test as vitestTest, it as vitestIt} from "vitest";
@@ -28,7 +28,7 @@ if (!globalThis.ResizeObserver) {
 }
 
 globalThis.fetch = async (url, options) => {
-    console.log("### ### fetch shall be mocked in tests: ", url);
+    console.log("⚠️  MUST BE FIXED WARNING: fetch shall be mocked in tests: ", url);
     return {
         ok: true,
         status: 200,
@@ -43,7 +43,7 @@ globalThis.XMLHttpRequest = class {
      *
      */
     open () {
-        console.log("### ### XMLHttpRequest shall be mocked in tests!");
+        console.log("⚠️  MUST BE FIXED WARNING: XMLHttpRequest shall be mocked in tests!");
     }
     /**
      *
@@ -70,6 +70,35 @@ globalThis.XMLHttpRequest = class {
     }
 };
 
+
+// Mock the useTranslation composable from i18next-vue and mock i18next
+vi.mock("i18next-vue", () => ({
+    useTranslation: () => ({
+        t: (key) => key,
+        $t: (key) => key,
+        i18n: {language: "de"}
+    })
+}));
+vi.mock("i18next", () => {
+    const mock = {
+        t: (key) => key,
+        language: "de",
+        changeLanguage: vi.fn(),
+        init: vi.fn()
+
+    };
+
+    return {
+        ...mock,
+        default: mock
+    };
+});
+
+// Mock $t and t for all components (template and script)
+config.global.mocks = config.global.mocks || {};
+
+config.global.mocks.t = key => key;
+
 // Mock navigation methods to prevent jsdom errors
 if (typeof window !== "undefined") {
     // Use a real Event constructor polyfill instead of vi.fn()
@@ -89,9 +118,6 @@ if (typeof window !== "undefined") {
 
     window.scrollTo = window.scrollTo || (() => {});
 }
-
-// renderStubDefaultSlot: https://test-utils.vuejs.org/migration/#shallowmount-and-renderstubdefaultslot
-config.global.renderStubDefaultSlot = true;
 
 // Comprehensive Cesium mocks to handle CommonJS/ESM compatibility issues
 // Mock the main cesium package that OLCS actually imports from
@@ -290,5 +316,7 @@ if (typeof global !== "undefined") {
 
 if (!globalThis.__autoUnmountEnabled) {
     enableAutoUnmount(globalThis.afterEach);
+    // renderStubDefaultSlot: https://test-utils.vuejs.org/migration/#shallowmount-and-renderstubdefaultslot
+    config.global.renderStubDefaultSlot = true;
     globalThis.__autoUnmountEnabled = true;
 }
