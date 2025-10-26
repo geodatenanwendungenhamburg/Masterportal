@@ -1,5 +1,5 @@
-import mapCollection from "@core/maps/js/mapCollection.js";
-import testConfig from "./testConfig.js";
+import mapCollection from "./src/core/maps/js/mapCollection.js";
+import testConfig from "./devtools/tests/testConfig.js";
 import i18next from "i18next";
 import {config, enableAutoUnmount} from "@vue/test-utils";
 import {vi, beforeAll as vitestBeforeAll, afterAll as vitestAfterAll, beforeEach as vitestBeforeEach, afterEach as vitestAfterEach, test as vitestTest, it as vitestIt} from "vitest";
