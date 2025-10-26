@@ -56,7 +56,9 @@ export default defineConfig(({mode}) => {
             ? `mastercode/${mastercodeVersionFolderName}`
             : "";
 
+    console.log("mode", mode);
     console.log("base:", base);
+
 
     return {
         root: rootPath,
