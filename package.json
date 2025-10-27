@@ -98,6 +98,7 @@
     "@masterportal/mpconfigparser": "^2.0.0",
     "@sinonjs/fake-timers": "^14.0.0",
     "@stylistic/eslint-plugin-js": "^2.13.0",
+    "@turf/helpers": "^6.5.0",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vitest/ui": "3.2.4",
     "@vitest/web-worker": "^3.2.4",
