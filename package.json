@@ -68,11 +68,7 @@
     "vue-multiselect": "3.2.0",
     "vuedraggable": "^4.1.0",
     "vuetify": "3.7.x",
-<<<<<<< HEAD
     "vuex": "^4.1.0"
-=======
-    "vuex": "^4.0.2"
->>>>>>> 97ed0542b9 (G31DEV1-3379-metadata-fo-mapfish using legend)
   },
   "devDependencies": {
     "@eslint/js": "9.20.0",
