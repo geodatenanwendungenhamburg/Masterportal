@@ -37,7 +37,8 @@ const mastercodeVersionFolderName = getMastercodeVersionFolderName();
 
 
 let proxyConfig = {},
-    {vueAddons, plainAddons} = await collectAddons();
+    {vueAddons, plainAddons} = await collectAddons(),
+    base;
 
 if (fs.existsSync("./devtools/proxyconf.json")) {
     proxyConfig = JSON.parse(fs.readFileSync("./devtools/proxyconf.json", "utf-8"));
@@ -78,7 +79,6 @@ export default defineConfig(({mode}) => {
                 "@devtools": path.resolve(rootPath, "devtools")
             }
         },
-
 
         plugins: [
             vue(),
@@ -149,13 +149,11 @@ export default defineConfig(({mode}) => {
                             changeOrigin: true,
                             rewrite: somePath => {
                                 const rewrittenPath = somePath.replace(new RegExp(`^${key}`), "");
-
                                 return rewrittenPath;
                             },
                             secure: false
                         }
                     ];
-
                     return proxyEntry;
                 })
             )
@@ -177,12 +175,13 @@ export default defineConfig(({mode}) => {
                     chunkFileNames: `${base}/assets/[name].js`,
                     assetFileNames: `${base}/assets/[name].[ext]`
                 },
-                external (id) {
+                 external (id) {
                     const pid = slash(id);
 
-                    if (pid.includes("/addons/") && pid.includes("/node_modules/")) {
-                        return true;
+                    if (pid.includes("/node_modules/")) {
+                        return false;
                     }
+                    //todo vite: sind die notwendig?
                     if (pid.endsWith("/rollup.config.js")) {
                         return true;
                     }
@@ -197,14 +196,13 @@ export default defineConfig(({mode}) => {
             }
         },
 
-        // CHANGED: it is equel DefinePlugin in Webpack.common + Webpack.test
         define: {
             __VUE_OPTIONS_API__: true,
             __VUE_PROD_DEVTOOLS__: false,
             VUE_ADDONS: JSON.stringify(vueAddons)
         },
 
-        optimizeDeps: {
+          optimizeDeps: {
             allowNodeBuiltins: true,
             include: [
                 "vue",
