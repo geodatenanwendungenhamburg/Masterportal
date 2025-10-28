@@ -31,6 +31,7 @@
     "buildPortal": "vite build --config devtools/vite.config.js && rm -rf dist/portal",
     "buildExamples": "cross-env EXAMPLES_ONLY=true vite build --config devtools/vite.config.js --mode production && rm -rf dist/portal dist/build dist/examples_*",
     "buildJsDoc": "node devtools/tasks/buildJsDoc.js",
+    "build:cosi": "set NODE_OPTIONS=--max_old_space_size=8192 && rm -rf portal/cosi && rm -rf mastercode/ && cp -R portalconfigs/cosi/ portal/cosi && npm run build && mv dist/cosi/index.html dist/cosi/index-temp.html && cp -r portal/cosi/* dist/cosi/ && rm -rf dist/cosi/index.html && mv dist/cosi/index-temp.html dist/cosi/index.html && cp -r dist/mastercode/ mastercode",
     "versionHotfix": "npm version patch && npm run versionLatest && git tag -d lts && git push --tags -f --no-verify",
     "versionMinor": "npm version minor && npm run versionLatest && git tag -d lts && git push --tags -f --no-verify",
     "versionMajor": "npm version major && npm run versionLatest && git tag -d lts && git push --tags -f --no-verify",
