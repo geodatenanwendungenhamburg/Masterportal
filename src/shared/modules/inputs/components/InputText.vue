@@ -149,12 +149,10 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-
-
-.form-control:focus ~ label {
-    color: $secondary;
-}
-.input-label {
-    color: $placeholder-color;
-}
+    .form-control:focus ~ label {
+        color: $secondary;
+    }
+    .form-floating > label {
+        padding: 1rem;
+    }
 </style>
