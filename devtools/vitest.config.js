@@ -40,6 +40,7 @@ export default defineConfig(mode => mergeConfig(
             hookTimeout: 500, // von inka: reduce from 20000 to 500 ms
             include: [
                 "**/*.spec.js"
+                // "**/modules/**/*.spec.js"
             // 'src/core/layers/**/*.spec.js',
             ],
             transformMode: {
