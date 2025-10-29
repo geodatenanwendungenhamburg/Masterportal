@@ -2,7 +2,7 @@ import markerHelper from "../../js/marker.js";
 import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 import WKTUtil from "@shared/js/utils/getWKTGeom.js";
 import wmsGFIUtil from "@shared/js/utils/getWmsFeaturesByMimeType.js";
-import {rawLayerList} from "@masterportal/masterportalapi/src";
+import {rawLayerList} from "@masterportal/masterportalapi/src/index.js";
 import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
 import {trackMatomo} from "@plugins/matomo";
 import mapMarker from "@core/maps/js/mapMarker.js";
