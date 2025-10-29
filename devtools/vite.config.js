@@ -7,7 +7,7 @@ import path from "path";
 import glob from "fast-glob";
 import fs from "fs";
 import {nodePolyfills} from "vite-plugin-node-polyfills";
-import {viteStaticCopy} from "vite-plugin-static-copy";
+import cp from "vite-plugin-cp";
 import stringReplace from "vite-plugin-string-replace";
 import htmlExtFallback from "./html-ext-fallback.js";
 import {directoryListing} from "./directory_listing.js";
@@ -23,21 +23,16 @@ const rootPath = path.resolve(__dirname, "../"),
             ? fs.readFileSync("devtools/certificate/localhost.key")
             : undefined
     },
-
     portalEntries = glob.sync("./portal/*/index.html", {cwd: rootPath}).map(file => {
-        const portalName = file.split("/").at(-2); // Ordername des Portals
+        const portalName = file.split("/").at(-2); // foldernames of portals
 
         return [`portal-${portalName}`, path.resolve(rootPath, file)];
-    });
-
-console.log("portalEntries", portalEntries);
-
-
-const mastercodeVersionFolderName = getMastercodeVersionFolderName();
-
-
+    }),
+    mastercodeVersionFolderName = getMastercodeVersionFolderName(),
+    isWin = process.platform === "win32",
+    slash = (p) => typeof p === "string" ? isWin ? p.replace(/\\/g, "/") : p : String(p || "");
 let proxyConfig = {},
-    {vueAddons, plainAddons} = await collectAddons(),
+    {vueAddons} = await collectAddons(),
     base;
 
 if (fs.existsSync("./devtools/proxyconf.json")) {
@@ -47,19 +42,18 @@ else if (fs.existsSync("./devtools/proxyconf_example.json")) {
     proxyConfig = JSON.parse(fs.readFileSync("./devtools/proxyconf_example.json", "utf-8"));
 }
 
-const isWin = process.platform === "win32",
-    slash = (p) => typeof p === "string" ? isWin ? p.replace(/\\/g, "/") : p : String(p || "");
-
-
 export default defineConfig(({mode}) => {
-    const isProd = mode === "production",
-        base = isProd
-            ? `mastercode/${mastercodeVersionFolderName}`
-            : "/";
+    const isProd = mode === "production";
+
+    base = isProd
+        ? `mastercode/${mastercodeVersionFolderName}`
+        : "/";
 
     console.log("mode", mode);
     console.log("base:", base);
-
+    if(isProd){
+        console.log("portalEntries", Object.fromEntries(portalEntries));
+    }
 
     return {
         root: rootPath,
@@ -80,7 +74,6 @@ export default defineConfig(({mode}) => {
             }
         },
 
-
         plugins: [
             vue(),
             nodePolyfills({
@@ -94,21 +87,35 @@ export default defineConfig(({mode}) => {
                 configPath: "addons/addonsConf.json",
                 baseDir: "addons"
             }),
-            viteStaticCopy({
-                targets: [{
-                    src: "locales/**/*",
-                    dest: `mastercode/${mastercodeVersionFolderName}`
-                }],
-                silent: false,
-                structured: true
-            }),
-            stringReplace([
+            isProd && stringReplace([
                 {
                     todofileName: "main.js",
                     search: "\"/locales/{{lng}}/{{ns}}.json\"",
                     replace: `"/mastercode/${mastercodeVersionFolderName}/locales/{{lng}}/{{ns}}.json"`
                 }
-            ])
+            ]),
+            isProd && cp({
+                targets: [
+                    // copy all besides modified index.html files
+                    {
+                        src: "./portal",
+                        dest: "dist",
+                        copyOptions: {
+                            filter: (src, dest) => {
+                                if (src.endsWith("/index.html")) {
+                                    return false;
+                                }
+                                return true;
+                            }
+                        }
+
+                    },
+                    // copy modified index.html files
+                    {src: "./dist/portal", dest: "dist"},
+                    {src: "./src/assets/img", dest: `dist/mastercode/${mastercodeVersionFolderName}/img`},
+                    {src: "./locales", dest: `dist/mastercode/${mastercodeVersionFolderName}/locales`}
+                ]
+            })
         ],
 
         css: {
@@ -231,22 +238,22 @@ export default defineConfig(({mode}) => {
 
 /**
  * Collects addons from 'addonsConf.json'.
- * Returns both Vue and plain addons to mimic Webpack's DefinePlugin(ADDONS, VUE_ADDONS).
+ * @returns both Vue and plain addons to mimic Webpack's DefinePlugin(ADDONS, VUE_ADDONS).
  */
 async function collectAddons () {
     const rootPath = path.resolve(__dirname, "../"),
         addonBasePath = path.resolve(rootPath, "addons"),
         addonConfigPath = path.resolve(addonBasePath, "addonsConf.json"),
-        vueAddons = {},
-        plainAddons = {};
+        vueAddons = {};
 
     if (!fs.existsSync(addonConfigPath)) {
         console.warn("NOTICE: " + addonConfigPath + " not found. Skipping all addons.");
-        return {vueAddons, plainAddons};
+        return {vueAddons};
     }
 
     const data = fs.readFileSync(addonConfigPath, "utf8"),
         addonEntryPoints = JSON.parse(data);
+    let addonCombinedRelpath;
 
     for (const addonName in addonEntryPoints) {
         let isVueAddon = false,
@@ -274,8 +281,7 @@ async function collectAddons () {
             }
         }
 
-        const addonCombinedRelpath = [addonPath, entryPointFileName].join("/");
-
+        addonCombinedRelpath = [addonPath, entryPointFileName].join("/");
         if (!fs.existsSync(path.resolve(addonBasePath, addonCombinedRelpath))) {
             console.error("############\n------------");
             throw new Error(`ERROR: FILE DOES NOT EXIST "${path.resolve(addonBasePath, addonCombinedRelpath)}"\nABORTED...`);
@@ -285,10 +291,11 @@ async function collectAddons () {
             vueAddons[addonName] = Object.assign({"entry": addonCombinedRelpath}, addonEntryPoints[addonName]);
         }
         else {
-            plainAddons[addonName] = addonCombinedRelpath;
+            console.warn("Detected addon, that does not follow the rules for addons:", addonName);
+            console.warn("rules: its configuration value is an object and with at least a key named \"type\"");
         }
     }
 
     console.info("provided addons:", Object.keys(vueAddons));
-    return {vueAddons, plainAddons};
+    return {vueAddons};
 }
