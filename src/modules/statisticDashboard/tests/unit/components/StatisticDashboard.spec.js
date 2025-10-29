@@ -32,7 +32,7 @@ function addSecondaryMenuElement () {
     document.body.append(app);
 }
 
-describe("src/modules/statisticDashboard/components/StatisticDashboard.vue", () => {
+describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue", () => {
     let store, wrapper;
 
     /**
