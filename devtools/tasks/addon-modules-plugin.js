@@ -1,13 +1,15 @@
-// vite.config.ts
 import fs from "node:fs";
 import path from "node:path";
 
 /**
- * @param {object} opts Optionen für das Plugin.
- * @param {string} [opts.jsonPath] Pfad zur addonsConf.json Datei, die Addon-Konfigurationen enthält.
- * @param {string} [opts.configPath] Alternative Bezeichnung für jsonPath; wird intern wie jsonPath verwendet.
- * @param {string} [opts.baseDir="addons/"] Basisverzeichnis relativ zum Vite-Root (CWD), das die Addon-Ordner enthält.
- * @param {string} [opts.virtualId="virtual:addons-modules"] Virtuelle Modul-ID, unter der das generierte Modul verfügbar ist.
+ * Plugin to provide addons from addonConf.json.
+ * @author Michael van Engelshoven, Innoq, Oktober 2025
+ * @param {Object} opts Options for the plugin.
+ * @param {String} [opts.jsonPath] Path to the addonsConf.json file, which contains add-on configurations.
+ * @param {String} [opts.configPath] Alternative name for jsonPath; used internally like jsonPath.
+ * @param {String} [opts.baseDir="addons/"] Base directory relative to the Vite root (CWD) that contains the add-on folders.
+ * @param {String} [opts.virtualId="virtual:addons-modules"] Virtual module ID under which the generated module is available.
+ * @returns {Object} the created plugin
  */
 export default function addonsFromJson (opts) {
     const configPath = opts.configPath || opts.jsonPath,
@@ -32,11 +34,11 @@ export default function addonsFromJson (opts) {
      */
     function makeModuleCode () {
         const entries = readConfig(),
-            // Aus JSON → absolute, projektrelative Pfade (Vite-Root = CWD)
+            // From JSON → absolute, project-relative paths (Vite root = CWD)
             items = entries.map(([id, addonConfig]) => {
                 let addonPath;
 
-                // Wenn path vorhanden ist, verwende diesen, sonst die addon-id
+                // If path exists, use it, otherwise use the addon-id.
                 if (typeof addonConfig === "object" && addonConfig.path) {
                     addonPath = addonConfig.path;
                 }
@@ -44,7 +46,7 @@ export default function addonsFromJson (opts) {
                     addonPath = id;
                 }
 
-                // Erstelle den vollständigen Pfad zur index.js
+                // Create the full path to index.js
                 const abs = path.posix.join(
                     "/",
                     baseDir.replace(/\\/g, "/"),
@@ -54,13 +56,13 @@ export default function addonsFromJson (opts) {
 
                 return {id, abs, config: addonConfig};
             }),
-            // Virtuelles Modul mit EXAKTEN Dynamik-Imports
-            // -> Nur diese Dateien werden gebündelt.
+            // Virtual module with EXACT dynamic imports
+            // -> Only these files will be bundled.
             lines = [];
 
         lines.push("export default {");
         for (const {id, abs} of items) {
-            // Key ist die addon-id, Value ist eine Funktion die das Modul importiert
+            // Key is the addon-id, Value is a function that imports the module
             lines.push(
                 "  " + JSON.stringify(id) + ": () => import(" + JSON.stringify(abs) + "),"
             );
@@ -84,20 +86,20 @@ export default function addonsFromJson (opts) {
             }
             return null;
         },
-        // HMR: Bei Änderungen an der JSON virtuelles Modul neu bauen
+        // HMR: Rebuild the JSON virtual module when changes are made
         handleHotUpdate (ctx) {
             const changed = ctx.file
                 .replace(/\\/g, "/")
                 .endsWith(configPath.replace(/\\/g, "/"));
 
             if (changed) {
-                // invalidiere das virtuelle Modul, damit es neu generiert wird
+                // Disable the virtual module so that it is regenerated.
                 const mod = ctx.server.moduleGraph.getModuleById(resolvedVirtualId);
 
                 if (mod) {
                     ctx.server.moduleGraph.invalidateModule(mod);
                 }
-                // optional: Full Reload, falls du darauf angewiesen bist
+                // Optional: Full reload, if you need it
                 return [mod].filter(Boolean);
             }
             return [];

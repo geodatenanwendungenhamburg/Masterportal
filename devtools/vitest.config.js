@@ -20,17 +20,16 @@ export default defineConfig(mode => mergeConfig(
         css: false,
         test: {
             reporters: ["default", "html"],
-            // reporters: "default",
             pool: "threads", // von inka //--> performance, https://vitest.dev/guide/improving-performance.html
             globals: true,
             environment: "jsdom",
             css: false, // von inka
             fileParallelism: false, // von inka
             /**
-         * Setting isolate: false disables test isolation, which means all tests in a file share the same environment and global state.
-         * This can cause side effects and make tests fail if they depend on a clean state.
-         * But here it is used with 'singleThread: true' and that works.
-         */
+             * Setting isolate: false disables test isolation, which means all tests in a file share the same environment and global state.
+             * This can cause side effects and make tests fail if they depend on a clean state.
+             * But here it is used with 'singleThread: true' and that works.
+             */
             isolate: false,
             poolOptions: {
                 threads: {
@@ -49,7 +48,7 @@ export default defineConfig(mode => mergeConfig(
             setupFiles: ["@vitest/web-worker", "jsdom-worker", "vitest.setup.js"],
             server: {
                 deps: {
-                // Vite will process inlined modules. This could be helpful to handle packages that ship .js in ESM format (that Node can't handle).
+                    // Vite will process inlined modules. This could be helpful to handle packages that ship .js in ESM format (that Node can't handle).
                     inline: [/ol[/\\]/, /olcs[/\\]/, /@geoblocks[/\\]/, /cesium[/\\]/, /@cesium[/\\]/],
                     // External packages that should not be bundled during testing
                     external: []
