@@ -3446,6 +3446,7 @@ Druckmodul. Konfigurierbar für 2 Druckdienste: den High Resolution PlotService 
 |overviewmapLayerId|nein|String||Über den Parameter layerId kann ein anderer Layer für die Overviewmap verwendet werden. Wird keine Id angegeben, wird der erste Layer der ausgewählten Hintergundkarten verwendet.|false|
 |printAppCapabilities|nein|String|"capabilities.json"|Pfad unter welcher die Konfiguration des Druckdienstes zu finden ist.|false|
 |printAppId|nein|String|"master"|Id der print app des Druckdienstes. Dies gibt dem Druckdienst vor welche/s Template/s er zu verwenden hat.|false|
+|layoutGroups|nein|Object|–|Ermöglicht die Gruppierung der im Druckdialog verfügbaren Layouts in Kategorien (z. B. *A4 – Hochformat*, *A4 – Querformat*). Wenn definiert, werden die Layouts im Dropdown gruppiert angezeigt. Fehlt der Eintrag, bleibt die Anzeige wie bisher.|false|
 |printMapMarker|nein|Boolean|false|Wenn dieses Feld auf true gesetzt ist, werden im Bildausschnitt sichtbare MapMarker mitgedruckt. Diese überdecken ggf. interessante Druckinformationen.|false|
 |printService|nein|String|"mapfish"|Flag welcher Druckdienst verwendet werden soll. Bei "plotservice" wird der High Resolution PlotService verwendet, wenn der Parameter nicht gesetzt wird, wird Mapfish 3 verwendet.|false|
 |printServiceId|ja|String||Id des Druckdienstes der verwendet werden soll. Wird in der rest-services.json abgelegt.|false|
@@ -3486,7 +3487,25 @@ Druckmodul. Konfigurierbar für 2 Druckdienste: den High Resolution PlotService 
     "printServiceId": "mapfish_printservice_id",
     "printAppId": "mrh",
     "filename": "Ausdruck",
-    "title": "Mein Titel"
+    "title": "Mein Titel",
+    "layoutGroups": {
+        "A0 – Hochformat": [
+            "A0 Hochformat Einfach",
+            "A0 Hochformat Umfangreich"
+        ],
+        "A0 – Querformat": [
+            "A0 Querformat Einfach",
+            "A0 Querformat Umfangreich"
+        ],
+        "A4 – Hochformat": [
+            "A4 Hochformat Einfach",
+            "A4 Hochformat Umfangreich"
+        ],
+        "A4 – Querformat": [
+            "A4 Querformat Einfach",
+            "A4 Querformat Umfangreich"
+        ]
+    }
 }
 ```
 

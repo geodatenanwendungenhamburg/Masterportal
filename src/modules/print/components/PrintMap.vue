@@ -75,7 +75,51 @@ export default {
             "mainMenu",
             "secondaryMenu"
         ]),
+        /**
+         * Indicates whether layout groups are defined and contain at least one entry.
+         * @returns {Boolean} True if layout groups exist and are not empty, otherwise false.
+         */
+        hasLayoutGroups () {
+            const groups = this.layoutGroupsFromConfig;
 
+            return groups && Object.keys(groups).length > 0;
+        },
+        /**
+         * Retrieves the layout group configuration from the config.json.
+         * @returns {Object|null} The layout group mapping (e.g., { "A4": ["A4 Hochformat Einfach"] })
+         * or null if no layoutGroups are defined.
+         */
+        layoutGroupsFromConfig () {
+            const sections = Array.isArray(this.secondaryMenu?.sections)
+                    ? this.secondaryMenu.sections.flat()
+                    : [],
+                printTool = sections.find(s => s && s.type === "print"),
+                layoutGroups = printTool?.layoutGroups;
+
+            return layoutGroups || null;
+        },
+        /**
+         * Returns the list of available print layouts grouped by category.
+         * @returns {Object} An object where each key is a layout group name.
+         */
+        groupedShownLayoutList () {
+            const map = this.layoutGroupsFromConfig,
+                groups = {};
+
+            if (!map) {
+                return {};
+            }
+
+            Object.entries(map).forEach(([groupName, layouts]) => {
+                const items = this.shownLayoutList.filter(l => layouts.includes(l.name));
+
+                if (items.length) {
+                    groups[groupName] = items;
+                }
+            });
+
+            return groups;
+        },
         currentScale: {
             get () {
                 return this.$store.state.Modules.Print.currentScale;
@@ -592,6 +636,30 @@ export default {
             </div>
             <div class="form-floating mb-3">
                 <select
+                    v-if="hasLayoutGroups"
+                    id="printLayout"
+                    class="form-select"
+                    :aria-label="$t('common:modules.print.layoutLabel')"
+                    @change="layoutChanged($event.target.value)"
+                >
+                    <optgroup
+                        v-for="(items, group) in groupedShownLayoutList"
+                        :key="group"
+                        :label="group"
+                    >
+                        <option
+                            v-for="layout in items"
+                            :key="layout.name"
+                            :value="layout.name"
+                            :selected="layout.name === currentLayoutName"
+                            :class="layout.name === currentLayoutName ? 'selected' : ''"
+                        >
+                            {{ layout.name }}
+                        </option>
+                    </optgroup>
+                </select>
+                <select
+                    v-else
                     id="printLayout"
                     class="form-select"
                     :aria-label="$t('common:modules.print.layoutLabel')"
@@ -877,5 +945,9 @@ export default {
                 color: darkgreen;
             }
         }
+    }
+    option.selected {
+        color: $white;
+        background: $secondary;
     }
 </style>
