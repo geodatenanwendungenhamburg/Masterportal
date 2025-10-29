@@ -74,17 +74,24 @@ globalThis.XMLHttpRequest = class {
 // Mock the useTranslation composable from i18next-vue and mock i18next
 vi.mock("i18next-vue", () => ({
     useTranslation: () => ({
-        t: (key) => key,
-        $t: (key) => key,
+        t: (key) => {
+            return replaceNameSpaceInLocalesKey(key);
+        },
+        $t: (key) => {
+            return replaceNameSpaceInLocalesKey(key);
+        },
         i18n: {language: "de"}
     })
 }));
 vi.mock("i18next", () => {
     const mock = {
-        t: (key) => key,
+        t: (key) => {
+            return replaceNameSpaceInLocalesKey(key);
+        },
         language: "de",
         changeLanguage: vi.fn(),
-        init: vi.fn()
+        init: vi.fn(),
+        exists: vi.fn()
 
     };
 
@@ -94,10 +101,27 @@ vi.mock("i18next", () => {
     };
 });
 
+/**
+ * Removes the namespace from the given locales key.
+ * @param {String} key of to translate
+ * @returns the key without namespace
+ */
+function replaceNameSpaceInLocalesKey (key) {
+    if (key.startsWith("common:")) {
+        return key.replace("common:", "");
+    }
+    if (key.startsWith("additional:")) {
+        return key.replace("additional:", "");
+    }
+    return key;
+}
+
+
 // Mock $t and t for all components (template and script)
 config.global.mocks = config.global.mocks || {};
 
 config.global.mocks.t = key => key;
+config.global.mocks.$t = key => key;
 
 // Mock navigation methods to prevent jsdom errors
 if (typeof window !== "undefined") {
