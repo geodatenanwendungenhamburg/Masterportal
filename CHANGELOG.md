@@ -337,7 +337,9 @@
     - Adds parameter clearAll to enable to clear the layers for the whole filter.
     - New parameter icon to set an icon for the filter.
     - New parameter showCurrentlyActiveFilters to control the visibility of the active filter area
-- Print: New parameter legendLabel as the descriptive text for the legend print checkbox.
+- Print: 
+    - New parameter legendLabel as the descriptive text for the legend print checkbox.
+    - New parameter layoutGroups to suppy another option to show the print layout in dropdown with categories.
 
 ### Changed
 - The following packages have been updated:

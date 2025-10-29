@@ -3454,6 +3454,7 @@ Print module, configurable for 2 print services: *High Resolution PlotService* a
 |overviewmapLayerId|no|String||Allows using a different layer for the overview map element. If no Id is specified, the first layer of the selected baselayer maps is used.|false|
 |printAppCapabilities|no|String|"capabilities.json"|path for the configuration of the print service|false|
 |printAppId|no|String|"master"|Print service print app id. This tells the print service which template(s) to use.|false|
+|layoutGroups|no|Object|–|Allows grouping of the layouts available in the print dialog into categories (e.g. A4 – portrait, A4 – landscape). If defined, the layouts are displayed as grouped items in the dropdown. If omitted, the layouts are shown as before.|false|
 |printMapMarker|no|Boolean|false|If set to true, map markers visible in the print image section will be printed. They may obstruct the view to interesting information.|false|
 |printService|no|String|"mapfish"|Flag determining which print service is in use. `plotservice` activates the *High Resolution PlotService*, if the parameter is not set, *Mapfish 3* is used.|false|
 |printServiceId|yes|String||Print service id. Resolved using the **[rest-services.json](../Global-Config/rest-services.json.md)** file.|false|
@@ -3493,7 +3494,25 @@ Print module, configurable for 2 print services: *High Resolution PlotService* a
     "printServiceId": "mapfish_printservice_id",
     "printAppId": "mrh",
     "filename": "Ausdruck",
-    "title": "Mein Titel"
+    "title": "Mein Titel",
+    "layoutGroups": {
+        "A0 – Hochformat": [
+            "A0 Hochformat Einfach",
+            "A0 Hochformat Umfangreich"
+        ],
+        "A0 – Querformat": [
+            "A0 Querformat Einfach",
+            "A0 Querformat Umfangreich"
+        ],
+        "A4 – Hochformat": [
+            "A4 Hochformat Einfach",
+            "A4 Hochformat Umfangreich"
+        ],
+        "A4 – Querformat": [
+            "A4 Querformat Einfach",
+            "A4 Querformat Umfangreich"
+        ]
+    }
 }
 ```
 ***
