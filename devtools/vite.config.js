@@ -178,13 +178,13 @@ export default defineConfig(({mode}) => {
                     chunkFileNames: `${base}/assets/[name].js`,
                     assetFileNames: `${base}/assets/[name].[ext]`
                 },
-                 external (id) {
+                external (id) {
                     const pid = slash(id);
 
                     if (pid.includes("/node_modules/")) {
                         return false;
                     }
-                    //todo vite: sind die notwendig?
+                    // todo vite: sind die notwendig?
                     if (pid.endsWith("/rollup.config.js")) {
                         return true;
                     }
