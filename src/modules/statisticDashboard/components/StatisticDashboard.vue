@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import FeaturesHandler from "../js/handleFeatures.js";
 import FetchDataHandler from "../js/fetchData.js";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
-import {getFeaturePOST} from "@shared/js/api/wfs/getFeature.js";
+import getFeature from "@shared/js/api/wfs/getFeature";
 import getters from "../store/gettersStatisticDashboard.js";
 import GridComponent from "./StatisticGridComponent.vue";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";

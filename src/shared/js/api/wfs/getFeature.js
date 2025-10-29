@@ -1,5 +1,5 @@
 import axios from "axios";
-import {handleAxiosError} from "@shared/js/utils/handleAxiosError.js";
+import handleAxiosError from "@shared/js/utils/handleAxiosError.js";
 import getWfsError from "@shared/js/utils/getWfsError.js";
 import {WFS} from "ol/format.js";
 import isObject from "@shared/js/utils/isObject.js";
