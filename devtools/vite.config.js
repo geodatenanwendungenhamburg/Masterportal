@@ -14,7 +14,11 @@ import {directoryListing} from "./directory_listing.js";
 import getMastercodeVersionFolderName from "./tasks/getMastercodeVersionFolderName.mjs";
 import addonModules from "./tasks/addon-modules-plugin.js";
 
-const rootPath = path.resolve(__dirname, "../"),
+let proxyConfig = {},
+    {vueAddons} = await collectAddons(),
+    base;
+const portalFolderName = process.env.PORTAL_FOLDER || "portal",
+    rootPath = path.resolve(__dirname, "../"),
     httpsConfig = {
         cert: fs.existsSync("devtools/certificate/localhost.pem")
             ? fs.readFileSync("devtools/certificate/localhost.pem")
@@ -23,7 +27,7 @@ const rootPath = path.resolve(__dirname, "../"),
             ? fs.readFileSync("devtools/certificate/localhost.key")
             : undefined
     },
-    portalEntries = glob.sync("./portal/*/index.html", {cwd: rootPath}).map(file => {
+    portalEntries = glob.sync(`${portalFolderName}/**/index.html`, {cwd: rootPath}).map(file => {
         const portalName = file.split("/").at(-2); // foldernames of portals
 
         return [`portal-${portalName}`, path.resolve(rootPath, file)];
@@ -31,9 +35,6 @@ const rootPath = path.resolve(__dirname, "../"),
     mastercodeVersionFolderName = getMastercodeVersionFolderName(),
     isWin = process.platform === "win32",
     slash = (p) => typeof p === "string" ? isWin ? p.replace(/\\/g, "/") : p : String(p || "");
-let proxyConfig = {},
-    {vueAddons} = await collectAddons(),
-    base;
 
 if (fs.existsSync("./devtools/proxyconf.json")) {
     proxyConfig = JSON.parse(fs.readFileSync("./devtools/proxyconf.json", "utf-8"));
@@ -51,7 +52,8 @@ export default defineConfig(({mode}) => {
 
     console.log("mode", mode);
     console.log("base:", base);
-    if(isProd){
+    if (isProd) {
+        console.log("portals folder ", portalFolderName);
         console.log("portalEntries", Object.fromEntries(portalEntries));
     }
 
@@ -98,7 +100,7 @@ export default defineConfig(({mode}) => {
                 targets: [
                     // copy all besides modified index.html files
                     {
-                        src: "./portal",
+                        src: `./${portalFolderName}`,
                         dest: "dist",
                         copyOptions: {
                             filter: (src, dest) => {
@@ -111,7 +113,7 @@ export default defineConfig(({mode}) => {
 
                     },
                     // copy modified index.html files
-                    {src: "./dist/portal", dest: "dist"},
+                    {src: `./dist/${portalFolderName}`, dest: "dist"},
                     {src: "./src/assets/img", dest: `dist/mastercode/${mastercodeVersionFolderName}/img`},
                     {src: "./locales", dest: `dist/mastercode/${mastercodeVersionFolderName}/locales`}
                 ]
@@ -141,8 +143,9 @@ export default defineConfig(({mode}) => {
                 strict: false,
                 allow: [
                     path.resolve(rootPath, "src"),
-                    path.resolve(rootPath, "portal/master"),
-                    path.resolve(rootPath, "addons")
+                    path.resolve(rootPath, "addons"),
+                    // todo vite: verallgemeinern! mit ${portalFolderName} oder brauchen wir das denn?
+                    path.resolve(rootPath, "portal/master")
                 ]
             },
             headers: {
