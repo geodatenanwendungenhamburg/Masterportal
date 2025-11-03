@@ -239,30 +239,34 @@ export default {
             @after-enter="setToggleButtonVisibility"
             @after-leave="setToggleButtonVisibility"
         >
-            <li
+            <template
                 v-for="(layer) in visibleSubjectDataLayers"
                 :key="layer.id"
-                class="nav-item shadow"
             >
-                <button
-                    class="nav-link"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="bottom"
-                    data-bs-custom-class="custom-tooltip"
-                    :title="$t(layer.name)"
-                    :class="layer.datasets ? 'nav-link-hover' : ''"
-                    @click="showLayerInformationInMenu(layer)"
-                    @keydown="showLayerInformationInMenu(layer)"
+                <li
+                    v-if="!layer.isNeverVisibleInTree"
+                    class="nav-item shadow"
                 >
-                    {{ $t(layer.name) }}
-                </button>
-                <IconButton
-                    :aria="$t('common:modules.layerPills.remove')"
-                    :class-array="['btn-light', 'layerpillsbutton', 'close-button']"
-                    :icon="'bi-x-lg'"
-                    :interaction="() => removeLayerFromVisibleLayers(layer)"
-                />
-            </li>
+                    <button
+                        class="nav-link"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        data-bs-custom-class="custom-tooltip"
+                        :title="$t(layer.name)"
+                        :class="layer.datasets ? 'nav-link-hover' : ''"
+                        @click="showLayerInformationInMenu(layer)"
+                        @keydown="showLayerInformationInMenu(layer)"
+                    >
+                        {{ $t(layer.name) }}
+                    </button>
+                    <IconButton
+                        :aria="$t('common:modules.layerPills.remove')"
+                        :class-array="['btn-light', 'layerpillsbutton', 'close-button']"
+                        :icon="'bi-x-lg'"
+                        :interaction="() => removeLayerFromVisibleLayers(layer)"
+                    />
+                </li>
+            </template>
         </TransitionGroup>
         <div
             key="more-pill"
