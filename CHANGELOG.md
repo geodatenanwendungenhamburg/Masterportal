@@ -6,6 +6,9 @@
 
 ## 2025-02-06 v3.15.2 (LTS)
 
+### Added
+ - Security: Added SECURITY.md file.
+
 ### Changed
 - The following packages have been updated:
     - dependencies:
