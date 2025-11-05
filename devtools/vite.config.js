@@ -43,6 +43,7 @@ if (fs.existsSync("./devtools/proxyconf.json")) {
 else if (fs.existsSync("./devtools/proxyconf_example.json")) {
     proxyConfig = JSON.parse(fs.readFileSync("./devtools/proxyconf_example.json", "utf-8"));
 }
+const FORCE_HTTPS = process.env.VITE_FORCE_HTTPS === "true";
 
 export default defineConfig(({mode}) => {
     const isProd = mode === "production";
@@ -139,7 +140,12 @@ export default defineConfig(({mode}) => {
 
         server: {
             port: 9001,
-            https: httpsConfig.cert && httpsConfig.key ? httpsConfig : false,
+            https: FORCE_HTTPS || (httpsConfig.cert && httpsConfig.key) ? httpsConfig || true : false,
+            hmr: {
+                protocol: "wss",
+                host: "localhost",
+                port: 9001
+            },
             fs: {
                 strict: false,
                 allow: [
