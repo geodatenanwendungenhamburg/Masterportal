@@ -324,6 +324,7 @@
 - Print: 
     - New parameter legendLabel as the descriptive text for the legend print checkbox.
     - New parameter layoutGroups to suppy another option to show the print layout in dropdown with categories.
+- InputText: new htmlType "textarea" in shared component InputText.
 
 ### Changed
 - The following packages have been updated:

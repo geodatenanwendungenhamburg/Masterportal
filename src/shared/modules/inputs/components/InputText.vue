@@ -38,6 +38,13 @@ export default {
             type: null,
             default: ""
         },
+        htmlType: {
+            type: String,
+            default: "input",
+            validator: function (value) {
+                return ["input", "textarea"].indexOf(value) !== -1;
+            }
+        },
         type: {
             type: String,
             default: "text",
@@ -111,7 +118,8 @@ export default {
 
 <template>
     <div class="form-floating mb-3">
-        <input
+        <component
+            :is="htmlType"
             :id="id"
             ref="input"
             :type="type"
@@ -121,18 +129,19 @@ export default {
             :aria-label="placeholder"
             :value="modelValue"
             :readonly="readonly"
-            :maxLength="maxLength"
+            :max-length="maxLength"
             :disabled="disabled"
             :min="min"
             :max="max"
             :step="step"
             :error-message="errorMessage"
+            :style="htmlType === 'textarea' ? 'height: 100px' : ''"
             @input="$emit('update:modelValue', $event.target.value); onInput?.($event.target.value)"
             @change="event => onChange?.(event.target.value)"
             @focus="$emit('focus', $event)"
             @blur="$emit('blur', $event)"
             @click="$emit('click', $event)"
-        >
+        />
         <label
             class="input-label"
             :for="id"
