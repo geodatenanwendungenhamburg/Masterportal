@@ -4,27 +4,6 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
-- Shared TableComponent:
-    - fixedColumnWithOrder in Props enable to insert the column with index.
-    - fixedRow in Props enable to insert a row directly after the header.
-- Added config.json parameter `rasterLayerDefaultInfoFormat` to override global default in 2d raster layer.
-
-### Changed
-- Shared TableComponent: Changes Props fixedData into fixedBottomData.
-
-### Deprecated
-
-### Removed
-
-### Fixed
-- Issue #1404: searchInterfaceVisibleVector: The Visible Vector Search now manually loads all features, ensuring that results are found even outside the bounding box.
-- wfsSearch: secured layers can now be searched.
-
----
 
 ## 2025-09-03 v3.14.0
 
