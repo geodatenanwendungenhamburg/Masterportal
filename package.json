@@ -19,8 +19,8 @@
   "scripts": {
     "dev": "vite --config devtools/vite.config.js",
     "devDebug": "vite --config devtools/vite.config.js  --debug plugin-transform",
+    "prestart": "node devtools/certificate/ensureDevCert.mjs",
     "start": "vite --config devtools/vite.config.js",
-    "start:ssl": "vite --config devtools/vite.config.js --https --cert devtools/certificate/localhost.pem --key devtools/certificate/localhost.key",
     "test": "vitest --config devtools/vitest.config.js --run .spec.js",
     "test:watch": "vitest --config devtools/vitest.config.js --watch .spec.js",
     "test:single": "vitest --config devtools/vitest.config.js --run",
