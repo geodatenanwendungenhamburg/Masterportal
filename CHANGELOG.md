@@ -8,6 +8,7 @@
 ### __Breaking Changes__
 
 ### Added
+- Mkdocs: Added version number.
 
 ### Changed
 
