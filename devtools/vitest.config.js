@@ -45,7 +45,7 @@ export default defineConfig(mode => mergeConfig(
             transformMode: {
                 web: [/.[tj]s$/]
             },
-            setupFiles: ["@vitest/web-worker", "jsdom-worker", "vitest.setup.js"],
+            setupFiles: ["@vitest/web-worker", "jsdom-worker", "./devtools/tests/vitest.setup.js"],
             server: {
                 deps: {
                     // Vite will process inlined modules. This could be helpful to handle packages that ship .js in ESM format (that Node can't handle).
