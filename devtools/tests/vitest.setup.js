@@ -1,5 +1,5 @@
-import mapCollection from "./src/core/maps/js/mapCollection.js";
-import testConfig from "./devtools/tests/testConfig.js";
+import mapCollection from "../../src/core/maps/js/mapCollection.js";
+import testConfig from "./testConfig.js";
 import i18next from "i18next";
 import {config, enableAutoUnmount} from "@vue/test-utils";
 import {vi, beforeAll as vitestBeforeAll, afterAll as vitestAfterAll, beforeEach as vitestBeforeEach, afterEach as vitestAfterEach, test as vitestTest, it as vitestIt} from "vitest";
@@ -238,15 +238,18 @@ vi.mock("@cesium/widgets", () => ({
 // Mocha-to-Vitest Polyfill for backward compatibility
 // Maps Mocha hook names to Vitest hook names for 3rd party repos
 
-// Done-callback to Promise polyfill for Mocha-style async tests
-// Wraps test functions to support done callback while maintaining Promise compatibility
 /**
- *
+ * Done-callback to Promise polyfill for Mocha-style async tests.
+ * Wraps test functions to support done callback while maintaining Promise compatibility.
+ * @param {Object} originalTestFn the original test-function from vitest
+ * @param {String} name name of the original test-function
+ * @param {Number} [callCount=1] amount of calls to this function
+ * @returns {Object} the polyfilled function
  */
-function createDoneCallbackWrapper (originalTestFn) {
-    return (name, fn, ...args) => {
+function createDoneCallbackWrapper (originalTestFn, name, callCount = 1) {    
+    const wrappedTestFn = (name, fn, ...args) => {        
     // If no test function provided, just pass through
-        if (typeof fn !== "function") {
+        if (typeof fn !== "function") {            
             return originalTestFn(name, fn, ...args);
         }
 
@@ -257,7 +260,8 @@ function createDoneCallbackWrapper (originalTestFn) {
             /**
              * Create a wrapper that returns a Promise
              */
-            function wrappedFn () {
+            // wrappedFn = () => {
+                function wrappedFn () {
                 return new Promise((resolve, reject) => {
                     try {
                         // Call the original function with the done callback
@@ -279,17 +283,18 @@ function createDoneCallbackWrapper (originalTestFn) {
                         reject(error);
                     }
                 });
-            }
-            // so in etwa - todo Inka: bitte stehen lasssen
-            // if(originalTestFn.skip){
-            //     wrappedFn.skip = createDoneCallbackWrapper(originalTestFn.skip, "skip");
-            // }
-            return originalTestFn(name, wrappedFn, ...args);
+            };
+            return originalTestFn (name, wrappedFn, ...args);
         }
         // No done callback expected, use original function as-is
         return originalTestFn(name, fn, ...args);
 
     };
+    if(callCount < 2){
+        wrappedTestFn.only = createDoneCallbackWrapper(originalTestFn.only, "only", 2);
+        wrappedTestFn.skip = createDoneCallbackWrapper(originalTestFn.skip, "skip", 2);
+    }
+    return wrappedTestFn;
 }
 
 // Create global polyfill functions that map Mocha hooks to Vitest hooks
