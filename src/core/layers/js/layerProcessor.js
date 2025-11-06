@@ -10,10 +10,10 @@ import {toRaw} from "vue";
  * @returns {void}
  */
 export default function initializeLayers (visibleLayerConfigs) {
-    processLayerConfig(visibleLayerConfigs, store.getters["Maps/mode"]).then(() => {
-        watchMapMode();
-        watchLayerConfig();
-    });
+    processLayerConfig(visibleLayerConfigs, store.getters["Maps/mode"]);
+
+    watchMapMode();
+    watchLayerConfig();
 }
 
 /**
@@ -48,10 +48,9 @@ function watchLayerConfig () {
  * @param {String} mapMode The current map mode.
  * @returns {void}
  */
-export async function processLayerConfig (layerConfig, mapMode) {
-    for (let i = 0; i < layerConfig.length; i++) {
-        const layerConf = layerConfig[i],
-            layer = layerCollection.getLayerById(layerConf.id);
+export function processLayerConfig (layerConfig, mapMode) {
+    layerConfig?.forEach(layerConf => {
+        let layer = layerCollection.getLayerById(layerConf.id);
 
         if (layer !== undefined) {
             updateLayerAttributes(layer, layerConf);
@@ -60,7 +59,7 @@ export async function processLayerConfig (layerConfig, mapMode) {
             layer = layerFactory.createLayer(layerConf, mapMode);
             processLayer(layer, mapMode);
         }
-    }
+    });
     if (store.getters.styleListLoaded) {
         store.dispatch("Modules/Legend/createLegend", {root: true});
     }
