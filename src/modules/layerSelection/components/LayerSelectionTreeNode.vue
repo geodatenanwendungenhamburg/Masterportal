@@ -70,14 +70,14 @@ export default {
          * @returns {void}
          */
         folderClicked () {
-            const elements = this.originalConf?.elements || this.conf.elements;
+            const elements = this.conf.elements;
 
             if (elements) {
                 if (elements.some(conf => "layerSequence" in conf)) {
                     sortByLayerSequence(elements);
                 }
 
-                this.$emit("showNode", this.originalConf?.name || this.conf.name, elements);
+                this.$emit("showNode", this.conf.name, elements);
             }
         },
         /**

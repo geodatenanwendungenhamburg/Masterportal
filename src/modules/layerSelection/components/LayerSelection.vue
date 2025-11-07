@@ -152,13 +152,6 @@ export default {
                 }
             },
             deep: true
-        },
-        subjectDataLayerConfs: {
-            handler (newVal) {
-                this.originalSubjectDataLayerConfs = JSON.parse(JSON.stringify(newVal));
-            },
-            deep: true,
-            immediate: true
         }
     },
 
