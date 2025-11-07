@@ -196,10 +196,29 @@ export default {
          * @returns {void}
          */
         filterLayers () {
-            const filteredTree = filterRecursive(
-                this.originalSubjectDataLayerConfs,
-                this.searchInput.trim().toLowerCase()
-            );
+            const search = this.searchInput.trim().toLowerCase();
+
+            if (this.filterInLayerSelection !== true || search === "") {
+                let currentFolder = this.layerConfig?.[treeSubjectsKey]?.elements || [];
+
+                if (this.lastFolderNames.length > 1) {
+                    for (const folderName of this.lastFolderNames.slice(1)) {
+                        const nextFolder = currentFolder.find(n => n.type === "folder" && n.name === folderName);
+
+                        currentFolder = nextFolder?.elements || [];
+                    }
+                }
+
+                this.filteredLayerConfs = [
+                    ...currentFolder.filter(c => c.type === "folder" && !c.isExternal),
+                    ...currentFolder.filter(c => c.type !== "folder" && !c.isExternal)
+                ];
+
+                this.provideSelectAllProps();
+                return;
+            }
+
+            const filteredTree = filterRecursive(this.originalSubjectDataLayerConfs, search);
 
             let currentFolder = filteredTree;
 
@@ -224,7 +243,6 @@ export default {
             }
 
             this.filteredLayerConfs = visibleLayers;
-
             this.provideSelectAllProps();
         },
         /**
