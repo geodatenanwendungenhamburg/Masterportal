@@ -212,7 +212,8 @@ export default {
             }
 
             const visibleLayers = [
-                    ...currentFolder.filter(c => c.type === "folder" && !c.isExternal)
+                    ...currentFolder.filter(c => c.type === "folder" && !c.isExternal),
+                    ...currentFolder.filter(c => c.type !== "folder" && !c.isExternal)
                 ],
 
                 highlightConf = this.originalSubjectDataLayerConfs.find(layer => layer.id === this.highlightLayerId),
