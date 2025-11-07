@@ -6,7 +6,7 @@ import LayerCheckBox from "../../layerTree/components/LayerCheckBox.vue";
 import SearchBar from "../../searchBar/components/SearchBar.vue";
 import LayerSelectionTreeNode from "./LayerSelectionTreeNode.vue";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
-import {layerExistsInTree, filterQueryableTree, filterTreeByQueryAndQueryable} from "@shared/js/utils/layerTreeFilterUtils.js";
+import {layerExistsInTree, filterQueryableTree, filterTreeByQueryAndQueryable, filterRecursive} from "@shared/js/utils/layerTreeFilterUtils.js";
 import {treeSubjectsKey} from "../../../shared/js/utils/constants.js";
 
 /**
@@ -196,31 +196,35 @@ export default {
          * @returns {void}
          */
         filterLayers () {
-            let filtered = [];
+            const filteredTree = filterRecursive(
+                this.originalSubjectDataLayerConfs,
+                this.searchInput.trim().toLowerCase()
+            );
 
+            let currentFolder = filteredTree;
 
-            if (this.filterInLayerSelection !== true) {
-                filtered = this.subjectDataLayerConfs;
-            }
-            else {
-                const query = this.searchInput.toLowerCase();
+            if (this.lastFolderNames.length > 1) {
+                for (const folderName of this.lastFolderNames.slice(1)) {
+                    const nextFolder = currentFolder.find(n => n.type === "folder" && n.name === folderName);
 
-                if (query) {
-                    filtered = filterTreeByQueryAndQueryable(this.subjectDataLayerConfs, query);
-                }
-                else {
-                    filtered = filterQueryableTree(this.subjectDataLayerConfs);
+                    currentFolder = nextFolder?.elements || [];
                 }
             }
 
-            const highlightConf = this.subjectDataLayerConfs.find(layer => layer.id === this.highlightLayerId),
-                highlightExists = layerExistsInTree(filtered, this.highlightLayerId);
+            const visibleLayers = [
+                    ...currentFolder.filter(c => c.type === "folder" && !c.isExternal)
+                ],
+
+                highlightConf = this.originalSubjectDataLayerConfs.find(layer => layer.id === this.highlightLayerId),
+                highlightExists = layerExistsInTree(visibleLayers, this.highlightLayerId);
 
             if (highlightConf && !highlightExists) {
-                filtered.push(highlightConf);
+                visibleLayers.push(highlightConf);
             }
 
-            this.filteredLayerConfs = filtered.filter(conf => !conf.isExternal);
+            this.filteredLayerConfs = visibleLayers;
+
+            this.provideSelectAllProps();
         },
         /**
          * Navigates backwards in folder-menu.
@@ -241,41 +245,6 @@ export default {
                 this.selectAllConfigs = [];
                 this.provideSelectAllProps();
             });
-        },
-        /**
-         * Recursively searches for a configuration object with the specified ID
-         * within the original (unfiltered) layer tree structure.
-         *
-         * This is useful when working with filtered views of the data (e.g. search results)
-         * and you need to reference or restore the full configuration object.
-         *
-         * @param {String|Number} id - The unique identifier of the configuration to find.
-         * @param {Array<Object>} [nodes=this.originalSubjectDataLayerConfs] - The list of nodes (folders or layers) to search in.
-         * @returns {Object|null} The found configuration object, or null if not found.
-         */
-        findOriginalConfById (id, nodes = this.originalSubjectDataLayerConfs) {
-            if (!Array.isArray(nodes)) {
-                console.warn("findOriginalConfById: nodes is not an array", nodes);
-                return null;
-            }
-
-            for (const node of nodes) {
-                if (node.id === id) {
-                    return node;
-                }
-
-                const children = node.elements;
-
-                if (Array.isArray(children)) {
-                    const found = this.findOriginalConfById(id, children);
-
-                    if (found) {
-                        return found;
-                    }
-                }
-            }
-
-            return null;
         },
         /**
          * Listener for click on folder.
@@ -309,13 +278,14 @@ export default {
          * @returns {void}
          */
         provideSelectAllProps () {
-            this.subjectDataLayerConfs.forEach(conf => {
-                if (this.isControlledBySelectAll(conf) && this.selectAllConfId === -1) {
-                    this.selectAllConfigs = this.subjectDataLayerConfs.filter(config => this.isControlledBySelectAll(config));
-                    this.selectAllConfId = conf.id;
-                    this.toggleShowAllCheckbox(conf);
-                }
-            });
+            const visibleLayers = this.filteredLayerConfs.filter(conf => this.isControlledBySelectAll(conf));
+
+            this.selectAllConfigs = visibleLayers;
+            this.selectAllConfId = visibleLayers[0]?.id || -1;
+
+            if (visibleLayers[0]) {
+                this.toggleShowAllCheckbox(visibleLayers[0]);
+            }
         },
         /**
          * Changes category after selection.
@@ -520,7 +490,6 @@ export default {
                     >
                         <LayerSelectionTreeNode
                             :conf="conf"
-                            :original-conf="findOriginalConfById(conf.id)"
                             :show-select-all-check-box="selectAllConfId === conf.id && !deactivateShowAllCheckbox"
                             :select-all-configs="selectAllConfigs"
                             @show-node="folderClicked"

@@ -28,19 +28,6 @@ export default {
             type: Object,
             required: true
         },
-        /**
-         * The original, unfiltered configuration object.
-         * This is useful for operations like navigating folders,
-         * where the full structure (not the filtered one) is needed.
-         * Optional—if not provided, `conf` is used as fallback.
-         * @type {Object|null}
-         * @default null
-         */
-        originalConf: {
-            type: Object,
-            required: false,
-            default: null
-        },
         /** if true, SelectAllCheckBox is rendered */
         showSelectAllCheckBox: {
             type: Boolean,

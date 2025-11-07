@@ -88,9 +88,45 @@ function filterTreeByQueryAndQueryable (configs, query) {
         .filter(conf => conf !== null);
 }
 
+/**
+ * Recursively filters a tree of layers and folders based on a search query and highlighted layer.
+ *
+ * Keeps folders only if they contain children that match the filter.
+ *
+ * @param {Array<Object>} nodes - Array of layer/folder objects to filter.
+ * @param {string} query - Search string to filter layers by name (case-insensitive).
+ * @returns {Array<Object>} Filtered array of layers and folders.
+ */
+function filterRecursive (nodes, query = "") {
+    if (!Array.isArray(nodes)) {
+        return [];
+    }
+
+    const lowerQuery = query.toLowerCase(),
+        result = [];
+
+    for (const node of nodes) {
+        if (node.type === "folder" && node.elements) {
+            const filteredChildren = filterRecursive(node.elements, query);
+
+            if (filteredChildren.length) {
+                result.push({...node, elements: filteredChildren});
+            }
+        }
+        else if (node.type === "layer") {
+            if (!query || node.name.toLowerCase().includes(lowerQuery)) {
+                result.push(node);
+            }
+        }
+    }
+
+    return result;
+}
+
 export {
     layerExistsInTree,
     isQueryableLayer,
     filterQueryableTree,
-    filterTreeByQueryAndQueryable
+    filterTreeByQueryAndQueryable,
+    filterRecursive
 };
