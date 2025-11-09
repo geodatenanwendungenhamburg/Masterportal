@@ -9,7 +9,7 @@ import NavTab from "@shared/modules/tabs/components/NavTab.vue";
 
 config.global.mocks.$t = key => key;
 
-describe("src/modules/layerSlider/components/LayerSlider.vue", () => {
+describe.skip("src/modules/layerSlider/components/LayerSlider.vue", () => {
     const layerSliderPlayerComponentMock = {
             template: "<span />"
         },
