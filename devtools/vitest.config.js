@@ -38,10 +38,10 @@ export default defineConfig(mode => mergeConfig(
                 }
             },
             hookTimeout: 500, // reduce from 20000 to 500 ms
-            include: [
-                "src/**/*.spec.js",
-                "addons/**/*.spec.js"
-            ],
+            // include: [
+            //     "src/**/*.spec.js",
+            //     "addons/**/*.spec.js"
+            // ],
             exclude: [
                 "src/modules/routing/**/*.spec.js", // --> hat Querauswirkungen auf andere Tests
                 /*
