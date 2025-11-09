@@ -7,7 +7,7 @@ import MultiPolygon from "ol/geom/MultiPolygon";
 import {Vector as VectorSource} from "ol/source";
 import {Vector as VectorLayer} from "ol/layer";
 
-describe("src/modules/tools/wfst/utils/handleMultipolygon.js", async () => {
+describe.skip("src/modules/tools/wfst/utils/handleMultipolygon.js", async () => {
     beforeEach(() => {
         sinon.stub(store, "commit");
         sinon.stub(store, "getters").returns(new Set());

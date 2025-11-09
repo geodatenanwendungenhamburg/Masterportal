@@ -21,7 +21,13 @@ export default {
     clear: function () {
         mapCollection.length = 0;
     },
-
+    /**
+     * Returns the amount of all maps in collection.
+     * @returns {Number} the amount of all maps in collection.
+     */
+    count: function () {
+        return mapCollection.length;
+    },
     /**
      * Gets a map by the given mode.
      * @param {String} mode The map mode.

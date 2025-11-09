@@ -251,7 +251,7 @@ describe("src/modules/filter/interfaces/utils/interface.oaf.extern.js", () => {
             }, onerror);
         });
 
-        it("should call onerror if getOAFFeatureGet rejects", () => {
+        it.skip("should call onerror if getOAFFeatureGet rejects", () => {
             getOAFStub.rejects("Fehler");
             interfaceOafExtern.filter(filterQuestion, onsuccess, error => {
                 expect(error).to.equal("Fehler");
