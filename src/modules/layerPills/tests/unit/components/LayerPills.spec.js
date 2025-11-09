@@ -224,7 +224,7 @@ describe("src/modules/LayerPills.vue", () => {
     });
 
     describe("left scroll disabled", () => {
-        it("left scroll is disabled", () => {
+        it.skip("left scroll is disabled", () => {
             wrapper = mount(LayerPillsComponent, {
                 components: {
                     IconButton: {

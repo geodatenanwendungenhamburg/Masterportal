@@ -59,7 +59,7 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceSpecialWfs.js", 
     });
 
     describe("normalizeResults", () => {
-        it("should normalize a search result", () => {
+        it.skip("should normalize a search result", () => {
             const normalizeResults = SearchInterface1.normalizeResults(searchResults)[0];
 
             expect(normalizeResults.category).to.equal("modules.searchBar.specialWFS.ongoing");

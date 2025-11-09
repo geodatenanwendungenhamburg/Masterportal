@@ -40,7 +40,7 @@
     "versionHotfix:all": "npm run versionHotfix && cd addons && npm run versionHotfix && cd .. && cd portalconfigs && npm run versionHotfix && cd ..",
     "versionMinor:all": "npm run versionMinor && cd addons && npm run versionMinor && cd .. && cd portalconfigs && npm run versionMinor && cd ..",
     "versionMajor:all": "npm run versionMajor && cd addons && npm run versionMajor && cd .. && cd portalconfigs && npm run versionMajor && cd ..",
-    "prePushHook": "node ./node_modules/@masterportal/mpconfigparser/cli.js docs/User/Portal-Config/config.json.md docs/User/Portal-Config/config.json.de.md && eslint --max-warnings 0 \"./**/*.{vue,js}\" && npm run vitest",
+    "prePushHook": "node ./node_modules/@masterportal/mpconfigparser/cli.js docs/User/Portal-Config/config.json.md docs/User/Portal-Config/config.json.de.md && eslint --max-warnings 0 \"./**/*.{vue,js}\" && npm run test",
     "validateDocs": "node devtools/docsValidation/validateDocs.js",
     "prepare": "husky"
   },
@@ -82,8 +82,8 @@
     "@sinonjs/fake-timers": "^14.0.0",
     "@stylistic/eslint-plugin-js": "^2.13.0",
     "@vitejs/plugin-vue": "^6.0.0",
-    "@vitest/ui": "3.2.4",
-    "@vitest/web-worker": "^3.2.4",
+    "@vitest/ui": "^4.0.8",
+    "@vitest/web-worker": "^4.0.8",
     "@vue/compiler-sfc": "3.5.22",
     "@vue/devtools-api": "^7.7.2",
     "@vue/server-renderer": "3.5.22",
@@ -121,7 +121,7 @@
     "vite-plugin-html-purgecss": "^0.1.1",
     "vite-plugin-node-polyfills": "^0.24.0",
     "vite-plugin-string-replace": "^1.1.5",
-    "vitest": "^3.2.4",
+    "vitest": "^4.0.8",
     "xmlserializer": "^0.6.1",
     "zip-a-folder": "3.1.8"
   },
