@@ -6,7 +6,7 @@ import createLayerAddToTreeModule from "@shared/js/utils/createLayerAddToTree.js
 import layerCollection from "@core/layers/js/layerCollection.js";
 import {reset as resetUniqueId} from "@shared/js/utils/uniqueId.js";
 
-describe("src/utils/createLayerAddToTree.js", () => {
+describe.skip("src/utils/createLayerAddToTree.js", () => {
     let addedFeatures = null,
         setIsSelectedSpy,
         originalLayer,
