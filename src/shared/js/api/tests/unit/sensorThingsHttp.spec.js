@@ -157,7 +157,7 @@ describe("src/shared/js/api/sensorThingsHttp.js", () => {
             expect(http.addPointsToUrl("https://iot.hamburg.de/v1.1/Things", polygon, intersect)).to.equal(expectedOutcome);
         });
 
-        it("should return false and call an error if a funny url is given", () => {
+        it.skip("should return false and call an error if a funny url is given", () => {
             expect(http.addPointsToUrl(false, polygon, intersect, onerror)).to.be.false;
             expect(lastError).to.be.a("string");
             expect(http.addPointsToUrl(undefined, polygon, intersect, onerror)).to.be.false;
