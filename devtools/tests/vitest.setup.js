@@ -1,6 +1,9 @@
+/* eslint-disable */
 import mapCollection from "../../src/core/maps/js/mapCollection.js";
 import testConfig from "./testConfig.js";
 import i18next from "i18next";
+import sinon from "sinon";
+import {expect} from "chai";
 import {config, enableAutoUnmount} from "@vue/test-utils";
 import {vi, beforeAll as vitestBeforeAll, afterAll as vitestAfterAll, beforeEach as vitestBeforeEach, afterEach as vitestAfterEach, test as vitestTest, it as vitestIt} from "vitest";
 
@@ -27,14 +30,13 @@ if (!globalThis.ResizeObserver) {
     };
 }
 
-globalThis.fetch = async (url, options) => {
-    console.log("⚠️  MUST BE FIXED WARNING: fetch shall be mocked in tests: ", url);
+globalThis.fetch = async (url) => {
+    console.warn("⚠️  MUST BE FIXED WARNING: fetch shall be mocked in tests: ", url);
     return {
         ok: true,
         status: 200,
         json: async () => ({ /* your mock data here */ }),
         text: async () => ""
-        // add other methods if needed
     };
 };
 
@@ -43,7 +45,7 @@ globalThis.XMLHttpRequest = class {
      *
      */
     open () {
-        console.log("⚠️  MUST BE FIXED WARNING: XMLHttpRequest shall be mocked in tests!");
+        console.warn("⚠️  MUST BE FIXED WARNING: XMLHttpRequest shall be mocked in tests!");
     }
     /**
      *
@@ -246,10 +248,10 @@ vi.mock("@cesium/widgets", () => ({
  * @param {Number} [callCount=1] amount of calls to this function
  * @returns {Object} the polyfilled function
  */
-function createDoneCallbackWrapper (originalTestFn, name, callCount = 1) {    
-    const wrappedTestFn = (name, fn, ...args) => {        
+function createDoneCallbackWrapper (originalTestFn, name, callCount = 1) {
+    const wrappedTestFn = (name, fn, ...args) => {
     // If no test function provided, just pass through
-        if (typeof fn !== "function") {            
+        if (typeof fn !== "function") {
             return originalTestFn(name, fn, ...args);
         }
 
@@ -260,8 +262,7 @@ function createDoneCallbackWrapper (originalTestFn, name, callCount = 1) {
             /**
              * Create a wrapper that returns a Promise
              */
-            // wrappedFn = () => {
-                function wrappedFn () {
+            function wrappedFn () {
                 return new Promise((resolve, reject) => {
                     try {
                         // Call the original function with the done callback
@@ -283,14 +284,15 @@ function createDoneCallbackWrapper (originalTestFn, name, callCount = 1) {
                         reject(error);
                     }
                 });
-            };
-            return originalTestFn (name, wrappedFn, ...args);
+            }
+            return originalTestFn(name, wrappedFn, ...args);
         }
         // No done callback expected, use original function as-is
         return originalTestFn(name, fn, ...args);
 
     };
-    if(callCount < 2){
+
+    if (callCount < 2) {
         wrappedTestFn.only = createDoneCallbackWrapper(originalTestFn.only, "only", 2);
         wrappedTestFn.skip = createDoneCallbackWrapper(originalTestFn.skip, "skip", 2);
     }
@@ -349,3 +351,16 @@ if (!globalThis.__autoUnmountEnabled) {
     config.global.renderStubDefaultSlot = true;
     globalThis.__autoUnmountEnabled = true;
 }
+
+
+globalThis.before(() => {
+    expect(mapCollection.count()).to.be.equals(0);
+});
+
+globalThis.after(() => {
+    mapCollection.clear();
+});
+
+globalThis.afterEach(() => {
+    sinon.restore();
+});
