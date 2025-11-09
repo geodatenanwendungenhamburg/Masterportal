@@ -21,7 +21,13 @@ export default {
     clear: function () {
         mapCollection.length = 0;
     },
-
+    /**
+     * Returns the amount of all maps in collection.
+     * @returns {Number} the amount of all maps in collection.
+     */
+    count: function () {
+        return mapCollection.length;
+    },
     /**
      * Returns true, if mapCollection is empty.
      * @returns {Boolean} true, if mapCollection is empty.
