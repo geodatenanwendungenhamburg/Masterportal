@@ -118,6 +118,7 @@ export default {
                     :set-selected-interaction="setSelectedInteraction"
                     :source="source"
                     :should-emit-events="false"
+                    :text-labels="true"
                 />
             </div>
             <div
@@ -136,6 +137,7 @@ export default {
                     :set-selected-draw-type="setSelectedDrawType"
                     :source="source"
                     :should-emit-events="false"
+                    :text-labels="true"
                 />
                 <DrawTypes
                     v-else-if="selectedDrawTypeMain === 'symbols'"
@@ -147,6 +149,7 @@ export default {
                     :set-selected-draw-type="setSelectedDrawType"
                     :source="source"
                     :should-emit-events="false"
+                    :text-labels="true"
                 />
             </div>
         </div>
