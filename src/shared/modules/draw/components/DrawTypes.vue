@@ -123,6 +123,11 @@ export default {
         textLabels: {
             type: Boolean,
             default: false
+        },
+        drawLayout: {
+            type: Boolean,
+            default: false,
+            required: false
         }
     },
     emits: ["drawstart", "drawend", "start-drawing", "stop-drawing"],
@@ -320,6 +325,6 @@ export default {
         :icon="drawIcons[drawType]"
         :label="getButtonLabel(drawType)"
         class="d-flex align-items-center"
-        :draw-layout="true"
+        :draw-layout="drawLayout"
     />
 </template>
