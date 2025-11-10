@@ -338,7 +338,7 @@ export default {
             const externalLayers = this.subjectDataLayerConfs.filter(conf => conf.isExternal),
                 query = this.searchInput.toLowerCase();
 
-            if (!this.filterInLayerSelection === true) {
+            if (this.filterInLayerSelection !== true) {
                 return externalLayers;
             }
 
