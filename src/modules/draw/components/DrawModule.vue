@@ -163,6 +163,7 @@ export default {
                 :selected-draw-type="selectedDrawType"
                 :set-current-layout="setCurrentLayout"
                 :stroke-range="strokeRange"
+                :draw-layout="true"
             />
             <DrawLayout
                 v-if="selectedDrawType === 'doubleCircle' && selectedDrawTypeMain !== ''"
@@ -172,6 +173,7 @@ export default {
                 :selected-draw-type="selectedDrawType"
                 :set-current-layout="setCurrentLayoutOuterCircle"
                 :stroke-range="strokeRange"
+                :draw-layout="true"
             />
         </div>
         <div
