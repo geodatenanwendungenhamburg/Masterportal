@@ -439,7 +439,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
 
         await wrapper.vm.$nextTick();
         expect(LayerSelection.actions.navigateBack.calledOnce).to.be.true;
-        expect(provideSelectAllPropsSpy.calledOnce).to.be.true;
+        expect(provideSelectAllPropsSpy.calledTwice).to.be.true;
     });
 
 
@@ -568,7 +568,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
             expect(wrapper.vm.lastFolderNames).to.deep.equals(["root"]);
             expect(commitSpy.calledOnce).to.be.true;
             expect(commitSpy.calledWith("Modules/LayerSelection/setSubjectDataLayerConfs", expectedPayload)).to.be.true;
-            expect(provideSelectAllPropsSpy.calledOnce).to.be.true;
+            expect(provideSelectAllPropsSpy.calledTwice).to.be.true;
         });
         it("should do nothing if the folder count does not change", async () => {
             const commitSpy = sinon.spy(store, "commit"),
