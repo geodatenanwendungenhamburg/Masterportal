@@ -133,7 +133,7 @@ export default {
     },
     computed: {
         ...mapGetters("Maps", ["projection"]),
-        ...mapState("Modules/Draw", ["drawTypesGeometrie", "drawTypesMain"])
+        ...mapState("Modules/Draw", ["drawTypesGeometrie", "drawTypesMain", "drawTypesSymbols"])
     },
     watch: {
         "circleOptions.interactive" () {
@@ -276,7 +276,8 @@ export default {
                 const labelEntry = this.drawTypeLabels.find(label => label.type === drawType),
                     drawTypesGeometrie = this.drawTypesGeometrie,
                     drawTypesMain = this.drawTypesMain,
-                    allDrawTypes = [...drawTypesGeometrie, ...drawTypesMain];
+                    drawTypesSymbols = this.drawTypesSymbols,
+                    allDrawTypes = [...drawTypesGeometrie, ...drawTypesMain, ...drawTypesSymbols];
 
                 if (labelEntry && labelEntry.label) {
                     return this.$t(labelEntry.label) || "";
