@@ -119,6 +119,10 @@ export default {
         shouldEmitEvents: {
             type: Boolean,
             default: false
+        },
+        textLabels: {
+            type: Boolean,
+            default: false
         }
     },
     emits: ["drawstart", "drawend", "start-drawing", "stop-drawing"],
@@ -265,6 +269,23 @@ export default {
          * @returns {String} - The Label of the button.
          */
         getButtonLabel (drawType) {
+            if (this.textLabels) {
+                if (!drawType || typeof drawType !== "string") {
+                    return "";
+                }
+                const labelEntry = this.drawTypeLabels.find(label => label.type === drawType),
+                    drawTypesGeometrie = this.drawTypesGeometrie,
+                    drawTypesMain = this.drawTypesMain,
+                    allDrawTypes = [...drawTypesGeometrie, ...drawTypesMain];
+
+                if (labelEntry && labelEntry.label) {
+                    return this.$t(labelEntry.label) || "";
+                }
+                if (allDrawTypes.includes(drawType)) {
+                    return this.$t(`common:shared.modules.draw.drawTypes.${drawType}`);
+                }
+                return "";
+            }
             if (this.drawTypeLabels.length === 0 || typeof drawType !== "string" || drawType === "") {
                 return "";
             }
