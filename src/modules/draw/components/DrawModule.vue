@@ -119,6 +119,7 @@ export default {
                     :source="source"
                     :should-emit-events="false"
                     :text-labels="true"
+                    :draw-layout="true"
                 />
             </div>
             <div
@@ -138,6 +139,7 @@ export default {
                     :source="source"
                     :should-emit-events="false"
                     :text-labels="true"
+                    :draw-layout="true"
                 />
                 <DrawTypes
                     v-else-if="selectedDrawTypeMain === 'symbols'"
@@ -150,6 +152,7 @@ export default {
                     :source="source"
                     :should-emit-events="false"
                     :text-labels="true"
+                    :draw-layout="true"
                 />
             </div>
         </div>
@@ -163,7 +166,6 @@ export default {
                 :selected-draw-type="selectedDrawType"
                 :set-current-layout="setCurrentLayout"
                 :stroke-range="strokeRange"
-                :draw-layout="true"
             />
             <DrawLayout
                 v-if="selectedDrawType === 'doubleCircle' && selectedDrawTypeMain !== ''"
@@ -173,7 +175,6 @@ export default {
                 :selected-draw-type="selectedDrawType"
                 :set-current-layout="setCurrentLayoutOuterCircle"
                 :stroke-range="strokeRange"
-                :draw-layout="true"
             />
         </div>
         <div
