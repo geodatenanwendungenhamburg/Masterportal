@@ -46,8 +46,9 @@ export default {
             }
         },
         layer: {
-            type: Object,
-            required: true
+            type: Object || null,
+            required: false,
+            default: null
         },
         selectedInteraction: {
             type: String,

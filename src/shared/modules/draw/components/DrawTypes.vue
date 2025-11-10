@@ -319,6 +319,7 @@ export default {
         :aria="$t('common:shared.modules.draw.drawTypes.' + drawType)"
         :class-array="[
             'btn-primary',
+            $attrs,
             selectedDrawType === drawType || selectedDrawTypeMain === drawType ? 'active': ''
         ]"
         :interaction="(event) => regulateInteraction(drawType)"
