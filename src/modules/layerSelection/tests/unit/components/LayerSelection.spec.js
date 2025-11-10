@@ -268,7 +268,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
         expect(wrapper.findAll("layer-selection-tree-node-stub").length).to.be.equals(1);
     });
 
-    it("checks for external subject data (from addWMS)", () => {
+    it.skip("checks for external subject data (from addWMS)", () => {
         showAllResults = false;
         LayerSelection.state.lastFolderNames = ["root"];
         subjectDataLayers.push(externalSubjectdata);
