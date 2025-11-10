@@ -40,7 +40,6 @@ export default {
         ...mapGetters("Maps", ["mode"]),
         ...mapGetters(["activeOrFirstCategory", "allCategories", "portalConfig", "folderById", "layerConfig", "filterInLayerSelection"]),
         ...mapGetters("Modules/LayerSelection", ["visible", "subjectDataLayerConfs", "baselayerConfs", "lastFolderNames", "layerInfoVisible", "highlightLayerId", "menuSide"]),
-        ...mapGetters("Menu", ["previousNavigationEntryText", "currentComponent"]),
         /**
          * @return {Array} The layer configurations for the select all checkbox.
          */
