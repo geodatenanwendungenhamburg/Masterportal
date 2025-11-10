@@ -59,7 +59,7 @@ export default {
         },
         drawLayout: {
             type: Boolean,
-            default: null,
+            default: false,
             required: false
         }
     },
