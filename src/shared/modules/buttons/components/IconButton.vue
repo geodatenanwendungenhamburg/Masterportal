@@ -42,6 +42,11 @@ export default {
             type: String,
             default: null,
             required: false
+        },
+        drawLayout: {
+            type: Boolean,
+            default: null,
+            required: false
         }
     }
 };
@@ -49,7 +54,7 @@ export default {
 
 <template>
     <div
-        :class="[label ? 'btn-wrapper flex-column d-flex': '']"
+        :class="[label && !drawLayout ? 'btn-wrapper flex-column d-flex align-items-center': drawLayout ? 'btn-wrapper draw-layout flex-column d-flex' : '']"
     >
         <button
             :id="id"
@@ -70,7 +75,7 @@ export default {
         </button>
         <label
             v-if="label"
-            class="btn-label"
+            class="text-center btn-label"
             :for="id"
             :aria-label="label"
         >
@@ -84,17 +89,15 @@ export default {
 @import "~mixins";
 
 .btn-wrapper {
-    margin-right: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 3rem;
+    width: 16rem;
+}
+
+.btn-wrapper.draw-layout {
+    width: 5rem;
 }
 
 .btn-wrapper > .btn-label {
     font-size: 0.9rem;
-    align-items: left;
-    margin-top: 0.5rem;
 }
 
  .btn {
