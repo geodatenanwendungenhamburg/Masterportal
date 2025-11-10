@@ -98,7 +98,7 @@ export default {
         </button>
         <label
             v-if="label"
-            class="btn-label"
+            class="text-center btn-label"
             :for="id"
             :aria-label="label"
         >
@@ -111,11 +111,11 @@ export default {
 
 
 .btn-wrapper {
-    margin-right: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 3rem;
+    width: 16rem;
+}
+
+.btn-wrapper.draw-layout {
+    width: 5rem;
 }
 
 .btn-wrapper.draw-layout {
@@ -132,8 +132,6 @@ export default {
 
 .btn-wrapper > .btn-label {
     font-size: 0.9rem;
-    align-items: left;
-    margin-top: 0.5rem;
 }
 
  .btn {
