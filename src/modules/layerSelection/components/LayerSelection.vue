@@ -6,7 +6,7 @@ import LayerCheckBox from "../../layerTree/components/LayerCheckBox.vue";
 import SearchBar from "../../searchBar/components/SearchBar.vue";
 import LayerSelectionTreeNode from "./LayerSelectionTreeNode.vue";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
-import {layerExistsInTree, filterQueryableTree, filterTreeByQueryAndQueryable, filterRecursive} from "@shared/js/utils/layerTreeFilterUtils.js";
+import {layerExistsInTree, filterQueryableTree, filterTreeByQueryAndQueryable, filterRecursive, getVisibleLayers} from "@shared/js/utils/layerTreeFilterUtils.js";
 import {treeSubjectsKey} from "../../../shared/js/utils/constants.js";
 
 /**
@@ -31,7 +31,8 @@ export default {
             activeCategory: null,
             deactivateShowAllCheckbox: false,
             rootFolderCount: 0,
-            filteredLayerConfs: []
+            filteredLayerConfs: [],
+            fullRootLayerConfig: []
         };
     },
     computed: {
@@ -39,7 +40,7 @@ export default {
         ...mapGetters("Maps", ["mode"]),
         ...mapGetters(["activeOrFirstCategory", "allCategories", "portalConfig", "folderById", "layerConfig", "filterInLayerSelection"]),
         ...mapGetters("Modules/LayerSelection", ["visible", "subjectDataLayerConfs", "baselayerConfs", "lastFolderNames", "layerInfoVisible", "highlightLayerId", "menuSide"]),
-
+        ...mapGetters("Menu", ["previousNavigationEntryText", "currentComponent"]),
         /**
          * @return {Array} The layer configurations for the select all checkbox.
          */
@@ -196,31 +197,25 @@ export default {
          * @returns {void}
          */
         filterLayers () {
-            const search = this.searchInput.trim().toLowerCase();
-
-            if (this.filterInLayerSelection !== true || search === "") {
-                let currentFolder = this.layerConfig?.[treeSubjectsKey]?.elements || [];
-
-                if (this.lastFolderNames.length > 1) {
-                    for (const folderName of this.lastFolderNames.slice(1)) {
-                        const nextFolder = currentFolder.find(n => n.type === "folder" && n.name === folderName);
-
-                        currentFolder = nextFolder?.elements || [];
-                    }
-                }
-
-                this.filteredLayerConfs = [
-                    ...currentFolder.filter(c => c.type === "folder" && !c.isExternal),
-                    ...currentFolder.filter(c => c.type !== "folder" && !c.isExternal)
-                ];
-
-                this.provideSelectAllProps();
-                return;
+            if (!this.fullRootLayerConfig?.length && this.layerConfig?.[treeSubjectsKey]?.elements) {
+                this.fullRootLayerConfig = this.layerConfig[treeSubjectsKey].elements;
             }
 
-            const filteredTree = filterRecursive(this.originalSubjectDataLayerConfs, search);
+            const
+                sourceTree = this.fullRootLayerConfig.length > 0
+                    ? this.fullRootLayerConfig
+                    : this.originalSubjectDataLayerConfs,
 
-            let currentFolder = filteredTree;
+                filteredTree = filterRecursive(
+                    sourceTree,
+                    this.searchInput.trim().toLowerCase()
+                );
+
+            let currentFolder = filteredTree,
+                visibleLayers = [],
+                highlightConf = null,
+                highlightExists = false;
+
 
             if (this.lastFolderNames.length > 1) {
                 for (const folderName of this.lastFolderNames.slice(1)) {
@@ -230,13 +225,9 @@ export default {
                 }
             }
 
-            const visibleLayers = [
-                    ...currentFolder.filter(c => c.type === "folder" && !c.isExternal),
-                    ...currentFolder.filter(c => c.type !== "folder" && !c.isExternal)
-                ],
-
-                highlightConf = this.originalSubjectDataLayerConfs.find(layer => layer.id === this.highlightLayerId),
-                highlightExists = layerExistsInTree(visibleLayers, this.highlightLayerId);
+            visibleLayers = getVisibleLayers(currentFolder);
+            highlightConf = this.originalSubjectDataLayerConfs.find(layer => layer.id === this.highlightLayerId);
+            highlightExists = layerExistsInTree(visibleLayers, this.highlightLayerId);
 
             if (highlightConf && !highlightExists) {
                 visibleLayers.push(highlightConf);

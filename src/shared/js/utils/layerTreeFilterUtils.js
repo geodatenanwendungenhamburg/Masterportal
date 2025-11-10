@@ -123,10 +123,35 @@ function filterRecursive (nodes, query = "") {
     return result;
 }
 
+/**
+ * Filters out external layers and sorts folders before layers.
+ *
+ * @param {Array<Object>} currentFolder - The array of layer and folder configurations.
+ * @returns {Array<Object>} - A new array containing only non-external configs, with folders first.
+ */
+function getVisibleLayers (currentFolder) {
+    if (!Array.isArray(currentFolder)) {
+        return [];
+    }
+
+    return currentFolder
+        .filter(conf => !conf.isExternal)
+        .sort((a, b) => {
+            if (a.type === "folder" && b.type !== "folder") {
+                return -1;
+            }
+            if (a.type !== "folder" && b.type === "folder") {
+                return 1;
+            }
+            return 0;
+        });
+}
+
 export {
     layerExistsInTree,
     isQueryableLayer,
     filterQueryableTree,
     filterTreeByQueryAndQueryable,
-    filterRecursive
+    filterRecursive,
+    getVisibleLayers
 };
