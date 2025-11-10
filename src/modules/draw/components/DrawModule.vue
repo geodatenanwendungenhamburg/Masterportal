@@ -92,7 +92,6 @@ export default {
             id="draw-edit"
         >
             <DrawEdit
-                v-if="layer !== null"
                 :draw-edits="drawEdits"
                 :draw-icons="drawIcons"
                 :layer="layer"

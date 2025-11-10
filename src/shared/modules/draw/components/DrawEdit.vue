@@ -93,20 +93,39 @@ export default {
                 this.removeInteraction(this.currentModifyInteraction);
                 this.currentModifyInteraction = null;
             }
+        },
+        layer (layer) {
+            if (layer !== null) {
+
+                this.source.on("addfeature", event => {
+                    this.shiftUndoRedoFeatures(event.feature, "draw", this.mode);
+                });
+
+                this.source.on("removefeature", event => {
+                    this.shiftUndoRedoFeatures(event.feature, "delete", this.mode);
+                });
+
+                this.source.on("clear", () => {
+                    this.mode = "";
+                });
+            }
         }
     },
     mounted () {
-        this.source.on("addfeature", event => {
-            this.shiftUndoRedoFeatures(event.feature, "draw", this.mode);
-        });
+        if (this.layer !== null) {
 
-        this.source.on("removefeature", event => {
-            this.shiftUndoRedoFeatures(event.feature, "delete", this.mode);
-        });
+            this.source.on("addfeature", event => {
+                this.shiftUndoRedoFeatures(event.feature, "draw", this.mode);
+            });
 
-        this.source.on("clear", () => {
-            this.mode = "";
-        });
+            this.source.on("removefeature", event => {
+                this.shiftUndoRedoFeatures(event.feature, "delete", this.mode);
+            });
+
+            this.source.on("clear", () => {
+                this.mode = "";
+            });
+        }
     },
     unmounted () {
         this.currentSelectInteractions.forEach(currentSelectInteraction => this.removeInteraction(currentSelectInteraction));
@@ -295,7 +314,6 @@ export default {
 
 <template>
     <div
-        v-if="source?.getFeatures()?.length > 0 || undoFeatures.length > 0 || redoFeatures.length > 0"
         class="mb-4"
     >
         <div class="d-flex">
