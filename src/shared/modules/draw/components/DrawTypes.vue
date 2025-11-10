@@ -265,23 +265,20 @@ export default {
          * @returns {String} - The Label of the button.
          */
         getButtonLabel (drawType) {
-            if (!drawType || typeof drawType !== "string") {
+            if (this.drawTypeLabels.length === 0 || typeof drawType !== "string" || drawType === "") {
                 return "";
             }
 
-            const labelEntry = this.drawTypeLabels.find(label => label.type === drawType),
-                drawTypesGeometrie = this.drawTypesGeometrie,
-                drawTypesMain = this.drawTypesMain,
-                allDrawTypes = [...drawTypesGeometrie, ...drawTypesMain];
+            let label = "";
 
-            if (labelEntry && labelEntry.label) {
-                return this.$t(labelEntry.label) || "";
+            for (let i = 0; i < this.drawTypeLabels.length; i++) {
+                if (this.drawTypeLabels[i].type === drawType) {
+                    label = this.drawTypeLabels[i].label;
+                    break;
+                }
             }
 
-            if (allDrawTypes.includes(drawType)) {
-                return this.$t(`common:shared.modules.draw.drawTypes.${drawType}`);
-            }
-            return "";
+            return this.$t(label);
         }
     }
 };
