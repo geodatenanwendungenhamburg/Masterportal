@@ -84,9 +84,6 @@ export default {
 
 <template>
     <div>
-        <div class="mb-3">
-            <span>{{ $t("common:shared.modules.draw.drawSettingsCircle.settings." + selectedDrawType) }}</span>
-        </div>
         <div
             v-if="selectedDrawType === 'circle'"
             class="form-check form-switch mb-3"

@@ -7,6 +7,7 @@ import DrawEdit from "@shared/modules/draw/components/DrawEdit.vue";
 import DrawLayout from "@shared/modules/draw/components/DrawLayout.vue";
 import DrawSettingsCircle from "@shared/modules/draw/components/DrawSettingsCircle.vue";
 import DrawTypes from "@shared/modules/draw/components/DrawTypes.vue";
+import LayoutFrame from "@shared/modules/layoutFrame/components/LayoutFrame.vue";
 
 /**
  * Modules to make drawings.
@@ -20,7 +21,8 @@ export default {
         DrawEdit,
         DrawLayout,
         DrawSettingsCircle,
-        DrawTypes
+        DrawTypes,
+        LayoutFrame
     },
     data () {
         return {
@@ -77,7 +79,32 @@ export default {
             "setSelectedDrawType",
             "setSelectedDrawTypeMain",
             "setSelectedInteraction"
-        ])
+        ]),
+        getTrianglePosition (selectedDrawTypeMain, selectedDrawType, triangleId) {
+            let buttonId;
+
+            if (triangleId === "first" && (selectedDrawTypeMain === "geometries" || selectedDrawTypeMain === "symbols")) {
+                buttonId = "draw-" + selectedDrawTypeMain;
+            }
+            else if (triangleId === "second" && (selectedDrawTypeMain === "pen" || selectedDrawTypeMain === "writeText")) {
+                buttonId = "draw-" + selectedDrawTypeMain;
+            }
+
+            if (triangleId === "second" && (selectedDrawTypeMain === "geometries" || selectedDrawTypeMain === "symbols") && selectedDrawType !== "") {
+                buttonId = "draw-" + selectedDrawType;
+            }
+
+            if (!buttonId) {
+                console.error("buttonId is undefined or null.");
+                return 0;
+            }
+
+            const buttonPosition = document.getElementById(buttonId).getBoundingClientRect(),
+                buttonPositionRight = buttonPosition.right,
+                buttonPositionLeft = buttonPosition.left;
+
+            return buttonPositionLeft + (buttonPositionRight - buttonPositionLeft) / 2 - 23;
+        }
     }
 };
 </script>
@@ -100,9 +127,12 @@ export default {
         </div>
         <div
             id="draw-types"
-            class="mb-5"
+            class="mb-2"
         >
-            <div class="d-flex mb-5 drawtypes-container">
+            <div
+                id="main-drawtypes-container"
+                class="d-flex mb-2 drawtypes-container"
+            >
                 <DrawTypes
                     :circle-options="circleOptions"
                     :current-layout="currentLayout"
@@ -121,72 +151,92 @@ export default {
                     :draw-layout="true"
                 />
             </div>
-            <div
+            <LayoutFrame
                 v-if="selectedDrawTypeMain === 'geometries' || selectedDrawTypeMain === 'symbols'"
-                class="d-flex mb-5"
+                triangle
+                :triangle-position="getTrianglePosition(selectedDrawTypeMain, selectedDrawType, 'first')"
+                border-color="#D6E3FF"
+                fill="#fff"
             >
-                <DrawTypes
-                    v-if="selectedDrawTypeMain === 'geometries'"
-                    class="mt-4"
+                <div
+                    class="d-flex mb-2"
+                >
+                    <DrawTypes
+                        v-if="selectedDrawTypeMain === 'geometries'"
+                        class="mt-4"
+                        :circle-options="circleOptions"
+                        :current-layout="currentLayout"
+                        :current-layout-outer-circle="currentLayoutOuterCircle"
+                        :draw-icons="drawIcons"
+                        :draw-types="drawTypesGeometrie"
+                        :selected-draw-type="selectedDrawType"
+                        :set-selected-draw-type="setSelectedDrawType"
+                        :source="source"
+                        :should-emit-events="false"
+                        :text-labels="true"
+                        :draw-layout="true"
+                    />
+                    <DrawTypes
+                        v-else-if="selectedDrawTypeMain === 'symbols'"
+                        class="mt-4"
+                        :current-layout="currentLayout"
+                        :draw-icons="drawIcons"
+                        :draw-types="drawTypesSymbols"
+                        :selected-draw-type="selectedDrawType"
+                        :set-selected-draw-type="setSelectedDrawType"
+                        :source="source"
+                        :should-emit-events="false"
+                        :text-labels="true"
+                        :draw-layout="true"
+                    />
+                </div>
+            </LayoutFrame>
+        </div>
+        <LayoutFrame
+            v-if="
+                selectedDrawTypeMain === 'pen' ||
+                    selectedDrawTypeMain === 'writeText' ||
+                    ['line', 'box', 'circle', 'polygon', 'doubleCircle', 'point'].includes(selectedDrawType)
+            "
+            triangle
+            :triangle-position="getTrianglePosition(selectedDrawTypeMain, selectedDrawType, 'second')"
+            border-color="#D6E3FF"
+            fill="#fff"
+            class="mb-2"
+        >
+            <div
+                id="draw-settings"
+            >
+                <DrawSettingsCircle
+                    v-if="selectedDrawType === 'circle' || selectedDrawType === 'doubleCircle'"
                     :circle-options="circleOptions"
-                    :current-layout="currentLayout"
-                    :current-layout-outer-circle="currentLayoutOuterCircle"
-                    :draw-icons="drawIcons"
-                    :draw-types="drawTypesGeometrie"
                     :selected-draw-type="selectedDrawType"
-                    :set-selected-draw-type="setSelectedDrawType"
-                    :source="source"
-                    :should-emit-events="false"
-                    :text-labels="true"
-                    :draw-layout="true"
-                />
-                <DrawTypes
-                    v-else-if="selectedDrawTypeMain === 'symbols'"
-                    class="mt-4"
-                    :current-layout="currentLayout"
-                    :draw-icons="drawIcons"
-                    :draw-types="drawTypesSymbols"
-                    :selected-draw-type="selectedDrawType"
-                    :set-selected-draw-type="setSelectedDrawType"
-                    :source="source"
-                    :should-emit-events="false"
-                    :text-labels="true"
-                    :draw-layout="true"
+                    :set-circle-options="setCircleOptions"
+                    :units="units"
                 />
             </div>
-        </div>
-        <div
-            id="draw-layouts"
-            class="mb-5"
-        >
-            <DrawLayout
-                v-if="selectedDrawType !== '' && selectedDrawTypeMain !== ''"
-                :current-layout="currentLayout"
-                :selected-draw-type="selectedDrawType"
-                :set-current-layout="setCurrentLayout"
-                :stroke-range="strokeRange"
-            />
-            <DrawLayout
-                v-if="selectedDrawType === 'doubleCircle' && selectedDrawTypeMain !== ''"
-                class="mt-4"
-                :circle-type="'outerCircle'"
-                :current-layout="currentLayoutOuterCircle"
-                :selected-draw-type="selectedDrawType"
-                :set-current-layout="setCurrentLayoutOuterCircle"
-                :stroke-range="strokeRange"
-            />
-        </div>
-        <div
-            id="draw-settings"
-        >
-            <DrawSettingsCircle
-                v-if="(selectedDrawType === 'circle' || selectedDrawType === 'doubleCircle') && selectedDrawTypeMain !== ''"
-                :circle-options="circleOptions"
-                :selected-draw-type="selectedDrawType"
-                :set-circle-options="setCircleOptions"
-                :units="units"
-            />
-        </div>
+            <div
+                id="draw-layouts"
+                class="mb-2"
+            >
+                <DrawLayout
+                    v-if="selectedDrawType !== ''"
+                    :current-layout="currentLayout"
+                    :selected-draw-type="selectedDrawType"
+                    :set-current-layout="setCurrentLayout"
+                    :stroke-range="strokeRange"
+                />
+                <DrawLayout
+                    v-if="selectedDrawType === 'doubleCircle'"
+                    class="mt-4"
+                    :circle-type="'outerCircle'"
+                    :current-layout="currentLayoutOuterCircle"
+                    :selected-draw-type="selectedDrawType"
+                    :set-current-layout="setCurrentLayoutOuterCircle"
+                    :stroke-range="strokeRange"
+                />
+            </div>
+        </LayoutFrame>
     </div>
 </template>
 
