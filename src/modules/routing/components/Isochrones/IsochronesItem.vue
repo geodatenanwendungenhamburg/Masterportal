@@ -1,6 +1,6 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from "vuex";
-import actions from "@modules/routing/store/isochrones/actionsIsochrones";
+import actions from "@modules/routing/store/isochrones/actionsIsochrones.js";
 import mutations from "../../store/isochrones/mutationsIsochrones.js";
 import * as constants from "../../store/isochrones/constantsIsochrones.js";
 import * as constantsRouting from "../../store/constantsRouting.js";
