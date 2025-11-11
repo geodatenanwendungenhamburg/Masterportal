@@ -367,7 +367,13 @@ export default {
             {{ $t('common:modules.searchBar.minCharHint', { min: minCharacters }) }}
         </small>
         <small
-            v-else-if="searchInput.length >= minCharacters && !searchIsLoading && searchResults.length === 0 && (currentComponentSide !== 'layerSelection' || !filterInLayerSelection)"
+            v-else-if="
+                searchInput.length >= minCharacters
+                    && !searchIsLoading
+                    && searchResults.length === 0
+                    && (currentComponentSide !== 'layerSelection' || !filterInLayerSelection)
+                    && currentComponentSide !== 'root'"
+
             class="form-text text-muted"
         >
             {{ $t('common:modules.searchBar.noResults') }}
