@@ -1,6 +1,6 @@
 
 import {apply as applyTransform} from "ol/transform.js";
-import {createEmpty, extendCoordinate} from "ol/extent";
+import {createEmpty, extendCoordinate} from "ol/extent.js";
 import {DEVICE_PIXEL_RATIO} from "ol/has.js";
 
 import BuildSpec from "../js/buildSpec.js";

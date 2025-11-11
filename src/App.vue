@@ -5,7 +5,7 @@ import Alerting from "./modules/alerting/components/AlertingItem.vue";
 import BaselayerSwitcher from "./modules/baselayerSwitcher/components/BaselayerSwitcher.vue";
 import ControlBar from "./modules/controls/components/ControlBar.vue";
 import initializeLayers from "./core/layers/js/layerProcessor.js";
-import maps from "./core/maps/js/maps";
+import maps from "./core/maps/js/maps.js";
 import {startProcessUrlParams} from "./core/urlParams/js/urlParams.js";
 import mapCollection from "./core/maps/js/mapCollection.js";
 import MenuContainer from "./modules/menu/components/MenuContainer.vue";
