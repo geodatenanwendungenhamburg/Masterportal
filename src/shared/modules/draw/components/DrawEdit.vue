@@ -30,7 +30,7 @@ export default {
         drawEdits: {
             type: Array,
             default () {
-                return ["deleteAll", "delete", "edit", "undo", "redo"];
+                return ["deleteAll", "delete", "edit", "undo", "redo", "editAttributes", "hide", "download"];
             }
         },
         drawIcons: {
@@ -41,7 +41,10 @@ export default {
                     deleteAll: "bi-trash",
                     modify: "bi-tools",
                     redo: "bi-arrow-right",
-                    undo: "bi-arrow-left"
+                    undo: "bi-arrow-left",
+                    editAttributes: "bi-window-split",
+                    hide: "bi-eye",
+                    download: "bi-cloud-download"
                 };
             }
         },
@@ -72,7 +75,10 @@ export default {
                 deleteAll: this.regulateDeleteAll,
                 modify: this.regulateModify,
                 redo: this.regulateRedo,
-                undo: this.regulateUndo
+                undo: this.regulateUndo,
+                editAttributes: this.regulateEditAttributes,
+                hide: this.regulateHide,
+                download: this.regulateDownload
             },
             mode: "",
             redoFeatures: [],
@@ -308,6 +314,15 @@ export default {
                 this.undoFeatures.push(undoRedoFeature);
                 this.redoFeatures = [];
             }
+        },
+        regulateEditAttributes () {
+            console.warn("Editing Attributes Stub");
+        },
+        regulateHide () {
+            console.warn("Hide/Show Stub");
+        },
+        regulateDownload () {
+            console.warn("Download Stub");
         }
     }
 };

@@ -63,7 +63,7 @@ const state = {
         strokeWidth: 1
     },
     description: "common:modules.draw.description",
-    drawEdits: ["deleteAll", "delete", "modify", "undo", "redo"],
+    drawEdits: ["deleteAll", "delete", "modify", "editAttributes", "undo", "redo", "hide", "download"],
     drawIcons: {
         box: "bi-square",
         circle: "bi-circle",
@@ -78,7 +78,11 @@ const state = {
         polygon: "bi-octagon",
         redo: "bi-arrow-right",
         symbols: "bi-circle-square",
-        undo: "bi-arrow-left"
+        undo: "bi-arrow-left",
+        editAttributes: "bi-window-split",
+        hide: "bi-eye",
+        show: "bi-eye-slash",
+        download: "bi-cloud-download"
     },
     drawTypesGeometrie: ["line", "box", "polygon", "circle", "doubleCircle"],
     drawTypesMain: ["pen", "geometries", "symbols"],
