@@ -148,6 +148,12 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
                     modules: {
                         namespaced: true,
                         LayerSelection,
+                        LayerInformation: {
+                            namespaced: true,
+                            getters: {
+                                icon: () => null
+                            }
+                        },
                         SearchBar: {
                             namespaced: true,
                             getters: {
