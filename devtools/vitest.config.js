@@ -1,4 +1,3 @@
-/* eslint-disable */
 import {defineConfig, mergeConfig} from "vitest/config";
 import viteConfig from "./vite.config.js";
 import {nodePolyfills} from "vite-plugin-node-polyfills";
@@ -21,7 +20,7 @@ export default defineConfig(mode => mergeConfig(
         test: {
             reporters: ["default"],
             // reporters: ["default", "html"],
-            pool: "threads", //--> performance, https://vitest.dev/guide/improving-performance.html
+            pool: "forks",
             globals: true,
             environment: "jsdom",
             css: false,
