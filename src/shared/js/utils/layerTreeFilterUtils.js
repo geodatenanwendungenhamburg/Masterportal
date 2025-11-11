@@ -1,19 +1,4 @@
 /**
- * Checks if a layer with the given ID exists anywhere in the tree.
- * @param {Array<Object>} tree Array of layer and folder configurations
- * @param {String} layerId The ID of the layer to search for
- * @returns {Boolean} True if a layer with the given ID exists in the tree
- */
-function layerExistsInTree (tree, layerId) {
-    return tree.some(conf => {
-        if (conf.type === "folder" && Array.isArray(conf.elements)) {
-            return layerExistsInTree(conf.elements, layerId);
-        }
-        return conf.id === layerId;
-    });
-}
-
-/**
  * Checks if the configuration is a queryable layer.
  * @param {Object} layer layer configuration
  * @returns {Boolean} true, if the configuration is a queryable layer
@@ -148,7 +133,6 @@ function getVisibleLayers (currentFolder) {
 }
 
 export {
-    layerExistsInTree,
     isQueryableLayer,
     filterQueryableTree,
     filterTreeByQueryAndQueryable,

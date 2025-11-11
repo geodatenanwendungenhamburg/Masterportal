@@ -6,7 +6,7 @@ import LayerCheckBox from "../../layerTree/components/LayerCheckBox.vue";
 import SearchBar from "../../searchBar/components/SearchBar.vue";
 import LayerSelectionTreeNode from "./LayerSelectionTreeNode.vue";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
-import {layerExistsInTree, filterQueryableTree, filterTreeByQueryAndQueryable, filterRecursive, getVisibleLayers} from "@shared/js/utils/layerTreeFilterUtils.js";
+import {filterQueryableTree, filterTreeByQueryAndQueryable, filterRecursive, getVisibleLayers} from "@shared/js/utils/layerTreeFilterUtils.js";
 import {treeSubjectsKey} from "../../../shared/js/utils/constants.js";
 
 /**
@@ -200,8 +200,7 @@ export default {
                 this.fullRootLayerConfig = this.layerConfig[treeSubjectsKey].elements;
             }
 
-            const
-                sourceTree = this.fullRootLayerConfig.length > 0
+            const sourceTree = this.fullRootLayerConfig.length > 0
                     ? this.fullRootLayerConfig
                     : this.originalSubjectDataLayerConfs,
 
@@ -211,24 +210,33 @@ export default {
                 );
 
             let currentFolder = filteredTree,
+                currentFolderObj = null,
                 visibleLayers = [],
                 highlightConf = null,
-                highlightExists = false;
-
+                highlightExists = false,
+                highlightInCurrentFolder = false;
 
             if (this.lastFolderNames.length > 1) {
-                for (const folderName of this.lastFolderNames.slice(1)) {
-                    const nextFolder = currentFolder.find(n => n.type === "folder" && n.name === folderName);
+                let folderTraversal = filteredTree;
 
-                    currentFolder = nextFolder?.elements || [];
+                for (const folderName of this.lastFolderNames.slice(1)) {
+                    const nextFolder = folderTraversal.find(n => n.type === "folder" && n.name === folderName);
+
+                    currentFolderObj = nextFolder || null;
+                    folderTraversal = nextFolder?.elements || [];
                 }
+                currentFolder = folderTraversal;
+            }
+            else {
+                currentFolderObj = {id: null};
             }
 
             visibleLayers = getVisibleLayers(currentFolder);
             highlightConf = this.originalSubjectDataLayerConfs.find(layer => layer.id === this.highlightLayerId);
-            highlightExists = layerExistsInTree(visibleLayers, this.highlightLayerId);
+            highlightExists = visibleLayers.some(conf => conf.id === this.highlightLayerId);
+            highlightInCurrentFolder = highlightConf && (highlightConf.parentId === currentFolderObj?.id);
 
-            if (highlightConf && !highlightExists) {
+            if (highlightConf && !highlightExists && highlightInCurrentFolder) {
                 visibleLayers.push(highlightConf);
             }
 
