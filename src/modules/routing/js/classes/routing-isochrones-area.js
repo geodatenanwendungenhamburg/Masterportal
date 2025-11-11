@@ -1,4 +1,4 @@
-import stateRouting from "../../store/stateRouting.js";
+import stateRouting from "@modules/routing/store/stateRouting.js";
 import {convertColor} from "@shared/js/utils/convertColor.js";
 
 /**
