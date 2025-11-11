@@ -1,7 +1,7 @@
 import axios from "axios";
 import Feature from "ol/Feature.js";
-import {Point, Polygon} from "ol/geom";
-import WFS from "ol/format/WFS";
+import {Point, Polygon} from "ol/geom.js";
+import WFS from "ol/format/WFS.js";
 import handleAxiosResponse from "@shared/js/utils/handleAxiosResponse.js";
 import {buildFilter, buildStoredFilter} from "./buildFilter.js";
 
