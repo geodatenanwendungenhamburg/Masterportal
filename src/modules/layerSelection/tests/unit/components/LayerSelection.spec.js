@@ -274,16 +274,18 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
         expect(wrapper.findAll("layer-selection-tree-node-stub").length).to.be.equals(1);
     });
 
-    it.skip("checks for external subject data (from addWMS)", () => {
+    it("checks for external subject data (from addWMS)", async () => {
         showAllResults = false;
+        searchInput = "";
         LayerSelection.state.lastFolderNames = ["root"];
         subjectDataLayers.push(externalSubjectdata);
 
-        store.commit("Modules/LayerSelection/setSubjectDataLayerConfs", subjectDataLayers);
         wrapper = shallowMount(LayerSelectionComponent, {
             global: {
                 plugins: [store]
             }});
+        store.commit("Modules/LayerSelection/setSubjectDataLayerConfs", subjectDataLayers);
+        await wrapper.vm.$nextTick();
         expect(wrapper.findAll("layer-selection-tree-node-stub").length).to.be.equals(2);
     });
 
