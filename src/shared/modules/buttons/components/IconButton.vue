@@ -126,8 +126,8 @@ export default {
     position: relative;
     text-align: center;
     top: auto;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 3.5rem;
+    height: 3.5rem;
     font-size: 1.5rem;
     border-radius: 50%;
     border: solid $white 1px;

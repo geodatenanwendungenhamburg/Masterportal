@@ -1637,7 +1637,12 @@
           "point": "Punkt",
           "polygon": "Fläche",
           "rectangle": "Rechteck",
-          "symbols": "Symbole"
+          "symbols": "Symbole",
+          "writeText": "Text"
+        },
+        "writeTextOptions": {
+          "font": "Schriftart",
+          "fontSize": "Schriftgröße"
         }
       },
       "graphicalSelect": {

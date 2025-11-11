@@ -52,7 +52,7 @@ export default {
     data () {
         const mappingLayout = {
             fillColor: {
-                drawTypes: ["box", "circle", "doubleCircle", "point", "polygon", "rectangle"],
+                drawTypes: ["box", "circle", "doubleCircle", "point", "polygon", "rectangle", "writeText"],
                 icon: "bi-paint-bucket"
             },
             strokeColor: {
@@ -64,7 +64,7 @@ export default {
                 icon: "bi-border-width"
             },
             fillTransparency: {
-                drawTypes: ["box", "circle", "doubleCircle", "point", "polygon", "rectangle"],
+                drawTypes: ["box", "circle", "doubleCircle", "point", "polygon", "rectangle", "writeText"],
                 icon: "bi-droplet-half"
             }
         };
@@ -78,7 +78,9 @@ export default {
 
         return {
             activeLayoutKey: "",
-            mappingLayout
+            mappingLayout,
+            trianglePosition: null,
+            drawTypesMain: ["pen", "writeText", "geometries", "symbols"]
         };
     },
     computed: {
@@ -101,6 +103,9 @@ export default {
     watch: {
         selectedDrawType () {
             this.activeLayoutKey = "";
+            if (this.drawTypesMain.includes(this.selectedDrawType)) {
+                this.updateTrianglePosition(this.selectedDrawType);
+            }
         }
     },
     methods: {
@@ -116,6 +121,24 @@ export default {
         },
 
         /**
+         * Updates the triangle position to point to the active button.
+         * @param {String} layoutKey The key of the active layout element.
+         * @returns {void}
+         */
+        updateTrianglePosition (type) {
+            const containerElement = document.getElementById("main-drawtypes-container"),
+                buttonId = `draw-${type}`,
+                buttonElement = document.getElementById(buttonId);
+
+            if (buttonElement && containerElement) {
+                const buttonRect = buttonElement.getBoundingClientRect(),
+                    containerRect = containerElement.getBoundingClientRect();
+
+                this.trianglePosition = buttonRect.x + buttonRect.width / 2 - containerRect.x;
+            }
+        },
+
+        /**
          * Update the current layout.
          * @param {String} layoutKey The key of layout element.
          * @param {String} value The value to be set.
@@ -126,6 +149,12 @@ export default {
 
             if (layoutKey === "fillColor" || layoutKey === "strokeColor") {
                 currentLayout[layoutKey] = convertColor(value, "rgb");
+            }
+            else if (layoutKey === "text" || layoutKey === "font") {
+                currentLayout[layoutKey] = value;
+            }
+            else if (layoutKey === "fontSize") {
+                currentLayout[layoutKey] = parseInt(value, 10);
             }
             else {
                 currentLayout[layoutKey] = parseFloat(value);
@@ -147,6 +176,62 @@ export default {
         >
             {{ $t("common:shared.modules.draw.drawLayout." + circleType) }}
         </label>
+        <div
+            v-if="selectedDrawType === 'writeText'"
+            class="write-text-container mt-4"
+        >
+            <div class="form-floating mb-3">
+                <input
+                    id="text-input"
+                    type="text"
+                    class="form-control"
+                    :placeholder="$t('common:shared.modules.draw.drawTypes.writeText')"
+                    :value="currentLayout.text || ''"
+                    @input="event => updateCurrentLayout('text', event.target.value)"
+                >
+                <label for="text-input">
+                    {{ $t('common:shared.modules.draw.drawTypes.writeText') }}
+                </label>
+            </div>
+            <div class="form-floating mb-3">
+                <select
+                    id="font-size-select"
+                    class="form-select"
+                    :value="currentLayout.fontSize || 10"
+                    @change="event => updateCurrentLayout('fontSize', event.target.value)"
+                >
+                    <option
+                        v-for="size in [10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48]"
+                        :key="size"
+                        :value="size"
+                    >
+                        {{ size }}px
+                    </option>
+                </select>
+                <label for="font-size-select">
+                    {{ $t('common:shared.modules.draw.writeTextOptions.fontSize') }}
+                </label>
+            </div>
+            <div class="form-floating mb-3">
+                <select
+                    id="font-select"
+                    class="form-select"
+                    :value="currentLayout.font || 'Arial'"
+                    @change="event => updateCurrentLayout('font', event.target.value)"
+                >
+                    <option
+                        v-for="font in ['Arial', 'Times New Roman', 'Calibri']"
+                        :key="font"
+                        :value="font"
+                    >
+                        {{ font }}
+                    </option>
+                </select>
+                <label for="font-select">
+                    {{ $t('common:shared.modules.draw.writeTextOptions.font') }}
+                </label>
+            </div>
+        </div>
         <div
             :id="'draw-layout-buttons-' + circleType"
             class="draw-layout-buttons d-flex flex-row align-items-center"

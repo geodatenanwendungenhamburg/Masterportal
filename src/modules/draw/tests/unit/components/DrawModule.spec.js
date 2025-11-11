@@ -93,6 +93,15 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                 }
             }
         });
+
+        sinon.stub(document, "getElementById").callsFake(() => {
+            return {
+                getBoundingClientRect: () => ({
+                    left: 100,
+                    right: 200
+                })
+            };
+        });
     });
 
 
@@ -143,7 +152,9 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                 }
             });
 
-            expect(wrapper.findAll("draw-types-stub").length).to.equals(2);
+            expect(wrapper.find("layout-frame-stub").exists()).to.be.true;
+
+            expect(wrapper.findAll("draw-types-stub").length).to.equals(1);
         });
 
         it("renders the shared module drawTypes for selectedDrawTypeMain - symbols", () => {
@@ -155,7 +166,7 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                 }
             });
 
-            expect(wrapper.findAll("draw-types-stub").length).to.equals(2);
+            expect(wrapper.findAll("draw-types-stub").length).to.equals(1);
         });
 
         it("renders the shared module drawTypes and draw layouts for selectedDrawTypeMain - symbols and selectedDrawType - circle", () => {
@@ -168,9 +179,8 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                 }
             });
 
-            expect(wrapper.findAll("draw-types-stub").length).to.equals(2);
-            expect(wrapper.findAll("draw-layout-stub").length).to.equals(1);
-            expect(wrapper.find("#draw-layouts > draw-layout-stub").exists()).to.be.true;
+            expect(wrapper.findAll("draw-types-stub").length).to.equals(1);
+            expect(wrapper.findAll("layout-frame-stub").length).to.equals(2);
         });
 
         it("renders the shared module drawTypes and draw layouts for selectedDrawTypeMain - symbols and selectedDrawType - doubleCircle", () => {
@@ -183,8 +193,8 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                 }
             });
 
-            expect(wrapper.findAll("draw-types-stub").length).to.equals(2);
-            expect(wrapper.findAll("draw-layout-stub").length).to.equals(2);
+            expect(wrapper.findAll("draw-types-stub").length).to.equals(1);
+            expect(wrapper.findAll("layout-frame-stub").length).to.equals(2);
         });
     });
 });

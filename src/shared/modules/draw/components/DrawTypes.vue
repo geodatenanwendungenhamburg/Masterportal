@@ -151,6 +151,10 @@ export default {
         },
         currentLayout (currentLayout) {
             drawInteraction.setStyleObject(currentLayout);
+
+            if (this.selectedDrawType === "writeText") {
+                drawInteraction.setStyleObject(currentLayout);
+            }
         },
         currentLayoutOuterCircle (currentLayoutOuterCircle) {
             drawInteraction.setStyleObject(currentLayoutOuterCircle, true);
@@ -319,6 +323,7 @@ export default {
         :aria="$t('common:shared.modules.draw.drawTypes.' + drawType)"
         :class-array="[
             'btn-primary',
+            'icon-button-size',
             $attrs,
             selectedDrawType === drawType || selectedDrawTypeMain === drawType ? 'active': ''
         ]"

@@ -29,7 +29,7 @@
  * @property {String} [drawIcons.polygon="bi-octagon"] The icon for polygon button.
  * @property {String} [drawIcons.symbols="bi-circle-square"] The icon for symbols button.
  * @property {String[]} [drawTypesGeometrie=["line", "box", "polygon", "circle", "doubleCircle"]] The drawing types in geometries.
- * @property {String[]} [drawTypesMain=["pen", "geometries", "symbols"]] The top level (main) drawing types.
+ * @property {String[]} [drawTypesMain=["pen", "writeText", "geometries", "symbols"]] The top level (main) drawing types.
  * @property {String[]} [drawTypesSymbols=["point"]] The drawing types in symbols.
  * @property {Boolean} [hasMouseMapInteractions=true] If this attribute is true, then all other modules will be deactivated when this attribute is also true. Only one module with this attribute true may be open at the same time, since conflicts can arise in the card interactions.
  * @property {String} [icon="bi-pencil"] Icon next to title (config-param)
@@ -82,10 +82,11 @@ const state = {
         editAttributes: "bi-window-split",
         hide: "bi-eye",
         show: "bi-eye-slash",
-        download: "bi-cloud-download"
+        download: "bi-cloud-download",
+        writeText: "bi-input-cursor-text"
     },
     drawTypesGeometrie: ["line", "box", "polygon", "circle", "doubleCircle"],
-    drawTypesMain: ["pen", "geometries", "symbols"],
+    drawTypesMain: ["pen", "writeText", "geometries", "symbols"],
     drawTypesSymbols: ["point"],
     hasMouseMapInteractions: true,
     icon: "bi-pencil",
