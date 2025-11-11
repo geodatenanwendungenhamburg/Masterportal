@@ -373,7 +373,6 @@ export default {
                     && searchResults.length === 0
                     && (currentComponentSide !== 'layerSelection' || !filterInLayerSelection)
                     && currentComponentSide !== 'root'"
-
             class="form-text text-muted"
         >
             {{ $t('common:modules.searchBar.noResults') }}
