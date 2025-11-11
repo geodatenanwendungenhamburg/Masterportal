@@ -2,6 +2,7 @@
 import {pointerMove} from "ol/events/condition.js";
 import selectInteraction from "@masterportal/masterportalapi/src/maps/interactions/selectInteraction.js";
 import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactions/modifyInteraction.js";
+import LayoutFrame from "@shared/modules/layoutFrame/components/LayoutFrame.vue";
 import {mapActions} from "vuex";
 
 import IconButton from "../../buttons/components/IconButton.vue";
@@ -24,7 +25,8 @@ import IconButton from "../../buttons/components/IconButton.vue";
 export default {
     name: "DrawEdit",
     components: {
-        IconButton
+        IconButton,
+        LayoutFrame
     },
     props: {
         drawEdits: {
@@ -82,7 +84,9 @@ export default {
             },
             mode: "",
             redoFeatures: [],
-            undoFeatures: []
+            undoFeatures: [],
+            showFrame: false,
+            iconPosition: 0
         };
     },
     computed: {
@@ -146,7 +150,10 @@ export default {
          * @param {String} drawEdit The current draw edit.
          * @returns {void}
          */
-        regulateEditInteraction (drawEdit) {
+        regulateEditInteraction (drawEdit, event) {
+            const iconRect = event.target.getBoundingClientRect();
+
+            this.iconPosition = iconRect.left + iconRect.width / 2 - 23;
             this.mappingEditInteractions[drawEdit]();
         },
 
@@ -322,6 +329,7 @@ export default {
             console.warn("Hide/Show Stub");
         },
         regulateDownload () {
+            this.showFrame = true;
             console.warn("Download Stub");
         }
     }
@@ -346,10 +354,19 @@ export default {
                     drawEdit === 'undo' && undoFeatures.length === 0 ? 'disabled' : '',
                     drawEdit !== 'redo' && drawEdit !== 'undo' && source?.getFeatures()?.length === 0 ? 'disabled' : ''
                 ]"
-                :interaction="() => regulateEditInteraction(drawEdit)"
+                :interaction="(event) => regulateEditInteraction(drawEdit, event)"
                 :icon="drawIcons[drawEdit]"
             />
         </div>
+        <LayoutFrame
+            v-if="showFrame"
+            border-color="#D6E3FF"
+            fill="#fff"
+            triangle="true"
+            :triangle-position="iconPosition"
+        >
+            <p>LALALALA</p>
+        </LayoutFrame>
         <hr>
     </div>
 </template>
