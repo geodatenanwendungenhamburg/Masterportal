@@ -362,7 +362,7 @@ export default {
             v-if="showFrame"
             border-color="#D6E3FF"
             fill="#fff"
-            triangle="true"
+            triangle
             :triangle-position="iconPosition"
         >
             <p>LALALALA</p>
