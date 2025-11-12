@@ -165,7 +165,7 @@ src
 |   |   |-- App.spec.js
 |
 |-- App.vue
-|-- main.js
+|-- masterportal.js
 ```
 
 ---
