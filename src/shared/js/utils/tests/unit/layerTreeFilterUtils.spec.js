@@ -2,7 +2,8 @@ import {expect} from "chai";
 import {
     isQueryableLayer,
     filterQueryableTree,
-    filterTreeByQueryAndQueryable
+    filterTreeByQueryAndQueryable,
+    filterRecursive
 } from "../../layerTreeFilterUtils.js";
 
 describe("Layer Filtering Utilities", () => {
@@ -174,6 +175,124 @@ describe("Layer Filtering Utilities", () => {
                     ])
                 ])
             ]);
+        });
+    });
+    describe("filterRecursive", () => {
+
+        /**
+     * Helper to create a layer object.
+     * @param {string} name - Layer name.
+     * @param {Object} [extra] - Additional properties.
+     * @returns {Object} Returns a layer configuration object.
+     */
+        function layer (name, extra = {}) {
+            return {type: "layer", name, ...extra};
+        }
+
+        /**
+     * Helper to create a folder object.
+     * @param {string} name - Folder name.
+     * @param {Array} elements - Child elements.
+     * @returns {Object} Returns a folder configuration object.
+     */
+        function folder (name, elements = []) {
+            return {type: "folder", name, elements};
+        }
+
+        it("should return an empty array if input is not an array", () => {
+            expect(filterRecursive(null)).to.deep.equal([]);
+            expect(filterRecursive(undefined)).to.deep.equal([]);
+            expect(filterRecursive("string")).to.deep.equal([]);
+            expect(filterRecursive({})).to.deep.equal([]);
+        });
+
+        it("should return all layers if query is empty", () => {
+            const input = [
+                    layer("Layer 1"),
+                    folder("Folder 1", [
+                        layer("Layer 2")
+                    ])
+                ],
+
+                result = filterRecursive(input, "");
+
+            expect(result).to.deep.equal(input);
+        });
+
+        it("should return only layers matching the query", () => {
+            const input = [
+                    layer("First Layer"),
+                    layer("Second Layer"),
+                    layer("Unrelated")
+                ],
+
+                result = filterRecursive(input, "second");
+
+            expect(result).to.deep.equal([
+                layer("Second Layer")
+            ]);
+        });
+
+        it("should include folders only if they contain matching layers", () => {
+            const input = [
+                    folder("Top Folder", [
+                        layer("Keep Me"),
+                        layer("Skip Me")
+                    ]),
+                    folder("Empty Folder", [
+                        layer("No Match")
+                    ])
+                ],
+
+                result = filterRecursive(input, "keep");
+
+            expect(result).to.deep.equal([
+                folder("Top Folder", [
+                    layer("Keep Me")
+                ])
+            ]);
+        });
+
+        it("should match query case-insensitively", () => {
+            const input = [layer("My Layer")],
+                result = filterRecursive(input, "my layer");
+
+            expect(result).to.deep.equal([layer("My Layer")]);
+        });
+
+        it("should handle nested folder structures", () => {
+            const input = [
+                    folder("Outer Folder", [
+                        folder("Inner Folder", [
+                            layer("Target Layer"),
+                            layer("Other Layer")
+                        ]),
+                        layer("Outer Layer")
+                    ])
+                ],
+
+                result = filterRecursive(input, "target");
+
+            expect(result).to.deep.equal([
+                folder("Outer Folder", [
+                    folder("Inner Folder", [
+                        layer("Target Layer")
+                    ])
+                ])
+            ]);
+        });
+
+        it("should return empty array if no layers match", () => {
+            const input = [
+                    folder("Folder A", [
+                        layer("One"),
+                        layer("Two")
+                    ])
+                ],
+
+                result = filterRecursive(input, "xyz");
+
+            expect(result).to.deep.equal([]);
         });
     });
 });
