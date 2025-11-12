@@ -328,7 +328,7 @@ export default {
                 class="form-control"
                 :placeholder="$t(layerSelectionPlaceHolder)"
                 :aria-label="$t(layerSelectionPlaceHolder)"
-                @keydown.enter="zoomToAndMarkSearchResult(searchInputValue), startSearch(currentComponentSide)"
+                @keydown.enter="zoomToAndMarkSearchResult(searchInputValue), checkCurrentComponent(currentComponentSide)"
             >
             <button
                 v-if="searchInputValue"
