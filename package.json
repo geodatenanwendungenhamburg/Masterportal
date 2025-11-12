@@ -15,7 +15,7 @@
     "type": "git",
     "url": "https://bitbucket.org/geowerkstatt-hamburg/masterportal.git"
   },
-  "main": "src/main.js",
+  "main": "src/masterportal.js",
   "scripts": {
     "dev": "vite --config devtools/vite.config.js",
     "devDebug": "vite --config devtools/vite.config.js  --debug plugin-transform",

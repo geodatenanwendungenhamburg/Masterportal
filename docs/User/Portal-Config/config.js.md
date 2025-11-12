@@ -11,7 +11,7 @@ In the following, all configuration options are described. For all configuration
 |cesiumLibrary|no|String|`"https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js"`|The path to the cesium.js library.|`"https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js"`|
 |cswId|no|String|`"3"`|Reference to a CSW interface used to retrieve layer information. The ID will be resolved to a service defined in the **[rest-services.json](../Global-Config/rest-services.json.md)** file.|`"my CSW-ID"`|
 |ignoredKeys|no|String[]|`["BOUNDEDBY", "SHAPE", "SHAPE_LENGTH", "SHAPE_AREA", "OBJECTID", "GLOBALID", "GEOMETRY", "SHP", "SHP_AREA", "SHP_LENGTH","GEOM"]`|List of attribute names to be ignored for attribute information lists of all layer types. Only used with "gfiAttributes": "showAll".|`["BOUNDEDBY", "SHAPE", "SHAPE_LENGTH", "SHAPE_AREA", "OBJECTID", "GLOBALID", "GEOMETRY", "SHP", "SHP_AREA", "SHP_LENGTH","GEOM"]`|
-|layerConf|yes|String||Path to the **[services.json](../Global-Config/services.json.md)** file containing all available WMS layers and WFS feature types. The path is relative to *js/main.js*.|`https://geodienste.hamburg.de/lgv-config/services-internet.json"`||
+|layerConf|yes|String||Path to the **[services.json](../Global-Config/services.json.md)** file containing all available WMS layers and WFS feature types. The path is relative to *js/masterportal.js*.|`https://geodienste.hamburg.de/lgv-config/services-internet.json"`||
 |matomo|no|**[matomo](#matomo)**||Options to integrate tracking via matomo.||
 |metaDataCatalogueId|no|String|`"2"`|URL to the metadata catalog linked to in the layer information window. The ID is resolved to a service of the **[rest-services.json](../Global-Config/rest-services.json.md)** file. Note: This attribute is only necessary, when no "show_doc_url" is configured in the metadata dataset in the **[services.json](../Global-Config/services.json.md)**. The url can either be set globally (**[config.js](config.js.md)**) or layer-specific(**[services.json](../Global-Config/services.json.md)**).|`"MetaDataCatalogueUrl"`|
 |namedProjections|yes|String[]||Definition of the usable coordinate systems. See **[syntax definition](http://proj4js.org/#named-projections)** for details..|`[["EPSG:25832", "+title=ETRS89/UTM 32N +proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"]]`|
@@ -21,10 +21,10 @@ In the following, all configuration options are described. For all configuration
 |portalLocales|no|**[portalLocales](#portallocales)**||Override locales by configuration, and allows adding new locales.||
 |proxyHost|no|String||Host name of a remote proxy with CORS configured to support the portal's domain, among others.|`"https://proxy.example.com"`|
 |remoteInterface|no|**[remoteInterface](#remoteinterface)**||Optional remote interface configuration.||
-|restConf|yes|String||Path to the **[rest-services.json](../Global-Config/rest-services.json.md)** file describing further services, e.g. print service, WPS, CSW. The path is relative to *js/main.js*.|`https://geodienste.hamburg.de/lgv-config/rest-services-internet.json"`||
-|styleConf|yes|String||Path to the **[style.json](../Global-Config/style.json.md)** file describing vector layer (WFS) styles. The path is relative to *js/main.js*.|`https://geodienste.hamburg.de/lgv-config/style.json"`||
+|restConf|yes|String||Path to the **[rest-services.json](../Global-Config/rest-services.json.md)** file describing further services, e.g. print service, WPS, CSW. The path is relative to *js/masterportal.js*.|`https://geodienste.hamburg.de/lgv-config/rest-services-internet.json"`||
+|styleConf|yes|String||Path to the **[style.json](../Global-Config/style.json.md)** file describing vector layer (WFS) styles. The path is relative to *js/masterportal.js*.|`https://geodienste.hamburg.de/lgv-config/style.json"`||
 |vuetify|no|String|undefined|Path to the optional instance of the vuetify UI library. e.g. portal or addon specific.|`addons/cosi/vuetify/index.js`|
-|wfsImgPath|no|String||Path to the folder holding images for the WFS styles. The path is relative to *js/main.js*.|`https://geodienste.hamburg.de/lgv-config/img/"`|
+|wfsImgPath|no|String||Path to the folder holding images for the WFS styles. The path is relative to *js/masterportal.js*.|`https://geodienste.hamburg.de/lgv-config/img/"`|
 
 ***
 
