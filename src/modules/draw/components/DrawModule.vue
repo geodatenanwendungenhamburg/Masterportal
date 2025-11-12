@@ -52,7 +52,6 @@ export default {
         ])
     },
     mounted () {
-        // Note: the layer handling still needs to be revised!
         const drawLayer = mapCollection.getMap("2D").getLayers().getArray().find(layer => layer.get("id") === "importDrawLayer");
 
         if (typeof drawLayer === "undefined") {
@@ -60,7 +59,7 @@ export default {
                 id: "importDrawLayer",
                 name: "importDrawLayer",
                 source: this.source,
-                zIndex: 99999999999
+                zIndex: 99999999999 // alwaysOnTop am Layer?! OL Layer vs unsere Layer
             });
 
             mapCollection.getMap("2D").addLayer(this.layer);
