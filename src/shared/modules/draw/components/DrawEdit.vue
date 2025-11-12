@@ -6,6 +6,7 @@ import LayoutFrame from "@shared/modules/layoutFrame/components/LayoutFrame.vue"
 import {mapActions} from "vuex";
 
 import IconButton from "../../buttons/components/IconButton.vue";
+import ExportItem from "@shared/modules/exportItem/components/ExportItem.vue";
 
 /**
  * Shared component that provides buttons to edit drawn features.
@@ -26,7 +27,8 @@ export default {
     name: "DrawEdit",
     components: {
         IconButton,
-        LayoutFrame
+        LayoutFrame,
+        ExportItem
     },
     props: {
         drawEdits: {
@@ -86,7 +88,10 @@ export default {
             redoFeatures: [],
             undoFeatures: [],
             showFrame: false,
-            iconPosition: 0
+            iconPosition: 0,
+            availableFormats: ["KML", "GEOJSON"],
+            exportData: null,
+            features: []
         };
     },
     computed: {
@@ -109,11 +114,15 @@ export default {
             if (layer !== null) {
 
                 this.source.on("addfeature", event => {
+                    console.warn("layer Watcher, addFeature:", event.feature);
                     this.shiftUndoRedoFeatures(event.feature, "draw", this.mode);
+                    this.registerFeatures();
                 });
 
                 this.source.on("removefeature", event => {
+                    console.warn("layer Watcher, removeFeature:", event.feature);
                     this.shiftUndoRedoFeatures(event.feature, "delete", this.mode);
+                    this.registerFeatures();
                 });
 
                 this.source.on("clear", () => {
@@ -319,6 +328,7 @@ export default {
             if (typeof this.setSelectedInteraction === "function") {
                 this.setSelectedInteraction("hide");
             }
+            this.exportData = "text";
             console.warn("Hide/Show Stub");
         },
         regulateDownload () {
@@ -327,6 +337,10 @@ export default {
             }
             this.showFrame = true;
             console.warn("Download Stub");
+        },
+        registerFeatures () {
+            this.features = [...mapCollection.getMap("2D").getLayers().getArray().find(availableLayer => availableLayer.get("id") === "importDrawLayer").getSource().getFeatures()];
+            console.warn("features: ", this.features);
         }
     }
 };
@@ -361,9 +375,11 @@ export default {
             triangle
             :triangle-position="iconPosition"
         >
-            <p v-if="selectedInteraction === 'download'">
-                Here, the export functionality is going to be displayed. For now, this is just some Lorem Ipsum text showing how the frame will change its size depending on the content. So hopefully it does not break the layout now but shows all the text, if Jasper implemented it nicely, that is. Did you know that the answer to life, the universe and everything is 42? No? Yes? Too bad this is not an interactive element.
-            </p>
+            <ExportItem
+                v-if="selectedInteraction === 'download'"
+                :formats="availableFormats"
+                :features="features"
+            />
             <p v-if="selectedInteraction === 'modify'">
                 You can edit the drawn features on the map through drag and drop. Have fun.
             </p>
