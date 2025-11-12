@@ -81,13 +81,14 @@ export default {
         }
     },
     mounted () {
-        console.warn("Hey ExportItem exportData:", this.features);
+        console.warn("Hey, features:", this.features);
     },
     unmounted () {
         this.fileName = "";
     },
     methods: {
         onFormatChange () {
+            // Errorhandling used to be in the convertFeatures directly, now needs to happen here, i.e. allGeometryTypesNotSupported, notSupportedAlert, siehe actionsDownload function convertFeatures in draw_old
             console.warn("Format Changed");
             this.exportFormat = this.format;
         },
