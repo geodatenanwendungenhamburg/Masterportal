@@ -139,7 +139,7 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
 
             wrapper.vm.regulateDeleteAll();
 
-            expect(wrapper.vm.mode).to.equals("");
+            expect(wrapper.vm.mode).to.equals("deleteAll");
             expect(wrapper.vm.source.getFeatures()).to.deep.equals([]);
         });
     });
