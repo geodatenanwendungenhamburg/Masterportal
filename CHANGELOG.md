@@ -4,20 +4,9 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
+## 2025-11-12 v3.16.1
 
 ### Fixed
-- Issue #1477: The Calculate button is now disabled and a warning message is displayed when this limit of Isochrones is exceeded.
-- Issue #1491: Fix connection between `import` and `draw_old` tool that wouldn't work if `draw_old` was opened first.
 - LayerSelection: Fixed filtering of layers.
 
 ---
