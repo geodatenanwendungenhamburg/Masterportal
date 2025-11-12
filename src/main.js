@@ -14,6 +14,11 @@ import store from "./app-store/index.js";
 
 import {initiateMatomo} from "./plugins/matomo.js";
 
+/*
+### #### #VITE ATTENTION ### ###
+ - this file was renamed to masterportal.js
+ - this file shall stay here until merge to dev, to provide easier rebase
+*/
 
 let app;
 
