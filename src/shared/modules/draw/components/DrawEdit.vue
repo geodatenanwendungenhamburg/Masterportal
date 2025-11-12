@@ -122,22 +122,6 @@ export default {
             }
         }
     },
-    mounted () {
-        if (this.layer !== null) {
-
-            this.source.on("addfeature", event => {
-                this.shiftUndoRedoFeatures(event.feature, "draw", this.mode);
-            });
-
-            this.source.on("removefeature", event => {
-                this.shiftUndoRedoFeatures(event.feature, "delete", this.mode);
-            });
-
-            this.source.on("clear", () => {
-                this.mode = "";
-            });
-        }
-    },
     unmounted () {
         this.currentSelectInteractions.forEach(currentSelectInteraction => this.removeInteraction(currentSelectInteraction));
         this.removeInteraction(this.currentModifyInteraction);
@@ -151,6 +135,7 @@ export default {
          * @returns {void}
          */
         regulateEditInteraction (drawEdit, event) {
+            this.showFrame = false;
             const iconRect = event.target.getBoundingClientRect();
 
             this.iconPosition = iconRect.left + iconRect.width / 2 - 23;
@@ -212,6 +197,7 @@ export default {
             this.removeInteraction(this.currentModifyInteraction);
             this.currentModifyInteraction = modifyInteraction.createModifyInteraction(this.source);
             this.addInteraction(this.currentModifyInteraction);
+            this.showFrame = true;
         },
 
         /**
@@ -323,12 +309,22 @@ export default {
             }
         },
         regulateEditAttributes () {
+            if (typeof this.setSelectedInteraction === "function") {
+                this.setSelectedInteraction("editAttributes");
+            }
+            this.showFrame = true;
             console.warn("Editing Attributes Stub");
         },
         regulateHide () {
+            if (typeof this.setSelectedInteraction === "function") {
+                this.setSelectedInteraction("hide");
+            }
             console.warn("Hide/Show Stub");
         },
         regulateDownload () {
+            if (typeof this.setSelectedInteraction === "function") {
+                this.setSelectedInteraction("download");
+            }
             this.showFrame = true;
             console.warn("Download Stub");
         }
@@ -365,7 +361,15 @@ export default {
             triangle
             :triangle-position="iconPosition"
         >
-            <p>LALALALA</p>
+            <p v-if="selectedInteraction === 'download'">
+                Here, the export functionality is going to be displayed. For now, this is just some Lorem Ipsum text showing how the frame will change its size depending on the content. So hopefully it does not break the layout now but shows all the text, if Jasper implemented it nicely, that is. Did you know that the answer to life, the universe and everything is 42? No? Yes? Too bad this is not an interactive element.
+            </p>
+            <p v-if="selectedInteraction === 'modify'">
+                You can edit the drawn features on the map through drag and drop. Have fun.
+            </p>
+            <p v-if="selectedInteraction === 'editAttributes'">
+                Click a feature on the map to edit the attributes. At least that's how it's supposed to work. Right now it doesn't. Haha!
+            </p>
         </LayoutFrame>
         <hr>
     </div>
