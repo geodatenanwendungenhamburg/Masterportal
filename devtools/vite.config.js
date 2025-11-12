@@ -91,9 +91,16 @@ export default defineConfig(({mode}) => {
                 configPath: "addons/addonsConf.json",
                 baseDir: "addons"
             }),
+            {
+                name: "remove-crossorigin",
+                apply: "build",
+                transformIndexHtml(html) {                    
+                    return html.replaceAll(" crossorigin", "");
+                }
+            },
             isProd && stringReplace([
                 {
-                    todofileName: "main.js",
+                    todofileName: "masterportal.js",
                     search: "\"/locales/{{lng}}/{{ns}}.json\"",
                     replace: `"/mastercode/${mastercodeVersionFolderName}/locales/{{lng}}/{{ns}}.json"`
                 }
@@ -180,20 +187,28 @@ export default defineConfig(({mode}) => {
         },
 
         build: {
+            assetsDir: "js",
             sourcemap: false,
             cssCodeSplit: true,
             rollupOptions: {
                 input: Object.fromEntries(portalEntries),
                 output: {
+                     assetFileNames: (entry) => {
+                        let extType = entry.name.split('.').at(1),
+                            folderName = "js";
+
+                        if (/css/i.test(extType)) {
+                            folderName = "css";
+                        }
+                        return `${base}/${folderName}/[name].[ext]`;
+                    },
                     entryFileNames: (entry) => {
                         if (entry.name.startsWith("addon-")) {
                             return `${base}/addons/${entry.name.substring(6)}.js`;
                         }
-
-                        return `${base}/assets/[name].js`;
+                        return `${base}/js/[name].js`;
                     },
-                    chunkFileNames: `${base}/assets/[name].js`,
-                    assetFileNames: `${base}/assets/[name].[ext]`
+                    chunkFileNames: `${base}/js/[name].js`
                 },
                 external (id) {
                     const pid = slash(id);
