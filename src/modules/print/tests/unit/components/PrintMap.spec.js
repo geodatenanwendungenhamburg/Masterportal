@@ -40,7 +40,13 @@ describe("src/modules/Print/components/PrintMap.vue", () => {
 
     let store,
         wrapper,
-        map = null;
+        map = null,
+        togglePostrenderListenerSpy,
+        updateCanvasLayerSpy,
+        setCurrentMapScaleSpy,
+        setIsScaleSelectedManuallySpy,
+        setIsIncreased3DResolutionSelectedSpy,
+        updateCanvasByFeaturesLoadendSpy;
 
     before(() => {
         map = {
@@ -57,6 +63,18 @@ describe("src/modules/Print/components/PrintMap.vue", () => {
     });
 
     beforeEach(() => {
+        togglePostrenderListenerSpy = sinon.spy();
+        updateCanvasLayerSpy = sinon.spy();
+        setCurrentMapScaleSpy = sinon.spy();
+        setIsScaleSelectedManuallySpy = sinon.spy();
+        setIsIncreased3DResolutionSelectedSpy = sinon.spy();
+        Print.actions.togglePostrenderListener = togglePostrenderListenerSpy;
+        Print.actions.updateCanvasLayer = updateCanvasLayerSpy;
+        Print.mutations.setCurrentMapScale = setCurrentMapScaleSpy;
+        Print.mutations.setIsScaleSelectedManually = setIsScaleSelectedManuallySpy;
+        Print.mutations.setIsIncreased3DResolutionSelected = setIsIncreased3DResolutionSelectedSpy;
+        updateCanvasByFeaturesLoadendSpy = sinon.spy(PrintComponent.methods, "updateCanvasByFeaturesLoadend");
+
         store = createStore({
             namespaced: true,
             modules: {
@@ -91,7 +109,9 @@ describe("src/modules/Print/components/PrintMap.vue", () => {
             }});
     });
 
-    afterEach(sinon.restore);
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe("PrintMap.vue methods", () => {
         it("method layoutChanged sets other print layout", () => {
@@ -110,7 +130,29 @@ describe("src/modules/Print/components/PrintMap.vue", () => {
             expect(store.state.Modules.Print.isGfiAvailable).to.be.equals(false);
             expect(store.state.Modules.Print.isLegendAvailable).to.be.equals(false);
         });
+
+        it("method init", () => {
+            expect(wrapper.vm.initialized).to.be.equals(false);
+            wrapper.vm.init();
+            // twice, because is also called in mounted
+            expect(setCurrentMapScaleSpy.calledTwice).to.be.equals(true);
+            expect(togglePostrenderListenerSpy.calledOnce).to.be.equals(true);
+            expect(updateCanvasByFeaturesLoadendSpy.calledOnce).to.be.equals(true);
+            expect(setIsScaleSelectedManuallySpy.calledOnce).to.be.equals(true);
+            expect(setIsIncreased3DResolutionSelectedSpy.calledOnce).to.be.equals(true);
+            expect(updateCanvasLayerSpy.calledOnce).to.be.equals(true);
+            expect(wrapper.vm.initialized).to.be.equals(true);
+        });
     });
+
+    describe("PrintMap.vue watcher", () => {
+        it("watcher currentLayout with value filled", () => {
+            expect(wrapper.vm.initialized).to.be.equals(false);
+            wrapper.vm.$options.watch.currentLayout.call(wrapper.vm, {layout: "A4"});
+            expect(wrapper.vm.initialized).to.be.equals(true);
+        });
+    });
+
 
     describe("template", () => {
         it("should have an existing title", () => {

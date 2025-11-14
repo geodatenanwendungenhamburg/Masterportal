@@ -33,7 +33,8 @@ export default {
         return {
             subtitle: "",
             textField: "",
-            author: ""
+            author: "",
+            initialized: false
         };
     },
     computed: {
@@ -188,30 +189,29 @@ export default {
         },
         isIncreased3DResolutionSelected: function (value) {
             this.update3DResolutionScale(value);
+        },
+        /**
+         * Watches for first time layout is set and initializes after it.
+         * Must be done this way to wait for the response of requesting capabilities.
+         * @param {Object} value the layout value
+         * @returns {void}
+         */
+        currentLayout: function (value) {
+            if (value && !this.initialized) {
+                this.init();
+            }
         }
     },
     created () {
         this.setServiceId(this.printServiceId);
     },
     mounted () {
-        if (this.mode === "3D") {
-            this.setIs3d(true);
-        }
-        else {
-            this.setIs3d(false);
-        }
+        this.setIs3d(this.mode === "3D");
         this.$nextTick(() => {
             if (this.shownLayoutList.length === 0) {
                 this.retrieveCapabilites();
-                this.setCurrentMapScale(this.scale);
-                this.togglePostrenderListener();
-                this.updateCanvasByFeaturesLoadend(this.visibleLayerList);
-                this.setIsScaleSelectedManually(false);
-                this.setCurrentMapScale(this.scale);
-                this.setIsIncreased3DResolutionSelected(false);
             }
         });
-
         this.setCurrentMapScale(this.scale);
     },
     unmounted () {
@@ -233,6 +233,20 @@ export default {
             "update3DResolutionScale"
         ]),
         ...mapActions("Alerting", ["addSingleAlert"]),
+
+        /**
+         * Initializes the print module and sets data.initialized to true.
+         * @returns {void}
+         */
+        init () {
+            this.setCurrentMapScale(this.scale);
+            this.togglePostrenderListener();
+            this.updateCanvasByFeaturesLoadend(this.visibleLayerList);
+            this.setIsScaleSelectedManually(false);
+            this.setIsIncreased3DResolutionSelected(false);
+            this.updateCanvasLayer();
+            this.initialized = true;
+        },
 
         /**
          * Waits until the features of Vector layers are loaded and then renders the canvas again.
