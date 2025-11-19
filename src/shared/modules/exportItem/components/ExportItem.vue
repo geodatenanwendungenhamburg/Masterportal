@@ -1,7 +1,9 @@
 <script>
 import {mapGetters} from "vuex";
+import exportItem from "@masterportal/masterportalapi/src/shared/exportItem.js";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
+import {GeoJSON, GPX} from "ol/format.js";
 
 export default {
     name: "ExportItem",
@@ -67,13 +69,20 @@ export default {
     data () {
         return {
             fileName: "",
-            exportFormat: null
+            exportFormat: null,
+            downloadStrategies: {
+                GEOJSON: this.handleGeoJSONDownload,
+                KML: this.handleKMLDownload,
+                CSV: this.handleCSVDownload,
+                GPX: this.handleGPXDownload
+            }
         };
     },
     computed: {
         ...mapGetters("Modules/ExportItem", [
             "exportFileName"
-        ])
+        ]),
+        ...mapGetters("Maps", ["projectionCode"])
     },
     watch: {
         features () {
@@ -87,14 +96,113 @@ export default {
         this.fileName = "";
     },
     methods: {
-        onFormatChange () {
+        onFormatChange (event) {
             // Errorhandling used to be in the convertFeatures directly, now needs to happen here, i.e. allGeometryTypesNotSupported, notSupportedAlert, siehe actionsDownload function convertFeatures in draw_old
-            console.warn("Format Changed");
-            this.exportFormat = this.format;
+            console.warn("Format Changed", event);
+            this.exportFormat = event.target.value;
         },
 
-        startDownload () {
+        async startDownload () {
+
+            try {
+                if (!this.exportFormat) {
+                    console.warn("No export format selected.");
+                    return;
+                }
+
+                const handler = this.downloadStrategies[this.exportFormat.toUpperCase()];
+
+                if (handler) {
+                    await handler();
+                }
+                else {
+                    console.error(`No handler defined for format: ${this.exportFormat}`);
+                }
+            }
+            catch (error) {
+                console.error("Error in startDownload:", error);
+            }
+
+            // The following is not working yet as we do not initialize the masterportal_attributes on draw in the new draw module. drawInteractionOnDrawEvent.js l 49 takes care of said init in draw_old. Purpose is questionable, but it probably needs to be in the new draw too.
+            /*             this.features.forEach((drawnFeature) => {
+                if (!drawnFeature.get("masterportal_attributes").isVisible && drawnFeature.get("masterportal_attributes").invisibleStyle) {
+                    drawnFeature.setStyle(drawnFeature.get("masterportal_attributes").invisibleStyle);
+                }
+                if (state.oldStyle && typeof state.selectedFeature?.get === "function"
+                    && drawnFeature.get("masterportal_attributes").styleId === state.selectedFeature.get("masterportal_attributes").styleId
+                    && (typeof drawnFeature.get("masterportal_attributes").styleId === "number" || typeof drawnFeature.get("masterportal_attributes").styleId === "string")
+                ) {
+                    drawnFeature.setStyle(state.oldStyle);
+                }
+            }); */
+
+
+            console.warn("exportItem", exportItem);
             console.warn("Download started with the following features", this.features);
+            // next line is working GeoJSON, gives back valid JSON, just missing styles
+            /*             let dataString = await exportItem.prepareFeatures(this.features);
+
+            dataString = await exportItem.convertFeatures(dataString, new GeoJSON()); */
+
+
+            // Following two lines create a KML error
+            // let dataString = exportItem.setKmlAttributes(this.features);
+
+            // dataString = await exportItem.convertFeaturesToKml(dataString);
+
+
+            // console.warn("the result: ", dataString);
+        },
+
+        async handleGeoJSONDownload () {
+            console.warn("Handling GeoJSON download...");
+            let dataString = await exportItem.prepareFeatures(this.features);
+
+            dataString = await exportItem.convertFeatures(dataString, new GeoJSON(), this.projectionCode);
+            console.warn("GeoJSON result: ", dataString);
+            this.triggerFileDownload(dataString, `${this.fileName}.geojson`);
+        },
+
+        async handleGPXDownload () {
+            console.warn("Handling GPX download...");
+            let dataString = await exportItem.prepareFeatures(this.features);
+
+            dataString = await exportItem.convertFeatures(this.features, new GPX(), this.projectionCode);
+
+            console.warn("GPX result: ", dataString);
+            this.triggerFileDownload(dataString, `${this.fileName}.gpx`);
+        },
+
+        async handleKMLDownload () {
+            console.warn("Handling KML download...");
+            let dataString = exportItem.setKmlAttributes(this.features);
+            const projection = this.projectionCode;
+
+            console.warn("features after setKMLAttributes:", dataString);
+
+            dataString = await exportItem.convertFeaturesToKml(dataString, projection);
+            console.warn("features after convertFeaturesToKML:", dataString);
+
+            console.warn("KML result: ", dataString);
+            this.triggerFileDownload(dataString, `${this.fileName}.kml`);
+        },
+
+        async handleCSVDownload () {
+            console.warn("Handling CSV download...");
+            const dataString = await exportItem.convertFeaturesToCsv(this.features);
+
+            console.warn("CSV result: ", dataString);
+            this.triggerFileDownload(dataString, `${this.fileName}.csv`);
+        },
+
+        triggerFileDownload (data, fileName) {
+            const blob = new Blob([data], {type: "application/octet-stream"}),
+                link = document.createElement("a");
+
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            link.click();
+            URL.revokeObjectURL(link.href);
         }
     }
 };
@@ -125,7 +233,7 @@ export default {
                     id="tool-draw-download-format"
                     class="form-select"
                     aria-label="label42"
-                    @change="onFormatChange"
+                    @change="(event) => onFormatChange(event)"
                 >
                     <option value="none">
                         {{ $t(pleaseChoose) }}
