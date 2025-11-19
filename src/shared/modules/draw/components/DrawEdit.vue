@@ -89,9 +89,11 @@ export default {
             undoFeatures: [],
             showFrame: false,
             iconPosition: 0,
-            availableFormats: ["KML", "GEOJSON"],
+            availableFormats: ["KML", "GEOJSON", "GPX"],
             exportData: null,
-            features: []
+            features: [],
+            localDrawIcons: {...this.drawIcons},
+            drawLayerVisible: true
         };
     },
     computed: {
@@ -101,6 +103,9 @@ export default {
     },
     watch: {
         selectedInteraction (selectedInteraction) {
+            if (!this.drawEdits.includes(selectedInteraction)) {
+                this.showFrame = false;
+            }
             if (selectedInteraction !== "delete") {
                 this.currentSelectInteractions.forEach(currentSelectInteraction => this.removeInteraction(currentSelectInteraction));
                 this.currentSelectInteractions = [];
@@ -328,8 +333,10 @@ export default {
             if (typeof this.setSelectedInteraction === "function") {
                 this.setSelectedInteraction("hide");
             }
-            this.exportData = "text";
-            console.warn("Hide/Show Stub");
+            if (!this.drawLayerVisible) {
+                this.setSelectedInteraction("");
+            }
+            this.toggleDrawLayerVisibility();
         },
         regulateDownload () {
             if (typeof this.setSelectedInteraction === "function") {
@@ -341,6 +348,17 @@ export default {
         registerFeatures () {
             this.features = [...mapCollection.getMap("2D").getLayers().getArray().find(availableLayer => availableLayer.get("id") === "importDrawLayer").getSource().getFeatures()];
             console.warn("features: ", this.features);
+        },
+        toggleDrawLayerVisibility () {
+            const drawLayer = this.layer;
+
+            if (drawLayer) {
+                const isVisible = drawLayer.getVisible();
+
+                this.drawLayerVisible = !isVisible;
+                drawLayer.setVisible(!isVisible);
+                this.localDrawIcons.hide = this.localDrawIcons.hide === "bi-eye" ? "bi-eye-slash" : "bi-eye";
+            }
         }
     }
 };
@@ -362,10 +380,11 @@ export default {
                     selectedInteraction === drawEdit ? 'active': '',
                     drawEdit === 'redo' && redoFeatures.length === 0 ? 'disabled' : '',
                     drawEdit === 'undo' && undoFeatures.length === 0 ? 'disabled' : '',
-                    drawEdit !== 'redo' && drawEdit !== 'undo' && source?.getFeatures()?.length === 0 ? 'disabled' : ''
+                    drawEdit !== 'redo' && drawEdit !== 'undo' && source?.getFeatures()?.length === 0 ? 'disabled' : '',
+                    drawEdit !== 'hide' && !drawLayerVisible ? 'disabled': ''
                 ]"
                 :interaction="(event) => regulateEditInteraction(drawEdit, event)"
-                :icon="drawIcons[drawEdit]"
+                :icon="localDrawIcons[drawEdit]"
             />
         </div>
         <LayoutFrame
