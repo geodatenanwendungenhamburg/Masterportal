@@ -5,11 +5,11 @@ import getters from "@shared/modules/layerSwiper/store/gettersLayerSwiper";
 export default {
     name: "LayerSwiper",
     props: {
-    /**
-     * The initial time slider object.
-     * @type {Object}
-     * @default () => ({})
-     */
+        /**
+         * The initial time slider object.
+         * @type {Object}
+         * @default () => ({})
+         */
         initialTimeSliderObject: {
             type: Object,
             default: () => ({})
@@ -53,21 +53,14 @@ export default {
             const mapSize = mapCollection.getMap(this.mode).getSize(),
                 target = this.$refs["layerSwiper-button"];
 
+            target.style.top = `${mapSize[1] / 2}px`;
+            target.style.left = `${mapSize[0] / 2}px`;
+
             if (this.splitDirection === "vertical") {
                 this.setLayerSwiperValueX(mapSize[0] / 2);
-                target.style.left = `${mapSize[0] / 2}px`;
-                target.style.top = "50%";
-                target.style.removeProperty("height");
-                target.style.width = "50px";
-                target.style.cursor = "ew-resize";
             }
             else {
                 this.setLayerSwiperValueY(mapSize[1] / 2);
-                target.style.top = `${mapSize[1] / 2}px`;
-                target.style.left = "50%";
-                target.style.removeProperty("width");
-                target.style.height = "50px";
-                target.style.cursor = "ns-resize";
             }
 
             target.focus();
@@ -76,21 +69,23 @@ export default {
         },
 
         /**
-         * Adds event listeners for mouse movement to move the swiper.
+         * Adds event listeners for pointer movement to move the swiper.
          * @returns {void}
          */
-        mouseMovement () {
-            window.addEventListener("mousemove", this.moveSwiper);
-            window.addEventListener("mouseup", this.mouseMovementStopped);
+        pointerMovement () {
+            window.addEventListener("pointermove", this.moveSwiper);
+            window.addEventListener("pointerup", this.pointerMovementStopped);
+            window.addEventListener("pointercancel", this.pointerMovementStopped);
         },
 
         /**
-         * Removes event listeners for mouse movement.
+         * Removes event listeners for pointer movement.
          * @returns {void}
          */
-        mouseMovementStopped () {
-            window.removeEventListener("mousemove", this.moveSwiper);
-            window.removeEventListener("mouseup", this.mouseMovementStopped);
+        pointerMovementStopped () {
+            window.removeEventListener("pointermove", this.moveSwiper);
+            window.removeEventListener("pointerup", this.pointerMovementStopped);
+            window.removeEventListener("pointercancel", this.pointerMovementStopped);
         }
     }
 };
@@ -105,12 +100,11 @@ export default {
         :class="splitDirection"
         :title="$t('common:modules.wmsTime.layerSwiper.title')"
         :aria-describedby="$t('common:modules.wmsTime.layerSwiper.description', { amount: initialTimeSliderObject.keyboardMovement })"
-        :style="splitDirection === 'vertical' ? { cursor: 'ew-resize' } : { cursor: 'ns-resize' }"
         @keydown.left="moveSwiper"
         @keydown.right="moveSwiper"
         @keydown.up="moveSwiper"
         @keydown.down="moveSwiper"
-        @mousedown="mouseMovement"
+        @pointerdown="pointerMovement"
     />
 </template>
 
@@ -120,50 +114,50 @@ export default {
 
 button {
     pointer-events: all;
-    width: 50px;
-    background-color: $light_grey;
     position: absolute;
     transform: translate(-50%, -50%);
     -webkit-transform: translate(-50%, -50%);
 
+    /* prevents scroll effects to avoid mobile pointercancel events */
+    touch-action: none;
+
+    /* increase specificity to avoid transparency on :hover,:active,... states */
+    &#layerSwiper-button {
+        background-color: $light_grey;
+    }
+
+    &:before {
+        content: "";
+        position: absolute;
+        background: $light_grey_contrast;
+        z-index: -1;
+    }
+
     &.vertical {
+        width: 50px;
         height: 30px;
-        top: 50%;
-        left: 50%;
         cursor: ew-resize;
 
         &:before {
-            content: "";
-            position: absolute;
-            top: -5000px;
-            bottom: -5000px;
-            left: 50%;
+            height: 100dvh;
             width: 4px;
-            background: $light_grey_contrast;
-            z-index: -1;
-            transform: translate(-2px, 0);
-            -webkit-transform: translate(-2px, 0);
+
+            left: calc(50% - 2px);
+            transform: translateY(-50%);
         }
     }
 
     &.horizontal {
         height: 50px;
         width: 30px;
-        left: 50%;
-        top: 50%;
         cursor: ns-resize;
 
         &:before {
-            content: "";
-            position: absolute;
-            left: -5000px;
-            right: -5000px;
-            top: 50%;
             height: 4px;
-            background: $light_grey_contrast;
-            z-index: -1;
-            transform: translate(0, -2px);
-            -webkit-transform: translate(0, -2px);
+            width: 100dvw;
+
+            transform: translateX(-50%);
+            top: calc(50% - 2px);
         }
     }
 }

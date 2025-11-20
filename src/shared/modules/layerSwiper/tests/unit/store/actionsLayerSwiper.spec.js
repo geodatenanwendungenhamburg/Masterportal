@@ -5,13 +5,13 @@ import {JSDOM} from "jsdom";
 import layerCollection from "@core/layers/js/layerCollection";
 
 describe("actions", () => {
-    let commit, dispatch, state, rootGetters, jsdom, map, originalDocument, originalWindow, originalKeyboardEvent, originalMouseEvent;
+    let commit, dispatch, state, rootGetters, jsdom, map, originalDocument, originalWindow, originalKeyboardEvent, originalPointerEvent;
 
     before(() => {
         originalDocument = global.document;
         originalWindow = global.window;
         originalKeyboardEvent = global.KeyboardEvent;
-        originalMouseEvent = global.MouseEvent;
+        originalPointerEvent = global.PointerEvent;
         mapCollection.clear();
         map = {
             id: "ol",
@@ -28,7 +28,8 @@ describe("actions", () => {
         global.document = jsdom.window.document;
         global.window = jsdom.window;
         global.KeyboardEvent = jsdom.window.KeyboardEvent;
-        global.MouseEvent = jsdom.window.MouseEvent;
+        // PointerEvent is missing in jsdom, using MouseEvent for test instead https://github.com/jsdom/jsdom/issues/2527
+        global.PointerEvent = jsdom.window.MouseEvent;
         commit = sinon.spy();
         dispatch = sinon.spy();
         state = {
@@ -57,12 +58,12 @@ describe("actions", () => {
         global.document = originalDocument;
         global.window = originalWindow;
         global.KeyboardEvent = originalKeyboardEvent;
-        global.MouseEvent = originalMouseEvent;
+        global.PointerEvent = originalPointerEvent;
         sinon.restore();
     });
 
-    it("should calculate new position and commit changes on mousemove", () => {
-        const event = new MouseEvent("mousemove", {
+    it("should calculate new position and commit changes on pointermove", () => {
+        const event = new PointerEvent("pointermove", {
             clientX: 150
         });
 

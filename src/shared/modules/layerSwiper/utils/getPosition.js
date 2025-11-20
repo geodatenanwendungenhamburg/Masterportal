@@ -1,7 +1,7 @@
 /**
  * Returns the new position of the swiper depending on the input event.
  *
- * @param {KeyboardEvent.keydown | MouseEvent.mousemove} event DOM Event.
+ * @param {KeyboardEvent.keydown | PointerEvent.pointermove} event DOM Event.
  * @param {Number} currentPos The current position of the swiper (either x or y).
  * @param {Number} keyboardMovement Value in pixels that the swiper should be moved when using the arrow keys.
  * @param {String} direction Direction of movement, either "horizontal" or "vertical".
@@ -10,8 +10,8 @@
 export default function getPosition (event, currentPos, keyboardMovement, direction) {
     let position = currentPos;
 
-    if (event.type === "mousemove") {
-        position = direction === "horizontal" ? event.clientX : event.clientY;
+    if (event.type === "pointermove") {
+        position = direction === "horizontal" ? event.pageX : event.pageY;
     }
     else if (event.type === "keydown") {
         if (direction === "horizontal") {

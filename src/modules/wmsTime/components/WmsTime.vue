@@ -10,10 +10,18 @@ export default {
         TimeSlider
     },
     computed: {
+        ...mapGetters("Menu", ["currentMouseMapInteractionsComponent"]),
         ...mapGetters("Modules/WmsTime", ["currentTimeSliderObject", "layerAppendix", "minWidth", "timeSlider"]),
         ...mapGetters("Modules/LayerSwiper", {
             layerSwiperActive: "active"
-        })
+        }),
+        renderLayerSwiper () {
+            return this.layerSwiperActive && (
+                // compareMaps supports usage on mobile devices
+                this.currentMouseMapInteractionsComponent === "compareMaps" ||
+                this.minWidth
+            );
+        }
     },
     created () {
         window.addEventListener("resize", this.windowWidthChanged);
@@ -42,7 +50,7 @@ export default {
             :layer-id="currentTimeSliderObject.layerId + layerAppendix"
         />
         <LayerSwiper
-            v-if="layerSwiperActive && minWidth"
+            v-if="renderLayerSwiper"
             :current-time-slider-object="currentTimeSliderObject"
         />
     </div>

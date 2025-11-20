@@ -40,6 +40,8 @@ module.exports = function () {
         // change to eval to debug ts-files in chrome developer tools
         // devtool: "eval",
         devServer: {
+            host: "0.0.0.0",
+            disableHostCheck: true,
             headers: {
                 "Access-Control-Allow-Origin": "*"
             },

@@ -8,13 +8,13 @@ import layerCollection from "@core/layers/js/layerCollection";
  */
 const actions = {
     /**
-     * Sets the position of the layerSwiper to state according to the x- or y-coordinate of the mousedown event
+     * Sets the position of the layerSwiper to state according to the x- or y-coordinate of the PointerEvent
      * or adjusts it based on the direction of the key pressed by the state defined value.
      * @param {Object} context - The Vuex context object.
      * @param {Object} context.state - The Vuex state object.
      * @param {Function} context.commit - The Vuex commit function.
      * @param {Function} context.dispatch - The Vuex dispatch function.
-     * @param {KeyboardEvent|MouseEvent} event - The DOM event.
+     * @param {(KeyboardEvent|PointerEvent)} event - The DOM event.
      * @returns {void}
      */
     moveSwiper ({state, commit, dispatch}, event) {
