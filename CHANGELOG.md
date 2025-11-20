@@ -4,6 +4,17 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## 2025-11-20 v3.15.1 (LTS)
+
+### Fixed
+- wfsSearch: secured layers can now be searched.
+- Issue #1410: Legend – Fixed ordering of legend entries to match the style configuration.
+- Issue #1385: Add missing internationalization calls for layer names.
+- Issue #1481: Fix error when configuring customMenuElement as currentComponent.
+- buildSpec: Fixed runtime error in Print module caused by imported WMS layers where LAYERS parameter was not a string.
+- Issue #1499: Print: Fix missing legends when multiple WFS layers are active.
+
+
 ## 2025-10-01 v3.15.0 (LTS)
 
 ### __Breaking Changes__
