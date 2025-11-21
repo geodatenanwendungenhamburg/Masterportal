@@ -533,6 +533,7 @@
       },
       "buttonBack": "Vorherige Informationen anzeigen",
       "buttonForward": "Weitere Informationen anzeigen",
+      "errorMessageLayers": "Bei der Informationsabfrage (GetFeatureInfo) sind Fehler bei folgenden Layern aufgetreten: <ul>{{layers}}</ul><br>Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut. Falls das Problem weiterhin auftritt, wenden Sie sich bitte an den Betreiber des Dienstes.",
       "errorMessage": "Bei der Informationsabfrage (GetFeatureInfo) ist ein Fehler aufgetreten.<br>Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut. Falls das Problem weiterhin auftritt, wenden Sie sich bitte an den Betreiber des Dienstes.",
       "favoriteIcons": {
         "compareFeatureIcon": {

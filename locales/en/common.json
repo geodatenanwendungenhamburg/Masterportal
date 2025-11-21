@@ -534,7 +534,8 @@
       },
       "buttonBack": "Show previous information",
       "buttonForward": "Show further information",
-      "errorMessage": "An error has occurred  during the information request (GetFeatureInfo).<br>Please try again later. If the problem persists, please contact the operator of the service.",
+      "errorMessageLayers": "An error has occurred during the information request (GetFeatureInfo) on these layers: {{layers}}<br>Please try again later. If the problem persists, please contact the operator of the service.",
+      "errorMessage": "An error has occurred during the information request (GetFeatureInfo).<br>Please try again later. If the problem persists, please contact the operator of the service.",
       "favoriteIcons": {
         "compareFeatureIcon": {
             "toCompareList": "Add to compare list",

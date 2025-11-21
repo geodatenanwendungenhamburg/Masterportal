@@ -103,7 +103,7 @@ export default {
             commit("setMenuExpandedBeforeGfi", rootGetters["Menu/expanded"](getters.menuSide));
         }
 
-        Promise.all(gfiWmsLayerList.map(layer => {
+        return Promise.allSettled(gfiWmsLayerList.map(layer => {
             const gfiParams = {
                 INFO_FORMAT: layer.get("infoFormat"),
                 FEATURE_COUNT: layer.get("featureCount")
@@ -118,6 +118,34 @@ export default {
             }
             return getWmsFeaturesByMimeType(layer, url);
         }))
+            .then((results) => {
+                const rejected = [],
+                    fulfilled = results.filter((result, index) => {
+                        if (result.status === "rejected") {
+                            console.error(result.reason);
+                            rejected.push(index);
+                            return false;
+                        }
+                        return true;
+                    });
+
+                if (rejected.length) {
+                    const errorLayers = rejected.reduce(
+                        (accumulator, index) => `${accumulator}<li>${gfiWmsLayerList[index].get("name")}</li>`,
+                        ""
+                    );
+
+                    dispatch(
+                        "Alerting/addSingleAlert",
+                        i18next.t("common:modules.getFeatureInfo.errorMessageLayers", {
+                            layers: errorLayers,
+                            interpolation: {escapeValue: false}}
+                        ), {root: true}
+                    );
+                }
+
+                return fulfilled.map(({value}) => value);
+            })
             .then(gfiFeatures => {
                 const clickPixel = rootGetters["Maps/clickPixel"],
                     mode = rootGetters["Maps/mode"];
