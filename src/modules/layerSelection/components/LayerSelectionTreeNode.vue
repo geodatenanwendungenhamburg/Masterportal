@@ -57,14 +57,12 @@ export default {
          * @returns {void}
          */
         folderClicked () {
-            const elements = this.conf.elements;
-
-            if (elements) {
-                if (elements.some(conf => "layerSequence" in conf)) {
-                    sortByLayerSequence(elements);
+            if (this.conf.elements) {
+                if (this.conf.elements.some(conf => "layerSequence" in conf)) {
+                    sortByLayerSequence(this.conf.elements);
                 }
 
-                this.$emit("showNode", this.conf.name, elements);
+                this.$emit("showNode", this.conf.name, this.conf.elements);
             }
         },
         /**

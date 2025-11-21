@@ -4972,9 +4972,8 @@ Es wird eine Themensuche innerhalb des konfigurierten SearchInterfaces und Searc
 |----|-------------|---|-------|------------|------|
 |active|ja|Boolean||Gibt an, ob die Suche angezeigt wird.|false|
 |searchInterfaceInstances|ja|**[searchInterfaceInstances](#portalconfigtreeaddlayerbuttonsearchbarsearchinterfaceinstances) []**||Liste der search interfaces aus der searchbar, die hier genutzt werden sollen.|true|
-|filter|nein|Boolean|false|Aktiviert die clientseitige Filterung von Layern und Ordnern in der Themen-Auswahl basierend auf der Sucheingabe. <br>**Hinweis:** <br>Ist `searchInterfaceInstances` gesetzt, hat `filter: true` **Priorität** und führt zur lokalen Filterung **anstatt** der SearchInterface-Nutzung.|false|
 
-**Beispiel mit `searchInterfaceInstances`**
+**Beispiel**
 
 ```json
 {
@@ -4992,17 +4991,6 @@ Es wird eine Themensuche innerhalb des konfigurierten SearchInterfaces und Searc
         ]
     }
 }
-```
-**Beispiel mit `filter`**
-
-```json
-{
-    "searchBar": {
-        "active": true,
-        "filter": true
-    }
-}
-```
 
 ***
 #### portalConfig.tree.addLayerButton.searchBar.searchInterfaceInstances {data-toc-label='Searchinterface Instances'}

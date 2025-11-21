@@ -24,8 +24,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
         setSearchResultsActiveSpy,
         setShowAllResultsSpy,
         setShowSearchResultsInTreeSpy,
-        setCurrentActionEventSpy,
-        filterInLayerSelection = false;
+        setCurrentActionEventSpy;
 
 
     beforeEach(() => {
@@ -112,16 +111,9 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
                                 showAllResults: () => false,
                                 suggestionListLength: () => 0,
                                 type: () => "searchBar",
-                                addLayerButtonSearchActive: () => true,
-                                searchIsLoading: () => false
+                                addLayerButtonSearchActive: () => true
                             },
                             mutations: searchBarMutationsSpy
-                        },
-                        LayerSelection: {
-                            namespaced: true,
-                            mutations: {
-                                setHighlightLayerId: sinon.stub()
-                            }
                         }
                     }
                 },
@@ -129,8 +121,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
                     namespaced: true,
                     getters: {
                         titleBySide: () => () => true,
-                        currentComponent: () => () => "root",
-                        previousNavigationEntryText: () => () => "common:modules.searchBar.search"
+                        currentComponent: () => () => "root"
                     },
                     actions: menuActionsSpy
                 },
@@ -142,8 +133,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
                 }
             },
             getters: {
-                portalConfig: sinon.stub(),
-                filterInLayerSelection: () => filterInLayerSelection
+                portalConfig: sinon.stub()
             },
             actions: {
                 initializeModule: sinon.stub()
@@ -153,7 +143,6 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
 
     afterEach(() => {
         sinon.restore();
-        filterInLayerSelection = false;
     });
 
     describe("render SearchBar", () => {
@@ -307,8 +296,6 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
 
     describe("checkCurrentComponent ", () => {
         it("startSearch is executed for modules", async () => {
-            filterInLayerSelection = true;
-
             wrapper = await mount(SearchBarComponent, {
                 global: {
                     plugins: [store]
@@ -320,7 +307,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
             expect(startSearchSpy.called).to.be.true;
         });
         it("startSearch is executed for layerSelection", async () => {
-            searchInputValue = "valid-search";
+            searchInputValue = "";
             wrapper = await mount(SearchBarComponent, {
                 global: {
                     plugins: [store]
@@ -332,23 +319,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
 
             expect(startSearchSpy.called).to.be.true;
             expect(searchBarActionsSpy.startLayerSelectionSearch.called).to.be.true;
-        });
-        it("navigateBack is called for layerSelection with empty searchInput", async () => {
-            searchInputValue = "";
-
-            wrapper = await mount(SearchBarComponent, {
-                global: {
-                    plugins: [store]
-                }
-            });
-
-            const navigateBackSpy = sinon.spy(wrapper.vm, "navigateBack");
-
-            wrapper.vm.checkCurrentComponent("layerSelection");
-
-            expect(navigateBackSpy.calledWith("mainMenu")).to.be.true;
             expect(menuActionsSpy.navigateBack.called).to.be.true;
-            expect(searchBarActionsSpy.startLayerSelectionSearch.called).to.be.false;
         });
     });
 

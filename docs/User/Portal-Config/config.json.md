@@ -4985,9 +4985,8 @@ A topic search is enabled within the configured SearchInterface and SearchCatego
 |----|--------|----|-------|-----------|------|
 |active|yes|Boolean||Specifies whether the search is displayed.|false|
 |searchInterfaceInstances|ja|**[searchInterfaceInstances](#portalconfigtreeaddlayerbuttonsearchbarsearchinterfaceinstances) []**||List of search interfaces from the searchbar that are to be used here.|true|
-|filter|no|Boolean|false|Enables client-side filtering of layers and folders in the tree based on the user's search input. <br>**Note:** <br>If `searchInterfaceInstances` *is* configured, `filter: true` takes **priority** and triggers local filtering **instead of** using the configured SearchInterface.|false|
 
-**Example with `searchInterfaceInstances`**
+**Example**
 
 ```json
 {
@@ -5003,16 +5002,6 @@ A topic search is enabled within the configured SearchInterface and SearchCatego
         "searchCategory": "Topic"
       }
     ]
-  }
-}
-```
-**Example with `filter`**
-
-```json
-{
-  "searchBar": {
-    "active": true,
-    "filter": true
   }
 }
 ```

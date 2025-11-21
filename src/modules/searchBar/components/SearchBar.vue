@@ -41,18 +41,14 @@ export default {
             "suggestionListLength",
             "addLayerButtonSearchActive",
             "type",
-            "currentSide",
-            "searchIsLoading"
+            "currentSide"
         ]),
         ...mapGetters("Menu", {
             menuCurrentComponent: "currentComponent",
             previousNavigationEntryText: "previousNavigationEntryText"
         }),
         ...mapGetters([
-            "portalConfig", "filterInLayerSelection"
-        ]),
-        ...mapGetters("Modules/LayerSelection", [
-            "lastFolderNames"
+            "portalConfig"
         ]),
         /**
          * v-bind of search input value.
@@ -64,7 +60,6 @@ export default {
             set (searchInput) {
                 this.setSearchInput(searchInput);
                 this.removeHighlight3DTile();
-                this.setHighlightLayerId(null);
             }
         },
         /**
@@ -179,10 +174,6 @@ export default {
         searchInputValue: {
             handler (value) {
                 if (value === "") {
-                    if (!this.filterInLayerSelection && this.previousNavigationEntryText(this.currentSide)) {
-                        this.checkCurrentComponent(this.currentComponentSide);
-                    }
-
                     this.removePointMarker();
                     this.removePolygonMarker();
                     this.removeHighlight3DTile();
@@ -241,7 +232,6 @@ export default {
             "setCurrentComponentBySide",
             "setCurrentComponentPropsName"
         ]),
-        ...mapMutations("Modules/LayerSelection", ["setHighlightLayerId"]),
         /**
          * Starts the search in searchInterfaces, if min characters are introduced, updates the result list.
          * @param {String} currentComponentSide Current component type
@@ -269,19 +259,15 @@ export default {
                 }
             }
             else if (currentComponentType === "layerSelection") {
-                if (this.filterInLayerSelection) {
-                    return;
-                }
-
                 if (this.searchInputValue?.length === 0) {
-                    if (this.searchResults.length !== 0) {
-                        this.navigateBack(this.currentSide);
-                    }
-                    return;
+                    this.navigateBack(this.currentSide);
+                    this.startLayerSelectionSearch(this.currentSide);
+                    this.startSearch();
                 }
-
-                this.startLayerSelectionSearch(this.currentSide);
-                this.startSearch();
+                if (this.searchInputValue.length >= this.minCharacters) {
+                    this.startLayerSelectionSearch(this.currentSide);
+                    this.startSearch();
+                }
             }
             else {
                 this.startSearch();
@@ -348,41 +334,17 @@ export default {
                 @click="zoomToAndMarkSearchResult(searchInputValue), checkCurrentComponent(currentComponentSide)"
             >
                 <i
-                    v-if="searchInput.length >= minCharacters && searchIsLoading"
-                    class="spinner-border spinner-border-sm"
-                    role="status"
-                    aria-hidden="true"
-                />
-                <i
-                    v-else
                     class="bi-search"
                     role="img"
                 />
             </button>
         </div>
-        <small
-            v-if="searchInput.length < minCharacters && searchInput.length > 0 && (currentComponentSide !== 'layerSelection' || !filterInLayerSelection)"
-            class="form-text text-muted"
-        >
-            {{ $t('common:modules.searchBar.minCharHint', { min: minCharacters }) }}
-        </small>
-        <small
-            v-else-if="
-                searchInput.length >= minCharacters
-                    && !searchIsLoading
-                    && searchResults.length === 0
-                    && (currentComponentSide !== 'layerSelection' || !filterInLayerSelection)
-                    && currentComponentSide !== 'root'"
-            class="form-text text-muted"
-        >
-            {{ $t('common:modules.searchBar.noResults') }}
-        </small>
         <SearchBarSuggestionList
             v-if="!showAllResults"
             :limited-sorted-search-results="limitedSortedSearchResults"
         />
         <SearchBarResultList
-            v-else-if="showAllResults && !(currentComponentSide === 'layerSelection' && filterInLayerSelection)"
+            v-else-if="showAllResults"
             :limited-sorted-search-results="limitedSortedSearchResults"
         />
     </div>
@@ -441,3 +403,4 @@ export default {
         text-overflow: ellipsis;
     }
 </style>
+

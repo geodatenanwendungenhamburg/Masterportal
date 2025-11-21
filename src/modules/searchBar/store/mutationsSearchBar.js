@@ -58,23 +58,5 @@ export default {
      */
     addSuggestionItem (state, item) {
         state.searchSuggestions.push(item);
-    },
-
-    /**
-     * Updates the searchState of a specific search interface instance.
-     * @param {Object} state The state of search bar.
-     * @param {Object} payload The payload object.
-     * @param {string} payload.searchInterfaceId The ID of the search interface to update.
-     * @param {string} payload.searchState The new search state ("aborted", "failed", "finished", "instantiated", "running").
-     * @returns {void}
-     */
-    updateSearchInterfaceState (state, {searchInterfaceId, searchState}) {
-        const instance = state.searchInterfaceInstances.find(
-            si => si.searchInterfaceId === searchInterfaceId
-        );
-
-        if (instance) {
-            instance.searchState = searchState;
-        }
     }
 };

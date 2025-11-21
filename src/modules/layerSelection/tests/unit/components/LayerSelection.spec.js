@@ -29,8 +29,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
         subjectDataLayers,
         wrapper,
         treeType,
-        externalSubjectdata,
-        filterInLayerSelection = false;
+        externalSubjectdata;
 
     beforeEach(() => {
         lastFolderNames = [];
@@ -170,8 +169,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
                                 placeholder: () => "",
                                 configPaths: () => "",
                                 showSearchResultsInTree: () => showInTree,
-                                type: () => "",
-                                searchIsLoading: () => false
+                                type: () => ""
                             },
                             mutations: {
                                 setSearchSuggestions: () => "",
@@ -188,8 +186,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
                 Menu: {
                     namespaced: true,
                     getters: {
-                        currentComponent: () => () => "root",
-                        previousNavigationEntryText: () => () => "common:modules.layerSelection.addSubject"
+                        currentComponent: () => () => "root"
                     }
                 },
                 Maps: {
@@ -216,8 +213,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
                             type: treeType
                         }
                     };
-                },
-                filterInLayerSelection: () => filterInLayerSelection
+                }
             },
             actions: {
                 changeCategory: changeCategorySpy,
@@ -276,16 +272,13 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
 
     it("checks for external subject data (from addWMS)", async () => {
         showAllResults = false;
-        searchInput = "";
         LayerSelection.state.lastFolderNames = ["root"];
         subjectDataLayers.push(externalSubjectdata);
-
+        store.commit("Modules/LayerSelection/setSubjectDataLayerConfs", subjectDataLayers);
         wrapper = shallowMount(LayerSelectionComponent, {
             global: {
                 plugins: [store]
             }});
-        store.commit("Modules/LayerSelection/setSubjectDataLayerConfs", subjectDataLayers);
-        await wrapper.vm.$nextTick();
         expect(wrapper.findAll("layer-selection-tree-node-stub").length).to.be.equals(2);
     });
 
@@ -447,7 +440,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
 
         await wrapper.vm.$nextTick();
         expect(LayerSelection.actions.navigateBack.calledOnce).to.be.true;
-        expect(provideSelectAllPropsSpy.calledTwice).to.be.true;
+        expect(provideSelectAllPropsSpy.calledOnce).to.be.true;
     });
 
 
@@ -576,7 +569,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
             expect(wrapper.vm.lastFolderNames).to.deep.equals(["root"]);
             expect(commitSpy.calledOnce).to.be.true;
             expect(commitSpy.calledWith("Modules/LayerSelection/setSubjectDataLayerConfs", expectedPayload)).to.be.true;
-            expect(provideSelectAllPropsSpy.calledTwice).to.be.true;
+            expect(provideSelectAllPropsSpy.calledOnce).to.be.true;
         });
         it("should do nothing if the folder count does not change", async () => {
             const commitSpy = sinon.spy(store, "commit"),
@@ -768,43 +761,6 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
             await wrapper.vm.$nextTick();
 
             expect(wrapper.vm.deactivateShowAllCheckbox).to.be.false;
-        });
-    });
-    describe("filter functionality", () => {
-        it("filters layers based on search input", async () => {
-            searchInput = "2D";
-
-            wrapper = await shallowMount(LayerSelectionComponent, {
-                global: {
-                    plugins: [store]
-                }
-            });
-
-            await wrapper.vm.$nextTick();
-
-            expect(wrapper.find("#layer-selection").exists()).to.be.true;
-            expect(wrapper.vm.filteredLayerConfs.length).to.equal(1);
-            expect(JSON.stringify(wrapper.vm.filteredLayerConfs).toLowerCase()).to.include("layer2d_1");
-            expect(JSON.stringify(wrapper.vm.filteredLayerConfs).toLowerCase()).to.include("layer2d_2");
-            expect(JSON.stringify(wrapper.vm.filteredLayerConfs).toLowerCase()).to.include("layer2d_3");
-        });
-
-        it("shows no layers if search input does not match any layer", async () => {
-            searchInput = "nonExistingLayer";
-            showAllResults = true;
-            filterInLayerSelection = true;
-
-            wrapper = shallowMount(LayerSelectionComponent, {
-                global: {
-                    plugins: [store]
-                }
-            });
-
-            await wrapper.vm.$nextTick();
-
-            expect(wrapper.find("#layer-selection").exists()).to.be.true;
-            expect(wrapper.vm.filteredLayerConfs.length).to.equal(0);
-            expect(wrapper.findAll("layer-selection-tree-node-stub").length).to.equal(0);
         });
     });
 });

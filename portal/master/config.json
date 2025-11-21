@@ -826,7 +826,6 @@
         "active": true,
         "searchBar": {
           "active": true,
-          "filter": true,
           "searchInterfaceInstances": [
             {
               "id":"elasticSearch_0",

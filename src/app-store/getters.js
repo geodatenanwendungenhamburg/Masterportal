@@ -488,17 +488,6 @@ export default {
     },
 
     /**
-     * Returns whether the layer selection tree uses client-side filtering.
-     * This checks the `portalConfig.tree.searchBar.filter` value.
-     * If the value is not explicitly set, it defaults to `false`.
-     * @param {Object} state state of the app-store.
-     * @returns {boolean} true if filtering is enabled, otherwise false.
-     */
-    filterInLayerSelection: state => {
-        return state?.portalConfig?.tree?.addLayerButton?.searchBar?.filter ? state?.portalConfig?.tree?.addLayerButton?.searchBar?.filter : false;
-    },
-
-    /**
      * Returns the starting map mode configuration of portalConfig.
      * @param {Object} state state of the app-store.
      * @returns {String} The map mode.

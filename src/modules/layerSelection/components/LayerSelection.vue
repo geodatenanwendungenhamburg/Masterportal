@@ -6,7 +6,6 @@ import LayerCheckBox from "../../layerTree/components/LayerCheckBox.vue";
 import SearchBar from "../../searchBar/components/SearchBar.vue";
 import LayerSelectionTreeNode from "./LayerSelectionTreeNode.vue";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
-import {filterQueryableTree, filterTreeByQueryAndQueryable, filterRecursive, getVisibleLayers} from "@shared/js/utils/layerTreeFilterUtils.js";
 import {treeSubjectsKey} from "../../../shared/js/utils/constants.js";
 
 /**
@@ -30,19 +29,14 @@ export default {
             selectAllConfigs: [],
             activeCategory: null,
             deactivateShowAllCheckbox: false,
-            rootFolderCount: 0,
-            filteredLayerConfs: [],
-            fullRootLayerConfig: []
+            rootFolderCount: 0
         };
     },
     computed: {
-        ...mapGetters("Modules/SearchBar", ["addLayerButtonSearchActive", "currentSide", "showAllResults", "showSearchResultsInTree", "searchInput"]),
+        ...mapGetters("Modules/SearchBar", ["addLayerButtonSearchActive", "currentSide", "showAllResults", "showSearchResultsInTree"]),
         ...mapGetters("Maps", ["mode"]),
-        ...mapGetters(["activeOrFirstCategory", "allCategories", "portalConfig", "folderById", "layerConfig", "filterInLayerSelection"]),
-        ...mapGetters("Modules/LayerSelection", ["visible", "subjectDataLayerConfs", "baselayerConfs", "lastFolderNames", "layerInfoVisible", "highlightLayerId", "menuSide"]),
-        /**
-         * @return {Array} The layer configurations for the select all checkbox.
-         */
+        ...mapGetters(["activeOrFirstCategory", "allCategories", "portalConfig", "folderById", "layerConfig"]),
+        ...mapGetters("Modules/LayerSelection", ["visible", "subjectDataLayerConfs", "baselayerConfs", "lastFolderNames", "layerInfoVisible", "highlightLayerId"]),
         categorySwitcher () {
             return this.portalConfig?.tree?.categories;
         },
@@ -79,13 +73,6 @@ export default {
             }
 
             return null;
-        },
-        /**
-         * Returns true if the folder navigation is at root level.
-         * @return {Boolean}
-         */
-        isAtRootLevel () {
-            return this.lastFolderNames.length === 1;
         }
     },
 
@@ -96,19 +83,6 @@ export default {
      * @returns {void}
      */
     watch: {
-        searchInput () {
-            this.filterLayers();
-        },
-        lastFolderNames: {
-            handler (newVal, oldVal) {
-                const newLast = newVal[newVal.length - 1],
-                    oldLast = oldVal[oldVal.length - 1];
-
-                if (newLast !== oldLast) {
-                    this.filterLayers();
-                }
-            }
-        },
         layerConfig: {
             handler (newVal) {
                 if (newVal && newVal[treeSubjectsKey] && Array.isArray(newVal[treeSubjectsKey].elements)) {
@@ -168,10 +142,8 @@ export default {
         this.setHighlightLayerId(null);
     },
     created () {
-        this.originalSubjectDataLayerConfs = this.subjectDataLayerConfs;
         this.activeCategory = this.activeOrFirstCategory?.key;
         this.setLayerInfoVisible(false);
-        this.filterLayers();
     },
     methods: {
         ...mapActions(["changeCategory"]),
@@ -189,60 +161,6 @@ export default {
                 this.portalConfig.tree.type === "auto" ? conf.name.toLowerCase() : undefined
             ]);
         },
-
-        /**
-         * Filters the layer configurations based on the search input.
-         * Ensures the highlighted layer is always included in the filtered results.
-         * @returns {void}
-         */
-        filterLayers () {
-            if (!this.fullRootLayerConfig?.length && this.layerConfig?.[treeSubjectsKey]?.elements) {
-                this.fullRootLayerConfig = this.layerConfig[treeSubjectsKey].elements;
-            }
-
-            const sourceTree = this.fullRootLayerConfig.length > 0
-                    ? this.fullRootLayerConfig
-                    : this.originalSubjectDataLayerConfs,
-
-                filteredTree = filterRecursive(
-                    sourceTree,
-                    this.searchInput.trim().toLowerCase()
-                );
-
-            let currentFolder = filteredTree,
-                currentFolderObj = null,
-                visibleLayers = [],
-                highlightConf = null,
-                highlightExists = false,
-                highlightInCurrentFolder = false;
-
-            if (this.lastFolderNames.length > 1) {
-                let folderTraversal = filteredTree;
-
-                for (const folderName of this.lastFolderNames.slice(1)) {
-                    const nextFolder = folderTraversal.find(n => n.type === "folder" && n.name === folderName);
-
-                    currentFolderObj = nextFolder || null;
-                    folderTraversal = nextFolder?.elements || [];
-                }
-                currentFolder = folderTraversal;
-            }
-            else {
-                currentFolderObj = {id: null};
-            }
-
-            visibleLayers = getVisibleLayers(currentFolder);
-            highlightConf = this.originalSubjectDataLayerConfs.find(layer => layer.id === this.highlightLayerId);
-            highlightExists = visibleLayers.some(conf => conf.id === this.highlightLayerId);
-            highlightInCurrentFolder = highlightConf && (highlightConf.parentId === currentFolderObj?.id);
-
-            if (highlightConf && !highlightExists && highlightInCurrentFolder) {
-                visibleLayers.push(highlightConf);
-            }
-
-            this.filteredLayerConfs = visibleLayers;
-            this.provideSelectAllProps();
-        },
         /**
          * Navigates backwards in folder-menu.
          * @param {Number} level level to go back to
@@ -254,9 +172,6 @@ export default {
             for (let index = 0; index < end; index++) {
                 this.navigateBack();
             }
-
-            this.filterLayers();
-
             this.$nextTick(() => {
                 this.selectAllConfId = -1;
                 this.selectAllConfigs = [];
@@ -270,12 +185,7 @@ export default {
          * @returns {void}
          */
         folderClicked (lastFolderName, subjectDataLayerConfs) {
-            const sortedConfs = this.sort(subjectDataLayerConfs);
-
-            this.navigateForward({lastFolderName, subjectDataLayerConfs: sortedConfs});
-
-            this.filterLayers();
-
+            this.navigateForward({lastFolderName, subjectDataLayerConfs: this.sort(subjectDataLayerConfs)});
             this.$nextTick(() => {
                 this.selectAllConfId = -1;
                 this.selectAllConfigs = [];
@@ -295,14 +205,13 @@ export default {
          * @returns {void}
          */
         provideSelectAllProps () {
-            const visibleLayers = this.filteredLayerConfs.filter(conf => this.isControlledBySelectAll(conf));
-
-            this.selectAllConfigs = visibleLayers;
-            this.selectAllConfId = visibleLayers[0]?.id || -1;
-
-            if (visibleLayers[0]) {
-                this.toggleShowAllCheckbox(visibleLayers[0]);
-            }
+            this.subjectDataLayerConfs.forEach(conf => {
+                if (this.isControlledBySelectAll(conf) && this.selectAllConfId === -1) {
+                    this.selectAllConfigs = this.subjectDataLayerConfs.filter(config => this.isControlledBySelectAll(config));
+                    this.selectAllConfId = conf.id;
+                    this.toggleShowAllCheckbox(conf);
+                }
+            });
         },
         /**
          * Changes category after selection.
@@ -343,18 +252,7 @@ export default {
          * @returns {Array} list of filtered layers
          */
         filterExternalSubjectDataLayer () {
-            const externalLayers = this.subjectDataLayerConfs.filter(conf => conf.isExternal),
-                query = this.searchInput.toLowerCase();
-
-            if (this.filterInLayerSelection !== true) {
-                return externalLayers;
-            }
-
-            if (query) {
-                return filterTreeByQueryAndQueryable(externalLayers, query);
-            }
-
-            return filterQueryableTree(externalLayers);
+            return this.subjectDataLayerConfs.filter(conf => conf.isExternal);
         },
 
         /**
@@ -415,14 +313,14 @@ export default {
                 <div class="align-items-left justify-content-center layer-selection-navigation-dataLayer">
                     <div class="layer-selection-category-head">
                         <h5
-                            v-if="isAtRootLevel && datalayerHeaderText !== false"
+                            v-if="lastFolderNames.length === 1 && datalayerHeaderText !== false"
                             class="layer-selection-subheadline"
                         >
                             {{ datalayerHeaderText ?? $t("common:modules.layerSelection.datalayer") }}
                         </h5>
 
                         <div
-                            v-if="activeOrFirstCategory && categorySwitcher && isAtRootLevel"
+                            v-if="activeOrFirstCategory && categorySwitcher && lastFolderNames.length === 1"
                             class="btn d-flex mb-auto layer-selection-category-div-btn"
                         >
                             <IconButton
@@ -437,7 +335,7 @@ export default {
                     </div>
 
                     <div
-                        v-if="activeOrFirstCategory && categorySwitcher && isAtRootLevel"
+                        v-if="activeOrFirstCategory && categorySwitcher && lastFolderNames.length === 1"
                         id="collapseCategory"
                         class="collapse"
                     >
@@ -502,7 +400,7 @@ export default {
                         </ol>
                     </nav>
                     <template
-                        v-for="(conf, idx) in filteredLayerConfs"
+                        v-for="(conf, idx) in filterSubjectDataLayer()"
                         :key="idx"
                     >
                         <LayerSelectionTreeNode
@@ -536,12 +434,6 @@ export default {
                             />
                         </template>
                     </div>
-                    <small
-                        v-if="filterInLayerSelection && searchInput.trim() !== '' && filteredLayerConfs.length === 0 && filterExternalSubjectDataLayer().length === 0"
-                        class="form-text text-muted"
-                    >
-                        {{ $t('common:modules.layerSelection.noResults', { filterText: searchInput }) }}
-                    </small>
                 </div>
             </div>
         </div>
