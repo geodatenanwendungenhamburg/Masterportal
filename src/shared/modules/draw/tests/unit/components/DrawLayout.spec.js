@@ -34,13 +34,21 @@ describe("src/shared/modules/draw/components/DrawLayout.vue", () => {
             expect(wrapper.find("#draw-layout-innerCircle-fillColor").exists()).to.be.false;
             expect(wrapper.find("#draw-layout-innerCircle-fillTransparency").exists()).to.be.false;
             expect(wrapper.find("#draw-layout-innerCircle-strokeColor").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-strokeColor > label").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-strokeColor > label > i").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-strokeColor > label > input").exists()).to.be.true;
             expect(wrapper.find("#draw-layout-innerCircle-strokeWidth").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-strokeWidth > label").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-strokeWidth > label > i").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-strokeWidth > label > span").exists()).to.be.true;
+        });
+
+        it("renders the writeText inputs when selectedDrawType is 'writeText'", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {
+                    currentLayout: currentLayout,
+                    selectedDrawType: "writeText",
+                    setCurrentLayout: setCurrentLayoutSpy
+                }
+            });
+
+            expect(wrapper.find("#text-input").exists()).to.be.true;
+            expect(wrapper.find("#font-size-select").exists()).to.be.true;
+            expect(wrapper.find("#font-select").exists()).to.be.true;
         });
 
         it("renders the layout buttons for drawType - circle ", () => {
@@ -53,21 +61,9 @@ describe("src/shared/modules/draw/components/DrawLayout.vue", () => {
             });
 
             expect(wrapper.find("#draw-layout-innerCircle-fillColor").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-fillColor > label").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-fillColor > label > i").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-fillColor > label > input").exists()).to.be.true;
             expect(wrapper.find("#draw-layout-innerCircle-fillTransparency").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-fillTransparency > label").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-fillTransparency > label > i").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-fillTransparency > label > span").exists()).to.be.true;
             expect(wrapper.find("#draw-layout-innerCircle-strokeColor").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-strokeColor > label").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-strokeColor > label > i").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-strokeColor > label > input").exists()).to.be.true;
             expect(wrapper.find("#draw-layout-innerCircle-strokeWidth").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-strokeWidth > label").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-strokeWidth > label > i").exists()).to.be.true;
-            expect(wrapper.find("#draw-layout-innerCircle-strokeWidth > label > span").exists()).to.be.true;
         });
 
         it("renders the slider for strokeWidth of drawType - circle ", async () => {

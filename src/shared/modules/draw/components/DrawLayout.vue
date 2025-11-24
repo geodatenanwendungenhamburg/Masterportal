@@ -169,13 +169,13 @@ export default {
 
 <template>
     <div class="d-flex flex-column">
-        <label
+        <h5
             v-if="selectedDrawType === 'doubleCircle'"
             :for="'draw-layout-buttons-' + circleType"
             class="mb-2"
         >
             {{ $t("common:shared.modules.draw.drawLayout." + circleType) }}
-        </label>
+        </h5>
         <div
             v-if="selectedDrawType === 'writeText'"
             class="write-text-container mt-4"
@@ -236,68 +236,64 @@ export default {
             :id="'draw-layout-buttons-' + circleType"
             class="draw-layout-buttons d-flex flex-row align-items-center"
         >
-            <button
+            <div
                 v-for="layoutKey in Object.keys(mappingLayoutBySelectedDrawType)"
-                :id="'draw-layout-' + circleType + '-' + layoutKey"
                 :key="layoutKey"
-                tabindex="0"
-                :class="[
-                    'btn',
-                    'btn-primary',
-                    'me-3',
-                    activeLayoutKey === layoutKey ? 'active' : ''
-                ]"
-                type="button"
-                :aria-label="$t('common:shared.modules.draw.drawLayout.' + layoutKey)"
-                :title="$t('common:shared.modules.draw.drawLayout.' + layoutKey)"
-                @click="setActiveLayoutKey(layoutKey)"
+                class="button-container text-center"
             >
-                <label
-                    v-if="layoutKey === 'fillColor' || layoutKey === 'strokeColor'"
-                    :for="'color-picker-' + circleType + '-' + layoutKey"
+                <button
+                    :id="'draw-layout-' + circleType + '-' + layoutKey"
+                    :key="layoutKey"
+                    :class="[
+                        'btn',
+                        'btn-primary',
+                        activeLayoutKey === layoutKey ? 'active' : ''
+                    ]"
+                    @click="setActiveLayoutKey(layoutKey)"
                 >
                     <i
                         :class="mappingLayout[layoutKey].icon"
                         role="img"
                     />
+                    <span
+                        v-if="layoutKey === 'fillColor' || layoutKey === 'strokeColor'"
+                        class="color-preview"
+                        :style="{ backgroundColor: convertColor(currentLayout[layoutKey], 'hex') }"
+                    />
+                    <span
+                        v-else-if="layoutKey === 'fillTransparency'"
+                        class="btn-value"
+                    >
+                        {{ currentLayout[layoutKey] + '%' }}
+                    </span>
+
+                    <span
+                        v-else-if="layoutKey === 'strokeWidth'"
+                        class="btn-value"
+                    >
+                        {{ currentLayout[layoutKey] + 'px' }}
+                    </span>
+
+                    <span
+                        v-else-if="layoutKey === 'extrudedHeight' && hasExtrudedHeight"
+                        class="btn-value"
+                    >
+                        {{ currentLayout[layoutKey] + 'm' }}
+                    </span>
                     <input
-                        :id="'color-picker-' + circleType + '-' + layoutKey"
+                        v-if="layoutKey === 'fillColor' || layoutKey === 'strokeColor'"
                         type="color"
+                        class="color-input-overlay"
                         :value="convertColor(currentLayout[layoutKey], 'hex')"
                         @input="event => updateCurrentLayout(layoutKey, event.target.value)"
                     >
-                </label>
-                <label
-                    v-else-if="layoutKey === 'fillTransparency'"
-                    :for="'text-fill-transparency-' + circleType + '-' + layoutKey"
+                </button>
+                <span
+                    class="text-center btn-label"
                 >
-                    <i
-                        :class="mappingLayout[layoutKey].icon"
-                        role="img"
-                    />
-                    <span>{{ currentLayout[layoutKey]+"%" }}</span>
-                </label>
-                <label
-                    v-else-if="layoutKey === 'strokeWidth'"
-                    :for="'text-stroke-width-' + circleType + '-' + layoutKey"
-                >
-                    <i
-                        :class="mappingLayout[layoutKey].icon"
-                        role="img"
-                    />
-                    <span>{{ currentLayout[layoutKey]+"px" }}</span>
-                </label>
-                <label
-                    v-else-if="layoutKey === 'extrudedHeight' && hasExtrudedHeight"
-                    :for="'text-extruded-height-' + circleType + '-' + layoutKey"
-                >
-                    <i
-                        :class="mappingLayout[layoutKey].icon"
-                        role="img"
-                    />
-                    <span>{{ currentLayout[layoutKey]+"m" }}</span>
-                </label>
-            </button>
+                    {{ $t(`common:shared.modules.draw.drawLayout.${layoutKey}`) }}
+                </span>
+            </div>
         </div>
         <div
             v-if="activeLayoutKey === 'strokeWidth'"
@@ -350,24 +346,46 @@ export default {
 <style lang="scss" scoped>
 
 
+.btn-label {
+    display: block;
+    font-size: 0.8rem;
+}
+
+.btn-value {
+    font-size: 0.75rem;
+    width: 100%;
+    display: block;
+}
+
+.color-preview {
+    display: block;
+    width: 1.8rem;
+    height: 0.6rem;
+    border-radius: 4px;
+}
+
+.color-input-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
 .btn {
-    width: 3.5rem;
-    height: 3.5rem;
-    position: sticky;
+    width: 3.65rem;
+    height: 3.65rem;
+    position: relative;
     text-align: center;
     top: auto;
     font-size: 1.143rem;
     border-radius: 50%;
     border: solid $white 1px;
-
-    &:hover {
-        > label {
-            > input {
-                color: $white;
-            }
-        }
-    }
-    /* position label in center of button */
     > label {
         position: absolute;
         cursor: pointer;
@@ -391,7 +409,7 @@ export default {
             padding-top: .3rem;
             width: 3rem;
             text-align: center;
-            padding-top: .3rem;
+            padding-top: 0.3rem;
         }
     }
 }
@@ -407,6 +425,16 @@ export default {
 input {
     cursor: pointer;
     border: none;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    width: 5rem;
+    height: 7rem;
 }
 
 </style>
