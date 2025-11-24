@@ -244,7 +244,7 @@ export default {
                     :key="layoutKey"
                     :class="[
                         'btn',
-                        'btn-secondary',
+                        'btn-primary',
                         activeLayoutKey === layoutKey ? 'active' : ''
                     ]"
                     @click="setActiveLayoutKey(layoutKey)"
@@ -342,6 +342,37 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+.btn-label {
+    display: block;
+    font-size: 0.8rem;
+}
+
+.btn-value {
+    font-size: 0.75rem;
+    width: 100%;
+    display: block;
+}
+
+.color-preview {
+    display: block;
+    width: 1.8rem;
+    height: 0.6rem;
+    border-radius: 4px;
+}
+
+.color-input-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
 .btn-label {
     display: block;
     font-size: 0.8rem;

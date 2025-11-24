@@ -87,7 +87,7 @@ export default {
         <button
             :id="id"
             tabindex="0"
-            class="btn d-flex justify-items-center mb-auto"
+            class="btn d-flex justify-items-center"
             type="button"
             :title="aria"
             :aria-label="aria"
