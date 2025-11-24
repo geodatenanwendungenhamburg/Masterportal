@@ -241,7 +241,7 @@ Layer2dVector.prototype.showFeaturesByIds = function (featureIdList) {
         allLayerFeatures = layerSource.getFeatures(),
         featuresToShow = featureIdList.map(id => layerSource.getFeatureById(id));
 
-    this.hideAllFeatures();
+    this.hideAllFeatures(true);
     featuresToShow.forEach(feature => {
         const style = this.getStyleAsFunction(this.get("style"));
 
@@ -256,9 +256,10 @@ Layer2dVector.prototype.showFeaturesByIds = function (featureIdList) {
 
 /**
  * Hides all features by setting style= null for all features.
+ * @param {Boolean} [preventReAddFeaturesAfterClean=true] If true, features are not re-added after clearing the source.
  * @returns {void}
  */
-Layer2dVector.prototype.hideAllFeatures = function () {
+Layer2dVector.prototype.hideAllFeatures = function (preventReAddFeaturesAfterClean = false) {
     const layerSource = this.getLayerSource() instanceof Cluster ? this.getLayerSource().getSource() : this.getLayerSource(),
         features = layerSource.getFeatures();
 
@@ -270,6 +271,9 @@ Layer2dVector.prototype.hideAllFeatures = function () {
         feature.setStyle(new Style());
     });
 
+    if (preventReAddFeaturesAfterClean) {
+        return;
+    }
     layerSource.addFeatures(features);
 };
 
