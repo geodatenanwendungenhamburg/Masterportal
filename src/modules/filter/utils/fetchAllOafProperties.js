@@ -14,7 +14,7 @@ import axios from "axios";
  * @param {Function|Boolean} [axiosMock=false] false to use axios, a function that is called with the axios configuration if mock is needed
  * @returns {void}
  */
-function fetchAllOafProperties (url, collection, limit, onsuccess, onerror, skipGeometry = false, propertyNames = undefined, axiosMock = false) {
+function fetchAllOafProperties (url, collection, limit, onsuccess, onerror, bbox, bboxCrs, signal, skipGeometry = false, propertyNames = undefined, axiosMock = false) {
     if (typeof url !== "string") {
         if (typeof onerror === "function") {
             onerror(new Error("fetchAllOafProperties: the url parameter has to be a string"));
@@ -38,8 +38,11 @@ function fetchAllOafProperties (url, collection, limit, onsuccess, onerror, skip
     if (skipGeometry) {
         axiosUrl += "&skipGeometry=true";
     }
+    if (bbox) {
+        axiosUrl += `&bbox=${bbox}&bbox-crs=${bboxCrs || "http://www.opengis.net/def/crs/EPSG/0/4326"}`;
+    }
 
-    fetchAllOafPropertiesRecursionHelper(result, axiosUrl, onsuccess, onerror, axiosObject);
+    fetchAllOafPropertiesRecursionHelper(result, axiosUrl, onsuccess, onerror, signal, axiosObject);
 }
 
 /**
@@ -51,13 +54,14 @@ function fetchAllOafProperties (url, collection, limit, onsuccess, onerror, skip
  * @param {Function} axiosObject an object to use for the axios request
  * @returns {void}
  */
-function fetchAllOafPropertiesRecursionHelper (result, url, onsuccess, onerror, axiosObject) {
+function fetchAllOafPropertiesRecursionHelper (result, url, onsuccess, onerror, signal, axiosObject) {
     axiosObject({
         method: "get",
         url,
         headers: {
             accept: "application/geo+json"
-        }
+        },
+        signal
     }).then(response => {
         if (!isObject(response) || !isObject(response.data)) {
             if (typeof onerror === "function") {
@@ -73,7 +77,7 @@ function fetchAllOafPropertiesRecursionHelper (result, url, onsuccess, onerror, 
             });
         }
         if (typeof nextLink === "string") {
-            fetchAllOafPropertiesRecursionHelper(result, nextLink, onsuccess, onerror, axiosObject);
+            fetchAllOafPropertiesRecursionHelper(result, nextLink, onsuccess, onerror, signal, axiosObject);
         }
         else if (typeof onsuccess === "function") {
             onsuccess(result);
@@ -92,7 +96,7 @@ function fetchAllOafPropertiesRecursionHelper (result, url, onsuccess, onerror, 
  * @param {Boolean} nested If set to true, for each attrName an nested object is created. Only works if attrName is an array
  * @returns {Object|Boolean} an object with the values as keys ({value1: true, ...}) or false if an error occured
  */
-function getUniqueValuesFromFetchedFeatures (allFetchedProperties, attrName, nested) {
+function getUniqueValuesFromFetchedFeatures (allFetchedProperties, attrName, nested, {rules, filterId, commands}) {
     if (!Array.isArray(allFetchedProperties)) {
         return false;
     }
@@ -103,7 +107,7 @@ function getUniqueValuesFromFetchedFeatures (allFetchedProperties, attrName, nes
             if (nested) {
                 result[attributeName] = {};
             }
-            Object.assign(nested ? result[attributeName] : result, getUniqueValuesFromFetchedFeatures(allFetchedProperties, attributeName));
+            Object.assign(nested ? result[attributeName] : result, getUniqueValuesFromFetchedFeatures(allFetchedProperties, attributeName, false, {rules, filterId, commands}));
         });
         return result;
     }

@@ -477,7 +477,9 @@ export default {
     mounted () {
         this.$nextTick(() => {
             this.initializeIcons();
-            this.$emit("registerUniqueValueOnMove", this.snippetId, this.gatherUniqueValues);
+            if (this.api) {
+                this.$emit("registerUniqueValueOnMove", this.snippetId, this.gatherUniqueValues);
+            }
 
             if (!this.visible) {
                 this.dropdownValue = Array.isArray(this.prechecked) ? this.prechecked : [];

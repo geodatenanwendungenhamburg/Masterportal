@@ -254,7 +254,7 @@ export default class FilterApi {
                         obj.onerror(error);
                     }
                 });
-            }, minOnly, maxOnly, isDate, {rules, filterId, format, commands});
+            }, minOnly, maxOnly, isDate, {rules, filterId, format, commands, service: this.service});
         }
         else {
             FilterApi.waitingList[cacheKey].push({onsuccess, onerror});
@@ -308,7 +308,7 @@ export default class FilterApi {
                         obj.onerror(error);
                     }
                 });
-            }, {rules, filterId, commands});
+            }, {rules, filterId, commands, service: this.service});
         }
         else {
             FilterApi.waitingList[cacheKey].push({onsuccess, onerror});

@@ -253,11 +253,11 @@ Layer2dVector.prototype.getStyleFunction = function () {
 Layer2dVector.prototype.showFeaturesByIds = function (featureIdList) {
     const layerSource = this.getLayerSource() instanceof Cluster ? this.getLayerSource().getSource() : this.getLayerSource(),
         allLayerFeatures = layerSource.getFeatures(),
-        featuresToShow = featureIdList.map(id => layerSource.getFeatureById(id));
+        featuresToShow = featureIdList.map(id => layerSource.getFeatureById(id)),
+        style = this.getStyleAsFunction(this.get("style"));
 
     this.hideAllFeatures(true);
     featuresToShow.forEach(feature => {
-        const style = this.getStyleAsFunction(this.get("style"));
 
         if (feature && feature !== null) {
             feature.set("hideInClustering", false);
@@ -275,14 +275,15 @@ Layer2dVector.prototype.showFeaturesByIds = function (featureIdList) {
  */
 Layer2dVector.prototype.hideAllFeatures = function (preventReAddFeaturesAfterClean = false) {
     const layerSource = this.getLayerSource() instanceof Cluster ? this.getLayerSource().getSource() : this.getLayerSource(),
-        features = layerSource.getFeatures();
+        features = layerSource.getFeatures(),
+        sharedStyle = new Style();
 
     // optimization - clear and re-add to prevent cluster updates on each change
     layerSource.clear();
 
     features.forEach((feature) => {
         feature.set("hideInClustering", true);
-        feature.setStyle(new Style());
+        feature.setStyle(sharedStyle);
     });
 
     if (preventReAddFeaturesAfterClean) {

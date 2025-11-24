@@ -152,7 +152,8 @@ export default {
             outOfZoom: false,
             gfiFirstActive: false,
             visibleSnippet: false,
-            uniqueValuesOnMoveListeners: {}
+            uniqueValuesOnMoveListeners: {},
+            snippetIdOfLastChange: null
         };
     },
     computed: {
@@ -894,6 +895,7 @@ export default {
                     rules: Array.isArray(rules) ? rules : this.getCleanArrayOfRules()
                 };
 
+            this.snippetIdOfLastChange = snippetId;
             this.applyPassiveValuesToTags(this.filterRules);
             this.setFormDisable(true);
             this.showStopButton(true);
@@ -1072,6 +1074,7 @@ export default {
             }
             if (!this.mapHandler.isLayerActivated(this.layerConfig.filterId)) {
                 if (this.layerConfig.filterOnMove && (evt.type === "moveend")) {
+                    this.stopFilter();
                     this.updateSnippetUniqueValues();
                 }
                 return;
@@ -1087,14 +1090,14 @@ export default {
                 this.setIsLoading(false);
             }
             this.$nextTick(() => {
+                this.stopFilter();
                 if (!this.outOfZoom) {
                     this.isLockedHandleActiveStrategy = false;
                     this.setSnippetValueByState(this.filterRules);
-                    this.handleActiveStrategy();
+                    this.handleActiveStrategy(this.snippetIdOfLastChange);
                 }
                 else {
                     this.amountOfFilteredItems = 0;
-                    this.stopFilter();
                 }
             });
         },

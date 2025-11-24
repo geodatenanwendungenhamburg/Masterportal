@@ -168,7 +168,7 @@ export default class InterfaceOafExtern {
      * @param {Boolean} [maxOnly=false] if only max is of interest
      * @returns {void}
      */
-    getMinMax (service, attrName, onsuccess, onerror, minOnly = false, maxOnly = false) {
+    getMinMax (service, attrName, onsuccess, onerror, minOnly = false, maxOnly = false, isDate = false, filterQuestion = {}) {
         if (Array.isArray(this.allFetchedProperties)) {
             if (typeof onsuccess === "function") {
                 onsuccess(getMinMaxFromFetchedFeatures(this.allFetchedProperties, attrName, minOnly, maxOnly));
@@ -177,13 +177,21 @@ export default class InterfaceOafExtern {
         }
 
         if (!this.allFetchedProperties) {
+            const controller = new AbortController();
+
+            this.axiosControllers[filterQuestion.filterId + ".allProperties"] = controller;
             this.allFetchedProperties = true;
             fetchAllOafProperties(service.url, service.collection, service.limit, allProperties => {
                 this.allFetchedProperties = allProperties;
                 while (this.waitingListForFeatures.length) {
                     this.waitingListForFeatures.shift()();
                 }
-            }, onerror);
+            },
+            onerror,
+            filterQuestion.commands.searchInMapExtent ? this.getCurrentExtent?.()?.join(",") : undefined,
+            epsgCodeToURI(filterQuestion.service.srsName),
+            controller.signal,
+            true);
         }
 
         this.waitingListForFeatures.push(() => {
@@ -201,10 +209,10 @@ export default class InterfaceOafExtern {
      * @param {Function} onerror a function(errorMsg)
      * @returns {void}
      */
-    getUniqueValues (service, attrName, onsuccess, onerror) {
+    getUniqueValues (service, attrName, onsuccess, onerror, filterQuestion) {
         if (Array.isArray(this.allFetchedProperties)) {
             if (typeof onsuccess === "function") {
-                const uniqueValue = getUniqueValuesFromFetchedFeatures(this.allFetchedProperties, attrName);
+                const uniqueValue = getUniqueValuesFromFetchedFeatures(this.allFetchedProperties, attrName, false, filterQuestion);
 
                 onsuccess(isObject(uniqueValue) ? Object.keys(uniqueValue) : []);
             }
@@ -212,18 +220,26 @@ export default class InterfaceOafExtern {
         }
 
         if (this.allFetchedProperties === false) {
+            const controller = new AbortController();
+
+            this.axiosControllers[filterQuestion.filterId + ".allProperties"] = controller;
             this.allFetchedProperties = true;
             fetchAllOafProperties(service.url, service.collection, service.limit, allProperties => {
                 this.allFetchedProperties = allProperties;
                 while (this.waitingListForFeatures.length) {
                     this.waitingListForFeatures.shift()();
                 }
-            }, onerror);
+            },
+            onerror,
+            filterQuestion.commands.searchInMapExtent ? this.getCurrentExtent?.()?.join(",") : undefined,
+            epsgCodeToURI(filterQuestion.service.srsName),
+            controller.signal,
+            true);
         }
 
         this.waitingListForFeatures.push(() => {
             if (typeof onsuccess === "function") {
-                const uniqueValue = getUniqueValuesFromFetchedFeatures(this.allFetchedProperties, attrName);
+                const uniqueValue = getUniqueValuesFromFetchedFeatures(this.allFetchedProperties, attrName, false, filterQuestion);
 
                 onsuccess(isObject(uniqueValue) ? Object.keys(uniqueValue) : []);
             }
@@ -240,17 +256,23 @@ export default class InterfaceOafExtern {
      * @returns {void}
      */
     stop (filterId, onsuccess, onerror) {
-        const controller = this.axiosControllers[filterId];
+        const controllers = [this.axiosControllers[filterId], this.axiosControllers[filterId + ".allProperties"]];
+        let errorOccurred = false;
 
-        if (controller instanceof AbortController) {
-            controller.abort();
-            if (typeof onsuccess === "function") {
-                onsuccess();
+        controllers.forEach((controller, idx) => {
+            if (controller instanceof AbortController) {
+                console.log("aborts controller", idx);
+                controller.abort();
             }
-        }
-        else if (typeof onerror === "function") {
+            else {
+                errorOccurred = true;
+            }
+        });
+        if (errorOccurred && typeof onerror === "function") {
             onerror();
+            return;
         }
+        onsuccess();
     }
 
     /**
@@ -269,7 +291,7 @@ export default class InterfaceOafExtern {
 
         const controller = new AbortController(),
             progress = 1,
-            bbox = filterQuestion.commands.searchInMapExtent ? this.getCurrentExtent().join(",") : undefined,
+            bbox = filterQuestion.commands.searchInMapExtent ? this.getCurrentExtent?.()?.join(",") : undefined,
             filter = this.getFilter(filterQuestion.rules, filterQuestion.commands?.geometryName, filterQuestion.commands?.filterGeometry, ignoreRules);
 
         this.callEmptySuccess(onsuccess, filterQuestion, progress);

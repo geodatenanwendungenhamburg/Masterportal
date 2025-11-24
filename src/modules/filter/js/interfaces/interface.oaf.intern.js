@@ -43,8 +43,8 @@ export default class InterfaceOafIntern {
      * @param {Boolean} [maxOnly=false] if only max is of interest
      * @returns {void}
      */
-    getMinMax (service, attrName, onsuccess, onerror, minOnly, maxOnly) {
-        return this.interfaceOafExtern.getMinMax(service, attrName, onsuccess, onerror, minOnly, maxOnly);
+    getMinMax (service, attrName, onsuccess, onerror, minOnly, maxOnly, isDate, filterQuestion) {
+        return this.interfaceOafExtern.getMinMax(service, attrName, onsuccess, onerror, minOnly, maxOnly, isDate, filterQuestion);
     }
 
     /**
@@ -55,8 +55,8 @@ export default class InterfaceOafIntern {
      * @param {Function} onerror a function(errorMsg)
      * @returns {void}
      */
-    getUniqueValues (service, attrName, onsuccess, onerror) {
-        return this.interfaceOafExtern.getUniqueValues(service, attrName, onsuccess, onerror);
+    getUniqueValues (service, attrName, onsuccess, onerror, filterQuestion) {
+        return this.interfaceOafExtern.getUniqueValues(service, attrName, onsuccess, onerror, filterQuestion);
     }
 
     /**

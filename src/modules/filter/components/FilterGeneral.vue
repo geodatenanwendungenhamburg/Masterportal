@@ -532,7 +532,7 @@ export default {
          * @returns {void}
          */
         registerMapMoveListeners () {
-            this.registerListener({type: "loadstart", listener: this.executeListeners.bind(this), keyForBoundFunctions: this.executeListeners.toString() + "loadstart"});
+            // this.registerListener({type: "loadstart", listener: this.executeListeners.bind(this), keyForBoundFunctions: this.executeListeners.toString() + "loadstart"});
             this.registerListener({type: "loadend", listener: this.executeListeners.bind(this), keyForBoundFunctions: this.executeListeners.toString() + "loadend"});
             this.registerListener({type: "moveend", listener: this.executeListeners.bind(this), keyForBoundFunctions: this.executeListeners.toString() + "moveend"});
         },
@@ -568,8 +568,15 @@ export default {
          * @returns {void}
          */
         executeListeners (evt) {
-            Object.values(this.mapMoveListeners).forEach(mapMoveListener => {
+            const runningLister = {};
+
+            console.log("executes listeners", evt.type)
+            Object.entries(this.mapMoveListeners).forEach(([filterId, mapMoveListener]) => {
                 if (typeof mapMoveListener === "function") {
+                    if (runningLister[filterId]) {
+                        this.layerConfigs.layers[filterId].api.stop();
+                    }
+                    runningLister[filterId] = true;
                     mapMoveListener(evt);
                 }
             });
