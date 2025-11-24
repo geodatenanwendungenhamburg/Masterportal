@@ -242,4 +242,20 @@ export default {
     align-items: left;
 }
 
+.selected-drawtypes-container {
+    gap: 1.4rem;
+    width: 5rem;
+    margin-top: 1rem;
+    margin-left: 0.85rem;
+}
+
+#draw-layouts {
+    margin-left: 0.2rem;
+    margin-top: 0.5rem;
+}
+
+#main-drawtypes-container {
+    margin-left: 0.65rem;
+}
+
 </style>
