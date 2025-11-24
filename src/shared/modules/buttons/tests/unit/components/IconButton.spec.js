@@ -22,7 +22,7 @@ describe("src/shared/components/IconButton.vue", () => {
             icon = button.find("i");
 
         expect(button.exists()).to.be.true;
-        expect(button.classes()).to.eql(["btn", "d-flex", "justify-items-center", "mb-auto"]);
+        expect(button.classes()).to.eql(["btn", "d-flex", "justify-items-center"]);
         expect(button.attributes("type")).to.equal("button");
         expect(icon.exists()).to.be.true;
         expect(icon.classes()).to.eql([iconString]);
