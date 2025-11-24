@@ -135,9 +135,10 @@ export default {
             />
         </div>
         <div
+            v-if="!circleOptions.interactive || selectedDrawType === 'doubleCircle'"
             class="circle-settings"
         >
-            <div class="form-floating mb-3 mt-2">
+            <div class="form-floating mb-3">
                 <select
                     :id="'draw-circle-settings-' + selectedDrawType"
                     :ref="'draw-circle-settings-' + selectedDrawType"
