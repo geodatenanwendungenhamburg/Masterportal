@@ -96,7 +96,10 @@ export default {
                 :checked="circleOptions.interactive"
             />
         </div>
-        <div v-if="!circleOptions.interactive || selectedDrawType === 'doubleCircle'">
+        <div
+            v-if="!circleOptions.interactive || selectedDrawType === 'doubleCircle'"
+            class="circle-settings"
+        >
             <div class="form-floating mb-3">
                 <select
                     :id="'draw-circle-settings-' + selectedDrawType"
@@ -146,6 +149,10 @@ export default {
 
 .input-radius {
     width: 100%;
+}
+
+.circle-settings {
+    margin-top: 2rem;
 }
 
 </style>

@@ -159,7 +159,7 @@ export default {
                 fill="#fff"
             >
                 <div
-                    class="d-flex mb-2"
+                    class="d-flex mb-2 selected-drawtypes-container"
                 >
                     <DrawTypes
                         v-if="selectedDrawTypeMain === 'geometries'"
@@ -204,9 +204,7 @@ export default {
             fill="#fff"
             class="mb-2"
         >
-            <div
-                id="draw-settings"
-            >
+            <div>
                 <DrawSettingsCircle
                     v-if="selectedDrawType === 'circle' || selectedDrawType === 'doubleCircle'"
                     :circle-options="circleOptions"
@@ -244,6 +242,22 @@ export default {
 
 .drawtypes-container {
     align-items: left;
+}
+
+.selected-drawtypes-container {
+    gap: 1.4rem;
+    width: 5rem;
+    margin-top: 1rem;
+    margin-left: 0.85rem;
+}
+
+#draw-layouts {
+    margin-left: 0.2rem;
+    margin-top: 0.5rem;
+}
+
+#main-drawtypes-container {
+    margin-left: 0.65rem;
 }
 
 </style>
