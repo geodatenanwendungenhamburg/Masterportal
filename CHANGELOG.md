@@ -4,6 +4,32 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased - in development
+### __Breaking Changes__
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
+
+## 2025-11-25 v3.16.2
+
+### Removed
+- SearchBar: Removed search status (min characters, loading, no results).
+- LayerSelection: Removed search within current folder (requires `"filter": true"` in `config.json`).
+
+### Fixed
+- Searchbar and LayerSelection: Behavior restored to the way it was before layerSelection filtering was introduced.
+
+---
+
 ## 2025-11-12 v3.16.1
 
 ### Fixed
