@@ -4,6 +4,7 @@ import selectInteraction from "@masterportal/masterportalapi/src/maps/interactio
 import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactions/modifyInteraction.js";
 import LayoutFrame from "@shared/modules/layoutFrame/components/LayoutFrame.vue";
 import {mapActions, mapMutations} from "vuex";
+import {markRaw} from "vue";
 
 import IconButton from "../../buttons/components/IconButton.vue";
 import ExportItem from "@shared/modules/exportItem/components/ExportItem.vue";
@@ -86,15 +87,17 @@ export default {
                 download: this.regulateDownload
             },
             mode: "",
-            redoFeatures: [],
-            undoFeatures: [],
+            nonReactiveUndoFeatures: markRaw([]),
+            nonReactiveRedoFeatures: markRaw([]),
             showFrame: false,
             iconPosition: 0,
             availableFormats: ["KML", "GEOJSON", "GPX"],
             exportData: null,
             features: [],
             localDrawIcons: {...this.drawIcons},
-            drawLayerVisible: true
+            drawLayerVisible: true,
+            originalGeometry: null,
+            redoing: false
         };
     },
     computed: {
@@ -120,15 +123,24 @@ export default {
             if (layer !== null) {
 
                 this.source.on("addfeature", event => {
-                    console.warn("layer Watcher, addFeature:", event.feature);
-                    this.shiftUndoRedoFeatures(event.feature, "draw", this.mode);
-                    this.registerFeatures();
+                    if (!this.redoing) {
+                        // console.warn("layer Watcher, addFeature:", event.feature);
+                        this.nonReactiveUndoFeatures.push({
+                            feature: markRaw(event.feature),
+                            mode: "draw"
+                        });
+                        this.nonReactiveRedoFeatures = markRaw([]);
+                    }
                 });
 
                 this.source.on("removefeature", event => {
-                    console.warn("layer Watcher, removeFeature:", event.feature);
-                    this.shiftUndoRedoFeatures(event.feature, "delete", this.mode);
-                    this.registerFeatures();
+                    if (!this.redoing) {
+                        // console.warn("layer Watcher, removeFeature:", event.feature);
+                        this.nonReactiveUndoFeatures.push({
+                            feature: markRaw(event.feature),
+                            mode: "delete"
+                        });
+                    }
                 });
 
                 this.source.on("clear", () => {
@@ -139,7 +151,10 @@ export default {
     },
     unmounted () {
         this.currentSelectInteractions.forEach(currentSelectInteraction => this.removeInteraction(currentSelectInteraction));
-        this.removeInteraction(this.currentModifyInteraction);
+        if (this.currentModifyInteraction) {
+            this.removeInteraction(this.currentModifyInteraction);
+            this.currentModifyInteraction = null;
+        }
     },
     methods: {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
@@ -148,6 +163,7 @@ export default {
         /**
          * Regulate the draw edit interactions.
          * @param {String} drawEdit The current draw edit.
+         * @param {Object} event The event that triggered the interaction
          * @returns {void}
          */
         regulateEditInteraction (drawEdit, event) {
@@ -190,18 +206,22 @@ export default {
 
         /**
          * Regulate the draw edit delete all (clear) interaction.
-         * If delete all was executed, all deleted features will be stored as array in undoFeatures and redoFeatures respectively.
+         * Disables the Layer watchers while running so that the push to nonReactiveUndoFeatures contains all features deleted and they don't get added multiple times.
+         * If delete all was executed, all deleted features will be stored as array in nonReactiveUndoFeatures and nonReactiveRedoFeatures respectively.
          * @returns {void}
          */
         regulateDeleteAll () {
+            this.redoing = true;
             this.mode = "deleteAll";
 
-            this.undoFeatures.push(this.source.getFeatures());
+            this.nonReactiveUndoFeatures.push(this.source.getFeatures());
             this.source.clear();
+            this.redoing = false;
         },
 
         /**
          * Regulate the draw edit modify interaction.
+         * Sets up Watchers for ModifyEnd and ModifyStart to track the modifications for undo/redo.
          * The previous modify interaction is removed from the map and newly created modify interaction is added.
          * @returns {void}
          */
@@ -210,9 +230,32 @@ export default {
                 this.setSelectedInteraction("modify");
             }
 
-            this.removeInteraction(this.currentModifyInteraction);
-            this.currentModifyInteraction = modifyInteraction.createModifyInteraction(this.source);
+            this.currentModifyInteraction = modifyInteraction.createModifyInteraction(this.source,
+                {
+                    onModifyEnd: (event) => {
+                        event.features.forEach(feature => {
+                            const originalGeometry = this.originalGeometry,
+                                modifiedGeometry = feature.getGeometry().clone();
+
+                            this.nonReactiveUndoFeatures.push({
+                                feature: markRaw(feature),
+                                mode: "modify",
+                                originalGeometry: markRaw(originalGeometry),
+                                modifiedGeometry: markRaw(modifiedGeometry)
+                            });
+                            this.registerFeatures();
+                        });
+                        this.nonReactiveRedoFeatures = markRaw([]);
+                    },
+                    onModifyStart: (event) => {
+                        event.features.forEach(feature => {
+                            this.originalGeometry = feature.getGeometry().clone();
+                        });
+                    }
+                }
+            );
             this.addInteraction(this.currentModifyInteraction);
+            this.currentModifyInteraction.setActive(true);
             this.showFrame = true;
         },
 
@@ -221,7 +264,7 @@ export default {
          * @returns {void}
          */
         regulateUndo () {
-            this.undoRedoFeatures(this.undoFeatures, "undo");
+            this.undoRedoFeatures(this.nonReactiveUndoFeatures, "undo");
         },
 
         /**
@@ -229,18 +272,19 @@ export default {
          * @returns {void}
          */
         regulateRedo () {
-            this.undoRedoFeatures(this.redoFeatures, "redo");
+            this.undoRedoFeatures(this.nonReactiveRedoFeatures, "redo");
         },
 
         /**
-         * Regulates the undo or redo features,
-         * depending on whether the last feature was drawn in features,
-         * deleted or is an array of features (delete all).
+         * Regulates the undo or redo features.
+         * Due to the nonreactive Arrays needed for undo and redo of modifications,
+         * the arrays get filled and emptied explicitly.
          * @param {ol/feature[]} features The undo or redo features.
          * @param {String} mode The undo or redo mode.
          * @returns {void}
          */
         undoRedoFeatures (features, mode) {
+            this.redoing = true;
             if (features.length > 0) {
                 const source = this.source,
                       feature = features[features.length - 1];
@@ -251,12 +295,66 @@ export default {
                     this.undoRedoDeleteAll(mode, features, source);
                 }
                 else if (feature.mode === "draw") {
-                    source.removeFeature(feature.feature);
+                    if (mode === "undo") {
+                        source.removeFeature(feature.feature);
+                        this.nonReactiveRedoFeatures.push({
+                            feature: markRaw(feature.feature),
+                            mode: "draw"
+                        });
+                        this.nonReactiveUndoFeatures.pop();
+                    }
+                    else if (mode === "redo") {
+                        source.addFeature(feature.feature);
+                        this.nonReactiveUndoFeatures.push({
+                            feature: markRaw(feature.feature),
+                            mode: "draw"
+                        });
+                        this.nonReactiveRedoFeatures.pop();
+                    }
                 }
                 else if (feature.mode === "delete") {
-                    source.addFeature(feature.feature);
+                    if (mode === "undo") {
+                        source.addFeature(feature.feature);
+                        this.nonReactiveRedoFeatures.push({
+                            feature: markRaw(feature.feature),
+                            mode: "delete"
+                        });
+                        this.nonReactiveUndoFeatures.pop();
+                    }
+                    else if (mode === "redo") {
+                        source.removeFeature(feature.feature);
+                        this.nonReactiveUndoFeatures.push({
+                            feature: markRaw(feature.feature),
+                            mode: "delete"
+                        });
+                        this.nonReactiveRedoFeatures.pop();
+                    }
+                }
+                else if (feature.mode === "modify") {
+                    if (mode === "undo") {
+                        this.redoing = true;
+                        const savedGeom = feature.feature;
+
+                        source.removeFeature(feature.feature);
+
+                        feature.feature.setGeometry(feature.originalGeometry);
+                        source.addFeature(feature.feature);
+                        this.nonReactiveRedoFeatures.push({
+                            feature: markRaw(savedGeom),
+                            mode: "modify",
+                            originalGeometry: markRaw(feature.originalGeometry),
+                            modifiedGeometry: markRaw(feature.modifiedGeometry)
+                        });
+                        this.nonReactiveUndoFeatures.pop();
+                    }
+                    else if (mode === "redo") {
+                        feature.feature.setGeometry(feature.modifiedGeometry);
+                        feature.feature.changed();
+                        this.nonReactiveUndoFeatures.push(features.pop());
+                    }
                 }
             }
+            this.redoing = false;
         },
 
         /**
@@ -285,52 +383,30 @@ export default {
 
             if (mode === "undo") {
                 source.addFeatures(featureArray);
-                this.redoFeatures.push(featureArray);
+                this.nonReactiveRedoFeatures.push(featureArray);
             }
             else if (mode === "redo") {
                 featureArray.forEach(feat => source.removeFeature(feat));
-                this.undoFeatures.push(featureArray);
+                this.nonReactiveUndoFeatures.push(featureArray);
             }
             this.mode = "";
         },
 
         /**
-         * Changes the position of features in undo and redo feature collections.
-         * The shift is determined based on the triggered edit mode.
-         * Note: When deleteAll is executed, the editMode is an empty string because each feature is added or removed individually from the layer source.
-         * @param {ol/feature} feature The ol feature.
-         * @param {String} featureMode Mode of the feature, possible modes are draw or delete.
-         * @param {String} editMode Editing mode that was executed.
+         * Regulates the editing of attributes for features and opens the corresponding layoutFrame.
          * @returns {void}
          */
-        shiftUndoRedoFeatures (feature, featureMode, editMode) {
-            const undoRedoFeature = {
-                feature: feature,
-                mode: featureMode
-            };
-
-            if (editMode === "undo") {
-                this.mode = "";
-                this.undoFeatures.pop();
-                this.redoFeatures.push(undoRedoFeature);
-            }
-            else if (editMode === "redo") {
-                this.mode = "";
-                this.redoFeatures.pop();
-                this.undoFeatures.push(undoRedoFeature);
-            }
-            else if (editMode === "") {
-                this.undoFeatures.push(undoRedoFeature);
-                this.redoFeatures = [];
-            }
-        },
         regulateEditAttributes () {
             if (typeof this.setSelectedInteraction === "function") {
                 this.setSelectedInteraction("editAttributes");
             }
             this.showFrame = true;
-            console.warn("Editing Attributes Stub");
         },
+
+        /**
+         * Regulates Hide Function.
+         * @returns {void}
+         */
         regulateHide () {
             if (typeof this.setSelectedInteraction === "function") {
                 this.setSelectedInteraction("hide");
@@ -340,17 +416,30 @@ export default {
             }
             this.toggleDrawLayerVisibility();
         },
+
+        /**
+         * Enables the download interface.
+         * @returns {void}
+         */
         regulateDownload () {
             if (typeof this.setSelectedInteraction === "function") {
                 this.setSelectedInteraction("download");
             }
             this.showFrame = true;
-            console.warn("Download Stub");
         },
+
+        /**
+         * Registers the features of the drawLayer to the data object features.
+         * @returns {void}
+         */
         registerFeatures () {
             this.features = [...mapCollection.getMap("2D").getLayers().getArray().find(availableLayer => availableLayer.get("id") === "importDrawLayer").getSource().getFeatures()];
-            console.warn("features: ", this.features);
         },
+
+        /**
+         * Toggles visibility of drawLayer.
+         * @returns {void}
+         */
         toggleDrawLayerVisibility () {
             const drawLayer = this.layer;
 
@@ -382,8 +471,8 @@ export default {
                     'btn-light',
                     'me-3',
                     selectedInteraction === drawEdit ? 'active': '',
-                    drawEdit === 'redo' && redoFeatures.length === 0 ? 'disabled' : '',
-                    drawEdit === 'undo' && undoFeatures.length === 0 ? 'disabled' : '',
+                    drawEdit === 'redo' && nonReactiveRedoFeatures.length === 0 ? 'disabled' : '',
+                    drawEdit === 'undo' && nonReactiveUndoFeatures.length === 0 ? 'disabled' : '',
                     drawEdit !== 'redo' && drawEdit !== 'undo' && source?.getFeatures()?.length === 0 ? 'disabled' : '',
                     drawEdit !== 'hide' && !drawLayerVisible ? 'disabled': ''
                 ]"
