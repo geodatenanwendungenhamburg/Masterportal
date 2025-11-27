@@ -29,6 +29,14 @@ export function initiateVueI18Next (app) {
 */
 export function initLanguage (portalLanguageConfig, portalLocales) {
     const portalId = window.location.pathname.split("/")[2] || window.location.hostname.split(".")[0],
+    const rawBasePath = typeof MASTERPORTAL_BASE_PATH === "string"
+            ? MASTERPORTAL_BASE_PATH
+            : "/",
+
+        basePath = rawBasePath.endsWith("/")
+            ? rawBasePath
+            : `${rawBasePath}/`,
+
         portalLanguage = Object.assign({
             "enabled": false,
             "debug": false,
@@ -38,10 +46,9 @@ export function initLanguage (portalLanguageConfig, portalLocales) {
             },
             "fallbackLanguage": "de",
             "changeLanguageOnStartWhen": ["querystring", "localStorage", "navigator", "htmlTag"],
-            "loadPath": "/locales/{{lng}}/{{ns}}.json"
+            "loadPath": `${basePath}locales/{{lng}}/{{ns}}.json`
         }, portalLanguageConfig);
 
-    // init i18next
     if (Config.portalLanguage !== undefined && Config.portalLanguage.enabled) {
         i18next.use(LanguageDetector);
     }
