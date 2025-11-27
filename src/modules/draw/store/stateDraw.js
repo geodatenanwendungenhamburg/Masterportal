@@ -42,6 +42,7 @@
  * @property {String[]} [supportedMapModes=["2D", "3D"]] Map mode in which this module can be used.
  * @property {String} type="draw" The type of the module.
  * @property {String[]} units=["m", "km"] The possible units for the circle or doubleCircle.
+ * @property {Boolean} [buttonsDisabled=false] If true, the draw buttons are disabled.
  */
 const state = {
     circleOptions: {
@@ -98,7 +99,8 @@ const state = {
     supportedDevices: ["Desktop", "Mobile", "Table"],
     supportedMapModes: ["2D", "3D"],
     type: "draw",
-    units: ["m", "km"]
+    units: ["m", "km"],
+    buttonsDisabled: false
 };
 
 export default state;

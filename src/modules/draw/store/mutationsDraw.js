@@ -20,5 +20,15 @@ export default {
      */
     setCircleOptions (state, options) {
         Object.assign(state.circleOptions, options);
+    },
+
+    /**
+     * Updates whether buttons should be disabled.
+     * @param {Object} state store state.
+     * @param {Boolean} value The new value for `buttonsDisabled`.
+     * @returns {void}
+     */
+    setButtonsDisabled (state, value) {
+        state.buttonsDisabled = value;
     }
 };

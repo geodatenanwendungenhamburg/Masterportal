@@ -246,7 +246,7 @@ export default {
                     :key="layoutKey"
                     :class="[
                         'btn',
-                        'btn-primary',
+                        'btn-secondary',
                         activeLayoutKey === layoutKey ? 'active' : ''
                     ]"
                     @click="setActiveLayoutKey(layoutKey)"
