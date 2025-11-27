@@ -9,7 +9,6 @@ import glob from "fast-glob";
 import fs from "fs";
 import {nodePolyfills} from "vite-plugin-node-polyfills";
 import cp from "vite-plugin-cp";
-import stringReplace from "vite-plugin-string-replace";
 import htmlExtFallback from "./html-ext-fallback.js";
 import {directoryListing} from "./directory_listing.js";
 import getMastercodeVersionFolderName from "./tasks/getMastercodeVersionFolderName.mjs";
@@ -46,7 +45,7 @@ else if (fs.existsSync("./devtools/proxyconf_example.json")) {
 const FORCE_HTTPS = process.env.VITE_FORCE_HTTPS === "true";
 
 export default defineConfig(({mode}) => {
-    const isProd = mode === "production";
+    const isProd = mode === "production",
 
     base = isProd
         ? `mastercode/${mastercodeVersionFolderName}`
@@ -98,13 +97,7 @@ export default defineConfig(({mode}) => {
                     return html.replaceAll(" crossorigin", "");
                 }
             },
-            isProd && stringReplace([
-                {
-                    todofileName: "masterportal.js",
-                    search: "\"/locales/{{lng}}/{{ns}}.json\"",
-                    replace: `"/mastercode/${mastercodeVersionFolderName}/locales/{{lng}}/{{ns}}.json"`
-                }
-            ]),
+ 
             isProd && cp({
                 targets: [
                     // copy all besides modified index.html files
@@ -233,7 +226,12 @@ export default defineConfig(({mode}) => {
         define: {
             __VUE_OPTIONS_API__: true,
             __VUE_PROD_DEVTOOLS__: false,
-            VUE_ADDONS: JSON.stringify(vueAddons)
+            VUE_ADDONS: JSON.stringify(vueAddons),
+            MASTERPORTAL_BASE_PATH: JSON.stringify(
+                isProd
+                    ? `/${base}`
+                    : "/"
+            )
         },
 
         optimizeDeps: {
