@@ -138,7 +138,7 @@ export default {
     },
     computed: {
         ...mapGetters("Maps", ["projection"]),
-        ...mapState("Modules/Draw", ["drawTypesGeometrie", "drawTypesMain", "drawTypesSymbols"])
+        ...mapState("Modules/Draw", ["drawTypesGeometrie", "drawTypesMain", "drawTypesSymbols", "buttonsDisabled"])
     },
     watch: {
         "circleOptions.interactive" () {
@@ -322,11 +322,12 @@ export default {
         :key="drawType"
         :aria="$t('common:shared.modules.draw.drawTypes.' + drawType)"
         :class-array="[
-            'btn-primary',
+            'btn-secondary',
             'icon-button-size',
             $attrs,
             selectedDrawType === drawType || selectedDrawTypeMain === drawType ? 'active': ''
         ]"
+        :disabled="buttonsDisabled"
         :interaction="(event) => regulateInteraction(drawType)"
         :icon="drawIcons[drawType]"
         :label="getButtonLabel(drawType)"

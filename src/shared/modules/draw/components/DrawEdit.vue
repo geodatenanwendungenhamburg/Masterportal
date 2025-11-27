@@ -3,7 +3,7 @@ import {pointerMove} from "ol/events/condition.js";
 import selectInteraction from "@masterportal/masterportalapi/src/maps/interactions/selectInteraction.js";
 import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactions/modifyInteraction.js";
 import LayoutFrame from "@shared/modules/layoutFrame/components/LayoutFrame.vue";
-import {mapActions} from "vuex";
+import {mapActions, mapMutations} from "vuex";
 
 import IconButton from "../../buttons/components/IconButton.vue";
 import ExportItem from "@shared/modules/exportItem/components/ExportItem.vue";
@@ -72,6 +72,7 @@ export default {
     },
     data () {
         return {
+            buttonsDisabled: false,
             currentSelectInteractions: [],
             currentModifyInteraction: null,
             mappingEditInteractions: {
@@ -142,6 +143,7 @@ export default {
     },
     methods: {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
+        ...mapMutations(["setButtonsDisabled"]),
 
         /**
          * Regulate the draw edit interactions.
@@ -355,9 +357,11 @@ export default {
             if (drawLayer) {
                 const isVisible = drawLayer.getVisible();
 
+                this.localDrawIcons.hide = this.localDrawIcons.hide === "bi-eye" ? "bi-eye-slash" : "bi-eye";
+
+                this.$store.commit("Modules/Draw/setButtonsDisabled", isVisible);
                 this.drawLayerVisible = !isVisible;
                 drawLayer.setVisible(!isVisible);
-                this.localDrawIcons.hide = this.localDrawIcons.hide === "bi-eye" ? "bi-eye-slash" : "bi-eye";
             }
         }
     }
