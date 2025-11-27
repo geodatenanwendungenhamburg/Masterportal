@@ -73,7 +73,8 @@ export default defineConfig(({mode}) => {
                 "@core": path.resolve(rootPath, "src/core"),
                 "@modules": path.resolve(rootPath, "src/modules"),
                 "@plugins": path.resolve(rootPath, "src/plugins"),
-                "@devtools": path.resolve(rootPath, "devtools")
+                "@devtools": path.resolve(rootPath, "devtools"),
+                "portalconfigs": path.resolve(rootPath, "portalconfigs")
             }
         },
 
