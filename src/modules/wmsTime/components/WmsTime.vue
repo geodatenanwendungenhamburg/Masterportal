@@ -17,7 +17,6 @@ export default {
         }),
         renderLayerSwiper () {
             return this.layerSwiperActive && (
-                // compareMaps supports usage on mobile devices
                 this.currentMouseMapInteractionsComponent === "compareMaps" ||
                 this.minWidth
             );
