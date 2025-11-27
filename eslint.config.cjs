@@ -28,7 +28,8 @@ module.exports = [
                 i18next: true,
                 mapCollection: true,
                 moduleCollection: true,
-                StreetSmartApi: true
+                StreetSmartApi: true,
+                MASTERPORTAL_BASE_PATH: true
             }
         },
         plugins: {
