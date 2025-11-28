@@ -99,7 +99,8 @@ export default {
                 return 0;
             }
 
-            const buttonPosition = document.getElementById(buttonId).getBoundingClientRect(),
+            const buttonElement = document.getElementById(buttonId),
+                buttonPosition = buttonElement ? buttonElement.getBoundingClientRect() : 0,
                 buttonPositionRight = buttonPosition.right,
                 buttonPositionLeft = buttonPosition.left;
 
