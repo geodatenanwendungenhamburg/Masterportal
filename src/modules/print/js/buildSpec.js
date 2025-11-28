@@ -446,7 +446,8 @@ const BuildSpecModel = {
         return mapObject;
     },
     /**
-     * Returns image wms layer information
+     * Returns image wms layer information.
+     * If layout is A0, type is set to tiledWMS and tile size is added, to avoid red background color.
      * @param {ol.layer.Image} layer - image layer with image wms source
      * @param {Number} [dpi] The dpi to use instead of the dpi from store.
      * @returns {Object} - wms layer spec
@@ -478,6 +479,10 @@ const BuildSpecModel = {
 
         if (store.state.Modules.Print.printService === "plotservice") {
             mapObject.title = layer.get("name");
+        }
+        if (this.defaults.layout.startsWith("A0")) {
+            mapObject.type = "tiledwms";
+            mapObject.tileSize = [source.getParams().WIDTH || 512, source.getParams().HEIGHT || 512];
         }
 
         return mapObject;

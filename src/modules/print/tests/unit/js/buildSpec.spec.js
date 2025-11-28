@@ -837,6 +837,8 @@ describe("src/modules/print/js/buildSpec", function () {
         });
 
         it("should buildImageWms", function () {
+            attr.layout = "A4 Hochformat";
+            buildSpec.setAttributes(attr);
             expect(buildSpec.buildImageWms(imageWmsLayer)).to.deep.own.include({
                 baseURL: "url",
                 opacity: 1,
@@ -848,6 +850,18 @@ describe("src/modules/print/js/buildSpec", function () {
                     DPI: 200
                 }
             });
+        });
+
+        it("should buildImageWms for A0", function () {
+            attr.layout = "A0 Querformat";
+            buildSpec.setAttributes(attr);
+            const result = buildSpec.buildImageWms(imageWmsLayer);
+
+            expect(result.type).to.be.equal("tiledwms");
+            expect(result.tileSize).to.deep.equal([512, 512]);
+            // reset layout to A4
+            attr.layout = "A4 Hochformat";
+            buildSpec.setAttributes(attr);
         });
     });
     describe("getFeatureStyle", function () {
