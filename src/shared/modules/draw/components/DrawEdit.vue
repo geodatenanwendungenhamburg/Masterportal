@@ -1,13 +1,15 @@
 <script>
-import {pointerMove} from "ol/events/condition.js";
+import {pointerMove, singleClick} from "ol/events/condition.js";
 import selectInteraction from "@masterportal/masterportalapi/src/maps/interactions/selectInteraction.js";
 import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactions/modifyInteraction.js";
 import LayoutFrame from "@shared/modules/layoutFrame/components/LayoutFrame.vue";
+import {Select} from "ol/interaction.js";
 import {mapActions} from "vuex";
 import {markRaw} from "vue";
 import undoRedoFeatures from "../js/undoRedoFeatures.js";
 import IconButton from "../../buttons/components/IconButton.vue";
 import ExportItem from "@shared/modules/exportItem/components/ExportItem.vue";
+import DrawEditAttributes from "./DrawEditAttributes.vue";
 
 /**
  * Shared component that provides buttons to edit drawn features.
@@ -29,7 +31,8 @@ export default {
     components: {
         IconButton,
         LayoutFrame,
-        ExportItem
+        ExportItem,
+        DrawEditAttributes
     },
     props: {
         drawEdits: {
@@ -247,12 +250,24 @@ export default {
                         this.nonReactiveRedoFeatures = markRaw([]);
                     },
                     onModifyStart: (event) => {
-                        event.features.forEach(feature => {
-                            this.originalGeometry = feature.getGeometry().clone();
-                        });
+                        console.warn("HEEE");
+                        if (this.selectedInteraction === "modify") {
+                            event.features.forEach(feature => {
+                                this.originalGeometry = feature.getGeometry().clone();
+                            });
+                        }
+                        else if (this.selectedInteraction === "editAttributes") {
+                            if (!event.selected.length) {
+                                return;
+                            }
+                            const feature = event.selected[event.selected.length - 1];
+
+                            console.warn("Feature selected for modification:", feature);
+                        }
                     }
                 }
             );
+
             this.addInteraction(this.currentModifyInteraction);
             this.currentModifyInteraction.setActive(true);
             this.showFrame = true;
@@ -312,6 +327,34 @@ export default {
             if (typeof this.setSelectedInteraction === "function") {
                 this.setSelectedInteraction("editAttributes");
             }
+            console.warn("YOYOYOYO");
+            // Create a Select interaction for selecting features
+            this.currentSelectInteraction = new Select({
+                layers: [this.layer], // Specify the layer(s) where features can be selected
+                condition: singleClick // Use single-click for selection
+            });
+            this.addInteraction(this.currentSelectInteraction);
+            this.currentSelectInteraction.setActive(true);
+
+            console.warn("Features in layer:", this.layer.getSource().getFeatures());
+            // Handle the select event
+            this.currentSelectInteraction.on("select", (event) => {
+                if (!event.selected.length) {
+                    return;
+                }
+
+                const feature = event.selected[event.selected.length - 1];
+
+                // Handle the selected feature (e.g., apply attributes or log it)
+                console.warn("Feature selected:", feature);
+                this.handleSelectedFeature(feature);
+            });
+
+            this.currentSelectInteraction.on("*", (event) => {
+                console.warn("Event emitted:", event.type, event);
+            });
+
+
             this.showFrame = true;
         },
 
@@ -405,9 +448,13 @@ export default {
             <p v-if="selectedInteraction === 'modify'">
                 You can edit the drawn features on the map through drag and drop. Have fun.
             </p>
-            <p v-if="selectedInteraction === 'editAttributes'">
-                Click a feature on the map to edit the attributes. At least that's how it's supposed to work. Right now it doesn't. Haha!
-            </p>
+            <DrawEditAttributes
+                v-if="selectedInteraction === 'editAttributes'"
+                :selected-feature="selectedFeature"
+                :layer="layer"
+                :attributes-key-list="attributesKeyList"
+                @update-attributes-key-list="updateAttributesKeyList"
+            />
         </LayoutFrame>
         <hr>
     </div>

@@ -22,9 +22,6 @@ export default {
             required: false,
             default: null
         }
-    },
-    mounted () {
-        console.warn("Hey", this.borderColor);
     }
 };
 </script>
