@@ -22,9 +22,6 @@ export default {
             required: false,
             default: null
         }
-    },
-    mounted () {
-        console.warn("Hey", this.borderColor);
     }
 };
 </script>
@@ -50,6 +47,7 @@ div {
     padding: 5px;
     position: relative;
     margin-top: 15px;
+    overflow-x: scroll;
 }
 div.has-triangle::before {
     content: "";
