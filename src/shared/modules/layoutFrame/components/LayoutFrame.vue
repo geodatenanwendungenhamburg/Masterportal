@@ -45,9 +45,8 @@ div {
     border-radius: 10px;
     background-color: var(--background-color);
     padding: 5px;
-    position: relative;
     margin-top: 15px;
-    overflow-x: scroll;
+    position: relative;
 }
 div.has-triangle::before {
     content: "";
