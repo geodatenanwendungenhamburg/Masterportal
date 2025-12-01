@@ -116,6 +116,10 @@ export default {
 
 .btn-wrapper.draw-layout {
     width: 5rem;
+    > .btn {
+        width: 3.5rem;
+        height: 3.5rem;
+    }
 }
 
 .btn-wrapper > .btn-label {
@@ -126,8 +130,8 @@ export default {
     position: relative;
     text-align: center;
     top: auto;
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
     font-size: 1.5rem;
     border-radius: 50%;
     border: solid $white 1px;
