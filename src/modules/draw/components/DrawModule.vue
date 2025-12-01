@@ -247,9 +247,12 @@ export default {
 
 .selected-drawtypes-container {
     gap: 1.4rem;
-    width: 5rem;
     margin-top: 1rem;
     margin-left: 0.85rem;
+    overflow-x: scroll;
+    > div {
+        width: 5rem;
+    }
 }
 
 #draw-layouts {
