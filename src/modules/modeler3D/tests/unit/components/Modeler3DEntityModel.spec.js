@@ -50,7 +50,15 @@ describe("src/modules/modeler3D/components/Modeler3DEntityModel.vue", () => {
             globe: {getHeight: () => 5},
             sampleHeight: () => 5,
             requestRender: sinon.stub()
-        },
+        };
+    let store,
+        wrapper,
+        updateEntityPositionSpy,
+        updatePositionUISpy,
+        editLayoutSpy,
+        map3D;
+
+    beforeEach(() => {
         map3D = {
             id: "1",
             mode: "3D",
@@ -63,13 +71,6 @@ describe("src/modules/modeler3D/components/Modeler3DEntityModel.vue", () => {
             },
             getCesiumScene: () => scene
         };
-    let store,
-        wrapper,
-        updateEntityPositionSpy,
-        updatePositionUISpy,
-        editLayoutSpy;
-
-    beforeEach(() => {
         mapCollection.clear();
         mapCollection.addMap(map3D, "3D");
 
@@ -166,9 +167,6 @@ describe("src/modules/modeler3D/components/Modeler3DEntityModel.vue", () => {
     });
 
     afterEach(() => {
-        store.commit("Modules/Modeler3D/setCurrentProjection", {id: "http://www.opengis.net/gml/srs/epsg.xml#25832", name: "EPSG:25832", projName: "utm", epsg: "EPSG:25832"});
-        store.commit("Modules/Modeler3D/setImportedEntities", []);
-
         sinon.restore();
     });
 

@@ -231,6 +231,7 @@ describe("src/modules/modeler3D/components/Modeler3DDraw.vue", () => {
                 }
             }
         });
+        sinon.stub(Modeler3DDrawComponent.methods, "downloadGeoJson");
         wrapper = mount(Modeler3DDrawComponent, {
             global: {
                 plugins: [store],

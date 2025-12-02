@@ -53,9 +53,7 @@ export default defineConfig(mode => mergeConfig(
                         7680|     };
                   hat das was damit zu tun? DrawItem: --> this.$.appContext.app.config.globalProperties.$layer = importDrawLayer;
                 */
-                "src/modules/draw_old/**/*.spec.js", //
-                "src/modules/modeler3D/**/*.spec.js", // --> hat Querauswirkungen auf andere Tests
-                "src/modules/shareView/**/*.spec.js", // -->  hat Querauswirkungen auf andere Tests
+                "src/modules/draw_old/**/*.spec.js", // --> hat Querauswirkungen auf andere Tests
                 /*
                     createLayerAddToTree:
                     FAIL  src/core/maps/tests/unit/js/multipleHighlighting.spec.js
@@ -82,20 +80,6 @@ export default defineConfig(mode => mergeConfig(
                     This error originated in "src/tests/unit/App.spec.js" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
                 */
                 "**/App.spec.js", // -->  hat Querauswirkungen auf andere Tests
-                /*
-                    oktagon:
-                    FAIL  src/modules/contact/tests/unit/js/getSystemInfo.spec.js > src/modules/contact/js/getSystemInfo > returns values from global variables
-                    AssertionError: expected undefined to be a string
-                    ❯ src/modules/contact/tests/unit/js/getSystemInfo.spec.js:10:43
-                        8|
-                        9|         expect(systemInfo.portalTitle).to.be.a("string");
-                        10|         expect(systemInfo.referrer).to.be.a("string");
-                        |                                           ^
-                        11|         expect(systemInfo.platform).to.be.a("string");
-                        12|         expect(systemInfo.cookieEnabled).to.be.a("boolean");
-
-                */
-                "addons/oktagon/**/*.spec.js", // -->  hat Querauswirkungen auf andere Tests
                 "**/AddWMS.spec.js", // komplett geskipt
                 "**/layer3dTileset.spec.js", // komplett geskipt
                 "**/actionsAlerting.spec.js", // komplett geskipt

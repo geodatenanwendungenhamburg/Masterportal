@@ -7,7 +7,7 @@ import EntityListComponent from "@modules/modeler3D/components/ui/EntityList.vue
 
 config.global.mocks.$t = key => key;
 
-describe.skip("src/modules/modeler3D/components/EntityList.vue", () => {
+describe("src/modules/modeler3D/components/EntityList.vue", () => {
     let store, wrapper;
 
     beforeEach(() => {
@@ -23,10 +23,33 @@ describe.skip("src/modules/modeler3D/components/EntityList.vue", () => {
             }
         });
         mapCollection.clear();
-        const map = {
-            id: "olcs",
-            mode: "3D"
-        };
+        const entities = {
+                getById: (val) => {
+                    return entities.values.find(x => x.id === val);
+                },
+                values: [],
+                add: (val) => {
+                    entities.values.push(val);
+                    return val;
+                },
+                remove: (val) => {
+                    entities.values.splice(entities.values.indexOf(val), 1);
+                },
+                removeById: (id) => {
+                    entities.remove(entities.getById(id));
+                }
+            },
+            map = {
+                id: "olcs",
+                mode: "3D",
+                getDataSourceDisplay: () => {
+                    return {
+                        defaultDataSource: {
+                            entities: entities
+                        }
+                    };
+                }
+            };
 
         mapCollection.addMap(map, "3D");
     });
