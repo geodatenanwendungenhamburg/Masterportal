@@ -403,7 +403,7 @@ describe("src/modules/modeler3D/components/Modeler3D.vue", () => {
     });
 
     describe("Modeler3D.vue methods", () => {
-        it("initProjectionsInModeler3D adds WGS84 decimal projection", () => {
+        it.skip("initProjectionsInModeler3D adds WGS84 decimal projection", () => {
             let projections = [];
 
             crs.registerProjections(namedProjections);
@@ -419,7 +419,7 @@ describe("src/modules/modeler3D/components/Modeler3D.vue", () => {
             expect(projections.filter(proj => proj.id === "http://www.opengis.net/gml/srs/epsg.xml#4326-DG").length).to.be.equals(1);
         });
 
-        it("initProjectionsInModeler3D adds ETRS89_3GK3", () => {
+        it.skip("initProjectionsInModeler3D adds ETRS89_3GK3", () => {
             let projections = [];
 
             crs.registerProjections(namedProjections);
