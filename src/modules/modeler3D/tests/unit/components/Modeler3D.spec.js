@@ -13,7 +13,7 @@ import layerCollection from "@core/layers/js/layerCollection.js";
 
 config.global.mocks.$t = key => key;
 
-describe.skip("src/modules/modeler3D/components/Modeler3D.vue", () => {
+describe("src/modules/modeler3D/components/Modeler3D.vue", () => {
     const mockMapGetters = {
             mouseCoordinate: () => {
                 return [11.549606597773037, 48.17285700012215];
@@ -252,7 +252,9 @@ describe.skip("src/modules/modeler3D/components/Modeler3D.vue", () => {
             {
                 id: "FloatingPointId",
                 positionIndex: 0,
-                polygon: {length: 4}
+                polygon: {
+                    length: 4
+                }
             },
             {
                 id: "entityId",
@@ -404,6 +406,8 @@ describe.skip("src/modules/modeler3D/components/Modeler3D.vue", () => {
         it("initProjectionsInModeler3D adds WGS84 decimal projection", () => {
             let projections = [];
 
+            crs.registerProjections(namedProjections);
+
             wrapper = shallowMount(Modeler3DComponent, {global: {
                 plugins: [store]
             }});
@@ -417,6 +421,8 @@ describe.skip("src/modules/modeler3D/components/Modeler3D.vue", () => {
 
         it("initProjectionsInModeler3D adds ETRS89_3GK3", () => {
             let projections = [];
+
+            crs.registerProjections(namedProjections);
 
             wrapper = shallowMount(Modeler3DComponent, {global: {
                 plugins: [store]
@@ -652,6 +658,7 @@ describe.skip("src/modules/modeler3D/components/Modeler3D.vue", () => {
             expect(document.getElementById("map").style.cursor).to.equal("grab");
         });
         it("should highlight a drawn polygon", async () => {
+
             wrapper = shallowMount(Modeler3DComponent, {global: {
                 plugins: [store]
             }});

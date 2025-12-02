@@ -1,5 +1,6 @@
 import {expect} from "chai";
 import sinon from "sinon";
+import {vi} from "vitest";
 import actions from "@modules/modeler3D/store/actionsModeler3D.js";
 import store from "@appstore/index.js";
 import proj4 from "proj4";
@@ -59,21 +60,12 @@ describe("Actions", () => {
             })
         };
 
+    global.fetch = vi.fn(() => Promise.resolve({
+        blob: () => Promise.resolve(new Blob(["mock content"], {type: "application/octet-stream"}))
+    })
+    );
+
     beforeEach(() => {
-        sinon.stub(global, "fetch").returns(
-            Promise.resolve({
-                ok: true,
-                text: () => Promise.resolve(`
-                        <xml>
-                            <dictionaryEntry>
-                                <gml:description>ALKIS</gml:description>
-                                <gml:name>31001_1000</gml:name>
-                                <gml:name>name1</gml:name>
-                            </dictionaryEntry>
-                        </xml>
-                    `)
-            })
-        );
         store.state.Maps.mode = "3D";
         mapCollection.clear();
         mapCollection.addMap(map3D, "3D");
@@ -241,6 +233,9 @@ describe("Actions", () => {
         entity = undefined;
         sinon.restore();
         entities.values = [];
+        vi.restoreAllMocks();
+        store.state.Maps.mode = "2D";
+
     });
     describe("deleteEntity", () => {
         it("should delete the entity from list and entityCollection", () => {

@@ -8,7 +8,7 @@ import layerCollection from "@core/layers/js/layerCollection.js";
 
 config.global.mocks.$t = key => key;
 
-describe.skip("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
+describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
     let store,
         wrapper;
     const values1 = {name: "Layer1", typ: "TileSet3D", visibility: true},
@@ -253,7 +253,6 @@ describe.skip("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () =
             expect(wrapper.vm.showModal).to.be.false;
         });
     });
-
     describe("Modeler3DDraw.vue methods", () => {
         beforeEach(() => {
             wrapper = shallowMount(Modeler3DFilterComponent, {
@@ -347,7 +346,6 @@ describe.skip("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () =
                 {id: 0, values: []}
             ]);
             store.commit("Modules/Modeler3D/setCurrentFilterId", 0);
-
             wrapper.vm.copyColorValues();
 
             expect(wrapper.vm.filterList[0].values).to.deep.equal([
