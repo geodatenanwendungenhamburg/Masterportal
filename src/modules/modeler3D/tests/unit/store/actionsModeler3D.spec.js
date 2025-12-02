@@ -1,5 +1,6 @@
 import {expect} from "chai";
 import sinon from "sinon";
+import {vi} from "vitest";
 import actions from "@modules/modeler3D/store/actionsModeler3D.js";
 import store from "@appstore/index.js";
 import proj4 from "proj4";
@@ -59,9 +60,17 @@ describe("Actions", () => {
             })
         };
 
+    global.fetch = vi.fn(() => Promise.resolve({
+        blob: () => Promise.resolve(new Blob(["mock content"], {type: "application/octet-stream"}))
+    })
+    );
+
     beforeEach(() => {
+        store.state.Maps.mode = "3D";
         mapCollection.clear();
         mapCollection.addMap(map3D, "3D");
+        sinon.stub(console, "error").callsFake(sinon.spy());
+        sinon.stub(console, "warn").callsFake(sinon.spy());
 
         global.Cesium = {
             PolylineGraphics: function (options) {
@@ -203,12 +212,6 @@ describe("Actions", () => {
                 }
             }
         };
-
-        store.state.Maps.mode = "3D";
-        store.getters = {
-            "Maps/mode": store.state.Maps.mode
-        };
-
         scene = {
             globe: {
                 getHeight: () => 5.7896
@@ -230,6 +233,8 @@ describe("Actions", () => {
         entity = undefined;
         sinon.restore();
         entities.values = [];
+        vi.restoreAllMocks();
+        store.state.Maps.mode = "2D";
 
     });
     describe("deleteEntity", () => {
@@ -1202,10 +1207,9 @@ describe("Actions", () => {
             const entityList = [
                     {
                         blob: new Blob()
-                    },
-                    {}
+                    }
                 ],
-                dispatch = sinon.stub();
+                dispatch = sinon.spy();
 
             await actions.createEntities({dispatch}, entityList);
             expect(dispatch.callCount).to.be.equal(1);

@@ -257,7 +257,7 @@ function createDoneCallbackWrapper (originalTestFn, name, callCount = 1) {
 
         // Check if function expects a 'done' callback (has more than 0 parameters)
         if (fn.length > 0) {
-            console.warn(`⚠️  DEPRECATION WARNING: Test "${name}" uses done callback. Please migrate to Promise-based async tests. This polyfill will be removed in a future version.`);
+            // console.warn(`⚠️  DEPRECATION WARNING: Test "${name}" uses done callback. Please migrate to Promise-based async tests. This polyfill will be removed in a future version.`);
 
             /**
              * Create a wrapper that returns a Promise
@@ -301,12 +301,12 @@ function createDoneCallbackWrapper (originalTestFn, name, callCount = 1) {
 
 // Create global polyfill functions that map Mocha hooks to Vitest hooks
 globalThis.before = (fn) => {
-    console.warn("⚠️  DEPRECATION WARNING: 'before' hook is deprecated. Please use 'beforeAll' instead. This polyfill will be removed in a future version.");
+    // console.warn("⚠️  DEPRECATION WARNING: 'before' hook is deprecated. Please use 'beforeAll' instead. This polyfill will be removed in a future version.");
     return vitestBeforeAll(fn);
 };
 
 globalThis.after = (fn) => {
-    console.warn("⚠️  DEPRECATION WARNING: 'after' hook is deprecated. Please use 'afterAll' instead. This polyfill will be removed in a future version.");
+    // console.warn("⚠️  DEPRECATION WARNING: 'after' hook is deprecated. Please use 'afterAll' instead. This polyfill will be removed in a future version.");
     return vitestAfterAll(fn);
 };
 
@@ -359,6 +359,9 @@ globalThis.before(() => {
 
 globalThis.after(() => {
     mapCollection.clear();
+    // hier auch folgendes zurücksetzen?
+    // - projections
+    // - vuex state, etc. --> es wird in vielen Tests der store importiert und manipuliert
 });
 
 globalThis.afterEach(() => {
