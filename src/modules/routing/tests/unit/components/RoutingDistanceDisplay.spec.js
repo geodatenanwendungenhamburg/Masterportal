@@ -34,6 +34,11 @@ describe("src/modules/routing/components/RoutingDistanceDisplay.vue", () => {
             distance: 1
         };
     });
+    afterEach(() => {
+        if (wrapper) {
+            wrapper.unmount();
+        }
+    });
 
     it("renders RoutingDistanceDisplayComponent", () => {
         wrapper = shallowMount(RoutingDistanceDisplayComponent, {

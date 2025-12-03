@@ -21,7 +21,7 @@
     "devDebug": "vite --config devtools/vite.config.js  --debug plugin-transform",
     "prestart": "node devtools/certificate/ensureDevCert.mjs",
     "start": "vite --config devtools/vite.config.js",
-    "test": "vitest --config devtools/vitest.config.js --run .spec.js",
+    "test": "rm -rf node_modules/.vite && vitest --config devtools/vitest.config.js --run .spec.js",
     "test:watch": "vitest --config devtools/vitest.config.js --watch .spec.js",
     "test:single": "vitest --config devtools/vitest.config.js --run",
     "test:single:watch": "vitest --config devtools/vitest.config.js --watch",

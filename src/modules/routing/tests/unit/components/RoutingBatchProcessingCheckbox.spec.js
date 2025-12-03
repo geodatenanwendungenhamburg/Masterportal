@@ -24,6 +24,12 @@ describe("src/modules/routing/components/RoutingBatchProcessingCheckbox.vue", ()
         };
     });
 
+    afterEach(() => {
+        if (wrapper) {
+            wrapper.unmount();
+        }
+    });
+
     it("renders RoutingBatchProcessingCheckboxComponent", () => {
         wrapper = shallowMount(RoutingBatchProcessingCheckboxComponent, {
             global: {
