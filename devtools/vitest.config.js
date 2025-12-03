@@ -42,7 +42,6 @@ export default defineConfig(mode => mergeConfig(
             //     "addons/**/*.spec.js"
             // ],
             exclude: [
-                "src/modules/routing/**/*.spec.js", // --> hat Querauswirkungen auf andere Tests
                 /*
                   draw_old stacktrace 202 mal:
                     VueWrapper.getRootNodes node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7679:37
@@ -54,16 +53,6 @@ export default defineConfig(mode => mergeConfig(
                   hat das was damit zu tun? DrawItem: --> this.$.appContext.app.config.globalProperties.$layer = importDrawLayer;
                 */
                 "src/modules/draw_old/**/*.spec.js", // --> hat Querauswirkungen auf andere Tests
-                /*
-                    createLayerAddToTree:
-                    FAIL  src/core/maps/tests/unit/js/multipleHighlighting.spec.js
-                    TypeError: Attempted to wrap dispatch which is already spied on
-                        ❯ checkWrappedMethod node_modules/sinon/pkg/sinon-esm.js:4758:21
-                            4756|         } else if (wrappedMethod.calledBefore) {
-                            4757|             const verb = wrappedMethod.returns ? "stubbed" : "spied on…
-                            4758|             error = new TypeError(
-                */
-                "**/createLayerAddToTree.spec.js", // -->  hat Querauswirkungen auf andere Tests
                 /*
                     App.spec:
                     TypeError: default.getters.getUrlParamValue is not a function

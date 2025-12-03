@@ -1,5 +1,6 @@
 /* eslint-disable */
 import mapCollection from "../../src/core/maps/js/mapCollection.js";
+import store from "../../src/app-store/index.js";
 import testConfig from "./testConfig.js";
 import i18next from "i18next";
 import sinon from "sinon";
@@ -143,6 +144,9 @@ if (typeof window !== "undefined") {
     }));
 
     window.scrollTo = window.scrollTo || (() => {});
+    window.getComputedStyle = window.getComputedStyle || (() => ({
+        getPropertyValue: () => ""
+    }));
 }
 
 // Comprehensive Cesium mocks to handle CommonJS/ESM compatibility issues
@@ -226,13 +230,21 @@ vi.mock("cesium", () => ({
     ClockStep: vi.fn()
 }));
 
-// Mock @cesium/engine as fallback for any direct imports
+// Mock chart.js, @cesium/engine, @cesium/widgets as fallback for any direct imports
+vi.mock("chart.js", () => ({
+    Chart: class {
+        constructor(canvas, config) {
+            this.data = config.data;
+            this.destroy = vi.fn();
+            this.update = vi.fn();
+            this.render = vi.fn();
+        }
+    }
+}));
 vi.mock("@cesium/engine", () => ({
     default: {},
     AutomaticUniforms: vi.fn(() => ({data: "mocked data"}))
 }));
-
-// Mock @cesium/widgets as fallback
 vi.mock("@cesium/widgets", () => ({
     default: {}
 }));
@@ -346,6 +358,20 @@ if (typeof global !== "undefined") {
 }
 
 if (!globalThis.__autoUnmountEnabled) {
+    /*
+    In Vue Test Utils v2 (for Vue 3), enableAutoUnmount only works if you use the wrapper returned by mount or shallowMount in your tests.
+    If you do not keep a reference to the wrapper, or if you mount components outside of test blocks, enableAutoUnmount cannot track and unmount them.
+    // This works:
+        it("test", () => {
+        const wrapper = mount(MyComponent);
+        // ...
+        });
+    // This does NOT work:
+        let wrapper;
+        beforeEach(() => {
+        wrapper = mount(MyComponent);
+        });
+    */
     enableAutoUnmount(globalThis.afterEach);
     // renderStubDefaultSlot: https://test-utils.vuejs.org/migration/#shallowmount-and-renderstubdefaultslot
     config.global.renderStubDefaultSlot = true;
@@ -359,6 +385,7 @@ globalThis.before(() => {
 
 globalThis.after(() => {
     mapCollection.clear();
+    
     // hier auch folgendes zurücksetzen?
     // - projections
     // - vuex state, etc. --> es wird in vielen Tests der store importiert und manipuliert

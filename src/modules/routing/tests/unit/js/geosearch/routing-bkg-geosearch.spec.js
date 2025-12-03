@@ -14,6 +14,9 @@ import {
 
 describe("src/modules/routing/js/geosearch/routing-bkg-geosearch.js", () => {
     let service;
+    const originWindow = global.window,
+        originStoreGetter = {...store.getters},
+        originStoreState = {...store.state};
 
     beforeEach(() => {
         service = "https://service";
@@ -48,6 +51,9 @@ describe("src/modules/routing/js/geosearch/routing-bkg-geosearch.js", () => {
 
     afterEach(() => {
         sinon.restore();
+        global.window = originWindow;
+        store.getters = originStoreGetter;
+        store.replaceState(originStoreState);
     });
 
     describe("should fetchRoutingBkgGeosearch", () => {
