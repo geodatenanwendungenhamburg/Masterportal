@@ -443,6 +443,11 @@ const BuildSpecModel = {
             mapObject.customParams.SLD_BODY = source.getParams().SLD_BODY;
             mapObject.styles = ["style"];
         }
+
+        if (source.getParams().VERSION) {
+            mapObject.version = source.getParams().VERSION;
+        }
+
         return mapObject;
     },
     /**

@@ -732,7 +732,7 @@ describe("src/modules/print/js/buildSpec", function () {
         });
     });
 
-    describe("buildTileWms", function () {
+    describe("buildTileWms", () => {
         const tileWmsLayer = new Tile({
             source: new TileWMS({
                 url: "url",
@@ -741,7 +741,8 @@ describe("src/modules/print/js/buildSpec", function () {
                     FORMAT: "image/png",
                     TRANSPARENT: true,
                     WIDTH: 512,
-                    HEIGHT: 512
+                    HEIGHT: 512,
+                    VERSION: "1.3.0"
                 },
                 tileGrid: new TileGrid({
                     extent: [510000.0, 5850000.0, 625000.4, 6000000.0],
@@ -752,7 +753,7 @@ describe("src/modules/print/js/buildSpec", function () {
             opacity: 1
         });
 
-        it("should buildTileWms", function () {
+        it("should buildTileWms", () => {
             expect(buildSpec.buildTileWms(tileWmsLayer)).to.deep.own.include({
                 baseURL: "url",
                 opacity: 1,
@@ -763,11 +764,12 @@ describe("src/modules/print/js/buildSpec", function () {
                     TRANSPARENT: true,
                     DPI: 200
                 },
-                tileSize: [512, 512]
+                tileSize: [512, 512],
+                version: "1.3.0"
             });
         });
 
-        it("should handle imported WMS layer when LAYERS is an array", function () {
+        it("should handle imported WMS layer when LAYERS is an array", () => {
             const layerWithArray = new Tile({
                     source: new TileWMS({
                         url: "https://example.com/wms",
@@ -776,7 +778,8 @@ describe("src/modules/print/js/buildSpec", function () {
                             FORMAT: "image/png",
                             TRANSPARENT: true,
                             WIDTH: 256,
-                            HEIGHT: 256
+                            HEIGHT: 256,
+                            VERSION: "1.3.0"
                         },
                         tileGrid: new TileGrid({
                             extent: [510000.0, 5850000.0, 625000.4, 6000000.0],
@@ -793,9 +796,10 @@ describe("src/modules/print/js/buildSpec", function () {
             expect(result.type).to.equal("tiledwms");
             expect(result.imageFormat).to.equal("image/png");
             expect(result.customParams).to.have.property("TRANSPARENT", true);
+            expect(result.version).to.equals("1.3.0");
         });
 
-        it("should handle imported WMS layer when LAYERS is a proxy-like object", function () {
+        it("should handle imported WMS layer when LAYERS is a proxy-like object", () => {
             const layerWithProxy = new Tile({
                     source: new TileWMS({
                         url: "https://example.com/wms",
@@ -804,7 +808,8 @@ describe("src/modules/print/js/buildSpec", function () {
                             FORMAT: "image/png",
                             TRANSPARENT: false,
                             WIDTH: 512,
-                            HEIGHT: 512
+                            HEIGHT: 512,
+                            VERSION: "1.1.0"
                         },
                         tileGrid: new TileGrid({
                             extent: [510000.0, 5850000.0, 625000.4, 6000000.0],
@@ -820,6 +825,7 @@ describe("src/modules/print/js/buildSpec", function () {
             expect(result.layers).to.deep.equal(["PS.ProtectedSitesGSG"]);
             expect(result.customParams).to.have.property("DPI");
             expect(result.imageFormat).to.equal("image/png");
+            expect(result.version).to.equals("1.1.0");
         });
     });
 
