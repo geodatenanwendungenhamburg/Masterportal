@@ -38,23 +38,11 @@ export default defineConfig(mode => mergeConfig(
             },
             hookTimeout: 500, // reduce from 20000 to 500 ms
             // include: [
-            //     "src/**/*.spec.js",
-            //     "addons/**/*.spec.js"
+            //     "src/**/table/**/*.spec.js",
+            //     "src/**/wfsSearch/**/*.spec.js"
+            //     // "addons/**/*.spec.js"
             // ],
             exclude: [
-                /*
-                  wfsSearch:
-                   TypeError: Cannot read properties of undefined (reading 'forEach')
-                    ❯ src/shared/modules/table/components/TableComponent.vue:229:37
-                        227|                 }
-                        228|
-                        229|                 this.visibleHeaders.forEach(header => {
-                        |                                     ^
-                        230|                     newItem[header.name] = item[header.name] ?? "";
-                        231|                 });
-                    ❯ Proxy.editedTable src/shared/modules/table/components/TableComponent.vue:217:39
-                */
-                "src/modules/wfsSearch/**/*.spec.js", // --> hat Querauswirkungen auf andere Tests
                 /*
                   draw_old stacktrace 202 mal:
                     VueWrapper.getRootNodes node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7679:37
