@@ -52,7 +52,7 @@ loadConfigJs.then(() => {
     }
 
 
-    initLanguage(Config.portalLanguage)
+    initLanguage(Config.portalLanguage, Config.portalLocales)
         .then(() => {
             app.mount("#masterportal-root");
         });

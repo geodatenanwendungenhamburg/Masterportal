@@ -17,6 +17,7 @@ In the following, all configuration options are described. For all configuration
 |namedProjections|yes|String[]||Definition of the usable coordinate systems. See **[syntax definition](http://proj4js.org/#named-projections)** for details..|`[["EPSG:25832", "+title=ETRS89/UTM 32N +proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"]]`|
 |portalConf|no|String|`"config.json"`|Path to the portal's `config.json` file. You may also enter a node; in that case the taken path is controlled by the urlParameter `config`.|Direct path: "../masterDefault/config.json"; Node: "../../portal/master/". In the node scenario, a query parameter like `config=config.json` must exist in the URL.|
 |portalLanguage|no|**[portalLanguage](#portallanguage)**||Settings for multilingualism of the portal interface.||
+|portalLocales|no|**[portalLocales](#portallocales)**||Override locales by configuration, and allows adding new locales.||
 |proxyHost|no|String||Host name of a remote proxy with CORS configured to support the portal's domain, among others.|`"https://proxy.example.com"`|
 |remoteInterface|no|**[remoteInterface](#remoteinterface)**||Optional remote interface configuration.||
 |restConf|yes|String||Path to the **[rest-services.json](../Global-Config/rest-services.json.md)** file describing further services, e.g. print service, WPS, CSW. The path is relative to *js/main.js*.|`https://geodienste.hamburg.de/lgv-config/rest-services-internet.json"`||
@@ -251,6 +252,37 @@ Settings for multilingualism of the portal interface.
     }
 }
 ```
+
+***
+
+## portalLocales
+
+It is possible to override or add locales by configuration. This way, the same build can be used with varying titles and texts. A configuration may e.g. look like this:
+
+```js
+{
+    portalLocales: {
+        en: {
+            common: {
+                modules: {
+                    layerTree: {
+                        addLayer: "Custom addLayer button text"
+                    }
+                }
+            },
+            additional: {
+                modules: {
+                    populationRequest: {
+                        name: "Custom addon tool name"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+In `portalLocales`, the first-level keys are languages (`de`, `en`, ...), the second-level keys are namespaces (`common` for all core features, `additional` for all addons) and, from then on, the usual nesting is used.
 
 ***
 

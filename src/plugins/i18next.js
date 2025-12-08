@@ -2,7 +2,6 @@ import I18NextVue from "i18next-vue";
 import LanguageDetector from "i18next-browser-languagedetector";
 import Backend from "i18next-http-backend";
 
-
 /**
  * Initialization. Wrapped in a function to avoid calling it initially
  * in a mochapack run.
@@ -18,6 +17,7 @@ export function initiateVueI18Next (app) {
 * @pre i18next is not initialized
 * @post i18next is initialized
 * @param {Object} portalLanguageConfig the configuration red from config.js
+* @param {Object} portalLocales portal-specific locale overrides from config.js
 * @param {Boolean} config.enabled activates the GUI for language switching
 * @param {Boolean} config.debug if true i18next show debugging for developing
 * @param {Object} config.languages the languages to be used as {krz: full} where krz is "en" and full is "english"
@@ -25,7 +25,7 @@ export function initiateVueI18Next (app) {
 * @param {Array} config.changeLanguageOnStartWhen the incidents that changes the language on startup as Array where the order is important
 * @returns {void}
 */
-export function initLanguage (portalLanguageConfig) {
+export function initLanguage (portalLanguageConfig, portalLocales) {
     // default language configuration
     const portalLanguage = Object.assign({
         "enabled": false,
@@ -129,6 +129,17 @@ export function initLanguage (portalLanguageConfig) {
                 return key
                     .replace(/^(common:|additional:)/, "")
                     .replace(/(?<=\s|^)([01]?[0-9]|2[0-3])\.([0-5][0-9])(?=\s|$)/g, "$1:$2");
+            }
+        })
+        .then(() => {
+            if (portalLocales) {
+                Object.entries(portalLocales).forEach(([language, languageEntries]) => Object.entries(languageEntries).forEach(([namespace, resources]) => i18next.addResourceBundle(
+                    language,
+                    namespace,
+                    resources,
+                    true,
+                    true
+                )));
             }
         });
 }

@@ -27,5 +27,18 @@ const Config = {
         },
         fallbackLanguage: "de",
         changeLanguageOnStartWhen: ["querystring", "localStorage", "htmlTag"]
+    },
+    portalLocales: {
+        de: {
+            common: {
+                modules: {
+                    searchBar: {
+                        placeholder: {
+                            address: "Suche nach Themen"
+                        }
+                    }
+                }
+            }
+        }
     }
 };
