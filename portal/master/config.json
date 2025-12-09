@@ -1180,6 +1180,7 @@
           "name": "Parkhäuser",
           "typ": "WFS",
           "visibility": false,
+          "clusterDistance": 40,
           "autoRefresh": 5000
         },
         {

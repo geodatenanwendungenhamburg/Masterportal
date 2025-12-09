@@ -11,19 +11,25 @@ describe("src/core/js/layers/Layer2dGroup.js", () => {
         attributes,
         layerWMS,
         layerWMS2,
-        layerFactorySpy;
+        layerWMS3,
+        layerFactorySpy,
+        updateLayerValuesStub;
 
     beforeEach(() => {
         warn = sinon.spy();
+        updateLayerValuesStub = sinon.stub();
         sinon.stub(console, "warn").callsFake(warn);
-        layerFactorySpy = sinon.stub(layerFactory, "createLayer").returns(
-            {
-                getLayer: () => {
-                    return new VectorLayer();
-                },
-                getLayerSource: sinon.stub()
-            }
-        );
+        layerFactorySpy = sinon.stub(layerFactory, "createLayer")
+            .callsFake((props) => {
+                return {
+                    attributes: props,
+                    getLayer: () => {
+                        return new VectorLayer();
+                    },
+                    getLayerSource: sinon.stub(),
+                    updateLayerValues: updateLayerValuesStub
+                };
+            });
         layerWMS = {
             id: "WMS",
             name: "layerWMS",
@@ -33,6 +39,12 @@ describe("src/core/js/layers/Layer2dGroup.js", () => {
             id: "WMS2",
             name: "layerWMS2",
             typ: "WMS"
+        };
+        layerWMS3 = {
+            id: "WMS3",
+            name: "layerWMS3",
+            typ: "WMS",
+            autoRefresh: 50000
         };
         attributes = {
             id: "1,2",
@@ -65,11 +77,65 @@ describe("src/core/js/layers/Layer2dGroup.js", () => {
             expect(groupLayer.getLayer()).to.be.an.instanceof(LayerGroup);
             expect(warn.notCalled).to.be.true;
             expect(layerFactorySpy.calledTwice).to.be.true;
-            expect(layerFactorySpy.firstCall.args[0]).to.be.deep.equals(layerWMS);
+            expect(layerFactorySpy.firstCall.args[0]).to.include(layerWMS);
             expect(layerFactorySpy.firstCall.args[1]).to.be.deep.equals("2D");
-            expect(layerFactorySpy.secondCall.args[0]).to.be.deep.equals(layerWMS2);
+            expect(layerFactorySpy.secondCall.args[0]).to.include(layerWMS2);
             expect(layerFactorySpy.secondCall.args[1]).to.be.deep.equals("2D");
             expect(groupLayer.getLayer().getSource().length).to.be.equals(2);
+        });
+        it("should pass the autoRefresh attribute to children without autoRefresh", () => {
+            const attrsWithAutoRefresh = {
+                    ...attributes,
+                    autoRefresh: 50000
+                },
+                groupLayer = new Layer2dGroup(attrsWithAutoRefresh, layerFactory);
+
+            expect(groupLayer.getLayerSource()[0].attributes.autoRefresh).to.equal(50000);
+            expect(groupLayer.getLayerSource()[1].attributes.autoRefresh).to.equal(50000);
+        });
+        it("should keep the autoRefresh attribute of children with autoRefresh", () => {
+            const attrsWithAutoRefresh = {
+                    ...attributes,
+                    autoRefresh: 100000,
+                    children: [
+                        layerWMS3
+                    ]
+                },
+                groupLayer = new Layer2dGroup(attrsWithAutoRefresh, layerFactory);
+
+            expect(groupLayer.getLayerSource()[0].attributes.autoRefresh).to.equal(50000);
+        });
+        it("should pass the visibility attribute to children", () => {
+            const attrsWithVisibility = {
+                    ...attributes,
+                    visibility: true
+                },
+                groupLayer = new Layer2dGroup(attrsWithVisibility, layerFactory);
+
+            expect(groupLayer.getLayerSource()[0].attributes.visibility).to.be.true;
+            expect(groupLayer.getLayerSource()[1].attributes.visibility).to.be.true;
+        });
+    });
+
+    describe("updateLayerValues", () => {
+        it("should update the values of the group", () => {
+            const groupLayer = new Layer2dGroup(attributes, layerFactory);
+
+            expect(groupLayer.getLayer().getVisible()).to.be.true;
+
+            groupLayer.updateLayerValues({
+                ...attributes,
+                visibility: false
+            });
+
+            expect(groupLayer.getLayer().getVisible()).to.be.false;
+        });
+        it("should update the visibility of children", () => {
+            const groupLayer = new Layer2dGroup(attributes, layerFactory);
+
+            groupLayer.updateLayerValues(attributes);
+
+            expect(updateLayerValuesStub.callCount).to.equal(2);
         });
     });
 
@@ -107,6 +173,4 @@ describe("src/core/js/layers/Layer2dGroup.js", () => {
 
         });
     });
-
-
 });
