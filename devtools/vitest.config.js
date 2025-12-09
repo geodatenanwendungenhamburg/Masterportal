@@ -38,22 +38,10 @@ export default defineConfig(mode => mergeConfig(
             },
             hookTimeout: 500, // reduce from 20000 to 500 ms
             // include: [
-            //     "src/**/table/**/*.spec.js",
-            //     "src/**/wfsSearch/**/*.spec.js"
-            //     // "addons/**/*.spec.js"
+            //     "src/**/*.spec.js",
+            //     "addons/**/*.spec.js"
             // ],
             exclude: [
-                /*
-                  draw_old stacktrace 202 mal:
-                    VueWrapper.getRootNodes node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7679:37
-                        7677|     });
-                        7678|     VueWrapper.prototype.getRootNodes = function () {
-                        7679|         return getRootNodes(this.vm.$.vnode);
-                        |                                     ^
-                        7680|     };
-                  hat das was damit zu tun? DrawItem: --> this.$.appContext.app.config.globalProperties.$layer = importDrawLayer;
-                */
-                "src/modules/draw_old/**/*.spec.js", // --> hat Querauswirkungen auf andere Tests
                 /*
                     App.spec:
                     TypeError: default.getters.getUrlParamValue is not a function

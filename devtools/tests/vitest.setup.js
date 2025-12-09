@@ -366,6 +366,7 @@ if (!globalThis.__autoUnmountEnabled) {
         const wrapper = mount(MyComponent);
         // ...
         });
+        ==>> das funktioniert auch nicht! (inka)
     // This does NOT work:
         let wrapper;
         beforeEach(() => {
