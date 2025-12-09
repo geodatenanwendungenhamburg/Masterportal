@@ -56,6 +56,9 @@ describe("src/modules/modeler3D/components/EntityList.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     it("shows buttons for importedModel", () => {
