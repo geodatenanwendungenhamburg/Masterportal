@@ -1,4 +1,4 @@
-export const badPathSymbol = Symbol("Path could not be resolved.");
+const badPathSymbol = Symbol("Path could not be resolved.");
 
 /**
  * Utility function (idx) for traversing the given path of the given object
@@ -9,7 +9,7 @@ export const badPathSymbol = Symbol("Path could not be resolved.");
  * @param {String[]} path The path of keys / indices to traverse through the object.
  * @returns {?*} The value(s) to be retrieved from the given object.
  */
-export function idx (object, path) {
+function idx (object, path) {
     return path.reduce(
         (acc, currentVal) => {
             return acc && Object.prototype.hasOwnProperty.call(acc, currentVal) ? acc[currentVal] : badPathSymbol;
@@ -17,3 +17,8 @@ export function idx (object, path) {
         object
     );
 }
+
+export default {
+    badPathSymbol,
+    idx
+};
