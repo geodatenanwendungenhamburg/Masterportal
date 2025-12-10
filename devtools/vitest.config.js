@@ -38,13 +38,11 @@ export default defineConfig(mode => mergeConfig(
             },
             hookTimeout: 500, // reduce from 20000 to 500 ms
             // include: [
-            //     "src/**/*.spec.js",
-            //     "addons/**/*.spec.js"
+            //     "src/**/wmsTime/**/*.spec.js"
+            //     // "addons/**/actionsCombinedGfi.spec.js"
             // ],
             exclude: [
-                "**/AddWMS.spec.js", // komplett geskipt
-                "**/layer3dTileset.spec.js", // komplett geskipt
-                "**/actionsAlerting.spec.js", // komplett geskipt
+                // "**/actionsAlerting.spec.js", // komplett geskipt
                 "**/PoiOrientation.spec.js", // komplett geskipt
                 "**/zoomToGetAndFilterFeatures.spec.js", // komplett geskipt
                 "**/actionsMapsZoomTo.spec.js", // komplett geskipt
