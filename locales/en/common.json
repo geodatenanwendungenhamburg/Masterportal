@@ -1419,7 +1419,7 @@
         "point": "Add point",
         "polygon": "Add area",
         "update": "Edit",
-        "multiUpdate": "Edit",
+        "multiUpdate": "Multiple Edit",
         "multiPolygon": "Add multipolygon"
       },
       "multiUpdate": {
