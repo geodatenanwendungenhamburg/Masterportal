@@ -24,6 +24,7 @@ export default function Layer2dVector (attributes) {
         styleId: "default"
     };
 
+    this.isStyling = false;
     this.geometryTypeRequestLayers = [];
     this.attributes = Object.assign(defaultAttributes, attributes);
     Layer2d.call(this, this.attributes);
@@ -211,10 +212,22 @@ Layer2dVector.prototype.createStyle = async function (attrs) {
          * @returns {Function} style function to style feature
          */
         const style = (feature) => {
-            const feat = feature !== undefined ? feature : this,
-                isClusterFeature = typeof feat.get("features") === "function" || typeof feat.get("features") === "object" && Boolean(feat.get("features").length > 1);
+            if (this.isStyling) {
+                return new Style();
+            }
+            this.isStyling = true;
+            let styleResult;
 
-            return createStyle.createStyle(styleObject, feat, isClusterFeature, Config.wfsImgPath);
+            try {
+                const feat = feature !== undefined ? feature : this,
+                    isClusterFeature = typeof feat.get("features") === "function" || typeof feat.get("features") === "object" && Boolean(feat.get("features").length > 1);
+
+                styleResult = createStyle.createStyle(styleObject, feat, isClusterFeature, Config.wfsImgPath);
+            }
+            finally {
+                this.isStyling = false;
+            }
+            return styleResult;
         };
 
         this.setStyle(style);
