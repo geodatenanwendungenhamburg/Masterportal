@@ -42,22 +42,6 @@ export default defineConfig(mode => mergeConfig(
             //     "addons/**/*.spec.js"
             // ],
             exclude: [
-                /*
-                    App.spec:
-                    TypeError: default.getters.getUrlParamValue is not a function
-                    ❯ src/shared/js/utils/processUrlParams.js:16:41
-                        16|             const value = store.getters.getUrlParamValue(param);
-                        |                                         ^
-                        17|
-                        18|             if (typeof value !== "undefined") {
-                    ❯ src/shared/js/utils/processUrlParams.js:13:32
-                    ❯ processUrlParams src/shared/js/utils/processUrlParams.js:12:28
-                    ❯ Object.processLayerUrlParams src/core/layers/js/layerUrlParams.js:31:21
-                    ❯ src/core/urlParams/js/urlParams.js:13:24
-
-                    This error originated in "src/tests/unit/App.spec.js" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
-                */
-                "**/App.spec.js", // -->  hat Querauswirkungen auf andere Tests
                 "**/AddWMS.spec.js", // komplett geskipt
                 "**/layer3dTileset.spec.js", // komplett geskipt
                 "**/actionsAlerting.spec.js", // komplett geskipt

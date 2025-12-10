@@ -6,7 +6,7 @@ import BaselayerSwitcher from "./modules/baselayerSwitcher/components/BaselayerS
 import ControlBar from "./modules/controls/components/ControlBar.vue";
 import initializeLayers from "./core/layers/js/layerProcessor.js";
 import maps from "./core/maps/js/maps.js";
-import {startProcessUrlParams} from "./core/urlParams/js/urlParams.js";
+import urlParamsHandler from "./core/urlParams/js/urlParams.js";
 import mapCollection from "./core/maps/js/mapCollection.js";
 import MenuContainer from "./modules/menu/components/MenuContainer.vue";
 import MenuToggleButton from "./modules/menu/components/MenuToggleButton.vue";
@@ -56,7 +56,7 @@ export default {
                 this.initializeVectorStyle();
                 maps.initializeMaps(this.mapViewSettings, this.configJs);
                 initializeLayers(this.visibleLayerConfigs);
-                startProcessUrlParams();
+                urlParamsHandler.startProcessUrlParams();
                 this.initializeOther();
 
                 // Wait until next tick to ensure that the menu components is rendered
