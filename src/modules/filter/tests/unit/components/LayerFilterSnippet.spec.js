@@ -8,11 +8,10 @@ import {expect} from "chai";
 import MapHandler from "@modules/filter/utils/mapHandler.js";
 import openlayerFunctions from "@modules/filter/utils/openlayerFunctions.js";
 import sinon from "sinon";
-import {nextTick} from "vue";
 
 config.global.mocks.$t = key => key;
 
-describe.skip("src/modules/filter/components/LayerFilterSnippet.vue", () => {
+describe("src/modules/filter/components/LayerFilterSnippet.vue", () => {
     let wrapper = null,
         store,
         mapHandler = null;
@@ -75,6 +74,9 @@ describe.skip("src/modules/filter/components/LayerFilterSnippet.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     describe("Lifecycle Hooks", () => {
@@ -106,7 +108,8 @@ describe.skip("src/modules/filter/components/LayerFilterSnippet.vue", () => {
                             type: "something external"
                         },
                         clearAll: false
-                    }
+                    },
+                    mapHandler
                 }
             });
             expect(wrapper.vm.isClearAll).to.be.false;
@@ -832,10 +835,9 @@ describe.skip("src/modules/filter/components/LayerFilterSnippet.vue", () => {
                         labelFilterButton: "common:modules.filter.filterButton"
                     }
                 });
+                await wrapper.vm.$nextTick();
 
-                nextTick(() => {
-                    expect(wrapper.find("#runFilter .btn-texts").text()).to.equal("common:modules.filter.filterButton");
-                });
+                expect(wrapper.find("#runFilter").attributes("text")).to.equal("common:modules.filter.filterButton");
             });
         });
 

@@ -41,7 +41,9 @@ describe.skip("src/core/maps/js/zoomToGetAndFilterFeatures.js", () => {
     });
 
     it("should return a Promise which resolves to Feature[] only including features including an allowed value for the given property", () => {
-        sinon.stub(rawLayerList, "getLayerWhere").returns({id: "id"});
+        sinon.stub(rawLayerList, "getLayerWhere").returns({id: "id", url: "https://geodaten.de",
+            version: "1.1.0",
+            featureType: "featureType"});
         sinon.stub(axios, "get").callsFake(() => new Promise(resolve => resolve({status: 200, statusText: "OK", data: exampleFeatureCollection})));
 
         featureProvider.getAndFilterFeatures(id, property, values)

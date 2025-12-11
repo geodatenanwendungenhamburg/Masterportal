@@ -38,33 +38,20 @@ export default defineConfig(mode => mergeConfig(
             },
             hookTimeout: 500, // reduce from 20000 to 500 ms
             // include: [
-            //     "src/**/wmsTime/**/*.spec.js"
-            //     // "addons/**/actionsCombinedGfi.spec.js"
+            //     "src/**/*.spec.js",
+            //     "addons/**/*.spec.js"
             // ],
             exclude: [
-                // "**/actionsAlerting.spec.js", // komplett geskipt
-                "**/PoiOrientation.spec.js", // komplett geskipt
-                "**/zoomToGetAndFilterFeatures.spec.js", // komplett geskipt
-                "**/actionsMapsZoomTo.spec.js", // komplett geskipt
-                "**/CopyrightConstraints.spec.js", // komplett geskipt
-                "**/LayerFilterSnippet.spec.js", // komplett geskipt
-                "**/LayerSlider.spec.js", // komplett geskipt
-                "**/FilterGeneral.spec.js", // komplett geskipt
-                "**/LoginComponent.spec.js", // komplett geskipt
-                "**/FeatureLister.spec.js", // komplett geskipt
-                "**/AlertingItem.spec.js", // komplett geskipt
-                "**/actionsprint.spec.js", // komplett geskipt
-                "**/addons.spec.js", // komplett geskipt
-                "**/StatisticDashboard.spec.js", // komplett geskipt
-                "**/WfsTransaction.spec.js", // komplett geskipt
-                "**/sensorThingsMqtt.spec.js", // komplett geskipt
-                "**/actionsSelectFeatures.spec.js", // komplett geskipt
-                "**/SimulationParameter.spec.js", // komplett geskipt
-                "**/VerkehrsstaerkenTheme.spec.js", // komplett geskipt
-                "**/complexType.spec.js", // komplett geskipt
-                "**/handleMultipolygon.spec.js", // komplett geskipt
+                "**/zoomToGetAndFilterFeatures.spec.js", // schwierig
+                "**/addons.spec.js", // muss neu geschrieben werden
+                "**/CopyrightConstraints.spec.js", // skipped, see https://lgv-hamburg.atlassian.net/browse/BG-5562
                 "**/actionsContact.spec.js", // --> Error: Test timed out in 5000ms.
                 "**/actionsPrintInitialization.spec.js", // --> Error: Test timed out in 5000ms.
+                // an G31
+                "**/VerkehrsstaerkenTheme.spec.js",
+                "**/SimulationParameter.spec.js",
+                "**/FilterGeneral.spec.js",
+                "**/StatisticDashboard.spec.js",
                 // defaults from vitest:
                 "**/node_modules/**",
                 "**/.git/**"
