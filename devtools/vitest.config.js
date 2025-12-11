@@ -42,12 +42,9 @@ export default defineConfig(mode => mergeConfig(
             //     "addons/**/*.spec.js"
             // ],
             exclude: [
-                "**/zoomToGetAndFilterFeatures.spec.js", // schwierig
                 "**/addons.spec.js", // muss neu geschrieben werden
                 "**/CopyrightConstraints.spec.js", // skipped, see https://lgv-hamburg.atlassian.net/browse/BG-5562
-                "**/actionsContact.spec.js", // --> Error: Test timed out in 5000ms.
-                "**/actionsPrintInitialization.spec.js", // --> Error: Test timed out in 5000ms.
-                // an G31
+                // an G31: https://lgv-hamburg.atlassian.net/browse/G31DEV1-3566
                 "**/VerkehrsstaerkenTheme.spec.js",
                 "**/SimulationParameter.spec.js",
                 "**/FilterGeneral.spec.js",
