@@ -1,10 +1,10 @@
-/* eslint-disable */
+/* eslint-disable no-empty-function, n/no-process-env */
 import mapCollection from "../../src/core/maps/js/mapCollection.js";
 import testConfig from "./testConfig.js";
 import i18next from "i18next";
 import sinon from "sinon";
 import {expect} from "chai";
-import {config, enableAutoUnmount} from "@vue/test-utils";
+import {config} from "@vue/test-utils";
 import {vi, beforeAll as vitestBeforeAll, afterAll as vitestAfterAll, beforeEach as vitestBeforeEach, afterEach as vitestAfterEach, test as vitestTest, it as vitestIt} from "vitest";
 
 if (!globalThis.ResizeObserver) {
@@ -106,7 +106,7 @@ vi.mock("i18next", () => {
 /**
  * Removes the namespace from the given locales key.
  * @param {String} key of to translate
- * @returns the key without namespace
+ * @returns {String} the key without namespace
  */
 function replaceNameSpaceInLocalesKey (key) {
     if (key.startsWith("common:")) {
@@ -143,6 +143,9 @@ if (typeof window !== "undefined") {
     }));
 
     window.scrollTo = window.scrollTo || (() => {});
+    window.getComputedStyle = window.getComputedStyle || (() => ({
+        getPropertyValue: () => ""
+    }));
 }
 
 // Comprehensive Cesium mocks to handle CommonJS/ESM compatibility issues
@@ -226,13 +229,24 @@ vi.mock("cesium", () => ({
     ClockStep: vi.fn()
 }));
 
-// Mock @cesium/engine as fallback for any direct imports
+// Mock chart.js, @cesium/engine, @cesium/widgets as fallback for any direct imports
+vi.mock("chart.js", () => ({
+    Chart: class {
+        /**
+         *
+         */
+        constructor (canvas, chartsConfig) {
+            this.data = chartsConfig.data;
+            this.destroy = vi.fn();
+            this.update = vi.fn();
+            this.render = vi.fn();
+        }
+    }
+}));
 vi.mock("@cesium/engine", () => ({
     default: {},
     AutomaticUniforms: vi.fn(() => ({data: "mocked data"}))
 }));
-
-// Mock @cesium/widgets as fallback
 vi.mock("@cesium/widgets", () => ({
     default: {}
 }));
@@ -244,20 +258,22 @@ vi.mock("@cesium/widgets", () => ({
  * Done-callback to Promise polyfill for Mocha-style async tests.
  * Wraps test functions to support done callback while maintaining Promise compatibility.
  * @param {Object} originalTestFn the original test-function from vitest
- * @param {String} name name of the original test-function
  * @param {Number} [callCount=1] amount of calls to this function
  * @returns {Object} the polyfilled function
  */
-function createDoneCallbackWrapper (originalTestFn, name, callCount = 1) {
+function createDoneCallbackWrapper (originalTestFn, callCount = 1) {
+    // eslint-disable-next-line func-style
     const wrappedTestFn = (name, fn, ...args) => {
-    // If no test function provided, just pass through
+        // If no test function provided, just pass through
         if (typeof fn !== "function") {
             return originalTestFn(name, fn, ...args);
         }
 
         // Check if function expects a 'done' callback (has more than 0 parameters)
         if (fn.length > 0) {
-            console.warn(`⚠️  DEPRECATION WARNING: Test "${name}" uses done callback. Please migrate to Promise-based async tests. This polyfill will be removed in a future version.`);
+            if (!process.env.SILENT) {
+                console.warn(`⚠️  DEPRECATION WARNING: Test "${name}" uses done callback. Please migrate to Promise-based async tests. This polyfill will be removed in a future version.`);
+            }
 
             /**
              * Create a wrapper that returns a Promise
@@ -293,20 +309,24 @@ function createDoneCallbackWrapper (originalTestFn, name, callCount = 1) {
     };
 
     if (callCount < 2) {
-        wrappedTestFn.only = createDoneCallbackWrapper(originalTestFn.only, "only", 2);
-        wrappedTestFn.skip = createDoneCallbackWrapper(originalTestFn.skip, "skip", 2);
+        wrappedTestFn.only = createDoneCallbackWrapper(originalTestFn.only, 2);
+        wrappedTestFn.skip = createDoneCallbackWrapper(originalTestFn.skip, 2);
     }
     return wrappedTestFn;
 }
 
 // Create global polyfill functions that map Mocha hooks to Vitest hooks
 globalThis.before = (fn) => {
-    console.warn("⚠️  DEPRECATION WARNING: 'before' hook is deprecated. Please use 'beforeAll' instead. This polyfill will be removed in a future version.");
+    if (!process.env.SILENT) {
+        console.warn("⚠️  DEPRECATION WARNING: 'before' hook is deprecated. Please use 'beforeAll' instead. This polyfill will be removed in a future version.");
+    }
     return vitestBeforeAll(fn);
 };
 
 globalThis.after = (fn) => {
-    console.warn("⚠️  DEPRECATION WARNING: 'after' hook is deprecated. Please use 'afterAll' instead. This polyfill will be removed in a future version.");
+    if (!process.env.SILENT) {
+        console.warn("⚠️  DEPRECATION WARNING: 'after' hook is deprecated. Please use 'afterAll' instead. This polyfill will be removed in a future version.");
+    }
     return vitestAfterAll(fn);
 };
 
@@ -316,8 +336,8 @@ globalThis.afterEach = globalThis.afterEach || vitestAfterEach;
 globalThis.mapCollection = mapCollection;
 globalThis.i18next = i18next;
 globalThis.Config = testConfig.config;
-globalThis.it = createDoneCallbackWrapper(globalThis.it || vitestIt, "it");
-globalThis.test = createDoneCallbackWrapper(globalThis.test || vitestTest, "test");
+globalThis.it = createDoneCallbackWrapper(globalThis.it || vitestIt);
+globalThis.test = createDoneCallbackWrapper(globalThis.test || vitestTest);
 
 // Also make them available as properties of global/window for different environments
 if (typeof window !== "undefined") {
@@ -345,11 +365,10 @@ if (typeof global !== "undefined") {
     global.test = globalThis.test;
 }
 
-if (!globalThis.__autoUnmountEnabled) {
-    enableAutoUnmount(globalThis.afterEach);
+if (!globalThis.__vueTestUtilsSettings) {
     // renderStubDefaultSlot: https://test-utils.vuejs.org/migration/#shallowmount-and-renderstubdefaultslot
     config.global.renderStubDefaultSlot = true;
-    globalThis.__autoUnmountEnabled = true;
+    globalThis.__vueTestUtilsSettings = true;
 }
 
 
@@ -359,6 +378,10 @@ globalThis.before(() => {
 
 globalThis.after(() => {
     mapCollection.clear();
+
+    // hier auch folgendes zurücksetzen?
+    // - projections
+    // - vuex state, etc. --> es wird in vielen Tests der store importiert und manipuliert
 });
 
 globalThis.afterEach(() => {

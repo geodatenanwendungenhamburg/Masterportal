@@ -20,7 +20,8 @@ describe("src/modules/menu/MenuContainer.vue", () => {
         collapseMenuesSpy,
         isMobile,
         setActiveSpy,
-        setHiddenSpy;
+        setHiddenSpy,
+        wrapper;
 
     beforeEach(() => {
         currentMenuWidth = sinon.stub();
@@ -84,17 +85,20 @@ describe("src/modules/menu/MenuContainer.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     describe("mainMenu", () => {
         it("renders the mainMenu component not expanded", () => {
-            const wrapper = shallowMount(MenuContainer, {
-                    global: {
-                        plugins: [store]
-                    },
-                    propsData: {side: "mainMenu"}
-                }),
-                mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
+            wrapper = shallowMount(MenuContainer, {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {side: "mainMenu"}
+            });
+            const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
                 secondaryMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
 
 
@@ -109,13 +113,13 @@ describe("src/modules/menu/MenuContainer.vue", () => {
 
         it("renders the mainMenu component expanded", () => {
             mainExpanded = true;
-            const wrapper = shallowMount(MenuContainer, {
-                    global: {
-                        plugins: [store]
-                    },
-                    propsData: {side: "mainMenu"}
-                }),
-                mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
+            wrapper = shallowMount(MenuContainer, {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {side: "mainMenu"}
+            });
+            const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
                 secondaryMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
 
             expect(mainMenuWrapper.exists()).to.be.true;
@@ -131,13 +135,13 @@ describe("src/modules/menu/MenuContainer.vue", () => {
 
     describe("secondaryMenu", () => {
         it("renders the secondaryMenu component not expanded", () => {
-            const wrapper = shallowMount(MenuContainer, {
-                    global: {
-                        plugins: [store]
-                    },
-                    propsData: {side: "secondaryMenu"}
-                }),
-                mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
+            wrapper = shallowMount(MenuContainer, {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {side: "secondaryMenu"}
+            });
+            const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
                 secondaryMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
 
             expect(mainMenuWrapper.exists()).to.be.false;
@@ -151,13 +155,13 @@ describe("src/modules/menu/MenuContainer.vue", () => {
 
         it("renders the secondaryMenu component expanded", () => {
             secondaryExpanded = true;
-            const wrapper = shallowMount(MenuContainer, {
-                    global: {
-                        plugins: [store]
-                    },
-                    propsData: {side: "secondaryMenu"}
-                }),
-                mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
+            wrapper = shallowMount(MenuContainer, {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {side: "secondaryMenu"}
+            });
+            const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
                 secondaryMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
 
             expect(mainMenuWrapper.exists()).to.be.false;
@@ -172,13 +176,13 @@ describe("src/modules/menu/MenuContainer.vue", () => {
 
     it("renders the mainMenu component with table style", () => {
         uiStyle = "TABLE";
-        const wrapper = shallowMount(MenuContainer, {
-                global: {
-                    plugins: [store]
-                },
-                propsData: {side: "mainMenu"}
-            }),
-            mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
+        wrapper = shallowMount(MenuContainer, {
+            global: {
+                plugins: [store]
+            },
+            propsData: {side: "mainMenu"}
+        });
+        const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
             secondaryMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
 
         expect(mainMenuWrapper.exists()).to.be.true;
@@ -191,13 +195,13 @@ describe("src/modules/menu/MenuContainer.vue", () => {
 
     it("renders the mainMenu component mobile", () => {
         isMobile = true;
-        const wrapper = shallowMount(MenuContainer, {
-                global: {
-                    plugins: [store]
-                },
-                propsData: {side: "mainMenu"}
-            }),
-            mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
+        wrapper = shallowMount(MenuContainer, {
+            global: {
+                plugins: [store]
+            },
+            propsData: {side: "mainMenu"}
+        });
+        const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
             secondaryMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
 
         expect(mainMenuWrapper.exists()).to.be.true;
@@ -211,13 +215,13 @@ describe("src/modules/menu/MenuContainer.vue", () => {
     });
 
     it("shall call toggleMenu if close button is clicked", async () => {
-        const wrapper = shallowMount(MenuContainer, {
-                global: {
-                    plugins: [store]
-                },
-                propsData: {side: "mainMenu"}
-            }),
-            mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
+        wrapper = shallowMount(MenuContainer, {
+            global: {
+                plugins: [store]
+            },
+            propsData: {side: "mainMenu"}
+        });
+        const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
             closeBtn = wrapper.find("#mp-menu-header-close-button-mainMenu");
 
         expect(mainMenuWrapper.exists()).to.be.true;
@@ -229,26 +233,26 @@ describe("src/modules/menu/MenuContainer.vue", () => {
 
     describe("handlePosition", () => {
         it("computed property handlePosition in mainMenu", () => {
-            const wrapper = shallowMount(MenuContainer, {
-                    global: {
-                        plugins: [store]
-                    },
-                    propsData: {side: "mainMenu"}
-                }),
-                mainMenuWrapper = wrapper.find("#mp-menu-mainMenu");
+            wrapper = shallowMount(MenuContainer, {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {side: "mainMenu"}
+            });
+            const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu");
 
             expect(mainMenuWrapper.exists()).to.be.true;
             expect(wrapper.vm.handlePosition).equals("right");
         });
 
         it("computed property handlePosition in secondaryMenu", () => {
-            const wrapper = shallowMount(MenuContainer, {
-                    global: {
-                        plugins: [store]
-                    },
-                    propsData: {side: "secondaryMenu"}
-                }),
-                mainMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
+            wrapper = shallowMount(MenuContainer, {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {side: "secondaryMenu"}
+            });
+            const mainMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
 
             expect(mainMenuWrapper.exists()).to.be.true;
             expect(wrapper.vm.handlePosition).equals("left");
@@ -257,13 +261,13 @@ describe("src/modules/menu/MenuContainer.vue", () => {
 
     describe("watcher mainMenu and secondaryMenu", () => {
         it("watcher mainMenu", () => {
-            const wrapper = shallowMount(MenuContainer, {
-                    global: {
-                        plugins: [store]
-                    },
-                    propsData: {side: "mainMenu"}
-                }),
-                mainMenuWrapper = wrapper.find("#mp-menu-mainMenu");
+            wrapper = shallowMount(MenuContainer, {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {side: "mainMenu"}
+            });
+            const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu");
 
             expect(mainMenuWrapper.exists()).to.be.true;
             wrapper.vm.$options.watch.mainMenu.call(wrapper.vm, {id: "mainMenu"});
@@ -275,13 +279,13 @@ describe("src/modules/menu/MenuContainer.vue", () => {
         });
 
         it("watcher secondaryMenu", () => {
-            const wrapper = shallowMount(MenuContainer, {
-                    global: {
-                        plugins: [store]
-                    },
-                    propsData: {side: "secondaryMenu"}
-                }),
-                mainMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
+            wrapper = shallowMount(MenuContainer, {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {side: "secondaryMenu"}
+            });
+            const mainMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
 
             expect(mainMenuWrapper.exists()).to.be.true;
             wrapper.vm.$options.watch.secondaryMenu.call(wrapper.vm, {id: "secondaryMenu"});
@@ -296,17 +300,18 @@ describe("src/modules/menu/MenuContainer.vue", () => {
     describe("onResize", () => {
         it("should trigger onResize when ResizeHandle emits resizing event", async () => {
             const onResizeSpy = sinon.spy(MenuContainer.methods, "onResize"),
-                wrapper = shallowMount(MenuContainer, {
-                    global: {
-                        plugins: [store]
-                    },
-                    propsData: {side: "mainMenu"}
-                }),
                 eventData = {
                     handleElement: {
                         offsetWidth: 300
                     }
                 };
+
+            wrapper = shallowMount(MenuContainer, {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {side: "mainMenu"}
+            });
 
             await wrapper.findComponent({name: "ResizeHandle"}).vm.$emit("resizing", eventData);
             expect(onResizeSpy.calledOnce).to.be.true;
@@ -316,7 +321,7 @@ describe("src/modules/menu/MenuContainer.vue", () => {
         });
     });
     describe("hideElementsForBiggerMenu", () => {
-        let wrapper, layerPillsMock, footerMock;
+        let layerPillsMock, footerMock;
 
         beforeEach(() => {
             layerPillsMock = {style: {display: ""}};
@@ -340,9 +345,6 @@ describe("src/modules/menu/MenuContainer.vue", () => {
             });
         });
 
-        afterEach(() => {
-            sinon.restore();
-        });
 
         it("should hide footer when menuPercentWidth exceeds the breakpoint", () => {
             wrapper.vm.hideElementsForBiggerMenu(0.8);

@@ -99,10 +99,11 @@ describe("src/modules/shareView/store/gettersShareView.js", () => {
         rootGetters["Menu/urlParams"].main.currentComponent = "customComponent";
         rootGetters["Menu/urlParams"].main.attributes = {circular};
 
-        const errorSpy = sinon.spy(console, "error"),
+        const errorSpy = sinon.stub(console, "error").callsFake(sinon.spy()),
             url = getters.url({}, {}, {}, rootGetters),
             parsed = new URL(url),
             menu = JSON.parse(parsed.searchParams.get("MENU"));
+
 
         expect(menu.main.attributes).to.be.undefined;
         expect(errorSpy.calledOnce).to.be.true;

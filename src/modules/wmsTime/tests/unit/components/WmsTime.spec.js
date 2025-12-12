@@ -12,7 +12,8 @@ config.global.mocks.$t = key => key;
 describe("src/modules/wmsTime/components/WmsTime.vue", () => {
     let store,
         timeSliderActive,
-        winWidth;
+        winWidth,
+        wrapper;
 
     beforeEach(() => {
         store = createStore({
@@ -92,11 +93,14 @@ describe("src/modules/wmsTime/components/WmsTime.vue", () => {
         winWidth = 1024;
         timeSliderActive = false;
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     it("render one TimeSlider component if it is active and the layerSwiper is inactive", () => {
         timeSliderActive = true;
-        const wrapper = shallowMount(WmsTimeComponent, {
+        wrapper = shallowMount(WmsTimeComponent, {
             global: {
                 plugins: [store]
             }});
@@ -108,12 +112,12 @@ describe("src/modules/wmsTime/components/WmsTime.vue", () => {
         timeSliderActive = true;
         store.commit("Modules/LayerSwiper/setActive", true);
 
-        const wrapper = shallowMount(WmsTimeComponent, {
-                global: {
-                    plugins: [store]
-                }
-            }),
-            timeSliderComponents = wrapper.findAllComponents(TimeSlider);
+        wrapper = shallowMount(WmsTimeComponent, {
+            global: {
+                plugins: [store]
+            }
+        });
+        const timeSliderComponents = wrapper.findAllComponents(TimeSlider);
 
         expect(timeSliderComponents.length).to.equal(2);
         expect(timeSliderComponents.at(0).element.className).to.include("moveLeft");
@@ -123,7 +127,7 @@ describe("src/modules/wmsTime/components/WmsTime.vue", () => {
     it("should only render one TimeSlider component and no LayerSwiper component if the window size is smaller than the minWidth of 800px", () => {
         timeSliderActive = true;
         winWidth = 799;
-        const wrapper = shallowMount(WmsTimeComponent, {
+        wrapper = shallowMount(WmsTimeComponent, {
             global: {
                 plugins: [store]
             }});

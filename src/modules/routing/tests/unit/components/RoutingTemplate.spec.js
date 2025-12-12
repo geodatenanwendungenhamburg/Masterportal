@@ -8,9 +8,6 @@ import actions from "@modules/routing/store/actionsRouting.js";
 
 config.global.mocks.$t = key => key;
 
-afterEach(() => {
-    sinon.restore();
-});
 
 describe("src/modules/routing/components/RoutingTemplate.vue", () => {
     let activeRoutingToolOption,
@@ -25,7 +22,12 @@ describe("src/modules/routing/components/RoutingTemplate.vue", () => {
             removeLayer: sinon.spy(),
             addInteraction: sinon.spy(),
             removeInteraction: sinon.spy(),
-            updateSize: sinon.spy()
+            updateSize: sinon.spy(),
+            getInteractions: () => {
+                return {
+                    getArray: () => []
+                };
+            }
         };
 
         mapCollection.clear();
@@ -61,12 +63,18 @@ describe("src/modules/routing/components/RoutingTemplate.vue", () => {
                                     namespaced: true,
                                     getters: {
                                         isLoadingDirections: () => sinon.stub()
+                                    },
+                                    actions: {
+                                        closeDirections: sinon.stub()
                                     }
                                 },
                                 Isochrones: {
                                     namespaced: true,
                                     getters: {
                                         isLoadingIsochrones: () => sinon.stub()
+                                    },
+                                    actions: {
+                                        closeIsochrones: sinon.stub()
                                     }
                                 }
                             },
@@ -118,6 +126,13 @@ describe("src/modules/routing/components/RoutingTemplate.vue", () => {
                 }
             }
         });
+    });
+
+    afterEach(() => {
+        sinon.restore();
+        if (wrapper) {
+            wrapper.unmount();
+        }
     });
 
     it("renders Routing", () => {

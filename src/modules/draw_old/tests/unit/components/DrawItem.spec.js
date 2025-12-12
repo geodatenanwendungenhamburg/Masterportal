@@ -1,5 +1,5 @@
 import {createStore} from "vuex";
-import {config, shallowMount} from "@vue/test-utils";
+import {config, mount, shallowMount} from "@vue/test-utils";
 import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 import DrawItemComponent from "@modules/draw_old/components/DrawItem.vue";
@@ -40,6 +40,7 @@ describe("src/modules/draw/components/DrawItem.vue", () => {
         };
 
         Draw_old.actions = Object.assign({}, actionsOrig, {startInteractions: sinon.stub()});
+        Draw_old.actions.resetModule = sinon.stub();
         app.config.globalProperties.$layer = {
             visible: true,
             getVisible: () => app.config.globalProperties.$layer.visible,
@@ -63,7 +64,8 @@ describe("src/modules/draw/components/DrawItem.vue", () => {
                     actions: {
                         addLayer: sinon.stub(),
                         checkLayer: sinon.stub(),
-                        addInteraction: sinon.stub()
+                        addInteraction: sinon.stub(),
+                        removeInteraction: sinon.stub()
                     },
                     getters: {
                         mode: () => "2D"
@@ -102,6 +104,9 @@ describe("src/modules/draw/components/DrawItem.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
         Draw_old.actions = actionsOrig;
     });
 
@@ -190,8 +195,10 @@ describe("src/modules/draw/components/DrawItem.vue", () => {
         wrapper.vm.squareAreaComputed = 6.5;
         expect(wrapper.vm.styleSettings.squareArea).to.equal(6500);
     });
-    it.skip("should hide layer and disable controls", async () => {
-        wrapper = shallowMount(DrawItemComponent, {global: {plugins: [store]}, data: componentData});
+    it("should hide layer and disable controls", async () => {
+        let switchInput = null;
+
+        wrapper = mount(DrawItemComponent, {global: {plugins: [store]}, data: componentData});
         await wrapper.vm.creationPromise;
         expect(wrapper.find("#tool-draw-drawLayerVisible").exists()).to.be.true;
 
@@ -203,17 +210,19 @@ describe("src/modules/draw/components/DrawItem.vue", () => {
         expect(wrapper.find("#tool-draw-deleteInteraction").element.disabled).to.be.false;
         expect(wrapper.find("#tool-draw-deleteAllInteraction").element.disabled).to.be.false;
 
-        wrapper.find("#tool-draw-drawLayerVisible").trigger("click").then(() => {
-            expect(wrapper.vm.drawLayerVisible).to.be.false;
-            expect(wrapper.vm.layer.getVisible()).to.be.false;
-            expect(wrapper.find("#tool-draw-drawType").element.disabled).to.be.true;
-            expect(wrapper.find("#tool-draw-drawInteraction").element.disabled).to.be.true;
-            expect(wrapper.find("#tool-draw-undoInteraction").element.disabled).to.be.true;
-            expect(wrapper.find("#tool-draw-redoInteraction").element.disabled).to.be.true;
-            expect(wrapper.find("#tool-draw-editInteraction").element.disabled).to.be.true;
-            expect(wrapper.find("#tool-draw-deleteInteraction").element.disabled).to.be.true;
-            expect(wrapper.find("#tool-draw-deleteAllInteraction").element.disabled).to.be.true;
-        });
+        switchInput = wrapper.find("#tool-draw-drawLayerVisible");
+        switchInput.setValue(false);
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.drawLayerVisible).to.be.false;
+        expect(wrapper.vm.getLayer().getVisible()).to.be.false;
+        expect(wrapper.find("#tool-draw-drawType").element.disabled).to.be.true;
+        expect(wrapper.find("#tool-draw-drawInteraction").element.disabled).to.be.true;
+        expect(wrapper.find("#tool-draw-undoInteraction").element.disabled).to.be.true;
+        expect(wrapper.find("#tool-draw-redoInteraction").element.disabled).to.be.true;
+        expect(wrapper.find("#tool-draw-editInteraction").element.disabled).to.be.true;
+        expect(wrapper.find("#tool-draw-deleteInteraction").element.disabled).to.be.true;
+        expect(wrapper.find("#tool-draw-deleteAllInteraction").element.disabled).to.be.true;
 
     });
 

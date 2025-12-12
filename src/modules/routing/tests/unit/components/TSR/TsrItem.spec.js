@@ -92,6 +92,9 @@ describe("src/modules/routing/components/TSR/TsrItem.vue", () => {
     });
 
     afterEach(() => {
+        if (wrapper) {
+            wrapper.unmount();
+        }
         sinon.restore();
     });
 
@@ -250,17 +253,16 @@ describe("src/modules/routing/components/TSR/TsrItem.vue", () => {
         expect(wrapper.findComponent(RoutingCoordinateInputComponent).emitted("search-result-selected")[0][0]).to.equal(0);
     });
 
-
     it("checks if csv header toggle is active", async () => {
         wrapper = shallowMount(TsrComponent, {global: {
             plugins: [store]
         }});
 
-        await wrapper.find("#csvHeaderSwitch").trigger("click");
-
+        wrapper.find("#csvHeaderSwitch").setValue(true);
         await wrapper.vm.$nextTick();
 
         expect(wrapper.find("#csvHeaderSwitch").exists()).to.be.true;
+        expect(wrapper.vm.csvHeaders).to.be.true;
         expect(wrapper.find("#csvHeaderSwitch").element.checked).to.be.true;
     });
 

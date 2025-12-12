@@ -6,6 +6,7 @@ import AppComponent from "../../App.vue";
 import MenuToggleButton from "@modules/menu/components/MenuToggleButton.vue";
 import maps from "@core/maps/js/maps.js";
 import loadAddons from "@plugins/addons";
+import urlParamsHandler from "@core/urlParams/js/urlParams.js";
 
 describe("src/App.vue", () => {
     let store,
@@ -19,6 +20,7 @@ describe("src/App.vue", () => {
             removeEventListener: sinon.stub()
         });
         initializeMapsSpy = sinon.spy(maps, "initializeMaps");
+        sinon.stub(urlParamsHandler, "startProcessUrlParams");
         actions = {
             extendLayers: sinon.spy(),
             loadConfigJs: sinon.spy(),
@@ -71,6 +73,9 @@ describe("src/App.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     it("loads config on creating App", () => {

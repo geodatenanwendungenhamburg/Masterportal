@@ -84,6 +84,9 @@ describe("src/modules/routing/components/RoutingRestrictionsInput.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (wrapper) {
+            wrapper.unmount();
+        }
     });
 
     it("should render restrictionsInput", () => {
