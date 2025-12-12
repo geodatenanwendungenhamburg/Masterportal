@@ -41,7 +41,8 @@ const simpleGetters = {
             mapParams = rootGetters["Maps/urlParams"],
             menuParams = rootGetters["Menu/urlParams"],
             componentTypes = [shareViewState.type, layerSelectionState.type, stateSearchBar.type, "borisComponent"],
-            shareUrl = new URL(location.origin + location.pathname + "?" + mapParams);
+            shareUrl = new URL(location.origin + location.pathname + "?" + mapParams),
+            currentMarker = rootState?.Maps?.currentMarker;
 
         if (componentTypes.includes(menuParams.main.currentComponent)) {
             menuParams.main.currentComponent = "root";
@@ -57,6 +58,11 @@ const simpleGetters = {
 
         shareUrl.searchParams.set("MENU", JSON.stringify(menuParams));
         shareUrl.searchParams.set("LAYERS", JSON.stringify(layerParams));
+
+
+        if (currentMarker) {
+            shareUrl.searchParams.set("MARKER", JSON.stringify(currentMarker));
+        }
 
         // Add existing URL parameters if there are any
         if (location.search) {

@@ -47,6 +47,8 @@ export default {
             if (position.rotation) {
                 dispatch("rotatePointMarker", {feature, position});
             }
+
+            commit("setCurrentMarker", coordinates);
         }
     },
 
@@ -54,8 +56,9 @@ export default {
      * Removes the features from the point map marker.
      * @returns {void}
      */
-    removePointMarker () {
+    removePointMarker ({commit}) {
         mapMarker.removeMapMarker("marker_point_layer");
+        commit("setCurrentMarker");
     },
 
     /**

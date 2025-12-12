@@ -69,7 +69,7 @@ describe("src/core/maps/store/actionsMapsMarker.js", () => {
 
             expect(dispatch.calledOnce).to.be.true;
             expect(dispatch.firstCall.args[0]).to.equals("removePointMarker");
-            expect(commit.notCalled).to.be.true;
+            expect(commit.calledOnce).to.be.true;
 
             expect(mapMarker.addFeatureToMapMarkerLayer.calledOnce).to.be.true;
             expect(mapMarker.addFeatureToMapMarkerLayer.firstCall.args[0]).to.equals("marker_point_layer");
@@ -125,7 +125,7 @@ describe("src/core/maps/store/actionsMapsMarker.js", () => {
 
             expect(dispatch.calledOnce).to.be.true;
             expect(dispatch.firstCall.args[0]).to.equals("removePointMarker");
-            expect(commit.calledTwice).to.be.true;
+            expect(commit.callCount).to.equal(3);
             expect(commit.firstCall.args[0]).to.equals("Modules/SearchBar/setSearchInput");
             expect(commit.firstCall.args[1]).to.equals("");
             expect(commit.secondCall.args[0]).to.equals("Modules/SearchBar/setCurrentSearchInputValue");
@@ -134,6 +134,15 @@ describe("src/core/maps/store/actionsMapsMarker.js", () => {
             expect(mapMarker.addFeatureToMapMarkerLayer.calledOnce).to.be.true;
             expect(mapMarker.addFeatureToMapMarkerLayer.firstCall.args[0]).to.equals("marker_point_layer");
             expect(mapMarker.addFeatureToMapMarkerLayer.firstCall.args[1] instanceof Feature).to.be.true;
+        });
+
+        it("should commit setCurrentMarker with coordinates when placing a point marker", () => {
+            const position = [10, 10];
+
+            placingPointMarker({commit, dispatch, rootGetters}, position);
+
+            expect(commit.calledTwice).to.be.false;
+            expect(commit.calledWith("setCurrentMarker", position)).to.be.true;
         });
     });
 
@@ -170,10 +179,23 @@ describe("src/core/maps/store/actionsMapsMarker.js", () => {
 
     describe("removePointMarker", () => {
         it("remove a point marker", () => {
-            removePointMarker();
+            removePointMarker({commit});
 
             expect(mapMarker.removeMapMarker.calledOnce).to.be.true;
             expect(mapMarker.removeMapMarker.firstCall.args[0]).to.equals("marker_point_layer");
+            expect(commit.calledOnce).to.be.true;
+            expect(commit.firstCall.args[0]).to.equal("setCurrentMarker");
+        });
+
+        it("should remove point marker and commit setCurrentMarker with no args", () => {
+            removePointMarker({commit});
+
+            expect(mapMarker.removeMapMarker.calledOnce).to.be.true;
+            expect(mapMarker.removeMapMarker.firstCall.args[0]).to.equal("marker_point_layer");
+
+            expect(commit.calledOnce).to.be.true;
+            expect(commit.firstCall.args[0]).to.equal("setCurrentMarker");
+            expect(commit.firstCall.args[1]).to.be.undefined;
         });
     });
 

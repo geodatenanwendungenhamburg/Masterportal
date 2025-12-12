@@ -22,6 +22,7 @@
  * @property {Number[]} scales Available scales of the map.
  * @property {Number} size Current size in pixels of the map in the DOM.
  * @property {Number} zoom Current zoom level of the map view.
+ * @property {Number[]|null} currentMarker Coordinates of the currently placed map marker [x, y].
 */
 
 const state = {
@@ -46,7 +47,8 @@ const state = {
     scales: null,
     size: null,
     twoFingerPanStart: false,
-    zoom: null
+    zoom: null,
+    currentMarker: null
 };
 
 export default state;
