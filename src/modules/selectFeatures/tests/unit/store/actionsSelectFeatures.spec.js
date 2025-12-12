@@ -12,7 +12,7 @@ describe("src/modules/selectFeatures/store/actionsSelectFeatures.js", () => {
 
     beforeEach(() => {
         dispatch = sinon.spy();
-        createLayerAddToTreeStub = sinon.spy(createLayerAddToTreeModule, "createLayerAddToTree");
+        createLayerAddToTreeStub = sinon.stub(createLayerAddToTreeModule, "createLayerAddToTree");
         rootGetters = {
             "treeHighlightedFeatures": {active: true},
             "treeType": ""
@@ -48,7 +48,7 @@ describe("src/modules/selectFeatures/store/actionsSelectFeatures.js", () => {
         sinon.restore();
     });
 
-    describe.skip("highlightFeature", () => {
+    describe("highlightFeature", () => {
         it("highlightFeature treeHighlightedFeatures is active", () => {
             actions.highlightFeature({state, rootGetters, dispatch}, {feature, layerId});
 

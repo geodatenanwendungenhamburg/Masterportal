@@ -51,9 +51,12 @@ describe("src/modules/Modules/Login/components/LoginComponent.vue", () => {
     afterEach(() => {
         sinon.restore();
         sandbox.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
-    describe.skip("LoginComponent template", () => {
+    describe("LoginComponent template", () => {
         it("should render Login", () => {
             wrapper = shallowMount(LoginComponent, {
                 global: {

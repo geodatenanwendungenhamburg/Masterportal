@@ -14,7 +14,8 @@ describe("src/modules/menu/MenuContainerBodyRoot.vue", () => {
         mainMenu,
         mainMenuTitle,
         secondaryMenu,
-        secondaryMenuTitle;
+        secondaryMenuTitle,
+        wrapper;
 
     beforeEach(() => {
         mainMenu = {
@@ -69,15 +70,21 @@ describe("src/modules/menu/MenuContainerBodyRoot.vue", () => {
         });
     });
 
+    afterEach(() => {
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
+    });
+
     it("renders the component in mainMenu with no sections", () => {
         mainMenu.sections = [];
-        const wrapper = shallowMount(MenuContainerBodyRoot, {
-                global: {
-                    plugins: [store]
-                },
-                propsData: {side: "mainMenu"}
-            }),
-            bodyWrapper = wrapper.find("#mp-body-root-mainMenu");
+        wrapper = shallowMount(MenuContainerBodyRoot, {
+            global: {
+                plugins: [store]
+            },
+            propsData: {side: "mainMenu"}
+        });
+        const bodyWrapper = wrapper.find("#mp-body-root-mainMenu");
 
         expect(bodyWrapper.exists()).to.be.true;
         expect(bodyWrapper.findComponent(LayerTree).exists()).to.be.true;
@@ -86,13 +93,13 @@ describe("src/modules/menu/MenuContainerBodyRoot.vue", () => {
 
     it("renders the component in secondaryMenu with no sections", () => {
         secondaryMenu.sections = [];
-        const wrapper = shallowMount(MenuContainerBodyRoot, {
-                global: {
-                    plugins: [store]
-                },
-                propsData: {side: "secondaryMenu"}
-            }),
-            bodyWrapper = wrapper.find("#mp-body-root-secondaryMenu");
+        wrapper = shallowMount(MenuContainerBodyRoot, {
+            global: {
+                plugins: [store]
+            },
+            propsData: {side: "secondaryMenu"}
+        });
+        const bodyWrapper = wrapper.find("#mp-body-root-secondaryMenu");
 
         expect(bodyWrapper.exists()).to.be.true;
         expect(bodyWrapper.findComponent(LayerTree).exists()).to.be.false;
@@ -102,13 +109,13 @@ describe("src/modules/menu/MenuContainerBodyRoot.vue", () => {
     it("renders the component in secondaryMenu with no sections and no logo", () => {
         secondaryMenu.sections = [];
         secondaryMenuTitle = null;
-        const wrapper = shallowMount(MenuContainerBodyRoot, {
-                global: {
-                    plugins: [store]
-                },
-                propsData: {side: "secondaryMenu"}
-            }),
-            bodyWrapper = wrapper.find("#mp-body-root-secondaryMenu");
+        wrapper = shallowMount(MenuContainerBodyRoot, {
+            global: {
+                plugins: [store]
+            },
+            propsData: {side: "secondaryMenu"}
+        });
+        const bodyWrapper = wrapper.find("#mp-body-root-secondaryMenu");
 
         expect(bodyWrapper.exists()).to.be.true;
         expect(bodyWrapper.findComponent(MenuContainerBodyRootLogo).exists()).to.be.false;
@@ -118,13 +125,13 @@ describe("src/modules/menu/MenuContainerBodyRoot.vue", () => {
     });
 
     it("renders the component in mainMenu with sections", () => {
-        const wrapper = shallowMount(MenuContainerBodyRoot, {
-                global: {
-                    plugins: [store]
-                },
-                propsData: {side: "mainMenu"}
-            }),
-            bodyWrapper = wrapper.find("#mp-body-root-mainMenu");
+        wrapper = shallowMount(MenuContainerBodyRoot, {
+            global: {
+                plugins: [store]
+            },
+            propsData: {side: "mainMenu"}
+        });
+        const bodyWrapper = wrapper.find("#mp-body-root-mainMenu");
 
         expect(bodyWrapper.exists()).to.be.true;
         expect(bodyWrapper.findComponent(LayerTree).exists()).to.be.true;
@@ -138,13 +145,13 @@ describe("src/modules/menu/MenuContainerBodyRoot.vue", () => {
 
     it("renders the component in secondaryMenu with sections and no logo", () => {
         secondaryMenuTitle = null;
-        const wrapper = shallowMount(MenuContainerBodyRoot, {
-                global: {
-                    plugins: [store]
-                },
-                propsData: {side: "secondaryMenu"}
-            }),
-            bodyWrapper = wrapper.find("#mp-body-root-secondaryMenu");
+        wrapper = shallowMount(MenuContainerBodyRoot, {
+            global: {
+                plugins: [store]
+            },
+            propsData: {side: "secondaryMenu"}
+        });
+        const bodyWrapper = wrapper.find("#mp-body-root-secondaryMenu");
 
         expect(bodyWrapper.exists()).to.be.true;
         expect(bodyWrapper.findComponent(MenuContainerBodyRootLogo).exists()).to.be.false;

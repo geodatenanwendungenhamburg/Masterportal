@@ -9,7 +9,7 @@ afterEach(() => {
     sinon.restore();
 });
 
-describe.skip("src/modules/print/store/actionsPrint", function () {
+describe("src/modules/print/store/actionsPrint", function () {
     describe("activatePrintStarted", function () {
         it("should set activatePrintStarted to true", done => {
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
@@ -37,10 +37,18 @@ describe.skip("src/modules/print/store/actionsPrint", function () {
                     "https://mis.bkg.bund.de/csw",
                     "https://www.geodaten-mv.de/soapServices/CSWStartup",
                     "https://metaver.de/csw"
-                ];
+                ],
+                rootGetters = {
+                    metadata: {
+                        useProxy
+                    },
+                    restServiceById: () => {
+                        return {url: "https:\\url.de"};
+                    }
+                };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(getMetaDataForPrint, payload, {}, {}, [], {}, done, {"metadata.useProxy": useProxy});
+            testAction(getMetaDataForPrint, payload, {}, {}, [], {}, done, rootGetters);
         });
     });
     describe("createPrintJob", function () {

@@ -9,7 +9,7 @@ import sinon from "sinon";
 
 config.global.mocks.$t = key => key;
 
-describe.skip("src/modules/controls/orientation/components/PoiOrientation.vue", () => {
+describe("src/modules/controls/orientation/components/PoiOrientation.vue", () => {
     let store,
         propsData,
         wrapper,
@@ -91,6 +91,9 @@ describe.skip("src/modules/controls/orientation/components/PoiOrientation.vue", 
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     describe("Render Component", function () {

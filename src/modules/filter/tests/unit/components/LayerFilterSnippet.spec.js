@@ -8,11 +8,10 @@ import {expect} from "chai";
 import MapHandler from "@modules/filter/utils/mapHandler.js";
 import openlayerFunctions from "@modules/filter/utils/openlayerFunctions.js";
 import sinon from "sinon";
-import {nextTick} from "vue";
 
 config.global.mocks.$t = key => key;
 
-describe.skip("src/modules/filter/components/LayerFilterSnippet.vue", () => {
+describe("src/modules/filter/components/LayerFilterSnippet.vue", () => {
     let wrapper = null,
         store,
         mapHandler = null;
@@ -75,6 +74,9 @@ describe.skip("src/modules/filter/components/LayerFilterSnippet.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     describe("Lifecycle Hooks", () => {
@@ -106,7 +108,8 @@ describe.skip("src/modules/filter/components/LayerFilterSnippet.vue", () => {
                             type: "something external"
                         },
                         clearAll: false
-                    }
+                    },
+                    mapHandler
                 }
             });
             expect(wrapper.vm.isClearAll).to.be.false;
@@ -234,146 +237,148 @@ describe.skip("src/modules/filter/components/LayerFilterSnippet.vue", () => {
 
             expect(wrapper.findAllComponents({name: "SpinnerItem"}).length).to.be.equal(0);
         });
-        // #VITE-TEST auskommentiert wegen await wrapper.setData direkt im describe!
 
-        // describe("should render amount of filtered items", async () => {
-        //     await wrapper.setData({
-        //         amountOfFilteredItems: 3,
-        //         showSpinner: false
-        //     });
-        //     await wrapper.vm.$nextTick();
-        //     expect(wrapper.find(".filter-result").exists()).to.be.true;
-        //     expect(wrapper.find(".filter-result").text()).contain("common:modules.filter.filterResult.unit");
+        describe.skip("should render amount of filtered items", async () => {
 
-        //     it("should not render amount of filtered items if showHits is false", async () => {
-        //         await wrapper.setData({
-        //             amountOfFilteredItems: 3,
-        //             layerConfig: {
-        //                 showHits: false
-        //             }
-        //         });
-        //         await wrapper.vm.$nextTick();
-        //         expect(wrapper.find(".filter-result").exists()).to.be.false;
-        //     });
-        //     it("should render a spinner", async () => {
-        //         await wrapper.setData({
-        //             isLoading: true,
-        //             layerConfig: {
-        //                 filterId: 1
-        //             }
-        //         });
-        //         expect(wrapper.find(".spinner-border").exists()).to.be.true;
-        //     });
-        //     it("should call 'activateLayer' if filter layer type is VectorTile and the layer is not yet loaded", () => {
-        //         mapHandler.getLayerModelByFilterId = sinon.stub().returns({
-        //             get: (val) => {
-        //                 if (val === "isSelected") {
-        //                     return false;
-        //                 }
-        //                 return "VectorTile";
-        //             }
-        //         });
-        //         mapHandler.activateLayer = sinon.stub();
-        //         wrapper = shallowMount(LayerFilterSnippet, {
-        //             propsData: {
-        //                 layerConfig: {
-        //                     service: {
-        //                         type: "something external"
-        //                     },
-        //                     searchInMapExtent: true
-        //                 },
-        //                 mapHandler
-        //             }
-        //         });
-        //         expect(mapHandler.activateLayer.calledOnce).to.be.true;
-        //     });
-        //     it("should render amount of filtered items if showHits is true", async () => {
-        //         await wrapper.setData({
-        //             amountOfFilteredItems: 3,
-        //             layerConfig: {
-        //                 showHits: true
-        //             }
-        //         });
-        //         await wrapper.vm.$nextTick();
-        //         expect(wrapper.find(".filter-result").exists()).to.be.true;
-        //         expect(wrapper.find(".filter-result").text()).contain("common:modules.filter.filterResult.unit", "3");
-        //     });
-        //     it("should render amount of filtered items if showHits is undefined", async () => {
-        //         await wrapper.setData({
-        //             amountOfFilteredItems: 3,
-        //             layerConfig: {
-        //                 showHits: undefined
-        //             }
-        //         });
-        //         await wrapper.vm.$nextTick();
-        //         expect(wrapper.find(".filter-result").exists()).to.be.true;
-        //         expect(wrapper.find(".filter-result").text()).contain("common:modules.filter.filterResult.unit", "3");
-        //     });
-        //     describe("setSnippetValueByState", () => {
-        //         const filterRules = [
-        //                 {
-        //                     snippetId: 0,
-        //                     startup: false,
-        //                     fixed: false,
-        //                     attrName: "test",
-        //                     operator: "EQ",
-        //                     value: ["Altona"]
-        //                 }
-        //             ],
-        //             snippets = [
-        //                 {
-        //                     operator: "EQ",
-        //                     snippetId: 0,
-        //                     title: "Bezirk",
-        //                     type: "dropdown",
-        //                     value: ["Altona"]
-        //                 }],
-        //             precheckedSnippets = [{
-        //                 operator: "EQ",
-        //                 snippetId: 0,
-        //                 title: "Bezirk",
-        //                 type: "dropdown",
-        //                 value: ["Altona"],
-        //                 prechecked: ["Altona"]
-        //             }];
+            it("should render amount of filtered items", async () => {
+                await wrapper.setData({
+                    amountOfFilteredItems: 3,
+                    showSpinner: false
+                });
+                await wrapper.vm.$nextTick();
+                expect(wrapper.find(".filter-result").exists()).to.be.true;
+                expect(wrapper.find(".filter-result").text()).contain("common:modules.filter.filterResult.unit");
+            });
 
-        //         it("should not set prechecked value if param is not an array", async () => {
-        //             await wrapper.setData({
-        //                 snippets
-        //             });
-        //             wrapper.vm.setSnippetValueByState(undefined);
-        //             wrapper.vm.setSnippetValueByState(null);
-        //             wrapper.vm.setSnippetValueByState(123456);
-        //             wrapper.vm.setSnippetValueByState("string");
-        //             wrapper.vm.setSnippetValueByState(true);
-        //             wrapper.vm.setSnippetValueByState({});
-        //             expect(wrapper.vm.snippets).to.deep.equal(snippets);
-        //         });
-        //         it("should not set prechecked value if given structure is not a rule", async () => {
-        //             await wrapper.setData({
-        //                 snippets
-        //             });
-        //             const isRuleStub = sinon.stub(wrapper.vm, "isRule").returns(false),
-        //                 noRule = [
-        //                     {
-        //                         something: "something"
-        //                     }
-        //                 ];
+            it("should not render amount of filtered items if showHits is false", async () => {
+                await wrapper.setData({
+                    amountOfFilteredItems: 3,
+                    layerConfig: {
+                        showHits: false
+                    }
+                });
+                await wrapper.vm.$nextTick();
+                expect(wrapper.find(".filter-result").exists()).to.be.false;
+            });
+            it("should render a spinner", async () => {
+                await wrapper.setData({
+                    isLoading: true,
+                    layerConfig: {
+                        filterId: 1
+                    }
+                });
+                expect(wrapper.find(".spinner-border").exists()).to.be.true;
+            });
+            it("should call 'activateLayer' if filter layer type is VectorTile and the layer is not yet loaded", () => {
+                mapHandler.getLayerModelByFilterId = sinon.stub().returns({
+                    get: (val) => {
+                        if (val === "isSelected") {
+                            return false;
+                        }
+                        return "VectorTile";
+                    }
+                });
+                mapHandler.activateLayer = sinon.stub();
+                wrapper = shallowMount(LayerFilterSnippet, {
+                    propsData: {
+                        layerConfig: {
+                            service: {
+                                type: "something external"
+                            },
+                            searchInMapExtent: true
+                        },
+                        mapHandler
+                    }
+                });
+                expect(mapHandler.activateLayer.calledOnce).to.be.true;
+            });
+            it("should render amount of filtered items if showHits is true", async () => {
+                await wrapper.setData({
+                    amountOfFilteredItems: 3,
+                    layerConfig: {
+                        showHits: true
+                    }
+                });
+                await wrapper.vm.$nextTick();
+                expect(wrapper.find(".filter-result").exists()).to.be.true;
+                expect(wrapper.find(".filter-result").text()).contain("common:modules.filter.filterResult.unit", "3");
+            });
+            it("should render amount of filtered items if showHits is undefined", async () => {
+                await wrapper.setData({
+                    amountOfFilteredItems: 3,
+                    layerConfig: {
+                        showHits: undefined
+                    }
+                });
+                await wrapper.vm.$nextTick();
+                expect(wrapper.find(".filter-result").exists()).to.be.true;
+                expect(wrapper.find(".filter-result").text()).contain("common:modules.filter.filterResult.unit", "3");
+            });
+            describe("setSnippetValueByState", () => {
+                const filterRules = [
+                        {
+                            snippetId: 0,
+                            startup: false,
+                            fixed: false,
+                            attrName: "test",
+                            operator: "EQ",
+                            value: ["Altona"]
+                        }
+                    ],
+                    snippets = [
+                        {
+                            operator: "EQ",
+                            snippetId: 0,
+                            title: "Bezirk",
+                            type: "dropdown",
+                            value: ["Altona"]
+                        }],
+                    precheckedSnippets = [{
+                        operator: "EQ",
+                        snippetId: 0,
+                        title: "Bezirk",
+                        type: "dropdown",
+                        value: ["Altona"],
+                        prechecked: ["Altona"]
+                    }];
 
-        //             wrapper.vm.setSnippetValueByState(noRule);
-        //             expect(wrapper.vm.snippets).to.deep.equal(snippets);
-        //             expect(isRuleStub.called).to.be.true;
-        //             sinon.restore();
-        //         });
-        //         it("should set prechecked value if correct filter rule is given", async () => {
-        //             await wrapper.setData({
-        //                 snippets
-        //             });
-        //             wrapper.vm.setSnippetValueByState(filterRules);
-        //             expect(wrapper.vm.snippets).to.deep.equal(precheckedSnippets);
-        //         });
-        //     });
-        // });
+                it("should not set prechecked value if param is not an array", async () => {
+                    await wrapper.setData({
+                        snippets
+                    });
+                    wrapper.vm.setSnippetValueByState(undefined);
+                    wrapper.vm.setSnippetValueByState(null);
+                    wrapper.vm.setSnippetValueByState(123456);
+                    wrapper.vm.setSnippetValueByState("string");
+                    wrapper.vm.setSnippetValueByState(true);
+                    wrapper.vm.setSnippetValueByState({});
+                    expect(wrapper.vm.snippets).to.deep.equal(snippets);
+                });
+                it("should not set prechecked value if given structure is not a rule", async () => {
+                    await wrapper.setData({
+                        snippets
+                    });
+                    const isRuleStub = sinon.stub(wrapper.vm, "isRule").returns(false),
+                        noRule = [
+                            {
+                                something: "something"
+                            }
+                        ];
+
+                    wrapper.vm.setSnippetValueByState(noRule);
+                    expect(wrapper.vm.snippets).to.deep.equal(snippets);
+                    expect(isRuleStub.called).to.be.true;
+                    sinon.restore();
+                });
+                it("should set prechecked value if correct filter rule is given", async () => {
+                    await wrapper.setData({
+                        snippets
+                    });
+                    wrapper.vm.setSnippetValueByState(filterRules);
+                    expect(wrapper.vm.snippets).to.deep.equal(precheckedSnippets);
+                });
+            });
+        });
     });
 
     describe("Methods", () => {
@@ -832,10 +837,9 @@ describe.skip("src/modules/filter/components/LayerFilterSnippet.vue", () => {
                         labelFilterButton: "common:modules.filter.filterButton"
                     }
                 });
+                await wrapper.vm.$nextTick();
 
-                nextTick(() => {
-                    expect(wrapper.find("#runFilter .btn-texts").text()).to.equal("common:modules.filter.filterButton");
-                });
+                expect(wrapper.find("#runFilter").attributes("text")).to.equal("common:modules.filter.filterButton");
             });
         });
 
