@@ -34,6 +34,14 @@ export default {
     computed: {
         ...mapGetters("Maps", ["mode", "scale", "scales"]),
 
+        /**
+         * Tooltip text explaining why a layer is disabled due to scale restrictions.
+         * If both minScale and maxScale exist, it returns a formatted scale range explanation.
+         * If only one is present, a generic "invisible layer" text is returned.
+         * If no scale limits exist, an empty string is returned.
+         *
+         * @returns {String} The tooltip text for layers out of visible scale range.
+         */
         tooltipText () {
             if (this.conf.maxScale && this.conf.minScale) {
                 let minScale = parseInt(this.conf.minScale, 10);
@@ -47,11 +55,9 @@ export default {
                     maxScale: "1: " + thousandsSeparator(parseInt(this.conf.maxScale, 10), ".")
                 });
             }
-
-            if (this.conf.maxScale || this.conf.minScale) {
+            else if (this.conf.maxScale || this.conf.minScale) {
                 return this.$t("common:modules.layerTree.invisibleLayerNoScale");
             }
-
             return "";
         }
     },
@@ -121,15 +127,18 @@ export default {
         <div class="d-flex justify-content-between align-items-center handle-layer-component-drag">
             <span
                 class="layer-checkbox-tooltip"
-                data-bs-placement="bottom"
-                data-bs-custom-class="custom-tooltip"
-                :title="scaleIsOutOfRange() ? tooltipText : ''"
             >
                 <LayerCheckBox
                     :conf="conf"
                     :disabled="scaleIsOutOfRange()"
                     :is-layer-tree="isLayerTree()"
                 />
+            </span>
+            <span
+                v-show="scaleIsOutOfRange()"
+                class="mp-tooltip"
+            >
+                {{ tooltipText }}
             </span>
             <div
                 class="d-flex"
@@ -161,16 +170,70 @@ export default {
     @import "~variables";
     @import "~mixins";
 
-    .layer-checkbox-tooltip {
-        overflow: hidden;
-        display: block;
-        width: 100%;
+    .handle-layer-component-drag {
+      position: relative;
     }
-    .layer-tree-layer {
-        font-size: 0.9rem;
 
-    }
-    .layer-selection{
+    .layer-tree-layer {
+      font-size: 0.9rem;
+
+      &.layer-selection {
         margin-left: 0.7rem;
+      }
+    }
+
+    .layer-checkbox-tooltip {
+      overflow-x: hidden;
+      overflow-y: visible;
+      display: block;
+      position: relative;
+      width: 100%;
+
+      &:hover + .mp-tooltip {
+        visibility: visible;
+        opacity: 0.8;
+
+        &::before {
+          visibility: visible;
+          opacity: 1;
+        }
+      }
+    }
+
+    .mp-tooltip {
+      position: absolute;
+      display: inline-block;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.15s ease-in-out, visibility 0.15s ease-in-out;
+      left: 50%;
+      top: 100%;
+      margin-top: 6px;
+      transform: translateX(-50%);
+      background-color: $black;
+      color: $white;
+      padding: 6px 8px;
+      border-radius: 0.25rem;
+      font-size: 0.85rem;
+      z-index: 2000;
+      max-width: 200px;
+      white-space: normal;
+      word-wrap: break-word;
+      text-align: center;
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: -12px;
+        transform: translateX(-50%) rotate(180deg);
+        border-width: 6px;
+        border-style: solid;
+        border-color: $black transparent transparent transparent;
+        z-index: 2000;
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.15s ease-in-out, visibility 0.15s ease-in-out;
+      }
     }
 </style>

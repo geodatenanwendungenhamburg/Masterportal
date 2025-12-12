@@ -117,13 +117,18 @@ describe("src/modules/layerTree/components/LayerComponent.vue", () => {
             propsData
         });
 
-        expect(wrapper.find("#layer-tree-layer-" + propsData.conf.id).exists()).to.be.true;
-        expect(wrapper.findAll("layer-check-box-stub").length).to.be.equals(1);
+        const layerWrapper = wrapper.find("#layer-tree-layer-" + propsData.conf.id),
+            checkbox = wrapper.find("layer-check-box-stub"),
+            tooltipEl = wrapper.find(".layer-checkbox-tooltip");
+
+        expect(layerWrapper.exists()).to.be.true;
+        expect(checkbox.exists()).to.be.true;
+        expect(checkbox.attributes().disabled).to.be.equals("true");
         expect(wrapper.findAll("layer-component-icon-sub-menu-stub").length).to.be.equals(1);
         expect(wrapper.findAll("layer-component-icon-info-stub").length).to.be.equals(1);
         expect(wrapper.findAll("layer-component-sub-menu-stub").length).to.be.equals(1);
-        expect(wrapper.find("span").attributes()["data-bs-toggle"]).to.be.equals("tooltip");
-        expect(wrapper.find("layer-check-box-stub").attributes().disabled).to.be.equals("true");
+        expect(tooltipEl.exists()).to.be.true;
+        expect(tooltipEl.attributes("data-tooltip")).to.be.equals("common:modules.layerTree.invisibleLayer");
         expect(wrapper.vm.tooltipText).to.be.equals("common:modules.layerTree.invisibleLayer");
     });
     it("renders layer only with checkbox - no submenu", () => {
