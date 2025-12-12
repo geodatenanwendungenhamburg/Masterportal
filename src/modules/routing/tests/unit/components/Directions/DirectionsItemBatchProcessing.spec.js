@@ -71,6 +71,9 @@ describe("src/modules/routing/components/Directions/DirectionsItemBatchProcessin
 
     afterEach(() => {
         sinon.restore();
+        if (wrapper) {
+            wrapper.unmount();
+        }
     });
 
     it("renders DirectionsBatchProcessingComponent", () => {

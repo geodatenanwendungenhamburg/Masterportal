@@ -20,7 +20,8 @@ describe("src/modules/featureLister/components/FeatureLister.vue", () => {
             switchToDetails: sinon.stub()
         };
         mutations = {
-            resetToThemeChooser: sinon.stub()
+            resetToThemeChooser: sinon.stub(),
+            setLayerListView: sinon.stub()
         };
         getters = {
             layer: () => ({name: "Layer 1"}),
@@ -55,10 +56,9 @@ describe("src/modules/featureLister/components/FeatureLister.vue", () => {
     });
     afterEach(() => {
         sinon.restore();
-    });
-
-    afterEach(() => {
-        sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     it("renders list of visible vector layers", () => {

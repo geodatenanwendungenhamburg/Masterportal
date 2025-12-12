@@ -50,7 +50,7 @@ export default {
          */
         setFocusToFirstControl () {
             this.$nextTick(() => {
-                if (this.$refs.wmsUrl) {
+                if (this.$refs.wmsUrl && typeof this.$refs.wmsUrl.focus === "function") {
                     this.$refs.wmsUrl.focus();
                 }
             });

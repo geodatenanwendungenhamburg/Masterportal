@@ -2,16 +2,23 @@ import axios from "axios";
 import {expect} from "chai";
 import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
 import sinon from "sinon";
-
+import crs from "@masterportal/masterportalapi/src/crs.js";
 import featureProvider from "@core/maps/js/zoomToGetAndFilterFeatures.js";
 
 const fs = require("fs"),
     exampleFeatureCollection = fs.readFileSync("./src/core/maps/tests/unit/resources/featureCollection.xml", "utf8");
 
-describe.skip("src/core/maps/js/zoomToGetAndFilterFeatures.js", () => {
+describe("src/core/maps/js/zoomToGetAndFilterFeatures.js", () => {
     const id = "someId",
         property = "flaechenid",
-        values = ["18", "26"];
+        values = ["18", "26"],
+        namedProjections = [
+            ["EPSG:25832", "+title=ETRS89/UTM 32N +proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"]
+        ];
+
+    beforeEach(() => {
+        crs.registerProjections(namedProjections);
+    });
 
     afterEach(() => {
         sinon.restore();
@@ -41,7 +48,9 @@ describe.skip("src/core/maps/js/zoomToGetAndFilterFeatures.js", () => {
     });
 
     it("should return a Promise which resolves to Feature[] only including features including an allowed value for the given property", () => {
-        sinon.stub(rawLayerList, "getLayerWhere").returns({id: "id"});
+        sinon.stub(rawLayerList, "getLayerWhere").returns({id: "id", url: "https://geodaten.de",
+            version: "1.1.0",
+            featureType: "featureType"});
         sinon.stub(axios, "get").callsFake(() => new Promise(resolve => resolve({status: 200, statusText: "OK", data: exampleFeatureCollection})));
 
         featureProvider.getAndFilterFeatures(id, property, values)

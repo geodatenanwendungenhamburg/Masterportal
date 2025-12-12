@@ -349,7 +349,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
             expect(dispatch.calledWith("deactivateDrawInteractions")).to.be.true;
         });
     });
-    describe.skip("createModifyInteractionAndAddToMap", () => {
+    describe("createModifyInteractionAndAddToMap", () => {
         it("commits and dispatches as expected", () => {
             const activeSymbol = Symbol();
 
@@ -381,7 +381,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
             expect(typeof dispatch.args[4][1]).to.eql("object");
         });
     });
-    describe.skip("createModifyInteractionListener", () => {
+    describe("createModifyInteractionListener", () => {
         let definedFunctions;
 
         beforeEach(() => {
@@ -405,7 +405,7 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
         });
 
         // dependent on remoteInterface, see https://lgv-hamburg.atlassian.net/browse/BG-5171
-        it("should enable the modifyend to trigger to the RemoteInterface if Config.inputMap is defined", () => {
+        it.skip("should enable the modifyend to trigger to the RemoteInterface if Config.inputMap is defined", () => {
             const featureSymbol = Symbol(),
                 geoJSONSymbol = Symbol();
 

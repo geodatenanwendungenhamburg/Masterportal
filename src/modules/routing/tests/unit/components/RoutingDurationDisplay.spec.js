@@ -50,6 +50,12 @@ describe("src/modules/routing/components/RoutingDurationDisplay.vue", () => {
         };
     });
 
+    afterEach(() => {
+        if (wrapper) {
+            wrapper.unmount();
+        }
+    });
+
     it("renders RoutingDurationDisplayComponent", () => {
         wrapper = shallowMount(RoutingDurationDisplayComponent, {
             global: {

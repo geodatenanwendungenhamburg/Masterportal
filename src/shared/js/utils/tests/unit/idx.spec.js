@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {idx, badPathSymbol} from "@shared/js/utils/idx.js";
+import idxProvider from "@shared/js/utils/idx.js";
 
 describe("src/shared/js/utils/idx.js", () => {
     const firstFinish = "We want this!",
@@ -22,16 +22,16 @@ describe("src/shared/js/utils/idx.js", () => {
     it("should return the value from the nested object if it is present (only object nesting)", () => {
         path = ["prm", "firstFinish"];
 
-        expect(idx(object, path)).to.equal(firstFinish);
+        expect(idxProvider.idx(object, path)).to.equal(firstFinish);
     });
     it("should return the value from the nested object if it is present (arrays included)", () => {
         path = ["prm", "arr", "2", "secondFinish"];
 
-        expect(idx(object, path)).to.eql(secondFinish);
+        expect(idxProvider.idx(object, path)).to.eql(secondFinish);
     });
     it("should return badPathSymbol if the path does not exist inside the given object", () => {
         path = ["prm", "arr", "whoops"];
 
-        expect(idx(object, path)).to.equal(badPathSymbol);
+        expect(idxProvider.idx(object, path)).to.equal(idxProvider.badPathSymbol);
     });
 });

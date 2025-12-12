@@ -24,6 +24,12 @@ describe("src/modules/routing/components/RoutingBatchProcessing.vue", () => {
         };
     });
 
+    afterEach(() => {
+        if (wrapper) {
+            wrapper.unmount();
+        }
+    });
+
     it("renders RoutingBatchProcessingComponent", () => {
         wrapper = shallowMount(RoutingBatchProcessingComponent, {
             global: {
@@ -62,6 +68,7 @@ describe("src/modules/routing/components/RoutingBatchProcessing.vue", () => {
 
         button.trigger("click");
         await wrapper.vm.$nextTick();
+
         expect(wrapper.emitted().cancelProcess.length).equal(1);
     });
 });

@@ -8,7 +8,7 @@ import searchBarUrlParams from "@modules/searchBar/js/searchBarUrlParams.js";
  * Processes the url params.
  * @returns {void}
  */
-export function startProcessUrlParams () {
+function startProcessUrlParams () {
     nextTick(() => {
         layerUrlParams.processLayerUrlParams();
         mapUrlParams.processMapUrlParams();
@@ -16,3 +16,7 @@ export function startProcessUrlParams () {
         searchBarUrlParams.processSearchBarUrlParams();
     });
 }
+
+export default {
+    startProcessUrlParams
+};
