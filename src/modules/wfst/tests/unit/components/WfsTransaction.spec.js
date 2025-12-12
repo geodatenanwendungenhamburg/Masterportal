@@ -9,7 +9,7 @@ import prepareFeaturePropertiesModule from "@modules/wfst/js/prepareFeaturePrope
 config.global.mocks.$t = key => key;
 
 
-describe.skip("src/modules/modules/wfst/components/WfsTransaction.vue", () => {
+describe("src/modules/modules/wfst/components/WfsTransaction.vue", () => {
     const layerIds = ["wfstOne", "wfstTwo"];
     let store,
         wrapper,
@@ -96,6 +96,14 @@ describe.skip("src/modules/modules/wfst/components/WfsTransaction.vue", () => {
                 required: false
             }
         ]);
+        mapCollection.clear();
+        const map = {
+            id: "ol",
+            mode: "2D",
+            removeLayer: sinon.stub()
+        };
+
+        mapCollection.addMap(map, "2D");
         store = createStore({
             modules: {
                 Modules: {

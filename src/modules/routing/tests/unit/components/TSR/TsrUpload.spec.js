@@ -67,7 +67,8 @@ describe("src/modules/routing/components/TSR/TsrUpload.vue", () => {
                                     actions: {
                                         createInteractionFromMapInteractionMode: sinon.stub(),
                                         initTSR: sinon.stub(),
-                                        isStartEndInput: sinon.stub()
+                                        isStartEndInput: sinon.stub(),
+                                        closeTSR: sinon.stub()
                                     }
                                 }
                             }
@@ -86,14 +87,18 @@ describe("src/modules/routing/components/TSR/TsrUpload.vue", () => {
                 }
             }
         });
+        sinon.stub(TsrComponent.methods, "removeModalFromBody");
+        sinon.stub(TsrComponent.methods, "appendModalToBody");
     });
 
     afterEach(() => {
+        if (wrapper) {
+            wrapper.unmount();
+        }
         sinon.restore();
     });
 
     it("renders TSRUpload", async () => {
-        sinon.stub(TsrComponent.methods, "appendModalToBody");
         wrapper = shallowMount(TsrComponent, {global: {
             plugins: [store]
         }});

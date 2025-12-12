@@ -35,6 +35,8 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
                 }
             }
         };
+    const originalSendAction = ContactModule.actions.send,
+        originalOnSendSuccessAction = ContactModule.actions.onSendSuccess;
 
     beforeEach(() => {
         ContactModule.actions.send = sinon.spy();
@@ -77,7 +79,12 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
     });
 
     afterEach(() => {
+        ContactModule.actions.send = originalSendAction;
+        ContactModule.actions.onSendSuccess = originalOnSendSuccessAction;
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     it("has a disabled save button if the form is not completed", () => {

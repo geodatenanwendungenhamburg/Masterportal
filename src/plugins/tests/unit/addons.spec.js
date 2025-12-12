@@ -4,7 +4,7 @@ import addons from "@plugins/addons";
 import store from "@appstore/index.js";
 
 
-describe.skip("src/plugins/addons.js", () => {
+describe("src/plugins/addons.js", () => {
     let warnSpy,
         loadAddonStub,
         origCommit,
@@ -67,33 +67,34 @@ describe.skip("src/plugins/addons.js", () => {
             expect(await stubLoadJavascriptAddons.notCalled).to.be.true;
         });
         it("load addon control", async () => {
-            const config = ["AddonControl"];
+            const config = ["exampleControl"];
 
             await addons.loadAddons(mockApp, config);
+
             expect(stubLoadControls.calledOnce).to.be.true;
-            expect(stubLoadControls.firstCall.args[0]).to.be.equals("AddonControl");
+            expect(stubLoadControls.firstCall.args[0]).to.be.equals("exampleControl");
             expect(stubLoadGfiThemes.notCalled).to.be.true;
             expect(stubLoadSearchInterfaces.notCalled).to.be.true;
             expect(stubLoadToolAddons.notCalled).to.be.true;
             expect(stubLoadJavascriptAddons.notCalled).to.be.true;
         });
         it("load addon gfiTheme", async () => {
-            const config = ["AddonGFITheme"];
+            const config = ["dataTable"];
 
             await addons.loadAddons(mockApp, config);
             expect(stubLoadGfiThemes.calledOnce).to.be.true;
-            expect(stubLoadGfiThemes.firstCall.args[0]).to.be.equals("AddonGFITheme");
+            expect(stubLoadGfiThemes.firstCall.args[0]).to.be.equals("dataTable");
             expect(stubLoadControls.notCalled).to.be.true;
             expect(stubLoadSearchInterfaces.notCalled).to.be.true;
             expect(stubLoadToolAddons.notCalled).to.be.true;
             expect(stubLoadJavascriptAddons.notCalled).to.be.true;
         });
         it("load addon searchInterface", async () => {
-            const config = ["SearchAddon"];
+            const config = ["exampleSearch"];
 
             await addons.loadAddons(mockApp, config);
             expect(stubLoadSearchInterfaces.calledOnce).to.be.true;
-            expect(stubLoadSearchInterfaces.firstCall.args[0]).to.be.equals("SearchAddon");
+            expect(stubLoadSearchInterfaces.firstCall.args[0]).to.be.equals("exampleSearch");
             expect(stubLoadControls.notCalled).to.be.true;
             expect(stubLoadGfiThemes.notCalled).to.be.true;
             expect(stubLoadToolAddons.notCalled).to.be.true;
@@ -101,11 +102,11 @@ describe.skip("src/plugins/addons.js", () => {
         });
 
         it("load addon tool", async () => {
-            const config = ["ToolAddon"];
+            const config = ["populationRequest"];
 
             await addons.loadAddons(mockApp, config);
             expect(stubLoadToolAddons.calledOnce).to.be.true;
-            expect(stubLoadToolAddons.firstCall.args[0]).to.be.equals("ToolAddon");
+            expect(stubLoadToolAddons.firstCall.args[0]).to.be.equals("populationRequest");
             expect(stubLoadControls.notCalled).to.be.true;
             expect(stubLoadGfiThemes.notCalled).to.be.true;
             expect(stubLoadSearchInterfaces.notCalled).to.be.true;
@@ -113,11 +114,11 @@ describe.skip("src/plugins/addons.js", () => {
         });
 
         it("load addon javascript", async () => {
-            const config = ["JavaScriptAddon"];
+            const config = ["cesium3dTilesInspector"];
 
             await addons.loadAddons(mockApp, config);
             expect(stubLoadJavascriptAddons.calledOnce).to.be.true;
-            expect(stubLoadJavascriptAddons.firstCall.args[0]).to.be.equals("JavaScriptAddon");
+            expect(stubLoadJavascriptAddons.firstCall.args[0]).to.be.equals("cesium3dTilesInspector");
             expect(stubLoadControls.notCalled).to.be.true;
             expect(stubLoadGfiThemes.notCalled).to.be.true;
             expect(stubLoadSearchInterfaces.notCalled).to.be.true;
@@ -126,10 +127,10 @@ describe.skip("src/plugins/addons.js", () => {
     });
     describe("loadControls", () => {
         it("load addon type control", async () => {
-            await addons.loadControls("AddonControl");
+            await addons.loadControls("exampleControl");
 
             expect(loadAddonStub.calledOnce).to.be.true;
-            expect(loadAddonStub.firstCall.args[0]).to.be.equals("AddonControl");
+            expect(loadAddonStub.firstCall.args[0]).to.be.equals("exampleControl");
             expect(store.registerModule.calledOnce).to.be.true;
             expect(store.registerModule.firstCall.args[0]).to.be.deep.equals(["Controls", "Component"]);
             expect(store.registerModule.firstCall.args[1]).to.be.deep.equals(store);

@@ -86,6 +86,9 @@ describe("src/modules/routing/components/TSR/TsrOutput.vue", () => {
     });
 
     afterEach(() => {
+        if (wrapper) {
+            wrapper.unmount();
+        }
         sinon.restore();
     });
 

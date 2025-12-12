@@ -43,6 +43,7 @@ describe("src/modules/routing/components/Directions/DirectionsItem.vue", () => {
             mapMode: "2D"
         }, "2D");
 
+        sinon.stub(DirectionsComponent.methods, "removeModalFromBody");
         store = createStore({
             namespaced: true,
             modules: {
@@ -97,7 +98,8 @@ describe("src/modules/routing/components/Directions/DirectionsItem.vue", () => {
                                     actions: {
                                         createInteractionFromMapInteractionMode: sinon.stub(),
                                         initDirections: sinon.stub(),
-                                        removeDirectionsAvoidDrawInteraction: sinon.stub()
+                                        removeDirectionsAvoidDrawInteraction: sinon.stub(),
+                                        closeDirections: sinon.stub()
                                     }
                                 }
                             },
@@ -140,6 +142,9 @@ describe("src/modules/routing/components/Directions/DirectionsItem.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (wrapper) {
+            wrapper.unmount();
+        }
     });
 
     it("renders Directions", () => {

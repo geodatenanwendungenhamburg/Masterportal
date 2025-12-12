@@ -15,65 +15,55 @@ config.global.mocks.$i18n = {
     }
 };
 
-// #VITE-TEST aukommentiert wegen Fehler
-/*
-TypeError: Cannot assign to read only property 'localStorage' of object '#<Object>'
- ❯ src/modules/alerting/tests/unit/components/AlertingItem.spec.js:63:21
-     61| }
-     62|
-     63| global.localStorage = new LocalStorageMock();
-       |                     ^
-     64|
-*/
 /**
  * Mock class for localStorage (used in tests)
  */
-// class LocalStorageMock {
-//     /**
-//      * Internal store object
-//      * @type {Object}
-//      */
-//     constructor () {
-//         this.store = {};
-//     }
-//     /**
-//    * Clear all stored keys
-//    */
-//     clear () {
-//         this.store = {};
-//     }
-//     /**
-//    * Get an item by key
-//    * @param {string} key
-//    */
-//     getItem (key) {
-//         /**
-//    * @returns {string|null}
-//    */
-//         return Object.prototype.hasOwnProperty.call(this.store, key)
-//             ? this.store[key]
-//             : null;
-//     }
-//     /**
-//    * Set an item by key
-//    * @param {string} key
-//    * @param {string} value
-//    */
-//     setItem (key, value) {
-//         this.store[key] = String(value);
-//     }
-//     /**
-//    * Remove an item by key
-//    * @param {string} key
-//    */
-//     removeItem (key) {
-//         delete this.store[key];
-//     }
-// }
+class LocalStorageMock {
+    /**
+     * Internal store object
+     * @type {Object}
+     */
+    constructor () {
+        this.store = {};
+    }
+    /**
+   * Clear all stored keys
+   */
+    clear () {
+        this.store = {};
+    }
+    /**
+   * Get an item by key
+   * @param {string} key
+   */
+    getItem (key) {
+        /**
+   * @returns {string|null}
+   */
+        return Object.prototype.hasOwnProperty.call(this.store, key)
+            ? this.store[key]
+            : null;
+    }
+    /**
+   * Set an item by key
+   * @param {string} key
+   * @param {string} value
+   */
+    setItem (key, value) {
+        this.store[key] = String(value);
+    }
+    /**
+   * Remove an item by key
+   * @param {string} key
+   */
+    removeItem (key) {
+        delete this.store[key];
+    }
+}
 
-// global.localStorage = new LocalStorageMock();
+global.localStorage = new LocalStorageMock();
 
-describe.skip("src/modules/alerting/components/AlertingItem.vue", () => {
+describe("src/modules/alerting/components/AlertingItem.vue", () => {
     let alerts,
         sortedAlerts,
         store,
@@ -275,6 +265,9 @@ describe.skip("src/modules/alerting/components/AlertingItem.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
 

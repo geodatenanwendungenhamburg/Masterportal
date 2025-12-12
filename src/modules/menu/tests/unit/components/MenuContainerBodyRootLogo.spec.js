@@ -7,6 +7,12 @@ config.global.mocks.$t = key => key;
 describe("src/modules/menu/MenuContainerBodyRootLogo.vue", () => {
     let wrapper;
 
+    afterEach(() => {
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
+    });
+
     it("renders the logo and other props", () => {
         const props = {
             idAppendix: "idAppendix",

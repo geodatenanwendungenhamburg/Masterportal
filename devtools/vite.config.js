@@ -15,8 +15,7 @@ import getMastercodeVersionFolderName from "./tasks/getMastercodeVersionFolderNa
 import addonModules from "./tasks/addon-modules-plugin.js";
 
 let proxyConfig = {},
-    {vueAddons} = await collectAddons(),
-    base;
+    {vueAddons} = await collectAddons();
 const portalFolderName = process.env.PORTAL_FOLDER || "portal",
     rootPath = path.resolve(__dirname, "../"),
     httpsConfig = {
@@ -319,6 +318,6 @@ async function collectAddons () {
         }
     }
 
-    console.info("provided addons:", Object.keys(vueAddons));
+    console.info("provided addons:", JSON.stringify(Object.keys(vueAddons))+"\n");
     return {vueAddons};
 }
