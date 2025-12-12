@@ -9,7 +9,7 @@ import {fetchRoutingOrsDirections, getRoutingDirectionsSettingsUrl, routingOrsPr
 
 describe("src/modules/routing/js/directions/routing-ors-directions.js", () => {
     let service;
-    const originWindow = window;
+    const originWindow = global.window;
 
     beforeEach(() => {
         service = "https://tmp";

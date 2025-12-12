@@ -35,6 +35,9 @@ describe("src/modules/menu/MenuToggleButton.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     it("should render the button including 'mainToggleButtonIcon' as the icon class for side 'main'", () => {

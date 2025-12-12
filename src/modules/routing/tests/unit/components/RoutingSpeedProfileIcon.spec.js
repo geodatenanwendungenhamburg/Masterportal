@@ -25,6 +25,12 @@ describe("src/modules/routing/components/RoutingSpeedProfileIcon.vue", () => {
         };
     });
 
+    afterEach(() => {
+        if (wrapper) {
+            wrapper.unmount();
+        }
+    });
+
 
     it("renders RoutingSpeedProfileIconComponent", () => {
         wrapper = shallowMount(RoutingSpeedProfileIconComponent, {

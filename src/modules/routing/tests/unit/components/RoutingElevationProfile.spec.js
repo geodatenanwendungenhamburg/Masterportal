@@ -4,11 +4,10 @@ import sinon from "sinon";
 import {config, mount} from "@vue/test-utils";
 import RoutingElevationProfileData from "@modules/routing/components/RoutingElevationProfile.vue";
 import VectorSource from "ol/source/Vector.js";
-import {Chart} from "chart.js";
 
 config.global.mocks.$t = key => key;
 
-describe.skip("src/modules/routing/components/RoutingElevationProfileData.vue", () => {
+describe("src/modules/routing/components/RoutingElevationProfileData.vue", () => {
     const routingDirections = {
             duration: 10,
             distance: 10,
@@ -39,9 +38,6 @@ describe.skip("src/modules/routing/components/RoutingElevationProfileData.vue", 
         wrapper;
 
     beforeEach(() => {
-
-        sinon.stub(Chart.prototype, "render");
-
         activeRoutingToolOption = "DIRECTIONS";
         store = createStore({
             namespaced: true,
@@ -99,6 +95,9 @@ describe.skip("src/modules/routing/components/RoutingElevationProfileData.vue", 
 
     afterEach(() => {
         sinon.restore();
+        if (wrapper) {
+            wrapper.unmount();
+        }
     });
 
     it("should render the component", () => {

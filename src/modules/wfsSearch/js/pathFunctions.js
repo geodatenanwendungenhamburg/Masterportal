@@ -1,4 +1,5 @@
-import {badPathSymbol, idx} from "@shared/js/utils/idx.js";
+// import {badPathSymbol, idx} from "@shared/js/utils/idx.js";
+import idxProvider from "@shared/js/utils/idx.js";
 
 /**
  * Builds the path to the given option in the external source object.
@@ -52,14 +53,14 @@ function buildPath (optionsObject, currentOption, parsedSource) {
  * @returns {Array} If found, return the values as an array, otherwise return an empty array.
  */
 function getOptions (path, source) {
-    const selectableOptions = idx(source, path);
+    const selectableOptions = idxProvider.idx(source, path);
 
-    if (selectableOptions && selectableOptions !== badPathSymbol && typeof selectableOptions[0] === "object") {
+    if (selectableOptions && selectableOptions !== idxProvider.badPathSymbol && typeof selectableOptions[0] === "object") {
         return prepareOptionsWithId(selectableOptions);
     }
 
     // idx returns badPathSymbol if the value could not be found. It is also possible that the value is defined, but holds null or undefined.
-    return selectableOptions === badPathSymbol || selectableOptions === null || selectableOptions === undefined ? [] : selectableOptions;
+    return selectableOptions === idxProvider.badPathSymbol || selectableOptions === null || selectableOptions === undefined ? [] : selectableOptions;
 }
 
 /**

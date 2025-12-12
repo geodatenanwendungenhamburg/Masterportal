@@ -3,7 +3,6 @@ import {mapGetters, mapActions, mapMutations} from "vuex";
 import mutations from "../store/mutationsRouting.js";
 import * as constantsRouting from "../store/constantsRouting.js";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
-import store from "@appstore/index.js";
 
 /**
  * RoutingTemplate
@@ -37,13 +36,17 @@ export default {
     async created () {
         await this.initRouting();
     },
-    unmounted () {
-        store.dispatch("Modules/Routing/Isochrones/closeIsochrones");
-        store.dispatch("Modules/Routing/Directions/closeDirections");
+    beforeUnmount () {
+        // store.dispatch("Modules/Routing/Isochrones/closeIsochrones");
+        // store.dispatch("Modules/Routing/Directions/closeDirections");
+        this.closeIsochrones();
+        this.closeDirections();
     },
     methods: {
         ...mapMutations("Modules/Routing", Object.keys(mutations)),
         ...mapActions("Modules/Routing", ["initRouting"]),
+        ...mapActions("Modules/Routing/Directions", ["closeDirections"]),
+        ...mapActions("Modules/Routing/Isochrones", ["closeIsochrones"]),
         /**
          * Changes the active tab
          * Will not change the tab if a batch process is running

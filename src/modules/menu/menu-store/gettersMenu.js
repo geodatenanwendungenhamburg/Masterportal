@@ -1,5 +1,5 @@
 import menuState from "./stateMenu.js";
-import {badPathSymbol, idx} from "@shared/js/utils/idx.js";
+import idxProvider from "@shared/js/utils/idx.js";
 import {generateSimpleGetters} from "@shared/js/utils/generators.js";
 import changeCase from "@shared/js/utils/changeCase.js";
 import i18next from "i18next";
@@ -173,10 +173,10 @@ const menuGetters = {
      */
     section: (state, getters) => path => {
         if (path && getters[path[0]]) {
-            const section = idx(getters, path);
+            const section = idxProvider.idx(getters, path);
 
-            if (section === badPathSymbol) {
-                console.error(`Menu.getters.section: ${badPathSymbol.description} ${path}.`);
+            if (section === idxProvider.badPathSymbol) {
+                console.error(`Menu.getters.section: ${idxProvider.badPathSymbol.description} ${path}.`);
                 return null;
             }
 
