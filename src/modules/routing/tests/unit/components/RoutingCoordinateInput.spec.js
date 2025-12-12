@@ -62,6 +62,9 @@ describe("src/modules/routing/components/RoutingCoordinateInput.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (wrapper) {
+            wrapper.unmount();
+        }
     });
 
     it("renders RoutingCoordinateInputComponent", () => {

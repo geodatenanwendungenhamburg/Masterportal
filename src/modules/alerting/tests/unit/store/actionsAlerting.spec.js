@@ -2,9 +2,57 @@ import actions from "@modules/alerting/store/actionsAlerting.js";
 import sinon from "sinon";
 import {expect} from "chai";
 
-describe.skip("src/modules/alerting/store/actionsAlerting.js", () => {
+describe("src/modules/alerting/store/actionsAlerting.js", () => {
     let commit,
         dispatch;
+
+    /**
+ * Mock class for localStorage (used in tests)
+ */
+    class LocalStorageMock {
+    /**
+     * Internal store object
+     * @type {Object}
+     */
+        constructor () {
+            this.store = {};
+        }
+        /**
+   * Clear all stored keys
+   */
+        clear () {
+            this.store = {};
+        }
+        /**
+   * Get an item by key
+   * @param {string} key
+   */
+        getItem (key) {
+        /**
+   * @returns {string|null}
+   */
+            return Object.prototype.hasOwnProperty.call(this.store, key)
+                ? this.store[key]
+                : null;
+        }
+        /**
+   * Set an item by key
+   * @param {string} key
+   * @param {string} value
+   */
+        setItem (key, value) {
+            this.store[key] = String(value);
+        }
+        /**
+   * Remove an item by key
+   * @param {string} key
+   */
+        removeItem (key) {
+            delete this.store[key];
+        }
+    }
+
+    global.localStorage = new LocalStorageMock();
 
     beforeEach(() => {
         commit = sinon.spy();

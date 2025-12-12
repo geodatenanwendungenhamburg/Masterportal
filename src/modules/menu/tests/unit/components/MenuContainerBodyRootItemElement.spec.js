@@ -21,7 +21,8 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
         resetMenuSpy,
         menu,
         mapMode,
-        isModuleVisible;
+        isModuleVisible,
+        wrapper;
 
     beforeEach(() => {
         menu = {
@@ -76,10 +77,13 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     it("renders the component and it contains the LightButton", () => {
-        const wrapper = shallowMount(MenuContainerBodyRootItemElement, {
+        wrapper = shallowMount(MenuContainerBodyRootItemElement, {
             global: {
                 plugins: [store]
             },
@@ -92,19 +96,20 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
     it("calls clickedMenuElement in created if type is equals currentComponent", () => {
         const name = "awesomeName",
             type = "componentType",
-            path = ["mainMenu", type],
-            wrapper = shallowMount(MenuContainerBodyRootItemElement, {
-                global: {
-                    plugins: [store]
-                },
-                propsData: {
-                    icon: "bi-file-plus",
-                    name: name,
-                    path: path,
-                    properties: {
-                        type: type
-                    }}
-            });
+            path = ["mainMenu", type];
+
+        wrapper = shallowMount(MenuContainerBodyRootItemElement, {
+            global: {
+                plugins: [store]
+            },
+            propsData: {
+                icon: "bi-file-plus",
+                name: name,
+                path: path,
+                properties: {
+                    type: type
+                }}
+        });
 
         expect(wrapper.findComponent(LightButton).exists()).to.be.true;
         expect(clickedMenuElementSpy.calledOnce).to.be.true;
@@ -120,19 +125,20 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
     it("calls not clickedMenuElement in created if type is not equals currentComponent", () => {
         const name = "awesomeName",
             type = "otherType",
-            path = ["mainMenu", type],
-            wrapper = shallowMount(MenuContainerBodyRootItemElement, {
-                global: {
-                    plugins: [store]
-                },
-                propsData: {
-                    icon: "bi-file-plus",
-                    name: name,
-                    path: path,
-                    properties: {
-                        type: type
-                    }}
-            });
+            path = ["mainMenu", type];
+
+        wrapper = shallowMount(MenuContainerBodyRootItemElement, {
+            global: {
+                plugins: [store]
+            },
+            propsData: {
+                icon: "bi-file-plus",
+                name: name,
+                path: path,
+                properties: {
+                    type: type
+                }}
+        });
 
         expect(wrapper.findComponent(LightButton).exists()).to.be.true;
         expect(clickedMenuElementSpy.notCalled).to.be.true;
@@ -145,21 +151,22 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
 
             const name = "awesomeName",
                 type = "componentType",
-                path = ["mainMenu", type],
-                wrapper = shallowMount(MenuContainerBodyRootItemElement, {
-                    global: {
-                        plugins: [store]
-                    },
-                    propsData: {
-                        icon: "bi-file-plus",
-                        name: name,
-                        path: path,
-                        properties: {
-                            type: type,
-                            supportedMapModes: ["2D", "3D"],
-                            supportedDevices: ["Desktop", "Mobile", "Table"]
-                        }}
-                });
+                path = ["mainMenu", type];
+
+            wrapper = shallowMount(MenuContainerBodyRootItemElement, {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {
+                    icon: "bi-file-plus",
+                    name: name,
+                    path: path,
+                    properties: {
+                        type: type,
+                        supportedMapModes: ["2D", "3D"],
+                        supportedDevices: ["Desktop", "Mobile", "Table"]
+                    }}
+            });
 
             expect(wrapper.findComponent(LightButton).exists()).to.be.true;
             expect(resetMenuSpy.notCalled).to.be.true;
@@ -171,21 +178,22 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
 
             const name = "awesomeName",
                 type = "componentType",
-                path = ["mainMenu", type],
-                wrapper = shallowMount(MenuContainerBodyRootItemElement, {
-                    global: {
-                        plugins: [store]
-                    },
-                    propsData: {
-                        icon: "bi-file-plus",
-                        name: name,
-                        path: path,
-                        properties: {
-                            type: type,
-                            supportedMapModes: ["2D"],
-                            supportedDevices: ["Desktop", "Mobile", "Table"]
-                        }}
-                });
+                path = ["mainMenu", type];
+
+            wrapper = shallowMount(MenuContainerBodyRootItemElement, {
+                global: {
+                    plugins: [store]
+                },
+                propsData: {
+                    icon: "bi-file-plus",
+                    name: name,
+                    path: path,
+                    properties: {
+                        type: type,
+                        supportedMapModes: ["2D"],
+                        supportedDevices: ["Desktop", "Mobile", "Table"]
+                    }}
+            });
 
             expect(wrapper.findComponent(LightButton).exists()).to.be.false;
             expect(visibilityChecker.isModuleVisible.calledOnce).to.be.true;
@@ -193,7 +201,7 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
             expect(visibilityChecker.isModuleVisible.firstCall.args[0].mapMode).to.equal("3D");
         });
         it("checkIsVisible hides element when required layers are not visible", () => {
-            const wrapper = shallowMount(MenuContainerBodyRootItemElement, {
+            wrapper = shallowMount(MenuContainerBodyRootItemElement, {
                 global: {
                     plugins: [store]
                 },
@@ -212,7 +220,7 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
         });
 
         it("checkIsVisible shows element if child elements have visible layers", () => {
-            const wrapper = shallowMount(MenuContainerBodyRootItemElement, {
+            wrapper = shallowMount(MenuContainerBodyRootItemElement, {
                 global: {
                     plugins: [store]
                 },

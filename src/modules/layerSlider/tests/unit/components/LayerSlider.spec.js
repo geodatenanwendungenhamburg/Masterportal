@@ -9,7 +9,7 @@ import NavTab from "@shared/modules/tabs/components/NavTab.vue";
 
 config.global.mocks.$t = key => key;
 
-describe.skip("src/modules/layerSlider/components/LayerSlider.vue", () => {
+describe("src/modules/layerSlider/components/LayerSlider.vue", () => {
     const layerSliderPlayerComponentMock = {
             template: "<span />"
         },
@@ -20,6 +20,8 @@ describe.skip("src/modules/layerSlider/components/LayerSlider.vue", () => {
         wrapper;
 
     beforeEach(() => {
+        LayerSlider.actions.checkIfAllLayersAvailable = sinon.stub().returns(true);
+        LayerSlider.actions.addInformationToLayerIds = sinon.stub();
         store = createStore({
             namespaced: true,
             modules: {
@@ -38,6 +40,9 @@ describe.skip("src/modules/layerSlider/components/LayerSlider.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     it("renders the layerSlider", () => {

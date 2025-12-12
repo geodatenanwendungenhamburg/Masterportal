@@ -56,6 +56,9 @@ describe("src/modules/routing/components/RoutingSliderInput.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (wrapper) {
+            wrapper.unmount();
+        }
     });
 
     it("renders RoutingSliderInputComponent", () => {

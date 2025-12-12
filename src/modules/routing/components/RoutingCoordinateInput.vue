@@ -55,7 +55,8 @@ export default {
             searchResults: [],
             ignoreNextSearchChange: false,
             isFocused: false,
-            selectedIndex: -1
+            selectedIndex: -1,
+            timeoutID: null
         };
     },
     computed: {
@@ -113,7 +114,7 @@ export default {
                 return;
             }
             if (!this.awaitingSearch) {
-                setTimeout(async () => {
+                this.timeoutID = setTimeout(async () => {
                     this.awaitingSearch = false;
                     const isWgs84Coordinate = this.isInputtextWgs84Coordinate(
                         this.search
@@ -144,6 +145,9 @@ export default {
                 this.search = this.waypoint.getDisplayName();
             }
         }
+    },
+    unmounted () {
+        clearTimeout(this.timeoutID);
     },
     methods: {
         ...mapActions("Modules/Routing", [

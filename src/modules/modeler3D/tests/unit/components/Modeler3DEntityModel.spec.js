@@ -168,6 +168,9 @@ describe("src/modules/modeler3D/components/Modeler3DEntityModel.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     it("renders Modeler3DEntityModel", () => {

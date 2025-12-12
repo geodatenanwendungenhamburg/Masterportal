@@ -34,8 +34,12 @@ describe("src/modules/routing/components/RoutingContextMenu.vue", () => {
             removeOverlay: sinon.stub(),
             removeInteraction: sinon.stub(),
             getViewport: () => ({
-                addEventListener: () => sinon.stub()
-            })
+                addEventListener: () => sinon.stub(),
+                removeEventListener: () => sinon.stub()
+            }),
+            getOverlayById: () => {
+                return {};
+            }
         }, "2D");
         coordinates1 = [10.002199616100814, 53.550403286559074];
         coordinates2 = [];
@@ -121,6 +125,9 @@ describe("src/modules/routing/components/RoutingContextMenu.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (wrapper) {
+            wrapper.unmount();
+        }
     });
 
     it("Directions: renders context menu", () => {

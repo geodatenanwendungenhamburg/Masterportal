@@ -3,6 +3,20 @@ import {expect} from "chai";
 import getSystemInfo from "@modules/contact/js/getSystemInfo.js";
 
 describe("src/modules/contact/js/getSystemInfo", function () {
+    const originWindow = global.window;
+
+    beforeEach(() => {
+        global.window = {
+            location: {
+                origin: "https://example.com",
+                href: "https://example.com/portal/path/"
+            }};
+    });
+
+    after(() => {
+        global.window = originWindow;
+    });
+
     it("returns values from global variables", function () {
         const systemInfo = getSystemInfo();
 

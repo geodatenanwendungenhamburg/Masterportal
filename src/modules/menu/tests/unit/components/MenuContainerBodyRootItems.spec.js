@@ -10,7 +10,8 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
     let store,
         sections,
         pathMainMenu,
-        pathSecondaryMenu;
+        pathSecondaryMenu,
+        wrapper;
 
     beforeEach(() => {
         sections = [
@@ -36,8 +37,14 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
         });
     });
 
+    afterEach(() => {
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
+    });
+
     it("renders the component as main menu", () => {
-        const wrapper = shallowMount(MenuContainerBodyRootItems, {
+        wrapper = shallowMount(MenuContainerBodyRootItems, {
             global: {
                 plugins: [store]
             },
@@ -48,7 +55,7 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
     });
 
     it("contains a list element and a MenuContainerBodyRootItemElements in the main menu for each configured section item", () => {
-        const wrapper = shallowMount(MenuContainerBodyRootItems, {
+        wrapper = shallowMount(MenuContainerBodyRootItems, {
             global: {
                 plugins: [store]
             },
@@ -74,7 +81,7 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
     });
 
     it("renders the component as secondary menu", () => {
-        const wrapper = shallowMount(MenuContainerBodyRootItems, {
+        wrapper = shallowMount(MenuContainerBodyRootItems, {
             global: {
                 plugins: [store]
             },
@@ -85,7 +92,7 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
     });
 
     it("contains a list element and a MenuContainerBodyRootItemElements in the main menu for each configured section item", () => {
-        const wrapper = shallowMount(MenuContainerBodyRootItems, {
+        wrapper = shallowMount(MenuContainerBodyRootItems, {
             global: {
                 plugins: [store]
             },
@@ -115,7 +122,7 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
             name: "Url öffnen",
             openURL: "https://geoinfo.hamburg.de/"
         }];
-        const wrapper = shallowMount(MenuContainerBodyRootItems, {
+        wrapper = shallowMount(MenuContainerBodyRootItems, {
             global: {
                 plugins: [store]
             },
@@ -137,7 +144,7 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
             openURL: "https://geoinfo.hamburg.de/",
             icon: "bi-custom-icon"
         }];
-        const wrapper = shallowMount(MenuContainerBodyRootItems, {
+        wrapper = shallowMount(MenuContainerBodyRootItems, {
             global: {
                 plugins: [store]
             },

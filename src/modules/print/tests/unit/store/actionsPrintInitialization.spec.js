@@ -370,7 +370,17 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
                     isScaleSelectedManually: false,
                     autoAdjustScale: true,
                     scaleList: [500, 1000, 2500, 5000, 10000, 20000, 40000, 60000, 100000],
-                    optimalScale: 20000
+                    optimalScale: 20000,
+                    currentLayout: {
+                        attributes: [
+                            {
+                                name: "map",
+                                clientInfo: {
+                                    dpiSuggestions: [72, 150, 300]
+                                }
+                            }
+                        ]
+                    }
                 },
                 canvasOptions = {
                     "mapSize": evt.frameState.size,

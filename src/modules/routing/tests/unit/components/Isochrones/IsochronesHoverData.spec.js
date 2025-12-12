@@ -23,8 +23,12 @@ describe("src/modules/routing/components/Isochrones/IsochronesHoverData.vue", ()
             removeOverlay: sinon.stub(),
             removeInteraction: sinon.stub(),
             getViewport: () => ({
-                addEventListener: () => sinon.stub()
-            })
+                addEventListener: () => sinon.stub(),
+                removeEventListener: () => sinon.stub()
+            }),
+            getOverlayById: () => {
+                return {};
+            }
         }, "2D");
 
         isochronesAreaLayer = new VectorLayer();
@@ -65,6 +69,9 @@ describe("src/modules/routing/components/Isochrones/IsochronesHoverData.vue", ()
 
     afterEach(() => {
         sinon.restore();
+        if (wrapper) {
+            wrapper.unmount();
+        }
     });
 
     it("renders hover menu", async () => {

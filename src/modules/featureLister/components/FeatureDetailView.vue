@@ -79,7 +79,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
+
 .feature-lister-details-ul {
     max-height: 400px;
     overflow: auto;

@@ -6,7 +6,7 @@ import store from "@appstore/index.js";
 import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
 import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle.js";
 
-describe.skip("src/core/js/layers/layer3dTileset.js", () => {
+describe("src/core/js/layers/layer3dTileset.js", () => {
     let attributes,
         fromUrlSpy,
         warn,
@@ -42,6 +42,8 @@ describe.skip("src/core/js/layers/layer3dTileset.js", () => {
             style: "Styling",
             readyPromise: Promise.resolve(true)
         });
+        style = [["true", "color"]];
+        global.Cesium.Cesium3DTileStyle = sinon.stub().returns(style);
 
         fromUrlSpy = sinon.spy(global.Cesium.Cesium3DTileset, "fromUrl");
     });

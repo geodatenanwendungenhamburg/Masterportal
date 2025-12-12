@@ -50,6 +50,9 @@ describe("src/modules/menu/components/CustomMenuElement.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     it("renders only a div if no htmlContent or pathToContent is given", () => {
