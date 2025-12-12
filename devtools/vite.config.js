@@ -9,10 +9,10 @@ import glob from "fast-glob";
 import fs from "fs";
 import {nodePolyfills} from "vite-plugin-node-polyfills";
 import cp from "vite-plugin-cp";
-import htmlExtFallback from "./html-ext-fallback.js";
-import {directoryListing} from "./directory_listing.js";
-import getMastercodeVersionFolderName from "./tasks/getMastercodeVersionFolderName.mjs";
+import htmlExtFallback from "./tasks/html-ext-fallback-plugin.js";
+import {directoryListing} from "./tasks/directory-listing-plugin.js";
 import addonModules from "./tasks/addon-modules-plugin.js";
+import getMastercodeVersionFolderName from "./tasks/getMastercodeVersionFolderName.mjs";
 
 let proxyConfig = {},
     {vueAddons} = await collectAddons();
