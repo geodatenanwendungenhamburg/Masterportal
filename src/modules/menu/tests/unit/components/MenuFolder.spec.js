@@ -32,6 +32,9 @@ describe("src/modules/menu/MenuFolder.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     it("renders MenuContainerBodyRootItems in mainMenu", () => {

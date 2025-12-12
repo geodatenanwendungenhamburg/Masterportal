@@ -80,6 +80,9 @@ describe("src/modules/shareView/components/ShareView.vue", () => {
     });
 
     afterEach(() => {
+        if (wrapper) {
+            wrapper.unmount();
+        }
         sinon.restore();
     });
 

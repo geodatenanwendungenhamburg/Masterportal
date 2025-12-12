@@ -7,7 +7,7 @@ import EntityListComponent from "@modules/modeler3D/components/ui/EntityList.vue
 
 config.global.mocks.$t = key => key;
 
-describe.skip("src/modules/modeler3D/components/EntityList.vue", () => {
+describe("src/modules/modeler3D/components/EntityList.vue", () => {
     let store, wrapper;
 
     beforeEach(() => {
@@ -56,6 +56,9 @@ describe.skip("src/modules/modeler3D/components/EntityList.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     it("shows buttons for importedModel", () => {

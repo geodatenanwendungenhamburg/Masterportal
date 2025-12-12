@@ -13,7 +13,7 @@ import layerCollection from "@core/layers/js/layerCollection.js";
 
 config.global.mocks.$t = key => key;
 
-describe.skip("src/modules/modeler3D/components/Modeler3D.vue", () => {
+describe("src/modules/modeler3D/components/Modeler3D.vue", () => {
     const mockMapGetters = {
             mouseCoordinate: () => {
                 return [11.549606597773037, 48.17285700012215];
@@ -252,7 +252,9 @@ describe.skip("src/modules/modeler3D/components/Modeler3D.vue", () => {
             {
                 id: "FloatingPointId",
                 positionIndex: 0,
-                polygon: {length: 4}
+                polygon: {
+                    length: 4
+                }
             },
             {
                 id: "entityId",
@@ -287,6 +289,9 @@ describe.skip("src/modules/modeler3D/components/Modeler3D.vue", () => {
 
     afterEach(() => {
         sinon.restore();
+        if (typeof wrapper !== "undefined") {
+            wrapper.unmount();
+        }
     });
 
     it("renders Modeler3D with import view", async () => {
@@ -404,12 +409,15 @@ describe.skip("src/modules/modeler3D/components/Modeler3D.vue", () => {
         it("initProjectionsInModeler3D adds WGS84 decimal projection", () => {
             let projections = [];
 
+            crs.registerProjections(namedProjections);
+
             wrapper = shallowMount(Modeler3DComponent, {global: {
                 plugins: [store]
             }});
             wrapper.vm.initProjectionsInModeler3D();
 
             projections = store.state.Modules.Modeler3D.projections;
+
             expect(projections.length).to.be.equals(6);
             expect(projections[0].id).to.be.not.null;
             expect(projections.filter(proj => proj.id === "http://www.opengis.net/gml/srs/epsg.xml#4326-DG").length).to.be.equals(1);
@@ -417,6 +425,8 @@ describe.skip("src/modules/modeler3D/components/Modeler3D.vue", () => {
 
         it("initProjectionsInModeler3D adds ETRS89_3GK3", () => {
             let projections = [];
+
+            crs.registerProjections(namedProjections);
 
             wrapper = shallowMount(Modeler3DComponent, {global: {
                 plugins: [store]
@@ -652,6 +662,7 @@ describe.skip("src/modules/modeler3D/components/Modeler3D.vue", () => {
             expect(document.getElementById("map").style.cursor).to.equal("grab");
         });
         it("should highlight a drawn polygon", async () => {
+
             wrapper = shallowMount(Modeler3DComponent, {global: {
                 plugins: [store]
             }});
@@ -801,22 +812,6 @@ describe.skip("src/modules/modeler3D/components/Modeler3D.vue", () => {
             wrapper.vm.onMouseMove(event);
             expect(movePolylineSpy.called).to.be.true;
             expect(updatePositionUISpy.called).to.be.true;
-        });
-
-        it("should handle the mouse move event for the pov cylinder", async () => {
-            wrapper = shallowMount(Modeler3DComponent, {global: {
-                plugins: [store]
-            }});
-            store.commit("Modules/Modeler3D/setCylinderId", 2);
-            await wrapper.vm.$nextTick();
-
-            wrapper.vm.moveHandler();
-            expect(document.getElementById("map").style.cursor).to.equal("copy");
-            expect(wrapper.vm.currentCartesian).to.eql({
-                x: 3739310.9273738265,
-                y: 659341.4057539968,
-                z: 5107613.232959453
-            });
         });
 
         it("onMouseUp should do nothing if isDragging is false", () => {

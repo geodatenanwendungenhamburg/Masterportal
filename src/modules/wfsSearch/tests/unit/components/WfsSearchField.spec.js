@@ -80,6 +80,7 @@ describe("src/modules/wfsSearch/components/WfsSearchField.vue", () => {
     });
 
     it("reset value if options changed", async () => {
+        store.commit("Modules/WfsSearch/setResults", []);
         store.commit("Modules/WfsSearch/setInstances", [{currentInstance: {addedOptions: ["", "fln"]},
             literals: [
                 {
@@ -88,6 +89,7 @@ describe("src/modules/wfsSearch/components/WfsSearchField.vue", () => {
                         literals: [
                             {
                                 field: {
+                                    "id": "gmk",
                                     "fieldName": "gmk",
                                     "inputLabel": "Gemarkung",
                                     "required": true,
@@ -98,6 +100,7 @@ describe("src/modules/wfsSearch/components/WfsSearchField.vue", () => {
                             },
                             {
                                 "field": {
+                                    "id": "fln",
                                     "fieldName": "fln",
                                     "inputLabel": "Flurnummer",
                                     "required": true,

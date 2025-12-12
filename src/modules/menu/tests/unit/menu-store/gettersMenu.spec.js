@@ -2,7 +2,7 @@ import sinon from "sinon";
 import {expect} from "chai";
 import gettersMenu from "@modules/menu/menu-store/gettersMenu.js";
 import stateMenu from "@modules/menu/menu-store/stateMenu.js";
-import idx from "@shared/js/utils/idx.js";
+import idxProvider from "@shared/js/utils/idx.js";
 
 describe("src/modules/menu/menu-store/gettersMenu.js", () => {
     const mainMenuSymbol = Symbol("mainMenu"),
@@ -365,14 +365,14 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
         });
     });
 
-    describe.skip("section", () => {
+    describe("section", () => {
         const goodPath = Symbol("woowee we found something");
         let foundSection, path;
 
         beforeEach(() => {
-            foundSection = idx.badPathSymbol;
+            foundSection = idxProvider.badPathSymbol;
             path = [];
-            sinon.stub(idx, "idx").callsFake(() => foundSection);
+            sinon.stub(idxProvider, "idx").callsFake(() => foundSection);
         });
 
         it("should return a found object from the getters through the given path if it exists for mainMenu", () => {
@@ -410,7 +410,7 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
             expect(gettersMenu.section(undefined, getters)(path)).to.equal(null);
             expect(consoleErrorSpy.calledOnce).to.be.true;
             expect(consoleErrorSpy.firstCall.args.length).to.equal(1);
-            expect(consoleErrorSpy.firstCall.args[0]).to.equal(`Menu.getters.section: ${idx.badPathSymbol.description} ${path}.`);
+            expect(consoleErrorSpy.firstCall.args[0]).to.equal(`Menu.getters.section: ${idxProvider.badPathSymbol.description} ${path}.`);
         });
         it("should return null and log an error if the first index of the path ('mainMenu' or 'secondaryMenu') is null", () => {
             path.push("mainMenu", "sections", 0);

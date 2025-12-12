@@ -40,6 +40,7 @@ describe("src/modules/routing/js/geosearch/routing-specialWfs-geosearch.js", () 
     </wfs:FeatureCollection>`;
 
     beforeEach(() => {
+        sinon.stub(console, "error").callsFake(sinon.spy());
         sinon.stub(i18next, "t").callsFake((...args) => args);
         store.getters = {
             restServiceById: () => ({url: "tmp"}),
