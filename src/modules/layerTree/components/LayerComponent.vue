@@ -31,28 +31,28 @@ export default {
             required: true
         }
     },
-    data () {
-        return {
-            tooltipText: ""
-        };
-    },
     computed: {
-        ...mapGetters("Maps", ["mode", "scale", "scales"])
-    },
-    mounted () {
-        if (this.conf.maxScale && this.conf.minScale) {
-            let minScale = parseInt(this.conf.minScale, 10);
+        ...mapGetters("Maps", ["mode", "scale", "scales"]),
 
-            if (minScale === 0) {
-                minScale = this.scales[this.scales.length - 1];
+        tooltipText () {
+            if (this.conf.maxScale && this.conf.minScale) {
+                let minScale = parseInt(this.conf.minScale, 10);
+
+                if (minScale === 0) {
+                    minScale = this.scales[this.scales.length - 1];
+                }
+
+                return this.$t("common:modules.layerTree.invisibleLayer", {
+                    minScale: "1: " + thousandsSeparator(minScale),
+                    maxScale: "1: " + thousandsSeparator(parseInt(this.conf.maxScale, 10), ".")
+                });
             }
-            this.tooltipText = this.$t("common:modules.layerTree.invisibleLayer", {
-                minScale: "1: " + thousandsSeparator(minScale),
-                maxScale: "1: " + thousandsSeparator(parseInt(this.conf.maxScale, 10), ".")
-            });
-        }
-        else if (this.conf.maxScale || this.conf.minScale) {
-            this.tooltipText = this.$t("common:modules.layerTree.invisibleLayerNoScale");
+
+            if (this.conf.maxScale || this.conf.minScale) {
+                return this.$t("common:modules.layerTree.invisibleLayerNoScale");
+            }
+
+            return "";
         }
     },
     methods: {
@@ -121,7 +121,6 @@ export default {
         <div class="d-flex justify-content-between align-items-center handle-layer-component-drag">
             <span
                 class="layer-checkbox-tooltip"
-                :data-bs-toggle="scaleIsOutOfRange() ? 'tooltip' : null"
                 data-bs-placement="bottom"
                 data-bs-custom-class="custom-tooltip"
                 :title="scaleIsOutOfRange() ? tooltipText : ''"
