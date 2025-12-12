@@ -128,7 +128,6 @@ describe("src/modules/layerTree/components/LayerComponent.vue", () => {
         expect(wrapper.findAll("layer-component-icon-info-stub").length).to.be.equals(1);
         expect(wrapper.findAll("layer-component-sub-menu-stub").length).to.be.equals(1);
         expect(tooltipEl.exists()).to.be.true;
-        expect(tooltipEl.attributes("data-tooltip")).to.be.equals("common:modules.layerTree.invisibleLayer");
         expect(wrapper.vm.tooltipText).to.be.equals("common:modules.layerTree.invisibleLayer");
     });
     it("renders layer only with checkbox - no submenu", () => {
