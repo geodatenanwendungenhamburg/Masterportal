@@ -2351,6 +2351,7 @@ The `Maps/activateViewpoint` action configures and activates a specific viewpoin
 |drawAreaSettings|no|**[drawAreaSet](#portalconfigmenusectionsmodulesdrawdrawareaset)**|{"strokeWidth": 1, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "opacityContour": 1}|Pre-configuration for area drawing.|false|
 |drawCircleSettings|no|**[drawCircleSet](#portalconfigmenusectionsmodulesdrawdrawcircleset)**|{"circleMethod": "interactive", "unit": "m", "circleRadius": null, "strokeWidth": 1, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "opacityContour": 1, "tooltipStyle": {"fontSize": "16px", "paddingTop": "3px", "paddingLeft": "3px", "paddingRight": "3px", "backgroundColor": "rgba(255, 255, 255, .9)"}}|Pre-configuration for circle drawing.|false|
 |drawDoubleCircleSettings|no|**[drawDoubleCircleSet](#portalconfigmenusectionsmodulesdrawdrawdoublecircleset)**|{"circleMethod": "defined", "unit": "m", "circleRadius": 0, "circleOuterRadius": 0, "strokeWidth": 1, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "outerColorContour": [0, 0, 0, 1], "opacityContour": 1}|Pre-configuration for double circle drawing.|false|
+|drawSquareSettings|no|**[drawSquareSet](#portalconfigmenusectionsmodulesdrawdrawsquareset)**|{"squareMethod": "interactive", "strokeWidth": 1, "squareSide": 0, "unit": "m", "squareArea": 0, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "opacityContour": 1, "tooltipStyle": {"fontSize": "14px","paddingTop":"3px","paddingLeft":"3px","paddingRight":"3px","backgroundColor":"rgba(255, 255, 255, .9)"}}|Pre-configuration for square drawing.|false|
 |writeTextSettings|no|**[writeTextSet](#portalconfigmenusectionsmodulesdrawwritetextset)**|{"text": "", "fontSize": 10, "font": "Arial", "color": [55, 126, 184, 1], "opacity": 1}|Pre-configuration for text writing.|false|
 |download|no|**[download](#portalconfigmenusectionsmodulesdrawdownload)**|{"preSelectedFormat": "KML"}|Pre-configuration for download.|false|
 |enableAttributesSelector|no|Boolean|false|Enables an button which toggles an edit section for custom attributes on the selected feature.|false|
@@ -2601,6 +2602,48 @@ Object to change the drawing tool's configured circle default value.
     "opacity": 1,
     "colorContour": [0, 0, 0, 1],
     "opacityContour": 1
+}
+```
+
+***
+
+###### portalConfig.menu.sections.modules.draw.drawSquareSet {data-toc-label='Square Set'}
+
+Object to change the drawing tool's configured square default value.
+
+|Name|Required|Type|Default|Description|Expert|
+|----|--------|----|-------|-----------|------|
+|squareMethod|yes|String|"interactive"|Pre-configured method of square drawing. `"interactive"`: freehand, `"defined"`: by entering fixed values|false|
+|strokeWidth|yes|Number|1|Pre-configured stroke width of square border in pixels.|false|
+|squareSide|yes|Number|0|Pre-configured side length of the square. Only relevant if all sides are the same length and `squareArea` is not used.|false|
+|unit|yes|String|"m"|Pre-configured unit regarding square side length or area: `"m"` or `"km"`.|false|
+|squareArea|yes|Number|0|Pre-configured area of the square in m² or km² depending on `unit`.|false|
+|color|yes|Number[]|[55, 126, 184, 1]|Pre-configured square fill color in RGBA.|false|
+|opacity|yes|Number|1|Pre-configured square fill transparency in range [0..1].|false|
+|colorContour|yes|Number[]|[0, 0, 0, 1]|Pre-configured square border color in RGBA.|false|
+|opacityContour|yes|Number|1|Pre-configured square border transparency in range [0..1].|false|
+|tooltipStyle|no|String|{}|Pre-configured style for the tooltip.|false|
+
+**Example**
+
+```json
+{
+    "squareMethod": "interactive",
+    "strokeWidth": 1,
+    "squareSide": 0,
+    "unit": "m",
+    "squareArea": 0,
+    "color": [55, 126, 184, 1],
+    "opacity": 1,
+    "colorContour": [0, 0, 0, 1],
+    "opacityContour": 1,
+    "tooltipStyle": {
+        "fontSize": "14px",
+        "paddingTop": "3px",
+        "paddingLeft": "3px",
+        "paddingRight": "3px",
+        "backgroundColor": "rgba(255, 255, 255, .9)"
+    }
 }
 ```
 

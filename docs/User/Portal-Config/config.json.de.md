@@ -2352,6 +2352,7 @@ Die Aktion Maps/activateViewpoint konfiguriert und aktiviert einen bestimmten Ka
 |drawAreaSettings|nein|**[drawAreaSet](#portalconfigmenusectionsmodulesdrawdrawareaset)**|{"strokeWidth": 1, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "opacityContour": 1}|Voreinstellung für das Zeichnen von Flächen.|false|
 |drawCircleSettings|nein|**[drawCircleSet](#portalconfigmenusectionsmodulesdrawdrawcircleset)**|{"circleMethod": "interactive", "unit": "m", "circleRadius": null, "strokeWidth": 1, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "opacityContour": 1, "tooltipStyle": {"fontSize": "16px", "paddingTop": "3px", "paddingLeft": "3px", "paddingRight": "3px", "backgroundColor": "rgba(255, 255, 255, .9)"}}|Voreinstellung für das Zeichnen von Kreisen.|false|
 |drawDoubleCircleSettings|nein|**[drawDoubleCircleSet](#portalconfigmenusectionsmodulesdrawdrawdoublecircleset)**|{"circleMethod": "defined", "unit": "m", "circleRadius": 0, "circleOuterRadius": 0, "strokeWidth": 1, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "outerColorContour": [0, 0, 0, 1], "opacityContour": 1}|Voreinstellung für das Zeichnen von Doppel-Kreisen.|false|
+|drawSquareSettings|nein|**[drawSquareSet](#portalconfigmenusectionsmodulesdrawdrawsquareset)**|{"squareMethod": "interactive", "strokeWidth": 1, "squareSide": 0, "unit": "m", "squareArea": 0, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "opacityContour": 1, "tooltipStyle": {"fontSize": "14px","paddingTop":"3px","paddingLeft":"3px","paddingRight":"3px","backgroundColor":"rgba(255, 255, 255, .9)"}}|Voreinstellung für das Zeichnen von Quadraten.|false|
 |writeTextSettings|nein|**[writeTextSet](#portalconfigmenusectionsmodulesdrawwritetextset)**|{"text": "", "fontSize": 10, "font": "Arial", "color": [55, 126, 184, 1], "opacity": 1}|Voreinstellung für das Schreiben von Texten.|false|
 |download|nein|**[download](#portalconfigmenusectionsmodulesdrawdownload)**|{"preSelectedFormat": "KML"}|Einstellungen für das Herunterladen der Zeichnung.|false|
 |enableAttributesSelector|nein|Boolean|false|Aktiviert einen Knopf zum Umschalten eines Bereiches zum Editieren von benutzerdefinierten Attributen an dem bereits ausgewählten Feature.|false|
@@ -2456,8 +2457,8 @@ Objekt zum Ändern des konfigurierten Default-Wertes des Punkt-Symbols im Zeiche
 
 ```json
     {
-        color: [55, 126, 184, 1],
-        opacity: 1
+        "color": [55, 126, 184, 1],
+        "opacity": 1
     }
 ```
 
@@ -2477,9 +2478,9 @@ Objekt zum Ändern des konfigurierten Default-Wertes für eine Linie im Zeichen-
 
 ```json
     {
-        strokeWidth: 1,
-        opacityContour: 1,
-        colorContour: [0, 0, 0, 1]
+        "strokeWidth": 1,
+        "opacityContour": 1,
+        "colorContour": [0, 0, 0, 1]
     }
 ```
 
@@ -2499,9 +2500,9 @@ Objekt zum Ändern des konfigurierten Default-Wertes für eine Freihandlinie im 
 
 ```json
     {
-        strokeWidth: 1,
-        opacityContour: 1,
-        colorContour: [0, 0, 0, 1]
+        "strokeWidth": 1,
+        "opacityContour": 1,
+        "colorContour": [0, 0, 0, 1]
     }
 ```
 
@@ -2523,11 +2524,11 @@ Objekt zum Ändern des konfigurierten Default-Wertes für eine Fläche im Zeiche
 
 ```json
     {
-        strokeWidth: 1,
-        color: [55, 126, 184, 1],
-        opacity: 1,
-        colorContour: [0, 0, 0, 1],
-        opacityContour: 1
+        "strokeWidth": 1,
+        "color": [55, 126, 184, 1],
+        "opacity": 1,
+        "colorContour": [0, 0, 0, 1],
+        "opacityContour": 1
     }
 ```
 
@@ -2553,14 +2554,14 @@ Objekt zum Ändern des konfigurierten Default-Wertes für einen Kreis im Zeichen
 
 ```json
     {
-        circleMethod: "interactive",
-        unit: "m",
-        circleRadius: 0,
-        strokeWidth: 1,
-        color: [55, 126, 184, 1],
-        opacity: 1,
-        colorContour: [0, 0, 0, 1],
-        opacityContour: 1
+        "circleMethod": "interactive",
+        "unit": "m",
+        "circleRadius": 0,
+        "strokeWidth": 1,
+        "color": [55, 126, 184, 1],
+        "opacity": 1,
+        "colorContour": [0, 0, 0, 1],
+        "opacityContour": 1
     }
 ```
 
@@ -2587,16 +2588,58 @@ Objekt zum Ändern des konfigurierten Default-Wertes für einen Doppelkreis im Z
 
 ```json
     {
-        circleMethod: "defined",
-        unit: "m",
-        circleRadius: 0,
-        circleOuterRadius: 0,
-        strokeWidth: 1,
-        color: [55, 126, 184, 1],
-        opacity: 1,
-        colorContour: [0, 0, 0, 1],
-        opacityContour: 1
+        "circleMethod": "defined",
+        "unit": "m",
+        "circleRadius": 0,
+        "circleOuterRadius": 0,
+        "strokeWidth": 1,
+        "color": [55, 126, 184, 1],
+        "opacity": 1,
+        "colorContour": [0, 0, 0, 1],
+        "opacityContour": 1
     }
+```
+
+***
+
+###### portalConfig.menu.sections.modules.draw.drawSquareSet {data-toc-label='Square Set'}
+
+Objekt zum Ändern des konfigurierten Default-Wertes für ein Quadrat im Zeichen-Tool.
+
+|Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
+|----|-------------|---|-------|------------|------|
+|squareMethod|ja|String|"interactive"|Die Methode zum Zeichnen des Quadrats: `"interactive"` für Freihand, `"defined"` für feste Werte.|false|
+|strokeWidth|ja|Number|1|Strichstärke (Dicke) des Quadratrandes in Pixel.|false|
+|squareSide|ja|Number|0|Voreingestellte Seitenlänge des Quadrats. Nur relevant, wenn alle Seiten die gleiche Länge haben und nicht über Fläche gesetzt.|false|
+|unit|ja|String|"m"|Die Maßeinheit für Seitenlänge oder Fläche: `"m"` oder `"km"`.|false|
+|squareArea|ja|Number|0|Voreingestellte Fläche des Quadrats in m² (oder km², abhängig von `unit`).|false|
+|color|ja|Number[]|[55, 126, 184, 1]|Farbe der Fläche als RGBA-Array.|false|
+|opacity|ja|Number|1|Transparenz der Fläche in einer Range [0..1].|false|
+|colorContour|ja|Number[]|[0, 0, 0, 1]|Farbe des Quadratrandes als RGBA-Array.|false|
+|opacityContour|ja|Number|1|Transparenz des Quadratrandes in einer Range [0..1].|false|
+|tooltipStyle|nein|String|{}|Custom-Style für das Tooltip beim Zeichnen.|false|
+
+**Beispiel**
+
+```json
+{
+    "squareMethod": "interactive",
+    "strokeWidth": 1,
+    "squareSide": 0,
+    "unit": "m",
+    "squareArea": 0,
+    "color": [55, 126, 184, 1],
+    "opacity": 1,
+    "colorContour": [0, 0, 0, 1],
+    "opacityContour": 1,
+    "tooltipStyle": {
+        "fontSize": "14px",
+        "paddingTop": "3px",
+        "paddingLeft": "3px",
+        "paddingRight": "3px",
+        "backgroundColor": "rgba(255, 255, 255, .9)"
+    }
+}
 ```
 
 ***
@@ -2617,11 +2660,11 @@ Objekt zum Ändern des konfigurierten Default-Wertes für einen Text im Zeichen-
 
 ```json
     {
-        text: "",
-        fontSize: 10,
-        font: "Arial",
-        color: [55, 126, 184, 1],
-        opacity: 1
+        "text": "",
+        "fontSize": 10,
+        "font": "Arial",
+        "color": [55, 126, 184, 1],
+        "opacity": 1
     }
 ```
 
