@@ -11,12 +11,18 @@
 - Issue #1524: draw_old: Added documentation for drawSquareSettings.
 - WMS-Time: The attributes `dimensionRange` and `dimensionRegex` can now be used to filter the values ​​that should be displayed in the time slider.
 - CopyrightConstraints: Added Parameter `useLayerCswUrl` to use the CSW interface specified in the layers.
+- The following packages have been added:
+  - devDependencies:
+    - vite-plugin-zip-pack: ^1.2.4
 
 ### Changed
 
 ### Deprecated
 
 ### Removed
+- The following packages have been removed:
+  - devDependencies:
+    - zip-a-folder: 3.1.8
 
 ### Fixed
 - FileUpload: Fixed a bug where FileUpload was inaccessible through keyboard.
