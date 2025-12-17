@@ -16,7 +16,7 @@
     "url": "https://bitbucket.org/geowerkstatt-hamburg/masterportal.git"
   },
   "main": "src/masterportal.js",
-  "scripts": {  
+  "scripts": {
     "prestart": "node devtools/certificate/ensureDevCert.mjs",
     "start": "vite --config devtools/vite.config.js",
     "startDebug": "vite --config devtools/vite.config.js  --debug plugin-transform",
