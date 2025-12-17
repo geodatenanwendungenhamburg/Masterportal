@@ -3168,6 +3168,8 @@ Druckmodul. Konfigurierbar für 2 Druckdienste: den High Resolution PlotService 
 
 **ACHTUNG: Backend notwendig!**
 
+**ACHTUNG: Der High Resolution PlotService unterstützt keine Kartenrotation! Wenn das Tool darauf konfiguriert wird, sollte keine Kartenrotation angeboten werden.**
+
 **Es wird mit einem [Mapfish-Print3](https://mapfish.github.io/mapfish-print-doc) oder einem HighResolutionPlotService im Backend kommuniziert.**
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|

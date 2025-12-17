@@ -3171,6 +3171,8 @@ Print module, configurable for 2 print services: *High Resolution PlotService* a
 
 **This requires a backend!**
 
+**The *High Resolution Plot Service* does not support map rotation! If the tool is configured to it, map rotation should be disabled.**
+
 **A [Mapfish-Print3](https://mapfish.github.io/mapfish-print-doc), or *HighResolutionPlotService* is required as backend.**
 
 |Name|Required|Type|Default|Description|Expert|

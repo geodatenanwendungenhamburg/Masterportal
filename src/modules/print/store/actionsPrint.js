@@ -181,6 +181,7 @@ const actions = {
                         "dpi": state.dpiForPdf,
                         "projection": mapCollection.getMapView("2D").getProjection().getCode(),
                         "center": mapCollection.getMapView("2D").getCenter(),
+                        "rotation": mapCollection.getMapView("2D").getRotation() * (180 / Math.PI),
                         "scale": state.currentScale
                     }
                 }

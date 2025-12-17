@@ -357,7 +357,8 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
                         size: [1348, 864],
                         pixelToCoordinateTransform: [10.583327618336, 0, 0, -10.583327618336, 1104618.7926526342, 7087941.480887591],
                         viewState: {
-                            resolution: 15.874991427504629
+                            resolution: 15.874991427504629,
+                            rotation: 0.5
                         }
                     }
                 },
@@ -383,6 +384,7 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
                     "pixelToCoordinateTransform": evt.frameState.pixelToCoordinateTransform,
                     "resolution": evt.frameState.viewState.resolution,
                     "printMapSize": state.layoutMapInfo,
+                    "rotation": 0.5,
                     "scale": 20000,
                     "context": evt.context
                 };
@@ -486,6 +488,21 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
                         },
                         closePath: () => {
                             return null;
+                        },
+                        save: () => {
+                            return null;
+                        },
+                        restore: () => {
+                            return null;
+                        },
+                        rotate: () => {
+                            return null;
+                        },
+                        rect: () => {
+                            return null;
+                        },
+                        translate: () => {
+                            return null;
                         }
                     },
                     frameState: {
@@ -539,6 +556,18 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
                             return null;
                         },
                         closePath: () => {
+                            return null;
+                        },
+                        restore: () => {
+                            return null;
+                        },
+                        rotate: () => {
+                            return null;
+                        },
+                        save: () => {
+                            return null;
+                        },
+                        translate: () => {
                             return null;
                         }
                     },
