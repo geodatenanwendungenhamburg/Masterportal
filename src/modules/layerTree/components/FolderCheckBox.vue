@@ -160,9 +160,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
-    @import "~mixins";
-
     .layer-tree-folder-title {
         overflow: hidden;
         line-height: normal;
