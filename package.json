@@ -31,7 +31,7 @@
     "migrateConfig": "node devtools/tasks/migrator/migrate.js",
     "build": "node devtools/tasks/viteBuild.js",
     "buildPortal": "vite build --config devtools/vite.config.js && rm -rf dist/portal",
-    "buildExamples": "node devtools/tasks/exampleBuild.js && node devtools/tasks/exampleCopy.js",
+    "buildExamples": "cross-env EXAMPLES_ONLY=true vite build --config devtools/vite.config.js --mode production && rm -rf dist/portal dist/build dist/examples_*",
     "buildJsDoc": "node devtools/tasks/buildJsDoc.js",
     "versionHotfix": "npm version patch && npm run versionLatest && git tag -d lts && git push --tags -f --no-verify",
     "versionMinor": "npm version minor && npm run versionLatest && git tag -d lts && git push --tags -f --no-verify",
@@ -120,9 +120,9 @@
     "vite-plugin-dynamic-import": "^1.6.0",
     "vite-plugin-html-purgecss": "^0.1.1",
     "vite-plugin-node-polyfills": "^0.24.0",
+    "vite-plugin-zip-pack": "^1.2.4",
     "vitest": "^4.0.8",
-    "xmlserializer": "^0.6.1",
-    "zip-a-folder": "3.1.8"
+    "xmlserializer": "^0.6.1"
   },
   "overrides": {
     "@cesium/engine": "npm:dry-uninstall",
