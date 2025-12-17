@@ -16,7 +16,7 @@
     "url": "https://bitbucket.org/geowerkstatt-hamburg/masterportal.git"
   },
   "main": "src/masterportal.js",
-  "scripts": {  
+  "scripts": {
     "prestart": "node devtools/certificate/ensureDevCert.mjs",
     "start": "vite --config devtools/vite.config.js",
     "startDebug": "vite --config devtools/vite.config.js  --debug plugin-transform",
@@ -52,7 +52,7 @@
     }
   ],
   "dependencies": {
-    "@masterportal/masterportalapi": "git+https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git#vite-dev",
+    "@masterportal/masterportalapi": "bitbucket:geowerkstatt-hamburg/masterportalapi#vite-dev",
     "@popperjs/core": "^2.11.8",
     "axios": "^1.12.2",
     "bootstrap": "^5.3.8",
