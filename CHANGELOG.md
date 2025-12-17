@@ -12,6 +12,9 @@
 - App: All locales can now be overridden with the config.js, and new locales can be added.
 - Issue #1248: BaselayerSwitcher: Added configuration option `visibleBaselayerIds` that allows to restrict base layers available in the layer switcher.
 - LayerSelection: All layers in a folder can now be enabled or disabled by checking the `isFolderSelectable` attribute under `Add subject` configurable in config.json.
+- The following packages have been added:
+  - devDependencies:
+    - vite-plugin-zip-pack: ^1.2.4
 
 ### Changed
 - Issue #1254: LayerPreview: Allow setting static layer preview images (`layerConfig.elements.layers.preview.src`) for all supported layer types.
@@ -20,6 +23,9 @@
 ### Deprecated
 
 ### Removed
+- The following packages have been removed:
+  - devDependencies:
+    - zip-a-folder: 3.1.8
 
 ### Fixed
 - Issue #1241: WfsSearch: Fix an issue where queryType "like" would not result in a "PropertyIsLike" expression.
