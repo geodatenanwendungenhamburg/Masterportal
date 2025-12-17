@@ -18,6 +18,9 @@
 - WMS-Time:
     - The attributes `dimensionRange` and `dimensionRegex` can now be used to filter the values ​​that should be displayed in the time slider.
     - The attibute `staticDimensions` can now be configured and sent to the service when the WMS time layer is loaded.
+- The following packages have been added:
+  - devDependencies:
+    - vite-plugin-zip-pack: ^1.2.4
 
 ### Changed
 - Issue #1500: WfsSearch: Added multi-select functionality for search results with polygon markers on map and zoom to combined extent. Improved geometry extraction and row selection logic to prevent duplicate entries.
@@ -29,6 +32,9 @@
 ### Removed
 - Issue #1541: Removed one-var and vars-on-top linting rules for improved dev experience.
 - The `authenticationUrl` attribute has been removed from the documentation, as it is no longer used.
+- The following packages have been removed:
+  - devDependencies:
+    - zip-a-folder: 3.1.8
 
 ### Fixed
 - Issue #1497: FeatureViaUrl: Fixed initial `"zoomTo"` feature for FeatureViaUrl-created vector layers.
