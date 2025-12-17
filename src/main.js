@@ -64,7 +64,7 @@ loadConfigJs.then(() => {
     }
 
 
-    initLanguage(Config.portalLanguage, Config.portalLocales)//TODO INKA
+    initLanguage(Config.portalLanguage, Config.portalLocales)
         .then(() => {
             initiateVueI18Next(app);
             app.mount("#masterportal-root");
