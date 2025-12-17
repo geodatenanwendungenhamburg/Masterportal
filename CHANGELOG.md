@@ -14,6 +14,9 @@
 - Issue: #1525: convertFeaturesToKml: Added alert for unsupported geometry types.
 - LayerSelection: All layers in a folder can now be enabled or disabled by checking the `isFolderSelectable` attribute under `Add subject` configurable in config.json.
 - WMS-Time: The default value can now be specified as a number within the dimension.
+- The following packages have been added:
+  - devDependencies:
+    - vite-plugin-zip-pack: ^1.2.4
 
 ### Changed
 - Issue #1254: LayerPreview: Allow setting static layer preview images (`layerConfig.elements.layers.preview.src`) for all supported layer types.
@@ -24,6 +27,9 @@
 ### Deprecated
 
 ### Removed
+- The following packages have been removed:
+  - devDependencies:
+    - zip-a-folder: 3.1.8
 
 ### Fixed
 - Issue #1168: Fix autoRefresh for LayerGroups.

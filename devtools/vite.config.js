@@ -2,21 +2,24 @@
 // 24.10.2025:
 // the changes from Innoq are integrated here
 // see https://github.com/micha149/lgv-masterportal/compare/vite-dev...build-setup-enhancements
-import {defineConfig} from "vite";
+import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import path from "path";
 import glob from "fast-glob";
 import fs from "fs";
-import {nodePolyfills} from "vite-plugin-node-polyfills";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 import cp from "vite-plugin-cp";
 import htmlExtFallback from "./tasks/html-ext-fallback-plugin.js";
-import {directoryListing} from "./tasks/directory-listing-plugin.js";
+import { directoryListing } from "./tasks/directory-listing-plugin.js";
 import addonModules from "./tasks/addon-modules-plugin.js";
 import getMastercodeVersionFolderName from "./tasks/getMastercodeVersionFolderName.mjs";
+import zipPack from "vite-plugin-zip-pack";
 
 let proxyConfig = {},
-    {vueAddons} = await collectAddons();
-const portalFolderName = process.env.PORTAL_FOLDER || "portal",
+    { vueAddons } = await collectAddons(),
+    base;
+const examplesOnly = process.env.EXAMPLES_ONLY === "true",
+    portalFolderName = process.env.PORTAL_FOLDER || "portal",
     rootPath = path.resolve(__dirname, "../"),
     httpsConfig = {
         cert: fs.existsSync("devtools/certificate/localhost.pem")
@@ -25,13 +28,18 @@ const portalFolderName = process.env.PORTAL_FOLDER || "portal",
         key: fs.existsSync("devtools/certificate/localhost.key")
             ? fs.readFileSync("devtools/certificate/localhost.key")
             : undefined
-    },
-    portalEntries = glob.sync(`${portalFolderName}/**/index.html`, {cwd: rootPath}).map(file => {
-        const portalName = file.split("/").at(-2); // foldernames of portals
+    };
 
-        return [`portal-${portalName}`, path.resolve(rootPath, file)];
-    }),
-    mastercodeVersionFolderName = getMastercodeVersionFolderName(),
+let portalEntries = glob.sync(`${portalFolderName}/**/index.html`, { cwd: rootPath }).map(file => {
+    const portalName = file.split("/").at(-2); // foldernames of portals
+    return [`portal-${portalName}`, path.resolve(rootPath, file)];
+});
+
+if (examplesOnly) {
+    portalEntries = portalEntries.filter(([name]) => name === "portal-basic");
+}
+
+const mastercodeVersionFolderName = process.env.MASTERCODE_VERSION_FOLDER || getMastercodeVersionFolderName(),
     isWin = process.platform === "win32",
     slash = (p) => typeof p === "string" ? isWin ? p.replace(/\\/g, "/") : p : String(p || "");
 
@@ -43,8 +51,8 @@ else if (fs.existsSync("./devtools/proxyconf_example.json")) {
 }
 const FORCE_HTTPS = process.env.VITE_FORCE_HTTPS === "true";
 
-export default defineConfig(({mode}) => {
-    const isProd = mode === "production",
+export default defineConfig(({ mode }) => {
+    const isProd = mode === "production";
 
     base = isProd
         ? `mastercode/${mastercodeVersionFolderName}`
@@ -92,32 +100,81 @@ export default defineConfig(({mode}) => {
             {
                 name: "remove-crossorigin",
                 apply: "build",
-                transformIndexHtml(html) {                    
+                transformIndexHtml(html) {
                     return html.replaceAll(" crossorigin", "");
                 }
             },
- 
-            isProd && cp({
+            isProd && examplesOnly && {
+                name: "fix-index-for-examples",
+                transformIndexHtml(html) {
+                    return html
+                        .replace(
+                            /src="\/mastercode\/([^"]+)\/js\/[^"]+"/,
+                            'src="/mastercode/$1/js/masterportal.js"'
+                        )
+                        .replace(
+                            /href="\/mastercode\/([^"]+)\/css\/[^"]+"/,
+                            'href="/mastercode/$1/css/masterportal.css"'
+                        );
+                }
+            },
+
+            isProd && !examplesOnly && cp({
+                // copy all besides modified index.html files
                 targets: [
-                    // copy all besides modified index.html files
                     {
                         src: `./${portalFolderName}`,
                         dest: "dist",
                         copyOptions: {
-                            filter: (src, dest) => {
-                                if (src.endsWith("/index.html")) {
-                                    return false;
-                                }
-                                return true;
-                            }
+                            filter: (src) => !src.endsWith("/index.html")
                         }
-
                     },
                     // copy modified index.html files
-                    {src: `./dist/${portalFolderName}`, dest: "dist"},
-                    {src: "./src/assets/img", dest: `dist/mastercode/${mastercodeVersionFolderName}/img`},
-                    {src: "./locales", dest: `dist/mastercode/${mastercodeVersionFolderName}/locales`}
+                    { src: `./dist/${portalFolderName}`, dest: "dist" }
                 ]
+            }),
+
+            isProd && cp({
+                targets: [
+                    { src: "./src/assets/img", dest: `dist/mastercode/${mastercodeVersionFolderName}/img` },
+                    { src: "./locales", dest: `dist/mastercode/${mastercodeVersionFolderName}/locales` }
+                ]
+            }),
+
+            isProd && examplesOnly && cp({
+                targets: [
+                    { src: "./dist/portal/basic/index.html", dest: `dist/examples_${mastercodeVersionFolderName}/basic` },
+
+                    {
+                        src: "./portal/basic",
+                        dest: `dist/examples_${mastercodeVersionFolderName}/basic`,
+                        copyOptions: {
+                            filter: (src) => {
+                                const p = slash(src);
+                                return !p.endsWith("/index.html");
+                            }
+                        }
+                    },
+                    {
+                        src: `./dist/mastercode/${mastercodeVersionFolderName}`,
+                        dest: `dist/examples_${mastercodeVersionFolderName}/mastercode/${mastercodeVersionFolderName}`
+                    },
+                    {
+                        src: "./src/assets/img",
+                        dest: `dist/examples_${mastercodeVersionFolderName}/mastercode/${mastercodeVersionFolderName}/img`
+                    },
+                    {
+                        src: "./locales",
+                        dest: `dist/examples_${mastercodeVersionFolderName}/mastercode/${mastercodeVersionFolderName}/locales`
+                    }
+                ]
+            }),
+
+            isProd && examplesOnly && zipPack({
+                inDir: `dist/examples_${mastercodeVersionFolderName}`,
+                outDir: "dist",
+                outFileName: `examples-${mastercodeVersionFolderName}.zip`,
+                pathPrefix: ""
             })
         ],
 
@@ -164,11 +221,7 @@ export default defineConfig(({mode}) => {
                         {
                             target: config.target,
                             changeOrigin: true,
-                            rewrite: somePath => {
-                                const rewrittenPath = somePath.replace(new RegExp(`^${key}`), "");
-
-                                return rewrittenPath;
-                            },
+                            rewrite: somePath => somePath.replace(new RegExp(`^${key}`), ""),
                             secure: false
                         }
                     ];
@@ -185,24 +238,35 @@ export default defineConfig(({mode}) => {
             rollupOptions: {
                 input: Object.fromEntries(portalEntries),
                 output: {
-                     assetFileNames: (entry) => {
-                        let extType = entry.name.split('.').at(1),
-                            folderName = "js";
+                    assetFileNames: (entry) => {
+                        const name = String(entry?.name || ""),
+                              extType = name.split(".").at(1),
+                              isCss = /css/i.test(extType);
 
-                        if (/css/i.test(extType)) {
+                        if (isProd && examplesOnly && isCss && name.includes("portal-basic")) {
+                            return `${base}/css/masterportal.[ext]`;
+                        }
+
+                        let folderName = "js";
+                        if (isCss) {
                             folderName = "css";
                         }
                         return `${base}/${folderName}/[name].[ext]`;
                     },
                     entryFileNames: (entry) => {
-                        if (entry.name.startsWith("addon-")) {
+                        if (entry.name && entry.name.startsWith("addon-")) {
                             return `${base}/addons/${entry.name.substring(6)}.js`;
                         }
+
+                        if (isProd && examplesOnly && entry.name === "portal-basic") {
+                            return `${base}/js/masterportal.js`;
+                        }
+
                         return `${base}/js/[name].js`;
                     },
                     chunkFileNames: `${base}/js/[name].js`
                 },
-                external (id) {
+                external(id) {
                     const pid = slash(id);
 
                     if (pid.includes("/node_modules/")) {
@@ -262,7 +326,7 @@ export default defineConfig(({mode}) => {
  * Collects addons from 'addonsConf.json'.
  * @returns both Vue and plain addons to mimic Webpack's DefinePlugin(ADDONS, VUE_ADDONS).
  */
-async function collectAddons () {
+async function collectAddons() {
     const rootPath = path.resolve(__dirname, "../"),
         addonBasePath = path.resolve(rootPath, "addons"),
         addonConfigPath = path.resolve(addonBasePath, "addonsConf.json"),
@@ -270,7 +334,7 @@ async function collectAddons () {
 
     if (!fs.existsSync(addonConfigPath)) {
         console.warn("NOTICE: " + addonConfigPath + " not found. Skipping all addons.");
-        return {vueAddons};
+        return { vueAddons };
     }
 
     const data = fs.readFileSync(addonConfigPath, "utf8"),
@@ -310,7 +374,7 @@ async function collectAddons () {
         }
 
         if (isVueAddon) {
-            vueAddons[addonName] = Object.assign({"entry": addonCombinedRelpath}, addonEntryPoints[addonName]);
+            vueAddons[addonName] = Object.assign({ "entry": addonCombinedRelpath }, addonEntryPoints[addonName]);
         }
         else {
             console.warn("Detected addon, that does not follow the rules for addons:", addonName);
@@ -318,6 +382,6 @@ async function collectAddons () {
         }
     }
 
-    console.info("provided addons:", JSON.stringify(Object.keys(vueAddons))+"\n");
-    return {vueAddons};
+    console.info("provided addons:", JSON.stringify(Object.keys(vueAddons)) + "\n");
+    return { vueAddons };
 }
