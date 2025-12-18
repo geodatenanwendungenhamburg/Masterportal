@@ -4,6 +4,11 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## 2025-12-18 v3.17.1
+
+### Fixed
+- Flurstücksbericht: Fix for Flurstücksbericht print - PDF download.
+
 ## 2025-12-03 v3.17.0
 
 ### Added
