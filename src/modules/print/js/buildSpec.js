@@ -480,7 +480,7 @@ const BuildSpecModel = {
         if (store.state.Modules.Print.printService === "plotservice") {
             mapObject.title = layer.get("name");
         }
-        if (this.defaults.layout.startsWith("A0")) {
+        if (this.defaults.layout !== null && this.defaults.layout.startsWith("A0")) {
             mapObject.type = "tiledwms";
             mapObject.tileSize = [source.getParams().WIDTH || 512, source.getParams().HEIGHT || 512];
         }
