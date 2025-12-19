@@ -10,7 +10,7 @@ const
     SUBJECTDATA_OLD = "Fachdaten",
     DATA3D_OLD = "Fachdaten_3D";
 
-module.exports = {
+export {
     DATA3D_OLD,
     PORTALCONFIG,
     PORTALCONFIG_OLD,
