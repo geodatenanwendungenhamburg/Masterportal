@@ -1,12 +1,16 @@
 /* eslint-disable no-console */
-const fs = require("fs").promises,
-    path = require("path"),
-    createMainMenu = require("./createMainMenu"),
-    createSecondaryMenu = require("./createSecondaryMenu"),
-    {copyDir, deleteTranslateInName, getToolFromOldConfig, migrateIdWithSuffix, replaceInFile, removeAttributesFromTools} = require("./utils"),
-    {PORTALCONFIG, PORTALCONFIG_OLD, TOPICS, TOPICS_OLD, BASEMAPS, BASEMAPS_OLD, BASEMAPS_NEW, SUBJECTDATA, SUBJECTDATA_OLD, DATA3D_OLD} = require("./constants"),
-    rootPath = path.resolve(__dirname, "../../../"),
-    {deprecated, removed, toolsNotToMigrate, toRemoveFromConfigJs, toRemoveFromTools} = require("./configuration");
+import {readFile, writeFile, readdir, mkdir, copyFile} from "fs/promises";
+import {fileURLToPath, pathToFileURL} from "url";
+import path from "path";
+import {createMainMenu} from "./createMainMenu.js";
+import {createSecondaryMenu} from "./createSecondaryMenu.js";
+import {copyDir, deleteTranslateInName, getToolFromOldConfig, migrateIdWithSuffix, replaceInFile, removeAttributesFromTools} from "./utils.js";
+import {PORTALCONFIG, PORTALCONFIG_OLD, TOPICS, TOPICS_OLD, BASEMAPS, BASEMAPS_OLD, BASEMAPS_NEW, SUBJECTDATA, SUBJECTDATA_OLD, DATA3D_OLD} from "./constants.js";
+import {deprecated, removed, toolsNotToMigrate, toRemoveFromConfigJs, toRemoveFromTools} from "./configuration.js";
+
+const __filename = fileURLToPath(import.meta.url),
+    __dirname = path.dirname(__filename),
+    rootPath = path.resolve(__dirname, "../../../");
 let migratedTools = toolsNotToMigrate.concat(deprecated);
 
 /**
@@ -449,7 +453,7 @@ function createGroupLayer (layers) {
  * @returns {String} the title and the logo from index.html
  */
 async function getTitleFromHtml (sourceFolder, indexFile) {
-    const data = await fs.readFile(path.resolve(sourceFolder, indexFile), "utf8"),
+    const data = await readFile(path.resolve(sourceFolder, indexFile), "utf8"),
         startIndexTitle = data.indexOf("<title>"),
         endIndexTitle = data.indexOf("</title>"),
         title = data.substring(startIndexTitle + "<title>".length, endIndexTitle),
@@ -471,7 +475,7 @@ async function getTitleFromHtml (sourceFolder, indexFile) {
  * @returns {void}
  */
 function migrateIndexHtml (sourceFolder, destFolder, indexFile) {
-    fs.readFile(path.resolve(sourceFolder, indexFile), "utf8")
+    readFile(path.resolve(sourceFolder, indexFile), "utf8")
         .then(data => {
             let result,
                 // removes <div id="loader"... and load of special_loaders.js from index.html - loader is no longer provided.
@@ -490,11 +494,17 @@ function migrateIndexHtml (sourceFolder, destFolder, indexFile) {
             if (result.includes("Cesium.js")) {
                 result = result.replace(regexCesium, "");
             }
+            if (result.includes("<script type=\"text/javascript\" src=\"../../build/js/masterportal.js\"></script>")) {
+                result = result.replace("<script type=\"text/javascript\" src=\"../../build/js/masterportal.js\"></script>", "<script type=\"module\" src=\"/src/masterportal.js\"></script>");
+            }
+            if (result.includes("<link rel=\"stylesheet\" href=\"../../build/css/masterportal.css\">")) {
+                result = result.replace("<link rel=\"stylesheet\" href=\"../../build/css/masterportal.css\">", "");
+            }
             if (result.indexOf("lgv-container") > -1 || result.indexOf("masterportal-container") > -1) {
                 console.warn("IS TOO OLD - NOT MIGRATED: ", indexFile);
             }
 
-            fs.writeFile(path.resolve(destFolder, indexFile), result, "utf8");
+            writeFile(path.resolve(destFolder, indexFile), result, "utf8");
 
         })
         .catch(err => {
@@ -509,13 +519,14 @@ function migrateIndexHtml (sourceFolder, destFolder, indexFile) {
  * @returns {void}
  */
 async function checkConfigJS (sourceFolder, configJsFile) {
-    const configJsPath = path.resolve(sourceFolder, configJsFile);
+    const configJsPath = path.resolve(sourceFolder, configJsFile),
+        configJS = await import(pathToFileURL(configJsPath).href);
 
-    if (Object.keys(require(configJsPath)).length === 0) {
-        const data = await fs.readFile(configJsPath, "utf8"),
+    if (Object.keys(configJS).length === 0) {
+        const data = await readFile(configJsPath, "utf8"),
             dataToWrite = data + "\n  if (typeof module !== \"undefined\") { module.exports = Config; }";
 
-        await fs.writeFile(configJsPath, dataToWrite, "utf8");
+        await writeFile(configJsPath, dataToWrite, "utf8");
     }
 }
 
@@ -530,7 +541,7 @@ async function migrateFiles (sourcePath, destPath) {
         sourceFolder = path.resolve(rootPath, sourcePath),
         destFolder = path.resolve(rootPath, destPath);
 
-    fs.readdir(sourceFolder)
+    readdir(sourceFolder)
         .then(files => {
             let configJS = null;
             const configJsonFile = files.find(fileName => fileName === "config.json"),
@@ -542,67 +553,70 @@ async function migrateFiles (sourcePath, destPath) {
                 configJsDestFile = path.resolve(destFolder, configJsFile);
 
             checkConfigJS(sourceFolder, configJsFile).then(() => {
-                configJS = require(path.resolve(sourceFolder, configJsFile));
+                const configJsPath = path.resolve(sourceFolder, configJsFile);
 
-                copyDir(sourcePath, destPath).then(() => {
-                    fs.readFile(configJsonSrcFile, "utf8")
-                        .then(data => {
-                            const migrated = {},
-                                parsed = JSON.parse(data);
+                import(pathToFileURL(configJsPath).href).then(module => {
+                    configJS = module.default || module;
+                    copyDir(sourcePath, destPath).then(() => {
+                        readFile(configJsonSrcFile, "utf8")
+                            .then(data => {
+                                const migrated = {},
+                                    parsed = JSON.parse(data);
 
-                            if (!parsed[PORTALCONFIG_OLD].mainMenu) {
-                                console.info("\n#############################     migrate     #############################\n");
-                                console.info("--- ATTENTION --- \nthis version will not migrate the following tools: ", toolsNotToMigrate.join(", ") + "\n");
-                                console.info("\ntools no longer available are not migrated: ", removed.join(", ") + "\n");
-                                console.info("\ndeprecated tools are not migrated:", deprecated.join(", ") + "\n---\n");
-                                console.info("source: ", configJsonSrcFile, "\ndestination: ", configJsonDestFile, "\n");
-                                migratedTools = migratedTools.concat(removed);
-                                getTitleFromHtml(sourceFolder, indexFile).then((titleAndLogo) => {
-                                    const gfi = migrateGFI(parsed);
+                                if (!parsed[PORTALCONFIG_OLD].mainMenu) {
+                                    console.info("\n#############################     migrate     #############################\n");
+                                    console.info("--- ATTENTION --- \nthis version will not migrate the following tools: ", toolsNotToMigrate.join(", ") + "\n");
+                                    console.info("\ntools no longer available are not migrated: ", removed.join(", ") + "\n");
+                                    console.info("\ndeprecated tools are not migrated:", deprecated.join(", ") + "\n---\n");
+                                    console.info("source: ", configJsonSrcFile, "\ndestination: ", configJsonDestFile, "\n");
+                                    migratedTools = migratedTools.concat(removed);
+                                    getTitleFromHtml(sourceFolder, indexFile).then((titleAndLogo) => {
+                                        const gfi = migrateGFI(parsed);
 
-                                    migrated[PORTALCONFIG] = {};
-                                    migrated[PORTALCONFIG].map = migrateMapParameters(configJS);
-                                    migrated[PORTALCONFIG].map.mapView = readMapView(parsed, configJS);
-                                    migrated[PORTALCONFIG].portalFooter = migrateFooter(configJS);
-                                    migrated[PORTALCONFIG].map.controls = migrateControls(parsed);
-                                    if (gfi) {
-                                        migrated[PORTALCONFIG].map.getFeatureInfo = gfi;
-                                    }
-                                    migrated[PORTALCONFIG].tree = migrateTree(parsed, configJS);
-                                    migrated[PORTALCONFIG].mainMenu = createMainMenu(parsed, titleAndLogo, configJS, migratedTools, toRemoveFromTools);
-                                    migrated[PORTALCONFIG].secondaryMenu = createSecondaryMenu(parsed, migratedTools, toRemoveFromTools);
-                                    migrated[TOPICS] = migrateTopics(parsed);
+                                        migrated[PORTALCONFIG] = {};
+                                        migrated[PORTALCONFIG].map = migrateMapParameters(configJS);
+                                        migrated[PORTALCONFIG].map.mapView = readMapView(parsed, configJS);
+                                        migrated[PORTALCONFIG].portalFooter = migrateFooter(configJS);
+                                        migrated[PORTALCONFIG].map.controls = migrateControls(parsed);
+                                        if (gfi) {
+                                            migrated[PORTALCONFIG].map.getFeatureInfo = gfi;
+                                        }
+                                        migrated[PORTALCONFIG].tree = migrateTree(parsed, configJS);
+                                        migrated[PORTALCONFIG].mainMenu = createMainMenu(parsed, titleAndLogo, configJS, migratedTools, toRemoveFromTools);
+                                        migrated[PORTALCONFIG].secondaryMenu = createSecondaryMenu(parsed, migratedTools, toRemoveFromTools);
+                                        migrated[TOPICS] = migrateTopics(parsed);
 
-                                    fs.mkdir(destPath, {recursive: true})
-                                        .then(() => {
-                                            fs.writeFile(configJsonDestFile, JSON.stringify(migrated, null, 4), "utf8")
-                                                .then(() => {
-                                                    replaceInFile(configJsonDestFile);
-                                                    fs.copyFile(configJsSrcFile, configJsDestFile);
-                                                    migrateIndexHtml(sourceFolder, destFolder, indexFile);
-                                                    console.info("ATTENTION - TODO for User --- remove from config.js by yourself: ", toRemoveFromConfigJs.join(", ") + "\n");
-                                                    console.info("SUCCESSFULLY MIGRATED: ", destFolder);
-                                                })
-                                                .catch(err => {
-                                                    console.error(err);
-                                                });
-                                        })
-                                        .catch(err => {
-                                            console.error(err);
-                                        });
-                                });
-                            }
-                            else {
-                                console.warn("IS ALREADY IN V3.0.0 - NOT MIGRATED: ", configJsonSrcFile);
-                            }
-                        })
+                                        mkdir(destPath, {recursive: true})
+                                            .then(() => {
+                                                writeFile(configJsonDestFile, JSON.stringify(migrated, null, 4), "utf8")
+                                                    .then(() => {
+                                                        replaceInFile(configJsonDestFile);
+                                                        copyFile(configJsSrcFile, configJsDestFile);
+                                                        migrateIndexHtml(sourceFolder, destFolder, indexFile);
+                                                        console.info("ATTENTION - TODO for User --- remove from config.js by yourself: ", toRemoveFromConfigJs.join(", ") + "\n");
+                                                        console.info("SUCCESSFULLY MIGRATED: ", destFolder);
+                                                    })
+                                                    .catch(err => {
+                                                        console.error(err);
+                                                    });
+                                            })
+                                            .catch(err => {
+                                                console.error(err);
+                                            });
+                                    });
+                                }
+                                else {
+                                    console.warn("IS ALREADY IN V3.0.0 - NOT MIGRATED: ", configJsonSrcFile);
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                            });
+                    })
                         .catch(err => {
                             console.error(err);
                         });
-                })
-                    .catch(err => {
-                        console.error(err);
-                    });
+                });
             })
                 .catch(err => {
                     console.error(err);
@@ -619,10 +633,10 @@ async function migrateFiles (sourcePath, destPath) {
  * @param {Object} answers contains the sourcePath and the destPath
  * @returns {void}
  */
-module.exports = function migrate (answers) {
+function migrate (answers) {
     const sourcePath = path.resolve(rootPath, answers.sourcePath);
 
-    fs.readdir(sourcePath)
+    readdir(sourcePath)
         .then(files => {
             if (files.find(fileName => fileName === "config.json")) {
                 migrateFiles(answers.sourcePath, answers.destPath);
@@ -631,7 +645,7 @@ module.exports = function migrate (answers) {
                 files.forEach(file => {
                     const sourceFolder = path.resolve(sourcePath, file);
 
-                    fs.readdir(sourceFolder)
+                    readdir(sourceFolder)
                         .then(sourcePathFiles => {
                             if (sourcePathFiles.find(fileName => fileName === "config.json")) {
                                 migrateFiles(answers.sourcePath + path.sep + file, answers.destPath + path.sep + file);
@@ -646,5 +660,9 @@ module.exports = function migrate (answers) {
         .catch(err => {
             console.error(err);
         });
+}
+
+export default {
+    migrate
 };
 
