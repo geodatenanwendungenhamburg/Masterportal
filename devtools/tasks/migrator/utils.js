@@ -1,8 +1,8 @@
-const fs = require("fs-extra"),
-    path = require("path"),
-    {replacementsInConfigJson} = require("./configuration"),
-    {replaceInFileSync} = require("replace-in-file"),
-    {PORTALCONFIG_OLD} = require("./constants");
+import {readdir, mkdir, copyFile} from "fs/promises";
+import path from "path";
+import {replacementsInConfigJson} from "./configuration.js";
+import {replaceInFileSync} from "replace-in-file";
+import {PORTALCONFIG_OLD} from "./constants.js";
 
 /**
  * Removes all attributes from tool config found in 'toRemoveFromTools'.
@@ -28,8 +28,8 @@ function removeAttributesFromTools (toRemoveFromTools, tool) {
  * @returns {void}
  */
 async function copyDir (src, dest) {
-    await fs.mkdir(dest, {recursive: true});
-    const entries = await fs.readdir(src, {withFileTypes: true});
+    await mkdir(dest, {recursive: true});
+    const entries = await readdir(src, {withFileTypes: true});
 
     for (const entry of entries) {
         const srcPath = path.join(src, entry.name),
@@ -39,7 +39,7 @@ async function copyDir (src, dest) {
             await copyDir(srcPath, destPath);
         }
         else {
-            await fs.copyFile(srcPath, destPath);
+            await copyFile(srcPath, destPath);
         }
     }
 }
@@ -114,7 +114,7 @@ function migrateIdWithSuffix (layers) {
 }
 
 
-module.exports = {
+export {
     copyDir,
     deleteTranslateInName,
     getToolFromOldConfig,
