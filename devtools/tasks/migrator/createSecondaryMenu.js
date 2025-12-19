@@ -1,8 +1,15 @@
 /* eslint-disable no-console */
-const {PORTALCONFIG_OLD} = require("./constants"),
-    {deleteTranslateInName, removeAttributesFromTools} = require("./utils");
+import {PORTALCONFIG_OLD} from "./constants.js";
+import {deleteTranslateInName, removeAttributesFromTools} from "./utils.js";
 
-module.exports = function createSecondaryMenu (data, migratedTools, toRemoveFromTools) {
+/**
+ * Migrates secondary menu.
+ * @param {Object} data parsed config.json content
+ * @param {Array} migratedTools already migrated v2 tools
+ * @param {Object} toRemoveFromTools attributes to remove from tools by type
+ * @returns {Object} the migrated secondary menu
+ */
+function createSecondaryMenu (data, migratedTools, toRemoveFromTools) {
     console.info("secondaryMenu");
     const secondaryMenu = {
         expanded: false,
@@ -11,7 +18,7 @@ module.exports = function createSecondaryMenu (data, migratedTools, toRemoveFrom
 
     fillSections(data, secondaryMenu, migratedTools, toRemoveFromTools);
     return secondaryMenu;
-};
+}
 
 /**
  * Fills the menu sections of secondary menu with tools contained in v2 config.json.
@@ -188,4 +195,8 @@ function adaptWfst (tool) {
         });
     }
 }
+
+export {
+    createSecondaryMenu
+};
 
