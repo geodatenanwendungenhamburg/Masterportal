@@ -1,8 +1,17 @@
 /* eslint-disable no-console */
-const {PORTALCONFIG_OLD} = require("./constants"),
-    {removeAttributesFromTools} = require("./utils");
+import {PORTALCONFIG_OLD} from "./constants.js";
+import {removeAttributesFromTools} from "./utils.js";
 
-module.exports = function createMainMenu (data, titleAndLogo, configJS, migratedTools, toRemoveFromTools) {
+/**
+ * Migrates main menu.
+ * @param {Object} data parsed config.json content
+ * @param {Object} titleAndLogo from index.html
+ * @param {Object} configJS content of the config.js file
+ * @param {Array} migratedTools already migrated v2 tools
+ * @param {Object} toRemoveFromTools attributes to remove from tools by type
+ * @returns {Object} the migrated main menu
+ */
+function createMainMenu (data, titleAndLogo, configJS, migratedTools, toRemoveFromTools) {
     console.info("mainMenu");
     const mainMenu = {
         expanded: true,
@@ -14,7 +23,7 @@ module.exports = function createMainMenu (data, titleAndLogo, configJS, migrated
     fillMainSections(data, configJS, mainMenu, migratedTools, toRemoveFromTools);
 
     return mainMenu;
-};
+}
 
 /**
  * Fills the menu sections of main menu with print, openConfig, legend, shareView, contact and language.
@@ -251,3 +260,7 @@ function addTitle (data, mainMenu, titleAndLogo) {
     mainMenu.title = newTitle;
     console.info("   title");
 }
+
+export {
+    createMainMenu
+};

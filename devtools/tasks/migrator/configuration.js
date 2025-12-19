@@ -40,7 +40,7 @@ const toolsNotToMigrate = [
         "filter": ["deactivateGFI", "isInitOpen", "isGeneric"],
         "getFeatureInfo": ["name", "centerMapToClickPoint", "desktopType", "type"]
     },
-    toRemoveFromConfigJs = ["footer", "defaultToolId", "gfiWindow", "scaleLine", "tree.layerIDsToIgnore", "tree.layerIDsToStyle", "tree.metaIDsToMerge", "tree.metaIDsToIgnore"],
+    toRemoveFromConfigJs = ["footer", "defaultToolId", "gfiWindow", "mouseHover", "scaleLine", "tree.layerIDsToIgnore", "tree.layerIDsToStyle", "tree.metaIDsToMerge", "tree.metaIDsToIgnore"],
     replacementsInConfigJson = {
         "menu.tools.parcelSearch": "modules.wfsSearch.parcelSearch",
         "modules.tools.wfsSearch": "modules.wfsSearch",
@@ -60,7 +60,7 @@ const toolsNotToMigrate = [
         "\"type\": \"gfi\"": "\"type\":\"getFeatureInfo\""// module gfi
     };
 
-module.exports = {
+export {
     deprecated,
     removed,
     replacementsInConfigJson,
