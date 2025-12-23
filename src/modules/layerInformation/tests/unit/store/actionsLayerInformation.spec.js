@@ -1,8 +1,9 @@
 import {expect} from "chai";
 import sinon from "sinon";
-import testAction from "@devtools/tests/VueTestUtils";
-import actions from "@modules/layerInformation/store/actionsLayerInformation";
-import getCswRecordById from "@shared/js/api/getCswRecordById";
+import testAction from "@devtools/tests/VueTestUtils.js";
+import actions from "@modules/layerInformation/store/actionsLayerInformation.js";
+import getCswRecordById from "@shared/js/api/getCswRecordById.js";
+import axios from "axios";
 
 const {startLayerInformation, setMetadataURL} = actions;
 
@@ -313,6 +314,7 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
             expect(commit.getCall(9).args[0]).to.equal("setDownloadLinks");
             expect(commit.getCall(9).args[1]).to.be.deep.equals([]);
         });
+
         it("ensures that downloadLinks is set to null", () => {
             const metaInfo = {},
                 state = {};
@@ -322,6 +324,41 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
             expect(commit.callCount).to.be.equal(9);
             expect(commit.firstCall.args[0]).to.equal("setDownloadLinks");
             expect(commit.firstCall.args[1]).to.be.deep.equals(null);
+        });
+
+        it("retrieves data from unmodified cswUrl when metaId is nullish", async () => {
+            const metaInfoNull = {
+                    customMetadata: true,
+                    metaId: null,
+                    cswUrl: "https://metaver.de/csw"
+                },
+                metaInfoUndefined = {
+                    customMetadata: true,
+                    metaId: undefined,
+                    cswUrl: "https://metaver.de/csw"
+                },
+                state = {};
+
+            sinon.stub(axios, "get").resolves({
+                request: {
+                    responseXML: new DOMParser().parseFromString("<Metadata></Metadata>", "application/xml")
+                }
+            });
+
+            sinon.stub(getCswRecordById, "getMetadata").returns(undefined);
+
+            await actions.getAbstractInfo({commit, dispatch, state, rootGetters}, metaInfoNull);
+
+            expect(axios.get.calledWith(metaInfoNull.cswUrl)).to.be.true;
+            expect(dispatch.calledWith("getCustomMetaData")).to.be.true;
+
+            axios.get.resetHistory();
+            dispatch.resetHistory();
+
+            await actions.getAbstractInfo({commit, dispatch, state, rootGetters}, metaInfoUndefined);
+
+            expect(axios.get.calledWith(metaInfoUndefined.cswUrl)).to.be.true;
+            expect(dispatch.calledWith("getCustomMetaData")).to.be.true;
         });
     });
     describe("additionalSingleLayerInfo", () => {
