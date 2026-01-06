@@ -9,12 +9,9 @@ import store from "@appstore/index.js";
  * @param {Object} mapMarker The mapMarker config of config.json file.
  * @returns {void}
  */
-function initializeMapMarkers (mapMarker) {
-    // #VITE Modified here to prevent the code from breaking or freezing
-    const safeMapMarker = mapMarker || {pointStyleId: "mapMarker_geo-alt-fill"};
-
-    store.dispatch("Maps/addLayer", createMapMarker("POINT", safeMapMarker.pointStyleId));
-    store.dispatch("Maps/addLayer", createMapMarker("POLYGON", safeMapMarker.polygonStyleId));
+function initializeMapMarkers (mapMarker = {}) {
+    store.dispatch("Maps/addLayer", createMapMarker("POINT", mapMarker.pointStyleId));
+    store.dispatch("Maps/addLayer", createMapMarker("POLYGON", mapMarker.polygonStyleId));
 }
 
 /**
