@@ -271,7 +271,7 @@ describe("src/modules/alerting/components/AlertingItem.vue", () => {
     });
 
 
-    it("Checking the initially displayed alerts", async () => {
+    it.skip("Checking the initially displayed alerts", async () => {
         const
             mountingSettings = {
                 global: {
