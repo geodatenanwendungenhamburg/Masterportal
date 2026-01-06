@@ -5,7 +5,6 @@ import getNestedValues from "../utils/getNestedValues.js";
 import handleAxiosError from "@shared/js/utils/handleAxiosError.js";
 import xml2json from "../utils/xml2json.js";
 import {setWebLinks} from "../utils/urlHelper.js";
-import i18next from "i18next";
 
 /**
  * Handles the GetRecordById request.

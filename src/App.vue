@@ -160,8 +160,7 @@ export default {
                 breakpoint = "(max-width: 768px)",
                 mediaQuery = window.matchMedia(breakpoint);
 
-            // #VITE does this work?
-            window.addEventListener("resize", () => this.onResize(MOBILE, DESKTOP));
+            this.setDeviceMode(mediaQuery.matches ? MOBILE : DESKTOP);
 
             this.mediaQueryHandler = (event) => {
                 this.setDeviceMode(event.matches ? MOBILE : DESKTOP);
