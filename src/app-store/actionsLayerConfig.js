@@ -273,7 +273,7 @@ export default function getActionsLayerConfig () {
                     folders = allLayerConfigsStructured.filter(conf => conf.type === "folder");
 
                 if (allLayerConfigsStructured.find(conf => conf.legendURL !== undefined)) {
-                    console.warn("legendURL ist deprecated in one of the next versions. Please use attribute \"legend\" als Boolean or String with path to legend image or pdf.");
+                    console.warn("legendURL ist deprecated in one of the next versions. Please use attribute \"legend\" as boolean or string with path to legend image or pdf.");
                 }
 
                 buildTreeStructure.setIdsAtFolders(folders);
@@ -314,7 +314,7 @@ export default function getActionsLayerConfig () {
                 layersStructured = buildTreeStructure.build(rawlayers, state.layerConfig, getters.activeOrFirstCategory, layerContainer);
 
             if (rawlayers.find(conf => conf.legendURL !== undefined)) {
-                console.warn("legendURL ist deprecated in one of the next versions. Please use attribute \"legend\" als Boolean or String with path to legend image or pdf.");
+                console.warn("legendURL ist deprecated in one of the next versions. Please use attribute \"legend\" as boolean or string with path to legend image or pdf.");
             }
 
             commit("setLayerConfigByParentKey", {layerConfigs: layersStructured, parentKey: treeSubjectsKey});

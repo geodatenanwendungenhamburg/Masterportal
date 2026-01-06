@@ -20,21 +20,62 @@
     - The attibute `staticDimensions` can now be configured and sent to the service when the WMS time layer is loaded.
 - The following packages have been added:
   - devDependencies:
+    - @vitejs/plugin-vue: ^6.0.3
+    - @vitest/ui: ^4.0.16
+    - @vitest/web-worker: ^4.0.16
+    - cross-env: ^10.1.0
+    - jsdom: ^26.0.0
+    - jsdom-worker: ^0.3.0
+    - vite: ^7.3.0
+    - vite-plugin-cp: ^6.0.3
+    - vite-plugin-dynamic-import: ^1.6.0
+    - vite-plugin-html-purgecss: ^0.1.1
+    - vite-plugin-node-polyfills: ^0.24.0
     - vite-plugin-zip-pack: ^1.2.4
+    - vitest: ^4.0.16
 
 ### Changed
+- Issue #1254: LayerPreview: Allow setting static layer preview images (`layerConfig.elements.layers.preview.src`) for all supported layer types.
 - Issue #1500: WfsSearch: Added multi-select functionality for search results with polygon markers on map and zoom to combined extent. Improved geometry extraction and row selection logic to prevent duplicate entries.
 - ShareView: The state of the LayerSelection Module is transported and restored with the shareView-Url.
+- Changed Node.js support: Versions from Node.js **22.19.0** up to Node.js **22.21.0** (LTS) are now supported
+- Adjusted module "statisticDashboard" and shared utility function "getOAFFeature" to changes in OAF standard.
+- LayerTree: Highlight clickable elements in breadcrumbs.
 - The following packages have been updated:
-    - devDependencies:
-        - @masterportal/masterportalapi: 2.54.0 to 2.56.0
+  - devDependencies:
+    - @masterportal/masterportalapi: 2.54.0 to 2.56.0
+    - esbuild-loader: ^4.3.0 to ^4.4.2
+
+### Deprecated
 
 ### Removed
 - Issue #1541: Removed one-var and vars-on-top linting rules for improved dev experience.
 - The `authenticationUrl` attribute has been removed from the documentation, as it is no longer used.
 - The following packages have been removed:
+  - dependencies:
+    - url-parse  
   - devDependencies:
-    - zip-a-folder: 3.1.8
+    - zip-a-folder
+    - css-loader
+    - file-loader
+    - imports-loader
+    - inquirer
+    - jsdom-global
+    - mini-css-extract-plugin
+    - mocha
+    - mochapack
+    - null-loader
+    - openssl-nodejs
+    - sass-loader
+    - svg-url-loader
+    - vue-loader
+    - webpack
+    - webpack-bundle-analyzer
+    - webpack-cli
+    - webpack-dev-server
+    - webpack-merge
+    - worker-loader
+    - zip-a-folder
 
 ### Fixed
 - Issue #1497: FeatureViaUrl: Fixed initial `"zoomTo"` feature for FeatureViaUrl-created vector layers.
