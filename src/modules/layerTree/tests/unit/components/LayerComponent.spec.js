@@ -162,7 +162,7 @@ describe("src/modules/layerTree/components/LayerComponent.vue", () => {
 
         expect(checkbox.exists()).to.be.true;
         expect(checkbox.attributes().disabled).to.be.equals("true");
-        expect(wrapper.vm.tooltipText).to.be.equals("common:modules.layerTree.invisibleLayerMaxScale");
+        expect(wrapper.vm.tooltipText).to.be.equals("common:modules.layerTree.invisibleLayerNoScale");
     });
 
     describe("methods", () => {

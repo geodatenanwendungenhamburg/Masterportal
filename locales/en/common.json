@@ -695,7 +695,6 @@
       "invisibleLayer": "This topic can only be displayed at {{minScale}} - {{maxScale}}",
       "invisibleLayerNoScale": "This topic cannot be displayed at this scale",
       "invisibleLayerMinScale": "The layer is visible from scale {{minScale}}.",
-      "invisibleLayerMaxScale": "The layer is visible up to scale {{maxScale}}.",
       "noCategory": "No category",
       "rootLayerPath": "Show in folder"
     },
