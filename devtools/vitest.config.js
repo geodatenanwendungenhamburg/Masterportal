@@ -38,7 +38,7 @@ export default defineConfig(mode => mergeConfig(
             },
             hookTimeout: 500, // reduce from 20000 to 500 ms
             // include: [
-            //     "src/**/buildSpec.spec.js",
+            //     // "src/**/*.spec.js",
             //     // "addons/**/*.spec.js"
             // ],
             exclude: [
