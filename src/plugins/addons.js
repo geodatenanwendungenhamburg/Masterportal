@@ -2,7 +2,6 @@
 import store from "@appstore/index.js";
 import {defineComponent} from "vue";
 import {upperFirst} from "@shared/js/utils/changeCase.js";
-import i18next from "i18next";
 import addonModules from "virtual:addon-modules";
 
 const allAddons = typeof VUE_ADDONS !== "undefined" ? VUE_ADDONS : {};

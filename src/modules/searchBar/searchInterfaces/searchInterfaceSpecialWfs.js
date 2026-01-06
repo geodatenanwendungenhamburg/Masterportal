@@ -1,7 +1,6 @@
 import SearchInterface from "./searchInterface.js";
 import WFS from "ol/format/WFS.js";
 import {uniqueId} from "@shared/js/utils/uniqueId.js";
-import mapCollection from "@core/maps/js/mapCollection.js";
 import crs from "@masterportal/masterportalapi/src/crs.js";
 
 /**

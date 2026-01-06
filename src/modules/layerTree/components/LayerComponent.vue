@@ -33,29 +33,51 @@ export default {
             required: true
         }
     },
-    data () {
-        return {
-            tooltipText: ""
-        };
-    },
     computed: {
-        ...mapGetters("Maps", ["mode", "scale", "scales"])
-    },
-    mounted () {
-        // #VITE The condition was adjusted to prevent the error Cannot read properties of null (reading 'length').
-        if (this.conf.maxScale && this.conf.minScale && Array.isArray(this.scales)) {
-            let minScale = parseInt(this.conf.minScale, 10);
+        ...mapGetters("Maps", ["mode", "scale", "scales"]),
 
-            if (minScale === 0) {
-                minScale = this.scales[this.scales.length - 1];
+        /**
+             * Tooltip text explaining why a layer is disabled due to scale restrictions.
+             * If both minScale and maxScale exist, it returns a formatted scale range explanation.
+             * If only one is present, a generic "invisible layer" text is returned.
+             * If no scale limits exist, an empty string is returned.
+             *
+             * @returns {String} The tooltip text for layers out of visible scale range.
+             */
+        tooltipText () {
+            const minScaleRaw = this.conf.minScale !== undefined
+                    ? parseInt(this.conf.minScale, 10)
+                    : null,
+
+                maxScale = this.conf.maxScale !== undefined
+                    ? parseInt(this.conf.maxScale, 10)
+                    : null,
+
+
+                minScale = minScaleRaw === 0
+                    ? this.scales[this.scales.length - 1]
+                    : minScaleRaw;
+
+            if (minScale && maxScale) {
+                return this.$t("common:modules.layerTree.invisibleLayer", {
+                    minScale: "1: " + thousandsSeparator(minScale),
+                    maxScale: "1: " + thousandsSeparator(maxScale)
+                });
             }
-            this.tooltipText = this.$t("common:modules.layerTree.invisibleLayer", {
-                minScale: "1: " + thousandsSeparator(minScale),
-                maxScale: "1: " + thousandsSeparator(parseInt(this.conf.maxScale, 10), ".")
-            });
-        }
-        else if (this.conf.maxScale || this.conf.minScale) {
-            this.tooltipText = this.$t("common:modules.layerTree.invisibleLayerNoScale");
+
+            if (minScale) {
+                return this.$t("common:modules.layerTree.invisibleLayerMinScale", {
+                    minScale: "1: " + thousandsSeparator(minScale)
+                });
+            }
+
+            if (maxScale) {
+                return this.$t("common:modules.layerTree.invisibleLayerMaxScale", {
+                    maxScale: "1: " + thousandsSeparator(maxScale)
+                });
+            }
+
+            return "";
         }
     },
     methods: {
