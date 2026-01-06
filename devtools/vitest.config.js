@@ -27,15 +27,10 @@ export default defineConfig(mode => mergeConfig(
             /**
              * Setting isolate: false disables test isolation, which means all tests in a file share the same environment and global state.
              * This can cause side effects and make tests fail if they depend on a clean state.
-             * But here it is used with 'singleThread: true' and 'fileParallelism: false' and that works.
+             * But here it is used with 'fileParallelism: false' and that works.
              */
             isolate: false,
             fileParallelism: false,
-            poolOptions: {
-                threads: {
-                    singleThread: true
-                }
-            },
             hookTimeout: 500, // reduce from 20000 to 500 ms
             // include: [
             //     // "src/**/*.spec.js",
