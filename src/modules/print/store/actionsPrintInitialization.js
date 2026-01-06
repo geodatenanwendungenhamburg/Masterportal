@@ -9,7 +9,6 @@ import layerProvider from "../js/getVisibleLayer.js";
 import thousandsSeparator from "@shared/js/utils/thousandsSeparator.js";
 import {autoDrawMask} from "olcs/lib/olcs/print/drawCesiumMask.js";
 import {computeRectangle} from "olcs/lib/olcs/print/computeRectangle.js";
-import i18next from "i18next";
 
 export default {
     /**
