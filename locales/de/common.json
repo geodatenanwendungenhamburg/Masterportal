@@ -696,7 +696,6 @@
       "invisibleLayer": "Dieses Thema kann nur im Maßstab {{minScale}} - {{maxScale}} angezeigt werden",
       "invisibleLayerNoScale": "Dieses Thema kann in diesem Maßstab nicht angezeigt werden",
       "invisibleLayerMinScale": "Der Layer ist ab dem Maßstab {{minScale}} sichtbar.",
-      "invisibleLayerMaxScale": "Der Layer ist bis zum Maßstab {{maxScale}} sichtbar.",
       "noCategory": "Ohne Kategorie",
       "rootLayerPath": "Im Ordner anzeigen"
     },
