@@ -15,6 +15,25 @@ import addonModules from "./tasks/addon-modules-plugin.js";
 import getMastercodeVersionFolderName from "./tasks/getMastercodeVersionFolderName.mjs";
 import zipPack from "vite-plugin-zip-pack";
 
+// Shim for the Node.js "vm" module to avoid Vite build warnings/errors.
+// Some dependencies reference "vm", which is not available in the browser.
+// This replaces the module with an empty stub, as it is not used at runtime.
+const VM_SHIM_ID = "\0vm-shim";
+function vmShimPlugin() {
+  return {
+    name: "vm-shim",
+    enforce: "pre",
+    resolveId(source) {
+      if (source === "vm") return VM_SHIM_ID;
+      return null;
+    },
+    load(id) {
+      if (id !== VM_SHIM_ID) return null;
+      return "export default {};";
+    }
+  };
+};
+
 let proxyConfig = {},
     { vueAddons } = await collectAddons(),
     base;
@@ -85,9 +104,10 @@ export default defineConfig(({ mode }) => {
         },
 
         plugins: [
+            vmShimPlugin(),
             vue(),
             nodePolyfills({
-                exclude: ["fs"]
+                exclude: ["fs", "vm"]
             }),
             htmlExtFallback({
                 rootDir: __dirname
@@ -235,6 +255,7 @@ export default defineConfig(({ mode }) => {
             assetsDir: "js",
             sourcemap: false,
             cssCodeSplit: true,
+            chunkSizeWarningLimit: 5000,
             rollupOptions: {
                 input: Object.fromEntries(portalEntries),
                 output: {
