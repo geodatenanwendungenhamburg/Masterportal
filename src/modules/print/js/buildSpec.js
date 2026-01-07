@@ -643,7 +643,9 @@ const BuildSpecModel = {
                             mapScaleFactor = store.state.Modules.Print.currentScale / store.state.Modules.Print.currentMapScale,
                             transformedCoords = mapCollection.getMap("2D").getCoordinateFromPixel([posX - offsetX * mapScaleFactor, posY - offsetY * mapScaleFactor, 0]);
 
-                        clonedFeature.getGeometry().setCoordinates(transformedCoords);
+                        if (!isNaN(transformedCoords[0]) && !isNaN(transformedCoords[1])) {
+                            clonedFeature.getGeometry().setCoordinates(transformedCoords);
+                        }
                     }
 
                     // if style has geometryFunction, take geometry from style Function
