@@ -19,6 +19,7 @@
     - @vitejs/plugin-vue: ^6.0.3
     - @vitest/ui: ^4.0.16
     - @vitest/web-worker: ^4.0.16
+    - @vitest/eslint-plugin": ^1.6.6
     - cross-env: ^10.1.0
     - jsdom: ^26.0.0
     - jsdom-worker: ^0.3.0
@@ -46,8 +47,8 @@
   - dependencies:
     - url-parse  
   - devDependencies:
-    - zip-a-folder
     - css-loader
+    - eslint-plugin-mocha
     - file-loader
     - imports-loader
     - inquirer
