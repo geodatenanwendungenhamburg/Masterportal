@@ -60,7 +60,7 @@
     }
   ],
   "dependencies": {
-    "@masterportal/masterportalapi": "2.53.0",
+    "@masterportal/masterportalapi": "2.54.0",
     "@popperjs/core": "^2.11.8",
     "axios": "^1.12.2",
     "bootstrap": "^5.3.8",
