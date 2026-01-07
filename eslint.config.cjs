@@ -2,7 +2,7 @@ const js = require("@eslint/js"),
     pluginVuejsAccessibility = require("eslint-plugin-vuejs-accessibility"),
     pluginVue = require("eslint-plugin-vue"),
     pluginJsdoc = require("eslint-plugin-jsdoc"),
-    pluginMocha = require("eslint-plugin-mocha"),
+    vitest = require("@vitest/eslint-plugin"),
     globals = require("globals"),
     stylisticJs = require("@stylistic/eslint-plugin-js"),
     nodePlugin = require("eslint-plugin-n");
@@ -11,7 +11,6 @@ module.exports = [
     js.configs.recommended,
     ...pluginVue.configs["flat/recommended"],
     ...pluginVuejsAccessibility.configs["flat/recommended"],
-    pluginMocha.configs.flat.recommended,
     pluginJsdoc.configs["flat/recommended"],
     nodePlugin.configs["flat/recommended-script"],
     {
@@ -20,7 +19,6 @@ module.exports = [
             sourceType: "module",
             globals: {
                 ...globals.browser,
-                ...globals.mocha,
                 ...globals.node,
                 ...globals.amd,
                 Config: true,
@@ -286,19 +284,6 @@ module.exports = [
              */
             "vuejs-accessibility/no-onchange": "off",
             "vuejs-accessibility/form-control-has-label": "off",
-            // eslint-plugin-mocha
-            "mocha/consistent-spacing-between-blocks": "off",
-            "mocha/no-mocha-arrows": "off",
-            "mocha/no-setup-in-describe": "off",
-            "mocha/no-identical-title": "off",
-            "mocha/no-top-level-hooks": "off",
-            "mocha/no-exports": "off",
-            "mocha/no-skipped-tests": "off",
-            "mocha/no-async-describe": "off",
-            "mocha/max-top-level-suites": "off",
-            "mocha/no-sibling-hooks": "off",
-            "mocha/no-nested-tests": "off",
-            "mocha/handle-done-callback": "off",
             // Enforce explicit extensions
             "no-restricted-syntax": [
                 "error",
@@ -343,6 +328,21 @@ module.exports = [
             "no-restricted-syntax": "off"
         }
     },
+    {
+        files: ["**/*.spec.js"],
+        plugins: { vitest },
+        languageOptions: {
+            globals: {
+              ...vitest.environments.env.globals,
+              before: "readonly",
+              after: "readonly",
+              context: "readonly"
+            }
+          },          
+        rules: {
+          "vitest/no-focused-tests": "error" 
+        }
+      },  
     {
         ignores: [
             "**/node_modules/",
