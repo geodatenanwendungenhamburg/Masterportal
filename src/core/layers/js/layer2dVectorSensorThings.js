@@ -9,6 +9,7 @@ import {GeoJSON} from "ol/format.js";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import dayjsTimezone from "dayjs/plugin/timezone";
+import de from "dayjs/locale/de";
 import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 import Layer2dVector from "./layer2dVector.js";
@@ -86,9 +87,9 @@ export default function Layer2dVectorSensorThings (attributes) {
     this.lastScale = null;
 
     this.registerInteractionMapResolutionListeners(this.get("scaleStyleByZoom"));
-    // todo vite: ohne das require wird die Sprache nicht auf de gewechselt. Warum soll das überhaupt sein?
-    // require("dayjs/locale/de.js");
-    // dayjs.locale("de");
+    if (dayjs.locale() !== "de") {
+        dayjs.locale(de);
+    }
     this.registerInteractionMapScaleListeners();
     this.prepareFeaturesFor3D(this.layer?.getSource().getFeatures());
 }
