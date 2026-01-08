@@ -395,6 +395,10 @@ export default {
     },
     async created () {
         this.layer = await this.addNewLayerIfNotExists({layerName: "statistic-dashboard"});
+        if (typeof this.selectedLevel === "undefined") {
+            this.setSelectedLevel(this.data[0]);
+        }
+        this.initializeData(this.selectedLevel);
         this.filterMap = {
             "Or": "OR",
             "And": "AND",
@@ -416,10 +420,6 @@ export default {
     mounted () {
         this.sideMenuWidth = document.getElementById("mp-menu-secondaryMenu").style.width;
 
-        if (typeof this.selectedLevel === "undefined") {
-            this.setSelectedLevel(this.data[0]);
-        }
-        this.initializeData(this.selectedLevel);
         if (this.minNumberOfClasses < 2) {
             this.setMinNumberOfClasses(2);
         }
@@ -845,6 +845,9 @@ export default {
          * @returns {void}
          */
         async handleFilterSettings (regions, dates, differenceMode) {
+            if (!this.selectedLevel) {
+                return;
+            }
             this.handleReset();
             this.setIsFeatureLoaded(false);
 
@@ -1761,7 +1764,7 @@ export default {
             this.loadedFilterData = true;
             this.loadedReferenceData = true;
             this.referenceData = {
-                "date": this.getTimestepsMerged(undefined, uniqueValues[selectedLevelDateAttribute.attrName], selectedLevelDateAttribute.inputFormat, selectedLevelDateAttribute.outputFormat),
+                "date": this.getTimestepsMerged(undefined, uniqueValues[selectedLevelDateAttribute?.attrName], selectedLevelDateAttribute?.inputFormat, selectedLevelDateAttribute?.outputFormat),
                 "region": this.regions
             };
 
