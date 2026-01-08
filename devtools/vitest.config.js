@@ -41,7 +41,6 @@ export default defineConfig(mode => mergeConfig(
                 "**/VerkehrsstaerkenTheme.spec.js",
                 "**/SimulationParameter.spec.js",
                 "**/FilterGeneral.spec.js",
-                "**/StatisticDashboard.spec.js",
                 // defaults from vitest:
                 "**/node_modules/**",
                 "**/.git/**"
