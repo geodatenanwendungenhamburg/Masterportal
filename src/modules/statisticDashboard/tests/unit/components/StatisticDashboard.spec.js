@@ -1,3 +1,4 @@
+Error.stackTraceLimit = 50;
 import {config, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import {createStore} from "vuex";
@@ -32,8 +33,8 @@ function addSecondaryMenuElement () {
     document.body.append(app);
 }
 
-describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue", () => {
-    let store, wrapper;
+describe("src/modules/statisticDashboard/components/StatisticDashboard.vue", () => {
+    let store, wrapper, getOAFFeatureStreamStub;
 
     /**
      * Creates a shallow-mounted wrapper of the StatisticDashboard component
@@ -101,7 +102,9 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 Maps: {
                     namespaced: true,
                     getters: {
-                        projection: () => "EPSG:25832"
+                        projection: () => ({
+                            getCode: () => "EPSG:25832"
+                        })
                     },
                     actions: {
                         addNewLayerIfNotExists: () => {
@@ -113,6 +116,8 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                     }
                 }
             }});
+        // eslint-disable-next-line no-empty-function
+        getOAFFeatureStreamStub = sinon.stub(getOAFFeature, "getOAFFeatureStream").returns((async function* () {})());
     });
 
     afterEach(() => {
@@ -289,7 +294,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
             await wrapper.vm.$nextTick();
 
             expect(spyCheckFilterSettings.calledOnce).to.be.false;
-            sinon.restore();
         });
 
         it("should call 'checkFilterSettings' if selectedReferenceData is changed", async () => {
@@ -305,11 +309,11 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
             await wrapper.vm.$nextTick();
 
             expect(spyCheckFilterSettings.calledOnce).to.be.true;
-            sinon.restore();
         });
 
         it("should call 'handleChartData' if chosenStatisticName is changed", async () => {
             wrapper = createWrapper();
+            sinon.stub(wrapper.vm, "getTableData");
             const spyHandleChartData = sinon.stub(wrapper.vm, "handleChartData");
 
             await wrapper.setData({statisticsData: {foo: {}}});
@@ -318,7 +322,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
             await wrapper.vm.$nextTick();
 
             expect(spyHandleChartData.calledOnce).to.be.true;
-            sinon.restore();
         });
 
         it("should call 'handleChartData' if showGrid is changed", async () => {
@@ -329,7 +332,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
             await wrapper.vm.$nextTick();
             await wrapper.vm.$nextTick();
             expect(spyHandleChartData.calledOnce).to.be.true;
-            sinon.restore();
         });
     });
 
@@ -344,25 +346,23 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                     }
                 });
 
+                await wrapper.vm.$nextTick();
                 wrapper.vm.setSelectedLevel({mappingFilter: {}});
 
                 sinon.stub(wrapper.vm, "getSelectedLevelRegionNameAttributeInDepth").returns({attrName: "ort"});
-                sinon.stub(getOAFFeature, "getOAFFeatureStream").callsFake(async function* () {
+                getOAFFeatureStreamStub.callsFake(async function* () {
                     yield {id: 1, properties: {name: "Feature 1"}};
                     yield {id: 2, properties: {name: "Feature 2"}};
                     yield {id: 3, properties: {name: "Feature 3"}};
                 });
 
                 wrapper.vm.layer = {
-                    getSource: () => ({
-                        clear: sinon.stub(),
-                        addFeature: sinon.stub()
-                    }),
+                    getSource: () => sourceStub,
                     setStyle: sinon.stub()
                 };
 
                 await wrapper.vm.prepareLayer();
-                expect(wrapper.vm.layer.getSource().addFeature.callCount).to.equal(3);
+                expect(sourceStub.addFeature.callCount).to.equal(3);
             });
         });
         describe("downloadData", () => {
@@ -376,7 +376,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
 
                 expect(onsuccess.calledWith(null)).to.be.true;
                 wrapper.vm.statisticsData = statisticsData;
-                sinon.restore();
             });
             it("should call onsuccess with expected params", () => {
                 wrapper = createWrapper();
@@ -416,7 +415,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
 
                 expect(onsuccess.getCall(0).args[0]).to.deep.equal(expected);
                 wrapper.vm.statisticsData = statisticsData;
-                sinon.restore();
             });
         });
         describe("loadTableExportData", () => {
@@ -500,7 +498,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 });
 
                 expect(fetchData.getUniqueValues.calledWith(layerId, attrNames, undefined, undefined)).to.be.true;
-                sinon.restore();
             });
         });
         describe("getTimestepsMerged", () => {
@@ -661,7 +658,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 wrapper.vm.getFilter(regions, dates);
 
                 expect(getFilterForListSpy.calledWith(dates, undefined)).to.be.true;
-                sinon.restore();
             });
             it("should call getFilterForList with expected params if dates is the same length as the data variable", () => {
                 wrapper = createWrapper();
@@ -683,7 +679,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 wrapper.vm.getFilter(regions, dates);
 
                 expect(getFilterForListSpy.calledWith(regions, "bar")).to.be.true;
-                sinon.restore();
             });
             it("should return an and filter if given regions and dates have values but not the same length as the data values", () => {
                 wrapper = createWrapper();
@@ -735,7 +730,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 wrapper.vm.getFilter(regions, dates);
 
                 expect(getFilterForListSpy.getCall(0).args).to.deep.equal([dates, "date"]);
-                sinon.restore();
             });
         });
         describe("getFilterForList", () => {
@@ -772,7 +766,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 wrapper.vm.updateReferenceTag(undefined);
 
                 expect(spySetSelectedReferenceValueTag.calledOnce).to.be.false;
-                sinon.restore();
             });
             it("should not call the method spySetSelectedReferenceValueTag", () => {
                 store.commit("Modules/StatisticDashboard/setSelectedReferenceData", {});
@@ -782,7 +775,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 wrapper.vm.updateReferenceTag("2001", undefined);
 
                 expect(spySetSelectedReferenceValueTag.calledOnce).to.be.false;
-                sinon.restore();
             });
             it("should not call the method spySetSelectedReferenceValueTag", () => {
                 store.commit("Modules/StatisticDashboard/setSelectedReferenceData", {});
@@ -808,7 +800,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 wrapper.vm.updateReferenceTag("2001", selectedLevel, undefined);
 
                 expect(spySetSelectedReferenceValueTag.calledOnce).to.be.false;
-                sinon.restore();
             });
             it("should call the method getSelectedLevelDateAttribute", () => {
                 store.commit("Modules/StatisticDashboard/setSelectedReferenceData", {});
@@ -838,7 +829,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 wrapper.vm.updateReferenceTag("2021", selectedLevel, referenceFeatures);
 
                 expect(spyGetSelectedLevelDateAttribute.calledOnce).to.be.true;
-                sinon.restore();
             });
         });
         describe("setSelectedColumn", () => {
@@ -852,7 +842,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 wrapper.vm.setSelectedColumn("2022");
 
                 expect(stubGetStepValue.calledWith({}, 5, "2022")).to.be.true;
-                sinon.restore();
             });
         });
         describe("prepareData", () => {
@@ -1024,11 +1013,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
 
                 wrapper.vm.layer = {};
 
-                Object.defineProperty(wrapper.vm.$refs, "hoverInfoOverlay", {
-                    value: document.createElement("div"),
-                    writable: false
-                });
-
                 wrapper.vm.addHoverInteraction();
 
                 expect(wrapper.vm.overlay).to.be.instanceOf(Overlay);
@@ -1046,11 +1030,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                     }
                 });
                 wrapper.vm.layer = {};
-
-                Object.defineProperty(wrapper.vm.$refs, "hoverInfoOverlay", {
-                    value: document.createElement("div"),
-                    writable: false
-                });
 
                 mockMap.removeOverlay = removeOverlaySpy;
                 mockMap.removeInteraction = removeInteractionSpy;
@@ -1163,7 +1142,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 await wrapper.vm.$nextTick();
 
                 expect(prepareChartDataStub.calledWith("foo", "bar", undefined, "line")).to.be.true;
-                sinon.restore();
             });
             it("should call prepareChartData with expected params for bar chart", async () => {
                 wrapper = createWrapper();
@@ -1173,7 +1151,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 await wrapper.vm.$nextTick();
 
                 expect(prepareChartDataStub.calledWith("foo", "bar", undefined, "bar", "vertical")).to.be.true;
-                sinon.restore();
             });
             it("should call prepareChartData with expected params for bar chart horizontal", async () => {
                 wrapper = createWrapper();
@@ -1183,7 +1160,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 await wrapper.vm.$nextTick();
 
                 expect(prepareChartDataStub.calledWith("foo", "bar", undefined, "bar", "horizontal")).to.be.true;
-                sinon.restore();
             });
         });
         describe("prepareChartData", () => {
@@ -1200,7 +1176,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 wrapper.vm.prepareChartData(topic, undefined, canvas, "line");
 
                 expect(wrapper.vm.currentChart).to.deep.equal(expected);
-                sinon.restore();
             });
             it("should set canvas and chart to property currentChart for bar", () => {
                 sinon.stub(ChartProcessor, "createBarChart").returns(null);
@@ -1215,7 +1190,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 wrapper.vm.prepareChartData(topic, undefined, canvas, "bar");
 
                 expect(wrapper.vm.currentChart).to.deep.equal(expected);
-                sinon.restore();
             });
             it("should destroy existing chart and set canvas and chart to property currentChart", async () => {
                 sinon.stub(ChartProcessor, "createLineChart").returns(null);
@@ -1233,7 +1207,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 wrapper.vm.prepareChartData(topic, undefined, undefined, "line");
 
                 expect(wrapper.vm.currentChart).to.deep.equal(expected);
-                sinon.restore();
             });
         });
         describe("hasDescription", () => {
@@ -1279,7 +1252,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 await wrapper.vm.$nextTick();
 
                 expect(spyResetLevel.calledOnce).to.be.false;
-                sinon.restore();
 
             });
 
@@ -1296,7 +1268,6 @@ describe.skip("src/modules/statisticDashboard/components/StatisticDashboard.vue"
                 await wrapper.vm.$nextTick();
 
                 expect(spyInitializeData.calledOnce).to.be.false;
-                sinon.restore();
 
             });
         });
