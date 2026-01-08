@@ -1,0 +1,11 @@
+{
+    "modules": {
+        "addonNameCamelCase": {
+            "name": "addonNameTitleCase",
+            "description": "Bitte eine Beschreibung einfügen.",
+            "loadingSpinnerText": {
+                "general": "Daten werden geladen. Bitte warten..."
+            }
+        }
+    }
+}

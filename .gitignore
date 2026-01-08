@@ -24,7 +24,7 @@ ci_scripts
 css/bootstrap.css
 css/modules.css
 
-dist
+dist*
 
 devtools/certificate*
 
