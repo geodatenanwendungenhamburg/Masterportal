@@ -191,6 +191,13 @@ export default {
             this.layerSelectionPlaceHolder = newValue;
         }
     },
+    updated () {
+        this.$nextTick(() => {
+            if (this.searchInput !== "") {
+                this.$refs.searchInput.focus();
+            }
+        });
+    },
     mounted () {
         this.checkLayerSelectionSearchConfig();
         this.setCurrentSide(this.portalConfig?.mainMenu?.searchBar !== undefined ? "mainMenu" : "secondaryMenu");
