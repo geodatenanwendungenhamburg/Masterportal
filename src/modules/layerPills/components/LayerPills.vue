@@ -288,12 +288,10 @@ export default {
 
 <style lang="scss" scoped>
     .layer-pills-container {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
+        position: relative;
         top: 15px;
         display: flex;
-        justify-content: center;
+        justify-content: left;
         pointer-events: all;
         margin: 0 auto 0 auto;
         border-radius: 19px;
