@@ -37,8 +37,6 @@ export default {
         await this.initRouting();
     },
     beforeUnmount () {
-        // store.dispatch("Modules/Routing/Isochrones/closeIsochrones");
-        // store.dispatch("Modules/Routing/Directions/closeDirections");
         this.closeIsochrones();
         this.closeDirections();
     },
