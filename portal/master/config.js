@@ -1,6 +1,5 @@
 const Config = {
-    addons: ["dataTable", "exampleSearch", "populationRequest", "schulinfo"],
-    addonsOrig: ["exampleControl", "bildungsatlas", "dataTable", "dipas", "exampleSearch", "populationRequest", "schulinfo", "sturmflut", "trafficCount", "trinkwasser", "verkehrsstaerken"],
+    addons: ["exampleControl", "bildungsatlas", "dataTable", "dipas", "exampleSearch", "populationRequest", "schulinfo", "sturmflut", "trafficCount", "trinkwasser", "verkehrsstaerken"],
     ignoredKeys: ["BOUNDEDBY", "SHAPE", "SHAPE_LENGTH", "SHAPE_AREA", "OBJECTID", "GLOBALID", "GEOMETRY", "SHP", "SHP_AREA", "SHP_LENGTH", "GEOM"],
     namedProjections: [
         // ETRS89 UTM
