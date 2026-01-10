@@ -7,10 +7,8 @@ import globalUrlParams from "../src/core/urlParams/js/globalUrlParams.js";
 import {createApp} from "vue";
 import App from "./App.vue";
 import store from "./app-store/index.js";
-// import "bootstrap/js/dist/offcanvas";
-// import remoteInterface from "./plugins/remoteInterface";
-// import utilsLogin from "../src/modules/login/js/utilsLogin";
-// import {instantiateVuetify} from "./plugins/vuetify";
+import remoteInterface from "./plugins/remoteInterface.js";
+import utilsLogin from "../src/modules/login/js/utilsLogin.js";
 
 import {initiateMatomo} from "./plugins/matomo.js";
 
@@ -30,7 +28,6 @@ const isDev = import.meta.env.MODE === "development",
         script.src = configPath;
     });
 
-// Wait until config.js is loaded
 loadConfigJs.then(() => {
 
     // Reload protection in dev mode only – prevents double mounting
@@ -42,15 +39,15 @@ loadConfigJs.then(() => {
     app = createApp(App);
 
 
-    // if (utilsLogin.handleLoginParameters()) {
-    //     window.close();
-    //     return;
-    // }
+    if (utilsLogin.handleLoginParameters()) {
+        window.close();
+        return;
+    }
 
-    // // Load remoteInterface
-    // if (Object.prototype.hasOwnProperty.call(Config, "remoteInterface")) {
-    //     app.use(remoteInterface, Config.remoteInterface);
-    // }
+    // Load remoteInterface
+    if (Object.prototype.hasOwnProperty.call(Config, "remoteInterface")) {
+        app.use(remoteInterface, Config.remoteInterface);
+    }
 
     app.use(store);
     store.$app = app;

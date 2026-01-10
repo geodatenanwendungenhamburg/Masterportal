@@ -321,9 +321,6 @@ export default {
      * @returns {void}
      */
     createPrintMask: function ({dispatch, state}, evt) {
-        if (!state.currentLayout) {
-            return;
-        }
         dispatch("getPrintMapSize");
         dispatch("getPrintMapScales");
 
