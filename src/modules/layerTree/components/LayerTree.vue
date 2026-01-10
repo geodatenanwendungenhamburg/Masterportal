@@ -84,12 +84,6 @@ export default {
 
 <style lang="scss" scoped>
 
-    .layer-tre {
-        padding-left: $padding;
-        font-size: $font-size-base;
-        max-height: 350px;
-    }
-
     .sticky {
         position : sticky;
         bottom: 2rem;
