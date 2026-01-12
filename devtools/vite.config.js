@@ -331,9 +331,7 @@ export default defineConfig(({ mode }) => {
                 "sinon",
                 "chai",
                 "@turf/turf", // used for addons
-                "@turf/helpers", // used for addons
                 "@turf/boolean-point-in-polygon", // used for addons
-                // add other @turf/* packages we use
                 "d3-geo", // used for addons
                 "point-in-polygon-hao", // used for addons
                 "rollup-plugin-terser", // used for addons
@@ -402,7 +400,6 @@ async function collectAddons() {
             console.warn("rules: its configuration value is an object and with at least a key named \"type\"");
         }
     }
-
     console.info("provided addons:", JSON.stringify(Object.keys(vueAddons)) + "\n");
     return { vueAddons };
 }
