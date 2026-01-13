@@ -11,6 +11,7 @@ describe("src/core/js/layers/layer2dRasterWmsTime.js", () => {
         origDispatch,
         origCommit,
         error,
+        errorStub,
         warnSpy;
 
 
@@ -48,7 +49,7 @@ describe("src/core/js/layers/layer2dRasterWmsTime.js", () => {
     beforeEach(() => {
         error = sinon.spy();
         warnSpy = sinon.spy();
-        sinon.stub(console, "error").callsFake(error);
+        errorStub = sinon.stub(console, "error").callsFake(error);
         sinon.stub(console, "warn").callsFake(warnSpy);
         commitStub = sinon.stub(store, "commit");
         sinon.stub(Layer2dRasterWmsTime.prototype, "requestCapabilities").returns(new Promise(resolve => resolve({status: 200, statusText: "OK", data: {}})));

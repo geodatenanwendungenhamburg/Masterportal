@@ -33,7 +33,7 @@ export default defineConfig(mode => mergeConfig(
             fileParallelism: false,
             hookTimeout: 500, // reduce from 20000 to 500 ms
             // include: [
-            //     // "src/**/*.spec.js",
+            //     "src/**/layer2dRasterWmsTime.spec.js",
             //     // "addons/**/*.spec.js"
             // ],
             exclude: [
