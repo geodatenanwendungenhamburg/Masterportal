@@ -36,9 +36,10 @@ function addInterceptor (interceptorUrlRegex) {
         };
 
         XMLHttpRequest.prototype.open = function (method, url, ...rest) {
-            const opened = open.call(this, method, url, ...rest);
+            const opened = open.call(this, method, url, ...rest),
+                urlString = typeof url === "object" ? url.toString() : url;
 
-            if (interceptorUrlRegex && url?.match(interceptorUrlRegex)) {
+            if (interceptorUrlRegex && urlString?.match(interceptorUrlRegex)) {
                 this.setRequestHeader("Authorization", `Bearer ${Cookie.get("token")}`);
                 this.withCredentials = true;
             }
