@@ -14,7 +14,7 @@ pipelines:
                     artifacts:
                         - dist/**
                     script:
-                        - ${BITBUCKET_TAG:=v3.19.0}
+                        - export BITBUCKET_TAG=${BITBUCKET_TAG:-v3.19.0}
                         - export NODE_OPTIONS=--openssl-legacy-provider
                         - npm install
                         - npm run buildExamples
