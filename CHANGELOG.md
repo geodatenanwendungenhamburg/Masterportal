@@ -4,27 +4,7 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
-- Issue #1524: draw_old: Added documentation for drawSquareSettings.
-- WMS-Time: The attributes `dimensionRange` and `dimensionRegex` can now be used to filter the values ​​that should be displayed in the time slider.
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-- FileUpload: Fixed a bug where FileUpload was inaccessible through keyboard.
-- LayerPills: Fix layer sequence so that it matches the LayerTree when opening via a link.
-- Documentation: Added jsDoc to shared Input Components.
-
----
-
-## 2026-01-07 v3.18.0
+## 2026-01-07 v3.19.0
 
 ### Added
 - UISTYLE: Updated element visibility when the UISTYLE URL parameter is applied.
