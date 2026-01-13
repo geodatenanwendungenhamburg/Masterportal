@@ -8,22 +8,41 @@
 ### __Breaking Changes__
 
 ### Added
+- Issue #1524: draw_old: Added documentation for drawSquareSettings.
+- WMS-Time: The attributes `dimensionRange` and `dimensionRegex` can now be used to filter the values â€‹â€‹that should be displayed in the time slider.
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+- FileUpload: Fixed a bug where FileUpload was inaccessible through keyboard.
+- LayerPills: Fix layer sequence so that it matches the LayerTree when opening via a link.
+- Documentation: Added jsDoc to shared Input Components.
+
+---
+
+## 2026-01-07 v3.18.0
+
+### Added
 - UISTYLE: Updated element visibility when the UISTYLE URL parameter is applied.
 - App: All locales can now be overridden with the config.js, and new locales can be added.
 - Issue #1248: BaselayerSwitcher: Added configuration option `visibleBaselayerIds` that allows to restrict base layers available in the layer switcher.
 - Issue: #1525: convertFeaturesToKml: Added alert for unsupported geometry types.
 - LayerSelection: All layers in a folder can now be enabled or disabled by checking the `isFolderSelectable` attribute under `Add subject` configurable in config.json.
 - WMS-Time: The default value can now be specified as a number within the dimension.
+- Shared component ConfirmModal â€” A preconfigured modal that prompts the user to confirm an action.
 
 ### Changed
 - Issue #1254: LayerPreview: Allow setting static layer preview images (`layerConfig.elements.layers.preview.src`) for all supported layer types.
 - Changed Node.js support: Versions from Node.js **22.19.0** up to Node.js **22.21.0** (LTS) are now supported
 - Adjusted module "statisticDashboard" and shared utility function "getOAFFeature" to changes in OAF standard.
 - LayerTree: Highlight clickable elements in breadcrumbs.
-
-### Deprecated
-
-### Removed
+- The following packages have been updated:
+    - devDependencies:
+        - @masterportal/masterportalapi: 2.53.0 to 2.54.0
 
 ### Fixed
 - Issue #1168: Fix autoRefresh for LayerGroups.
@@ -43,7 +62,7 @@
 - Print: When printing a tiled WMS, the version is now specified, as without this information an error would occur when printing with some services.
 - wfsSearch: reset dependent fields at changed selection.
 - MouseHover: Prevent duplicate hover info for WebGL polygon and line layers.
-- WFS-cluster: Fix a recursive style loop that triggered a ‘Maximum call stack size exceeded’ error.
+- WFS-cluster: Fix a recursive style loop that triggered a â€˜Maximum call stack size exceededâ€™ error.
 - MapMarker: Fix marker visibility after ShareView.
 - MkDocs: Fixed MkDocs formatting and heading anchor issues and ensured the CI pipeline fails immediately on MkDocs warnings and errors.
 - Documentation: correct example configuration for FeatureLister.
