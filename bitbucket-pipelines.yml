@@ -72,6 +72,7 @@ pipelines:
                         echo "Deploy Latest? $DEPLOY_LATEST"
                         echo $DEPLOY_LATEST > deploy_latest_flag.txt  # save for next step
                     artifacts:
+                        - $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG/**
                         - deploy_latest_flag.txt
             -   step:
                     name: deploy Latest if allowed
