@@ -9,7 +9,7 @@
 
 ### Added
 - Issue #1524: draw_old: Added documentation for drawSquareSettings.
-- WMS-Time: The attributes `dimensionRange` and `dimensionRegex` can now be used to filter the values â€‹â€‹that should be displayed in the time slider.
+- WMS-Time: The attributes `dimensionRange` and `dimensionRegex` can now be used to filter the values ​​that should be displayed in the time slider.
 
 ### Changed
 
@@ -33,7 +33,7 @@
 - Issue: #1525: convertFeaturesToKml: Added alert for unsupported geometry types.
 - LayerSelection: All layers in a folder can now be enabled or disabled by checking the `isFolderSelectable` attribute under `Add subject` configurable in config.json.
 - WMS-Time: The default value can now be specified as a number within the dimension.
-- Shared component ConfirmModal â€” A preconfigured modal that prompts the user to confirm an action.
+- Shared component ConfirmModal — A preconfigured modal that prompts the user to confirm an action.
 
 ### Changed
 - Issue #1254: LayerPreview: Allow setting static layer preview images (`layerConfig.elements.layers.preview.src`) for all supported layer types.
@@ -62,7 +62,7 @@
 - Print: When printing a tiled WMS, the version is now specified, as without this information an error would occur when printing with some services.
 - wfsSearch: reset dependent fields at changed selection.
 - MouseHover: Prevent duplicate hover info for WebGL polygon and line layers.
-- WFS-cluster: Fix a recursive style loop that triggered a â€˜Maximum call stack size exceededâ€™ error.
+- WFS-cluster: Fix a recursive style loop that triggered a ‘Maximum call stack size exceeded’ error.
 - MapMarker: Fix marker visibility after ShareView.
 - MkDocs: Fixed MkDocs formatting and heading anchor issues and ensured the CI pipeline fails immediately on MkDocs warnings and errors.
 - Documentation: correct example configuration for FeatureLister.
