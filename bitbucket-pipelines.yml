@@ -50,8 +50,8 @@ pipelines:
                                 LOCAL_PATH: $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG
                                 DEBUG: 'true'
                                 DELETE_FLAG: 'false'
-                        artifacts:
-                            - $BITBUCKET_TAG/**
+                    artifacts:
+                        - $BITBUCKET_TAG/**
             -   step:
                     name: check LTS hotfix
                     image: python:3.8
