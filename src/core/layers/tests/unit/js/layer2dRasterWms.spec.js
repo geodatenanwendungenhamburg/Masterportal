@@ -9,6 +9,7 @@ describe("src/core/js/layers/layer2dRasterWms.js", () => {
         origGetters;
 
     before(() => {
+        origGetters = store.getters;
         warn = sinon.spy();
         sinon.stub(console, "warn").callsFake(warn);
         mapCollection.clear();
@@ -31,7 +32,9 @@ describe("src/core/js/layers/layer2dRasterWms.js", () => {
     });
 
     beforeEach(() => {
-        origGetters = store.getters;
+        store.getters = {
+            isModuleAvailable: () => false
+        };
         attributes = {
             id: "id",
             layers: "layer1,layer2",
@@ -176,9 +179,6 @@ describe("src/core/js/layers/layer2dRasterWms.js", () => {
         });
 
         it("should return the layer params, login module not available", () => {
-            store.getters = {
-                isModuleAvailable: () => false
-            };
             const wmsLayer = new Layer2dRasterWms(localAttributes);
 
             expect(wmsLayer.getLayerParams(localAttributes)).to.deep.equals({
