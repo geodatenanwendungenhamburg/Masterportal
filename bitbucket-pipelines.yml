@@ -36,6 +36,7 @@ pipelines:
                     script:
                         - apt-get update && apt-get install zip && apt-get install -y curl wput jq  && apt-get install zip
                         - pip install -r devtools/docsValidation/python-dependencies.txt
+                        - echo "Check $BITBUCKET_TAG"
                         - mike deploy $BITBUCKET_TAG
                         - mv $BITBUCKET_CLONE_DIR/site $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG
                         -   pipe: atlassian/ftp-deploy:0.7.1
