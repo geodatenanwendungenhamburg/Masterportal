@@ -1,20 +1,5 @@
-import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants";
-
-const zIndexMap = new Map();
-let baseZIndex = 0,
-    overlayZIndex = 1000;
-
-/**
- * Setzt den zIndex für einen Layer.
- * @param {Object} layer - Der Layer, für den der zIndex gesetzt werden soll.
- * @param {string} type - Der Typ des Layers ("base" oder "overlay").
- */
-function setZIndex (layer, type = "overlay") {
-    const zIndex = type === "base" ? baseZIndex++ : overlayZIndex++;
-
-    layer.setZIndex(zIndex);
-    zIndexMap.set(layer, zIndex);
-}
+import {treeOrder, treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants.js";
+import {sortObjects} from "@shared/js/utils/sortObjects.js";
 
 /**
  * Gibt den aktuellen zIndex eines Layers zurück.
@@ -45,23 +30,6 @@ function getZIndexForLayer (layerId, isBaselayer, rootGetters) {
 }
 
 /**
- * Aktualisiert den zIndex eines Layers.
- * @param {Object} layer - Der Layer, dessen zIndex aktualisiert werden soll.
- * @param {number} newZIndex - Der neue zIndex-Wert.
- */
-function updateZIndex (layer, newZIndex) {
-    layer.setZIndex(newZIndex);
-    zIndexMap.set(layer, newZIndex);
-}
-
-/**
- * Gibt alle Layer und ihre zIndex-Werte aus (für Debugging).
- */
-function logZIndexes () {
-    console.warn("Aktuelle zIndex-Werte:", Array.from(zIndexMap.entries()));
-}
-
-/**
  * Bestimmt den obersten Basemap-Layer anhand des höchsten zIndex.
  *
  * @param {Object[]} visibleBaselayers - Array von sichtbaren Basemap-Layer-Configs.
@@ -79,10 +47,47 @@ function getTopBaselayer (visibleBaselayers) {
     return visibleBaselayers.find(l => l.zIndex === maxZIndex) || null;
 }
 
+/**
+     * Updates the zindex of the layer configs by increasing the zindex of the layer configs
+     * that have a zindex greater than the max zindex by 1.
+     * @param {Object} context the vue context
+     * @param {Object} payload the payload
+     * @param {Object} payload.layerContainer The layer container of layer configs.
+     * @param {Object} payload.maxZIndex The max zIndex of the layer configs.
+     * @returns {void}
+     */
+function updateLayerConfigZIndex (context, {layerContainer, maxZIndex}) {
+    sortObjects(layerContainer, "zIndex");
+
+    layerContainer.forEach(layerConf => {
+        if (layerConf.zIndex > maxZIndex) {
+            layerConf.zIndex = layerConf.zIndex + 1;
+        }
+    });
+}
+
+/**
+     * Updates the zIndexes of all layerConfigs shown in tree, starts with 0.
+     * @param {Object} context the vue context
+     * @param {Object} context.getters the getters
+     * @returns {void}
+     */
+function updateAllZIndexes ({getters}) {
+    let startZIndex = 1;
+
+    treeOrder.forEach(parentKey => {
+        const configsByParentKey = getters.allLayerConfigsByParentKey(parentKey).filter(config => Object.prototype.hasOwnProperty.call(config, "zIndex") && typeof config.zIndex === "number");
+
+        sortObjects(configsByParentKey, "zIndex");
+        configsByParentKey.forEach(layerConf => {
+            layerConf.zIndex = startZIndex++;
+        });
+    });
+}
+
 export default {
-    setZIndex,
     getZIndexForLayer,
-    updateZIndex,
-    logZIndexes,
-    getTopBaselayer
+    getTopBaselayer,
+    updateLayerConfigZIndex,
+    updateAllZIndexes
 };

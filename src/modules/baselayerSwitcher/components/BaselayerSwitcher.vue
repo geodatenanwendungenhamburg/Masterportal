@@ -1,7 +1,7 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
 import LayerPreview from "@shared/modules/layerPreview/components/LayerPreview.vue";
-import ZIndexManager from "../../../core/layers/js/zIndexManager";
+import ZIndexManager from "../../../core/layers/js/zIndexManager.js";
 
 export default {
     name: "BaselayerSwitcher",
