@@ -40,7 +40,7 @@ pipelines:
                         - pip install -r devtools/docsValidation/python-dependencies.txt
                         - echo "Check $BITBUCKET_TAG"
                         - mike deploy $BITBUCKET_TAG
-                        - mv $BITBUCKET_CLONE_DIR/site $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG
+                        - mv site $BITBUCKET_TAG
                         -   pipe: atlassian/ftp-deploy:0.7.1
                             variables:
                                 USER: $MKDOCS_FTP_NAME
@@ -82,7 +82,7 @@ pipelines:
                       - export BITBUCKET_TAG=${BITBUCKET_TAG:-v3.19.0}
                       - DEPLOY_LATEST=$(cat deploy_latest_flag.txt)
                       - if [ "$DEPLOY_LATEST" = "true" ]; then
-                          mv $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG $BITBUCKET_CLONE_DIR/Latest;
+                          mv $BITBUCKET_TAG" Latest
                         else
                           echo "Skipping Latest deployment";
                         fi
