@@ -44,6 +44,17 @@ const simpleGetters = {
             shareUrl = new URL(location.origin + location.pathname + "?" + mapParams),
             currentMarker = rootState?.Maps?.currentMarker;
 
+        layerParams.forEach(layerParam => {
+            const layerModel = layerCollection.getLayerById(layerParam.id),
+                time = layerModel?.getLayerSource?.()?.getParams?.()?.TIME;
+
+            if (time) {
+                layerParam.params = {
+                    ...layerParam.params,
+                    TIME: time
+                };
+            }
+        });
         if (componentTypes.includes(menuParams.main.currentComponent)) {
             menuParams.main.currentComponent = "root";
             delete menuParams.main.attributes;
