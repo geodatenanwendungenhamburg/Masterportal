@@ -1505,6 +1505,7 @@ export default {
                         :fixed-rules="fixedRules"
                         :snippet-id="snippet.snippetId"
                         :timeout-slider="getTimeoutSlider(snippet)"
+                        :timeout-input="getTimeoutInput(snippet)"
                         :visible="snippet.visible"
                         :filter-geometry="filterGeometry"
                         :filter-geometry-name="layerConfig.geometryName"

@@ -139,6 +139,11 @@ export default {
             required: false,
             default: false
         },
+        timeoutInput: {
+            type: Number,
+            required: false,
+            default: 1200
+        },
         timeoutSlider: {
             type: Number,
             required: false,
@@ -177,7 +182,10 @@ export default {
                 return this.initialDateRef[this.sliderFrom] ? this.initialDateRef[this.sliderFrom] : this.initialDateRef[0];
             },
             set (date) {
-                this.sliderFrom = this.getSliderIdxCloseToFromDate(date);
+                clearTimeout(this.sliderChangeTimeout);
+                this.sliderChangeTimeout = setTimeout(() => {
+                    this.sliderFrom = this.getSliderIdxCloseToFromDate(date);
+                }, this.timeoutInput);
             }
         },
         dateUntilComputed: {
@@ -792,6 +800,7 @@ export default {
                 />
             </div>
             <input
+                :key="`from-${snippetId}-${currentSliderMin}-${currentSliderMax}`"
                 v-model="sliderFrom"
                 type="range"
                 :aria-label="$t('common:modules.filter.ariaLabel.sliderRange.min', {param: getAttrNameFrom()})"
@@ -804,6 +813,7 @@ export default {
                 @mouseup="setSliderMouseUp"
             >
             <input
+                :key="`until-${snippetId}-${currentSliderMin}-${currentSliderMax}`"
                 v-model="sliderUntil"
                 type="range"
                 :aria-label="$t('common:modules.filter.ariaLabel.sliderRange.max', {param: getAttrNameUntil()})"

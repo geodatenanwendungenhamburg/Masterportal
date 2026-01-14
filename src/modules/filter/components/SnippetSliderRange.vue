@@ -823,6 +823,7 @@ export default {
                         />
                     </div>
                     <input
+                        :key="`from-${snippetId}-${currentSliderMin}-${currentSliderMax}`"
                         v-model="sliderFrom"
                         type="range"
                         :aria-label="$t('common:modules.filter.ariaLabel.sliderRange.min', {param: getAttrNameFrom()})"
@@ -836,6 +837,7 @@ export default {
                         @mouseup="setSliderMouseUp"
                     >
                     <input
+                        :key="`until-${snippetId}-${currentSliderMin}-${currentSliderMax}`"
                         v-model="sliderUntil"
                         type="range"
                         :aria-label="$t('common:modules.filter.ariaLabel.sliderRange.max', {param: getAttrNameUntil()})"
