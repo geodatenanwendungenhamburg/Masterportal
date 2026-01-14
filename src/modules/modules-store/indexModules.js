@@ -62,7 +62,7 @@ export default {
         CompareFeatures: {...CompareFeatures},
         CopyrightConstraints: {...CopyrightConstraints},
         Draw: {...Draw},
-        //Draw_old: {...Draw_old},
+        Draw_old: {...Draw_old},
         FeatureLister: {...FeatureLister},
         FileImport: {...FileImport},
         Filter: {...Filter},
