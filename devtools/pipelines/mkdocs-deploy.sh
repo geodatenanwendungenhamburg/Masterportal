@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+chmod +x masterportal/deployScripts/transfer_ftp.sh
+chmod -R a+rwx masterportal/dist
+
 set -e
 
 BITBUCKET_TAG=${BITBUCKET_TAG:-v3.19.0}
