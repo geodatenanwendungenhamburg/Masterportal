@@ -39,62 +39,9 @@ pipelines:
                         - apt-get update && apt-get install zip && apt-get install -y curl wput jq  && apt-get install zip
                         - pip install -r devtools/docsValidation/python-dependencies.txt
                         - echo "Check $BITBUCKET_TAG"
-                        - mike deploy $BITBUCKET_TAG
-                        - mv site $BITBUCKET_TAG
-                        -   pipe: atlassian/ftp-deploy:0.7.1
-                            variables:
-                                USER: $MKDOCS_FTP_NAME
-                                PASSWORD: $MKDOCS_FTP_PW
-                                SERVER: $MKDOCS_FTP_SERVER
-                                REMOTE_PATH: '/$BITBUCKET_TAG'
-                                LOCAL_PATH: $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG
-                                DEBUG: 'true'
-                                DELETE_FLAG: 'false'
-                    artifacts:
-                        - $BITBUCKET_TAG/**
-            -   step:
-                    name: check LTS hotfix
-                    image: python:3.8
-                    script:
-                      - export BITBUCKET_TAG=${BITBUCKET_TAG:-v3.19.0}
-                      - |
-                        FIRST_HEADER=$(grep -m1 '^## ' CHANGELOG.md || true)
-                        echo "Detected first changelog header: $FIRST_HEADER"
-
-                        DEPLOY_LATEST=true
-
-                        if [[ "$FIRST_HEADER" == *"(LTS)"* ]]; then
-                            PATCH=$(echo "$FIRST_HEADER" | grep -oE 'v[0-9]+\.[0-9]+\.([0-9]+)' | cut -d. -f3)
-                            if [[ "$PATCH" != "0" ]]; then
-                                echo "❌ LTS hotfix detected, skipping Latest deployment"
-                                DEPLOY_LATEST=false
-                            fi
-                        fi
-
-                        echo "Deploy Latest? $DEPLOY_LATEST"
-                        echo $DEPLOY_LATEST > deploy_latest_flag.txt  # save for next step
-                    artifacts:
-                        - deploy_latest_flag.txt
-            -   step:
-                    name: deploy Latest if allowed
-                    image: python:3.8
-                    script:
-                      - export BITBUCKET_TAG=${BITBUCKET_TAG:-v3.19.0}
-                      - DEPLOY_LATEST=$(cat deploy_latest_flag.txt)
-                      - if [ "$DEPLOY_LATEST" = "true" ]; then
-                          mv $BITBUCKET_TAG" Latest
-                        else
-                          echo "Skipping Latest deployment";
-                        fi
-                      - pipe: atlassian/ftp-deploy:0.7.1
-                        variables:
-                          USER: $MKDOCS_FTP_NAME
-                          PASSWORD: $MKDOCS_FTP_PW
-                          SERVER: $MKDOCS_FTP_SERVER
-                          REMOTE_PATH: '/Latest'
-                          LOCAL_PATH: '$BITBUCKET_CLONE_DIR/Latest'
-                          DEBUG: 'true'
-                          DELETE_FLAG: 'false'
+                        - git fetch --all --tags
+                        - git checkout tags/$BITBUCKET_TAG
+                        - ./devtools/pipelines/mkdocs-deploy.sh
             # -   step:
             #         name: deploy on openCode
             #         script:
