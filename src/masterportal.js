@@ -64,5 +64,15 @@ loadConfigJs.then(() => {
         });
 });
 
+// Move all external CSS stylesheets to the end of <head> to ensure precedence over Vite styles
+(function ensureAllCssLinksLast () {
+    const links = Array.from(
+        document.querySelectorAll("link[rel=\"stylesheet\"]")
+    );
+
+    links.forEach(link => {
+        document.head.appendChild(link);
+    });
+})();
 
 export default app;
