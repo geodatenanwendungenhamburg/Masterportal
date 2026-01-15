@@ -47,6 +47,7 @@ export default {
             "currentLayoutName",
             "currentMapScale",
             "currentScaleUrlParams",
+            "customLayoutSelectionComponent",
             "defaultCapabilitiesFilter",
             "fileDownloads",
             "filename",
@@ -583,7 +584,17 @@ export default {
                     :max-length="'60'"
                 />
             </div>
-            <div class="form-floating mb-3">
+            <component
+                :is="customLayoutSelectionComponent"
+                v-if="customLayoutSelectionComponent"
+                :items="shownLayoutList"
+                :model-value="currentLayoutName"
+                @update:model-value="layoutChanged"
+            />
+            <div
+                v-else
+                class="form-floating mb-3"
+            >
                 <select
                     id="printLayout"
                     class="form-select"
