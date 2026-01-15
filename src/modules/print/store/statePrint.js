@@ -19,6 +19,7 @@
  * @property {Array} additionalLayers list of Layers that can be added in the print
  * @property {Object} currentLayout the current layout
  * @property {String} currentLayoutName the current layout's name
+ * @property {String} customLayoutSelectionComponent the name of a custom component to select the layout
  * @property {Array} formatList available formats of the specified print configuration
  * @property {Array} invisibleLayer contains layers that are not displayed in the current scale,
  * @property {Array} invisibleLayerNames contains names of layers that are not displayed in the current scale,
@@ -73,6 +74,7 @@ const state = {
     currentMapScale: "",
     currentScale: undefined,
     currentScaleUrlParams: undefined,
+    customLayoutSelectionComponent: "",
     defaultCapabilitiesFilter: {},
     dpiForPdf: 200,
     dpiList: [],

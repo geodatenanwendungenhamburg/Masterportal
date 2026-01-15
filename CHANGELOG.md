@@ -33,6 +33,7 @@
 - Calendar: Added women's day, liberation day and children day as holidays.
 - GetFeatureInfo: Added `stickyHeader` configuration option to keep GFI title and navigation arrows visible when scrolling through long content.
 - Menu: Added configuration parameter `closeOppositeMenu` to allow modules to close the opposite menu when opened.
+- Print: Added support for custom layout selection component via config.json parameter `customLayoutSelectionComponent`.
 
 ### Changed
 - WMS-Time:
@@ -104,6 +105,10 @@
 - WMS-Time:
     - The attributes `dimensionRange` and `dimensionRegex` can now be used to filter the values ​​that should be displayed in the time slider.
     - The attibute `staticDimensions` can now be configured and sent to the service when the WMS time layer is loaded.
+=======
+- Issue #1524: draw_old: Added documentation for drawSquareSettings.
+- WMS-Time: The attributes `dimensionRange` and `dimensionRegex` can now be used to filter the values ​​that should be displayed in the time slider.
+- CopyrightConstraints: Added Parameter `useLayerCswUrl` to use the CSW interface specified in the layers.
 - The following packages have been added:
   - devDependencies:
     - @vitejs/plugin-vue: ^6.0.3
