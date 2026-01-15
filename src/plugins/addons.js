@@ -38,6 +38,9 @@ export default {
                         else if (addonConf.type === "javascript") {
                             await this.loadJavascriptAddons(addonKey);
                         }
+                        else if (addonConf.type === "vueComponent") {
+                            await this.loadVueComponentAddons(addonKey, app);
+                        }
                         else if (addonConf.type === "filterSnippet") {
                             await this.loadFilterSnippetAddons(addonKey, app);
                         }
@@ -63,6 +66,21 @@ export default {
 
         if (addon.store) {
             store.registerModule([upperFirst(addonKey)], addon.store);
+        }
+    },
+
+    /**
+     * Loads the vue component addon and creates the Vue component and adds it to Vue instance globally
+     * @param {String} addonKey specified in config.js
+     * @param {Object} app The app.
+     * @returns {void}
+     */
+    loadVueComponentAddons: async function (addonKey, app) {
+        const addon = await this.loadAddon(addonKey);
+
+        app.component(addon.component.name, addon.component);
+        if (addon.store) {
+            store.registerModule(["Modules", addon.component.name], addon.store);
         }
     },
     /**
