@@ -427,7 +427,6 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
 
                 // NOTE: This is only used for dipas/diplanung (08-2020): inputMap contains the map
                 if (typeof Config.inputMap !== "undefined" && Config.inputMap !== null) {
-
                     dispatch("createCenterPoint", {feature: event.features.getArray()[0], targetProjection: Config.inputMap.targetProjection}).then(centerPointCoords => {
                         dispatch("downloadFeaturesWithoutGUI", {prmObject: {"targetProjection": Config.inputMap.targetProjection}, currentFeature: event.feature})
                             .then(geoJSON => postDrawEnd({type: "Point", coordinates: centerPointCoords}, geoJSON));
