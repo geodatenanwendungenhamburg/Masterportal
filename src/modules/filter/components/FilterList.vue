@@ -57,7 +57,8 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/Filter", ["rulesOfFilters"])
+        ...mapGetters("Modules/Filter", ["rulesOfFilters", "shouldSubjectDataSelectedInTree"]),
+        ...mapGetters(["layerConfigById"])
     },
     watch: {
         jumpToId (newFilterId) {
@@ -72,6 +73,19 @@ export default {
         translateKeyWithPlausibilityCheck,
         hasUnfixedRules,
         isRule,
+
+        /**
+         * Checks if layer is visible.
+         * @param {String} layerId - The layer id.
+         * @returns {Boolean} true, if the layer is visible.
+         */
+        isLayerVisible (layerId) {
+            if (!this.shouldSubjectDataSelectedInTree) {
+                return true;
+            }
+            return this.layerConfigById(layerId)?.visibility === true;
+        },
+
         /**
          * Updates selectedLayers array.
          * @param {Number} filterId id which should be removed or added to selectedLayers array
@@ -189,7 +203,7 @@ export default {
                 class="panel panel-default"
             >
                 <AccordionItem
-                    v-if="filter.active && multiLayerSelector"
+                    v-if="filter.active && multiLayerSelector && isLayerVisible(filter.layerId)"
                     :id="filter.layerId + '-' + filter.filterId"
                     :title="filter.title ? filter.title : filter.layerId"
                     :is-open="true"
@@ -208,7 +222,7 @@ export default {
                     />
                 </AccordionItem>
                 <AccordionItem
-                    v-else-if="!multiLayerSelector"
+                    v-else-if="!multiLayerSelector && isLayerVisible(filter.layerId)"
                     :id="filter.layerId + '-' + filter.filterId"
                     :title="filter.title ? filter.title : filter.layerId"
                     :is-open="!disabled(filter.filterId)"
@@ -227,7 +241,7 @@ export default {
                     />
                 </AccordionItem>
                 <AccordionItem
-                    v-else
+                    v-else-if="isLayerVisible(filter.layerId)"
                     :id="filter.layerId + '-' + filter.filterId"
                     :title="filter.title ? filter.title : filter.layerId"
                     :icon="filter.icon"
