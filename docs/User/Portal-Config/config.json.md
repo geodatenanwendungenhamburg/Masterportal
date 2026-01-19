@@ -2896,6 +2896,7 @@ The filter tool offers a range of options to filter vector data from WFS, OAF, G
 |closeDropdownOnSelect|no|Boolean|true|Enable/disable closing dropdown list after selecting an option.|false|
 |collapseButtons|no|Boolean|false|If collapseButtons is set to `true`, buttons are displayed instead of accordions.|false|
 |clearAll|no|Boolean|false|After clicking button Reset all, all the features will be shown. Set to `true` to clear all the features after clicking Reselt all button.|false|
+|shouldSubjectDataSelectedInTree|false|Boolean|false|Filters are only displayed when the respective layer is selected in the subject tree.|false|
 
 **Example**
 

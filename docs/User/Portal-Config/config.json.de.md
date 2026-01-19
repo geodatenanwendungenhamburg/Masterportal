@@ -2889,6 +2889,7 @@ Das Filterwerkzeug bietet eine Reihe von Optionen zum Filtern von Vektordaten au
 |closeDropdownOnSelect|nein|Boolean|true|Aktivieren/Deaktivieren des Schließens der Dropdownliste nach Auswahl einer Option.|false|
 |collapseButtons|nein|Boolean|false|Wenn collapseButtons auf `true` gesetzt ist, werden Buttons statt Accordions angezeigt.|false|
 |clearAll|nein|Boolean|false|Beim Klick auf den Zurücksetzen-Button werden alle Features angezeigt. Wird das clearAll-Flag auf `true` gestellt, werden beim Zurücksetzen keine Features angezeigt.|false|
+|shouldSubjectDataSelectedInTree|false|Boolean|false|Filter werden nur angezeigt, wenn der jeweilig Layer im Themenbaum ausgewählt ist.|false|
 
 **Beispiel**
 
