@@ -212,3 +212,83 @@ pipelines:
                         - git clone --single-branch --branch lts https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
                         - cd masterportal
                         - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git HEAD:refs/heads/lts -f
+        release_minor:
+            -   step:
+                    name: Release minor instead of versionMinor
+                    script:
+                        - git fetch origin
+                        - git checkout release
+
+                        - echo "$GPG_PRIVATE_KEY" | gpg --import
+                        - npm version minor --no-git-tag-version
+                        - git tag -s v$(node -p "require('./package.json').version") -m "release" -f
+                        - git tag -s latest -f
+
+                        - git tag -d lts || true
+                        - git push --tags -f --no-verify
+        release_minor_all:
+            -   step:
+                    name: Instead of versionMinor:all
+                    script:
+                        - git fetch origin
+                        - git checkout release
+
+                        - echo "$GPG_PRIVATE_KEY" | gpg --import
+                        - npm version minor --no-git-tag-version
+                        - git tag -s v$(node -p "require('./package.json').version") -m "release" -f
+                        - git tag -s latest -f
+
+                        - git tag -d lts || true
+                        - git push --tags -f --no-verify
+
+                        - cd addons
+
+                        - git fetch origin
+                        - git checkout release
+
+                        - echo "$GPG_PRIVATE_KEY" | gpg --import
+                        - npm version minor --no-git-tag-version
+                        - git tag -s v$(node -p "require('./package.json').version") -m "release" -f
+                        - git tag -s latest -f
+
+                        - git tag -d lts || true
+                        - git push --tags -f --no-verify
+
+                        - cd ..
+                        - cd portalconfigs
+
+                        - git fetch origin
+                        - git checkout release
+
+                        - echo "$GPG_PRIVATE_KEY" | gpg --import
+                        - npm version minor --no-git-tag-version
+                        - git tag -s v$(node -p "require('./package.json').version") -m "release" -f
+                        - git tag -s latest -f
+
+                        - git tag -d lts || true
+                        - git push --tags -f --no-verify
+
+        release_minor_test:
+            -   step:
+                    name: TEST Release minor test
+                    script:
+                        - git fetch origin
+                        - git checkout release
+                        
+                        - echo "$GPG_PRIVATE_KEY" | gpg --import
+                        - npm version minor --no-git-tag-version
+                        - git tag -s testTag -m "release"
+
+                        - git push --tags -f --no-verify
+        release_minor_test_version:
+            -   step:
+                    name: TEST Release minor test version
+                    script:
+                        - git fetch origin
+                        - git checkout release
+
+                        - echo "$GPG_PRIVATE_KEY" | gpg --import
+                        - npm version minor --no-git-tag-version
+                        - git tag -s testTag$(node -p "require('./package.json').version") -m "release"
+
+                        - git push --tags -f --no-verify
