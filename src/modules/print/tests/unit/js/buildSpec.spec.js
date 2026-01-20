@@ -762,7 +762,8 @@ describe("src/modules/print/js/buildSpec", function () {
                 imageFormat: "image/png",
                 customParams: {
                     TRANSPARENT: true,
-                    DPI: 200
+                    DPI: 200,
+                    TIME: undefined
                 },
                 tileSize: [512, 512],
                 version: "1.3.0"
@@ -853,7 +854,8 @@ describe("src/modules/print/js/buildSpec", function () {
                 imageFormat: "image/png",
                 customParams: {
                     TRANSPARENT: true,
-                    DPI: 200
+                    DPI: 200,
+                    TIME: undefined
                 }
             });
         });
@@ -1775,7 +1777,8 @@ describe("src/modules/print/js/buildSpec", function () {
                 imageFormat: "image/png",
                 customParams: {
                     TRANSPARENT: true,
-                    DPI: 200
+                    DPI: 200,
+                    TIME: undefined
                 }
             });
         });
