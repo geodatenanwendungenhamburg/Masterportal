@@ -879,6 +879,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 expectedConfig.transparency = 0;
                 expectedConfig.showInLayerTree = true;
                 expectedConfig.zIndex = 5;
+                expectedConfig.time = undefined;
 
                 actions.addOrReplaceLayer({dispatch, getters}, {layerId: "1132"});
                 expect(dispatch.calledOnce).to.be.true;
@@ -903,6 +904,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
                 expectedConfig.transparency = 0;
                 expectedConfig.showInLayerTree = true;
                 expectedConfig.zIndex = 5;
+                expectedConfig.time = undefined;
 
                 actions.addOrReplaceLayer({dispatch, getters}, {layerId: "1132", showInLayerTree: true});
                 expect(dispatch.calledOnce).to.be.true;

@@ -48,21 +48,24 @@ describe("src/core/layers/js/layerUrlParams.js", () => {
                 visibility: true,
                 transparency: 0,
                 showInLayerTree: true,
-                zIndex: 0
+                zIndex: 0,
+                time: undefined
             });
             expect(dispatchCalls[1].addOrReplaceLayer).to.deep.equals({
                 layerId: "1711",
                 visibility: false,
                 transparency: 0,
                 showInLayerTree: true,
-                zIndex: 1
+                zIndex: 1,
+                time: undefined
             });
             expect(dispatchCalls[2].addOrReplaceLayer).to.deep.equals({
                 layerId: "452",
                 visibility: true,
                 transparency: 50,
                 showInLayerTree: true,
-                zIndex: 2
+                zIndex: 2,
+                time: undefined
             });
         });
     });
@@ -83,14 +86,16 @@ describe("src/core/layers/js/layerUrlParams.js", () => {
                 visibility: true,
                 transparency: "50",
                 showInLayerTree: true,
-                zIndex: 0
+                zIndex: 0,
+                time: undefined
             });
             expect(dispatchCalls[1].addOrReplaceLayer).to.deep.equals({
                 layerId: "1711",
                 visibility: false,
                 transparency: "0",
                 showInLayerTree: true,
-                zIndex: 1
+                zIndex: 1,
+                time: undefined
             });
         });
         it("should replace the grouped layerId with all ids of group from the params", () => {
@@ -123,14 +128,16 @@ describe("src/core/layers/js/layerUrlParams.js", () => {
                 visibility: true,
                 transparency: "50",
                 showInLayerTree: true,
-                zIndex: 0
+                zIndex: 0,
+                time: undefined
             });
             expect(dispatchCalls[1].addOrReplaceLayer).to.deep.equals({
                 layerId: "1711",
                 visibility: false,
                 transparency: "0",
                 showInLayerTree: true,
-                zIndex: 1
+                zIndex: 1,
+                time: undefined
             });
         });
     });
@@ -193,21 +200,24 @@ describe("src/core/layers/js/layerUrlParams.js", () => {
                 visibility: true,
                 transparency: 0,
                 showInLayerTree: true,
-                zIndex: 0
+                zIndex: 0,
+                time: undefined
             });
             expect(dispatchCalls[2].addOrReplaceLayer).to.deep.equals({
                 layerId: "2425",
                 visibility: true,
                 transparency: 0,
                 showInLayerTree: true,
-                zIndex: 1
+                zIndex: 1,
+                time: undefined
             });
             expect(dispatchCalls[3].addOrReplaceLayer).to.deep.equals({
                 layerId: "2426",
                 visibility: true,
                 transparency: 0,
                 showInLayerTree: true,
-                zIndex: 2
+                zIndex: 2,
+                time: undefined
             });
         });
     });
@@ -262,14 +272,16 @@ describe("src/core/layers/js/layerUrlParams.js", () => {
                 visibility: true,
                 transparency: "50",
                 showInLayerTree: true,
-                zIndex: 0
+                zIndex: 0,
+                time: undefined
             });
             expect(dispatchCalls[1].addOrReplaceLayer).to.deep.equals({
                 layerId: "1711",
                 visibility: false,
                 transparency: "0",
                 showInLayerTree: true,
-                zIndex: 1
+                zIndex: 1,
+                time: undefined
             });
 
             expect(dispatchCalls[2].replaceByIdInLayerConfig).to.deep.equals({
@@ -289,21 +301,24 @@ describe("src/core/layers/js/layerUrlParams.js", () => {
                 visibility: true,
                 transparency: 0,
                 showInLayerTree: true,
-                zIndex: 0
+                zIndex: 0,
+                time: undefined
             });
             expect(dispatchCalls[4].addOrReplaceLayer).to.deep.equals({
                 layerId: "2425",
                 visibility: true,
                 transparency: 0,
                 showInLayerTree: true,
-                zIndex: 1
+                zIndex: 1,
+                time: undefined
             });
             expect(dispatchCalls[5].addOrReplaceLayer).to.deep.equals({
                 layerId: "2426",
                 visibility: true,
                 transparency: 0,
                 showInLayerTree: true,
-                zIndex: 2
+                zIndex: 2,
+                time: undefined
             });
         });
     });
@@ -378,14 +393,16 @@ describe("src/core/layers/js/layerUrlParams.js", () => {
                 visibility: true,
                 transparency: 0,
                 showInLayerTree: true,
-                zIndex: 0
+                zIndex: 0,
+                time: undefined
             });
             expect(dispatchCalls[1].addOrReplaceLayer).to.deep.equals({
                 layerId: "456",
                 visibility: true,
                 transparency: 0,
                 showInLayerTree: true,
-                zIndex: 1
+                zIndex: 1,
+                time: undefined
             });
         });
         it("should add a layer that isn't in the config.json", () => {
@@ -403,7 +420,8 @@ describe("src/core/layers/js/layerUrlParams.js", () => {
                 showInLayerTree: true,
                 type: "layer",
                 visibility: true,
-                zIndex: 0
+                zIndex: 0,
+                time: undefined
             });
 
             layerUrlParams.addLayerToLayerTree(layers);
@@ -414,7 +432,8 @@ describe("src/core/layers/js/layerUrlParams.js", () => {
                 visibility: true,
                 transparency: 0,
                 showInLayerTree: true,
-                zIndex: 0
+                zIndex: 0,
+                time: undefined
             });
         });
     });
