@@ -138,7 +138,8 @@ function addLayerToLayerTree (layers) {
             visibility: typeof layer.visibility === "boolean" ? layer.visibility : true,
             transparency: layer.transparency || 0,
             showInLayerTree: true,
-            zIndex: index
+            zIndex: index,
+            time: layer.params?.TIME ? {default: layer.params.TIME} : undefined
         },
         {root: true}).then((success) => {
             if (!success) {
