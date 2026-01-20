@@ -429,7 +429,8 @@ const BuildSpecModel = {
             imageFormat: source.getParams().FORMAT,
             customParams: {
                 "TRANSPARENT": source.getParams().TRANSPARENT,
-                "DPI": typeof dpi === "number" ? dpi : store.state.Modules.Print.dpiForPdf
+                "DPI": typeof dpi === "number" ? dpi : store.state.Modules.Print.dpiForPdf,
+                "TIME": source.getParams().TIME
             }
         };
 
@@ -475,7 +476,8 @@ const BuildSpecModel = {
             mapObject.imageFormat = source.getParams().FORMAT;
             mapObject.customParams = {
                 "TRANSPARENT": source.getParams().TRANSPARENT,
-                "DPI": typeof dpi === "number" ? dpi : store.state.Modules.Print.dpiForPdf
+                "DPI": typeof dpi === "number" ? dpi : store.state.Modules.Print.dpiForPdf,
+                "TIME": source.getParams().TIME
             };
             if (source.getParams().VERSION) {
                 mapObject.version = source.getParams().VERSION;
