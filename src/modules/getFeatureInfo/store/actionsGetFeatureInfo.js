@@ -16,7 +16,7 @@ import remove3DFeatureHighlight from "@shared/js/utils/remove3DFeatureHighlight.
  */
 export default {
     /**
-     * Highlights a 3D Tile when left-clicked.
+     * Highlights a 3D Tile when left-clicked. TEST
      *
      * @param {Object} param - The parameters object.
      * @param {Object} param.getters - The getters from the Vuex store.
