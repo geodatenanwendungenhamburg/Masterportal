@@ -6,6 +6,7 @@ import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants.js"
 import {uniqueId} from "@shared/js/utils/uniqueId.js";
 import {expect} from "chai";
 import sinon from "sinon";
+import fs from "fs";
 
 describe("src/app-store/js/buildTreeStructure.js", () => {
     const categories = [
@@ -50,8 +51,6 @@ describe("src/app-store/js/buildTreeStructure.js", () => {
         layerConfig;
 
     before(() => {
-        const fs = require("fs");
-
         layerList = fs.readFileSync("src/app-store/tests/unit/js/servicesMasterAuto.json", "utf8");
         layerList = JSON.parse(layerList);
 

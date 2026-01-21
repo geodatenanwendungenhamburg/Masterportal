@@ -4,9 +4,9 @@ import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
 import sinon from "sinon";
 import crs from "@masterportal/masterportalapi/src/crs.js";
 import featureProvider from "@core/maps/js/zoomToGetAndFilterFeatures.js";
+import fs from "fs";
 
-const fs = require("fs"),
-    exampleFeatureCollection = fs.readFileSync("./src/core/maps/tests/unit/resources/featureCollection.xml", "utf8");
+const exampleFeatureCollection = fs.readFileSync("./src/core/maps/tests/unit/resources/featureCollection.xml", "utf8");
 
 describe("src/core/maps/js/zoomToGetAndFilterFeatures.js", () => {
     const id = "someId",

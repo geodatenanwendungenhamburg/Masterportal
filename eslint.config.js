@@ -1,13 +1,13 @@
-const js = require("@eslint/js"),
-    pluginVuejsAccessibility = require("eslint-plugin-vuejs-accessibility"),
-    pluginVue = require("eslint-plugin-vue"),
-    pluginJsdoc = require("eslint-plugin-jsdoc"),
-    vitest = require("@vitest/eslint-plugin"),
-    globals = require("globals"),
-    stylisticJs = require("@stylistic/eslint-plugin-js"),
-    nodePlugin = require("eslint-plugin-n");
+import js from "@eslint/js";
+import pluginVuejsAccessibility from "eslint-plugin-vuejs-accessibility";
+import pluginVue from "eslint-plugin-vue";
+import pluginJsdoc from "eslint-plugin-jsdoc";
+import vitest from "@vitest/eslint-plugin";
+import globals from "globals";
+import stylisticJs from "@stylistic/eslint-plugin-js";
+import nodePlugin from "eslint-plugin-n";
 
-module.exports = [
+export default [
     js.configs.recommended,
     ...pluginVue.configs["flat/recommended"],
     ...pluginVuejsAccessibility.configs["flat/recommended"],
@@ -328,19 +328,19 @@ module.exports = [
     },
     {
         files: ["**/*.spec.js"],
-        plugins: { vitest },
+        plugins: {vitest},
         languageOptions: {
             globals: {
-              ...vitest.environments.env.globals,
-              before: "readonly",
-              after: "readonly",
-              context: "readonly"
+                ...vitest.environments.env.globals,
+                before: "readonly",
+                after: "readonly",
+                context: "readonly"
             }
-          },          
+        },
         rules: {
-          "vitest/no-focused-tests": "error" 
+            "vitest/no-focused-tests": "error"
         }
-      },  
+    },
     {
         ignores: [
             "**/node_modules/",

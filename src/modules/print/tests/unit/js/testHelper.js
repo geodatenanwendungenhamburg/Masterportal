@@ -1,14 +1,14 @@
 import {WFS} from "ol/format.js";
 import {addProjection} from "ol/proj.js";
 import Projection from "ol/proj/Projection.js";
+import fs from "fs";
 
-const fs = require("fs"),
-    proj = new Projection({
-        code: "EPSG:25832",
-        units: "m",
-        axisOrientation: "enu",
-        global: false
-    });
+const proj = new Projection({
+    code: "EPSG:25832",
+    units: "m",
+    axisOrientation: "enu",
+    global: false
+});
 
 addProjection(proj);
 
