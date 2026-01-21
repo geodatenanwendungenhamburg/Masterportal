@@ -39,7 +39,7 @@
 - Issue #1254: LayerPreview: Allow setting static layer preview images (`layerConfig.elements.layers.preview.src`) for all supported layer types.
 - Issue #1500: WfsSearch: Added multi-select functionality for search results with polygon markers on map and zoom to combined extent. Improved geometry extraction and row selection logic to prevent duplicate entries.
 - ShareView: The state of the LayerSelection Module is transported and restored with the shareView-Url.
-- Changed Node.js support: Versions from Node.js **22.19.0** up to Node.js **22.21.0** (LTS) are now supported
+- Changed Node.js support: Versions from Node.js **22.19.0** up to Node.js **22.21.0** (LTS) are now supported. Regard a bug in Node.js v22.21.0 in the HTTP/WebSocket upgrade, use instead v22.21.1.
 - Adjusted module "statisticDashboard" and shared utility function "getOAFFeature" to changes in OAF standard.
 - LayerTree: Highlight clickable elements in breadcrumbs.
 - The following packages have been updated:
