@@ -9,6 +9,7 @@ import crs from "@masterportal/masterportalapi/src/crs.js";
 import {reset as resetUniqueId} from "@shared/js/utils/uniqueId.js";
 import sinon from "sinon";
 import {expect} from "chai";
+import fs from "fs";
 
 const
     {addLayerConfig, importGeoJSON, importFile, setFeatureExtents} = actions,
@@ -39,8 +40,6 @@ before(() => {
         lng: "cimode",
         debug: false
     });
-    const fs = require("fs");
-
     test1KML = fs.readFileSync("./src/modules/fileImport/tests/resources/test1.kml", "utf8");
     test2KML = fs.readFileSync("./src/modules/fileImport/tests/resources/test2.kml", "utf8");
 });
