@@ -9,6 +9,7 @@ const getters = {
             contact: defineAsyncComponent(() => import("../contact/components/ContactFormular.vue")),
             coordToolkit: defineAsyncComponent(() => import("../coordToolkit/components/CoordToolkit.vue")),
             copyrightConstraints: defineAsyncComponent(() => import("../copyrightConstraints/components/CopyrightConstraints.vue")),
+            compareFeatures: defineAsyncComponent(() => import("../compareFeatures/components/CompareFeatures.vue")),
             compareMaps: defineAsyncComponent(() => import("../compareMaps/components/CompareMaps.vue")),
             customMenuElement: defineAsyncComponent(() => import("../menu/components/CustomMenuElement.vue")),
             draw: defineAsyncComponent(() => import("../draw/components/DrawModule.vue")),
