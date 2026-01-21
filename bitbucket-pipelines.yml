@@ -273,7 +273,7 @@ pipelines:
                     name: TEST Release minor test
                     script:
                         - git fetch origin
-                        - git checkout release
+                        - git checkout -B release origin/release
                         
                         - echo "$GPG_PRIVATE_KEY" | gpg --import
                         - npm version minor --no-git-tag-version
