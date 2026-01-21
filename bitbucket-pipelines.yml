@@ -272,7 +272,7 @@ pipelines:
             -   step:
                     name: TEST Release minor test
                     script:
-                        - git fetch origin
+                        - git fetch origin refs/heads/release:refs/remotes/origin/release
                         - git checkout -B release origin/release
                         
                         - echo "$GPG_PRIVATE_KEY" | gpg --import
