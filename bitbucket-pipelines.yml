@@ -293,3 +293,25 @@ pipelines:
                         - git tag -s testTag$(node -p "require('./package.json').version") -m "release"
 
                         - git push --tags -f --no-verify
+        release_gpg_test:
+            -   step:
+                    name: TEST gpg
+                    script:
+                        - apt-get update -y && apt-get install -y gnupg2 && apt-get install -y git
+                        - echo $gpg_private > private_b64.asc
+                        - echo $gpg_public > public_b64.asc
+                        - base64 -d private_b64.asc > private.asc
+                        - base64 -d public_b64.asc > public.asc
+                        - gpg --import public.asc
+                        - gpg --import private.asc
+                        - gpg --list-keys
+                        - rm -rf private.asc private_b64.asc public.asc public_b64.asc
+                        - git config --global user.signingkey 35F604B7CD941CAC6010ACD271A19E8703BFB4B4
+                        - git config --global user.name "Release Bot"
+                        - git config --global user.email "geodatenanwendungen@gv.hamburg.de"
+                        - echo "new file" >>test68.txt
+                        - git add . 
+                        - git commit -S -m "Push through pipelines with signature [skip ci]"
+                        - git tag -S tes-m "signed tag"
+                        - git push 
+
