@@ -298,10 +298,8 @@ pipelines:
                     name: TEST gpg
                     script:
                         - apt-get update -y && apt-get install -y gnupg2 && apt-get install -y git
-                        - echo $gpg_private > private_b64.asc
-                        - echo $gpg_public > public_b64.asc
-                        - base64 -d private_b64.asc > private.asc
-                        - base64 -d public_b64.asc > public.asc
+                        - echo $gpg_private > private.asc
+                        - echo $gpg_public > public.asc
                         - gpg --import public.asc
                         - gpg --import private.asc
                         - gpg --list-keys
