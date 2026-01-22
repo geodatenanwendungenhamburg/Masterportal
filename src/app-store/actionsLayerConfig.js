@@ -119,6 +119,7 @@ export default {
      * @param {Boolean} [showInLayerTree = true] value for showInLayerTree
      * @param {Boolean} [isBaseLayer = false] value for isBaseLayer
      * @param {Number} zIndex new zIndex of the layer in the tree
+     * @param {Number} [payload.time] time information for time-dependent layers e.g. timestamp
      * @returns {Boolean} true, if layer exists an was added or replaced
      */
     addOrReplaceLayer: function ({dispatch, getters}, {layerId, visibility = true, transparency = 0, showInLayerTree = true, isBaseLayer = false, zIndex}) {
