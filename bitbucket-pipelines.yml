@@ -312,6 +312,6 @@ pipelines:
                         - echo "new file" >>test68.txt
                         - git add . 
                         - git commit -S -m "Push through pipelines with signature [skip ci]"
-                        - git tag -S tes-m "signed tag"
+                        - git tag -S testTage -m "signed tag"
                         - git push 
 
