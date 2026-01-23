@@ -595,6 +595,8 @@ async function migrateFiles (sourcePath, destPath) {
                                                         migrateIndexHtml(sourceFolder, destFolder, indexFile);
                                                         console.info("ATTENTION - TODO for User --- remove from config.js by yourself: ", toRemoveFromConfigJs.join(", ") + "\n");
                                                         console.info("SUCCESSFULLY MIGRATED: ", destFolder);
+                                                        // eslint-disable-next-line n/no-process-exit
+                                                        process.exit(0);
                                                     })
                                                     .catch(err => {
                                                         console.error(err);
@@ -607,6 +609,8 @@ async function migrateFiles (sourcePath, destPath) {
                                 }
                                 else {
                                     console.warn("IS ALREADY IN V3.0.0 - NOT MIGRATED: ", configJsonSrcFile);
+                                    // eslint-disable-next-line n/no-process-exit
+                                    process.exit(0);
                                 }
                             })
                             .catch(err => {

@@ -1,27 +1,54 @@
 /* eslint-disable no-console */
-import inquirer from "inquirer";
+import readline from "readline";
 import migrator from "./migrateConfigFiles.js";
 
 const infoMessage = "The paths to the portal or folder with portals must start from \"[...]/masterportal/\")!",
     sourceMessage = "source path to the portal or folder with portals to migrate",
     destMessage = "destination path to store the migrated portal(s)",
-    questions = [
-        {
-            type: "input",
-            name: "sourcePath",
-            message: sourceMessage + ":\n",
-            default: "portal/master"
-        },
-        {
-            type: "input",
-            name: "destPath",
-            message: destMessage + ":\n",
-            default: "portal/destination"
-        }
-    ];
+    questionsArr = [
+        {name: "sourcePath", message: sourceMessage + ":\n", default: "portal/master"},
+        {name: "destPath", message: destMessage + ":\n", default: "portal/destination"}
+    ],
+    rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+
 let sourcePath = null,
     destPath = null,
     usagePrinted = false;
+
+/**
+ * Asks the questions in console.
+ * @param {Array} questions the questions
+ * @param {Object} callback the callback
+ * @returns {Object} answers
+ */
+function askQuestions (questions, callback) {
+    const answers = {};
+    let i = 0;
+
+    /**
+     * Asks the next questions in console.
+     *  @returns {void}
+     */
+    function askNext () {
+        if (i < questions.length) {
+            rl.question(questions[i].message, (answer) => {
+                answers[questions[i].name] = answer || questions[i].default;
+                i++;
+                askNext();
+            });
+        }
+        else {
+            // eslint-disable-next-line n/callback-return
+            callback(answers);
+            rl.close();
+        }
+    }
+
+    askNext();
+}
 
 process.argv.forEach((val) => {
     const splitted = val.split("=");
@@ -48,18 +75,10 @@ else if (sourcePath && destPath) {
 }
 else if (!usagePrinted) {
     console.info(infoMessage);
-    inquirer.prompt(questions)
-        .then((answers) => {
-            migrator.migrate(answers);
-        })
-        .catch((error) => {
-            if (error.isTtyError) {
-                console.error(error);
-            }
-            else {
-                console.error("Failed to call migration script: unknown error");
-            }
-        });
+    askQuestions(questionsArr, (answers) => {
+        migrator.migrate(answers);
+    });
+
 }
 
 /**
