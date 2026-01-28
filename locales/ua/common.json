@@ -1,1717 +1,1717 @@
 {
-  "app-store": {
-    "loadServicesJsonFailed": "<strong>Не вдалося завантажити файл {{layerConf}}!</strong>",
-    "loadStylev3JsonFailed": "<strong>Не вдалося завантажити файл {{style_v3}}!</strong></br>Будь ласка, перевірте конфігурацію 'styleConf' у файлі config.js."
-  },
-  "core": {
-    "layers": {
-      "errorHandling": {
-        "getGeometryTypeFromWFSFetchfailed": "Не вдалося створити легенду в інформації про шар!",
-        "getGeometryTypeFromWFSFetchfailedMessage": "Деталі: необхідний сервіс не відповідає.",
-        "getGeometryTypeFromOAFFetchfailed": "Не вдалося створити легенду в інформації про шар!",
-        "getGeometryTypeFromOAFFetchfailedMessage": "Деталі: API не відповідає.",
-        "LinkMetadata": "Контактні дані та додаткову інформацію ви знайдете <a href={{linkMetadata}} target=\"_blank\">тут</a>.",
-        "wrongStyleId": "Для вказаного StyleId: {{styleId}} не знайдено об’єкт стилю. Будь ласка, переконайтеся, що у використаному файлі Style.json налаштований стиль зі StyleId: {{styleId}}.",
-        "wrongLayerId": "Шар з ID: {{layerId}} не знайдено. Будь ласка, перевірте ID.",
-        "403": "<strong>Немає доступу до {{layerName}}!</strong></br> На жаль, ви не маєте прав для перегляду даних {{layerName}}. Тему було автоматично деактивовано.</br></br>Будь ласка, зверніться до відповідального органу для отримання доступу.</br></br>"
-      },
-      "urlParamWarning": "Параметризований виклик містить помилку. Шар з ID: <b>{{layerId}}</b> не існує та буде проігнорований."
+    "app-store": {
+        "loadServicesJsonFailed": "<strong>Не вдалося завантажити файл {{layerConf}}!</strong>",
+        "loadStylev3JsonFailed": "<strong>Не вдалося завантажити файл {{style_v3}}!</strong></br>Будь ласка, перевірте конфігурацію 'styleConf' у файлі config.js."
     },
-    "maps": {
-      "mapRegion": {
-        "twoFingerPanAlert": "Будь ласка, використовуйте два пальці для навігації та масштабування карти."
-      },
-      "featureViaURL": {
-        "messages": {
-          "featureParsing": "FeatureViaURL: Не всі передані об’єкти Feature вдалося обробити.",
-          "featureParsingAll": "FeatureViaURL: Усі передані об’єкти Feature були передані з неправильним типом даних. Будь ласка, ознайомтеся з документацією.",
-          "featureParsingNoneAdded": "FeatureViaURL: У всіх переданих об’єктів Feature відсутній щонайменше один параметр. Жоден об’єкт Feature не було додано до карти. Будь ласка, ознайомтеся з документацією.",
-          "layerNotFound": "FeatureViaURL: Не вдалося знайти шар з ID {{layerId}}.",
-          "noNameDefined": "FeatureViaURL: Для шару з ID {{layerId}} у конфігурації не визначено назву."
-        }
-      },
-      "highlightFeaturesByAttribute": {
-        "messages": {
-          "configurationError": "Помилка конфігурації. Будь ласка, перевірте вивід консолі.",
-          "requestFailed": "Не вдалося виконати запит даних."
-        }
-      }
-    }
-  },
-  "modules": {
-    "about": {
-      "additionalMetadata": "додаткова інформація...",
-      "contact": "Контактна особа:",
-      "description": "Дізнайтеся більше про цей портал",
-      "name": "Про цей портал",
-      "noMetadataLoaded": "Не вдалося завантажити метадані!",
-      "version": "Версія: ",
-      "ustId": "Ідентифікаційний номер платника ПДВ відповідно до § 27 Закону про податок на додану вартість:",
-      "imprintTitle": "Вихідні дані",
-      "privacyStatementText": "Політика конфіденційності та загальна інформація щодо виконання вимог із захисту даних відповідно до статей 12–14 Загального регламенту захисту даних у Державному підприємстві геоінформації та землеустрою Вільного та ганзейського міста Гамбург:",
-      "privacyStatement": "Політика конфіденційності",
-      "accessibilityText": "Заява про доступність відповідно до § 11 Гамбурзького закону про рівність людей з інвалідністю (Hamburgisches Behindertengleichstellungsgesetz – HmbBGG) від 19 грудня 2019 року:",
-      "accessibilityStatement": "Заява про доступність",
-      "contactButton": "Зв’язатися"
-    },
-    "addWMS": {
-      "alertTitleSuccess": "Шар успішно додано",
-      "alreadyAdded": "Шари запитаного WMS вже були додані.",
-      "completeMessage": "Шари запитаного WMS були додані до дерева тем і можуть бути вибрані через <b>Додати теми</b>!",
-      "completeMessageShowInLayerTree": "&#9989; Шари запитаного WMS були додані до дерева тем!",
-      "description": "Додайте сервіс Web Map Service (WMS) до дерева тем",
-      "errorHttpsMessage": " &#10060; Запитаний вами WMS доступний за http-URL. Masterportal може підключати WMS лише через https (SSL).",
-      "errorMessage": "&#10060; Вказаний сервіс не вдалося завантажити. Будь ласка, переконайтеся, що URL вказано правильно.<br><br> Якщо проблема не зникає, зверніться до оператора сервісу з таким зауваженням щодо поширеної помилки: <br><strong>Необхідно переконатися, що для сервісу встановлено CORS-заголовок. Це рекомендовано <a target='_blank' href='https://www.gdi-de.org/download/AK_Geodienste_Architektur_GDI-DE_Bereitstellung_Darstellungsdienste.pdf'>GDI-DE</a> у розділі 4.7.1.</strong>",
-      "errorTitle": "Не вдалося додати шар",
-      "ifInExtent": "&#10060; Геодані, надані через WMS, знаходяться поза межами відображуваної області. Додавання WMS неможливе.",
-      "name": "Додати WMS",
-      "placeholder": "Будь ласка, введіть тут URL WMS.",
-      "textLoadLayer": "Завантажити шар",
-      "examples": "Приклади:"
-    },
-    "alerting": {
-      "alertWindowTitle": "Інформація",
-      "categories": {
-        "error": "Помилка",
-        "info": "Інформація",
-        "news": "Новини",
-        "success": "Успіх",
-        "warning": "Увага"
-      },
-      "created": "Створено: ",
-      "hideMessage": "Більше не показувати це повідомлення",
-      "showMessage": "Показати це повідомлення"
-    },
-    "aria": {
-      "sliderAria": "Повзунок для "
-    },
-    "button": {
-      "confirm": "Підтвердити",
-      "stop": "Скасувати"
-    },
-    "bufferAnalysis": {
-      "clearButton": "Скинути",
-      "description": "Дізнайтеся, що знаходиться в межах певного радіуса навколо об’єкта",
-      "name": "Буферний аналіз",
-      "notOverlapping": "поза радіусами",
-      "overlapping": "у межах радіусів",
-      "rangeLabel": "Радіус (м)",
-      "resultTypeLabel": "Тип результату",
-      "saveButton": "Скопіювати посилання",
-      "sourceLayerNotFound": "Збережений вихідний шар з ID {{layerId}} не знайдено.",
-      "sourceSelectLabel": "Вихідний шар",
-      "targetLayerNotFound": "Збережений цільовий шар з ID {{layerId}} не знайдено.",
-      "targetSelectLabel": "Цільовий шар"
-    },
-    "compareMaps": {
-      "description": "Порівняйте дві карти поруч або одна над одною",
-      "horizontal": "горизонтально",
-      "leftLayer": "Лівий шар",
-      "lowerLayer": "Нижній шар",
-      "name": "Порівняння карт",
-      "reset": "Скинути",
-      "rightLayer": "Правий шар",
-      "sameLayerSelected": "Один і той самий шар було вибрано двічі. Вибір скинуто.",
-      "selectLeftLayerFirst": "Будь ласка, спочатку виберіть лівий шар",
-      "selectUpperLayerFirst": "Будь ласка, спочатку виберіть верхній шар",
-      "splitDirection": "Орієнтація: ",
-      "upperLayer": "Верхній шар",
-      "vertical": "вертикально"
-    },
-    "contact": {
-      "addFileButton": "Додати вкладення",
-      "description": "Поставте запитання щодо цього порталу або повідомте про помилки",
-      "error": {
-        "mail": "Будь ласка, введіть дійсну адресу електронної пошти.",
-        "message": "Не вдалося надіслати електронний лист!",
-        "messageInput": "Ваше повідомлення повинно містити щонайменше {{length}} символів.",
-        "phone": "За яким номером телефону ми можемо з вами зв’язатися?",
-        "username": "Будь ласка, вкажіть ваше ім’я."
-      },
-      "errorIncompleteDeclarations": "Будь ласка, коректно заповніть усі поля контактної форми, щоб ваш запит було надіслано.",
-      "fileFormatMessage": "Прикріплений файл має некоректний формат. Дозволені формати: .jpg, .jpeg, .png та .pdf",
-      "fileSizeMessage": "Прикріплений файл перевищує встановлений розмір файлу: ",
-      "fileSizeSumMessage": "Прикріплені файли перевищують максимально допустимий загальний розмір для завантаження.",
-      "fileDuplicatedMessage": "Неможливо додати. Цей файл уже було додано: ",
-      "mailSubject": "Запит до служби підтримки порталу ",
-      "messageLabel": "Ваше повідомлення",
-      "name": "Зв’язатися",
-      "placeholder": {
-        "mail": "Ваша електронна адреса",
-        "message": "Будь ласка, сформулюйте тут своє запитання та натисніть \"$t(common:modules.contact.sendButton)\".",
-        "phone": "Ваш номер телефону",
-        "username": "Ваше ім’я"
-      },
-      "privacyPolicy": {
-        "info": "Ви погоджуєтеся з тим, що ваші дані будуть використані для обробки вашого запиту. Додаткову інформацію та відомості про відкликання згоди ви знайдете в <a href=\"{{privacyPolicyLink}}\" target=\"_blank\">Політиці конфіденційності</a>.",
-        "label": "Будь ласка, прийміть політику конфіденційності."
-      },
-      "removeAttachment": "Видалити файл",
-      "sendButton": "Зв’язатися",
-      "successMessage": "Ваш запит було успішно надіслано.",
-      "successTicket": "Номер вашого звернення: ",
-      "infoMessage": "У вас є зауваження, запитання або проблеми? Напишіть нам!"
-    },
-    "controls": {
-      "backForward": {
-        "stepBackward": "Попередній вигляд",
-        "stepForward": "Наступний вигляд"
-      },
-      "button3d": {
-        "buttonTitle2d": "2D",
-        "buttonTitle3d": "3D"
-      },
-      "fullScreen": {
-        "enable": "Увімкнути повноекранний режим",
-        "disable": "Вимкнути повноекранний режим"
-      },
-      "freeze": {
-        "freeze": "Заблокувати вигляд",
-        "unfreeze": "Розблокувати вигляд"
-      },
-      "orientation": {
-        "distanceUnit": "Метри",
-        "geolocationDeniedText": "Геолокація недоступна",
-        "iFrameGeolocationError": "Геолокація всередині iframe наразі недоступна.<br/>Будь ласка, відкрийте <a href='#' target=`_blank`>портал</a> у новій вкладці або вікні.",
-        "imgAlt": "Зображення для точки інтересу",
-        "poiChoiceCurrentPosition": "Поточне місцезнаходження",
-        "poiChoiceCustomPosition": "Пошук адреси або встановлення точки на карті",
-        "poiChoiceClickPoint": "Встановити точку на карті",
-        "poiChoiceConfirmation": "OK",
-        "poiChoiceStop": "Завершити",
-        "poiChoiceTitle": "Виберіть початкову точку для пошуку в радіусі:",
-        "titleGeolocate": "Місцезнаходження",
-        "titleGeolocatePOI": "Поруч (пряма відстань)",
-        "trackingDeniedText": "Функція «Поруч» недоступна."
-      },
-      "rotation": {
-        "reset": "Скинути обертання",
-        "rotateClockwise": "Повернути за годинниковою стрілкою",
-        "rotateCounterClockwise": "Повернути проти годинникової стрілки",
-        "compass": {
-          "pointerNorth": "Повернути вигляд",
-          "moveNorth": "Перемістити на північ",
-          "moveSouth": "Перемістити на південь",
-          "moveWest": "Перемістити на захід",
-          "moveEast": "Перемістити на схід"
-        }
-      },
-      "tiltView": {
-        "downButton": "Нахилити вигляд вниз",
-        "upButton": "Нахилити вигляд вгору"
-      },
-      "totalView": {
-        "titleButton": "Повернутися до початкового вигляду"
-      },
-      "zoom": {
-        "zoomIn": "Збільшити",
-        "zoomOut": "Зменшити"
-      }
-    },
-    "compareFeatures": {
-      "title": "Список порівняння",
-      "description": "Порівнюйте вибрані об’єкти в таблиці.",
-      "topicsSelection": "Вибір тем",
-      "removeFromList": "Видалити зі списку",
-      "noFeatures": {
-        "nothingSelected": "Для списку порівняння не вибрано жодних {{objects}}.",
-        "objectName": "Об’єкти",
-        "info": "Натисніть на об’єкт на карті. Відкриється вікно з відповідною інформацією. У правому верхньому куті знаходиться значок зірки {{iconEmptyStar}}. Натисніть на нього, щоб додати об’єкт до списку порівняння. Значок зірки стане жовтим {{iconYellowStar}}. Повторне натискання видалить об’єкт зі списку порівняння.",
-        "info2": "Як тільки об’єкт додається до списку порівняння, він з’являється в таблиці, що дозволяє легко порівнювати його з іншими об’єктами. Щоб видалити об’єкт, просто натисніть на «X» поруч із відповідним об’єктом з лівого боку таблиці."
-      },
-      "feedback": {
-        "added": "Об’єкт було додано до списку порівняння",
-        "addedWithName": "{{currentFeatureName}} було додано до списку порівняння",
-        "notAdded": "Не вдалося додати об’єкт до списку порівняння",
-        "notAddedWithName": "{{currentFeatureName}} не вдалося додати до списку порівняння",
-        "limitReached": "Досягнуто максимальної кількості об’єктів у списку порівняння.",
-        "removeObjects": "Будь ласка, спочатку видаліть щонайменше один об’єкт, перш ніж продовжити.",
-        "goToComparisonlist": "Перейти до списку порівняння"
-      },
-      "trueFalse": {
-        "true": "Так",
-        "false": "Ні"
-      }
-    },
-    "coordToolkit": {
-      "cartesian": {
-        "eastingLabel": "Східне значення / абсциса",
-        "northingLabel": "Північне значення / ордината"
-      },
-      "coordSystemField": "Система координат",
-      "coordsCopied": "Координату(и) скопійовано до буфера обміну.",
-      "coordsPair": "Пара координат",
-      "copyCoordBtn": "Скопіювати {{- value}}",
-      "copyCoordsBtn": "Скопіювати пару координат",
-      "copyToClipboard": {
-        "contentSaved": "Вміст скопійовано до буфера обміну.",
-        "contentNotSaved": "Не вдалося скопіювати вміст до буфера обміну."
-      },
-      "description": "Визначайте координати з карти або здійснюйте пошук за координатами.",
-      "errorMsg": {
-        "example": "Приклад: ",
-        "hdmsNoCoord": "Будь ласка, повністю введіть значення {{valueKey}}.",
-        "hdmsNoMatch": "Введене значення для {{valueKey}} здається некоректним!",
-        "noCoord": "Будь ласка, повністю введіть {{valueKey}}.",
-        "noMatch": "Введене значення для {{valueKey}} здається некоректним!"
-      },
-      "exampleAcronym": "Напр. ",
-      "hdms": {
-        "eastingLabel": "Широта",
-        "northingLabel": "Довгота"
-      },
-      "heightLabel": "Висота",
-      "hintSearch": "Введіть координати для пошуку",
-      "hintSupply": "Будь ласка, клацніть на карті.",
-      "influenceFactors": "Відображені значення можуть містити неточності, на які впливають, зокрема, масштаб, роздільна здатність карти та екрана.",
-      "info": "Інформація",
-      "name": "Координати",
-      "noHeightBuilding": "Площа будівлі, відсутні дані про висоту",
-      "noHeightWater": "Площа водойми, відсутні дані про висоту",
-      "postionCoordinates": "Координати положення",
-      "search": "Пошук координат",
-      "searchBtn": "Пошук",
-      "supply": "Отримати координати / висоту",
-      "utm": {
-        "eastingLabel": "Східне значення",
-        "northingLabel": "Північне значення"
-      }
-    },
-    "copyrightConstraints": {
-      "name": "Умови використання",
-      "info": "Будь ласка, зверніть увагу на умови використання застосованих геоданих",
-      "notSpecified": "Не зазначено, за потреби зверніться до",
-      "contactOrganisation": "Організація",
-      "contactName": "Ім’я",
-      "contactPhone": "Тел.",
-      "contactEmail": "Електронна пошта",
-      "wait": "Будь ласка, зачекайте"
-    },
-    "draw": {
-      "description": "Створюйте важливі позначки або виділяйте ділянки",
-      "name": "Малювання / Написання"
-    },
-    "draw_old": {
-      "attributeSelect": {
-        "attributeDuplicatedKeyError": "Ключ атрибута вже існує.",
-        "attributeKeyError": "Будь ласка, вкажіть ключ для атрибута.",
-        "input": {
-          "key": "Ключ атрибута",
-          "value": "Значення атрибута",
-          "newKey": "Новий ключ",
-          "newValue": "Нове значення"
+    "core": {
+        "layers": {
+            "errorHandling": {
+                "getGeometryTypeFromWFSFetchfailed": "Не вдалося створити легенду в інформації про шар!",
+                "getGeometryTypeFromWFSFetchfailedMessage": "Деталі: необхідний сервіс не відповідає.",
+                "getGeometryTypeFromOAFFetchfailed": "Не вдалося створити легенду в інформації про шар!",
+                "getGeometryTypeFromOAFFetchfailedMessage": "Деталі: API не відповідає.",
+                "LinkMetadata": "Контактні дані та додаткову інформацію ви знайдете <a href={{linkMetadata}} target=\"_blank\">тут</a>.",
+                "wrongStyleId": "Для вказаного StyleId: {{styleId}} не знайдено об’єкт стилю. Будь ласка, переконайтеся, що у використаному файлі Style.json налаштований стиль зі StyleId: {{styleId}}.",
+                "wrongLayerId": "Шар з ID: {{layerId}} не знайдено. Будь ласка, перевірте ID.",
+                "403": "<strong>Немає доступу до {{layerName}}!</strong></br> На жаль, ви не маєте прав для перегляду даних {{layerName}}. Тему було автоматично деактивовано.</br></br>Будь ласка, зверніться до відповідального органу для отримання доступу.</br></br>"
+            },
+            "urlParamWarning": "Параметризований виклик містить помилку. Шар з ID: <b>{{layerId}}</b> не існує та буде проігнорований."
         },
-        "noFeatureSelected": "Наразі жоден об’єкт не вибрано. Будь ласка, виберіть об’єкт!",
-        "remove": "Видалити",
-        "save": "Зберегти"
-      },
-      "button": {
-        "delete": "Видалити геометрію / текст",
-        "deleteAll": "Видалити все",
-        "download": "Завантажити",
-        "draw": "Малювати геометрію / текст",
-        "edit": "Редагувати геометрію / текст",
-        "editAttributes": "Редагувати атрибути",
-        "redo": "Повторити",
-        "saveDrawing": "Зберегти креслення",
-        "undo": "Скасувати"
-      },
-      "clickToPlaceText": "Клацніть на карту, щоб розмістити текст",
-      "color": "Колір заповнення",
-      "colorContour": "Колір контуру",
-      "colors": {
-        "black": "Чорний",
-        "blue": "Синій",
-        "green": "Зелений",
-        "grey": "Сірий",
-        "orange": "Помаранчевий",
-        "red": "Червоний",
-        "white": "Білий",
-        "yellow": "Жовтий"
-      },
-      "defined": "визначено",
-      "description": "Створюйте важливі позначки або виділяйте ділянки. Завантажте їх тут, щоб пізніше знову завантажити",
-      "doubleCirclePlaceholder": "Будь ласка, введіть радіус",
-      "download": {
-        "allGeometryTypesNotSupported": "Намальовані геометрії не можуть бути завантажені у вибраному форматі. Формат не підтримує тип геометрії «полігон».",
-        "enterFilename": "Будь ласка, вкажіть назву файлу",
-        "filename": "Назва файлу",
-        "format": "Формат",
-        "notSupportedGeometryType": "Одна або кілька намальованих геометрій не можуть бути завантажені у вибраному форматі, оскільки формат не підтримує тип геометрії «полігон». Усі намальовані точки та лінії можуть бути завантажені.",
-        "pleaseChoose": "Будь ласка, виберіть",
-        "unknownGeometry": "Невідома геометрія: <strong>{{geometry}}</strong>"
-      },
-      "drawLayerVisible": "Креслення видиме",
-      "drawTypeOptions": {
-        "drawArea": "Площа",
-        "drawSquare": "Квадрат",
-        "drawCircle": "Коло",
-        "drawCurve": "Вільна лінія",
-        "drawDoubleCircle": "Подвійне коло",
-        "drawLine": "Лінії",
-        "drawSymbol": "Символ",
-        "writeText": "Текст"
-      },
-      "fontName": "Шрифт",
-      "fontSize": "Розмір шрифту",
-      "geometry": "Геометрія",
-      "geometryDrawFailed": "Передану геометрію не вдалося відобразити.",
-      "iconList": {
-        "gelber Pin": "жовтий пін",
-        "iconCloud": "Хмара",
-        "iconLeaf": "Лист",
-        "iconMeadow": "Луг",
-        "iconPoint": "Точка"
-      },
-      "innerColorContour": "Колір внутрішнього контуру",
-      "innerRadius": "Внутрішній радіус",
-      "interactive": "інтерактивний",
-      "limitReached_one": "Ви вже намалювали {{count}} об’єкт, будь ласка, видаліть його, перш ніж продовжити!",
-      "limitReached_other": "Ви вже намалювали {{count}} об’єктів, будь ласка, спочатку видаліть один, перш ніж продовжити!",
-      "lineWidth": "Товщина лінії",
-      "method": "Метод",
-      "name": "Малювання / Написання",
-      "outerColorContour": "Колір зовнішнього контуру",
-      "outerRadius": "Зовнішній радіус",
-      "radius": "Радіус",
-      "symbol": "Символ",
-      "text": "Текст",
-      "transparency": "Прозорість",
-      "transparencyOutline": "Прозорість контуру",
-      "undefinedInnerCircle": "Будь ласка, також визначте внутрішнє коло.",
-      "undefinedOuterCircle": "Будь ласка, також визначте зовнішнє коло.",
-      "undefinedSquareArea": "Будь ласка, визначте площу квадрата.",
-      "undefinedRadius": "Будь ласка, вкажіть радіус.",
-      "undefinedTwoCircles": "Будь ласка, визначте обидва кола.",
-      "unit": "Одиниця",
-      "squareDefinedInfo": " (без урахування кривизни Землі)",
-      "areaLabel": "Площа",
-      "squareSideLengthLabel": "Довжина сторони",
-      "lineLengthLabel": "Загальна довжина"
-    },
-    "featureLister": {
-      "chooseTheme": "Вибрати тему",
-      "continueButton": "Перейти до списку",
-      "details": "Деталі",
-      "detailsOfSelected": "Деталі вибраного об’єкта",
-      "description": "Перелічіть усі записи за темою",
-      "key": "Показано {{shownFeatures}} з {{featureCount}} об’єктів",
-      "list": "Список",
-      "manualSelection": "Вибрати об’єкти на карті вручну",
-      "more": "Більше...",
-      "name": "Список",
-      "noFeaturesFound": "У виборі не знайдено жодних об’єктів.",
-      "noFeaturesFoundInMap": "У поточному фрагменті карти не знайдено жодних об’єктів.",
-      "requestFailedAlert": "Не вдалося виконати запит об’єктів. Будь ласка, спробуйте пізніше.",
-      "spatialSelection": "Просторово фільтрувати об’єкти",
-      "visibleVectorLayers": "Видимі векторні шари"
-    },
-    "fileImport": {
-      "alertingMessages": {
-        "featureError": "Один об’єкт у цьому файлі не вдалося зчитати.",
-        "formatError": "Файл \"{{filename}}\" не вдалося зчитати. Будь ласка, перевірте, чи має файл формат *.kml, *.gpx, *.geojson або *.json.",
-        "missingFileContent": "Помилка під час зчитування файлу \"{{filename}}\". Будь ласка, перевірте тип файлу та його вміст. Якщо файл не містить помилок, зверніться до служби підтримки.",
-        "missingFormat": "Формат файлу {{format}} не підтримується. Будь ласка, зверніться до служби підтримки.",
-        "success": "Файл \"{{filename}}\" було успішно імпортовано.",
-        "successPartly": "Файл \"{{filename}}\" було імпортовано частково."
-      },
-      "captions": {
-        "drawTool": "Відкрити $t(common:modules.draw.name)",
-        "introDrawTool": "Імпортовані геометрії можна змінювати згодом. Для цього скористайтеся інструментом \"$t(modules.draw.name)\".",
-        "introFormats": "Можна імпортувати файли KML (*.kml), GPX (*.gpx) або GeoJson (*.geojson, *.json).",
-        "introInfo": "Імпортуйте потрібний файл за допомогою перетягування або через діалог відкриття файлів браузера.",
-        "supportedFiletypes": {
-          "auto": "Автоматичне визначення",
-          "geojson": "Файл GeoJson (*.geojson, *.json)",
-          "gpx": "Файл GPX (*.gpx)",
-          "kml": "Файл KML (*.kml)"
-        }
-      },
-      "description": "Імпортуйте геодані з різних форматів файлів",
-      "fileZoom": "Наблизити до об’єктів файлу \"{{filename}}\"",
-      "importFiles": "Імпортувати вибрані файли",
-      "name": "Імпорт файлів",
-      "removeAttachment": "Видалити файл",
-      "successfullyImportedLabel": "Успішно імпортовано:",
-      "zoom": "Масштабувати",
-      "colorPerAttributes": "Колір за атрибутами",
-      "stylingAttributeDescription": "Виберіть атрибут, за яким буде стилізовано шар.",
-      "stylingColorDescription": "Після вибору кольору автоматично створюється колірна шкала. Для числових (кількісних) значень формується шкала від світлого до темного, при цьому найвищому значенню даних відповідає вибраний колір. Для якісних даних створюється колірна шкала з різними відтінками на основі вибраного кольору."
-    },
-    "filter": {
-      "activeFilter": "Активні фільтри",
-      "alertingMessages": {
-        "noMatchingFilterId": "Налаштований ідентифікатор фільтра відсутній."
-      },
-      "ariaLabel": {
-        "checkbox": "Прапорець для {{param}}",
-        "date": "Дата для {{param}}",
-        "dateRange": {
-          "from": "Дата початку для {{param}}",
-          "to": "Дата завершення для {{param}}"
-        },
-        "dropdown": "Список вибору для {{param}}",
-        "input": "Поле введення для {{param}}",
-        "radio": "Перемикач для {{param}}",
-        "slider": "Повзунок діапазону для {{param}}",
-        "sliderRange": {
-          "max": "Максимум повзунка для {{param}}",
-          "min": "Мінімум повзунка для {{param}}"
-        },
-        "toolInfo": "Інформація про інструмент (відкрити посилання в новій вкладці)"
-      },
-      "button": {
-        "confirm": "Підтвердити",
-        "stop": "Скасувати"
-      },
-      "chart": {
-        "speciesCadastreAlternativeText": "Для цього виду наразі відсутні або недостатні актуальні щоденні спостереження."
-      },
-      "description": "Фільтрує об’єкти, відображені на карті",
-      "download": {
-        "enterFilename": "Будь ласка, вкажіть назву файлу",
-        "filename": "Назва файлу",
-        "format": "Формат",
-        "label": "Завантажити відфільтровані дані",
-        "labelBtn": "Завантажити",
-        "pleaseChoose": "Будь ласка, виберіть"
-      },
-      "dropdown": {
-        "deselectAll": "Зняти вибір з усіх",
-        "emptyList": "Список порожній",
-        "noElements": "Елементи не знайдено",
-        "selectAll": "Вибрати все"
-      },
-      "filterButton": "Застосувати фільтр",
-      "filterReset": "Очистити фільтр",
-      "filterResetAll": "Очистити всі фільтри",
-      "filterResetOrigin": "Скинути фільтр",
-      "filterResult": {
-        "disabledInfo": "Фільтр вимкнено на поточному рівні масштабування.",
-        "unit": "{{amountOfFilteredItems}} результатів"
-      },
-      "geometryFilter": {
-        "title": "Геометричний фільтр",
-        "buffer": "Буфер [м]",
-        "geometries": "Геометрії",
-        "regions": "Області",
-        "geometryTypes": {
-          "circle": "Коло",
-          "lineString": "Лінія + буфер",
-          "polygon": "Площа",
-          "rectangle": "Прямокутник"
-        },
-        "delete": "Видалити",
-        "removeGeometry": "Видалити область",
-        "selectGeometry": "Виберіть геометрію, щоб фільтрувати лише в межах заданої геометрії.",
-        "selectRegion": "Виберіть область, щоб фільтрувати лише в межах цієї області."
-      },
-      "info": {
-        "infoIcon": "Натиснувши на значок інформації, можна отримати додаткові відомості",
-        "snippetCheckbox": "Прапорець можна увімкнути або вимкнути клацанням миші.",
-        "snippetDate": "Щоб ввести дату як критерій пошуку, клацніть у полі дати та виберіть дату з відкритого календаря.",
-        "snippetDateRange": "Щоб ввести діапазон дат як критерій пошуку, клацніть у поля дати початку та завершення і виберіть відповідні дати з календаря.",
-        "snippetDropdown": "Ви можете вибрати одне або кілька значень зі списку.",
-        "snippetInput": "Ви можете ввести бажані критерії пошуку в текстовому полі.",
-        "snippetSlider": "Щоб ввести числове значення як критерій пошуку, перемістіть повзунок праворуч або ліворуч. Також можна ввести значення безпосередньо в поле введення.",
-        "snippetSliderRange": "Щоб ввести мінімальні та максимальні числові значення як критерій пошуку, перемістіть лівий або правий повзунок. Також можна ввести значення безпосередньо в полях введення."
-      },
-      "name": "Фільтр",
-      "searchInMapExtent": "Пошук у поточному фрагменті карти",
-      "slider": {
-        "valueEmptyErrorMessage": "Значення поля не може бути порожнім!",
-        "valueOutOfRangeErrorMessage": "Введене значення {{inputValue}} має бути в межах допустимого діапазону {{minValueSlider}} та {{maxValueSlider}}!"
-      },
-      "snippetTags": {
-        "selectionText": "Ваш вибір:",
-        "showMore": "показати більше",
-        "showLess": "показати менше"
-      },
-      "upload": {
-        "geometryParseError": "Зазначену геометрію не вдалося завантажити"
-      },
-      "distributionMapLinkText": "Посилання на карту поширення",
-      "distributionMapLinkTextTitle": "Скопіювати посилання на карту поширення",
-      "universalSearchTitle": "Шукати цю тварину в Інтернеті",
-      "resetButton": "Скинути до початкового стану"
-    },
-    "getFeatureInfo": {
-      "boolean": {
-        "0": "Ні",
-        "1": "Так",
-        "false": "Ні",
-        "no": "Ні",
-        "true": "Так",
-        "yes": "Так"
-      },
-      "buttonBack": "Показати попередню інформацію",
-      "buttonForward": "Показати додаткову інформацію",
-      "errorMessageLayers": "Під час запиту інформації (GetFeatureInfo) виникли помилки для таких шарів: <ul>{{layers}}</ul><br>Будь ласка, спробуйте пізніше. Якщо проблема не зникне, зверніться до оператора сервісу.",
-      "errorMessage": "Під час запиту інформації (GetFeatureInfo) сталася помилка.<br>Будь ласка, спробуйте пізніше. Якщо проблема не зникне, зверніться до оператора сервісу.",
-      "favoriteIcons": {
-        "compareFeatureIcon": {
-          "toCompareList": "До списку порівняння",
-          "fromCompareList": "Видалити зі списку порівняння"
-        }
-      },
-      "name": "Отримати інформацію",
-      "themes": {
-        "default": {
-          "imgAlt": "Не вдалося завантажити зображення.",
-          "noAttributeAvailable": "Атрибути відсутні!"
-        },
-        "sensor": {
-          "chargingStations": {
-            "available": "Доступність",
-            "charging": "Завантаженість",
-            "outoforder": "Не працює",
-            "faulted": "Стан помилки"
-          },
-          "sensor": {
-            "dataName": "Дані",
-            "header": {
-              "description": "Опис",
-              "name": "Назва",
-              "ownerThing": "Власник"
+        "maps": {
+            "mapRegion": {
+                "twoFingerPanAlert": "Будь ласка, використовуйте два пальці для навігації та масштабування карти."
+            },
+            "featureViaURL": {
+                "messages": {
+                    "featureParsing": "FeatureViaURL: Не всі передані об’єкти Feature вдалося обробити.",
+                    "featureParsingAll": "FeatureViaURL: Усі передані об’єкти Feature були передані з неправильним типом даних. Будь ласка, ознайомтеся з документацією.",
+                    "featureParsingNoneAdded": "FeatureViaURL: У всіх переданих об’єктів Feature відсутній щонайменше один параметр. Жоден об’єкт Feature не було додано до карти. Будь ласка, ознайомтеся з документацією.",
+                    "layerNotFound": "FeatureViaURL: Не вдалося знайти шар з ID {{layerId}}.",
+                    "noNameDefined": "FeatureViaURL: Для шару з ID {{layerId}} у конфігурації не визначено назву."
+                }
+            },
+            "highlightFeaturesByAttribute": {
+                "messages": {
+                    "configurationError": "Помилка конфігурації. Будь ласка, перевірте вивід консолі.",
+                    "requestFailed": "Не вдалося виконати запит даних."
+                }
             }
-          },
-          "sensorBarChart": {
-            "chartTitleAverage": "Середнє значення з",
-            "clock": "{{value}} год",
-            "month_one": "{{count}} місяць",
-            "month_other": "{{count}} місяців",
-            "nextWeekday": "Наступний день тижня",
-            "noticeTextAvailable": "(враховуються лише дані зі значенням available / доступно)",
-            "noticeTextCharging": "(враховуються лише дані зі значенням charging / заряджається)",
-            "noticeTextOutoforder": "(враховуються лише дані зі значенням outoforder / не працює)",
-            "noticeTextFaulted": "(враховуються лише дані зі значенням faulted / стан помилки)",
-            "previousWeekday": "Попередній день тижня",
-            "year_one": "{{count}} рік",
-            "year_other": "{{count}} років"
-          },
-          "sensorData": {
-            "firstColumnHeaderName": "Властивості"
-          }
         }
-      },
-      "title": "Інформація про об’єкт"
-    },
-    "gfiThemes": {
-      "dataTable": {
-        "sort": "Сортувати значення"
-      }
-    },
-    "info": {
-      "name": "Інфо",
-      "disclaimer": "Відмова від відповідальності",
-      "home": {
-        "name": "Гамбург"
-      }
-    },
-    "language": {
-      "de": "Deutsch",
-      "description": "Оберіть мову",
-      "en": "English",
-      "es": "Español",
-      "it": "Italiano",
-      "name": "Змінити мову",
-      "platt": "Platt",
-      "pt": "Português",
-      "ru": "Русский",
-      "tr": "Türkçe",
-      "ua": "Українська",
-      "nl": "Nederlands"
-    },
-    "layerClusterToggler": {
-      "description": "Активуйте кілька тем одним натисканням кнопки",
-      "info": "Увімкнути або вимкнути видимість таких шарів:",
-      "name": "Відкрити групу шарів",
-      "toggle": "Перемкнути видимість шарів"
-    },
-    "layerInformation": {
-      "additionalMetadata": "додаткова інформація...",
-      "addressSuffix": "Адреса",
-      "addressSuffixes": "Адреси шарів",
-      "attachFileMessage": "за потреби додати тип файлу під час завантаження",
-      "downloadDataset": "Завантажити набір даних",
-      "lastModified": "Остання зміна",
-      "legend": "Легенда",
-      "name": "Інформація та легенда",
-      "noMetadataLoaded": "Не вдалося завантажити метадані!",
-      "noMetadataLoadedConsole": "Не вдалося отримати метадані для цього шару. Це вказує на проблему з підключеним файлом services.json.",
-      "periodicityTitle": "Оновлення даних",
-      "publicationCreation": "Публікація / створення",
-      "pointOfContact": "Контактна особа",
-      "contactInfoMessage": "Написати контактній особі теми ",
-      "contactPublisher": "Написати контактній особі ",
-      "mailSubject": "Запит щодо набору даних ",
-      "mailOriginHint": "Цей запит було надіслано вам через контактну форму за такою URL-адресою",
-      "changeLayerInfo": "Вибрати інформацію про шар: "
-    },
-    "layerPills": {
-      "next": "Показати наступний шар",
-      "previous": "Показати попередній шар",
-      "remove": "Видалити шар"
-    },
-    "layerSelection": {
-      "addSubject": "Додати тему",
-      "folderCheckbox": {
-        "selectedAllLayer": "Активувати всі шари в папці {{folderName}}",
-        "unselectedAllLayer": "Деактивувати всі шари в папці {{folderName}}"
-      },
-      "name": "Вибір тем",
-      "backgrounds": "Фони",
-      "datalayer": "Тематичні дані",
-      "externalSubjectLayer": "Зовнішні тематичні дані",
-      "selectAll": "Додати всі",
-      "deselectAll": "Видалити всі",
-      "selectedSubjectsCount_other": "Будь ласка, виберіть тему",
-      "addSelectedSubjectsToMap_one": "Додати вибрану тему на карту",
-      "addSelectedSubjectsToMap_other": "Додати {{count}} вибрані теми на карту"
-    },
-    "layerSlider": {
-      "description": "Запустити слайд-шоу",
-      "displayLayers": "Відображення різних шарів.",
-      "name": "Серія шарів",
-      "serviceOne": "Сервіс 1",
-      "serviceTwo": "Сервіс 2",
-      "serviceThree": "Сервіс 3",
-      "serviceFour": "Сервіс 4",
-      "sliderTypeHandle": "Режим повзунка",
-      "sliderTypePlayer": "Режим плеєра",
-      "title": "Симуляція прикладних сервісів"
-    },
-    "layerTree": {
-      "addLayer": "Додати теми",
-      "categories": "Категорії",
-      "categoryInspire": "Inspire",
-      "categoryOpendata": "Open Data",
-      "categoryOrganisation": "Установа",
-      "categoriesListHead": "Упорядкувати теми за такою категорією:",
-      "subjectData3D": "3D-дані",
-      "iconRemoveLayer": "Видалити тему з карти",
-      "iconSubMenu": "Показати додаткові функції",
-      "iconTransparency": "Прозорість",
-      "infosAndLegend": "Показати інформацію про набір даних",
-      "invisibleLayer": "Цю тему можна відображати лише в масштабі {{minScale}} – {{maxScale}}",
-      "invisibleLayerNoScale": "Цю тему не можна відобразити в цьому масштабі",
-      "noCategory": "Без категорії",
-      "rootLayerPath": "Показати в папці"
-    },
-    "legend": {
-      "description": "Отримайте інформацію про об’єкти на карті",
-      "linkToPdf": "До зовнішньої легенди (PDF)",
-      "name": "Легенда",
-      "noLegendForLayerInfo": "Легенда недоступна"
-    },
-    "login": {
-      "description": "Увійдіть за допомогою імені користувача та пароля",
-      "descriptionLoggedIn": "Ви увійшли в систему",
-      "login": "Вхід",
-      "logout": "Вихід",
-      "progress": "Будь ласка, увійдіть у відкритому спливаючому вікні.",
-      "name": "Ім’я",
-      "email": "Електронна пошта",
-      "profile": "Профіль"
-    },
-    "measure": {
-      "area": "Площа",
-      "deleteMeasurements": "Видалити вимірювання",
-      "description": "Вимірюйте відстань або площу",
-      "finishWithDoubleClick": "Завершити подвійним клацанням",
-      "geometry": "Геометрія",
-      "influenceFactors": "Відображені значення можуть містити неточності, на які впливають, зокрема, масштаб, роздільна здатність карти та екрана.",
-      "inputAccuracy": "Точність введення та кількість оцифрованих точок",
-      "measure": "Одиниця",
-      "measureDistance": "Довжина вимірювальної лінії або розмір вимірюваної площі",
-      "name": "Вимірювання відстані / площі",
-      "resolution": "Роздільна здатність карти",
-      "scale": "Масштаб",
-      "screenResolution": "Роздільна здатність екрана",
-      "stretch": "Відстань"
-    },
-    "menu": {
-      "ariaLabelClose": "Закрити $t(menu.name)",
-      "ariaLabelOpen": "Відкрити $t(menu.name)",
-      "name": "Меню",
-      "widthUrlParamError": "URL-параметр для налаштування ширини меню є некоректним і не може бути застосований. Будь ласка, виберіть значення між 5 та 90."
-    },
-    "modalItem": {
-      "close": "Закрити вікно"
-    },
-    "modeler3D": {
-      "entity": {
-        "captions": {
-          "backToList": "До огляду",
-          "copyTitle": "Скопіювати 3D-модель \"{{name}}\"",
-          "delete": "Видалити модель",
-          "deletionTitle": "Видалити 3D-модель \"{{name}}\"",
-          "dimensionsModel": "Показати розміри для 3D-моделі \"{{name}}\"",
-          "editModel": "Редагувати 3D-модель \"{{name}}\"",
-          "incrementTooltip": "Утримуйте Shift, щоб змінювати значення з більшим кроком.",
-          "modelName": "Назва моделі",
-          "projectionInfo": "Увага! Під час використання системи координат WGS84 можливі неточності. Рекомендуємо використовувати десятковий формат.",
-          "rotationPlaceholder": "Кроки інкременту/декременту",
-          "rotation": "Обертання",
-          "rotationSwitch": "Кроки обертання",
-          "scale": "Масштабування",
-          "steps": "Кроки",
-          "visibilityTitle": "Показати/приховати 3D-модель \"{{name}}\"",
-          "zoomTo": "Наблизити до 3D-моделі \"{{name}}\""
-        },
-        "deleteInteraction": {
-          "confirm": "Видалити",
-          "headline": "Увага",
-          "text": "Ви впевнені, що хочете видалити модель \"{{name}}\"?"
-        },
-        "projections": {
-          "adaptToHeight": "Підігнати до рельєфу",
-          "area": "Площа основи",
-          "cartesian": {
-            "eastingLabel": "Східне значення",
-            "northingLabel": "Північне значення"
-          },
-          "depth": "Глибина",
-          "hdms": {
-            "eastingLabel": "Довгота",
-            "northingLabel": "Широта"
-          },
-          "height": "Висота",
-          "projection": "Система координат",
-          "width": "Ширина"
-        }
-      },
-      "import": {
-        "alertingMessages": {
-          "featureError": "Один об’єкт у цьому файлі не вдалося зчитати.",
-          "fileSizeError": "Розмір файлу перевищує ліміт у 100 МБ.",
-          "formatError": "Файл \"{{filename}}\" не вдалося зчитати. Перевірте, чи має файл формат *.gltf, *.obj, *.dae або *.geojson.",
-          "missingFileContent": "Помилка під час зчитування файлу \"{{filename}}\". Перевірте тип файлу та його вміст. Якщо файл без помилок, зверніться до служби підтримки.",
-          "missingFormat": "Формат файлу \"{{format}}\" не підтримується. Будь ласка, зверніться до служби підтримки.",
-          "success": "Файл \"{{filename}}\" було успішно імпортовано.",
-          "successPartly": "Файл \"{{filename}}\" було імпортовано частково."
-        },
-        "captions": {
-          "introInfo": "За допомогою імпортера ви можете завантажувати, візуалізувати та аналізувати цифрові містобудівні проєкти в існуючій 3D-моделі міста.",
-          "introInfo2": "Імпортуйте потрібний файл простим перетягуванням або через діалог відкриття файлів браузера.",
-          "introFormats": "Можна імпортувати файли glTF (*.gltf), OBJ (*.obj), Collada (*.dae) або GeoJSON.",
-          "info": "Інформація",
-          "successfullyImportedLabel": "Імпортовані 3D-моделі",
-          "newImport": "Новий імпорт"
-        }
-      },
-      "draw": {
-        "captions": {
-          "beginModelling": "Моделювати 3D-об’єкт",
-          "clampToGround": "Орієнтуватися на модель рельєфу",
-          "color": "Колір",
-          "coordinates": "Координати",
-          "design": "Дизайн",
-          "dimensions": "Розміри",
-          "drawing": "Малювання",
-          "drawName": "Назва",
-          "drawnModels": "Намальовані моделі",
-          "export": "Експортувати все",
-          "exportTitle": "Експортувати всі намальовані моделі у формат GeoJSON.",
-          "extrudedHeight": "Екструдована висота",
-          "fillColor": "Колір заповнення",
-          "fillTransparency": "Прозорість",
-          "geometries": "Геометрії",
-          "introInfo": "За допомогою цієї функції ви можете малювати 3D-об’єкти на карті, індивідуально їх налаштовувати та, наприклад, виконувати симуляції тіней.\n\nІнструмент також дозволяє малювати на вже існуючих будівлях та імпортованих об’єктах. Передумова — вимкнена висота рельєфу.\n\nНамальовані об’єкти можна експортувати через функцію «Експортувати все» та згодом знову завантажити через імпортер.\n\nКлацання лівою кнопкою миші додає вершини, подвійне клацання завершує малювання. Останню точку можна видалити комбінацією Ctrl+Z і додати знову Ctrl+Y. Натисніть на об’єкт, щоб підняти, перемістити або відредагувати його.",
-          "info": "Інформація",
-          "newModel": "Нова модель",
-          "options": "Опції",
-          "readyGeometries": "Готові геометрії",
-          "showDimensions": "Показувати розміри під час малювання",
-          "strokeColor": "Колір контуру",
-          "strokeWidth": "Товщина лінії",
-          "transformation": "Трансформація"
-        },
-        "geometries": {
-          "line": "Лінія",
-          "polygon": "Полігон",
-          "rectangle": "Прямокутник"
-        },
-        "oneClicks": {
-          "rectangle": "Прямокутник 15 м x 20 м x 20 м (ШxГxВ)"
-        }
-      },
-      "filter": {
-        "captions": {
-          "abortStyle": "Скасувати",
-          "addFilter": "Додати фільтр",
-          "applyStyle": "Застосувати",
-          "editFilter": "Редагувати фільтр",
-          "fillColor": "Колір заповнення",
-          "filterList": "Список фільтрів",
-          "filterName": "Назва фільтра",
-          "info": "Інформація",
-          "introInfo": "За допомогою функції «Фільтр і стиль» ви можете зафарбовувати будівлі за атрибутами, наприклад, для візуалізації використання.",
-          "introInfo2": "Виберіть потрібний шар і атрибут для візуалізації, після чого налаштуйте колір будівель.",
-          "noFilter": "Фільтри відсутні.",
-          "optionsTitle": "Опції фільтра",
-          "pvoCheck": "Зафарбувати всі значення відповідно до PlanzeichenVO",
-          "resetStyle": "Скинути",
-          "selectLayer": "Вибір шару",
-          "selectAttribute": "Вибір атрибута",
-          "title": "Функція фільтра та стилю",
-          "styleSettingsTitle": "Налаштування кольорів",
-          "value": "Значення"
-        },
-        "errorLoadingData": "Помилка під час завантаження списку значень для атрибута 'BuildingFunctionType'"
-      },
-      "options": {
-        "captions": {
-          "enableFunction": "Увімкнути/вимкнути функцію",
-          "hideObjectInfo": "Існуючі будівлі можна приховати, щоб, наприклад, розмістити імпортовані елементи на відповідній ділянці.\n\nЗапустіть цю функцію через «Активувати» та клацніть по потрібних об’єктах, щоб приховати їх.\n\nУсі приховані об’єкти з’являються у списку та можуть бути знову активовані.",
-          "hideSwitchLabel": "Приховувати будівлі кліком миші",
-          "pov": "Перейти до пішохідного режиму",
-          "povInfo": "Тут ви можете перейти до пішохідної перспективи та оглянути місто.\n\nПеремістіться в потрібну позицію та клацніть мишею, щоб встановити циліндр на карті — після цього ви потрапите до пішохідного режиму.\n\nРухами миші з натиснутою лівою кнопкою можна змінювати поле зору. Щоб повернутися до початкової позиції, вимкніть функцію повзунком.",
-          "povTitle": "Пішохідна перспектива",
-          "visibilityTitle": "Опції видимості"
-        }
-      },
-      "nav": {
-        "drawTitle": "Малювання",
-        "filterTitle": "Фільтр і стиль",
-        "importTitle": "Імпорт",
-        "options": "Опції"
-      },
-      "description": "Імпортуйте, малюйте та редагуйте 3D-моделі в міській моделі",
-      "hiddenObjectsLabel": "Приховані будівлі:",
-      "name": "3D-моделер"
-    },
-    "mouseHover": {
-      "infoText": "(інші об’єкти. Будь ласка, збільште масштаб.)"
-    },
-    "news": {
-      "description": "Дізнайтеся, що нового",
-      "headline": "Новини",
-      "name": "Новини"
-    },
-    "openConfig": {
-      "explanation": "Відкрийте карту, яку ви зберегли як локальний файл конфігурації.",
-      "loadFileFailed": "Файл конфігурації <b>{{targetFileName}}</b> не було завантажено. Формат файлу <b>{{targetFileFormat}}</b> не підтримується. Будь ласка, завантажте файл у форматі <b>json</b>.",
-      "loadFileSuccess": "Файл конфігурації <b>{{targetFileName}}</b> було успішно завантажено",
-      "name": "Відкрити карту",
-      "openFile": "Відкрити файл конфігурації"
-    },
-    "portalFooter": {
-      "designation": "Картографія та дизайн:",
-      "mapDiscrepancy": "Повідомити про неточність на карті",
-      "scale": "Масштаб карти"
-    },
-    "print": {
-      "alertMessage": "Перевищено максимальну кількість паралельних друків.<br>Будь ласка, спробуйте знову після завершення створення інших друків.",
-      "authorLabel": "Автор",
-      "autoAdjustScale": "Автоматично підігнати масштаб друку",
-      "createDownloadFile": "Створюється...",
-      "description": "Завантажте фрагмент карти у вибраному форматі",
-      "downloadFile": "Завантажити",
-      "dpiLabel": "DPI",
-      "errorMessage": "Не вдалося отримати метадані. Якщо проблема не зникне, зверніться до власника сервісу: <b>{{cswObjCswUrl}}</b>",
-      "formatLabel": "Формат",
-      "hintInfoScale": "Якщо вибраний масштаб друку відрізняється від масштабу у вікні карти, це може призвести до зміненого макета карти під час друку.",
-      "invisibleLayer": "Наступні теми не можуть бути надруковані у вибраному масштабі {{scale}}:",
-      "improveResolution": "Покращити роздільну здатність",
-      "layoutLabel": "Макет",
-      "name": "Друк карти",
-      "outputfileTitleLabel": "Назва файлу",
-      "printLabel": "Створити файл",
-      "scaleLabel": "Масштаб друку",
-      "subtitleLabel": "Підзаголовок",
-      "textFieldLabel": "Поле довільного тексту",
-      "titleLabel": "Заголовок",
-      "validationWarning": "Назва файлу може містити лише літери та спеціальні символи '-' і '_'.",
-      "vtlWarning": "Оскільки MapFish 3 не підтримує векторні тайлові шари, наступні активні шари не відображатимуться у попередньому перегляді друку:",
-      "waitForPrintErrorMessage": "Не вдалося створити друк.<br>Будь ласка, спробуйте пізніше або зверніться до оператора порталу.",
-      "withInfoLabel": "З інформацією",
-      "withLegendLabel": "З легендою",
-      "predefinedLegendInfo": "Шар \"{{layerName}}\" містить попередньо визначену легенду.",
-      "predefinedLegendDownload": "Легенду неможливо додати до друку. Ви можете завантажити попередньо визначену легенду окремо через меню завантаження."
-    },
-    "routing": {
-      "addWaypoint": "Додати проміжну точку",
-      "avoidOptions": {
-        "header": "Уникати транспортних шляхів",
-        "FERRIES": "Пароми",
-        "HIGHWAYS": "Автомагістралі",
-        "STEPS": "Сходи",
-        "TOLLWAYS": "Платні дороги",
-        "UNPAVEDROADS": "Ґрунтові дороги",
-        "MIXEDTRAFFIC": "Змішаний рух (темп 50)",
-        "COBBLESTONE": "Бруківка",
-        "NARROWWAYS": "Вузькі ділянки",
-        "BORDERS": "Кордон"
-      },
-      "batchProcessing": {
-        "cancel": "Скасувати пакетну обробку",
-        "example": "Приклад",
-        "header": "Пакетна обробка",
-        "isProcessing": "Виконується пакетна обробка",
-        "placeFile": "Перетягніть файл сюди",
-        "structure": "Структура",
-        "uploadFile": "Завантажити файл"
-      },
-      "contextMenu": {
-        "addAvoidPoint": "Додати точку блокування",
-        "addEndpoint": "Додати кінцеву точку",
-        "addStartpoint": "Додати початкову точку",
-        "addWaypoint": "Додати проміжну точку",
-        "avoidPointModalTitle": "Радіус точки блокування",
-        "header": "Дії",
-        "removeAvoidPoint": "Видалити заблоковану область",
-        "removePoint": "Видалити точку"
-      },
-      "coordinateInputHelp": "Знайдіть місце або додайте точку, клацнувши на карті",
-      "deleteWaypoint": "Видалити проміжну точку",
-      "description": "Дізнайтеся, як найшвидше дістатися до місця призначення або задайте радіус пошуку",
-      "directions": {
-        "batchProcessing": {
-          "downloadHeader": {
-            "distance": "Відстань(м)",
-            "profile": "Профіль",
-            "time": "Час(хв)",
-            "xEnd": "X-значення_кінець",
-            "xStart": "X-значення_початок",
-            "yEnd": "Y-значення_кінець",
-            "yStart": "Y-значення_початок"
-          },
-          "errorNoEntries": "У CSV немає записів",
-          "errorAllFailed": "Усі запити завершилися помилкою. Можливо, сервіс блокує запит. Файл не містить результатів.",
-          "errorRowContainsEntriesNoNumber": "Координати в рядку {{row}} не містять чисел",
-          "errorSomeFailed": "Не вдалося коректно обчислити {{countFailed}} результатів. У файлі результатів у цих місцях є порожні клітинки.",
-          "errorToManyEntriesInFile": "Перевищено максимальну кількість рядків ({{limit}})",
-          "errorToManyEntriesInRow": "Рядок {{row}} містить більше ніж 5 записів. Будь ласка, дотримуйтеся структури (ID;lon(початок);lat(початок);lon(кінець);lat(кінець))",
-          "errorContextMenuSetPoint": "У цьому місці не вдалося встановити точку.",
-          "structure": "ID;lon(початок);lat(початок);lon(кінець);lat(кінець)"
-        },
-        "deleteRestrictedAreas": "Видалити заблоковані області",
-        "editRestrictedAreas": "Малювати/редагувати заблоковані області",
-        "editRestrictedPoints": "Малювати/редагувати точки блокування",
-        "keepRoutesAfterClose": "Зберігати маршрут після закриття",
-        "preference": {
-          "RECOMMENDED": "Рекомендований маршрут",
-          "SHORTEST": "Найкоротший маршрут",
-          "GREEN": "Зелений маршрут"
-        },
-        "preferenceLabel": "Перевага",
-        "restrictedAreas": "Заблоковані області",
-        "avoidAreas": {
-          "avoidArea": "Заблокована область",
-          "avoidPoint": "Точка блокування",
-          "avoidPointRadius": "Радіус",
-          "avoidPointRadiusUnit": "Одиниця",
-          "avoidPointRadiusUnitKm": "км",
-          "avoidPointRadiusOutOfRangeKm": "Будь ласка, введіть значення від 0 до 12 км.",
-          "delete": "Видалити",
-          "export": "Експорт",
-          "import": "Імпорт"
-        }
-      },
-      "download": {
-        "filename": "Назва файлу",
-        "filenamePlaceholder": "Будь ласка, вкажіть назву файлу",
-        "format": "Формат",
-        "header": "Завантаження",
-        "saveResult": "Зберегти результат",
-        "error": {
-          "header": "Назва файлу недійсна.",
-          "fileNameTooLong": "Назва файлу занадто довга. Дозволено максимум 40 символів.",
-          "fileNameContainsWhiteSpace": "Назва файлу містить пробіли.",
-          "fileNameContainsInvalidChars": "Назва файлу містить недозволені спеціальні символи."
-        }
-      },
-      "endpoint": "Кінцева точка",
-      "elevationProfile": {
-        "titleCollapse": "Профіль висот",
-        "titleChart": "Профіль висот уздовж маршруту",
-        "yAxis": "Висота в метрах",
-        "xAxis": "Відстань у км",
-        "titleTooltipMeters": "Висота після {{distance}} метрів",
-        "titleTooltipKilometers": "Висота після {{distance}} кілометрів"
-      },
-      "errors": {
-        "titleErrorRouteFetch": "Не вдалося обчислити маршрут.",
-        "titleErrorIsochroneFetch": "Не вдалося обчислити досяжність.",
-        "avoidAreaBig": "Зазначені заблоковані області занадто великі. Будь ласка, виправте введені дані.",
-        "errorIsochronesFetch": "Помилка під час запиту досяжності",
-        "errorRouteFetch": "Помилка під час запиту маршруту",
-        "fetchingCoordinates": "Помилка під час запиту координат",
-        "hgvRestrictionOutOfRange": "Параметри для вантажівки містять недійсні значення. Перевірте введені дані.",
-        "noRouteFound": "На жаль, маршрут не знайдено"
-      },
-      "exportAvoidAreas": {
-        "header": "Експорт заблокованих областей",
-        "type": "Тип файлу",
-        "tooltip": "Експортувати заблоковані області",
-        "download": "Завантажити",
-        "filename": "Назва файлу",
-        "filenamePlaceholder": "Будь ласка, вкажіть назву файлу",
-        "format": "Формат",
-        "error": {
-          "header": "Помилка під час експорту заблокованих областей",
-          "noAvoidArea": "Немає заблокованих областей / точок блокування."
-        }
-      },
-      "importAvoidAreas": {
-        "header": "Імпорт заблокованих областей",
-        "help": "Тип файлу",
-        "tooltip": "Імпортувати заблоковані області",
-        "description": "Виберіть файл GeoJSON або KML, який містить власні заблоковані області. Дозволені такі об’єкти:",
-        "structure": "Polygon, Multipolygon",
-        "filenamePlaceholder": "Будь ласка, вкажіть назву файлу",
-        "format": "Формат",
-        "uploadSuccessTitle": "Заблоковані області успішно завантажено.",
-        "uploadSuccess": "Завантажені заблоковані області тепер доступні вам.",
-        "error": {
-          "header": "Помилка під час імпорту заблокованих областей",
-          "noAvoidArea": "Немає заблокованих областей / точок блокування.",
-          "formatError": "Файл не вдалося зчитати. Перевірте, чи має файл формат *.kml або *.geojson.",
-          "parseError": "Помилка під час парсингу файлу типу {{type}}.",
-          "polygonFormatError": "Файл містить недійсні геометрії. Підтримуються лише Polygon і MultiPolygon.",
-          "polygonEmpty": "Одна з імпортованих заблокованих областей не містить координат.",
-          "polygonNotClosed": "Одна з імпортованих заблокованих областей не замкнена. Перша та остання координати кожної області мають збігатися.",
-          "polygonNotEnoughPoints": "Заблоковані області мають складатися щонайменше з 3 точок.",
-          "tooManyFeatures": "Забагато заблокованих областей. Дозволено максимум {{maxFeatures}}.",
-          "areaTooBig": "Одна з імпортованих заблокованих областей занадто велика: {{area}} км². Максимально дозволено {{maxArea}} км² на одну область.",
-          "sideTooLong": "Одна зі сторін полігона перевищує максимально дозволену довжину {{maxSideLength}} км. Довжина сторони: {{distance}} км."
-        }
-      },
-      "isochrones": {
-        "batchProcessing": {
-          "errorNoEntries": "У CSV немає записів",
-          "errorAllFailed": "Усі запити завершилися помилкою. Можливо, сервіс блокує запит. Файл не містить результатів.",
-          "errorRowContainsEntriesNoNumber": "Координати в рядку {{row}} не містять чисел",
-          "errorSomeFailed": "Не вдалося коректно обчислити {{countFailed}} результатів. У файлі результатів у цих місцях є порожні клітинки.",
-          "errorToManyEntriesInFile": "Перевищено максимальну кількість рядків ({{limit}})",
-          "errorToManyEntriesInRow": "Рядок {{row}} містить більше ніж 3 записи. Будь ласка, дотримуйтеся структури (ID;lon(початок);lat(початок))",
-          "structure": "ID;lon(початок);lat(початок)"
-        },
-        "calculate": "Обчислити",
-        "hoverMenu": {
-          "population": "Населення:",
-          "area": "Площа:"
-        },
-        "interval": {
-          "default": "Інтервал",
-          "count": "Кількість інтервалів"
-        },
-        "legend": {
-          "area": "Площа",
-          "color": "Колір",
-          "distance": "Відстань",
-          "population": "Населення",
-          "time": "Час",
-          "title": "Легенда"
-        },
-        "maxDistance": "Максимальна відстань",
-        "maxTraveltime": "Максимальна тривалість поїздки",
-        "optimization": {
-          "DISTANCE": "Досяжність за відстанню",
-          "TIME": "Досяжність за часом"
-        },
-        "optimizeHeader": "Оптимізація за",
-        "startpoint": "Початкова точка",
-        "tooManyIntervalsInline": "Перевищено ліміт ізохрон. Дозволено максимум 10."
-      },
-      "moveWaypointDown": "Перемістити проміжну точку вниз",
-      "moveWaypointUp": "Перемістити проміжну точку вгору",
-      "startIndex": "П",
-      "endIndex": "К",
-      "name": "Маршрутизація",
-      "resetSettings": "Скинути налаштування",
-      "restrictions": {
-        "header": "Параметри вантажівки",
-        "length": "Довжина (м)",
-        "width": "Ширина (м)",
-        "height": "Висота (м)",
-        "weight": "Вага (т)",
-        "axleload": "Навантаження на вісь (т)",
-        "hazmat": "Небезпечний вантаж",
-        "tooltip": "Дійсне значення між {{min}} та {{max}}",
-        "placeholder": "Будь ласка, введіть значення"
-      },
-      "settings": {
-        "submit": "Підтвердити"
-      },
-      "speedprofiles": {
-        "CAR": "Легковий автомобіль",
-        "CYCLING": "Велосипед",
-        "FOOT": "Пішки",
-        "HGV": "Вантажівка",
-        "WHEELCHAIR": "Крісло колісне"
-      },
-      "startpoint": "Початкова точка",
-      "tabs": {
-        "DIRECTIONS": "Планування маршруту",
-        "ISOCHRONES": "Досяжність",
-        "TSR": "Travelling Salesman"
-      },
-      "tsr": {
-        "header": "Змінити параметри маршруту",
-        "calculate": "Обчислити маршрут TSR",
-        "upload": {
-          "header": "Завантажити проміжні точки",
-          "description": "Виберіть CSV-файл, який містить власні проміжні точки для TSR. Точки потрібно вказувати у WGS84 (EPSG:4326). Необхідно дотримуватися такого формату:",
-          "csvHeaders": "Файл містить заголовок",
-          "help": "Допомога",
-          "divider": "або",
-          "failTitle": "Файл не вдалося завантажити.",
-          "successTitle": "Файл успішно завантажено.",
-          "successInfo": "Завантажені проміжні точки тепер доступні вам у списку."
-        },
-        "backToTSR": "Маршрутизація",
-        "modifyWaypointsTSR": "Редагувати проміжні точки",
-        "outputHeaderTSR": "Найшвидший маршрут",
-        "downloadOutputTSR": "Завантажити маршрут TSR",
-        "downloadCsv": {
-          "header": "*** Travelling Salesman Routing ***",
-          "descriptionRoundTrip": "Початкова точка: {{start}} до: круговий маршрут",
-          "descriptionNoRoundTrip": "Початкова точка: {{start}} до: {{end}}",
-          "optimalOrder": "оптимальна {{profile}} послідовність цілей:",
-          "waypoint": "{{pos}}) {{displayName}};{{lon}};{{lat}}"
-        },
-        "selectedPoints": "Вибрані проміжні точки",
-        "structure": "ID;lon;lat",
-        "tsrEndpoint": "Якщо не визначено: круговий маршрут",
-        "tsrDuration": "Загальна тривалість: ",
-        "tsrDistance": "Загальна відстань: ",
-        "errors": {
-          "wrongFileType": "Неправильний формат файлу. Будь ласка, завантажте CSV-файл.",
-          "errorNoEntries": "У CSV немає записів",
-          "errorToManyEntriesInFile": "Перевищено максимальну кількість точок TSR ({{limit}}).",
-          "wrongNEntriesInRow": "Неправильна кількість атрибутів у рядку {{row}}. Перевірте формат даних (ID;lon;lat) і роздільник (крапка з комою).",
-          "rowContainsEntriesNoNumber": "Координати в рядку {{row}} не містять чисел.",
-          "emptyRow": "Файл містить щонайменше один порожній рядок.",
-          "emptyEntriesInRow": "Відсутні дані в рядку {{row}}. Перевірте дані та роздільник (крапка з комою).",
-          "invalidCoordinateRange": "Координати мають недійсні значення в рядку {{row}}. Допустимі значення: -180 – 180 (довгота) та -90 – 90 (широта).",
-          "attributeTooLong": "Атрибути в рядку {{row}} містять більше ніж 25 символів.",
-          "errorCalculation": "Не вдалося запустити обчислення.",
-          "notEnoughPoints": "Будь ласка, вкажіть початкову точку та щонайменше ще дві точки.",
-          "emptyPoint": "Щонайменше одна точка порожня. Перевірте точки у списку.",
-          "duplicatePoints": "Завантажені проміжні точки тепер доступні вам у списку. Дублікати було проігноровано.",
-          "unreachablePoint": "На жаль, для щонайменше однієї з вибраних точок не вдалося обчислити маршрут."
-        }
-      },
-      "waypoint": "Проміжна точка"
-    },
-    "scaleSwitcher": {
-      "description": "Змініть масштаб без прокручування",
-      "label": "Масштаб",
-      "name": "Перемкнути масштаб"
-    },
-    "searchBar": {
-      "locationFinder": {
-        "errorMsg": "Пошук через LocationFinder не вдався",
-        "serverError": "Помилка під час серверної обробки запиту",
-        "unknownProjection": "Результати в невідомій системі координат"
-      },
-      "placeholder": {
-        "searchFor": "Пошук",
-        "address": "Пошук за адресою",
-        "addressDistrict": "Пошук адреси, район",
-        "addressHospitalBplan": "Пошук адреси/лікарні/B-плану",
-        "addressTopic": "Пошук адреси, район, тема",
-        "addressOrTopic": "Пошук адрес або тем",
-        "addressTopicParcel": "Пошук адреси, район, тема, земельна ділянка",
-        "startWithAddress": "Почніть тут з адреси!"
-      },
-      "showAllResults": "показати всі результати",
-      "searchResults": "Результати пошуку",
-      "search": "Пошук",
-      "searchResultList": "Огляд результатів",
-      "searchResultsFrom": "Результати пошуку від: ",
-      "mark": "Вибрати тему",
-      "add": "Додати тему",
-      "type": {
-        "address": "Адреса",
-        "county": "Округ",
-        "district": "Район",
-        "folder": "Папка (тематичні дані)",
-        "general": "Тематичні дані",
-        "location": "Місце",
-        "parcel": "Земельна ділянка",
-        "street": "Вулиця",
-        "subject": "Тема",
-        "topic": "Тема (тематичні дані)",
-        "topicBaselayer": "Тема (фонові карти)"
-      },
-      "specialWFS": {
-        "ongoing": "у процесі",
-        "terminated": "затверджено",
-        "hazardous": "підприємство підвищеної небезпеки",
-        "childcare": "дитсадок",
-        "bplan": "B-план"
-      },
-      "actions": {
-        "activateLayerInTopicTree": "Показати шар у дереві тем",
-        "addLayerToTopicTree": "Додати шар до дерева тем",
-        "highlightFeature": "Підсвітити об’єкт",
-        "openGetFeatureInfo": "Показати інформацію",
-        "setMarker": "Встановити маркер",
-        "zoomToResult": "Наблизити до результату",
-        "startRouting": "Почати маршрут",
-        "showInTree": "Показати тему в папці",
-        "showLayerInfo": "Інформація та легенда"
-      },
-      "noInitialResults": "Початковий пошук не дав результатів.",
-      "showAll": "Показати все",
-      "layerResultNotShown": "Знайдений шар неможливо відобразити.",
-      "layerInfoNotShown": "Інформацію про шар неможливо відобразити."
-    },
-    "selectFeatures": {
-      "description": "Отримайте інформацію про об’єкти, які ви вибираєте на карті",
-      "name": "Вибір об’єктів",
-      "noFeatureChosen": "Об’єкти не вибрано. Виберіть об’єкти, утримуючи клавішу Ctrl і протягнувши рамку навколо потрібних об’єктів, або додайте окремі об’єкти, утримуючи Ctrl та клацнувши лівою кнопкою миші.",
-      "propertylessFeature": "Елемент без атрибутів",
-      "clearSelection": "Скасувати весь вибір",
-      "deselectFeature": "Зняти вибір з об’єкта",
-      "zoomToFeature": "Наблизити до цього об’єкта"
-    },
-    "statisticDashboard": {
-      "name": "Статистична панель",
-      "description": "Фільтруйте статистику за тематичними полями та переглядайте відповідні таблиці й діаграми.",
-      "headings": {
-        "mrhstatistics": "Цифри, дані та факти регіональної статистики MRH",
-        "mrhstatisticsTooltip": "Посилання на метадані",
-        "addFilter": "Додати фільтр",
-        "filter": "Фільтр",
-        "addStatisticalData": "Вибрати статистичні дані",
-        "addArea": "Вибрати території",
-        "addTime": "Вибрати період"
-      },
-      "infoText": "Примітка: за великої кількості територій спочатку на діаграмі відображається лише їх частина. За допомогою нижнього поля можна додати інші території.",
-      "infoTextNoData": "Ще не додано жодного або не всі необхідні фільтри. Щоб відобразити статистичні дані в таблицях і діаграмах, спочатку потрібно відфільтрувати дані.",
-      "button": {
-        "difference": "Різниця",
-        "table": "Таблиця",
-        "chart": "Діаграма",
-        "add": "Додати фільтр",
-        "edit": "Змінити фільтр",
-        "arrowLeft": "Гортати ліворуч",
-        "arrowRight": "Гортати праворуч",
-        "reset": "Видалити всі",
-        "filter": "Фільтр",
-        "showMore": "показати більше...",
-        "showLess": "показати менше...",
-        "done": "Готово",
-        "all": "Усі",
-        "statistics": "Статистика",
-        "geographical": "Географічні фільтри",
-        "timeBased": "Часові фільтри"
-      },
-      "label": {
-        "category": "Категорія",
-        "area": "Територія",
-        "year": "Рік",
-        "statistics": "Статистика",
-        "communities": "Громади",
-        "districts": "Округи",
-        "more": "більше",
-        "time": "Часові фільтри",
-        "geographical": "Географічні фільтри"
-      },
-      "filterInputs": {
-        "additional": "Інше"
-      },
-      "reference": {
-        "title": "Режим різниці",
-        "optionDate": "Який рік використати як еталонний?",
-        "optionArea": "Яку територію використати як еталонну?",
-        "description": "Відображати значення різниці відносно еталонного року або території",
-        "placeholder": "Будь ласка, виберіть щонайменше одну опцію!",
-        "tagLabel": "Еталон",
-        "year": "Еталонний рік {{value}}",
-        "region": "Еталонна територія {{value}}",
-        "difference": "Різниця"
-      },
-      "legend": {
-        "under": "нижче",
-        "between": "від {{minimum}} до менше {{maximum}}",
-        "from": "Від",
-        "nodata": "Візуалізація даних кількох статистик на карті недоступна.",
-        "legend": "Легенда карти",
-        "edit": "Редагувати",
-        "editClassification": "Редагувати класифікацію",
-        "classification": "Класифікація",
-        "numberOfClasses": "Кількість класів",
-        "colorPalette": "Палітра кольорів",
-        "betweenValues": "до менше",
-        "opacity": "Прозорість",
-        "reset": "Скинути",
-        "range": "Діапазон",
-        "color": "Колір",
-        "equalIntervals": "рівні інтервали",
-        "quantile": "рівні розміри класів (квантилі)",
-        "customized": "налаштовано користувачем",
-        "andAbove": "і вище",
-        "invalidCustomStepsAlert": "Увага: вибрані межі діапазонів не утворюють зростаючої числової послідовності!",
-        "noValue": "Території з відсутніми значеннями зафарбовано білим",
-        "previewLegend": "Попередній перегляд класифікації"
-      },
-      "totalHint": "Увага: функція підсумовування не розрізняє абсолютні значення, відсотки, середні або відносні величини (наприклад, мешканці на квадратний метр). Тому підсумки не завжди є інтерпретованими. Будь ласка, враховуйте контекст вибраної статистики. Відсутні значення не враховуються під час обчислення.",
-      "filterHint": "Щоб відобразити результати фільтрації, усі поля мають бути повністю заповнені.",
-      "backToOverview": "Огляд діаграм",
-      "backToStatisticDashboard": "Повернутися до огляду"
-    },
-    "shadow": {
-      "name": "Тінь",
-      "description": "Показуйте тіні на карті в різні моменти часу",
-      "pickDate": "Виберіть дату:",
-      "shadowDisplayOff": "Приховати тіні на карті",
-      "shadowDisplayOn": "Показати тіні на карті",
-      "slideHour": "Виберіть час:",
-      "withInfoLabel": "З інформацією"
-    },
-    "shareView": {
-      "copyErrorAlert": "Не вдалося скопіювати <b><a href=\"{{url}}\" target=\"_blank\">URL поточного вигляду</a></b> до буфера обміну. Ця функція доступна лише на захищених вебсайтах, що використовують протокол HTTPS (https://).<br><br>Будь ласка, зверніться до оператора порталу з проханням налаштувати захищене з’єднання.",
-      "description": "Поділіться посиланням на карту",
-      "downloadQR": "Завантажити QR-код",
-      "myMap": "Ось мій фрагмент карти: ",
-      "name": "Поділитися вибором",
-      "share": "Поділитися",
-      "shareFacebook": "Поділитися поточним виглядом у Facebook",
-      "shareHeadline": "Як ви хочете поділитися посиланням?",
-      "shareLink": "Скопіювати поточний вигляд як посилання",
-      "shareQR": "Створити QR-код поточного вигляду",
-      "shareTwitter": "Twitter",
-      "linkCopied": "Посилання скопійовано до буфера обміну.",
-      "qrError": "Під час створення QR-коду сталася помилка.",
-      "qrErrorDataTooLarge": "Дані, якими ви хочете поділитися, занадто великі. Будь ласка, зменште кількість опцій на карті, щоб скоротити обсяг даних."
-    },
-    "styleVT": {
-      "chooseTheme": "Будь ласка, виберіть активну тему",
-      "description": "Змініть вигляд шару типу VectorTile",
-      "introText": "До шарів VectorTile можна застосувати різні попередньо визначені стилі для оптимізації відображення відповідно до цілей використання.",
-      "name": "Стилі для шарів Vector Tile",
-      "noStyleableLayers": "Наразі немає доступних тем, до яких можна застосувати цей інструмент.",
-      "style": "Стиль",
-      "theme": "Тема"
-    },
-    "wfsSearch": {
-      "description": "Шукайте об’єкти в темі",
-      "description_parcel": "Пошук земельної ділянки",
-      "district": "Кадастровий округ",
-      "fieldSelectionLabel": "Вибір поля",
-      "instancesSelectLabel": "Вибір інстанції",
-      "name": "Пошук WFS",
-      "noResults": "За вашими критеріями пошуку результатів не знайдено. Будь ласка, спробуйте ще раз.",
-      "optionsPlaceholder": "Будь ласка, виберіть опцію!",
-      "parcelNumber": "Номер земельної ділянки",
-      "parcelSearch": "Пошук земельної ділянки",
-      "resetButton": "Скинути",
-      "searchButton": "Пошук",
-      "searchError": "Помилка під час пошуку об’єкта: {{error}}.",
-      "showResultHeading": "Результати пошуку:",
-      "userHelp": {
-        "and": "та",
-        "label": "Інформація щодо результатів пошуку",
-        "or": "або",
-        "text": "Результати пошуку відповідатимуть умовам / правилам {{userHelp}}. <br /> *Обов’язкове поле"
-      },
-      "wrongConfig": "Шар з ідентифікатором \"{{id}}\" пошукової інстанції \"{{title}}\" не визначений."
-    },
-    "wfst": {
-      "deleteInteraction": {
-        "headline": "Увага",
-        "text": "Ви впевнені, що хочете видалити цю геометрію?"
-      },
-      "description": "Створюйте, оновлюйте та видаляйте об’єкти",
-      "descriptionNeueInfo": "Ввести нову інформацію",
-      "error": {
-        "allLayersNotSelected": "Активуйте налаштований шар WFS-T у дереві тем",
-        "geometryOutOfRange": "Намальована геометрія знаходиться поза дозволеною областю шару.",
-        "layerNotConfiguredCorrectly": "Виявлено проблеми з конфігурацією вибраного шару для використання з цим інструментом; можливо, відсутній параметр 'featurePrefix'.",
-        "layerNotSelected": "Вибраний шар ще не активовано в дереві тем.",
-        "noFeature": "Будь ласка, намалюйте геометрію, пов’язану з вашими записами.",
-        "onlyNumbersAllowed": "Поле введення дозволяє лише числа.",
-        "requiredPropertiesNotSet": "Будь ласка, введіть коректне значення для обов’язкових полів {{properties}}.",
-        "fetchFeaturePropError": "Завантаження параметрів триває довше, ніж зазвичай. Будь ласка, спробуйте ще раз."
-      },
-      "mandatoryInputError": {
-        "text": "Потрібні звичайні текстові символи та спеціальні символи, такі як , . / \\ [ ] пробіли та німецькі літери ö ä ü Ö Ä Ü ß, а не лише числа.",
-        "number": "Потрібне число, дробове або від’ємне число.",
-        "date": "Потрібна повна дата.",
-        "datetime-local": "Потрібні повні дата та час."
-      },
-      "form": {
-        "discard": "Скасувати",
-        "save": "Зберегти"
-      },
-      "interactionSelect": {
-        "delete": "Видалити геометрію",
-        "line": "Створити лінію",
-        "point": "Створити точку",
-        "polygon": "Створити полігон",
-        "update": "Редагувати",
-        "multiUpdate": "Редагувати",
-        "multiPolygon": "Створити мультиполігон"
-      },
-      "multiUpdate": {
-        "oneSelected": "Об’єкт вибрано:",
-        "multipleSelected": "Об’єкти вибрано:",
-        "noItemsSelected": "Жодного об’єкта не вибрано",
-        "warningText": "Увага! Наявні записи тут можуть не відображатися! Під час збереження нових записів вони будуть перезаписані без попередження.",
-        "buttonIcon": {
-          "active": {
-            "pen": "Вимкнути ласо-вибір",
-            "box": "Вимкнути прямокутний вибір"
-          },
-          "notActive": {
-            "pen": "Увімкнути ласо-вибір",
-            "box": "Увімкнути прямокутний вибір"
-          }
-        }
-      },
-      "confirmVoidFeatureCreation": {
-        "textContent": "Бажаєте створити мультиполігон з порожниною (donut-полігон)?",
-        "headline": "Створення полігона з порожниною"
-      },
-      "layerSelectLabel": "Поточний шар:",
-      "name": "Інструмент WFS-T",
-      "polygonHint": "Утримуйте клавішу Ctrl і переміщуйте мишу з натиснутою кнопкою, щоб перемістити полігон.",
-      "fieldRequired": "Обов’язкове поле",
-      "transaction": {
-        "error": {
-          "axios": "На жаль, збереження або видалення геометрії та її параметрів не вдалося. Будь ласка, зверніться до адміністратора.",
-          "InvalidParameterValue": "Збереження геометрії та її параметрів не вдалося. Один із введених параметрів недійсний або має неправильний формат.",
-          "MissingParameterValue": "Збереження геометрії та її параметрів не вдалося. Один або кілька параметрів не мають значень, а сервіс не має значень за замовчуванням.",
-          "OperationNotSupported": "Збереження геометрії та її параметрів не вдалося. Сервіс не підтримує виконану операцію.",
-          "OperationParsingFailed": "Збереження геометрії та її параметрів не вдалося. Сервіс не зміг обробити транзакцію. Будь ласка, зверніться до адміністратора.",
-          "OperationProcessingFailed": "Збереження геометрії та її параметрів не вдалося. Під час транзакції сталася помилка."
-        },
-        "success": {
-          "baseSuccess": "{{transaction}} виконано успішно.",
-          "delete": "Видалення",
-          "insert": "Збереження",
-          "selectedUpdate": "Редагування",
-          "batchInfo": "Наступні записи шару {{layer}} були збережені:</br>"
-        }
-      }
-    },
-    "wmsTime": {
-      "layer": {
-        "errorTimeLayer": "Сталася помилка при підготовці шару з ідентифікатором {{id}}: {{error}}"
-      },
-      "layerSwiper": {
-        "description": "Свайпер можна переміщати за допомогою миші або клавіш зі стрілками на клавіатурі. Під час використання стрілок свайпер переміщується на {{amount}} px у відповідному напрямку.",
-        "title": "Порівняти шари"
-      },
-      "timeSlider": {
-        "buttons": {
-          "backward": "На один момент назад",
-          "deactivateLayerSwiper": "Видалити шар",
-          "forward": "На один момент вперед",
-          "layerSwiper": "Порівняти моменти часу",
-          "play": "Автоматично відтворити всі моменти часу, починаючи з поточно вибраного"
-        },
-        "inputRangeLabel": "Вибрати момент часу"
-      }
-    },
-    "pagination": {
-      "aria": {
-        "previous": "Попередня сторінка",
-        "next": "Наступна сторінка",
-        "go": "Перейти на сторінку"
-      },
-      "input": {
-        "label": "Сторінка",
-        "placeholder": "Сторінка",
-        "tooltip": "Введіть номер сторінки та натисніть Enter або клацніть стрілку, щоб перейти на цю сторінку"
-      },
-      "button": {
-        "goTooltip": "Перейти на введену сторінку"
-      }
-    }
-  },
-  "shared": {
-    "js": {
-      "api": {
-        "cswParser": {
-          "annually": "щорічно",
-          "asNeeded": "за потреби",
-          "biannually": "двічі на рік",
-          "continual": "безперервно",
-          "daily": "щоденно",
-          "fortnightly": "раз на два тижні",
-          "irregular": "нерегулярні інтервали",
-          "monthly": "щомісяця",
-          "notPlanned": "не заплановано",
-          "quarterly": "щоквартально",
-          "unknown": "невідомо",
-          "weekly": "щотижня"
-        }
-      },
-      "utils": {
-        "buildings": "Будівлі",
-        "selectedFeatures": "Вибір:"
-      }
     },
     "modules": {
-      "buttons": {
-        "download": "Завантажити",
-        "error": {
-          "download": "Під час завантаження запитаних даних сталася помилка."
-        }
-      },
-      "draw": {
-        "drawEdit": {
-          "delete": "Видалити геометрію / текст",
-          "deleteAll": "Видалити все",
-          "modify": "Редагувати геометрію / текст",
-          "redo": "Повторити",
-          "undo": "Скасувати"
+        "about": {
+            "additionalMetadata": "додаткова інформація...",
+            "contact": "Контактна особа:",
+            "description": "Дізнайтеся більше про цей портал",
+            "name": "Про цей портал",
+            "noMetadataLoaded": "Не вдалося завантажити метадані!",
+            "version": "Версія: ",
+            "ustId": "Ідентифікаційний номер платника ПДВ відповідно до § 27 Закону про податок на додану вартість:",
+            "imprintTitle": "Вихідні дані",
+            "privacyStatementText": "Політика конфіденційності та загальна інформація щодо виконання вимог із захисту даних відповідно до статей 12–14 Загального регламенту захисту даних у Державному підприємстві геоінформації та землеустрою Вільного та ганзейського міста Гамбург:",
+            "privacyStatement": "Політика конфіденційності",
+            "accessibilityText": "Заява про доступність відповідно до § 11 Гамбурзького закону про рівність людей з інвалідністю (Hamburgisches Behindertengleichstellungsgesetz – HmbBGG) від 19 грудня 2019 року:",
+            "accessibilityStatement": "Заява про доступність",
+            "contactButton": "Зв’язатися"
         },
-        "drawLayout": {
-          "fillColor": "Колір заповнення",
-          "fillTransparency": "Прозорість",
-          "innerCircle": "Внутрішнє коло:",
-          "outerCircle": "Зовнішнє коло:",
-          "strokeColor": "Колір обводу",
-          "strokeWidth": "Товщина лінії",
-          "extrudedHeight": "Екструдована висота"
+        "addWMS": {
+            "alertTitleSuccess": "Шар успішно додано",
+            "alreadyAdded": "Шари запитаного WMS вже були додані.",
+            "completeMessage": "Шари запитаного WMS були додані до дерева тем і можуть бути вибрані через <b>Додати теми</b>!",
+            "completeMessageShowInLayerTree": "&#9989; Шари запитаного WMS були додані до дерева тем!",
+            "description": "Додайте сервіс Web Map Service (WMS) до дерева тем",
+            "errorHttpsMessage": " &#10060; Запитаний вами WMS доступний за http-URL. Masterportal може підключати WMS лише через https (SSL).",
+            "errorMessage": "&#10060; Вказаний сервіс не вдалося завантажити. Будь ласка, переконайтеся, що URL вказано правильно.<br><br> Якщо проблема не зникає, зверніться до оператора сервісу з таким зауваженням щодо поширеної помилки: <br><strong>Необхідно переконатися, що для сервісу встановлено CORS-заголовок. Це рекомендовано <a target='_blank' href='https://www.gdi-de.org/download/AK_Geodienste_Architektur_GDI-DE_Bereitstellung_Darstellungsdienste.pdf'>GDI-DE</a> у розділі 4.7.1.</strong>",
+            "errorTitle": "Не вдалося додати шар",
+            "ifInExtent": "&#10060; Геодані, надані через WMS, знаходяться поза межами відображуваної області. Додавання WMS неможливе.",
+            "name": "Додати WMS",
+            "placeholder": "Будь ласка, введіть тут URL WMS.",
+            "textLoadLayer": "Завантажити шар",
+            "examples": "Приклади:"
         },
-        "drawSettingsCircle": {
-          "interactive": "Інтерактивно",
-          "radii": {
+        "alerting": {
+            "alertWindowTitle": "Інформація",
+            "categories": {
+                "error": "Помилка",
+                "info": "Інформація",
+                "news": "Новини",
+                "success": "Успіх",
+                "warning": "Увага"
+            },
+            "created": "Створено: ",
+            "hideMessage": "Більше не показувати це повідомлення",
+            "showMessage": "Показати це повідомлення"
+        },
+        "aria": {
+            "sliderAria": "Повзунок для "
+        },
+        "button": {
+            "confirm": "Підтвердити",
+            "stop": "Скасувати"
+        },
+        "bufferAnalysis": {
+            "clearButton": "Скинути",
+            "description": "Дізнайтеся, що знаходиться в межах певного радіуса навколо об’єкта",
+            "name": "Буферний аналіз",
+            "notOverlapping": "поза радіусами",
+            "overlapping": "у межах радіусів",
+            "rangeLabel": "Радіус (м)",
+            "resultTypeLabel": "Тип результату",
+            "saveButton": "Скопіювати посилання",
+            "sourceLayerNotFound": "Збережений вихідний шар з ID {{layerId}} не знайдено.",
+            "sourceSelectLabel": "Вихідний шар",
+            "targetLayerNotFound": "Збережений цільовий шар з ID {{layerId}} не знайдено.",
+            "targetSelectLabel": "Цільовий шар"
+        },
+        "compareMaps": {
+            "description": "Порівняйте дві карти поруч або одна над одною",
+            "horizontal": "горизонтально",
+            "leftLayer": "Лівий шар",
+            "lowerLayer": "Нижній шар",
+            "name": "Порівняння карт",
+            "reset": "Скинути",
+            "rightLayer": "Правий шар",
+            "sameLayerSelected": "Один і той самий шар було вибрано двічі. Вибір скинуто.",
+            "selectLeftLayerFirst": "Будь ласка, спочатку виберіть лівий шар",
+            "selectUpperLayerFirst": "Будь ласка, спочатку виберіть верхній шар",
+            "splitDirection": "Орієнтація: ",
+            "upperLayer": "Верхній шар",
+            "vertical": "вертикально"
+        },
+        "contact": {
+            "addFileButton": "Додати вкладення",
+            "description": "Поставте запитання щодо цього порталу або повідомте про помилки",
+            "error": {
+                "mail": "Будь ласка, введіть дійсну адресу електронної пошти.",
+                "message": "Не вдалося надіслати електронний лист!",
+                "messageInput": "Ваше повідомлення повинно містити щонайменше {{length}} символів.",
+                "phone": "За яким номером телефону ми можемо з вами зв’язатися?",
+                "username": "Будь ласка, вкажіть ваше ім’я."
+            },
+            "errorIncompleteDeclarations": "Будь ласка, коректно заповніть усі поля контактної форми, щоб ваш запит було надіслано.",
+            "fileFormatMessage": "Прикріплений файл має некоректний формат. Дозволені формати: .jpg, .jpeg, .png та .pdf",
+            "fileSizeMessage": "Прикріплений файл перевищує встановлений розмір файлу: ",
+            "fileSizeSumMessage": "Прикріплені файли перевищують максимально допустимий загальний розмір для завантаження.",
+            "fileDuplicatedMessage": "Неможливо додати. Цей файл уже було додано: ",
+            "mailSubject": "Запит до служби підтримки порталу ",
+            "messageLabel": "Ваше повідомлення",
+            "name": "Зв’язатися",
+            "placeholder": {
+                "mail": "Ваша електронна адреса",
+                "message": "Будь ласка, сформулюйте тут своє запитання та натисніть \"$t(common:modules.contact.sendButton)\".",
+                "phone": "Ваш номер телефону",
+                "username": "Ваше ім’я"
+            },
+            "privacyPolicy": {
+                "info": "Ви погоджуєтеся з тим, що ваші дані будуть використані для обробки вашого запиту. Додаткову інформацію та відомості про відкликання згоди ви знайдете в <a href=\"{{privacyPolicyLink}}\" target=\"_blank\">Політиці конфіденційності</a>.",
+                "label": "Будь ласка, прийміть політику конфіденційності."
+            },
+            "removeAttachment": "Видалити файл",
+            "sendButton": "Зв’язатися",
+            "successMessage": "Ваш запит було успішно надіслано.",
+            "successTicket": "Номер вашого звернення: ",
+            "infoMessage": "У вас є зауваження, запитання або проблеми? Напишіть нам!"
+        },
+        "controls": {
+            "backForward": {
+                "stepBackward": "Попередній вигляд",
+                "stepForward": "Наступний вигляд"
+            },
+            "button3d": {
+                "buttonTitle2d": "2D",
+                "buttonTitle3d": "3D"
+            },
+            "fullScreen": {
+                "enable": "Увімкнути повноекранний режим",
+                "disable": "Вимкнути повноекранний режим"
+            },
+            "freeze": {
+                "freeze": "Заблокувати вигляд",
+                "unfreeze": "Розблокувати вигляд"
+            },
+            "orientation": {
+                "distanceUnit": "Метри",
+                "geolocationDeniedText": "Геолокація недоступна",
+                "iFrameGeolocationError": "Геолокація всередині iframe наразі недоступна.<br/>Будь ласка, відкрийте <a href='#' target=`_blank`>портал</a> у новій вкладці або вікні.",
+                "imgAlt": "Зображення для точки інтересу",
+                "poiChoiceCurrentPosition": "Поточне місцезнаходження",
+                "poiChoiceCustomPosition": "Пошук адреси або встановлення точки на карті",
+                "poiChoiceClickPoint": "Встановити точку на карті",
+                "poiChoiceConfirmation": "OK",
+                "poiChoiceStop": "Завершити",
+                "poiChoiceTitle": "Виберіть початкову точку для пошуку в радіусі:",
+                "titleGeolocate": "Місцезнаходження",
+                "titleGeolocatePOI": "Поруч (пряма відстань)",
+                "trackingDeniedText": "Функція «Поруч» недоступна."
+            },
+            "rotation": {
+                "reset": "Скинути обертання",
+                "rotateClockwise": "Повернути за годинниковою стрілкою",
+                "rotateCounterClockwise": "Повернути проти годинникової стрілки",
+                "compass": {
+                    "pointerNorth": "Повернути вигляд",
+                    "moveNorth": "Перемістити на північ",
+                    "moveSouth": "Перемістити на південь",
+                    "moveWest": "Перемістити на захід",
+                    "moveEast": "Перемістити на схід"
+                }
+            },
+            "tiltView": {
+                "downButton": "Нахилити вигляд вниз",
+                "upButton": "Нахилити вигляд вгору"
+            },
+            "totalView": {
+                "titleButton": "Повернутися до початкового вигляду"
+            },
+            "zoom": {
+                "zoomIn": "Збільшити",
+                "zoomOut": "Зменшити"
+            }
+        },
+        "compareFeatures": {
+            "title": "Список порівняння",
+            "description": "Порівнюйте вибрані об’єкти в таблиці.",
+            "topicsSelection": "Вибір тем",
+            "removeFromList": "Видалити зі списку",
+            "noFeatures": {
+                "nothingSelected": "Для списку порівняння не вибрано жодних {{objects}}.",
+                "objectName": "Об’єкти",
+                "info": "Натисніть на об’єкт на карті. Відкриється вікно з відповідною інформацією. У правому верхньому куті знаходиться значок зірки {{iconEmptyStar}}. Натисніть на нього, щоб додати об’єкт до списку порівняння. Значок зірки стане жовтим {{iconYellowStar}}. Повторне натискання видалить об’єкт зі списку порівняння.",
+                "info2": "Як тільки об’єкт додається до списку порівняння, він з’являється в таблиці, що дозволяє легко порівнювати його з іншими об’єктами. Щоб видалити об’єкт, просто натисніть на «X» поруч із відповідним об’єктом з лівого боку таблиці."
+            },
+            "feedback": {
+                "added": "Об’єкт було додано до списку порівняння",
+                "addedWithName": "{{currentFeatureName}} було додано до списку порівняння",
+                "notAdded": "Не вдалося додати об’єкт до списку порівняння",
+                "notAddedWithName": "{{currentFeatureName}} не вдалося додати до списку порівняння",
+                "limitReached": "Досягнуто максимальної кількості об’єктів у списку порівняння.",
+                "removeObjects": "Будь ласка, спочатку видаліть щонайменше один об’єкт, перш ніж продовжити.",
+                "goToComparisonlist": "Перейти до списку порівняння"
+            },
+            "trueFalse": {
+                "true": "Так",
+                "false": "Ні"
+            }
+        },
+        "coordToolkit": {
+            "cartesian": {
+                "eastingLabel": "Східне значення / абсциса",
+                "northingLabel": "Північне значення / ордината"
+            },
+            "coordSystemField": "Система координат",
+            "coordsCopied": "Координату(и) скопійовано до буфера обміну.",
+            "coordsPair": "Пара координат",
+            "copyCoordBtn": "Скопіювати {{- value}}",
+            "copyCoordsBtn": "Скопіювати пару координат",
+            "copyToClipboard": {
+                "contentSaved": "Вміст скопійовано до буфера обміну.",
+                "contentNotSaved": "Не вдалося скопіювати вміст до буфера обміну."
+            },
+            "description": "Визначайте координати з карти або здійснюйте пошук за координатами.",
+            "errorMsg": {
+                "example": "Приклад: ",
+                "hdmsNoCoord": "Будь ласка, повністю введіть значення {{valueKey}}.",
+                "hdmsNoMatch": "Введене значення для {{valueKey}} здається некоректним!",
+                "noCoord": "Будь ласка, повністю введіть {{valueKey}}.",
+                "noMatch": "Введене значення для {{valueKey}} здається некоректним!"
+            },
+            "exampleAcronym": "Напр. ",
+            "hdms": {
+                "eastingLabel": "Широта",
+                "northingLabel": "Довгота"
+            },
+            "heightLabel": "Висота",
+            "hintSearch": "Введіть координати для пошуку",
+            "hintSupply": "Будь ласка, клацніть на карті.",
+            "influenceFactors": "Відображені значення можуть містити неточності, на які впливають, зокрема, масштаб, роздільна здатність карти та екрана.",
+            "info": "Інформація",
+            "name": "Координати",
+            "noHeightBuilding": "Площа будівлі, відсутні дані про висоту",
+            "noHeightWater": "Площа водойми, відсутні дані про висоту",
+            "postionCoordinates": "Координати положення",
+            "search": "Пошук координат",
+            "searchBtn": "Пошук",
+            "supply": "Отримати координати / висоту",
+            "utm": {
+                "eastingLabel": "Східне значення",
+                "northingLabel": "Північне значення"
+            }
+        },
+        "copyrightConstraints": {
+            "name": "Умови використання",
+            "info": "Будь ласка, зверніть увагу на умови використання застосованих геоданих",
+            "notSpecified": "Не зазначено, за потреби зверніться до",
+            "contactOrganisation": "Організація",
+            "contactName": "Ім’я",
+            "contactPhone": "Тел.",
+            "contactEmail": "Електронна пошта",
+            "wait": "Будь ласка, зачекайте"
+        },
+        "draw": {
+            "description": "Створюйте важливі позначки або виділяйте ділянки",
+            "name": "Малювання / Написання"
+        },
+        "draw_old": {
+            "attributeSelect": {
+                "attributeDuplicatedKeyError": "Ключ атрибута вже існує.",
+                "attributeKeyError": "Будь ласка, вкажіть ключ для атрибута.",
+                "input": {
+                    "key": "Ключ атрибута",
+                    "value": "Значення атрибута",
+                    "newKey": "Новий ключ",
+                    "newValue": "Нове значення"
+                },
+                "noFeatureSelected": "Наразі жоден об’єкт не вибрано. Будь ласка, виберіть об’єкт!",
+                "remove": "Видалити",
+                "save": "Зберегти"
+            },
+            "button": {
+                "delete": "Видалити геометрію / текст",
+                "deleteAll": "Видалити все",
+                "download": "Завантажити",
+                "draw": "Малювати геометрію / текст",
+                "edit": "Редагувати геометрію / текст",
+                "editAttributes": "Редагувати атрибути",
+                "redo": "Повторити",
+                "saveDrawing": "Зберегти креслення",
+                "undo": "Скасувати"
+            },
+            "clickToPlaceText": "Клацніть на карту, щоб розмістити текст",
+            "color": "Колір заповнення",
+            "colorContour": "Колір контуру",
+            "colors": {
+                "black": "Чорний",
+                "blue": "Синій",
+                "green": "Зелений",
+                "grey": "Сірий",
+                "orange": "Помаранчевий",
+                "red": "Червоний",
+                "white": "Білий",
+                "yellow": "Жовтий"
+            },
+            "defined": "визначено",
+            "description": "Створюйте важливі позначки або виділяйте ділянки. Завантажте їх тут, щоб пізніше знову завантажити",
+            "doubleCirclePlaceholder": "Будь ласка, введіть радіус",
+            "download": {
+                "allGeometryTypesNotSupported": "Намальовані геометрії не можуть бути завантажені у вибраному форматі. Формат не підтримує тип геометрії «полігон».",
+                "enterFilename": "Будь ласка, вкажіть назву файлу",
+                "filename": "Назва файлу",
+                "format": "Формат",
+                "notSupportedGeometryType": "Одна або кілька намальованих геометрій не можуть бути завантажені у вибраному форматі, оскільки формат не підтримує тип геометрії «полігон». Усі намальовані точки та лінії можуть бути завантажені.",
+                "pleaseChoose": "Будь ласка, виберіть",
+                "unknownGeometry": "Невідома геометрія: <strong>{{geometry}}</strong>"
+            },
+            "drawLayerVisible": "Креслення видиме",
+            "drawTypeOptions": {
+                "drawArea": "Площа",
+                "drawSquare": "Квадрат",
+                "drawCircle": "Коло",
+                "drawCurve": "Вільна лінія",
+                "drawDoubleCircle": "Подвійне коло",
+                "drawLine": "Лінії",
+                "drawSymbol": "Символ",
+                "writeText": "Текст"
+            },
+            "fontName": "Шрифт",
+            "fontSize": "Розмір шрифту",
+            "geometry": "Геометрія",
+            "geometryDrawFailed": "Передану геометрію не вдалося відобразити.",
+            "iconList": {
+                "gelber Pin": "жовтий пін",
+                "iconCloud": "Хмара",
+                "iconLeaf": "Лист",
+                "iconMeadow": "Луг",
+                "iconPoint": "Точка"
+            },
+            "innerColorContour": "Колір внутрішнього контуру",
             "innerRadius": "Внутрішній радіус",
+            "interactive": "інтерактивний",
+            "limitReached_one": "Ви вже намалювали {{count}} об’єкт, будь ласка, видаліть його, перш ніж продовжити!",
+            "limitReached_other": "Ви вже намалювали {{count}} об’єктів, будь ласка, спочатку видаліть один, перш ніж продовжити!",
+            "lineWidth": "Товщина лінії",
+            "method": "Метод",
+            "name": "Малювання / Написання",
+            "outerColorContour": "Колір зовнішнього контуру",
             "outerRadius": "Зовнішній радіус",
-            "radius": "Радіус"
-          },
-          "settings": {
-            "circle": "Налаштування кола:",
-            "doubleCircle": "Налаштування подвійного кола:"
-          },
-          "unit": "Одиниця"
+            "radius": "Радіус",
+            "symbol": "Символ",
+            "text": "Текст",
+            "transparency": "Прозорість",
+            "transparencyOutline": "Прозорість контуру",
+            "undefinedInnerCircle": "Будь ласка, також визначте внутрішнє коло.",
+            "undefinedOuterCircle": "Будь ласка, також визначте зовнішнє коло.",
+            "undefinedSquareArea": "Будь ласка, визначте площу квадрата.",
+            "undefinedRadius": "Будь ласка, вкажіть радіус.",
+            "undefinedTwoCircles": "Будь ласка, визначте обидва кола.",
+            "unit": "Одиниця",
+            "squareDefinedInfo": " (без урахування кривизни Землі)",
+            "areaLabel": "Площа",
+            "squareSideLengthLabel": "Довжина сторони",
+            "lineLengthLabel": "Загальна довжина"
         },
-        "drawTypes": {
-          "box": "Бокс",
-          "circle": "Коло",
-          "doubleCircle": "Подвійне коло",
-          "geometries": "Геометрії",
-          "line": "Лінія",
-          "pen": "Перо",
-          "point": "Точка",
-          "polygon": "Площа",
-          "rectangle": "Прямокутник",
-          "symbols": "Символи"
+        "featureLister": {
+            "chooseTheme": "Вибрати тему",
+            "continueButton": "Перейти до списку",
+            "details": "Деталі",
+            "detailsOfSelected": "Деталі вибраного об’єкта",
+            "description": "Перелічіть усі записи за темою",
+            "key": "Показано {{shownFeatures}} з {{featureCount}} об’єктів",
+            "list": "Список",
+            "manualSelection": "Вибрати об’єкти на карті вручну",
+            "more": "Більше...",
+            "name": "Список",
+            "noFeaturesFound": "У виборі не знайдено жодних об’єктів.",
+            "noFeaturesFoundInMap": "У поточному фрагменті карти не знайдено жодних об’єктів.",
+            "requestFailedAlert": "Не вдалося виконати запит об’єктів. Будь ласка, спробуйте пізніше.",
+            "spatialSelection": "Просторово фільтрувати об’єкти",
+            "visibleVectorLayers": "Видимі векторні шари"
+        },
+        "fileImport": {
+            "alertingMessages": {
+                "featureError": "Один об’єкт у цьому файлі не вдалося зчитати.",
+                "formatError": "Файл \"{{filename}}\" не вдалося зчитати. Будь ласка, перевірте, чи має файл формат *.kml, *.gpx, *.geojson або *.json.",
+                "missingFileContent": "Помилка під час зчитування файлу \"{{filename}}\". Будь ласка, перевірте тип файлу та його вміст. Якщо файл не містить помилок, зверніться до служби підтримки.",
+                "missingFormat": "Формат файлу {{format}} не підтримується. Будь ласка, зверніться до служби підтримки.",
+                "success": "Файл \"{{filename}}\" було успішно імпортовано.",
+                "successPartly": "Файл \"{{filename}}\" було імпортовано частково."
+            },
+            "captions": {
+                "drawTool": "Відкрити $t(common:modules.draw.name)",
+                "introDrawTool": "Імпортовані геометрії можна змінювати згодом. Для цього скористайтеся інструментом \"$t(modules.draw.name)\".",
+                "introFormats": "Можна імпортувати файли KML (*.kml), GPX (*.gpx) або GeoJson (*.geojson, *.json).",
+                "introInfo": "Імпортуйте потрібний файл за допомогою перетягування або через діалог відкриття файлів браузера.",
+                "supportedFiletypes": {
+                    "auto": "Автоматичне визначення",
+                    "geojson": "Файл GeoJson (*.geojson, *.json)",
+                    "gpx": "Файл GPX (*.gpx)",
+                    "kml": "Файл KML (*.kml)"
+                }
+            },
+            "description": "Імпортуйте геодані з різних форматів файлів",
+            "fileZoom": "Наблизити до об’єктів файлу \"{{filename}}\"",
+            "importFiles": "Імпортувати вибрані файли",
+            "name": "Імпорт файлів",
+            "removeAttachment": "Видалити файл",
+            "successfullyImportedLabel": "Успішно імпортовано:",
+            "zoom": "Масштабувати",
+            "colorPerAttributes": "Колір за атрибутами",
+            "stylingAttributeDescription": "Виберіть атрибут, за яким буде стилізовано шар.",
+            "stylingColorDescription": "Після вибору кольору автоматично створюється колірна шкала. Для числових (кількісних) значень формується шкала від світлого до темного, при цьому найвищому значенню даних відповідає вибраний колір. Для якісних даних створюється колірна шкала з різними відтінками на основі вибраного кольору."
+        },
+        "filter": {
+            "activeFilter": "Активні фільтри",
+            "alertingMessages": {
+                "noMatchingFilterId": "Налаштований ідентифікатор фільтра відсутній."
+            },
+            "ariaLabel": {
+                "checkbox": "Прапорець для {{param}}",
+                "date": "Дата для {{param}}",
+                "dateRange": {
+                    "from": "Дата початку для {{param}}",
+                    "to": "Дата завершення для {{param}}"
+                },
+                "dropdown": "Список вибору для {{param}}",
+                "input": "Поле введення для {{param}}",
+                "radio": "Перемикач для {{param}}",
+                "slider": "Повзунок діапазону для {{param}}",
+                "sliderRange": {
+                    "max": "Максимум повзунка для {{param}}",
+                    "min": "Мінімум повзунка для {{param}}"
+                },
+                "toolInfo": "Інформація про інструмент (відкрити посилання в новій вкладці)"
+            },
+            "button": {
+                "confirm": "Підтвердити",
+                "stop": "Скасувати"
+            },
+            "chart": {
+                "speciesCadastreAlternativeText": "Для цього виду наразі відсутні або недостатні актуальні щоденні спостереження."
+            },
+            "description": "Фільтрує об’єкти, відображені на карті",
+            "download": {
+                "enterFilename": "Будь ласка, вкажіть назву файлу",
+                "filename": "Назва файлу",
+                "format": "Формат",
+                "label": "Завантажити відфільтровані дані",
+                "labelBtn": "Завантажити",
+                "pleaseChoose": "Будь ласка, виберіть"
+            },
+            "dropdown": {
+                "deselectAll": "Зняти вибір з усіх",
+                "emptyList": "Список порожній",
+                "noElements": "Елементи не знайдено",
+                "selectAll": "Вибрати все"
+            },
+            "filterButton": "Застосувати фільтр",
+            "filterReset": "Очистити фільтр",
+            "filterResetAll": "Очистити всі фільтри",
+            "filterResetOrigin": "Скинути фільтр",
+            "filterResult": {
+                "disabledInfo": "Фільтр вимкнено на поточному рівні масштабування.",
+                "unit": "{{amountOfFilteredItems}} результатів"
+            },
+            "geometryFilter": {
+                "title": "Геометричний фільтр",
+                "buffer": "Буфер [м]",
+                "geometries": "Геометрії",
+                "regions": "Області",
+                "geometryTypes": {
+                    "circle": "Коло",
+                    "lineString": "Лінія + буфер",
+                    "polygon": "Площа",
+                    "rectangle": "Прямокутник"
+                },
+                "delete": "Видалити",
+                "removeGeometry": "Видалити область",
+                "selectGeometry": "Виберіть геометрію, щоб фільтрувати лише в межах заданої геометрії.",
+                "selectRegion": "Виберіть область, щоб фільтрувати лише в межах цієї області."
+            },
+            "info": {
+                "infoIcon": "Натиснувши на значок інформації, можна отримати додаткові відомості",
+                "snippetCheckbox": "Прапорець можна увімкнути або вимкнути клацанням миші.",
+                "snippetDate": "Щоб ввести дату як критерій пошуку, клацніть у полі дати та виберіть дату з відкритого календаря.",
+                "snippetDateRange": "Щоб ввести діапазон дат як критерій пошуку, клацніть у поля дати початку та завершення і виберіть відповідні дати з календаря.",
+                "snippetDropdown": "Ви можете вибрати одне або кілька значень зі списку.",
+                "snippetInput": "Ви можете ввести бажані критерії пошуку в текстовому полі.",
+                "snippetSlider": "Щоб ввести числове значення як критерій пошуку, перемістіть повзунок праворуч або ліворуч. Також можна ввести значення безпосередньо в поле введення.",
+                "snippetSliderRange": "Щоб ввести мінімальні та максимальні числові значення як критерій пошуку, перемістіть лівий або правий повзунок. Також можна ввести значення безпосередньо в полях введення."
+            },
+            "name": "Фільтр",
+            "searchInMapExtent": "Пошук у поточному фрагменті карти",
+            "slider": {
+                "valueEmptyErrorMessage": "Значення поля не може бути порожнім!",
+                "valueOutOfRangeErrorMessage": "Введене значення {{inputValue}} має бути в межах допустимого діапазону {{minValueSlider}} та {{maxValueSlider}}!"
+            },
+            "snippetTags": {
+                "selectionText": "Ваш вибір:",
+                "showMore": "показати більше",
+                "showLess": "показати менше"
+            },
+            "upload": {
+                "geometryParseError": "Зазначену геометрію не вдалося завантажити"
+            },
+            "distributionMapLinkText": "Посилання на карту поширення",
+            "distributionMapLinkTextTitle": "Скопіювати посилання на карту поширення",
+            "universalSearchTitle": "Шукати цю тварину в Інтернеті",
+            "resetButton": "Скинути до початкового стану"
+        },
+        "getFeatureInfo": {
+            "boolean": {
+                "0": "Ні",
+                "1": "Так",
+                "false": "Ні",
+                "no": "Ні",
+                "true": "Так",
+                "yes": "Так"
+            },
+            "buttonBack": "Показати попередню інформацію",
+            "buttonForward": "Показати додаткову інформацію",
+            "errorMessageLayers": "Під час запиту інформації (GetFeatureInfo) виникли помилки для таких шарів: <ul>{{layers}}</ul><br>Будь ласка, спробуйте пізніше. Якщо проблема не зникне, зверніться до оператора сервісу.",
+            "errorMessage": "Під час запиту інформації (GetFeatureInfo) сталася помилка.<br>Будь ласка, спробуйте пізніше. Якщо проблема не зникне, зверніться до оператора сервісу.",
+            "favoriteIcons": {
+                "compareFeatureIcon": {
+                    "toCompareList": "До списку порівняння",
+                    "fromCompareList": "Видалити зі списку порівняння"
+                }
+            },
+            "name": "Отримати інформацію",
+            "themes": {
+                "default": {
+                    "imgAlt": "Не вдалося завантажити зображення.",
+                    "noAttributeAvailable": "Атрибути відсутні!"
+                },
+                "sensor": {
+                    "chargingStations": {
+                        "available": "Доступність",
+                        "charging": "Завантаженість",
+                        "outoforder": "Не працює",
+                        "faulted": "Стан помилки"
+                    },
+                    "sensor": {
+                        "dataName": "Дані",
+                        "header": {
+                            "description": "Опис",
+                            "name": "Назва",
+                            "ownerThing": "Власник"
+                        }
+                    },
+                    "sensorBarChart": {
+                        "chartTitleAverage": "Середнє значення з",
+                        "clock": "{{value}} год",
+                        "month_one": "{{count}} місяць",
+                        "month_other": "{{count}} місяців",
+                        "nextWeekday": "Наступний день тижня",
+                        "noticeTextAvailable": "(враховуються лише дані зі значенням available / доступно)",
+                        "noticeTextCharging": "(враховуються лише дані зі значенням charging / заряджається)",
+                        "noticeTextOutoforder": "(враховуються лише дані зі значенням outoforder / не працює)",
+                        "noticeTextFaulted": "(враховуються лише дані зі значенням faulted / стан помилки)",
+                        "previousWeekday": "Попередній день тижня",
+                        "year_one": "{{count}} рік",
+                        "year_other": "{{count}} років"
+                    },
+                    "sensorData": {
+                        "firstColumnHeaderName": "Властивості"
+                    }
+                }
+            },
+            "title": "Інформація про об’єкт"
+        },
+        "gfiThemes": {
+            "dataTable": {
+                "sort": "Сортувати значення"
+            }
+        },
+        "info": {
+            "name": "Інфо",
+            "disclaimer": "Відмова від відповідальності",
+            "home": {
+                "name": "Гамбург"
+            }
+        },
+        "language": {
+            "de": "Deutsch",
+            "description": "Оберіть мову",
+            "en": "English",
+            "es": "Español",
+            "it": "Italiano",
+            "name": "Змінити мову",
+            "platt": "Platt",
+            "pt": "Português",
+            "ru": "Русский",
+            "tr": "Türkçe",
+            "ua": "Українська",
+            "nl": "Nederlands"
+        },
+        "layerClusterToggler": {
+            "description": "Активуйте кілька тем одним натисканням кнопки",
+            "info": "Увімкнути або вимкнути видимість таких шарів:",
+            "name": "Відкрити групу шарів",
+            "toggle": "Перемкнути видимість шарів"
+        },
+        "layerInformation": {
+            "additionalMetadata": "додаткова інформація...",
+            "addressSuffix": "Адреса",
+            "addressSuffixes": "Адреси шарів",
+            "attachFileMessage": "за потреби додати тип файлу під час завантаження",
+            "downloadDataset": "Завантажити набір даних",
+            "lastModified": "Остання зміна",
+            "legend": "Легенда",
+            "name": "Інформація та легенда",
+            "noMetadataLoaded": "Не вдалося завантажити метадані!",
+            "noMetadataLoadedConsole": "Не вдалося отримати метадані для цього шару. Це вказує на проблему з підключеним файлом services.json.",
+            "periodicityTitle": "Оновлення даних",
+            "publicationCreation": "Публікація / створення",
+            "pointOfContact": "Контактна особа",
+            "contactInfoMessage": "Написати контактній особі теми ",
+            "contactPublisher": "Написати контактній особі ",
+            "mailSubject": "Запит щодо набору даних ",
+            "mailOriginHint": "Цей запит було надіслано вам через контактну форму за такою URL-адресою",
+            "changeLayerInfo": "Вибрати інформацію про шар: "
+        },
+        "layerPills": {
+            "next": "Показати наступний шар",
+            "previous": "Показати попередній шар",
+            "remove": "Видалити шар"
+        },
+        "layerSelection": {
+            "addSubject": "Додати тему",
+            "folderCheckbox": {
+                "selectedAllLayer": "Активувати всі шари в папці {{folderName}}",
+                "unselectedAllLayer": "Деактивувати всі шари в папці {{folderName}}"
+            },
+            "name": "Вибір тем",
+            "backgrounds": "Фони",
+            "datalayer": "Тематичні дані",
+            "externalSubjectLayer": "Зовнішні тематичні дані",
+            "selectAll": "Додати всі",
+            "deselectAll": "Видалити всі",
+            "selectedSubjectsCount_other": "Будь ласка, виберіть тему",
+            "addSelectedSubjectsToMap_one": "Додати вибрану тему на карту",
+            "addSelectedSubjectsToMap_other": "Додати {{count}} вибрані теми на карту"
+        },
+        "layerSlider": {
+            "description": "Запустити слайд-шоу",
+            "displayLayers": "Відображення різних шарів.",
+            "name": "Серія шарів",
+            "serviceOne": "Сервіс 1",
+            "serviceTwo": "Сервіс 2",
+            "serviceThree": "Сервіс 3",
+            "serviceFour": "Сервіс 4",
+            "sliderTypeHandle": "Режим повзунка",
+            "sliderTypePlayer": "Режим плеєра",
+            "title": "Симуляція прикладних сервісів"
+        },
+        "layerTree": {
+            "addLayer": "Додати теми",
+            "categories": "Категорії",
+            "categoryInspire": "Inspire",
+            "categoryOpendata": "Open Data",
+            "categoryOrganisation": "Установа",
+            "categoriesListHead": "Упорядкувати теми за такою категорією:",
+            "subjectData3D": "3D-дані",
+            "iconRemoveLayer": "Видалити тему з карти",
+            "iconSubMenu": "Показати додаткові функції",
+            "iconTransparency": "Прозорість",
+            "infosAndLegend": "Показати інформацію про набір даних",
+            "invisibleLayer": "Цю тему можна відображати лише в масштабі {{minScale}} – {{maxScale}}",
+            "invisibleLayerNoScale": "Цю тему не можна відобразити в цьому масштабі",
+            "noCategory": "Без категорії",
+            "rootLayerPath": "Показати в папці"
+        },
+        "legend": {
+            "description": "Отримайте інформацію про об’єкти на карті",
+            "linkToPdf": "До зовнішньої легенди (PDF)",
+            "name": "Легенда",
+            "noLegendForLayerInfo": "Легенда недоступна"
+        },
+        "login": {
+            "description": "Увійдіть за допомогою імені користувача та пароля",
+            "descriptionLoggedIn": "Ви увійшли в систему",
+            "login": "Вхід",
+            "logout": "Вихід",
+            "progress": "Будь ласка, увійдіть у відкритому спливаючому вікні.",
+            "name": "Ім’я",
+            "email": "Електронна пошта",
+            "profile": "Профіль"
+        },
+        "measure": {
+            "area": "Площа",
+            "deleteMeasurements": "Видалити вимірювання",
+            "description": "Вимірюйте відстань або площу",
+            "finishWithDoubleClick": "Завершити подвійним клацанням",
+            "geometry": "Геометрія",
+            "influenceFactors": "Відображені значення можуть містити неточності, на які впливають, зокрема, масштаб, роздільна здатність карти та екрана.",
+            "inputAccuracy": "Точність введення та кількість оцифрованих точок",
+            "measure": "Одиниця",
+            "measureDistance": "Довжина вимірювальної лінії або розмір вимірюваної площі",
+            "name": "Вимірювання відстані / площі",
+            "resolution": "Роздільна здатність карти",
+            "scale": "Масштаб",
+            "screenResolution": "Роздільна здатність екрана",
+            "stretch": "Відстань"
+        },
+        "menu": {
+            "ariaLabelClose": "Закрити $t(menu.name)",
+            "ariaLabelOpen": "Відкрити $t(menu.name)",
+            "name": "Меню",
+            "widthUrlParamError": "URL-параметр для налаштування ширини меню є некоректним і не може бути застосований. Будь ласка, виберіть значення між 5 та 90."
+        },
+        "modalItem": {
+            "close": "Закрити вікно"
+        },
+        "modeler3D": {
+            "entity": {
+                "captions": {
+                    "backToList": "До огляду",
+                    "copyTitle": "Скопіювати 3D-модель \"{{name}}\"",
+                    "delete": "Видалити модель",
+                    "deletionTitle": "Видалити 3D-модель \"{{name}}\"",
+                    "dimensionsModel": "Показати розміри для 3D-моделі \"{{name}}\"",
+                    "editModel": "Редагувати 3D-модель \"{{name}}\"",
+                    "incrementTooltip": "Утримуйте Shift, щоб змінювати значення з більшим кроком.",
+                    "modelName": "Назва моделі",
+                    "projectionInfo": "Увага! Під час використання системи координат WGS84 можливі неточності. Рекомендуємо використовувати десятковий формат.",
+                    "rotationPlaceholder": "Кроки інкременту/декременту",
+                    "rotation": "Обертання",
+                    "rotationSwitch": "Кроки обертання",
+                    "scale": "Масштабування",
+                    "steps": "Кроки",
+                    "visibilityTitle": "Показати/приховати 3D-модель \"{{name}}\"",
+                    "zoomTo": "Наблизити до 3D-моделі \"{{name}}\""
+                },
+                "deleteInteraction": {
+                    "confirm": "Видалити",
+                    "headline": "Увага",
+                    "text": "Ви впевнені, що хочете видалити модель \"{{name}}\"?"
+                },
+                "projections": {
+                    "adaptToHeight": "Підігнати до рельєфу",
+                    "area": "Площа основи",
+                    "cartesian": {
+                        "eastingLabel": "Східне значення",
+                        "northingLabel": "Північне значення"
+                    },
+                    "depth": "Глибина",
+                    "hdms": {
+                        "eastingLabel": "Довгота",
+                        "northingLabel": "Широта"
+                    },
+                    "height": "Висота",
+                    "projection": "Система координат",
+                    "width": "Ширина"
+                }
+            },
+            "import": {
+                "alertingMessages": {
+                    "featureError": "Один об’єкт у цьому файлі не вдалося зчитати.",
+                    "fileSizeError": "Розмір файлу перевищує ліміт у 100 МБ.",
+                    "formatError": "Файл \"{{filename}}\" не вдалося зчитати. Перевірте, чи має файл формат *.gltf, *.obj, *.dae або *.geojson.",
+                    "missingFileContent": "Помилка під час зчитування файлу \"{{filename}}\". Перевірте тип файлу та його вміст. Якщо файл без помилок, зверніться до служби підтримки.",
+                    "missingFormat": "Формат файлу \"{{format}}\" не підтримується. Будь ласка, зверніться до служби підтримки.",
+                    "success": "Файл \"{{filename}}\" було успішно імпортовано.",
+                    "successPartly": "Файл \"{{filename}}\" було імпортовано частково."
+                },
+                "captions": {
+                    "introInfo": "За допомогою імпортера ви можете завантажувати, візуалізувати та аналізувати цифрові містобудівні проєкти в існуючій 3D-моделі міста.",
+                    "introInfo2": "Імпортуйте потрібний файл простим перетягуванням або через діалог відкриття файлів браузера.",
+                    "introFormats": "Можна імпортувати файли glTF (*.gltf), OBJ (*.obj), Collada (*.dae) або GeoJSON.",
+                    "info": "Інформація",
+                    "successfullyImportedLabel": "Імпортовані 3D-моделі",
+                    "newImport": "Новий імпорт"
+                }
+            },
+            "draw": {
+                "captions": {
+                    "beginModelling": "Моделювати 3D-об’єкт",
+                    "clampToGround": "Орієнтуватися на модель рельєфу",
+                    "color": "Колір",
+                    "coordinates": "Координати",
+                    "design": "Дизайн",
+                    "dimensions": "Розміри",
+                    "drawing": "Малювання",
+                    "drawName": "Назва",
+                    "drawnModels": "Намальовані моделі",
+                    "export": "Експортувати все",
+                    "exportTitle": "Експортувати всі намальовані моделі у формат GeoJSON.",
+                    "extrudedHeight": "Екструдована висота",
+                    "fillColor": "Колір заповнення",
+                    "fillTransparency": "Прозорість",
+                    "geometries": "Геометрії",
+                    "introInfo": "За допомогою цієї функції ви можете малювати 3D-об’єкти на карті, індивідуально їх налаштовувати та, наприклад, виконувати симуляції тіней.\n\nІнструмент також дозволяє малювати на вже існуючих будівлях та імпортованих об’єктах. Передумова — вимкнена висота рельєфу.\n\nНамальовані об’єкти можна експортувати через функцію «Експортувати все» та згодом знову завантажити через імпортер.\n\nКлацання лівою кнопкою миші додає вершини, подвійне клацання завершує малювання. Останню точку можна видалити комбінацією Ctrl+Z і додати знову Ctrl+Y. Натисніть на об’єкт, щоб підняти, перемістити або відредагувати його.",
+                    "info": "Інформація",
+                    "newModel": "Нова модель",
+                    "options": "Опції",
+                    "readyGeometries": "Готові геометрії",
+                    "showDimensions": "Показувати розміри під час малювання",
+                    "strokeColor": "Колір контуру",
+                    "strokeWidth": "Товщина лінії",
+                    "transformation": "Трансформація"
+                },
+                "geometries": {
+                    "line": "Лінія",
+                    "polygon": "Полігон",
+                    "rectangle": "Прямокутник"
+                },
+                "oneClicks": {
+                    "rectangle": "Прямокутник 15 м x 20 м x 20 м (ШxГxВ)"
+                }
+            },
+            "filter": {
+                "captions": {
+                    "abortStyle": "Скасувати",
+                    "addFilter": "Додати фільтр",
+                    "applyStyle": "Застосувати",
+                    "editFilter": "Редагувати фільтр",
+                    "fillColor": "Колір заповнення",
+                    "filterList": "Список фільтрів",
+                    "filterName": "Назва фільтра",
+                    "info": "Інформація",
+                    "introInfo": "За допомогою функції «Фільтр і стиль» ви можете зафарбовувати будівлі за атрибутами, наприклад, для візуалізації використання.",
+                    "introInfo2": "Виберіть потрібний шар і атрибут для візуалізації, після чого налаштуйте колір будівель.",
+                    "noFilter": "Фільтри відсутні.",
+                    "optionsTitle": "Опції фільтра",
+                    "pvoCheck": "Зафарбувати всі значення відповідно до PlanzeichenVO",
+                    "resetStyle": "Скинути",
+                    "selectLayer": "Вибір шару",
+                    "selectAttribute": "Вибір атрибута",
+                    "title": "Функція фільтра та стилю",
+                    "styleSettingsTitle": "Налаштування кольорів",
+                    "value": "Значення"
+                },
+                "errorLoadingData": "Помилка під час завантаження списку значень для атрибута 'BuildingFunctionType'"
+            },
+            "options": {
+                "captions": {
+                    "enableFunction": "Увімкнути/вимкнути функцію",
+                    "hideObjectInfo": "Існуючі будівлі можна приховати, щоб, наприклад, розмістити імпортовані елементи на відповідній ділянці.\n\nЗапустіть цю функцію через «Активувати» та клацніть по потрібних об’єктах, щоб приховати їх.\n\nУсі приховані об’єкти з’являються у списку та можуть бути знову активовані.",
+                    "hideSwitchLabel": "Приховувати будівлі кліком миші",
+                    "pov": "Перейти до пішохідного режиму",
+                    "povInfo": "Тут ви можете перейти до пішохідної перспективи та оглянути місто.\n\nПеремістіться в потрібну позицію та клацніть мишею, щоб встановити циліндр на карті — після цього ви потрапите до пішохідного режиму.\n\nРухами миші з натиснутою лівою кнопкою можна змінювати поле зору. Щоб повернутися до початкової позиції, вимкніть функцію повзунком.",
+                    "povTitle": "Пішохідна перспектива",
+                    "visibilityTitle": "Опції видимості"
+                }
+            },
+            "nav": {
+                "drawTitle": "Малювання",
+                "filterTitle": "Фільтр і стиль",
+                "importTitle": "Імпорт",
+                "options": "Опції"
+            },
+            "description": "Імпортуйте, малюйте та редагуйте 3D-моделі в міській моделі",
+            "hiddenObjectsLabel": "Приховані будівлі:",
+            "name": "3D-моделер"
+        },
+        "mouseHover": {
+            "infoText": "(інші об’єкти. Будь ласка, збільште масштаб.)"
+        },
+        "news": {
+            "description": "Дізнайтеся, що нового",
+            "headline": "Новини",
+            "name": "Новини"
+        },
+        "openConfig": {
+            "explanation": "Відкрийте карту, яку ви зберегли як локальний файл конфігурації.",
+            "loadFileFailed": "Файл конфігурації <b>{{targetFileName}}</b> не було завантажено. Формат файлу <b>{{targetFileFormat}}</b> не підтримується. Будь ласка, завантажте файл у форматі <b>json</b>.",
+            "loadFileSuccess": "Файл конфігурації <b>{{targetFileName}}</b> було успішно завантажено",
+            "name": "Відкрити карту",
+            "openFile": "Відкрити файл конфігурації"
+        },
+        "portalFooter": {
+            "designation": "Картографія та дизайн:",
+            "mapDiscrepancy": "Повідомити про неточність на карті",
+            "scale": "Масштаб карти"
+        },
+        "print": {
+            "alertMessage": "Перевищено максимальну кількість паралельних друків.<br>Будь ласка, спробуйте знову після завершення створення інших друків.",
+            "authorLabel": "Автор",
+            "autoAdjustScale": "Автоматично підігнати масштаб друку",
+            "createDownloadFile": "Створюється...",
+            "description": "Завантажте фрагмент карти у вибраному форматі",
+            "downloadFile": "Завантажити",
+            "dpiLabel": "DPI",
+            "errorMessage": "Не вдалося отримати метадані. Якщо проблема не зникне, зверніться до власника сервісу: <b>{{cswObjCswUrl}}</b>",
+            "formatLabel": "Формат",
+            "hintInfoScale": "Якщо вибраний масштаб друку відрізняється від масштабу у вікні карти, це може призвести до зміненого макета карти під час друку.",
+            "invisibleLayer": "Наступні теми не можуть бути надруковані у вибраному масштабі {{scale}}:",
+            "improveResolution": "Покращити роздільну здатність",
+            "layoutLabel": "Макет",
+            "name": "Друк карти",
+            "outputfileTitleLabel": "Назва файлу",
+            "printLabel": "Створити файл",
+            "scaleLabel": "Масштаб друку",
+            "subtitleLabel": "Підзаголовок",
+            "textFieldLabel": "Поле довільного тексту",
+            "titleLabel": "Заголовок",
+            "validationWarning": "Назва файлу може містити лише літери та спеціальні символи '-' і '_'.",
+            "vtlWarning": "Оскільки MapFish 3 не підтримує векторні тайлові шари, наступні активні шари не відображатимуться у попередньому перегляді друку:",
+            "waitForPrintErrorMessage": "Не вдалося створити друк.<br>Будь ласка, спробуйте пізніше або зверніться до оператора порталу.",
+            "withInfoLabel": "З інформацією",
+            "withLegendLabel": "З легендою",
+            "predefinedLegendInfo": "Шар \"{{layerName}}\" містить попередньо визначену легенду.",
+            "predefinedLegendDownload": "Легенду неможливо додати до друку. Ви можете завантажити попередньо визначену легенду окремо через меню завантаження."
+        },
+        "routing": {
+            "addWaypoint": "Додати проміжну точку",
+            "avoidOptions": {
+                "header": "Уникати транспортних шляхів",
+                "FERRIES": "Пароми",
+                "HIGHWAYS": "Автомагістралі",
+                "STEPS": "Сходи",
+                "TOLLWAYS": "Платні дороги",
+                "UNPAVEDROADS": "Ґрунтові дороги",
+                "MIXEDTRAFFIC": "Змішаний рух (темп 50)",
+                "COBBLESTONE": "Бруківка",
+                "NARROWWAYS": "Вузькі ділянки",
+                "BORDERS": "Кордон"
+            },
+            "batchProcessing": {
+                "cancel": "Скасувати пакетну обробку",
+                "example": "Приклад",
+                "header": "Пакетна обробка",
+                "isProcessing": "Виконується пакетна обробка",
+                "placeFile": "Перетягніть файл сюди",
+                "structure": "Структура",
+                "uploadFile": "Завантажити файл"
+            },
+            "contextMenu": {
+                "addAvoidPoint": "Додати точку блокування",
+                "addEndpoint": "Додати кінцеву точку",
+                "addStartpoint": "Додати початкову точку",
+                "addWaypoint": "Додати проміжну точку",
+                "avoidPointModalTitle": "Радіус точки блокування",
+                "header": "Дії",
+                "removeAvoidPoint": "Видалити заблоковану область",
+                "removePoint": "Видалити точку"
+            },
+            "coordinateInputHelp": "Знайдіть місце або додайте точку, клацнувши на карті",
+            "deleteWaypoint": "Видалити проміжну точку",
+            "description": "Дізнайтеся, як найшвидше дістатися до місця призначення або задайте радіус пошуку",
+            "directions": {
+                "batchProcessing": {
+                    "downloadHeader": {
+                        "distance": "Відстань(м)",
+                        "profile": "Профіль",
+                        "time": "Час(хв)",
+                        "xEnd": "X-значення_кінець",
+                        "xStart": "X-значення_початок",
+                        "yEnd": "Y-значення_кінець",
+                        "yStart": "Y-значення_початок"
+                    },
+                    "errorNoEntries": "У CSV немає записів",
+                    "errorAllFailed": "Усі запити завершилися помилкою. Можливо, сервіс блокує запит. Файл не містить результатів.",
+                    "errorRowContainsEntriesNoNumber": "Координати в рядку {{row}} не містять чисел",
+                    "errorSomeFailed": "Не вдалося коректно обчислити {{countFailed}} результатів. У файлі результатів у цих місцях є порожні клітинки.",
+                    "errorToManyEntriesInFile": "Перевищено максимальну кількість рядків ({{limit}})",
+                    "errorToManyEntriesInRow": "Рядок {{row}} містить більше ніж 5 записів. Будь ласка, дотримуйтеся структури (ID;lon(початок);lat(початок);lon(кінець);lat(кінець))",
+                    "errorContextMenuSetPoint": "У цьому місці не вдалося встановити точку.",
+                    "structure": "ID;lon(початок);lat(початок);lon(кінець);lat(кінець)"
+                },
+                "deleteRestrictedAreas": "Видалити заблоковані області",
+                "editRestrictedAreas": "Малювати/редагувати заблоковані області",
+                "editRestrictedPoints": "Малювати/редагувати точки блокування",
+                "keepRoutesAfterClose": "Зберігати маршрут після закриття",
+                "preference": {
+                    "RECOMMENDED": "Рекомендований маршрут",
+                    "SHORTEST": "Найкоротший маршрут",
+                    "GREEN": "Зелений маршрут"
+                },
+                "preferenceLabel": "Перевага",
+                "restrictedAreas": "Заблоковані області",
+                "avoidAreas": {
+                    "avoidArea": "Заблокована область",
+                    "avoidPoint": "Точка блокування",
+                    "avoidPointRadius": "Радіус",
+                    "avoidPointRadiusUnit": "Одиниця",
+                    "avoidPointRadiusUnitKm": "км",
+                    "avoidPointRadiusOutOfRangeKm": "Будь ласка, введіть значення від 0 до 12 км.",
+                    "delete": "Видалити",
+                    "export": "Експорт",
+                    "import": "Імпорт"
+                }
+            },
+            "download": {
+                "filename": "Назва файлу",
+                "filenamePlaceholder": "Будь ласка, вкажіть назву файлу",
+                "format": "Формат",
+                "header": "Завантаження",
+                "saveResult": "Зберегти результат",
+                "error": {
+                    "header": "Назва файлу недійсна.",
+                    "fileNameTooLong": "Назва файлу занадто довга. Дозволено максимум 40 символів.",
+                    "fileNameContainsWhiteSpace": "Назва файлу містить пробіли.",
+                    "fileNameContainsInvalidChars": "Назва файлу містить недозволені спеціальні символи."
+                }
+            },
+            "endpoint": "Кінцева точка",
+            "elevationProfile": {
+                "titleCollapse": "Профіль висот",
+                "titleChart": "Профіль висот уздовж маршруту",
+                "yAxis": "Висота в метрах",
+                "xAxis": "Відстань у км",
+                "titleTooltipMeters": "Висота після {{distance}} метрів",
+                "titleTooltipKilometers": "Висота після {{distance}} кілометрів"
+            },
+            "errors": {
+                "titleErrorRouteFetch": "Не вдалося обчислити маршрут.",
+                "titleErrorIsochroneFetch": "Не вдалося обчислити досяжність.",
+                "avoidAreaBig": "Зазначені заблоковані області занадто великі. Будь ласка, виправте введені дані.",
+                "errorIsochronesFetch": "Помилка під час запиту досяжності",
+                "errorRouteFetch": "Помилка під час запиту маршруту",
+                "fetchingCoordinates": "Помилка під час запиту координат",
+                "hgvRestrictionOutOfRange": "Параметри для вантажівки містять недійсні значення. Перевірте введені дані.",
+                "noRouteFound": "На жаль, маршрут не знайдено"
+            },
+            "exportAvoidAreas": {
+                "header": "Експорт заблокованих областей",
+                "type": "Тип файлу",
+                "tooltip": "Експортувати заблоковані області",
+                "download": "Завантажити",
+                "filename": "Назва файлу",
+                "filenamePlaceholder": "Будь ласка, вкажіть назву файлу",
+                "format": "Формат",
+                "error": {
+                    "header": "Помилка під час експорту заблокованих областей",
+                    "noAvoidArea": "Немає заблокованих областей / точок блокування."
+                }
+            },
+            "importAvoidAreas": {
+                "header": "Імпорт заблокованих областей",
+                "help": "Тип файлу",
+                "tooltip": "Імпортувати заблоковані області",
+                "description": "Виберіть файл GeoJSON або KML, який містить власні заблоковані області. Дозволені такі об’єкти:",
+                "structure": "Polygon, Multipolygon",
+                "filenamePlaceholder": "Будь ласка, вкажіть назву файлу",
+                "format": "Формат",
+                "uploadSuccessTitle": "Заблоковані області успішно завантажено.",
+                "uploadSuccess": "Завантажені заблоковані області тепер доступні вам.",
+                "error": {
+                    "header": "Помилка під час імпорту заблокованих областей",
+                    "noAvoidArea": "Немає заблокованих областей / точок блокування.",
+                    "formatError": "Файл не вдалося зчитати. Перевірте, чи має файл формат *.kml або *.geojson.",
+                    "parseError": "Помилка під час парсингу файлу типу {{type}}.",
+                    "polygonFormatError": "Файл містить недійсні геометрії. Підтримуються лише Polygon і MultiPolygon.",
+                    "polygonEmpty": "Одна з імпортованих заблокованих областей не містить координат.",
+                    "polygonNotClosed": "Одна з імпортованих заблокованих областей не замкнена. Перша та остання координати кожної області мають збігатися.",
+                    "polygonNotEnoughPoints": "Заблоковані області мають складатися щонайменше з 3 точок.",
+                    "tooManyFeatures": "Забагато заблокованих областей. Дозволено максимум {{maxFeatures}}.",
+                    "areaTooBig": "Одна з імпортованих заблокованих областей занадто велика: {{area}} км². Максимально дозволено {{maxArea}} км² на одну область.",
+                    "sideTooLong": "Одна зі сторін полігона перевищує максимально дозволену довжину {{maxSideLength}} км. Довжина сторони: {{distance}} км."
+                }
+            },
+            "isochrones": {
+                "batchProcessing": {
+                    "errorNoEntries": "У CSV немає записів",
+                    "errorAllFailed": "Усі запити завершилися помилкою. Можливо, сервіс блокує запит. Файл не містить результатів.",
+                    "errorRowContainsEntriesNoNumber": "Координати в рядку {{row}} не містять чисел",
+                    "errorSomeFailed": "Не вдалося коректно обчислити {{countFailed}} результатів. У файлі результатів у цих місцях є порожні клітинки.",
+                    "errorToManyEntriesInFile": "Перевищено максимальну кількість рядків ({{limit}})",
+                    "errorToManyEntriesInRow": "Рядок {{row}} містить більше ніж 3 записи. Будь ласка, дотримуйтеся структури (ID;lon(початок);lat(початок))",
+                    "structure": "ID;lon(початок);lat(початок)"
+                },
+                "calculate": "Обчислити",
+                "hoverMenu": {
+                    "population": "Населення:",
+                    "area": "Площа:"
+                },
+                "interval": {
+                    "default": "Інтервал",
+                    "count": "Кількість інтервалів"
+                },
+                "legend": {
+                    "area": "Площа",
+                    "color": "Колір",
+                    "distance": "Відстань",
+                    "population": "Населення",
+                    "time": "Час",
+                    "title": "Легенда"
+                },
+                "maxDistance": "Максимальна відстань",
+                "maxTraveltime": "Максимальна тривалість поїздки",
+                "optimization": {
+                    "DISTANCE": "Досяжність за відстанню",
+                    "TIME": "Досяжність за часом"
+                },
+                "optimizeHeader": "Оптимізація за",
+                "startpoint": "Початкова точка",
+                "tooManyIntervalsInline": "Перевищено ліміт ізохрон. Дозволено максимум 10."
+            },
+            "moveWaypointDown": "Перемістити проміжну точку вниз",
+            "moveWaypointUp": "Перемістити проміжну точку вгору",
+            "startIndex": "П",
+            "endIndex": "К",
+            "name": "Маршрутизація",
+            "resetSettings": "Скинути налаштування",
+            "restrictions": {
+                "header": "Параметри вантажівки",
+                "length": "Довжина (м)",
+                "width": "Ширина (м)",
+                "height": "Висота (м)",
+                "weight": "Вага (т)",
+                "axleload": "Навантаження на вісь (т)",
+                "hazmat": "Небезпечний вантаж",
+                "tooltip": "Дійсне значення між {{min}} та {{max}}",
+                "placeholder": "Будь ласка, введіть значення"
+            },
+            "settings": {
+                "submit": "Підтвердити"
+            },
+            "speedprofiles": {
+                "CAR": "Легковий автомобіль",
+                "CYCLING": "Велосипед",
+                "FOOT": "Пішки",
+                "HGV": "Вантажівка",
+                "WHEELCHAIR": "Крісло колісне"
+            },
+            "startpoint": "Початкова точка",
+            "tabs": {
+                "DIRECTIONS": "Планування маршруту",
+                "ISOCHRONES": "Досяжність",
+                "TSR": "Travelling Salesman"
+            },
+            "tsr": {
+                "header": "Змінити параметри маршруту",
+                "calculate": "Обчислити маршрут TSR",
+                "upload": {
+                    "header": "Завантажити проміжні точки",
+                    "description": "Виберіть CSV-файл, який містить власні проміжні точки для TSR. Точки потрібно вказувати у WGS84 (EPSG:4326). Необхідно дотримуватися такого формату:",
+                    "csvHeaders": "Файл містить заголовок",
+                    "help": "Допомога",
+                    "divider": "або",
+                    "failTitle": "Файл не вдалося завантажити.",
+                    "successTitle": "Файл успішно завантажено.",
+                    "successInfo": "Завантажені проміжні точки тепер доступні вам у списку."
+                },
+                "backToTSR": "Маршрутизація",
+                "modifyWaypointsTSR": "Редагувати проміжні точки",
+                "outputHeaderTSR": "Найшвидший маршрут",
+                "downloadOutputTSR": "Завантажити маршрут TSR",
+                "downloadCsv": {
+                    "header": "*** Travelling Salesman Routing ***",
+                    "descriptionRoundTrip": "Початкова точка: {{start}} до: круговий маршрут",
+                    "descriptionNoRoundTrip": "Початкова точка: {{start}} до: {{end}}",
+                    "optimalOrder": "оптимальна {{profile}} послідовність цілей:",
+                    "waypoint": "{{pos}}) {{displayName}};{{lon}};{{lat}}"
+                },
+                "selectedPoints": "Вибрані проміжні точки",
+                "structure": "ID;lon;lat",
+                "tsrEndpoint": "Якщо не визначено: круговий маршрут",
+                "tsrDuration": "Загальна тривалість: ",
+                "tsrDistance": "Загальна відстань: ",
+                "errors": {
+                    "wrongFileType": "Неправильний формат файлу. Будь ласка, завантажте CSV-файл.",
+                    "errorNoEntries": "У CSV немає записів",
+                    "errorToManyEntriesInFile": "Перевищено максимальну кількість точок TSR ({{limit}}).",
+                    "wrongNEntriesInRow": "Неправильна кількість атрибутів у рядку {{row}}. Перевірте формат даних (ID;lon;lat) і роздільник (крапка з комою).",
+                    "rowContainsEntriesNoNumber": "Координати в рядку {{row}} не містять чисел.",
+                    "emptyRow": "Файл містить щонайменше один порожній рядок.",
+                    "emptyEntriesInRow": "Відсутні дані в рядку {{row}}. Перевірте дані та роздільник (крапка з комою).",
+                    "invalidCoordinateRange": "Координати мають недійсні значення в рядку {{row}}. Допустимі значення: -180 – 180 (довгота) та -90 – 90 (широта).",
+                    "attributeTooLong": "Атрибути в рядку {{row}} містять більше ніж 25 символів.",
+                    "errorCalculation": "Не вдалося запустити обчислення.",
+                    "notEnoughPoints": "Будь ласка, вкажіть початкову точку та щонайменше ще дві точки.",
+                    "emptyPoint": "Щонайменше одна точка порожня. Перевірте точки у списку.",
+                    "duplicatePoints": "Завантажені проміжні точки тепер доступні вам у списку. Дублікати було проігноровано.",
+                    "unreachablePoint": "На жаль, для щонайменше однієї з вибраних точок не вдалося обчислити маршрут."
+                }
+            },
+            "waypoint": "Проміжна точка"
+        },
+        "scaleSwitcher": {
+            "description": "Змініть масштаб без прокручування",
+            "label": "Масштаб",
+            "name": "Перемкнути масштаб"
+        },
+        "searchBar": {
+            "locationFinder": {
+                "errorMsg": "Пошук через LocationFinder не вдався",
+                "serverError": "Помилка під час серверної обробки запиту",
+                "unknownProjection": "Результати в невідомій системі координат"
+            },
+            "placeholder": {
+                "searchFor": "Пошук",
+                "address": "Пошук за адресою",
+                "addressDistrict": "Пошук адреси, район",
+                "addressHospitalBplan": "Пошук адреси/лікарні/B-плану",
+                "addressTopic": "Пошук адреси, район, тема",
+                "addressOrTopic": "Пошук адрес або тем",
+                "addressTopicParcel": "Пошук адреси, район, тема, земельна ділянка",
+                "startWithAddress": "Почніть тут з адреси!"
+            },
+            "showAllResults": "показати всі результати",
+            "searchResults": "Результати пошуку",
+            "search": "Пошук",
+            "searchResultList": "Огляд результатів",
+            "searchResultsFrom": "Результати пошуку від: ",
+            "mark": "Вибрати тему",
+            "add": "Додати тему",
+            "type": {
+                "address": "Адреса",
+                "county": "Округ",
+                "district": "Район",
+                "folder": "Папка (тематичні дані)",
+                "general": "Тематичні дані",
+                "location": "Місце",
+                "parcel": "Земельна ділянка",
+                "street": "Вулиця",
+                "subject": "Тема",
+                "topic": "Тема (тематичні дані)",
+                "topicBaselayer": "Тема (фонові карти)"
+            },
+            "specialWFS": {
+                "ongoing": "у процесі",
+                "terminated": "затверджено",
+                "hazardous": "підприємство підвищеної небезпеки",
+                "childcare": "дитсадок",
+                "bplan": "B-план"
+            },
+            "actions": {
+                "activateLayerInTopicTree": "Показати шар у дереві тем",
+                "addLayerToTopicTree": "Додати шар до дерева тем",
+                "highlightFeature": "Підсвітити об’єкт",
+                "openGetFeatureInfo": "Показати інформацію",
+                "setMarker": "Встановити маркер",
+                "zoomToResult": "Наблизити до результату",
+                "startRouting": "Почати маршрут",
+                "showInTree": "Показати тему в папці",
+                "showLayerInfo": "Інформація та легенда"
+            },
+            "noInitialResults": "Початковий пошук не дав результатів.",
+            "showAll": "Показати все",
+            "layerResultNotShown": "Знайдений шар неможливо відобразити.",
+            "layerInfoNotShown": "Інформацію про шар неможливо відобразити."
+        },
+        "selectFeatures": {
+            "description": "Отримайте інформацію про об’єкти, які ви вибираєте на карті",
+            "name": "Вибір об’єктів",
+            "noFeatureChosen": "Об’єкти не вибрано. Виберіть об’єкти, утримуючи клавішу Ctrl і протягнувши рамку навколо потрібних об’єктів, або додайте окремі об’єкти, утримуючи Ctrl та клацнувши лівою кнопкою миші.",
+            "propertylessFeature": "Елемент без атрибутів",
+            "clearSelection": "Скасувати весь вибір",
+            "deselectFeature": "Зняти вибір з об’єкта",
+            "zoomToFeature": "Наблизити до цього об’єкта"
+        },
+        "statisticDashboard": {
+            "name": "Статистична панель",
+            "description": "Фільтруйте статистику за тематичними полями та переглядайте відповідні таблиці й діаграми.",
+            "headings": {
+                "mrhstatistics": "Цифри, дані та факти регіональної статистики MRH",
+                "mrhstatisticsTooltip": "Посилання на метадані",
+                "addFilter": "Додати фільтр",
+                "filter": "Фільтр",
+                "addStatisticalData": "Вибрати статистичні дані",
+                "addArea": "Вибрати території",
+                "addTime": "Вибрати період"
+            },
+            "infoText": "Примітка: за великої кількості територій спочатку на діаграмі відображається лише їх частина. За допомогою нижнього поля можна додати інші території.",
+            "infoTextNoData": "Ще не додано жодного або не всі необхідні фільтри. Щоб відобразити статистичні дані в таблицях і діаграмах, спочатку потрібно відфільтрувати дані.",
+            "button": {
+                "difference": "Різниця",
+                "table": "Таблиця",
+                "chart": "Діаграма",
+                "add": "Додати фільтр",
+                "edit": "Змінити фільтр",
+                "arrowLeft": "Гортати ліворуч",
+                "arrowRight": "Гортати праворуч",
+                "reset": "Видалити всі",
+                "filter": "Фільтр",
+                "showMore": "показати більше...",
+                "showLess": "показати менше...",
+                "done": "Готово",
+                "all": "Усі",
+                "statistics": "Статистика",
+                "geographical": "Географічні фільтри",
+                "timeBased": "Часові фільтри"
+            },
+            "label": {
+                "category": "Категорія",
+                "area": "Територія",
+                "year": "Рік",
+                "statistics": "Статистика",
+                "communities": "Громади",
+                "districts": "Округи",
+                "more": "більше",
+                "time": "Часові фільтри",
+                "geographical": "Географічні фільтри"
+            },
+            "filterInputs": {
+                "additional": "Інше"
+            },
+            "reference": {
+                "title": "Режим різниці",
+                "optionDate": "Який рік використати як еталонний?",
+                "optionArea": "Яку територію використати як еталонну?",
+                "description": "Відображати значення різниці відносно еталонного року або території",
+                "placeholder": "Будь ласка, виберіть щонайменше одну опцію!",
+                "tagLabel": "Еталон",
+                "year": "Еталонний рік {{value}}",
+                "region": "Еталонна територія {{value}}",
+                "difference": "Різниця"
+            },
+            "legend": {
+                "under": "нижче",
+                "between": "від {{minimum}} до менше {{maximum}}",
+                "from": "Від",
+                "nodata": "Візуалізація даних кількох статистик на карті недоступна.",
+                "legend": "Легенда карти",
+                "edit": "Редагувати",
+                "editClassification": "Редагувати класифікацію",
+                "classification": "Класифікація",
+                "numberOfClasses": "Кількість класів",
+                "colorPalette": "Палітра кольорів",
+                "betweenValues": "до менше",
+                "opacity": "Прозорість",
+                "reset": "Скинути",
+                "range": "Діапазон",
+                "color": "Колір",
+                "equalIntervals": "рівні інтервали",
+                "quantile": "рівні розміри класів (квантилі)",
+                "customized": "налаштовано користувачем",
+                "andAbove": "і вище",
+                "invalidCustomStepsAlert": "Увага: вибрані межі діапазонів не утворюють зростаючої числової послідовності!",
+                "noValue": "Території з відсутніми значеннями зафарбовано білим",
+                "previewLegend": "Попередній перегляд класифікації"
+            },
+            "totalHint": "Увага: функція підсумовування не розрізняє абсолютні значення, відсотки, середні або відносні величини (наприклад, мешканці на квадратний метр). Тому підсумки не завжди є інтерпретованими. Будь ласка, враховуйте контекст вибраної статистики. Відсутні значення не враховуються під час обчислення.",
+            "filterHint": "Щоб відобразити результати фільтрації, усі поля мають бути повністю заповнені.",
+            "backToOverview": "Огляд діаграм",
+            "backToStatisticDashboard": "Повернутися до огляду"
+        },
+        "shadow": {
+            "name": "Тінь",
+            "description": "Показуйте тіні на карті в різні моменти часу",
+            "pickDate": "Виберіть дату:",
+            "shadowDisplayOff": "Приховати тіні на карті",
+            "shadowDisplayOn": "Показати тіні на карті",
+            "slideHour": "Виберіть час:",
+            "withInfoLabel": "З інформацією"
+        },
+        "shareView": {
+            "copyErrorAlert": "Не вдалося скопіювати <b><a href=\"{{url}}\" target=\"_blank\">URL поточного вигляду</a></b> до буфера обміну. Ця функція доступна лише на захищених вебсайтах, що використовують протокол HTTPS (https://).<br><br>Будь ласка, зверніться до оператора порталу з проханням налаштувати захищене з’єднання.",
+            "description": "Поділіться посиланням на карту",
+            "downloadQR": "Завантажити QR-код",
+            "myMap": "Ось мій фрагмент карти: ",
+            "name": "Поділитися вибором",
+            "share": "Поділитися",
+            "shareFacebook": "Поділитися поточним виглядом у Facebook",
+            "shareHeadline": "Як ви хочете поділитися посиланням?",
+            "shareLink": "Скопіювати поточний вигляд як посилання",
+            "shareQR": "Створити QR-код поточного вигляду",
+            "shareTwitter": "Twitter",
+            "linkCopied": "Посилання скопійовано до буфера обміну.",
+            "qrError": "Під час створення QR-коду сталася помилка.",
+            "qrErrorDataTooLarge": "Дані, якими ви хочете поділитися, занадто великі. Будь ласка, зменште кількість опцій на карті, щоб скоротити обсяг даних."
+        },
+        "styleVT": {
+            "chooseTheme": "Будь ласка, виберіть активну тему",
+            "description": "Змініть вигляд шару типу VectorTile",
+            "introText": "До шарів VectorTile можна застосувати різні попередньо визначені стилі для оптимізації відображення відповідно до цілей використання.",
+            "name": "Стилі для шарів Vector Tile",
+            "noStyleableLayers": "Наразі немає доступних тем, до яких можна застосувати цей інструмент.",
+            "style": "Стиль",
+            "theme": "Тема"
+        },
+        "wfsSearch": {
+            "description": "Шукайте об’єкти в темі",
+            "description_parcel": "Пошук земельної ділянки",
+            "district": "Кадастровий округ",
+            "fieldSelectionLabel": "Вибір поля",
+            "instancesSelectLabel": "Вибір інстанції",
+            "name": "Пошук WFS",
+            "noResults": "За вашими критеріями пошуку результатів не знайдено. Будь ласка, спробуйте ще раз.",
+            "optionsPlaceholder": "Будь ласка, виберіть опцію!",
+            "parcelNumber": "Номер земельної ділянки",
+            "parcelSearch": "Пошук земельної ділянки",
+            "resetButton": "Скинути",
+            "searchButton": "Пошук",
+            "searchError": "Помилка під час пошуку об’єкта: {{error}}.",
+            "showResultHeading": "Результати пошуку:",
+            "userHelp": {
+                "and": "та",
+                "label": "Інформація щодо результатів пошуку",
+                "or": "або",
+                "text": "Результати пошуку відповідатимуть умовам / правилам {{userHelp}}. <br /> *Обов’язкове поле"
+            },
+            "wrongConfig": "Шар з ідентифікатором \"{{id}}\" пошукової інстанції \"{{title}}\" не визначений."
+        },
+        "wfst": {
+            "deleteInteraction": {
+                "headline": "Увага",
+                "text": "Ви впевнені, що хочете видалити цю геометрію?"
+            },
+            "description": "Створюйте, оновлюйте та видаляйте об’єкти",
+            "descriptionNeueInfo": "Ввести нову інформацію",
+            "error": {
+                "allLayersNotSelected": "Активуйте налаштований шар WFS-T у дереві тем",
+                "geometryOutOfRange": "Намальована геометрія знаходиться поза дозволеною областю шару.",
+                "layerNotConfiguredCorrectly": "Виявлено проблеми з конфігурацією вибраного шару для використання з цим інструментом; можливо, відсутній параметр 'featurePrefix'.",
+                "layerNotSelected": "Вибраний шар ще не активовано в дереві тем.",
+                "noFeature": "Будь ласка, намалюйте геометрію, пов’язану з вашими записами.",
+                "onlyNumbersAllowed": "Поле введення дозволяє лише числа.",
+                "requiredPropertiesNotSet": "Будь ласка, введіть коректне значення для обов’язкових полів {{properties}}.",
+                "fetchFeaturePropError": "Завантаження параметрів триває довше, ніж зазвичай. Будь ласка, спробуйте ще раз."
+            },
+            "mandatoryInputError": {
+                "text": "Потрібні звичайні текстові символи та спеціальні символи, такі як , . / \\ [ ] пробіли та німецькі літери ö ä ü Ö Ä Ü ß, а не лише числа.",
+                "number": "Потрібне число, дробове або від’ємне число.",
+                "date": "Потрібна повна дата.",
+                "datetime-local": "Потрібні повні дата та час."
+            },
+            "form": {
+                "discard": "Скасувати",
+                "save": "Зберегти"
+            },
+            "interactionSelect": {
+                "delete": "Видалити геометрію",
+                "line": "Створити лінію",
+                "point": "Створити точку",
+                "polygon": "Створити полігон",
+                "update": "Редагувати",
+                "multiUpdate": "Редагувати",
+                "multiPolygon": "Створити мультиполігон"
+            },
+            "multiUpdate": {
+                "oneSelected": "Об’єкт вибрано:",
+                "multipleSelected": "Об’єкти вибрано:",
+                "noItemsSelected": "Жодного об’єкта не вибрано",
+                "warningText": "Увага! Наявні записи тут можуть не відображатися! Під час збереження нових записів вони будуть перезаписані без попередження.",
+                "buttonIcon": {
+                    "active": {
+                        "pen": "Вимкнути ласо-вибір",
+                        "box": "Вимкнути прямокутний вибір"
+                    },
+                    "notActive": {
+                        "pen": "Увімкнути ласо-вибір",
+                        "box": "Увімкнути прямокутний вибір"
+                    }
+                }
+            },
+            "confirmVoidFeatureCreation": {
+                "textContent": "Бажаєте створити мультиполігон з порожниною (donut-полігон)?",
+                "headline": "Створення полігона з порожниною"
+            },
+            "layerSelectLabel": "Поточний шар:",
+            "name": "Інструмент WFS-T",
+            "polygonHint": "Утримуйте клавішу Ctrl і переміщуйте мишу з натиснутою кнопкою, щоб перемістити полігон.",
+            "fieldRequired": "Обов’язкове поле",
+            "transaction": {
+                "error": {
+                    "axios": "На жаль, збереження або видалення геометрії та її параметрів не вдалося. Будь ласка, зверніться до адміністратора.",
+                    "InvalidParameterValue": "Збереження геометрії та її параметрів не вдалося. Один із введених параметрів недійсний або має неправильний формат.",
+                    "MissingParameterValue": "Збереження геометрії та її параметрів не вдалося. Один або кілька параметрів не мають значень, а сервіс не має значень за замовчуванням.",
+                    "OperationNotSupported": "Збереження геометрії та її параметрів не вдалося. Сервіс не підтримує виконану операцію.",
+                    "OperationParsingFailed": "Збереження геометрії та її параметрів не вдалося. Сервіс не зміг обробити транзакцію. Будь ласка, зверніться до адміністратора.",
+                    "OperationProcessingFailed": "Збереження геометрії та її параметрів не вдалося. Під час транзакції сталася помилка."
+                },
+                "success": {
+                    "baseSuccess": "{{transaction}} виконано успішно.",
+                    "delete": "Видалення",
+                    "insert": "Збереження",
+                    "selectedUpdate": "Редагування",
+                    "batchInfo": "Наступні записи шару {{layer}} були збережені:</br>"
+                }
+            }
+        },
+        "wmsTime": {
+            "layer": {
+                "errorTimeLayer": "Сталася помилка при підготовці шару з ідентифікатором {{id}}: {{error}}"
+            },
+            "layerSwiper": {
+                "description": "Свайпер можна переміщати за допомогою миші або клавіш зі стрілками на клавіатурі. Під час використання стрілок свайпер переміщується на {{amount}} px у відповідному напрямку.",
+                "title": "Порівняти шари"
+            },
+            "timeSlider": {
+                "buttons": {
+                    "backward": "На один момент назад",
+                    "deactivateLayerSwiper": "Видалити шар",
+                    "forward": "На один момент вперед",
+                    "layerSwiper": "Порівняти моменти часу",
+                    "play": "Автоматично відтворити всі моменти часу, починаючи з поточно вибраного"
+                },
+                "inputRangeLabel": "Вибрати момент часу"
+            }
+        },
+        "pagination": {
+            "aria": {
+                "previous": "Попередня сторінка",
+                "next": "Наступна сторінка",
+                "go": "Перейти на сторінку"
+            },
+            "input": {
+                "label": "Сторінка",
+                "placeholder": "Сторінка",
+                "tooltip": "Введіть номер сторінки та натисніть Enter або клацніть стрілку, щоб перейти на цю сторінку"
+            },
+            "button": {
+                "goTooltip": "Перейти на введену сторінку"
+            }
         }
-      },
-      "graphicalSelect": {
-        "alert": {
-          "notSupportedElement": "Елемент шаблону графічного вибору не підтримується! Доступні:",
-          "notSupportedOption": "Графічний вибір містить непідтримувані елементи! Доступні:",
-          "notSupportedSelection": "SelectedOption графічного вибору не підтримується! Доступні:"
+    },
+    "shared": {
+        "js": {
+            "api": {
+                "cswParser": {
+                    "annually": "щорічно",
+                    "asNeeded": "за потреби",
+                    "biannually": "двічі на рік",
+                    "continual": "безперервно",
+                    "daily": "щоденно",
+                    "fortnightly": "раз на два тижні",
+                    "irregular": "нерегулярні інтервали",
+                    "monthly": "щомісяця",
+                    "notPlanned": "не заплановано",
+                    "quarterly": "щоквартально",
+                    "unknown": "невідомо",
+                    "weekly": "щотижня"
+                }
+            },
+            "utils": {
+                "buildings": "Будівлі",
+                "selectedFeatures": "Вибір:"
+            }
         },
-        "displayName": "Вибрати геометрію",
-        "selectByCircle": "Намалювати коло",
-        "selectByPolygon": "Намалювати площу",
-        "selectBySquare": "Намалювати прямокутник",
-        "selectByLine": "Намалювати лінію",
-        "bufferDistance": "Буферна відстань (метри): ",
-        "tooltipMessage": "Клацніть, щоб почати та завершити",
-        "tooltipMessagePolygon": "Клацніть, щоб додати опорну точку"
-      },
-      "inputs": {
-        "fileUpload": {
-          "browse": "Вибрати файл",
-          "dropzone": "Перетягніть файл сюди",
-          "or": "або "
+        "modules": {
+            "buttons": {
+                "download": "Завантажити",
+                "error": {
+                    "download": "Під час завантаження запитаних даних сталася помилка."
+                }
+            },
+            "draw": {
+                "drawEdit": {
+                    "delete": "Видалити геометрію / текст",
+                    "deleteAll": "Видалити все",
+                    "modify": "Редагувати геометрію / текст",
+                    "redo": "Повторити",
+                    "undo": "Скасувати"
+                },
+                "drawLayout": {
+                    "fillColor": "Колір заповнення",
+                    "fillTransparency": "Прозорість",
+                    "innerCircle": "Внутрішнє коло:",
+                    "outerCircle": "Зовнішнє коло:",
+                    "strokeColor": "Колір обводу",
+                    "strokeWidth": "Товщина лінії",
+                    "extrudedHeight": "Екструдована висота"
+                },
+                "drawSettingsCircle": {
+                    "interactive": "Інтерактивно",
+                    "radii": {
+                        "innerRadius": "Внутрішній радіус",
+                        "outerRadius": "Зовнішній радіус",
+                        "radius": "Радіус"
+                    },
+                    "settings": {
+                        "circle": "Налаштування кола:",
+                        "doubleCircle": "Налаштування подвійного кола:"
+                    },
+                    "unit": "Одиниця"
+                },
+                "drawTypes": {
+                    "box": "Бокс",
+                    "circle": "Коло",
+                    "doubleCircle": "Подвійне коло",
+                    "geometries": "Геометрії",
+                    "line": "Лінія",
+                    "pen": "Перо",
+                    "point": "Точка",
+                    "polygon": "Площа",
+                    "rectangle": "Прямокутник",
+                    "symbols": "Символи"
+                }
+            },
+            "graphicalSelect": {
+                "alert": {
+                    "notSupportedElement": "Елемент шаблону графічного вибору не підтримується! Доступні:",
+                    "notSupportedOption": "Графічний вибір містить непідтримувані елементи! Доступні:",
+                    "notSupportedSelection": "SelectedOption графічного вибору не підтримується! Доступні:"
+                },
+                "displayName": "Вибрати геометрію",
+                "selectByCircle": "Намалювати коло",
+                "selectByPolygon": "Намалювати площу",
+                "selectBySquare": "Намалювати прямокутник",
+                "selectByLine": "Намалювати лінію",
+                "bufferDistance": "Буферна відстань (метри): ",
+                "tooltipMessage": "Клацніть, щоб почати та завершити",
+                "tooltipMessagePolygon": "Клацніть, щоб додати опорну точку"
+            },
+            "inputs": {
+                "fileUpload": {
+                    "browse": "Вибрати файл",
+                    "dropzone": "Перетягніть файл сюди",
+                    "or": "або "
+                }
+            },
+            "list": {
+                "pagination": "Сторінка результатів",
+                "replace": {
+                    "no": "ні",
+                    "true": "так"
+                },
+                "selection": "Вибір рядка",
+                "zoomToResult": "Наблизити до результату",
+                "zoomToResults": "Наблизити до вибору"
+            },
+            "table": {
+                "fixColumnAriaLabel": "Клацніть тут, щоб зафіксувати цей стовпець",
+                "download": "Завантажити",
+                "reset": "Скинути таблицю",
+                "settings": "Налаштувати таблицю",
+                "total": "Разом",
+                "totalTitle": "Обчислити загальну кількість кожного списку",
+                "fullscreenViewToolTip": "Перейти до розширеного вигляду таблиці",
+                "fullscreenViewActiveToolTip": "Повернутися до компактного вигляду таблиці",
+                "settingsTooltip": "Фільтрувати вміст таблиці",
+                "resetToolTip": "Скинути фільтри таблиці",
+                "fullscreenView": "Повноекранний режим",
+                "fullscreenViewActive": "Компактний режим"
+            }
         }
-      },
-      "list": {
-        "pagination": "Сторінка результатів",
-        "replace": {
-          "no": "ні",
-          "true": "так"
-        },
-        "selection": "Вибір рядка",
-        "zoomToResult": "Наблизити до результату",
-        "zoomToResults": "Наблизити до вибору"
-      },
-      "table": {
-        "fixColumnAriaLabel": "Клацніть тут, щоб зафіксувати цей стовпець",
-        "download": "Завантажити",
-        "reset": "Скинути таблицю",
-        "settings": "Налаштувати таблицю",
-        "total": "Разом",
-        "totalTitle": "Обчислити загальну кількість кожного списку",
-        "fullscreenViewToolTip": "Перейти до розширеного вигляду таблиці",
-        "fullscreenViewActiveToolTip": "Повернутися до компактного вигляду таблиці",
-        "settingsTooltip": "Фільтрувати вміст таблиці",
-        "resetToolTip": "Скинути фільтри таблиці",
-        "fullscreenView": "Повноекранний режим",
-        "fullscreenViewActive": "Компактний режим"
-      }
+    },
+    "aria": {
+        "sliderAria": "Повзунок для "
+    },
+    "libraries": {
+        "vue-datepicker-next": {
+            "lang": {
+                "formatLocale": {
+                    "months": [
+                        "Січень",
+                        "Лютий",
+                        "Березень",
+                        "Квітень",
+                        "Травень",
+                        "Червень",
+                        "Липень",
+                        "Серпень",
+                        "Вересень",
+                        "Жовтень",
+                        "Листопад",
+                        "Грудень"
+                    ],
+                    "monthsShort": [
+                        "Січ",
+                        "Лют",
+                        "Бер",
+                        "Кві",
+                        "Тра",
+                        "Чер",
+                        "Лип",
+                        "Сер",
+                        "Вер",
+                        "Жов",
+                        "Лис",
+                        "Гру"
+                    ],
+                    "weekdays": [
+                        "Неділя",
+                        "Понеділок",
+                        "Вівторок",
+                        "Середа",
+                        "Четвер",
+                        "Пʼятниця",
+                        "Субота"
+                    ],
+                    "weekdaysShort": [
+                        "Нд",
+                        "Пн",
+                        "Вт",
+                        "Ср",
+                        "Чт",
+                        "Пт",
+                        "Сб"
+                    ],
+                    "weekdaysMin": [
+                        "Нд",
+                        "Пн",
+                        "Вт",
+                        "Ср",
+                        "Чт",
+                        "Пт",
+                        "Сб"
+                    ],
+                    "firstDayOfWeek": 1,
+                    "firstWeekContainsDate": 4
+                }
+            }
+        }
     }
-  },
-  "aria": {
-    "sliderAria": "Повзунок для "
-  },
-  "libraries": {
-    "vue-datepicker-next": {
-      "lang": {
-        "formatLocale": {
-          "months": [
-            "Січень",
-            "Лютий",
-            "Березень",
-            "Квітень",
-            "Травень",
-            "Червень",
-            "Липень",
-            "Серпень",
-            "Вересень",
-            "Жовтень",
-            "Листопад",
-            "Грудень"
-          ],
-          "monthsShort": [
-            "Січ",
-            "Лют",
-            "Бер",
-            "Кві",
-            "Тра",
-            "Чер",
-            "Лип",
-            "Сер",
-            "Вер",
-            "Жов",
-            "Лис",
-            "Гру"
-          ],
-          "weekdays": [
-            "Неділя",
-            "Понеділок",
-            "Вівторок",
-            "Середа",
-            "Четвер",
-            "Пʼятниця",
-            "Субота"
-          ],
-          "weekdaysShort": [
-            "Нд",
-            "Пн",
-            "Вт",
-            "Ср",
-            "Чт",
-            "Пт",
-            "Сб"
-          ],
-          "weekdaysMin": [
-            "Нд",
-            "Пн",
-            "Вт",
-            "Ср",
-            "Чт",
-            "Пт",
-            "Сб"
-          ],
-          "firstDayOfWeek": 1,
-          "firstWeekContainsDate": 4
-        }
-      }
-    }
-  }
 }

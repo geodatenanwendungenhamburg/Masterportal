@@ -4,18 +4,17 @@
 // Essential when using Webpack aliases in non-TypeScript (JavaScript) projects.
 {
     "compilerOptions": {
-      "baseUrl": ".",
-      "paths": {
-        "@appstore/*": ["src/app-store/*"],
-        "@appstore": ["src/app-store/index.js"],
-        "@shared/*": ["src/shared/*"],
-        "@core/*": ["src/core/*"],
-        "@modules/*": ["src/modules/*"],
-        "@plugins/*": ["src/plugins/*"],
-        "@devtools/*": ["devtools/*"],
-        "@masterportal/masterportalapi/*": ["node_modules/@masterportal/masterportalapi/*"]
-      }
+        "baseUrl": ".",
+        "paths": {
+            "@appstore/*": ["src/app-store/*"],
+            "@appstore": ["src/app-store/index.js"],
+            "@shared/*": ["src/shared/*"],
+            "@core/*": ["src/core/*"],
+            "@modules/*": ["src/modules/*"],
+            "@plugins/*": ["src/plugins/*"],
+            "@devtools/*": ["devtools/*"],
+            "@masterportal/masterportalapi/*": ["node_modules/@masterportal/masterportalapi/*"]
+        }
     },
     "exclude": ["node_modules", "dist"]
-  }
-  
+}

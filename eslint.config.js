@@ -5,7 +5,8 @@ const js = require("@eslint/js"),
     pluginMocha = require("eslint-plugin-mocha"),
     globals = require("globals"),
     stylisticJs = require("@stylistic/eslint-plugin-js"),
-    nodePlugin = require("eslint-plugin-n");
+    nodePlugin = require("eslint-plugin-n"),
+    jsonc = require("eslint-plugin-jsonc");
 
 module.exports = [
     js.configs.recommended,
@@ -35,6 +36,7 @@ module.exports = [
             "vuejs-accessibility": pluginVuejsAccessibility,
             "@stylistic/js": stylisticJs
         },
+        ignores: ["**/*.json"],
         rules: {
             // Possible Problems - These rules relate to possible logic errors in code:
             "array-callback-return": "error",
@@ -339,6 +341,43 @@ module.exports = [
         rules: {
             "no-restricted-syntax": "off"
         }
+    },
+    {
+        files: ["**/*.json"],
+        rules: {
+            "jsonc/indent": "error",
+            "jsonc/object-curly-newline": "error",
+            "jsonc/quotes": "error",
+            "jsonc/key-spacing": "error",
+            "jsonc/object-curly-spacing": "error",
+            "@/no-trailing-spaces": "error"
+            // "custom/no-trailing-whitespace-in-values": "error"
+        },
+        plugins: {
+            jsonc,
+            custom: {
+                rules: {
+                    "no-trailing-whitespace-in-values": {
+                        create (context) {
+                            return {
+                                JSONLiteral (node) {
+                                    if (typeof node.value === "string" && (/\s$/).test(node.value)) {
+                                        context.report({
+                                            node,
+                                            message: "String values should not have trailing whitespace."
+                                        });
+                                    }
+                                }
+                            };
+                        }
+                    }
+                }
+            }
+        },
+        languageOptions: {
+            parser: require("jsonc-eslint-parser") // Correctly reference the JSONC parser
+        }
+
     },
     {
         ignores: [

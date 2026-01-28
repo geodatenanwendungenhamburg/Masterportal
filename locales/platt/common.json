@@ -1,1717 +1,1717 @@
 {
-"app-store": {
-  "loadServicesJsonFailed": "<strong>De Datei {{layerConf}} kunn nich laadt warrn!</strong>",
-  "loadStylev3JsonFailed": "<strong>De Datei {{style_v3}} kunn nich laadt warrn!</strong></br>Bitte prööv de Konfiguration 'styleConf' in de Datei config.js."
-},
-  "core": {
-    "layers": {
-      "errorHandling": {
-        "getGeometryTypeFromWFSFetchfailed": "De Legende kunn in de Layer-Informatschonen nich opstellt warrn!",
-        "getGeometryTypeFromWFSFetchfailedMessage": "Details: Een nödig Deenst geevt keen Antwoord.",
-        "getGeometryTypeFromOAFFetchfailed": "De Legende kunn in de Layer-Informatschonen nich opstellt warrn!",
-        "getGeometryTypeFromOAFFetchfailedMessage": "Details: De API geevt keen Antwoord.",
-        "LinkMetadata": "Kontaktdaten un mehr Informatschonen finnst du <a href={{linkMetadata}} target=\"_blank\">hier</a>.",
-        "wrongStyleId": "För de angeven StyleId: {{styleId}} kunn keen Style-Objekt funnen warrn. Bidde pass op, dat in de bruukte Style.json een Style mit de StyleId: {{styleId}} instellt is.",
-        "wrongLayerId": "Layer mit de ID: {{layerId}} is nich funnen worrn. Bidde överprööv de ID.",
-        "403": "<strong>Togriep op {{layerName}} nich mööglich!</strong></br>Du hest leider keen Beriechtigung, de Daten vun {{layerName}} to sehn. Dat Thema is automaatsch utschalt worrn.</br></br>Bidde wend di för een Togriepsberiechtigung an de tostännige Steed.</br></br>"
-      },
-      "urlParamWarning": "De parameterte Oproop is fehlerhaft. De Layer mit de ID: <b>{{layerId}}</b> gifft dat nich un warrt ignoreert."
+    "app-store": {
+        "loadServicesJsonFailed": "<strong>De Datei {{layerConf}} kunn nich laadt warrn!</strong>",
+        "loadStylev3JsonFailed": "<strong>De Datei {{style_v3}} kunn nich laadt warrn!</strong></br>Bitte prööv de Konfiguration 'styleConf' in de Datei config.js."
     },
-    "maps": {
-      "mapRegion": {
-        "twoFingerPanAlert": "Bidde bruuk för dat Navigeren un Zoom’n in de Koort twee Finger."
-      },
-      "featureViaURL": {
-        "messages": {
-          "featureParsing": "FeatureViaURL: Nich all övergeven Features kunn verarbeidt warrn.",
-          "featureParsingAll": "FeatureViaURL: All övergeven Features hebbt den verkehrten Datentyp. Bidde achte op de Dokmentatschoon.",
-          "featureParsingNoneAdded": "FeatureViaURL: All övergeven Features fehlt tominnst een Parameter. Dat sünd keen Features to de Koort toföögt worrn. Bidde achte op de Dokmentatschoon.",
-          "layerNotFound": "FeatureViaURL: Keen Layer mit de ID {{layerId}} funnen.",
-          "noNameDefined": "FeatureViaURL: För den Layer mit de ID {{layerId}} is keen Naam in de Konfiguratschoon fastleggt."
-        }
-      },
-      "highlightFeaturesByAttribute": {
-        "messages": {
-          "configurationError": "Konfiguratschoon fehlerhaft. Bidde de Konsolen-Utgaav pröven.",
-          "requestFailed": "De Datenafraag is fehlslaan."
-        }
-      }
-    }
-  },
-  "modules": {
-    "about": {
-      "additionalMetadata": "noch mehr Infos...",
-      "contact": "Anspreekpartner:",
-      "description": "Hier kannst wat över dit Portal rutfinnen",
-      "name": "Över dit Portal",
-      "noMetadataLoaded": "Keen Metadaten kunn laad warrn!",
-      "version": "Verschoon: ",
-      "ustId": "Umsatzsteuer-ID na § 27 Umsatzsteuergesetz:",
-      "imprintTitle": "Impressum",
-      "privacyStatementText": "Datenschutzerklärung un allgemeene Infos, woans de datenschutzrechtlichen Vörgaaben ut de Artikels 12 bet 14 vun de Datenschutz-Grundverordnung bi’n Landesbetrieb Geoinformation un Vermessung vun de Freien un Hansestadt Hamburg ümsett warrt:",
-      "privacyStatement": "Datenschutzerklärung",
-      "accessibilityText": "Erklärung to de Barrierefreiheit na § 11 Hamburgisches Gesetz to de Gleichstellung vun Minschen mit Behinnern (Hamburgisches Behindertengleichstellungsgesetz – HmbBGG) vun’n 19. Dezember 2019:",
-      "accessibilityStatement": "Barrierefreiheitserklärung",
-      "contactButton": "Kontakt opnehmen"
-    },
-    "addWMS": {
-      "alertTitleSuccess": "Layer mit Spood toföögt",
-      "alreadyAdded": "De Layer vun dat anfraagte WMS sünd al toföögt.",
-      "completeMessage": "De Layer vun dat anfraagte WMS sünd in’n Themenboom toföögt un köönt över <b>Themen tofögen</b> utsöcht warrn!",
-      "completeMessageShowInLayerTree": "&#9989; De Layer vun dat anfraagte WMS sünd in’n Themenboom toföögt!",
-      "description": "Föög en Web Map Service (WMS) to’n Themenboom to",
-      "errorHttpsMessage": " &#10060; Dat vun di anfraagte WMS löppt över en http-URL. Dat Masterportal kann bloots WMS över https (SSL) inbinden.",
-      "errorMessage": "&#10060; De angeevne Deenst kunn nich laad warrn. Bitte prööv, wat de URL richtig angeeven is.<br><br> Wenn dat Problem wiedder optreedt, wend di bitte an den Betreiber vun den Deenst mit dissen Hennwies op en faken Fehler: <br><strong>Dat mutt sekerstellt warrn, dat för den Deenst en CORS-Header sett is. Dat warrt vun de <a target='_blank' href='https://www.gdi-de.org/download/AK_Geodienste_Architektur_GDI-DE_Bereitstellung_Darstellungsdienste.pdf'>GDI-DE</a> in Kapittel 4.7.1 anraadt.</strong>",
-      "errorTitle": "Layer kunn nich toföögt warrn",
-      "ifInExtent": "&#10060; De över dat WMS levert Geodaten liggt buten dat darstellbore Rebeet. WMS tofögen is nich mööglich.",
-      "name": "WMS tofögen",
-      "placeholder": "Hier bitte de WMS-URL ingeven.",
-      "textLoadLayer": "Layer laden",
-      "examples": "Bispelen:"
-    },
-    "alerting": {
-      "alertWindowTitle": "Informatschonen",
-      "categories": {
-        "error": "Fehler",
-        "info": "Info",
-        "news": "Narichten",
-        "success": "Spood",
-        "warning": "Achtung"
-      },
-      "created": "Opstellt: ",
-      "hideMessage": "Disse Mellen nich wedder wiesen",
-      "showMessage": "Disse Mellen wiesen"
-    },
-    "aria": {
-      "sliderAria": "Schuuvregler för "
-    },
-    "button": {
-      "confirm": "Bestätigen",
-      "stop": "Afbreken"
-    },
-    "bufferAnalysis": {
-      "clearButton": "Torüchsetten",
-      "description": "Kiek, wat sik in’n Umkreis üm en Objekt befinnt",
-      "name": "Buffer-Analyse",
-      "notOverlapping": "buten de Radien",
-      "overlapping": "binnen de Radien",
-      "rangeLabel": "Radius (m)",
-      "resultTypeLabel": "Resultat-Typ",
-      "saveButton": "Link koperen",
-      "sourceLayerNotFound": "De spiekerte Quell-Layer mit de ID {{layerId}} wöör nich funnen.",
-      "sourceSelectLabel": "Quell-Layer",
-      "targetLayerNotFound": "De spiekerte Teel-Layer mit de ID {{layerId}} wöör nich funnen.",
-      "targetSelectLabel": "Teel-Layer"
-    },
-    "compareMaps": {
-      "description": "Twee Koorten naastenanner oder överenanner vergeliken",
-      "horizontal": "horizontal",
-      "leftLayer": "Linke Layer",
-      "lowerLayer": "Unnere Layer",
-      "name": "Koorten vergeliken",
-      "reset": "Torüchsetten",
-      "rightLayer": "Rechte Layer",
-      "sameLayerSelected": "De sülve Layer is tweemal utsöcht worrn. De Utsöök is torüchsett.",
-      "selectLeftLayerFirst": "Bitte eerst de linke Layer utsöken",
-      "selectUpperLayerFirst": "Bitte eerst de boven Layer utsöken",
-      "splitDirection": "Utrichten: ",
-      "upperLayer": "Boven Layer",
-      "vertical": "vertikal"
-    },
-    "contact": {
-      "addFileButton": "Anhang tofögen",
-      "description": "Stell Fragen to dit Portal oder mell Fehler",
-      "error": {
-        "mail": "Bitte en gellen E-Mail-Adress ingeven.",
-        "message": "Dat Sennen vun de E-Mail is fehlslaan!",
-        "messageInput": "Dien Naricht mutt tominnst {{length}} Tekens lang ween.",
-        "phone": "Ünner welk Telefoonnummer köönt wi di bereiken?",
-        "username": "Bitte segg uns dien Naam."
-      },
-      "errorIncompleteDeclarations": "Bitte füll all Felder vun dat Kontaktformular richtig ut, dormit dien Anfraag afschickt warrn kann.",
-      "fileFormatMessage": "De anhängte Datei hett nich dat richtige Format. Tolaaten sünd: .jpg, .jpeg, .png un .pdf",
-      "fileSizeMessage": "De anhängte Datei is grötter as de fastleggte Dateigrött: ",
-      "fileSizeSumMessage": "De anhängten Dateien sünd tosamen gröter as de maximal tolaatene Upload-Grött.",
-      "fileDuplicatedMessage": "Dat Tofögen is nich mööglich. Disse Datei is al toföögt: ",
-      "mailSubject": "Support-Anfraag to dat Portal ",
-      "messageLabel": "Dien Naricht",
-      "name": "Kontakt opnehmen",
-      "placeholder": {
-        "mail": "Dien E-Mail-Adress",
-        "message": "Bitte schrieff hier dien Fraag un drück op \"$t(common:modules.contact.sendButton)\".",
-        "phone": "Dien Telefoonnummer",
-        "username": "Dien Naam"
-      },
-      "privacyPolicy": {
-        "info": "Du büst dor mit inverstahn, dat dien Daten för de Bearbeiden vun dien Anliggen bruukt warrt. Mehr Infos un Henwiesen to’n Wedderruf finnst du in de <a href=\"{{privacyPolicyLink}}\" target=\"_blank\">Datenschutzerklärung</a>.",
-        "label": "Bitte de Datenschutzerklärung akzeptieren."
-      },
-      "removeAttachment": "Datei wegmaken",
-      "sendButton": "Kontakt opnehmen",
-      "successMessage": "Dien Anfraag is mit Spood afschickt worrn.",
-      "successTicket": "Dien Ticketnummer is: ",
-      "infoMessage": "Hest du Henwiesen, Fragen oder Problemen? Schrieff uns!"
-    },
-    "controls": {
-      "backForward": {
-        "stepBackward": "Leste Ansicht",
-        "stepForward": "Nächste Ansicht"
-      },
-      "button3d": {
-        "buttonTitle2d": "2D",
-        "buttonTitle3d": "3D"
-      },
-      "fullScreen": {
-        "enable": "Vullbild anmaken",
-        "disable": "Vullbild utmaken"
-      },
-      "freeze": {
-        "freeze": "Ansicht fastsetten",
-        "unfreeze": "Ansicht wedder freegeven"
-      },
-      "orientation": {
-        "distanceUnit": "Meter",
-        "geolocationDeniedText": "Lokaliseren nich mööglich",
-        "iFrameGeolocationError": "De Geolokaliseren binnen en Iframe is opstunns nich mööglich.<br/>Bitte maak dat <a href='#' target=`_blank`>Portal</a> in en niegen Tab oder Finster op.",
-        "imgAlt": "Bild för Point of Interest",
-        "poiChoiceCurrentPosition": "Standort",
-        "poiChoiceCustomPosition": "Adress söken oder Punkt in de Koort setten",
-        "poiChoiceClickPoint": "Punkt in de Koort setten",
-        "poiChoiceConfirmation": "OK",
-        "poiChoiceStop": "Beennen",
-        "poiChoiceTitle": "Utsgangspunkt för Umkreissöök utsöken:",
-        "titleGeolocate": "Standpunkt",
-        "titleGeolocatePOI": "In de Neeg (Luftlien)",
-        "trackingDeniedText": "'In de Neeg' nich verfögbor."
-      },
-      "rotation": {
-        "reset": "Dreihung torüchsetten",
-        "rotateClockwise": "Mit den Klockenwieser dreihen",
-        "rotateCounterClockwise": "Gegen den Klockenwieser dreihen",
-        "compass": {
-          "pointerNorth": "Ansicht dreihen",
-          "moveNorth": "Na Noorden bewegen",
-          "moveSouth": "Na Süden bewegen",
-          "moveWest": "Na Westen bewegen",
-          "moveEast": "Na Osten bewegen"
-        }
-      },
-      "tiltView": {
-        "downButton": "Ansicht na nerrn kippen",
-        "upButton": "Ansicht na baven kippen"
-      },
-      "totalView": {
-        "titleButton": "Torüch to de Startansicht"
-      },
-      "zoom": {
-        "zoomIn": "Hienzoomen",
-        "zoomOut": "Rutzoomen"
-      }
-    },
-    "compareFeatures": {
-      "title": "Vergliekslist",
-      "description": "Utwählte Objekte in de Tabell mit’nanner vergelieken.",
-      "topicsSelection": "Themen-Utwahl",
-      "removeFromList": "Vun de List rutnehmen",
-      "noFeatures": {
-        "nothingSelected": "Keen {{objects}} för de Vergliekslist utwählt.",
-        "objectName": "Objekte",
-        "info": "Klick op en Objekt in de Koort. Denn geiht en Finster mit de Sachinfos op. Baven rechts is en Steernsünnbool {{iconEmptyStar}}. Klick dor op, denn kummt dat Objekt in de Vergliekslist. De Steern warrt geel {{iconYellowStar}}. Klickst du nochmaal, flüggt dat Objekt wedder rut.",
-        "info2": "Soodra en Objekt in de Vergliekslist is, dukt dat in de Tabell op, so dat du dat mit anner Objekte vergelieken kannst. För rutnehmen klickst du eenfach op dat 'X' links in de Tabell."
-      },
-      "feedback": {
-        "added": "Dat Objekt is to de Vergliekslist toföögt worrn",
-        "addedWithName": "{{currentFeatureName}} is to de Vergliekslist toföögt worrn",
-        "notAdded": "Dat Objekt kunn nich to de Vergliekslist toföögt warrn",
-        "notAddedWithName": "{{currentFeatureName}} kunn nich to de Vergliekslist toföögt warrn",
-        "limitReached": "De maximale Tall an Objekte in de Vergliekslist is erreicht.",
-        "removeObjects": "Bidde eerst tominnst een Objekt rutnehmen, ehr du wiedermakst.",
-        "goToComparisonlist": "To de Vergliekslist"
-      },
-      "trueFalse": {
-        "true": "Jo",
-        "false": "Nee"
-      }
-    },
-    "coordToolkit": {
-      "cartesian": {
-        "eastingLabel": "Oostweert / Rechtsweert",
-        "northingLabel": "Noordweert / Hoochweert"
-      },
-      "coordSystemField": "Koordinatensysteem",
-      "coordsCopied": "De Koordinaten sünd in de Twüschenaflaag kopiert worrn.",
-      "coordsPair": "Koordinatenpoor",
-      "copyCoordBtn": " {{- value}} kopieren",
-      "copyCoordsBtn": "Koordinatenpoor kopieren",
-      "copyToClipboard": {
-        "contentSaved": "Inholt is in de Twüschenaflaag kopiert worrn.",
-        "contentNotSaved": "Inholt kunn nich in de Twüschenaflaag kopiert warrn."
-      },
-      "description": "Koordinaten ut de Koort holen oder na Koordinaten söken.",
-      "errorMsg": {
-        "example": "Bispill: ",
-        "hdmsNoCoord": "Bidde giff den Weert för {{valueKey}} komplett in.",
-        "hdmsNoMatch": "De Ingav för {{valueKey}} passt so nich richtig!",
-        "noCoord": "Bidde giff {{valueKey}} komplett in.",
-        "noMatch": "De Ingav för {{valueKey}} passt so nich richtig!"
-      },
-      "exampleAcronym": "Bsp. ",
-      "hdms": {
-        "eastingLabel": "Breed",
-        "northingLabel": "Läng"
-      },
-      "heightLabel": "Hööchd",
-      "hintSearch": "Giff de Koordinaten in, de du söchst",
-      "hintSupply": "Bidde in de Koort klicken.",
-      "influenceFactors": "De wiesten Weerten köönt afwiken, t.B. dör Maatschaal, Koortoplüüsung un Bildschirm.",
-      "info": "Informatschonen",
-      "name": "Koordinaten",
-      "noHeightBuilding": "Gebäudefläche, keen Hööchdaten",
-      "noHeightWater": "Waterfläche, keen Hööchdaten",
-      "postionCoordinates": "Lagekoordinaten",
-      "search": "Koordinaten söken",
-      "searchBtn": "Söken",
-      "supply": "Koordinaten / Hööch afragen",
-      "utm": {
-        "eastingLabel": "Oostweert",
-        "northingLabel": "Noordweert"
-      }
-    },
-    "copyrightConstraints": {
-      "name": "Bruukhinwiesen",
-      "info": "Bidde acht op de Bruukhinwiesen vun de bruukten Geodaten",
-      "notSpecified": "Keen Angav, giff di man an",
-      "contactOrganisation": "Organisatschoon",
-      "contactName": "Naam",
-      "contactPhone": "Tel.",
-      "contactEmail": "E-Mail",
-      "wait": "Een lütten Momang bidde"
-    },
-    "draw": {
-      "description": "Wichtige Markern maken oder Flächen kennteken",
-      "name": "Teken / Schrieven"
-    },
-    "draw_old": {
-      "attributeSelect": {
-        "attributeDuplicatedKeyError": "De Attribut-Slötel gifft dat al.",
-        "attributeKeyError": "Bidde en Slötel för dat Attribut angeven.",
-        "input": {
-          "key": "Attribut-Slötel",
-          "value": "Attribut-Weert",
-          "newKey": "Nieg Slötel",
-          "newValue": "Nieg Weert"
+    "core": {
+        "layers": {
+            "errorHandling": {
+                "getGeometryTypeFromWFSFetchfailed": "De Legende kunn in de Layer-Informatschonen nich opstellt warrn!",
+                "getGeometryTypeFromWFSFetchfailedMessage": "Details: Een nödig Deenst geevt keen Antwoord.",
+                "getGeometryTypeFromOAFFetchfailed": "De Legende kunn in de Layer-Informatschonen nich opstellt warrn!",
+                "getGeometryTypeFromOAFFetchfailedMessage": "Details: De API geevt keen Antwoord.",
+                "LinkMetadata": "Kontaktdaten un mehr Informatschonen finnst du <a href={{linkMetadata}} target=\"_blank\">hier</a>.",
+                "wrongStyleId": "För de angeven StyleId: {{styleId}} kunn keen Style-Objekt funnen warrn. Bidde pass op, dat in de bruukte Style.json een Style mit de StyleId: {{styleId}} instellt is.",
+                "wrongLayerId": "Layer mit de ID: {{layerId}} is nich funnen worrn. Bidde överprööv de ID.",
+                "403": "<strong>Togriep op {{layerName}} nich mööglich!</strong></br>Du hest leider keen Beriechtigung, de Daten vun {{layerName}} to sehn. Dat Thema is automaatsch utschalt worrn.</br></br>Bidde wend di för een Togriepsberiechtigung an de tostännige Steed.</br></br>"
+            },
+            "urlParamWarning": "De parameterte Oproop is fehlerhaft. De Layer mit de ID: <b>{{layerId}}</b> gifft dat nich un warrt ignoreert."
         },
-        "noFeatureSelected": "Opstunn is noch keen Feature utwählt. Bidde en Feature utsöken!",
-        "remove": "Wegmaken",
-        "save": "Spiekern"
-      },
-      "button": {
-        "delete": "Geometrie / Text wegmaken",
-        "deleteAll": "Allens wegmaken",
-        "download": "Rünnerladen",
-        "draw": "Geometrie / Text teken",
-        "edit": "Geometrie / Text bewerken",
-        "editAttributes": "Attribute bewerken",
-        "redo": "Wedderhalen",
-        "saveDrawing": "Teken spiekern",
-        "undo": "Torüchnehmen"
-      },
-      "clickToPlaceText": "Klick op de Koort, üm den Text to platzeren",
-      "color": "Füllklöör",
-      "colorContour": "Ümrissklöör",
-      "colors": {
-        "black": "Swatt",
-        "blue": "Blaag",
-        "green": "Gröön",
-        "grey": "Graa",
-        "orange": "Orange",
-        "red": "Root",
-        "white": "Witt",
-        "yellow": "Geel"
-      },
-      "defined": "defineert",
-      "description": "Wichtige Markern maken oder Flächen kennteken. Du kannst se hier rünnerladen, üm se later wedder to laden.",
-      "doubleCirclePlaceholder": "Bidde en Radius angeven",
-      "download": {
-        "allGeometryTypesNotSupported": "De tekenten Geometrien köönt in dat utsöchte Format nich rünnerladen warrn. Dat Format ünnerstütt den Geometrietyp Polygon nich.",
-        "enterFilename": "Bidde Dateinaam angeven",
-        "filename": "Dateinaam",
-        "format": "Format",
-        "notSupportedGeometryType": "Een oder mehr tekente Geometrien köönt in dat utsöchte Format nich rünnerladen warrn, wiel dat Format den Geometrietyp Polygon nich ünnerstütt. All Punkte un Linien köönt rünnerladen warrn.",
-        "pleaseChoose": "Bidde utsöken",
-        "unknownGeometry": "Nich bekannte Geometrie: <strong>{{geometry}}</strong>"
-      },
-      "drawLayerVisible": "Teken sichtbor",
-      "drawTypeOptions": {
-        "drawArea": "Fläche",
-        "drawSquare": "Quadraat",
-        "drawCircle": "Kreis",
-        "drawCurve": "Freehand-Linie",
-        "drawDoubleCircle": "Doppelkreis",
-        "drawLine": "Linien",
-        "drawSymbol": "Symbol",
-        "writeText": "Text"
-      },
-      "fontName": "Schriftort",
-      "fontSize": "Schriftgrööt",
-      "geometry": "Geometrie",
-      "geometryDrawFailed": "De övergevene Geometrie kunn nich dorstellt warrn.",
-      "iconList": {
-        "gelber Pin": "geeler Pin",
-        "iconCloud": "Wolke",
-        "iconLeaf": "Bladd",
-        "iconMeadow": "Wisch",
-        "iconPoint": "Punkt"
-      },
-      "innerColorContour": "Inner Ümrissklöör",
-      "innerRadius": "Inner Radius",
-      "interactive": "interaktiv",
-      "limitReached_one": "Du hest al {{count}} Objekt tekent. Bidde dat eerst wegmaken, ehr du wiedermakst!",
-      "limitReached_other": "Du hest al {{count}} Objekte tekent. Bidde eerst een wegmaken, ehr du wiedermakst!",
-      "lineWidth": "Strichstark",
-      "method": "Metood",
-      "name": "Teken / Schrieven",
-      "outerColorContour": "Buuter Ümrissklöör",
-      "outerRadius": "Buuter Radius",
-      "radius": "Radius",
-      "symbol": "Symbol",
-      "text": "Text",
-      "transparency": "Dörsichtigkeit",
-      "transparencyOutline": "Ümriss-Dörsichtigkeit",
-      "undefinedInnerCircle": "Bidde ok den innern Kreis defineern.",
-      "undefinedOuterCircle": "Bidde ok den butern Kreis defineern.",
-      "undefinedSquareArea": "Bidde den Flächeninhollt vun dat Quadraat angeven.",
-      "undefinedRadius": "Bidde en Radius angeven.",
-      "undefinedTwoCircles": "Bidde beed Kreise defineern.",
-      "unit": "Eenheit",
-      "squareDefinedInfo": " (ahn Berücksichtigung vun de Eerdkrümmung)",
-      "areaLabel": "Flächeninhollt",
-      "squareSideLengthLabel": "Siedenläng",
-      "lineLengthLabel": "Gesamtläng"
-    },
-    "featureLister": {
-      "chooseTheme": "Thema utsöken",
-      "continueButton": "Wieder to de List",
-      "details": "Details",
-      "detailsOfSelected": "Details vun dat utsöchte Feature",
-      "description": "All Indrääg to een Thema oplisten",
-      "key": "{{shownFeatures}} vun {{featureCount}} Features listet",
-      "list": "List",
-      "manualSelection": "Features vun Hand in de Koort utsöken",
-      "more": "Mehr…",
-      "name": "List",
-      "noFeaturesFound": "Keen Features in de Utwahl funnen.",
-      "noFeaturesFoundInMap": "Keen Features in dissen Koortutsnitt funnen.",
-      "requestFailedAlert": "De Afraag vun de Features is fehlslaan. Versöök dat later nochmaal.",
-      "spatialSelection": "Objekte räumlich filtern",
-      "visibleVectorLayers": "Sichtbore Vektorlayer"
-    },
-    "fileImport": {
-      "alertingMessages": {
-        "featureError": "Een Feature in disse Datei kunn nich leest warrn.",
-        "formatError": "De Datei \"{{filename}}\" kunn nich leest warrn. Bidde prööv, wat dat Format *.kml, *.gpx, *.geojson oder *.json is.",
-        "missingFileContent": "Fehler bi’m Leesen vun de Datei \"{{filename}}\". Bidde prööv Dateityp un Inholt. Is de Datei ok, wend di an den Support.",
-        "missingFormat": "Dat Dateiformat {{format}} warrt nich ünnerstütt. Bidde wend di an den Support.",
-        "success": "De Datei \"{{filename}}\" is mit Spood importeert worrn.",
-        "successPartly": "De Datei \"{{filename}}\" is deels importeert worrn."
-      },
-      "captions": {
-        "drawTool": "$t(common:modules.draw.name) opmaken",
-        "introDrawTool": "Importeerte Geometrien köönt later noch ännert warrn. Dor för dat Warktüüg \"$t(modules.draw.name)\" bruken.",
-        "introFormats": "Du kannst KML-Dateien (*.kml), GPX-Dateien (*.gpx) oder GeoJson-Dateien (*.geojson, *.json) importeren.",
-        "introInfo": "Treck de Datei eenfach rin (Drag & Drop) oder bruuk den Opmaak-Dialog vun den Browser.",
-        "supportedFiletypes": {
-          "auto": "Automatische Erkennung",
-          "geojson": "GeoJson-Datei (*.geojson, *.json)",
-          "gpx": "GPX-Datei (*.gpx)",
-          "kml": "KML-Datei (*.kml)"
-        }
-      },
-      "description": "Geodaten ut verschedene Dateiformaten importeren",
-      "fileZoom": "Op Features ut disse Datei \"{{filename}}\" zoomen",
-      "importFiles": "Utsöchte Dateien importeren",
-      "name": "Datei-Import",
-      "removeAttachment": "Datei wegmaken",
-      "successfullyImportedLabel": "Mit Spood importeert:",
-      "zoom": "Zoomen",
-      "colorPerAttributes": "Klöör na Attributen",
-      "stylingAttributeDescription": "Söök en Attribut ut, na dat de Layer stylt warrn schall.",
-      "stylingColorDescription": "Wenn du en Klöör utsöchst, warrt automaatsch en Klöörskala maakt. Bi nummerische Weerten vun hell na düster. De högste Weert kriggt de utsöchte Klöör. Bi qualitative Daten warrt verschedene Klöörtöön maakt."
-    },
-    "filter": {
-      "activeFilter": "Aktive Filter",
-      "alertingMessages": {
-        "noMatchingFilterId": "De instellte Filter-ID gifft dat nich."
-      },
-      "ariaLabel": {
-        "checkbox": "Checkbox för {{param}}",
-        "date": "Datum för {{param}}",
-        "dateRange": {
-          "from": "Startdatum vun {{param}}",
-          "to": "Ennddatum vun {{param}}"
-        },
-        "dropdown": "Utwahlbox för {{param}}",
-        "input": "Ingaav för {{param}}",
-        "radio": "Radio för {{param}}",
-        "slider": "Schuuvregler för {{param}}",
-        "sliderRange": {
-          "max": "Schuuvregler max för {{param}}",
-          "min": "Schuuvregler min för {{param}}"
-        },
-        "toolInfo": "Warktüüg-Informatschonen (Link in niegen Tab opmaken)"
-      },
-      "button": {
-        "confirm": "Bestätigen",
-        "stop": "Afbreken"
-      },
-      "chart": {
-        "speciesCadastreAlternativeText": "För disse Oort gifft dat opstunn noch keen oder nich noog aktuelle Beobachtungen."
-      },
-      "description": "Filtert de Objekte, de in de Koort wiest warrt",
-      "download": {
-        "enterFilename": "Bidde Dateinaam angeven",
-        "filename": "Dateinaam",
-        "format": "Format",
-        "label": "Filterte Daten rünnerladen",
-        "labelBtn": "Rünnerladen",
-        "pleaseChoose": "Bidde utsöken"
-      },
-      "dropdown": {
-        "deselectAll": "Allens afwählen",
-        "emptyList": "De List is leddig",
-        "noElements": "Keen Elemente funnen",
-        "selectAll": "Allens utsöken"
-      },
-      "filterButton": "Filter anwennen",
-      "filterReset": "Filter löschen",
-      "filterResetAll": "All Filter löschen",
-      "filterResetOrigin": "Filter torüchsetten",
-      "filterResult": {
-        "disabledInfo": "De Filter is op disse Zoomstuf deaktiviert.",
-        "unit": "{{amountOfFilteredItems}} Ergebnisse"
-      },
-      "geometryFilter": {
-        "title": "Geometriefilter",
-        "buffer": "Puffer [m]",
-        "geometries": "Geometrien",
-        "regions": "Gebiete",
-        "geometryTypes": {
-          "circle": "Kreis",
-          "lineString": "Linie + Puffer",
-          "polygon": "Fläche",
-          "rectangle": "Rechteck"
-        },
-        "delete": "Wegmaken",
-        "removeGeometry": "Gebiet wegmaken",
-        "selectGeometry": "Söök en Geometrie ut, üm bloots binnen disse Geometrie to filtern.",
-        "selectRegion": "Söök en Gebiet ut, üm bloots binnen dit Gebiet to filtern."
-      },
-      "info": {
-        "infoIcon": "Mit en Klick op dat Info-Icon kriggst du mehr Informatschonen",
-        "snippetCheckbox": "Dat Kontrollkästchen kann mit en Muusklick an- oder utmaakt warrn.",
-        "snippetDate": "För en Datum as Söök-Kriterium klickst du in dat Feld un söchst en Datum ut den Kalender ut.",
-        "snippetDateRange": "För en Datumsbereich klickst du in Start- un Enn-Datum-Feld un söchst de Daten ut den Kalender ut.",
-        "snippetDropdown": "Du kannst een oder mehr Weerten ut de List utsöken.",
-        "snippetInput": "Du kannst dien Söök-Kriterien in dat Textfeld ingeven.",
-        "snippetSlider": "För nummerische Weerten kannst du den Schuuvregler na rechts oder links schuven oder den Weert direktemang ingeven.",
-        "snippetSliderRange": "För Minimum- un Maximum-Weerten kannst du de Schuuvregler verschuven oder de Weerten direktemang ingeven."
-      },
-      "name": "Filter",
-      "searchInMapExtent": "Söök in den aktuellen Koortutsnitt",
-      "slider": {
-        "valueEmptyErrorMessage": "De Ingaav darf nich leddig wesen!",
-        "valueOutOfRangeErrorMessage": "De Ingaav {{inputValue}} mut binnen den Beriek vun {{minValueSlider}} un {{maxValueSlider}} liggen!"
-      },
-      "snippetTags": {
-        "selectionText": "Dien Utwahl:",
-        "showMore": "mehr wiesen",
-        "showLess": "weniger wiesen"
-      },
-      "upload": {
-        "geometryParseError": "De angeven Geometrie kunn nich laden warrn"
-      },
-      "distributionMapLinkText": "Link to de Verbreitungskort",
-      "distributionMapLinkTextTitle": "Link to de Verbreitungskort kopieren",
-      "universalSearchTitle": "Na dit Dier in’t Web söken",
-      "resetButton": "Op den Ursprungszustand torüchsetten"
-    },
-    "getFeatureInfo": {
-      "boolean": {
-        "0": "Nee",
-        "1": "Jo",
-        "false": "Nee",
-        "no": "Nee",
-        "true": "Jo",
-        "yes": "Jo"
-      },
-      "buttonBack": "Vörige Informatschonen wiesen",
-      "buttonForward": "Wiedere Informatschonen wiesen",
-      "errorMessageLayers": "Bi de Informatschonen-Afraag (GetFeatureInfo) sünd Fehler bi disse Layer opreten: <ul>{{layers}}</ul><br>Bidde versöök dat later nochmaal. Wenn dat Problem blifft, wend di bidde an den Betreiber vun den Deenst.",
-      "errorMessage": "Bi de Informatschonen-Afraag (GetFeatureInfo) is en Fehler opreten.<br>Bidde versöök dat later nochmaal. Wenn dat Problem blifft, wend di bidde an den Betreiber vun den Deenst.",
-      "favoriteIcons": {
-        "compareFeatureIcon": {
-          "toCompareList": "To de Vergliekslist",
-          "fromCompareList": "Vun de Vergliekslist rutnehmen"
-        }
-      },
-      "name": "Informatschonen affragen",
-      "themes": {
-        "default": {
-          "imgAlt": "Dat Bild kunn nich laden warrn.",
-          "noAttributeAvailable": "Keen Attribut vörhannen!"
-        },
-        "sensor": {
-          "chargingStations": {
-            "available": "Verföögborheit",
-            "charging": "Utlastung",
-            "outoforder": "Buten Bedriev",
-            "faulted": "Fehlerstatus"
-          },
-          "sensor": {
-            "dataName": "Daten",
-            "header": {
-              "description": "Beschrievung",
-              "name": "Naam",
-              "ownerThing": "Eegner"
+        "maps": {
+            "mapRegion": {
+                "twoFingerPanAlert": "Bidde bruuk för dat Navigeren un Zoom’n in de Koort twee Finger."
+            },
+            "featureViaURL": {
+                "messages": {
+                    "featureParsing": "FeatureViaURL: Nich all övergeven Features kunn verarbeidt warrn.",
+                    "featureParsingAll": "FeatureViaURL: All övergeven Features hebbt den verkehrten Datentyp. Bidde achte op de Dokmentatschoon.",
+                    "featureParsingNoneAdded": "FeatureViaURL: All övergeven Features fehlt tominnst een Parameter. Dat sünd keen Features to de Koort toföögt worrn. Bidde achte op de Dokmentatschoon.",
+                    "layerNotFound": "FeatureViaURL: Keen Layer mit de ID {{layerId}} funnen.",
+                    "noNameDefined": "FeatureViaURL: För den Layer mit de ID {{layerId}} is keen Naam in de Konfiguratschoon fastleggt."
+                }
+            },
+            "highlightFeaturesByAttribute": {
+                "messages": {
+                    "configurationError": "Konfiguratschoon fehlerhaft. Bidde de Konsolen-Utgaav pröven.",
+                    "requestFailed": "De Datenafraag is fehlslaan."
+                }
             }
-          },
-          "sensorBarChart": {
-            "chartTitleAverage": "Middelweert ut",
-            "clock": "{{value}} Uhr",
-            "month_one": "{{count}} Monat",
-            "month_other": "{{count}} Monaden",
-            "nextWeekday": "Nakamen Wekendag",
-            "noticeTextAvailable": "(Bloots Daten mit den Weert available / verfüögbor warrt berücksichtig)",
-            "noticeTextCharging": "(Bloots Daten mit den Weert charging / ladend warrt berücksichtig)",
-            "noticeTextOutoforder": "(Bloots Daten mit den Weert outoforder / buten Bedriev warrt berücksichtig)",
-            "noticeTextFaulted": "(Bloots Daten mit den Weert faulted / Fehlerstatus warrt berücksichtig)",
-            "previousWeekday": "Vörige Wekendag",
-            "year_one": "{{count}} Johr",
-            "year_other": "{{count}} Johren"
-          },
-          "sensorData": {
-            "firstColumnHeaderName": "Egenschappen"
-          }
         }
-      },
-      "title": "Objekt-Informatschonen"
-    },
-    "gfiThemes": {
-      "dataTable": {
-        "sort": "Weerten sorteren"
-      }
-    },
-    "info": {
-      "name": "Info",
-      "disclaimer": "Hafungsutsluut",
-      "home": {
-        "name": "Hamborg"
-      }
-    },
-    "language": {
-      "de": "Deutsch",
-      "description": "Söök dien Spraak ut",
-      "en": "English",
-      "es": "Español",
-      "it": "Italiano",
-      "name": "Spraak ännern",
-      "platt": "Platt",
-      "pt": "Português",
-      "ru": "Русский",
-      "tr": "Türkçe",
-      "ua": "Українська",
-      "nl": "Nederlands"
-    },
-    "layerClusterToggler": {
-      "description": "Mehrere Themen mit een Klick anmaken",
-      "info": "De Sichtborkeit vun disse Layer an- oder utmaken:",
-      "name": "Layer-Gruppe opmaken",
-      "toggle": "Sichtborkeit vun de Layer ümmschalten"
-    },
-    "layerInformation": {
-      "additionalMetadata": "mehr Informatschonen...",
-      "addressSuffix": "Adress",
-      "addressSuffixes": "Layer-Adressen",
-      "attachFileMessage": "eventuell Dateityp bi’n Download anhängen",
-      "downloadDataset": "Datensett daalladen",
-      "lastModified": "Leste Ännern",
-      "legend": "Legenn",
-      "name": "Informatschonen un Legenn",
-      "noMetadataLoaded": "Dat keen Metadaten laden worrn sünd!",
-      "noMetadataLoadedConsole": "De Metadaten för dissen Layer köönt nich affraagt warrn. Dat wiest op en Problem mit de inbunnen services.json hen.",
-      "periodicityTitle": "Datenaktualisatschoon",
-      "publicationCreation": "Publikatschoon / Opstellen",
-      "pointOfContact": "Anspreekpartner",
-      "contactInfoMessage": "Schriev den Anspreekpartner vun dat Thema ",
-      "contactPublisher": "Schriev den Anspreekpartner ",
-      "mailSubject": "Anfrag to’n Datensett ",
-      "mailOriginHint": "Disse Anfrag is över dat Kontaktformular vun disse URL verschickt worrn",
-      "changeLayerInfo": "Informatschonen för de Ebene utsöken: "
-    },
-    "layerPills": {
-      "next": "Nakamen Layer wiesen",
-      "previous": "Vörigen Layer wiesen",
-      "remove": "Layer rutnehmen"
-    },
-    "layerSelection": {
-      "addSubject": "Thema tofögen",
-      "folderCheckbox": {
-        "selectedAllLayer": "All Layer in’n Orner {{folderName}} aktiveren",
-        "unselectedAllLayer": "All Layer in’n Orner {{folderName}} deaktiveren"
-      },
-      "name": "Themenutwahl",
-      "backgrounds": "Achtergrünn",
-      "datalayer": "Fachdaten",
-      "externalSubjectLayer": "Externe Fachdaten",
-      "selectAll": "All tofögen",
-      "deselectAll": "All rutnehmen",
-      "selectedSubjectsCount_other": "Bidde söök een Thema ut",
-      "addSelectedSubjectsToMap_one": "Utsökt Thema to de Koort tofögen",
-      "addSelectedSubjectsToMap_other": "{{count}} utsökte Themen to de Koort tofögen"
-    },
-    "layerSlider": {
-      "description": "Een Slideshow starten",
-      "displayLayers": "Anwiesen vun verschedene Layer.",
-      "name": "Layerserie",
-      "serviceOne": "Deenst 1",
-      "serviceTwo": "Deenst 2",
-      "serviceThree": "Deenst 3",
-      "serviceFour": "Deenst 4",
-      "sliderTypeHandle": "Slider-Modus",
-      "sliderTypePlayer": "Player-Modus",
-      "title": "Simulatschoon vun Bispill-Deensten"
-    },
-    "layerTree": {
-      "addLayer": "Themen tofögen",
-      "categories": "Kategorien",
-      "categoryInspire": "Inspire",
-      "categoryOpendata": "Opendata",
-      "categoryOrganisation": "Behörde",
-      "categoriesListHead": "Themen na disse Kategorie sorteren:",
-      "subjectData3D": "3D-Daten",
-      "iconRemoveLayer": "Thema ut de Koort rutnehmen",
-      "iconSubMenu": "Mehr Funkschonen wiesen",
-      "iconTransparency": "Transparenz",
-      "infosAndLegend": "Informatschonen to’n Datensett wiesen",
-      "invisibleLayer": "Dit Thema kann bloots in’n Maßstap {{minScale}} - {{maxScale}} wiest warrn",
-      "invisibleLayerNoScale": "Dit Thema kann in dissen Maßstap nich wiest warrn",
-      "noCategory": "Keen Kategorie",
-      "rootLayerPath": "In’n Orner wiesen"
-    },
-    "legend": {
-      "description": "Informatschonen to de Objekten in de Koort kriegen",
-      "linkToPdf": "To de externe Legenn (PDF)",
-      "name": "Legenn",
-      "noLegendForLayerInfo": "Legenn nich verfögbor"
-    },
-    "login": {
-      "description": "Mit Brukernaam un Passwoort anmellen",
-      "descriptionLoggedIn": "Du büst anmellt",
-      "login": "Login",
-      "logout": "Logout",
-      "progress": "Bidde meld di in dat opmaakt Popup an.",
-      "name": "Naam",
-      "email": "E-Mail",
-      "profile": "Profil"
-    },
-    "measure": {
-      "area": "Flach",
-      "deleteMeasurements": "Maaten löschen",
-      "description": "Maat en Streek oder en Flach",
-      "finishWithDoubleClick": "Afsluten mit Dubbelklick",
-      "geometry": "Geometrie",
-      "influenceFactors": "De wiest Werten sünd nich ganz genau; dat kann ünner annern dorvun kamen, t.B. Maßstap, Oplösen vun de Koort un vun’n Schirm.",
-      "inputAccuracy": "Ingaav-Genauegkeit un Tall vun de digitaliseerten Punkten",
-      "measure": "Eenheit",
-      "measureDistance": "Streek vun de Maatlinie bzw. Grööt vun de Maatflach",
-      "name": "Streek / Flach meten",
-      "resolution": "Oplösen vun de Koort",
-      "scale": "Maßstap",
-      "screenResolution": "Oplösen vun’n Schirm",
-      "stretch": "Streek"
-    },
-    "menu": {
-      "ariaLabelClose": "$t(menu.name) tomaken",
-      "ariaLabelOpen": "$t(menu.name) opmaken",
-      "name": "Menü",
-      "widthUrlParamError": "De URL-Parameter för’t Instellen vun de Breed vun’t Menü is fehlerhaft un kunn nich anwendt warrn. Bidde söök en Weert twischen 5 un 90."
-    },
-    "modalItem": {
-      "close": "Finster tomaken"
-    },
-    "modeler3D": {
-      "entity": {
-        "captions": {
-          "backToList": "Trüch to de Översicht",
-          "copyTitle": "3D-Modell \"{{name}}\" koperen",
-          "delete": "Modell löschen",
-          "deletionTitle": "3D-Modell \"{{name}}\" löschen",
-          "dimensionsModel": "Maate för 3D-Modell \"{{name}}\" wiesen",
-          "editModel": "3D-Modell \"{{name}}\" bewerken",
-          "incrementTooltip": "Holl de Shift-Tast drückt, üm den Weert gröver to erhöhen.",
-          "modelName": "Modellnaam",
-          "projectionInfo": "Achtung! Bi Bruuk vun dat WGS84-Koordinatensysteem köönt Ungenauegkeiten opkamen. Wi empfehlen de dezimale Schrievwies.",
-          "rotationPlaceholder": "Inkrement-/Dekrement-Schritte",
-          "rotation": "Dreihung",
-          "rotationSwitch": "Dreih-Schritte",
-          "scale": "Skaleren",
-          "steps": "Schritte",
-          "visibilityTitle": "3D-Modell \"{{name}}\" in- / utblennen",
-          "zoomTo": "To 3D-Modell \"{{name}}\" henzoomen"
-        },
-        "deleteInteraction": {
-          "confirm": "Löschen",
-          "headline": "Achtung",
-          "text": "Büst du seker, dat du dat Modell \"{{name}}\" löschen wullt?"
-        },
-        "projections": {
-          "adaptToHeight": "An dat Gelände anpassen",
-          "area": "Grundflach",
-          "cartesian": {
-            "eastingLabel": "Rechtsweert",
-            "northingLabel": "Hochweert"
-          },
-          "depth": "Deepde",
-          "hdms": {
-            "eastingLabel": "Längde",
-            "northingLabel": "Breed"
-          },
-          "height": "Höögde",
-          "projection": "Koordinatensysteem",
-          "width": "Breed"
-        }
-      },
-      "import": {
-        "alertingMessages": {
-          "featureError": "Een Feature in disse Datei kunn nich leest warrn.",
-          "fileSizeError": "De Dateigrött is grötter as dat Limit vun 100 MB.",
-          "formatError": "De Datei \"{{filename}}\" kunn nich leest warrn. Prööv bidde, wat se dat Format *.gltf, *.obj, *.dae oder *.geojson hett.",
-          "missingFileContent": "Fehler bi’t Lesen vun de Datei \"{{filename}}\". Prööv bidde Dateityp un Inholt. Wenn de Datei in Ordnung is, wend di an den Support.",
-          "missingFormat": "Dat Dateiformat \"{{format}}\" warrt nich ünnerstütt. Wend di bidde an den Support.",
-          "success": "De Datei \"{{filename}}\" is erfolgreich importeert worrn.",
-          "successPartly": "De Datei \"{{filename}}\" is bloots deels importeert worrn."
-        },
-        "captions": {
-          "introInfo": "Mit den Importer köönt digitale städteboulige Entwörp in dat bestahn 3D-Stadtmodell laden, sichtbor maken un analyseert warrn.",
-          "introInfo2": "Importeer dien Datei eenfach per Drag & Drop oder över den Öffnen-Dialog vun’n Browser.",
-          "introFormats": "Dat köönt glTF- (*.gltf), OBJ- (*.obj), Collada- (*.dae) oder GeoJSON-Dateien importeert warrn.",
-          "info": "Informatschonen",
-          "successfullyImportedLabel": "Importeerte 3D-Modelle",
-          "newImport": "Nee Import"
-        }
-      },
-      "draw": {
-        "captions": {
-          "beginModelling": "3D-Objekt modelleren",
-          "clampToGround": "An dat Höödenmodell anlehnen",
-          "color": "Klöör",
-          "coordinates": "Koordinaten",
-          "design": "Design",
-          "dimensions": "Maate",
-          "drawing": "Teeken",
-          "drawName": "Naam",
-          "drawnModels": "Teekente Modelle",
-          "export": "Allens exporteren",
-          "exportTitle": "All teekente Modelle in GeoJSON-Format exporteren.",
-          "extrudedHeight": "Extrudeerte Höögde",
-          "fillColor": "Füllklöör",
-          "fillTransparency": "Transparenz",
-          "geometries": "Geometrien",
-          "introInfo": "Mit disse Funkschoon köönt 3D-Objekte in de Koort teekent, individuell gestaltet un achterher t.B. Schattensimulationen maakt warrn.\n\nDat Tool maakt ok dat Teeknen op bestahn Gebäuden un importeerte Objekte mööglich. Vörutsetten is, dat de Gelände-Höögde utmaakt is.\n\nTeekente Objekte köönt över „Allens exporteren“ speichert un later över den Importer wedder laden warrn.\n\nMit een Klick vun de linke Muustast warrt Eckpunkten sett, mit’n Dubbelklick warrt dat Teeknen afslaten. De lest sett Punkt kann mit Strg+Z rutnahmen un mit Strg+Y wedder tofögt warrn. Klick op en Objekt, üm dat to heven, to verschuven oder to bewerken.",
-          "info": "Informatschonen",
-          "newModel": "Nee Modell",
-          "options": "Optschonen",
-          "readyGeometries": "Fardige Geometrien",
-          "showDimensions": "Maate bi’t Teeknen wiesen",
-          "strokeColor": "Umrissklöör",
-          "strokeWidth": "Strichstark",
-          "transformation": "Transformation"
-        },
-        "geometries": {
-          "line": "Liin",
-          "polygon": "Polygon",
-          "rectangle": "Rechteck"
-        },
-        "oneClicks": {
-          "rectangle": "15m x 20m x 20m (B x T x H) Rechteck"
-        }
-      },
-      "filter": {
-        "captions": {
-          "abortStyle": "Afbreken",
-          "addFilter": "Filter tofögen",
-          "applyStyle": "Anwennen",
-          "editFilter": "Filter bewerken",
-          "fillColor": "Füllklöör",
-          "filterList": "Filterlist",
-          "filterName": "Filternaam",
-          "info": "Informatschonen",
-          "introInfo": "Mit de Filter- & Style-Funkschoon köönt Gebäude na Attributen infärvt warrn, üm t.B. de Nutzung sichtbor to maken.",
-          "introInfo2": "Söök dorbi den passenden Layer un dat Attribut ut, dat visualiseert warrn schall. Achterher kannst du de Klöör vun de Gebäude anpassen.",
-          "noFilter": "Keen Filter vörhannen.",
-          "optionsTitle": "Filteroptschonen",
-          "pvoCheck": "All Weerten na de PlanzeichenVO infärven",
-          "resetStyle": "Trüchsetten",
-          "selectLayer": "Layer utsöken",
-          "selectAttribute": "Attribut utsöken",
-          "title": "Filter- & Stylefunkschoon",
-          "styleSettingsTitle": "Klöörinstellen",
-          "value": "Weert"
-        },
-        "errorLoadingData": "Fehler bi’t Laden vun de Weertelist för dat Attribut „BuildingFunctionType“"
-      },
-      "options": {
-        "captions": {
-          "enableFunction": "Funkschoon an- / utmaken",
-          "hideObjectInfo": "Bestahn Gebäude köönt in de Ansicht utblendt warrn, üm t.B. importeerte Elemente op dat passende Grundstück to platzeren.\n\nStart disse Funkschoon över Aktivieren un klick op de gewensten Objekte.\n\nAll utblende Objekte warrt in en List wiest un köönt dor wedder anmaakt warrn.",
-          "hideSwitchLabel": "Gebäude mit Muusklick utblennen",
-          "pov": "Na de Fußgängeransicht springen",
-          "povInfo": "Hier kannst du de Perspektiev vun en Fußgänger innehmen un di dör de Stadt bewegen.\n\nNaviger to de gewünscht Positschoon, set den Zylinder mit’n Muusklick, un du kummst in de Fußgängeransicht.\n\nMit Muusbewegungen un drückte linke Muustast kannst du dat Sichtfeld ännern. Üm trüch to kamen, maak de Funkschoon mit’n Schieber ut.",
-          "povTitle": "Fußgängerperspektiev",
-          "visibilityTitle": "Sichtbarkeitsoptschonen"
-        }
-      },
-      "nav": {
-        "drawTitle": "Teeknen",
-        "filterTitle": "Filter & Style",
-        "importTitle": "Importeren",
-        "options": "Optschonen"
-      },
-      "description": "Importeer, teekn un bewerk 3D-Modelle in’t Stadtmodell",
-      "hiddenObjectsLabel": "Utblende Gebäude:",
-      "name": "3D-Modeller"
-    },
-    "mouseHover": {
-      "infoText": "(mehr Objekte. Bidde näher zoomen.)"
-    },
-    "news": {
-      "description": "Hier kannst du lesen, wat dat Niege gifft",
-      "headline": "Neeigkeiten",
-      "name": "Neeigkeiten"
-    },
-    "openConfig": {
-      "explanation": "Maak en Koort op, de du as lokale Konfiguratschoonsdatei speichert hest.",
-      "loadFileFailed": "De Konfiguratschoonsdatei <b>{{targetFileName}}</b> kunn nich laden warrn. Dat Dateiformat <b>{{targetFileFormat}}</b> warrt nich ünnerstütt. Bidde laad en Datei in’t Format <b>json</b>.",
-      "loadFileSuccess": "De Konfiguratschoonsdatei <b>{{targetFileName}}</b> is erfolgreich laden worrn",
-      "name": "Koort opmaken",
-      "openFile": "Konfiguratschoonsdatei opmaken"
-    },
-    "portalFooter": {
-      "designation": "Kartografie un Gestaltung:",
-      "mapDiscrepancy": "Koortenfehler mellen",
-      "scale": "Skaleren vun de Koort"
-    },
-    "print": {
-      "alertMessage": "De maximale Tall vun parallel laufende Utdrucke is överschritten.<br>Bidde versöök dat nochmaal, wenn anner Utdrucke afslaten sünd.",
-      "authorLabel": "Ersteller",
-      "autoAdjustScale": "Druckmaßstap automaatsch anpassen",
-      "createDownloadFile": "Warrt erstellt...",
-      "description": "Laad en Koortutsnitt in en utsöcht Format daal",
-      "downloadFile": "Herunnerladen",
-      "dpiLabel": "DPI",
-      "errorMessage": "De Afraag vun de Metadaten is fehlslagen. Wenn dat Problem blifft, wend di bidde an den Eegner vun den Deenst: <b>{{cswObjCswUrl}}</b>",
-      "formatLabel": "Format",
-      "hintInfoScale": "Wenn de utsöchte Druckmaßstap sik vun den Maßstap im Koortfinster ünnerscheedt, kann dat to en anner Koortlayout bi’t Drucken führen.",
-      "invisibleLayer": "Disse Themen köönt bi den utsöchten Druckmaßstap {{scale}} nich druckt warrn:",
-      "improveResolution": "Oplösen verbeteren",
-      "layoutLabel": "Layout",
-      "name": "Koort drucken",
-      "outputfileTitleLabel": "Dateinaam",
-      "printLabel": "Datei erstellen",
-      "scaleLabel": "Druckmaßstap",
-      "subtitleLabel": "Ünnertitel",
-      "textFieldLabel": "Freitextfeld",
-      "titleLabel": "Titel",
-      "validationWarning": "De Dateinaam mutt bloots Bookstaven un de Sünnerteken '-' un '_' enthollen.",
-      "vtlWarning": "Wiel MapFish 3 keen Vector-Tile-Layer ünnerstütt, warrt disse aktiven Layer in de Druckansicht nich wiest:",
-      "waitForPrintErrorMessage": "Dat Erstellen vun den Utdruck is fehlslagen.<br>Bidde versöök dat later nochmaal oder wend di an den Betreiber vun dat Portal.",
-      "withInfoLabel": "Mit Informatschonen",
-      "withLegendLabel": "Mit Legende",
-      "predefinedLegendInfo": "De Layer \"{{layerName}}\" hett en vördefineerte Legende.",
-      "predefinedLegendDownload": "De Legende kann nich mitdruckt warrn. Du kannst de vördefineerte Legende separat över dat Download-Menü herunnerladen."
-    },
-    "routing": {
-      "addWaypoint": "Wegpunkt to doon",
-      "avoidOptions": {
-        "header": "Verkehrsweg ümgaan",
-        "FERRIES": "Fähren",
-        "HIGHWAYS": "Autobahn",
-        "STEPS": "Treppen",
-        "TOLLWAYS": "Mautstraßen",
-        "UNPAVEDROADS": "Nich befestigte Straaten",
-        "MIXEDTRAFFIC": "Mischverkehr Tempo 50",
-        "COBBLESTONE": "Koppsteenpflaster",
-        "NARROWWAYS": "Enge Steed",
-        "BORDERS": "Grenzen"
-      },
-      "batchProcessing": {
-        "cancel": "Stapelverarbeitung afbreken",
-        "example": "Bispill",
-        "header": "Stapelverarbeitung",
-        "isProcessing": "Stapelverarbeitung löppt",
-        "placeFile": "Datei hier afleggen",
-        "structure": "Struktur",
-        "uploadFile": "Datei hoochladen"
-      },
-      "contextMenu": {
-        "addAvoidPoint": "Sperrpunkt to doon",
-        "addEndpoint": "Zielpunkt to doon",
-        "addStartpoint": "Startpunkt to doon",
-        "addWaypoint": "Wegpunkt to doon",
-        "avoidPointModalTitle": "Radius vun’n Sperrpunkt",
-        "header": "Aktschonen",
-        "removeAvoidPoint": "Sperrfläch wegmaken",
-        "removePoint": "Punkt wegmaken"
-      },
-      "coordinateInputHelp": "Söök en Oort oder föög en Punkt dör Klick in de Koort to",
-      "deleteWaypoint": "Wegpunkt wegdoon",
-      "description": "Fünn rut, woans du am gauesten to dien Ziel kummst, oder legg en Söök-Radius fast",
-      "directions": {
-        "batchProcessing": {
-          "downloadHeader": {
-            "distance": "Entfernung(m)",
-            "profile": "Profil",
-            "time": "Tiet(min)",
-            "xEnd": "X-Wert_Ende",
-            "xStart": "X-Wert_Start",
-            "yEnd": "Y-Wert_Ende",
-            "yStart": "Y-Wert_Start"
-          },
-          "errorNoEntries": "Keen Indrääg in de CSV",
-          "errorAllFailed": "All Anfragen sünd fehlslagen. Villicht warrt de Anfraag vun’n Deenst blockeert. De Datei hett keen Resultaat.",
-          "errorRowContainsEntriesNoNumber": "Koordinaten in Reeg {{row}} sünd keen Tahlen",
-          "errorSomeFailed": "{{countFailed}} Resultaten köönt nich richtig utrekent warrn. In de Ergebnisdatei sünd an disse Steed leege Feller.",
-          "errorToManyEntriesInFile": "Maximale Tall vun Reegen överschritten ({{limit}})",
-          "errorToManyEntriesInRow": "Reeg {{row}} hett mehr as 5 Indrääg, bidde op de Struktur kieken (ID;lon(Startpunkt);lat(Startpunkt);lon(Endpunkt);lat(Endpunkt))",
-          "errorContextMenuSetPoint": "An disse Steed kunn keen Punkt sett warrn.",
-          "structure": "ID;lon(Startpunkt);lat(Startpunkt);lon(Endpunkt);lat(Endpunkt)"
-        },
-        "deleteRestrictedAreas": "Sperrflächen löschen",
-        "editRestrictedAreas": "Sperrflächen tekenen/bearbeiten",
-        "editRestrictedPoints": "Sperrpunkte tekenen/bearbeiten",
-        "keepRoutesAfterClose": "De Route ok na’t Tomaken behollen",
-        "preference": {
-          "RECOMMENDED": "Anraden Route",
-          "SHORTEST": "Körteste Route",
-          "GREEN": "Gröne Route"
-        },
-        "preferenceLabel": "Präferenz",
-        "restrictedAreas": "Sperrflächen",
-        "avoidAreas": {
-          "avoidArea": "Sperrfläch",
-          "avoidPoint": "Sperrpunkt",
-          "avoidPointRadius": "Radius",
-          "avoidPointRadiusUnit": "Eenheit",
-          "avoidPointRadiusUnitKm": "km",
-          "avoidPointRadiusOutOfRangeKm": "Bidde en Weert twischen 0 un 12 km ingeven.",
-          "delete": "Löschen",
-          "export": "Export",
-          "import": "Import"
-        }
-      },
-      "download": {
-        "filename": "Dateinaam",
-        "filenamePlaceholder": "Bidde Dateinaam ingeven",
-        "format": "Format",
-        "header": "Herunnerladen",
-        "saveResult": "Resultaat sekern",
-        "error": {
-          "header": "De Dateinaam is nich gültig.",
-          "fileNameTooLong": "De Dateinaam is to lang. Maximaal 40 Teken sünd verlöövt.",
-          "fileNameContainsWhiteSpace": "De Dateinaam hett Leerteken.",
-          "fileNameContainsInvalidChars": "De Dateinaam hett nich verlöövte Sünnerteken."
-        }
-      },
-      "endpoint": "Zielpunkt",
-      "elevationProfile": {
-        "titleCollapse": "Höhenprofil",
-        "titleChart": "Höhenprofil langs de Route",
-        "yAxis": "Hööchde in Meter",
-        "xAxis": "Streek in km",
-        "titleTooltipMeters": "Hööchde na {{distance}} Metern",
-        "titleTooltipKilometers": "Hööchde na {{distance}} Kilometers"
-      },
-      "errors": {
-        "titleErrorRouteFetch": "De Routebereken hett nich klappt.",
-        "titleErrorIsochroneFetch": "De Bereken vun de Erreichborkeit hett nich klappt.",
-        "avoidAreaBig": "De angeven Sperrflächen sünd to groot. Bidde korrigeer dien Ingaav.",
-        "errorIsochronesFetch": "Fehler bi de Afraag vun de Erreichborkeit",
-        "errorRouteFetch": "Fehler bi de Afraag vun de Route",
-        "fetchingCoordinates": "Fehler bi de Afraag vun de Koordinaten",
-        "hgvRestrictionOutOfRange": "De LKW-Parameter hebbt ungültige Weerten. Bidde prööv dien Ingaav.",
-        "noRouteFound": "Leider hett sik keen Route finnen laten"
-      },
-      "exportAvoidAreas": {
-        "header": "Export vun de Sperrflächen",
-        "type": "Dateityp",
-        "tooltip": "Sperrflächen exporteren",
-        "download": "Herunnerladen",
-        "filename": "Dateinaam",
-        "filenamePlaceholder": "Bidde Dateinaam ingeven",
-        "format": "Format",
-        "error": {
-          "header": "Fehler bi’t Exporteren vun de Sperrflächen",
-          "noAvoidArea": "Keen Sperrflächen / Sperrpunkte vörhannen."
-        }
-      },
-      "importAvoidAreas": {
-        "header": "Sperrflächen importeren",
-        "help": "Dateityp",
-        "tooltip": "Sperrflächen importeren",
-        "description": "Wähl en GeoJSON- oder KML-Datei ut, de egen Sperrflächen in sik hett. Disse Features sünd verlöövt:",
-        "structure": "Polygon, Multipolygon",
-        "filenamePlaceholder": "Bidde Dateinaam ingeven",
-        "format": "Format",
-        "uploadSuccessTitle": "De Sperrflächen sünd erfolgreich hoochladen worrn.",
-        "uploadSuccess": "De hoochladen Sperrflächen staht di nu to Verföögung.",
-        "error": {
-          "header": "Fehler bi’t Importeren vun de Sperrflächen",
-          "noAvoidArea": "Keen Sperrflächen / Sperrpunkte vörhannen.",
-          "formatError": "De Datei kunn nich leest warrn. Bidde prööv, wat se dat Format *.kml oder *.geojson hett.",
-          "parseError": "Fehler bi’t Parsen vun de {{type}}-Datei.",
-          "polygonFormatError": "De Datei hett ungültige Geometrien. Bloots Polygon un MultiPolygon warrt ünnerstütt.",
-          "polygonEmpty": "Een vun de importeerden Sperrflächen hett keen Koordinaten.",
-          "polygonNotClosed": "Een importeerde Sperrfläch is nich sluten. De eerste un leste Koordinate mutt bi jede Sperrfläch gliek wesen.",
-          "polygonNotEnoughPoints": "Sperrflächen mutt ut tominnst 3 Punkten bestahn.",
-          "tooManyFeatures": "To veel Sperrflächen. Maximaal {{maxFeatures}} Sperrflächen sünd verlöövt.",
-          "areaTooBig": "Een vun de importeerden Sperrflächen is to groot: {{area}} km². Maximaal {{maxArea}} km² pro Sperrfläch sünd verlöövt.",
-          "sideTooLong": "Een Siedenlängde vun’n Polygon is länger as de maximal verlöövte Längde vun {{maxSideLength}} km. Siedenlängde: {{distance}} km."
-        }
-      },
-      "isochrones": {
-        "batchProcessing": {
-          "errorNoEntries": "Keen Indrääg in de CSV",
-          "errorAllFailed": "All Anfragen sünd fehlslagen. Villicht warrt de Anfraag vun’n Deenst blockeert. De Datei hett keen Resultaat.",
-          "errorRowContainsEntriesNoNumber": "Koordinaten in Reeg {{row}} sünd keen Tahlen",
-          "errorSomeFailed": "{{countFailed}} Resultaten köönt nich richtig utrekent warrn. In de Ergebnisdatei sünd an disse Steed leege Feller.",
-          "errorToManyEntriesInFile": "Maximale Tall vun Reegen överschritten ({{limit}})",
-          "errorToManyEntriesInRow": "Reeg {{row}} hett mehr as 3 Indrääg, bidde op de Struktur kieken (ID;lon(Startpunkt);lat(Startpunkt))",
-          "structure": "ID;lon(Startpunkt);lat(Startpunkt)"
-        },
-        "calculate": "Utreken",
-        "hoverMenu": {
-          "population": "Bevölkerung:",
-          "area": "Fläch:"
-        },
-        "interval": {
-          "default": "Intervall",
-          "count": "Tall vun Intervallen"
-        },
-        "legend": {
-          "area": "Fläch",
-          "color": "Klöör",
-          "distance": "Distanz",
-          "population": "Bevölkerung",
-          "time": "Tiet",
-          "title": "Legende"
-        },
-        "maxDistance": "Maximale Entfernung",
-        "maxTraveltime": "Maximale Reiseduur",
-        "optimization": {
-          "DISTANCE": "Erreichborkeit na Distanz",
-          "TIME": "Erreichborkeit na Tiet"
-        },
-        "optimizeHeader": "Optimeren na",
-        "startpoint": "Startpunkt",
-        "tooManyIntervalsInline": "Limit bi Isochronen överschritten. Max. 10 verlöövt."
-      },
-      "moveWaypointDown": "Wegpunkt na nerrn schuven",
-      "moveWaypointUp": "Wegpunkt na baven schuven",
-      "startIndex": "S",
-      "endIndex": "Z",
-      "name": "Routing",
-      "resetSettings": "Instellungen torüchsetten",
-      "restrictions": {
-        "header": "LKW-Parameter",
-        "length": "Längde (m)",
-        "width": "Breed (m)",
-        "height": "Hööchde (m)",
-        "weight": "Gewicht (t)",
-        "axleload": "Achslast (t)",
-        "hazmat": "Gefahrgoot",
-        "tooltip": "Weert twischen {{min}} un {{max}} gültig",
-        "placeholder": "Bidde Weert ingeven"
-      },
-      "settings": {
-        "submit": "Bestätigen"
-      },
-      "speedprofiles": {
-        "CAR": "PKW",
-        "CYCLING": "Fahrrad",
-        "FOOT": "Footgänger",
-        "HGV": "LKW",
-        "WHEELCHAIR": "Rollstohl"
-      },
-      "startpoint": "Startpunkt",
-      "tabs": {
-        "DIRECTIONS": "Routenplanung",
-        "ISOCHRONES": "Erreichborkeit",
-        "TSR": "Travelling Salesman"
-      },
-      "tsr": {
-        "header": "Routenoptschonen ännern",
-        "calculate": "TSR-Route utreken",
-        "upload": {
-          "header": "Wegpunkte hoochladen",
-          "description": "Wähl en csv-Datei ut, de egen Wegpunkte för TSR in sik hett. De Punkten mööt in WGS84 (EPSG:4326) angeven warrn. Disse Format mutt inhollen warrn:",
-          "csvHeaders": "Datei hett Kopfzeil",
-          "help": "Hülp",
-          "divider": "oder",
-          "failTitle": "De Datei kunn nich hoochladen warrn.",
-          "successTitle": "De Datei is erfolgreich hoochladen worrn.",
-          "successInfo": "De hoochladen Wegpunkte staht di nu in de List to Verföögung."
-        },
-        "backToTSR": "Routing",
-        "modifyWaypointsTSR": "Wegpunkte bewerken",
-        "outputHeaderTSR": "Gaueste Route",
-        "downloadOutputTSR": "TSR-Route herunnerladen",
-        "downloadCsv": {
-          "header": "*** Travelling Salesman Routing ***",
-          "descriptionRoundTrip": "Startpunkt: {{start}} na: Rundtrip",
-          "descriptionNoRoundTrip": "Startpunkt: {{start}} na: {{end}}",
-          "optimalOrder": "optimale {{profile}}-Zielreihenfolge:",
-          "waypoint": "{{pos}}) {{displayName}};{{lon}};{{lat}}"
-        },
-        "selectedPoints": "Utsöchte Wegpunkte",
-        "structure": "ID;lon;lat",
-        "tsrEndpoint": "Wenn nich defineert: Rundtrip",
-        "tsrDuration": "Gesamtdüür: ",
-        "tsrDistance": "Gesamtstreek: ",
-        "errors": {
-          "wrongFileType": "Falsch Dateiformat. Bidde en CSV-Datei hoochladen.",
-          "errorNoEntries": "Keen Indrääg in de CSV",
-          "errorToManyEntriesInFile": "Maximale Tall vun TSR-Punkten överschritten ({{limit}}).",
-          "wrongNEntriesInRow": "Falsch Tall vun Attributen in Reeg {{row}}. Prööv dat Format (ID;lon;lat) un dat Trennteken (Semikolon).",
-          "rowContainsEntriesNoNumber": "Koordinaten in Reeg {{row}} sünd keen Tahlen.",
-          "emptyRow": "De Datei hett tominnst een leegh Reeg.",
-          "emptyEntriesInRow": "Fehlende Daten in Reeg {{row}}. Prööv de Daten un dat Trennteken (Semikolon).",
-          "invalidCoordinateRange": "Koordinaten hebbt ungültige Weerten in Reeg {{row}}. Gültig sünd -180 - 180 (Longitude) un -90 - 90 (Latitude).",
-          "attributeTooLong": "Attributen in Reeg {{row}} sünd länger as 25 Teken.",
-          "errorCalculation": "De Bereken kunn nich start warrn.",
-          "notEnoughPoints": "Bidde giff den Startpunkt un tominnst twee anner Punkten an.",
-          "emptyPoint": "Tominnst een Punkt is leer. Bidde prööv de Punkten in de List.",
-          "duplicatePoints": "De hoochladen Wegpunkte staht di nu in de List to Verföögung. Duplikaten sünd övergahn worrn.",
-          "unreachablePoint": "Leider kunn för tominnst een vun de utsöchten Punkten keen Route berekent warrn."
-        }
-      },
-      "waypoint": "Wegpunkt"
-    },
-    "scaleSwitcher": {
-      "description": "Stell den Maßstap üm, ganz ahn to scrollen",
-      "label": "Maßstap",
-      "name": "Maßstap ümstellen"
-    },
-    "searchBar": {
-      "locationFinder": {
-        "errorMsg": "Söök över LocationFinder hett nich klappt",
-        "serverError": "Fehler bi de serverseitige Verarbeiden vun de Anfraag",
-        "unknownProjection": "Resultaten in’n nich bekannt Koordinatensysteem"
-      },
-      "placeholder": {
-        "searchFor": "Söök na",
-        "address": "Söök na Adress",
-        "addressDistrict": "Söök Adress, Stadtdeel",
-        "addressHospitalBplan": "Söök na Adress/Krankenhuus/B-Plan",
-        "addressTopic": "Söök Adress, Stadtdeel, Thema",
-        "addressOrTopic": "Söök na Adressen oder Themen",
-        "addressTopicParcel": "Söök Adress, Stadtdeel, Thema, Flörstück",
-        "startWithAddress": "Hier mit Adress anfangen!"
-      },
-      "showAllResults": "all Resultaten wiesen",
-      "searchResults": "Söökresultaten",
-      "search": "Söök",
-      "searchResultList": "Söököversicht",
-      "searchResultsFrom": "Söökresultaten vun: ",
-      "mark": "Söök dat Thema ut",
-      "add": "Thema to doon",
-      "type": {
-        "address": "Adress",
-        "county": "Bezirk",
-        "district": "Stadtdeel",
-        "folder": "Orner (Fachdaten)",
-        "general": "Fachdaten",
-        "location": "Oort",
-        "parcel": "Flörstück",
-        "street": "Straat",
-        "subject": "Thema",
-        "topic": "Thema (Fachdaten)",
-        "topicBaselayer": "Thema (Hintergrundkoorten)"
-      },
-      "specialWFS": {
-        "ongoing": "in’t Verfahren",
-        "terminated": "faststellt",
-        "hazardous": "Störfallbetrieb",
-        "childcare": "Kita",
-        "bplan": "B-Plan"
-      },
-      "actions": {
-        "activateLayerInTopicTree": "Layer in’n Themenboom wiesen",
-        "addLayerToTopicTree": "Layer to’n Themenboom to doon",
-        "highlightFeature": "Feature markeren",
-        "openGetFeatureInfo": "Informatschonen wiesen",
-        "setMarker": "Marker setten",
-        "zoomToResult": "To’t Resultaat zoom’n",
-        "startRouting": "Route starten",
-        "showInTree": "Thema in’n Orner wiesen",
-        "showLayerInfo": "Informatschonen un Legende"
-      },
-      "noInitialResults": "De eerste Söök hett keen Treffer bröcht.",
-      "showAll": "All wiesen",
-      "layerResultNotShown": "De funnen Layer kann nich wiest warrn.",
-      "layerInfoNotShown": "De Layer-Information kann nich wiest warrn."
-    },
-    "selectFeatures": {
-      "description": "Kriegs Informatschonen över Objekte, de du in de Koort utsöchst",
-      "name": "Features utsöken",
-      "noFeatureChosen": "Keen Features utsöcht. Söök Features ut, indem du de Strg-Tast hölst un en Kasten üm de wünschten Features treckst, oder föög enkelte Features to, wenn du de Strg-Tast hölst un mit de linke Muustast klickst.",
-      "propertylessFeature": "Element ahn Attribute",
-      "clearSelection": "Heel Utwahl opheven",
-      "deselectFeature": "Feature afwählen",
-      "zoomToFeature": "Op dit Feature zoom’n"
-    },
-    "statisticDashboard": {
-      "name": "Statistik-Dashboard",
-      "description": "Filter Statistiken na Themenfeld un laat di tohörige Tabellen un Diagrammen wiesen.",
-      "headings": {
-        "mrhstatistics": "Tahlen, Daten, Fakten vun de MRH - Regionalstatistik",
-        "mrhstatisticsTooltip": "Link to de Metadaten",
-        "addFilter": "Filter to doon",
-        "filter": "Filter",
-        "addStatisticalData": "Statistische Daten utsöken",
-        "addArea": "Gebiete utsöken",
-        "addTime": "Tiedruum utsöken"
-      },
-      "infoText": "Henwies: Bi vele Gebiete warrt eerst bloots en Deel in’t Diagramm wiest. Över dat unner Feld laat sik mehr Gebiete tofögen.",
-      "infoTextNoData": "Dat sünd noch keen oder nich all nöödige Filter toföögt. Dormit statistische Daten in Tabellen un Diagrammen wiest warrt, mööt de Daten eerst filtert warrn.",
-      "button": {
-        "difference": "Differenz",
-        "table": "Tabell",
-        "chart": "Diagramm",
-        "add": "Filter to doon",
-        "edit": "Filter ännern",
-        "arrowLeft": "Na links blättern",
-        "arrowRight": "Na rechts blättern",
-        "reset": "All wegmaken",
-        "filter": "Filter",
-        "showMore": "mehr wiesen...",
-        "showLess": "weniger wiesen...",
-        "done": "Fardig",
-        "all": "All",
-        "statistics": "Statistiken",
-        "geographical": "Geografische Filter",
-        "timeBased": "Tiedbezogene Filter"
-      },
-      "label": {
-        "category": "Kategorie",
-        "area": "Gebiet",
-        "year": "Johr",
-        "statistics": "Statistiken",
-        "communities": "Gemeinden",
-        "districts": "Kreise",
-        "more": "mehr",
-        "time": "Tiedbezogene Filter",
-        "geographical": "Geografische Filter"
-      },
-      "filterInputs": {
-        "additional": "Sonstiges"
-      },
-      "reference": {
-        "title": "Differenzmodus",
-        "optionDate": "Welch Johr schall as Referenz dienen?",
-        "optionArea": "Welch Gebiet schall as Referenz dienen?",
-        "description": "Differenzweerten wiesen, baseert op en Referenzjohr oder -gebiet",
-        "placeholder": "Bidde tominnst een Optschoon utsöken!",
-        "tagLabel": "Referenz",
-        "year": "Referenzjohr {{value}}",
-        "region": "Referenzgebiet {{value}}",
-        "difference": "Differenz"
-      },
-      "legend": {
-        "under": "unner",
-        "between": "{{minimum}} bet unner {{maximum}}",
-        "from": "Vun",
-        "nodata": "De Visualiseren vun Daten vun mehr as een Statistik op de Koort steiht nich to Verföögung.",
-        "legend": "Koortenlegende",
-        "edit": "Bearbeiten",
-        "editClassification": "Klasseneinteilung bearbeiten",
-        "classification": "Klassifikation",
-        "numberOfClasses": "Tall vun Klassen",
-        "colorPalette": "Farbpalette",
-        "betweenValues": "bet unner",
-        "opacity": "Deckkraft",
-        "reset": "Torüchsetten",
-        "range": "Bereich",
-        "color": "Farbe",
-        "equalIntervals": "glieke Intervalle",
-        "quantile": "glieke Klassengröten (Quantile)",
-        "customized": "benutzerdefiniert",
-        "andAbove": "un doröver",
-        "invalidCustomStepsAlert": "Achtung: De utsöchten Bereichsgrenzen vormt keen opstigende Tahlenreeg!",
-        "noValue": "Gebiete mit fehlenden Weert sünd witt infärvt",
-        "previewLegend": "Vorschau Klasseneinteilung"
-      },
-      "totalHint": "Achtung: De Summenfunkschoon ünnerscheedt nich twischen absolute Tahlen, Prozente, Mittelweerten oder relative Gröten (t.B. Inwener per Quadratmeter). De Summen sünd dorüm nich jümmers richtig to deuten. Bidde im Kontext vun de utsöchten Statistik beachten. Fehlende Weerten warrt bi de Bereken nich berücksichtig.",
-      "filterHint": "All Feller mööt heel utfullt wesen, dormit de Filterresultaten wiest warrt.",
-      "backToOverview": "Diagrammöversicht",
-      "backToStatisticDashboard": "Torüch to de Översicht"
-    },
-    "shadow": {
-      "name": "Schadden",
-      "description": "Wies den Schaddenwurf to verschedene Tiedpunkten in de Koort",
-      "pickDate": "Söök en Datum ut:",
-      "shadowDisplayOff": "Schadden in de Koort utblennen",
-      "shadowDisplayOn": "Schadden in de Koort inblennen",
-      "slideHour": "Söök en Tied ut:",
-      "withInfoLabel": "Mit Informatschonen"
-    },
-    "shareView": {
-      "copyErrorAlert": "De <b><a href=\"{{url}}\" target=\"_blank\">URL vun de aktuelle Ansicht</a></b> kunn nich in de Twüschenaflaag kopeert warrn. Disse Funkschoon geiht bloots op sicker Websieden, de över dat Protokoll HTTPS (https://) to bereiken sünd.<br><br>Bidde neem Kontakt mit den Betreiber vun’t Portal op un bidd üm dat Inrichten vun en sicker Verbinnen.",
-      "description": "Deel en Link to de Koort",
-      "downloadQR": "QR-Code daalladen",
-      "myMap": "Hier is mien Koortenutsnitt: ",
-      "name": "Utwahl delen",
-      "share": "Delen",
-      "shareFacebook": "Aktuelle Ansicht op Facebook delen",
-      "shareHeadline": "Wo wullt du den Link delen?",
-      "shareLink": "Aktuelle Ansicht as Link kopeern",
-      "shareQR": "Aktuelle Ansicht as QR-Code maken",
-      "shareTwitter": "Twitter",
-      "linkCopied": "Link is in de Twüschenaflaag kopeert worrn.",
-      "qrError": "Bi’t Maken vun den QR-Code is en Fehler optraden.",
-      "qrErrorDataTooLarge": "De Daten, de du delen wullt, sünd to groot. Bidde minner Optschonen op de Koort wählen, dormit de Datenmeng lütter warrt."
-    },
-    "styleVT": {
-      "chooseTheme": "Bidde aktives Thema utsöken",
-      "description": "Änner dat Utsehn vun en Layer vun den Typ VectorTile",
-      "introText": "Op VectorTiles-Layer köönt verschedene vordefineerte Styles anwennt warrn, dormit de Ansicht för den jeweeligen Zweck beter passt.",
-      "name": "Style för Vector Tile Layers",
-      "noStyleableLayers": "Opstunns sünd keen Themen verföögbor, op de dit Warktüüch anwennt warrn kunn.",
-      "style": "Style",
-      "theme": "Thema"
-    },
-    "wfsSearch": {
-      "description": "Söök in en Thema na Objekte",
-      "description_parcel": "Söök na en Flurstück",
-      "district": "Gemarkung",
-      "fieldSelectionLabel": "Feld-Utwahl",
-      "instancesSelectLabel": "Instanzen-Utwahl",
-      "name": "WFS-Söök",
-      "noResults": "Dor sünd keen Resultaten för dien Söökkriterien funnen worrn. Versöök dat man nochmaal.",
-      "optionsPlaceholder": "Bidde en Optschoon utsöken!",
-      "parcelNumber": "Flurstücksnummer",
-      "parcelSearch": "Flurstückssöök",
-      "resetButton": "Torüchsetten",
-      "searchButton": "Söken",
-      "searchError": "Fehler bi de Söök vun Feature: {{error}}.",
-      "showResultHeading": "Söökresultaten:",
-      "userHelp": {
-        "and": "un",
-        "label": "Informatschonen to de Söökresultaten",
-        "or": "oder",
-        "text": "De Resultaten vun de Söök schüllt de Bedingen / Klauseln {{userHelp}} erfüllen. <br /> *Pflichtfeld"
-      },
-      "wrongConfig": "De Layer mit de Id \"{{id}}\" vun de Söök-Instanz \"{{title}}\" is nich defineert."
-    },
-    "wfst": {
-      "deleteInteraction": {
-        "headline": "Achtung",
-        "text": "Büst du di seker, dat du disse Geometrie löschen wullt?"
-      },
-      "description": "Objekte maken, opfrischen un löschen",
-      "descriptionNeueInfo": "Niege Informatschonen intragen",
-      "error": {
-        "allLayersNotSelected": "Aktiveer en konfigureerten WFS-T-Layer in’n Themenboom",
-        "geometryOutOfRange": "De teekente Geometrie liggt buten den tolaten Bereich vun den Layer.",
-        "layerNotConfiguredCorrectly": "Dor gifft Problemen mit de Konfiguratschoon vun den utsöchten Layer för dit Warktüüch; villicht fehlt de Parameter 'featurePrefix'.",
-        "layerNotSelected": "De utsöchte Layer is noch nich in’n Themenboom aktiveert.",
-        "noFeature": "Bidde teeken en Geometrie, de to dien Inträgen tohöört.",
-        "onlyNumbersAllowed": "Dat Ingaavfeld laat bloots Tahlen to.",
-        "requiredPropertiesNotSet": "Bidde giff en gellten Weert för de Pflichtfeller {{properties}} in.",
-        "fetchFeaturePropError": "Dat Laden vun de Parameter duert länger as normaal. Versöök dat man nochmaal."
-      },
-      "mandatoryInputError": {
-        "text": "Normale Texttekens un Sünnertekens as , . / \\ [ ] Lääruum un düütsche Tekens ö ä ü Ö Ä Ü ß (un nich bloots Tahlen) sünd nödig.",
-        "number": "En Tahl, Deel-Tahl oder negative Tahl is nödig.",
-        "date": "Dat komplette Datum is nödig.",
-        "datetime-local": "Komplett Datum un Uhrtied sünd nödig."
-      },
-      "form": {
-        "discard": "Wegsmieten",
-        "save": "Spiekern"
-      },
-      "interactionSelect": {
-        "delete": "Geometrie löschen",
-        "line": "Linie opnehmen",
-        "point": "Punkt opnehmen",
-        "polygon": "Flääch opnehmen",
-        "update": "Bearbeiten",
-        "multiUpdate": "Bearbeiten",
-        "multiPolygon": "Multipolygon opnehmen"
-      },
-      "multiUpdate": {
-        "oneSelected": "Objekt is utsöcht:",
-        "multipleSelected": "Objekte sünd utsöcht:",
-        "noItemsSelected": "Keen Objekte utsöcht",
-        "warningText": "Achtung! Eventuell vörhannen Inträgen warrt hier nich wiest! Bi’t Spiekern vun niege Inträgen warrt solche ahn Warnung överschreven.",
-        "buttonIcon": {
-          "active": {
-            "pen": "Lasso-Utwahl deaktivieren",
-            "box": "Rechteck-Utwahl deaktivieren"
-          },
-          "notActive": {
-            "pen": "Lasso-Utwahl aktivieren",
-            "box": "Rechteck-Utwahl aktivieren"
-          }
-        }
-      },
-      "confirmVoidFeatureCreation": {
-        "textContent": "Wullt du en Multipolygon mit en void (Donut-Polygon) maken?",
-        "headline": "Polygon maken mit void"
-      },
-      "layerSelectLabel": "Aktueller Layer:",
-      "name": "WFS-T-Warktüüch",
-      "polygonHint": "Hool de Strg-Tast drückt un beweeg de Muus mit drückte Muustast, üm en Polygon to verschuven.",
-      "fieldRequired": "Pflichtfeld",
-      "transaction": {
-        "error": {
-          "axios": "Dat Spiekern bzw. Löschen vun de Geometrie un ehr Parameter is leider fehl slaan. Bidde wend di an dien Administrator.",
-          "InvalidParameterValue": "Dat Spiekern vun de Geometrie un ehr Parameter is leider fehl slaan. Een vun de Ingaaven is nich tolaten oder nich in’t richtige Format.",
-          "MissingParameterValue": "Dat Spiekern vun de Geometrie un ehr Parameter is leider fehl slaan. Een oder mehr Parameter hebbt keen Ingaav un de Deenst hett keen Defaultweert.",
-          "OperationNotSupported": "Dat Spiekern vun de Geometrie un ehr Parameter is leider fehl slaan. De Deenst ünnerstütt de dörföhrte Operatschoon nich.",
-          "OperationParsingFailed": "Dat Spiekern vun de Geometrie un ehr Parameter is leider fehl slaan. De Transakschoon kunn vun den Deenst nich verarbeidt warrn. Bidde wend di an den Administrator.",
-          "OperationProcessingFailed": "Dat Spiekern vun de Geometrie un ehr Parameter is leider fehl slaan. Bi de Transakschoon is en Fehler optraden."
-        },
-        "success": {
-          "baseSuccess": "Dat {{transaction}} weer erfolgreich.",
-          "delete": "Löschen",
-          "insert": "Spiekern",
-          "selectedUpdate": "Bearbeiten",
-          "batchInfo": "Disse Inträgen vun den Layer {{layer}} sünd spiekert worrn:</br>"
-        }
-      }
-    },
-    "wmsTime": {
-      "layer": {
-        "errorTimeLayer": "Es ist ein Fehler bei der Vorbereitung des Layer mit der id {{id}} aufgetreten: {{error}}"
-      },
-      "layerSwiper": {
-        "description": "De Swiper kann mit de Muus oder mit de Pieltasten vun de Tastatur bewegt warrn. Wenn de Pieltasten bruukt warrt, verschuuvt sik de Swiper {{amount}}px in de jeweelige Richt.",
-        "title": "Layer verglieken"
-      },
-      "timeSlider": {
-        "buttons": {
-          "backward": "Een Tietpunkt torüch",
-          "deactivateLayerSwiper": "Layer wegmaken",
-          "forward": "Een Tietpunkt vöran",
-          "layerSwiper": "Tietpunkten verglieken",
-          "play": "All Tietpunkten automaatsch afspelen, utgahn vun den aktuell utsöchten Tietpunkt"
-        },
-        "inputRangeLabel": "Een Tietpunkt utsöken"
-      }
-    },
-    "pagination": {
-      "aria": {
-        "previous": "Vörige Siet",
-        "next": "Nächste Siet",
-        "go": "Gahn to Siet"
-      },
-      "input": {
-        "label": "Siet",
-        "placeholder": "Siet",
-        "tooltip": "Sietentall ingeven un Enter drücken oder op den Piel klicken, üm to disse Siet to springen"
-      },
-      "button": {
-        "goTooltip": "To de ingevene Siet springen"
-      }
-    }
-  },
-  "shared": {
-    "js": {
-      "api": {
-        "cswParser": {
-          "annually": "all Johr",
-          "asNeeded": "wenn nödig",
-          "biannually": "twee Mal in’t Johr",
-          "continual": "dauern",
-          "daily": "daglich",
-          "fortnightly": "all veertien Daag",
-          "irregular": "unregelmatig Tieden",
-          "monthly": "maandlich",
-          "notPlanned": "nich plaant",
-          "quarterly": "vierteljohrlich",
-          "unknown": "nich bekannt",
-          "weekly": "wöchentlich"
-        }
-      },
-      "utils": {
-        "buildings": "Gebäuden",
-        "selectedFeatures": "Utwahl:"
-      }
     },
     "modules": {
-      "buttons": {
-        "download": "Runnerladen",
-        "error": {
-          "download": "Bi’t Runnerladen vun de wünschten Daten is’n Fehler optraten."
+        "about": {
+            "additionalMetadata": "noch mehr Infos...",
+            "contact": "Anspreekpartner:",
+            "description": "Hier kannst wat över dit Portal rutfinnen",
+            "name": "Över dit Portal",
+            "noMetadataLoaded": "Keen Metadaten kunn laad warrn!",
+            "version": "Verschoon: ",
+            "ustId": "Umsatzsteuer-ID na § 27 Umsatzsteuergesetz:",
+            "imprintTitle": "Impressum",
+            "privacyStatementText": "Datenschutzerklärung un allgemeene Infos, woans de datenschutzrechtlichen Vörgaaben ut de Artikels 12 bet 14 vun de Datenschutz-Grundverordnung bi’n Landesbetrieb Geoinformation un Vermessung vun de Freien un Hansestadt Hamburg ümsett warrt:",
+            "privacyStatement": "Datenschutzerklärung",
+            "accessibilityText": "Erklärung to de Barrierefreiheit na § 11 Hamburgisches Gesetz to de Gleichstellung vun Minschen mit Behinnern (Hamburgisches Behindertengleichstellungsgesetz – HmbBGG) vun’n 19. Dezember 2019:",
+            "accessibilityStatement": "Barrierefreiheitserklärung",
+            "contactButton": "Kontakt opnehmen"
+        },
+        "addWMS": {
+            "alertTitleSuccess": "Layer mit Spood toföögt",
+            "alreadyAdded": "De Layer vun dat anfraagte WMS sünd al toföögt.",
+            "completeMessage": "De Layer vun dat anfraagte WMS sünd in’n Themenboom toföögt un köönt över <b>Themen tofögen</b> utsöcht warrn!",
+            "completeMessageShowInLayerTree": "&#9989; De Layer vun dat anfraagte WMS sünd in’n Themenboom toföögt!",
+            "description": "Föög en Web Map Service (WMS) to’n Themenboom to",
+            "errorHttpsMessage": " &#10060; Dat vun di anfraagte WMS löppt över en http-URL. Dat Masterportal kann bloots WMS över https (SSL) inbinden.",
+            "errorMessage": "&#10060; De angeevne Deenst kunn nich laad warrn. Bitte prööv, wat de URL richtig angeeven is.<br><br> Wenn dat Problem wiedder optreedt, wend di bitte an den Betreiber vun den Deenst mit dissen Hennwies op en faken Fehler: <br><strong>Dat mutt sekerstellt warrn, dat för den Deenst en CORS-Header sett is. Dat warrt vun de <a target='_blank' href='https://www.gdi-de.org/download/AK_Geodienste_Architektur_GDI-DE_Bereitstellung_Darstellungsdienste.pdf'>GDI-DE</a> in Kapittel 4.7.1 anraadt.</strong>",
+            "errorTitle": "Layer kunn nich toföögt warrn",
+            "ifInExtent": "&#10060; De över dat WMS levert Geodaten liggt buten dat darstellbore Rebeet. WMS tofögen is nich mööglich.",
+            "name": "WMS tofögen",
+            "placeholder": "Hier bitte de WMS-URL ingeven.",
+            "textLoadLayer": "Layer laden",
+            "examples": "Bispelen:"
+        },
+        "alerting": {
+            "alertWindowTitle": "Informatschonen",
+            "categories": {
+                "error": "Fehler",
+                "info": "Info",
+                "news": "Narichten",
+                "success": "Spood",
+                "warning": "Achtung"
+            },
+            "created": "Opstellt: ",
+            "hideMessage": "Disse Mellen nich wedder wiesen",
+            "showMessage": "Disse Mellen wiesen"
+        },
+        "aria": {
+            "sliderAria": "Schuuvregler för "
+        },
+        "button": {
+            "confirm": "Bestätigen",
+            "stop": "Afbreken"
+        },
+        "bufferAnalysis": {
+            "clearButton": "Torüchsetten",
+            "description": "Kiek, wat sik in’n Umkreis üm en Objekt befinnt",
+            "name": "Buffer-Analyse",
+            "notOverlapping": "buten de Radien",
+            "overlapping": "binnen de Radien",
+            "rangeLabel": "Radius (m)",
+            "resultTypeLabel": "Resultat-Typ",
+            "saveButton": "Link koperen",
+            "sourceLayerNotFound": "De spiekerte Quell-Layer mit de ID {{layerId}} wöör nich funnen.",
+            "sourceSelectLabel": "Quell-Layer",
+            "targetLayerNotFound": "De spiekerte Teel-Layer mit de ID {{layerId}} wöör nich funnen.",
+            "targetSelectLabel": "Teel-Layer"
+        },
+        "compareMaps": {
+            "description": "Twee Koorten naastenanner oder överenanner vergeliken",
+            "horizontal": "horizontal",
+            "leftLayer": "Linke Layer",
+            "lowerLayer": "Unnere Layer",
+            "name": "Koorten vergeliken",
+            "reset": "Torüchsetten",
+            "rightLayer": "Rechte Layer",
+            "sameLayerSelected": "De sülve Layer is tweemal utsöcht worrn. De Utsöök is torüchsett.",
+            "selectLeftLayerFirst": "Bitte eerst de linke Layer utsöken",
+            "selectUpperLayerFirst": "Bitte eerst de boven Layer utsöken",
+            "splitDirection": "Utrichten: ",
+            "upperLayer": "Boven Layer",
+            "vertical": "vertikal"
+        },
+        "contact": {
+            "addFileButton": "Anhang tofögen",
+            "description": "Stell Fragen to dit Portal oder mell Fehler",
+            "error": {
+                "mail": "Bitte en gellen E-Mail-Adress ingeven.",
+                "message": "Dat Sennen vun de E-Mail is fehlslaan!",
+                "messageInput": "Dien Naricht mutt tominnst {{length}} Tekens lang ween.",
+                "phone": "Ünner welk Telefoonnummer köönt wi di bereiken?",
+                "username": "Bitte segg uns dien Naam."
+            },
+            "errorIncompleteDeclarations": "Bitte füll all Felder vun dat Kontaktformular richtig ut, dormit dien Anfraag afschickt warrn kann.",
+            "fileFormatMessage": "De anhängte Datei hett nich dat richtige Format. Tolaaten sünd: .jpg, .jpeg, .png un .pdf",
+            "fileSizeMessage": "De anhängte Datei is grötter as de fastleggte Dateigrött: ",
+            "fileSizeSumMessage": "De anhängten Dateien sünd tosamen gröter as de maximal tolaatene Upload-Grött.",
+            "fileDuplicatedMessage": "Dat Tofögen is nich mööglich. Disse Datei is al toföögt: ",
+            "mailSubject": "Support-Anfraag to dat Portal ",
+            "messageLabel": "Dien Naricht",
+            "name": "Kontakt opnehmen",
+            "placeholder": {
+                "mail": "Dien E-Mail-Adress",
+                "message": "Bitte schrieff hier dien Fraag un drück op \"$t(common:modules.contact.sendButton)\".",
+                "phone": "Dien Telefoonnummer",
+                "username": "Dien Naam"
+            },
+            "privacyPolicy": {
+                "info": "Du büst dor mit inverstahn, dat dien Daten för de Bearbeiden vun dien Anliggen bruukt warrt. Mehr Infos un Henwiesen to’n Wedderruf finnst du in de <a href=\"{{privacyPolicyLink}}\" target=\"_blank\">Datenschutzerklärung</a>.",
+                "label": "Bitte de Datenschutzerklärung akzeptieren."
+            },
+            "removeAttachment": "Datei wegmaken",
+            "sendButton": "Kontakt opnehmen",
+            "successMessage": "Dien Anfraag is mit Spood afschickt worrn.",
+            "successTicket": "Dien Ticketnummer is: ",
+            "infoMessage": "Hest du Henwiesen, Fragen oder Problemen? Schrieff uns!"
+        },
+        "controls": {
+            "backForward": {
+                "stepBackward": "Leste Ansicht",
+                "stepForward": "Nächste Ansicht"
+            },
+            "button3d": {
+                "buttonTitle2d": "2D",
+                "buttonTitle3d": "3D"
+            },
+            "fullScreen": {
+                "enable": "Vullbild anmaken",
+                "disable": "Vullbild utmaken"
+            },
+            "freeze": {
+                "freeze": "Ansicht fastsetten",
+                "unfreeze": "Ansicht wedder freegeven"
+            },
+            "orientation": {
+                "distanceUnit": "Meter",
+                "geolocationDeniedText": "Lokaliseren nich mööglich",
+                "iFrameGeolocationError": "De Geolokaliseren binnen en Iframe is opstunns nich mööglich.<br/>Bitte maak dat <a href='#' target=`_blank`>Portal</a> in en niegen Tab oder Finster op.",
+                "imgAlt": "Bild för Point of Interest",
+                "poiChoiceCurrentPosition": "Standort",
+                "poiChoiceCustomPosition": "Adress söken oder Punkt in de Koort setten",
+                "poiChoiceClickPoint": "Punkt in de Koort setten",
+                "poiChoiceConfirmation": "OK",
+                "poiChoiceStop": "Beennen",
+                "poiChoiceTitle": "Utsgangspunkt för Umkreissöök utsöken:",
+                "titleGeolocate": "Standpunkt",
+                "titleGeolocatePOI": "In de Neeg (Luftlien)",
+                "trackingDeniedText": "'In de Neeg' nich verfögbor."
+            },
+            "rotation": {
+                "reset": "Dreihung torüchsetten",
+                "rotateClockwise": "Mit den Klockenwieser dreihen",
+                "rotateCounterClockwise": "Gegen den Klockenwieser dreihen",
+                "compass": {
+                    "pointerNorth": "Ansicht dreihen",
+                    "moveNorth": "Na Noorden bewegen",
+                    "moveSouth": "Na Süden bewegen",
+                    "moveWest": "Na Westen bewegen",
+                    "moveEast": "Na Osten bewegen"
+                }
+            },
+            "tiltView": {
+                "downButton": "Ansicht na nerrn kippen",
+                "upButton": "Ansicht na baven kippen"
+            },
+            "totalView": {
+                "titleButton": "Torüch to de Startansicht"
+            },
+            "zoom": {
+                "zoomIn": "Hienzoomen",
+                "zoomOut": "Rutzoomen"
+            }
+        },
+        "compareFeatures": {
+            "title": "Vergliekslist",
+            "description": "Utwählte Objekte in de Tabell mit’nanner vergelieken.",
+            "topicsSelection": "Themen-Utwahl",
+            "removeFromList": "Vun de List rutnehmen",
+            "noFeatures": {
+                "nothingSelected": "Keen {{objects}} för de Vergliekslist utwählt.",
+                "objectName": "Objekte",
+                "info": "Klick op en Objekt in de Koort. Denn geiht en Finster mit de Sachinfos op. Baven rechts is en Steernsünnbool {{iconEmptyStar}}. Klick dor op, denn kummt dat Objekt in de Vergliekslist. De Steern warrt geel {{iconYellowStar}}. Klickst du nochmaal, flüggt dat Objekt wedder rut.",
+                "info2": "Soodra en Objekt in de Vergliekslist is, dukt dat in de Tabell op, so dat du dat mit anner Objekte vergelieken kannst. För rutnehmen klickst du eenfach op dat 'X' links in de Tabell."
+            },
+            "feedback": {
+                "added": "Dat Objekt is to de Vergliekslist toföögt worrn",
+                "addedWithName": "{{currentFeatureName}} is to de Vergliekslist toföögt worrn",
+                "notAdded": "Dat Objekt kunn nich to de Vergliekslist toföögt warrn",
+                "notAddedWithName": "{{currentFeatureName}} kunn nich to de Vergliekslist toföögt warrn",
+                "limitReached": "De maximale Tall an Objekte in de Vergliekslist is erreicht.",
+                "removeObjects": "Bidde eerst tominnst een Objekt rutnehmen, ehr du wiedermakst.",
+                "goToComparisonlist": "To de Vergliekslist"
+            },
+            "trueFalse": {
+                "true": "Jo",
+                "false": "Nee"
+            }
+        },
+        "coordToolkit": {
+            "cartesian": {
+                "eastingLabel": "Oostweert / Rechtsweert",
+                "northingLabel": "Noordweert / Hoochweert"
+            },
+            "coordSystemField": "Koordinatensysteem",
+            "coordsCopied": "De Koordinaten sünd in de Twüschenaflaag kopiert worrn.",
+            "coordsPair": "Koordinatenpoor",
+            "copyCoordBtn": " {{- value}} kopieren",
+            "copyCoordsBtn": "Koordinatenpoor kopieren",
+            "copyToClipboard": {
+                "contentSaved": "Inholt is in de Twüschenaflaag kopiert worrn.",
+                "contentNotSaved": "Inholt kunn nich in de Twüschenaflaag kopiert warrn."
+            },
+            "description": "Koordinaten ut de Koort holen oder na Koordinaten söken.",
+            "errorMsg": {
+                "example": "Bispill: ",
+                "hdmsNoCoord": "Bidde giff den Weert för {{valueKey}} komplett in.",
+                "hdmsNoMatch": "De Ingav för {{valueKey}} passt so nich richtig!",
+                "noCoord": "Bidde giff {{valueKey}} komplett in.",
+                "noMatch": "De Ingav för {{valueKey}} passt so nich richtig!"
+            },
+            "exampleAcronym": "Bsp. ",
+            "hdms": {
+                "eastingLabel": "Breed",
+                "northingLabel": "Läng"
+            },
+            "heightLabel": "Hööchd",
+            "hintSearch": "Giff de Koordinaten in, de du söchst",
+            "hintSupply": "Bidde in de Koort klicken.",
+            "influenceFactors": "De wiesten Weerten köönt afwiken, t.B. dör Maatschaal, Koortoplüüsung un Bildschirm.",
+            "info": "Informatschonen",
+            "name": "Koordinaten",
+            "noHeightBuilding": "Gebäudefläche, keen Hööchdaten",
+            "noHeightWater": "Waterfläche, keen Hööchdaten",
+            "postionCoordinates": "Lagekoordinaten",
+            "search": "Koordinaten söken",
+            "searchBtn": "Söken",
+            "supply": "Koordinaten / Hööch afragen",
+            "utm": {
+                "eastingLabel": "Oostweert",
+                "northingLabel": "Noordweert"
+            }
+        },
+        "copyrightConstraints": {
+            "name": "Bruukhinwiesen",
+            "info": "Bidde acht op de Bruukhinwiesen vun de bruukten Geodaten",
+            "notSpecified": "Keen Angav, giff di man an",
+            "contactOrganisation": "Organisatschoon",
+            "contactName": "Naam",
+            "contactPhone": "Tel.",
+            "contactEmail": "E-Mail",
+            "wait": "Een lütten Momang bidde"
+        },
+        "draw": {
+            "description": "Wichtige Markern maken oder Flächen kennteken",
+            "name": "Teken / Schrieven"
+        },
+        "draw_old": {
+            "attributeSelect": {
+                "attributeDuplicatedKeyError": "De Attribut-Slötel gifft dat al.",
+                "attributeKeyError": "Bidde en Slötel för dat Attribut angeven.",
+                "input": {
+                    "key": "Attribut-Slötel",
+                    "value": "Attribut-Weert",
+                    "newKey": "Nieg Slötel",
+                    "newValue": "Nieg Weert"
+                },
+                "noFeatureSelected": "Opstunn is noch keen Feature utwählt. Bidde en Feature utsöken!",
+                "remove": "Wegmaken",
+                "save": "Spiekern"
+            },
+            "button": {
+                "delete": "Geometrie / Text wegmaken",
+                "deleteAll": "Allens wegmaken",
+                "download": "Rünnerladen",
+                "draw": "Geometrie / Text teken",
+                "edit": "Geometrie / Text bewerken",
+                "editAttributes": "Attribute bewerken",
+                "redo": "Wedderhalen",
+                "saveDrawing": "Teken spiekern",
+                "undo": "Torüchnehmen"
+            },
+            "clickToPlaceText": "Klick op de Koort, üm den Text to platzeren",
+            "color": "Füllklöör",
+            "colorContour": "Ümrissklöör",
+            "colors": {
+                "black": "Swatt",
+                "blue": "Blaag",
+                "green": "Gröön",
+                "grey": "Graa",
+                "orange": "Orange",
+                "red": "Root",
+                "white": "Witt",
+                "yellow": "Geel"
+            },
+            "defined": "defineert",
+            "description": "Wichtige Markern maken oder Flächen kennteken. Du kannst se hier rünnerladen, üm se later wedder to laden.",
+            "doubleCirclePlaceholder": "Bidde en Radius angeven",
+            "download": {
+                "allGeometryTypesNotSupported": "De tekenten Geometrien köönt in dat utsöchte Format nich rünnerladen warrn. Dat Format ünnerstütt den Geometrietyp Polygon nich.",
+                "enterFilename": "Bidde Dateinaam angeven",
+                "filename": "Dateinaam",
+                "format": "Format",
+                "notSupportedGeometryType": "Een oder mehr tekente Geometrien köönt in dat utsöchte Format nich rünnerladen warrn, wiel dat Format den Geometrietyp Polygon nich ünnerstütt. All Punkte un Linien köönt rünnerladen warrn.",
+                "pleaseChoose": "Bidde utsöken",
+                "unknownGeometry": "Nich bekannte Geometrie: <strong>{{geometry}}</strong>"
+            },
+            "drawLayerVisible": "Teken sichtbor",
+            "drawTypeOptions": {
+                "drawArea": "Fläche",
+                "drawSquare": "Quadraat",
+                "drawCircle": "Kreis",
+                "drawCurve": "Freehand-Linie",
+                "drawDoubleCircle": "Doppelkreis",
+                "drawLine": "Linien",
+                "drawSymbol": "Symbol",
+                "writeText": "Text"
+            },
+            "fontName": "Schriftort",
+            "fontSize": "Schriftgrööt",
+            "geometry": "Geometrie",
+            "geometryDrawFailed": "De övergevene Geometrie kunn nich dorstellt warrn.",
+            "iconList": {
+                "gelber Pin": "geeler Pin",
+                "iconCloud": "Wolke",
+                "iconLeaf": "Bladd",
+                "iconMeadow": "Wisch",
+                "iconPoint": "Punkt"
+            },
+            "innerColorContour": "Inner Ümrissklöör",
+            "innerRadius": "Inner Radius",
+            "interactive": "interaktiv",
+            "limitReached_one": "Du hest al {{count}} Objekt tekent. Bidde dat eerst wegmaken, ehr du wiedermakst!",
+            "limitReached_other": "Du hest al {{count}} Objekte tekent. Bidde eerst een wegmaken, ehr du wiedermakst!",
+            "lineWidth": "Strichstark",
+            "method": "Metood",
+            "name": "Teken / Schrieven",
+            "outerColorContour": "Buuter Ümrissklöör",
+            "outerRadius": "Buuter Radius",
+            "radius": "Radius",
+            "symbol": "Symbol",
+            "text": "Text",
+            "transparency": "Dörsichtigkeit",
+            "transparencyOutline": "Ümriss-Dörsichtigkeit",
+            "undefinedInnerCircle": "Bidde ok den innern Kreis defineern.",
+            "undefinedOuterCircle": "Bidde ok den butern Kreis defineern.",
+            "undefinedSquareArea": "Bidde den Flächeninhollt vun dat Quadraat angeven.",
+            "undefinedRadius": "Bidde en Radius angeven.",
+            "undefinedTwoCircles": "Bidde beed Kreise defineern.",
+            "unit": "Eenheit",
+            "squareDefinedInfo": " (ahn Berücksichtigung vun de Eerdkrümmung)",
+            "areaLabel": "Flächeninhollt",
+            "squareSideLengthLabel": "Siedenläng",
+            "lineLengthLabel": "Gesamtläng"
+        },
+        "featureLister": {
+            "chooseTheme": "Thema utsöken",
+            "continueButton": "Wieder to de List",
+            "details": "Details",
+            "detailsOfSelected": "Details vun dat utsöchte Feature",
+            "description": "All Indrääg to een Thema oplisten",
+            "key": "{{shownFeatures}} vun {{featureCount}} Features listet",
+            "list": "List",
+            "manualSelection": "Features vun Hand in de Koort utsöken",
+            "more": "Mehr…",
+            "name": "List",
+            "noFeaturesFound": "Keen Features in de Utwahl funnen.",
+            "noFeaturesFoundInMap": "Keen Features in dissen Koortutsnitt funnen.",
+            "requestFailedAlert": "De Afraag vun de Features is fehlslaan. Versöök dat later nochmaal.",
+            "spatialSelection": "Objekte räumlich filtern",
+            "visibleVectorLayers": "Sichtbore Vektorlayer"
+        },
+        "fileImport": {
+            "alertingMessages": {
+                "featureError": "Een Feature in disse Datei kunn nich leest warrn.",
+                "formatError": "De Datei \"{{filename}}\" kunn nich leest warrn. Bidde prööv, wat dat Format *.kml, *.gpx, *.geojson oder *.json is.",
+                "missingFileContent": "Fehler bi’m Leesen vun de Datei \"{{filename}}\". Bidde prööv Dateityp un Inholt. Is de Datei ok, wend di an den Support.",
+                "missingFormat": "Dat Dateiformat {{format}} warrt nich ünnerstütt. Bidde wend di an den Support.",
+                "success": "De Datei \"{{filename}}\" is mit Spood importeert worrn.",
+                "successPartly": "De Datei \"{{filename}}\" is deels importeert worrn."
+            },
+            "captions": {
+                "drawTool": "$t(common:modules.draw.name) opmaken",
+                "introDrawTool": "Importeerte Geometrien köönt later noch ännert warrn. Dor för dat Warktüüg \"$t(modules.draw.name)\" bruken.",
+                "introFormats": "Du kannst KML-Dateien (*.kml), GPX-Dateien (*.gpx) oder GeoJson-Dateien (*.geojson, *.json) importeren.",
+                "introInfo": "Treck de Datei eenfach rin (Drag & Drop) oder bruuk den Opmaak-Dialog vun den Browser.",
+                "supportedFiletypes": {
+                    "auto": "Automatische Erkennung",
+                    "geojson": "GeoJson-Datei (*.geojson, *.json)",
+                    "gpx": "GPX-Datei (*.gpx)",
+                    "kml": "KML-Datei (*.kml)"
+                }
+            },
+            "description": "Geodaten ut verschedene Dateiformaten importeren",
+            "fileZoom": "Op Features ut disse Datei \"{{filename}}\" zoomen",
+            "importFiles": "Utsöchte Dateien importeren",
+            "name": "Datei-Import",
+            "removeAttachment": "Datei wegmaken",
+            "successfullyImportedLabel": "Mit Spood importeert:",
+            "zoom": "Zoomen",
+            "colorPerAttributes": "Klöör na Attributen",
+            "stylingAttributeDescription": "Söök en Attribut ut, na dat de Layer stylt warrn schall.",
+            "stylingColorDescription": "Wenn du en Klöör utsöchst, warrt automaatsch en Klöörskala maakt. Bi nummerische Weerten vun hell na düster. De högste Weert kriggt de utsöchte Klöör. Bi qualitative Daten warrt verschedene Klöörtöön maakt."
+        },
+        "filter": {
+            "activeFilter": "Aktive Filter",
+            "alertingMessages": {
+                "noMatchingFilterId": "De instellte Filter-ID gifft dat nich."
+            },
+            "ariaLabel": {
+                "checkbox": "Checkbox för {{param}}",
+                "date": "Datum för {{param}}",
+                "dateRange": {
+                    "from": "Startdatum vun {{param}}",
+                    "to": "Ennddatum vun {{param}}"
+                },
+                "dropdown": "Utwahlbox för {{param}}",
+                "input": "Ingaav för {{param}}",
+                "radio": "Radio för {{param}}",
+                "slider": "Schuuvregler för {{param}}",
+                "sliderRange": {
+                    "max": "Schuuvregler max för {{param}}",
+                    "min": "Schuuvregler min för {{param}}"
+                },
+                "toolInfo": "Warktüüg-Informatschonen (Link in niegen Tab opmaken)"
+            },
+            "button": {
+                "confirm": "Bestätigen",
+                "stop": "Afbreken"
+            },
+            "chart": {
+                "speciesCadastreAlternativeText": "För disse Oort gifft dat opstunn noch keen oder nich noog aktuelle Beobachtungen."
+            },
+            "description": "Filtert de Objekte, de in de Koort wiest warrt",
+            "download": {
+                "enterFilename": "Bidde Dateinaam angeven",
+                "filename": "Dateinaam",
+                "format": "Format",
+                "label": "Filterte Daten rünnerladen",
+                "labelBtn": "Rünnerladen",
+                "pleaseChoose": "Bidde utsöken"
+            },
+            "dropdown": {
+                "deselectAll": "Allens afwählen",
+                "emptyList": "De List is leddig",
+                "noElements": "Keen Elemente funnen",
+                "selectAll": "Allens utsöken"
+            },
+            "filterButton": "Filter anwennen",
+            "filterReset": "Filter löschen",
+            "filterResetAll": "All Filter löschen",
+            "filterResetOrigin": "Filter torüchsetten",
+            "filterResult": {
+                "disabledInfo": "De Filter is op disse Zoomstuf deaktiviert.",
+                "unit": "{{amountOfFilteredItems}} Ergebnisse"
+            },
+            "geometryFilter": {
+                "title": "Geometriefilter",
+                "buffer": "Puffer [m]",
+                "geometries": "Geometrien",
+                "regions": "Gebiete",
+                "geometryTypes": {
+                    "circle": "Kreis",
+                    "lineString": "Linie + Puffer",
+                    "polygon": "Fläche",
+                    "rectangle": "Rechteck"
+                },
+                "delete": "Wegmaken",
+                "removeGeometry": "Gebiet wegmaken",
+                "selectGeometry": "Söök en Geometrie ut, üm bloots binnen disse Geometrie to filtern.",
+                "selectRegion": "Söök en Gebiet ut, üm bloots binnen dit Gebiet to filtern."
+            },
+            "info": {
+                "infoIcon": "Mit en Klick op dat Info-Icon kriggst du mehr Informatschonen",
+                "snippetCheckbox": "Dat Kontrollkästchen kann mit en Muusklick an- oder utmaakt warrn.",
+                "snippetDate": "För en Datum as Söök-Kriterium klickst du in dat Feld un söchst en Datum ut den Kalender ut.",
+                "snippetDateRange": "För en Datumsbereich klickst du in Start- un Enn-Datum-Feld un söchst de Daten ut den Kalender ut.",
+                "snippetDropdown": "Du kannst een oder mehr Weerten ut de List utsöken.",
+                "snippetInput": "Du kannst dien Söök-Kriterien in dat Textfeld ingeven.",
+                "snippetSlider": "För nummerische Weerten kannst du den Schuuvregler na rechts oder links schuven oder den Weert direktemang ingeven.",
+                "snippetSliderRange": "För Minimum- un Maximum-Weerten kannst du de Schuuvregler verschuven oder de Weerten direktemang ingeven."
+            },
+            "name": "Filter",
+            "searchInMapExtent": "Söök in den aktuellen Koortutsnitt",
+            "slider": {
+                "valueEmptyErrorMessage": "De Ingaav darf nich leddig wesen!",
+                "valueOutOfRangeErrorMessage": "De Ingaav {{inputValue}} mut binnen den Beriek vun {{minValueSlider}} un {{maxValueSlider}} liggen!"
+            },
+            "snippetTags": {
+                "selectionText": "Dien Utwahl:",
+                "showMore": "mehr wiesen",
+                "showLess": "weniger wiesen"
+            },
+            "upload": {
+                "geometryParseError": "De angeven Geometrie kunn nich laden warrn"
+            },
+            "distributionMapLinkText": "Link to de Verbreitungskort",
+            "distributionMapLinkTextTitle": "Link to de Verbreitungskort kopieren",
+            "universalSearchTitle": "Na dit Dier in’t Web söken",
+            "resetButton": "Op den Ursprungszustand torüchsetten"
+        },
+        "getFeatureInfo": {
+            "boolean": {
+                "0": "Nee",
+                "1": "Jo",
+                "false": "Nee",
+                "no": "Nee",
+                "true": "Jo",
+                "yes": "Jo"
+            },
+            "buttonBack": "Vörige Informatschonen wiesen",
+            "buttonForward": "Wiedere Informatschonen wiesen",
+            "errorMessageLayers": "Bi de Informatschonen-Afraag (GetFeatureInfo) sünd Fehler bi disse Layer opreten: <ul>{{layers}}</ul><br>Bidde versöök dat later nochmaal. Wenn dat Problem blifft, wend di bidde an den Betreiber vun den Deenst.",
+            "errorMessage": "Bi de Informatschonen-Afraag (GetFeatureInfo) is en Fehler opreten.<br>Bidde versöök dat later nochmaal. Wenn dat Problem blifft, wend di bidde an den Betreiber vun den Deenst.",
+            "favoriteIcons": {
+                "compareFeatureIcon": {
+                    "toCompareList": "To de Vergliekslist",
+                    "fromCompareList": "Vun de Vergliekslist rutnehmen"
+                }
+            },
+            "name": "Informatschonen affragen",
+            "themes": {
+                "default": {
+                    "imgAlt": "Dat Bild kunn nich laden warrn.",
+                    "noAttributeAvailable": "Keen Attribut vörhannen!"
+                },
+                "sensor": {
+                    "chargingStations": {
+                        "available": "Verföögborheit",
+                        "charging": "Utlastung",
+                        "outoforder": "Buten Bedriev",
+                        "faulted": "Fehlerstatus"
+                    },
+                    "sensor": {
+                        "dataName": "Daten",
+                        "header": {
+                            "description": "Beschrievung",
+                            "name": "Naam",
+                            "ownerThing": "Eegner"
+                        }
+                    },
+                    "sensorBarChart": {
+                        "chartTitleAverage": "Middelweert ut",
+                        "clock": "{{value}} Uhr",
+                        "month_one": "{{count}} Monat",
+                        "month_other": "{{count}} Monaden",
+                        "nextWeekday": "Nakamen Wekendag",
+                        "noticeTextAvailable": "(Bloots Daten mit den Weert available / verfüögbor warrt berücksichtig)",
+                        "noticeTextCharging": "(Bloots Daten mit den Weert charging / ladend warrt berücksichtig)",
+                        "noticeTextOutoforder": "(Bloots Daten mit den Weert outoforder / buten Bedriev warrt berücksichtig)",
+                        "noticeTextFaulted": "(Bloots Daten mit den Weert faulted / Fehlerstatus warrt berücksichtig)",
+                        "previousWeekday": "Vörige Wekendag",
+                        "year_one": "{{count}} Johr",
+                        "year_other": "{{count}} Johren"
+                    },
+                    "sensorData": {
+                        "firstColumnHeaderName": "Egenschappen"
+                    }
+                }
+            },
+            "title": "Objekt-Informatschonen"
+        },
+        "gfiThemes": {
+            "dataTable": {
+                "sort": "Weerten sorteren"
+            }
+        },
+        "info": {
+            "name": "Info",
+            "disclaimer": "Hafungsutsluut",
+            "home": {
+                "name": "Hamborg"
+            }
+        },
+        "language": {
+            "de": "Deutsch",
+            "description": "Söök dien Spraak ut",
+            "en": "English",
+            "es": "Español",
+            "it": "Italiano",
+            "name": "Spraak ännern",
+            "platt": "Platt",
+            "pt": "Português",
+            "ru": "Русский",
+            "tr": "Türkçe",
+            "ua": "Українська",
+            "nl": "Nederlands"
+        },
+        "layerClusterToggler": {
+            "description": "Mehrere Themen mit een Klick anmaken",
+            "info": "De Sichtborkeit vun disse Layer an- oder utmaken:",
+            "name": "Layer-Gruppe opmaken",
+            "toggle": "Sichtborkeit vun de Layer ümmschalten"
+        },
+        "layerInformation": {
+            "additionalMetadata": "mehr Informatschonen...",
+            "addressSuffix": "Adress",
+            "addressSuffixes": "Layer-Adressen",
+            "attachFileMessage": "eventuell Dateityp bi’n Download anhängen",
+            "downloadDataset": "Datensett daalladen",
+            "lastModified": "Leste Ännern",
+            "legend": "Legenn",
+            "name": "Informatschonen un Legenn",
+            "noMetadataLoaded": "Dat keen Metadaten laden worrn sünd!",
+            "noMetadataLoadedConsole": "De Metadaten för dissen Layer köönt nich affraagt warrn. Dat wiest op en Problem mit de inbunnen services.json hen.",
+            "periodicityTitle": "Datenaktualisatschoon",
+            "publicationCreation": "Publikatschoon / Opstellen",
+            "pointOfContact": "Anspreekpartner",
+            "contactInfoMessage": "Schriev den Anspreekpartner vun dat Thema ",
+            "contactPublisher": "Schriev den Anspreekpartner ",
+            "mailSubject": "Anfrag to’n Datensett ",
+            "mailOriginHint": "Disse Anfrag is över dat Kontaktformular vun disse URL verschickt worrn",
+            "changeLayerInfo": "Informatschonen för de Ebene utsöken: "
+        },
+        "layerPills": {
+            "next": "Nakamen Layer wiesen",
+            "previous": "Vörigen Layer wiesen",
+            "remove": "Layer rutnehmen"
+        },
+        "layerSelection": {
+            "addSubject": "Thema tofögen",
+            "folderCheckbox": {
+                "selectedAllLayer": "All Layer in’n Orner {{folderName}} aktiveren",
+                "unselectedAllLayer": "All Layer in’n Orner {{folderName}} deaktiveren"
+            },
+            "name": "Themenutwahl",
+            "backgrounds": "Achtergrünn",
+            "datalayer": "Fachdaten",
+            "externalSubjectLayer": "Externe Fachdaten",
+            "selectAll": "All tofögen",
+            "deselectAll": "All rutnehmen",
+            "selectedSubjectsCount_other": "Bidde söök een Thema ut",
+            "addSelectedSubjectsToMap_one": "Utsökt Thema to de Koort tofögen",
+            "addSelectedSubjectsToMap_other": "{{count}} utsökte Themen to de Koort tofögen"
+        },
+        "layerSlider": {
+            "description": "Een Slideshow starten",
+            "displayLayers": "Anwiesen vun verschedene Layer.",
+            "name": "Layerserie",
+            "serviceOne": "Deenst 1",
+            "serviceTwo": "Deenst 2",
+            "serviceThree": "Deenst 3",
+            "serviceFour": "Deenst 4",
+            "sliderTypeHandle": "Slider-Modus",
+            "sliderTypePlayer": "Player-Modus",
+            "title": "Simulatschoon vun Bispill-Deensten"
+        },
+        "layerTree": {
+            "addLayer": "Themen tofögen",
+            "categories": "Kategorien",
+            "categoryInspire": "Inspire",
+            "categoryOpendata": "Opendata",
+            "categoryOrganisation": "Behörde",
+            "categoriesListHead": "Themen na disse Kategorie sorteren:",
+            "subjectData3D": "3D-Daten",
+            "iconRemoveLayer": "Thema ut de Koort rutnehmen",
+            "iconSubMenu": "Mehr Funkschonen wiesen",
+            "iconTransparency": "Transparenz",
+            "infosAndLegend": "Informatschonen to’n Datensett wiesen",
+            "invisibleLayer": "Dit Thema kann bloots in’n Maßstap {{minScale}} - {{maxScale}} wiest warrn",
+            "invisibleLayerNoScale": "Dit Thema kann in dissen Maßstap nich wiest warrn",
+            "noCategory": "Keen Kategorie",
+            "rootLayerPath": "In’n Orner wiesen"
+        },
+        "legend": {
+            "description": "Informatschonen to de Objekten in de Koort kriegen",
+            "linkToPdf": "To de externe Legenn (PDF)",
+            "name": "Legenn",
+            "noLegendForLayerInfo": "Legenn nich verfögbor"
+        },
+        "login": {
+            "description": "Mit Brukernaam un Passwoort anmellen",
+            "descriptionLoggedIn": "Du büst anmellt",
+            "login": "Login",
+            "logout": "Logout",
+            "progress": "Bidde meld di in dat opmaakt Popup an.",
+            "name": "Naam",
+            "email": "E-Mail",
+            "profile": "Profil"
+        },
+        "measure": {
+            "area": "Flach",
+            "deleteMeasurements": "Maaten löschen",
+            "description": "Maat en Streek oder en Flach",
+            "finishWithDoubleClick": "Afsluten mit Dubbelklick",
+            "geometry": "Geometrie",
+            "influenceFactors": "De wiest Werten sünd nich ganz genau; dat kann ünner annern dorvun kamen, t.B. Maßstap, Oplösen vun de Koort un vun’n Schirm.",
+            "inputAccuracy": "Ingaav-Genauegkeit un Tall vun de digitaliseerten Punkten",
+            "measure": "Eenheit",
+            "measureDistance": "Streek vun de Maatlinie bzw. Grööt vun de Maatflach",
+            "name": "Streek / Flach meten",
+            "resolution": "Oplösen vun de Koort",
+            "scale": "Maßstap",
+            "screenResolution": "Oplösen vun’n Schirm",
+            "stretch": "Streek"
+        },
+        "menu": {
+            "ariaLabelClose": "$t(menu.name) tomaken",
+            "ariaLabelOpen": "$t(menu.name) opmaken",
+            "name": "Menü",
+            "widthUrlParamError": "De URL-Parameter för’t Instellen vun de Breed vun’t Menü is fehlerhaft un kunn nich anwendt warrn. Bidde söök en Weert twischen 5 un 90."
+        },
+        "modalItem": {
+            "close": "Finster tomaken"
+        },
+        "modeler3D": {
+            "entity": {
+                "captions": {
+                    "backToList": "Trüch to de Översicht",
+                    "copyTitle": "3D-Modell \"{{name}}\" koperen",
+                    "delete": "Modell löschen",
+                    "deletionTitle": "3D-Modell \"{{name}}\" löschen",
+                    "dimensionsModel": "Maate för 3D-Modell \"{{name}}\" wiesen",
+                    "editModel": "3D-Modell \"{{name}}\" bewerken",
+                    "incrementTooltip": "Holl de Shift-Tast drückt, üm den Weert gröver to erhöhen.",
+                    "modelName": "Modellnaam",
+                    "projectionInfo": "Achtung! Bi Bruuk vun dat WGS84-Koordinatensysteem köönt Ungenauegkeiten opkamen. Wi empfehlen de dezimale Schrievwies.",
+                    "rotationPlaceholder": "Inkrement-/Dekrement-Schritte",
+                    "rotation": "Dreihung",
+                    "rotationSwitch": "Dreih-Schritte",
+                    "scale": "Skaleren",
+                    "steps": "Schritte",
+                    "visibilityTitle": "3D-Modell \"{{name}}\" in- / utblennen",
+                    "zoomTo": "To 3D-Modell \"{{name}}\" henzoomen"
+                },
+                "deleteInteraction": {
+                    "confirm": "Löschen",
+                    "headline": "Achtung",
+                    "text": "Büst du seker, dat du dat Modell \"{{name}}\" löschen wullt?"
+                },
+                "projections": {
+                    "adaptToHeight": "An dat Gelände anpassen",
+                    "area": "Grundflach",
+                    "cartesian": {
+                        "eastingLabel": "Rechtsweert",
+                        "northingLabel": "Hochweert"
+                    },
+                    "depth": "Deepde",
+                    "hdms": {
+                        "eastingLabel": "Längde",
+                        "northingLabel": "Breed"
+                    },
+                    "height": "Höögde",
+                    "projection": "Koordinatensysteem",
+                    "width": "Breed"
+                }
+            },
+            "import": {
+                "alertingMessages": {
+                    "featureError": "Een Feature in disse Datei kunn nich leest warrn.",
+                    "fileSizeError": "De Dateigrött is grötter as dat Limit vun 100 MB.",
+                    "formatError": "De Datei \"{{filename}}\" kunn nich leest warrn. Prööv bidde, wat se dat Format *.gltf, *.obj, *.dae oder *.geojson hett.",
+                    "missingFileContent": "Fehler bi’t Lesen vun de Datei \"{{filename}}\". Prööv bidde Dateityp un Inholt. Wenn de Datei in Ordnung is, wend di an den Support.",
+                    "missingFormat": "Dat Dateiformat \"{{format}}\" warrt nich ünnerstütt. Wend di bidde an den Support.",
+                    "success": "De Datei \"{{filename}}\" is erfolgreich importeert worrn.",
+                    "successPartly": "De Datei \"{{filename}}\" is bloots deels importeert worrn."
+                },
+                "captions": {
+                    "introInfo": "Mit den Importer köönt digitale städteboulige Entwörp in dat bestahn 3D-Stadtmodell laden, sichtbor maken un analyseert warrn.",
+                    "introInfo2": "Importeer dien Datei eenfach per Drag & Drop oder över den Öffnen-Dialog vun’n Browser.",
+                    "introFormats": "Dat köönt glTF- (*.gltf), OBJ- (*.obj), Collada- (*.dae) oder GeoJSON-Dateien importeert warrn.",
+                    "info": "Informatschonen",
+                    "successfullyImportedLabel": "Importeerte 3D-Modelle",
+                    "newImport": "Nee Import"
+                }
+            },
+            "draw": {
+                "captions": {
+                    "beginModelling": "3D-Objekt modelleren",
+                    "clampToGround": "An dat Höödenmodell anlehnen",
+                    "color": "Klöör",
+                    "coordinates": "Koordinaten",
+                    "design": "Design",
+                    "dimensions": "Maate",
+                    "drawing": "Teeken",
+                    "drawName": "Naam",
+                    "drawnModels": "Teekente Modelle",
+                    "export": "Allens exporteren",
+                    "exportTitle": "All teekente Modelle in GeoJSON-Format exporteren.",
+                    "extrudedHeight": "Extrudeerte Höögde",
+                    "fillColor": "Füllklöör",
+                    "fillTransparency": "Transparenz",
+                    "geometries": "Geometrien",
+                    "introInfo": "Mit disse Funkschoon köönt 3D-Objekte in de Koort teekent, individuell gestaltet un achterher t.B. Schattensimulationen maakt warrn.\n\nDat Tool maakt ok dat Teeknen op bestahn Gebäuden un importeerte Objekte mööglich. Vörutsetten is, dat de Gelände-Höögde utmaakt is.\n\nTeekente Objekte köönt över „Allens exporteren“ speichert un later över den Importer wedder laden warrn.\n\nMit een Klick vun de linke Muustast warrt Eckpunkten sett, mit’n Dubbelklick warrt dat Teeknen afslaten. De lest sett Punkt kann mit Strg+Z rutnahmen un mit Strg+Y wedder tofögt warrn. Klick op en Objekt, üm dat to heven, to verschuven oder to bewerken.",
+                    "info": "Informatschonen",
+                    "newModel": "Nee Modell",
+                    "options": "Optschonen",
+                    "readyGeometries": "Fardige Geometrien",
+                    "showDimensions": "Maate bi’t Teeknen wiesen",
+                    "strokeColor": "Umrissklöör",
+                    "strokeWidth": "Strichstark",
+                    "transformation": "Transformation"
+                },
+                "geometries": {
+                    "line": "Liin",
+                    "polygon": "Polygon",
+                    "rectangle": "Rechteck"
+                },
+                "oneClicks": {
+                    "rectangle": "15m x 20m x 20m (B x T x H) Rechteck"
+                }
+            },
+            "filter": {
+                "captions": {
+                    "abortStyle": "Afbreken",
+                    "addFilter": "Filter tofögen",
+                    "applyStyle": "Anwennen",
+                    "editFilter": "Filter bewerken",
+                    "fillColor": "Füllklöör",
+                    "filterList": "Filterlist",
+                    "filterName": "Filternaam",
+                    "info": "Informatschonen",
+                    "introInfo": "Mit de Filter- & Style-Funkschoon köönt Gebäude na Attributen infärvt warrn, üm t.B. de Nutzung sichtbor to maken.",
+                    "introInfo2": "Söök dorbi den passenden Layer un dat Attribut ut, dat visualiseert warrn schall. Achterher kannst du de Klöör vun de Gebäude anpassen.",
+                    "noFilter": "Keen Filter vörhannen.",
+                    "optionsTitle": "Filteroptschonen",
+                    "pvoCheck": "All Weerten na de PlanzeichenVO infärven",
+                    "resetStyle": "Trüchsetten",
+                    "selectLayer": "Layer utsöken",
+                    "selectAttribute": "Attribut utsöken",
+                    "title": "Filter- & Stylefunkschoon",
+                    "styleSettingsTitle": "Klöörinstellen",
+                    "value": "Weert"
+                },
+                "errorLoadingData": "Fehler bi’t Laden vun de Weertelist för dat Attribut „BuildingFunctionType“"
+            },
+            "options": {
+                "captions": {
+                    "enableFunction": "Funkschoon an- / utmaken",
+                    "hideObjectInfo": "Bestahn Gebäude köönt in de Ansicht utblendt warrn, üm t.B. importeerte Elemente op dat passende Grundstück to platzeren.\n\nStart disse Funkschoon över Aktivieren un klick op de gewensten Objekte.\n\nAll utblende Objekte warrt in en List wiest un köönt dor wedder anmaakt warrn.",
+                    "hideSwitchLabel": "Gebäude mit Muusklick utblennen",
+                    "pov": "Na de Fußgängeransicht springen",
+                    "povInfo": "Hier kannst du de Perspektiev vun en Fußgänger innehmen un di dör de Stadt bewegen.\n\nNaviger to de gewünscht Positschoon, set den Zylinder mit’n Muusklick, un du kummst in de Fußgängeransicht.\n\nMit Muusbewegungen un drückte linke Muustast kannst du dat Sichtfeld ännern. Üm trüch to kamen, maak de Funkschoon mit’n Schieber ut.",
+                    "povTitle": "Fußgängerperspektiev",
+                    "visibilityTitle": "Sichtbarkeitsoptschonen"
+                }
+            },
+            "nav": {
+                "drawTitle": "Teeknen",
+                "filterTitle": "Filter & Style",
+                "importTitle": "Importeren",
+                "options": "Optschonen"
+            },
+            "description": "Importeer, teekn un bewerk 3D-Modelle in’t Stadtmodell",
+            "hiddenObjectsLabel": "Utblende Gebäude:",
+            "name": "3D-Modeller"
+        },
+        "mouseHover": {
+            "infoText": "(mehr Objekte. Bidde näher zoomen.)"
+        },
+        "news": {
+            "description": "Hier kannst du lesen, wat dat Niege gifft",
+            "headline": "Neeigkeiten",
+            "name": "Neeigkeiten"
+        },
+        "openConfig": {
+            "explanation": "Maak en Koort op, de du as lokale Konfiguratschoonsdatei speichert hest.",
+            "loadFileFailed": "De Konfiguratschoonsdatei <b>{{targetFileName}}</b> kunn nich laden warrn. Dat Dateiformat <b>{{targetFileFormat}}</b> warrt nich ünnerstütt. Bidde laad en Datei in’t Format <b>json</b>.",
+            "loadFileSuccess": "De Konfiguratschoonsdatei <b>{{targetFileName}}</b> is erfolgreich laden worrn",
+            "name": "Koort opmaken",
+            "openFile": "Konfiguratschoonsdatei opmaken"
+        },
+        "portalFooter": {
+            "designation": "Kartografie un Gestaltung:",
+            "mapDiscrepancy": "Koortenfehler mellen",
+            "scale": "Skaleren vun de Koort"
+        },
+        "print": {
+            "alertMessage": "De maximale Tall vun parallel laufende Utdrucke is överschritten.<br>Bidde versöök dat nochmaal, wenn anner Utdrucke afslaten sünd.",
+            "authorLabel": "Ersteller",
+            "autoAdjustScale": "Druckmaßstap automaatsch anpassen",
+            "createDownloadFile": "Warrt erstellt...",
+            "description": "Laad en Koortutsnitt in en utsöcht Format daal",
+            "downloadFile": "Herunnerladen",
+            "dpiLabel": "DPI",
+            "errorMessage": "De Afraag vun de Metadaten is fehlslagen. Wenn dat Problem blifft, wend di bidde an den Eegner vun den Deenst: <b>{{cswObjCswUrl}}</b>",
+            "formatLabel": "Format",
+            "hintInfoScale": "Wenn de utsöchte Druckmaßstap sik vun den Maßstap im Koortfinster ünnerscheedt, kann dat to en anner Koortlayout bi’t Drucken führen.",
+            "invisibleLayer": "Disse Themen köönt bi den utsöchten Druckmaßstap {{scale}} nich druckt warrn:",
+            "improveResolution": "Oplösen verbeteren",
+            "layoutLabel": "Layout",
+            "name": "Koort drucken",
+            "outputfileTitleLabel": "Dateinaam",
+            "printLabel": "Datei erstellen",
+            "scaleLabel": "Druckmaßstap",
+            "subtitleLabel": "Ünnertitel",
+            "textFieldLabel": "Freitextfeld",
+            "titleLabel": "Titel",
+            "validationWarning": "De Dateinaam mutt bloots Bookstaven un de Sünnerteken '-' un '_' enthollen.",
+            "vtlWarning": "Wiel MapFish 3 keen Vector-Tile-Layer ünnerstütt, warrt disse aktiven Layer in de Druckansicht nich wiest:",
+            "waitForPrintErrorMessage": "Dat Erstellen vun den Utdruck is fehlslagen.<br>Bidde versöök dat later nochmaal oder wend di an den Betreiber vun dat Portal.",
+            "withInfoLabel": "Mit Informatschonen",
+            "withLegendLabel": "Mit Legende",
+            "predefinedLegendInfo": "De Layer \"{{layerName}}\" hett en vördefineerte Legende.",
+            "predefinedLegendDownload": "De Legende kann nich mitdruckt warrn. Du kannst de vördefineerte Legende separat över dat Download-Menü herunnerladen."
+        },
+        "routing": {
+            "addWaypoint": "Wegpunkt to doon",
+            "avoidOptions": {
+                "header": "Verkehrsweg ümgaan",
+                "FERRIES": "Fähren",
+                "HIGHWAYS": "Autobahn",
+                "STEPS": "Treppen",
+                "TOLLWAYS": "Mautstraßen",
+                "UNPAVEDROADS": "Nich befestigte Straaten",
+                "MIXEDTRAFFIC": "Mischverkehr Tempo 50",
+                "COBBLESTONE": "Koppsteenpflaster",
+                "NARROWWAYS": "Enge Steed",
+                "BORDERS": "Grenzen"
+            },
+            "batchProcessing": {
+                "cancel": "Stapelverarbeitung afbreken",
+                "example": "Bispill",
+                "header": "Stapelverarbeitung",
+                "isProcessing": "Stapelverarbeitung löppt",
+                "placeFile": "Datei hier afleggen",
+                "structure": "Struktur",
+                "uploadFile": "Datei hoochladen"
+            },
+            "contextMenu": {
+                "addAvoidPoint": "Sperrpunkt to doon",
+                "addEndpoint": "Zielpunkt to doon",
+                "addStartpoint": "Startpunkt to doon",
+                "addWaypoint": "Wegpunkt to doon",
+                "avoidPointModalTitle": "Radius vun’n Sperrpunkt",
+                "header": "Aktschonen",
+                "removeAvoidPoint": "Sperrfläch wegmaken",
+                "removePoint": "Punkt wegmaken"
+            },
+            "coordinateInputHelp": "Söök en Oort oder föög en Punkt dör Klick in de Koort to",
+            "deleteWaypoint": "Wegpunkt wegdoon",
+            "description": "Fünn rut, woans du am gauesten to dien Ziel kummst, oder legg en Söök-Radius fast",
+            "directions": {
+                "batchProcessing": {
+                    "downloadHeader": {
+                        "distance": "Entfernung(m)",
+                        "profile": "Profil",
+                        "time": "Tiet(min)",
+                        "xEnd": "X-Wert_Ende",
+                        "xStart": "X-Wert_Start",
+                        "yEnd": "Y-Wert_Ende",
+                        "yStart": "Y-Wert_Start"
+                    },
+                    "errorNoEntries": "Keen Indrääg in de CSV",
+                    "errorAllFailed": "All Anfragen sünd fehlslagen. Villicht warrt de Anfraag vun’n Deenst blockeert. De Datei hett keen Resultaat.",
+                    "errorRowContainsEntriesNoNumber": "Koordinaten in Reeg {{row}} sünd keen Tahlen",
+                    "errorSomeFailed": "{{countFailed}} Resultaten köönt nich richtig utrekent warrn. In de Ergebnisdatei sünd an disse Steed leege Feller.",
+                    "errorToManyEntriesInFile": "Maximale Tall vun Reegen överschritten ({{limit}})",
+                    "errorToManyEntriesInRow": "Reeg {{row}} hett mehr as 5 Indrääg, bidde op de Struktur kieken (ID;lon(Startpunkt);lat(Startpunkt);lon(Endpunkt);lat(Endpunkt))",
+                    "errorContextMenuSetPoint": "An disse Steed kunn keen Punkt sett warrn.",
+                    "structure": "ID;lon(Startpunkt);lat(Startpunkt);lon(Endpunkt);lat(Endpunkt)"
+                },
+                "deleteRestrictedAreas": "Sperrflächen löschen",
+                "editRestrictedAreas": "Sperrflächen tekenen/bearbeiten",
+                "editRestrictedPoints": "Sperrpunkte tekenen/bearbeiten",
+                "keepRoutesAfterClose": "De Route ok na’t Tomaken behollen",
+                "preference": {
+                    "RECOMMENDED": "Anraden Route",
+                    "SHORTEST": "Körteste Route",
+                    "GREEN": "Gröne Route"
+                },
+                "preferenceLabel": "Präferenz",
+                "restrictedAreas": "Sperrflächen",
+                "avoidAreas": {
+                    "avoidArea": "Sperrfläch",
+                    "avoidPoint": "Sperrpunkt",
+                    "avoidPointRadius": "Radius",
+                    "avoidPointRadiusUnit": "Eenheit",
+                    "avoidPointRadiusUnitKm": "km",
+                    "avoidPointRadiusOutOfRangeKm": "Bidde en Weert twischen 0 un 12 km ingeven.",
+                    "delete": "Löschen",
+                    "export": "Export",
+                    "import": "Import"
+                }
+            },
+            "download": {
+                "filename": "Dateinaam",
+                "filenamePlaceholder": "Bidde Dateinaam ingeven",
+                "format": "Format",
+                "header": "Herunnerladen",
+                "saveResult": "Resultaat sekern",
+                "error": {
+                    "header": "De Dateinaam is nich gültig.",
+                    "fileNameTooLong": "De Dateinaam is to lang. Maximaal 40 Teken sünd verlöövt.",
+                    "fileNameContainsWhiteSpace": "De Dateinaam hett Leerteken.",
+                    "fileNameContainsInvalidChars": "De Dateinaam hett nich verlöövte Sünnerteken."
+                }
+            },
+            "endpoint": "Zielpunkt",
+            "elevationProfile": {
+                "titleCollapse": "Höhenprofil",
+                "titleChart": "Höhenprofil langs de Route",
+                "yAxis": "Hööchde in Meter",
+                "xAxis": "Streek in km",
+                "titleTooltipMeters": "Hööchde na {{distance}} Metern",
+                "titleTooltipKilometers": "Hööchde na {{distance}} Kilometers"
+            },
+            "errors": {
+                "titleErrorRouteFetch": "De Routebereken hett nich klappt.",
+                "titleErrorIsochroneFetch": "De Bereken vun de Erreichborkeit hett nich klappt.",
+                "avoidAreaBig": "De angeven Sperrflächen sünd to groot. Bidde korrigeer dien Ingaav.",
+                "errorIsochronesFetch": "Fehler bi de Afraag vun de Erreichborkeit",
+                "errorRouteFetch": "Fehler bi de Afraag vun de Route",
+                "fetchingCoordinates": "Fehler bi de Afraag vun de Koordinaten",
+                "hgvRestrictionOutOfRange": "De LKW-Parameter hebbt ungültige Weerten. Bidde prööv dien Ingaav.",
+                "noRouteFound": "Leider hett sik keen Route finnen laten"
+            },
+            "exportAvoidAreas": {
+                "header": "Export vun de Sperrflächen",
+                "type": "Dateityp",
+                "tooltip": "Sperrflächen exporteren",
+                "download": "Herunnerladen",
+                "filename": "Dateinaam",
+                "filenamePlaceholder": "Bidde Dateinaam ingeven",
+                "format": "Format",
+                "error": {
+                    "header": "Fehler bi’t Exporteren vun de Sperrflächen",
+                    "noAvoidArea": "Keen Sperrflächen / Sperrpunkte vörhannen."
+                }
+            },
+            "importAvoidAreas": {
+                "header": "Sperrflächen importeren",
+                "help": "Dateityp",
+                "tooltip": "Sperrflächen importeren",
+                "description": "Wähl en GeoJSON- oder KML-Datei ut, de egen Sperrflächen in sik hett. Disse Features sünd verlöövt:",
+                "structure": "Polygon, Multipolygon",
+                "filenamePlaceholder": "Bidde Dateinaam ingeven",
+                "format": "Format",
+                "uploadSuccessTitle": "De Sperrflächen sünd erfolgreich hoochladen worrn.",
+                "uploadSuccess": "De hoochladen Sperrflächen staht di nu to Verföögung.",
+                "error": {
+                    "header": "Fehler bi’t Importeren vun de Sperrflächen",
+                    "noAvoidArea": "Keen Sperrflächen / Sperrpunkte vörhannen.",
+                    "formatError": "De Datei kunn nich leest warrn. Bidde prööv, wat se dat Format *.kml oder *.geojson hett.",
+                    "parseError": "Fehler bi’t Parsen vun de {{type}}-Datei.",
+                    "polygonFormatError": "De Datei hett ungültige Geometrien. Bloots Polygon un MultiPolygon warrt ünnerstütt.",
+                    "polygonEmpty": "Een vun de importeerden Sperrflächen hett keen Koordinaten.",
+                    "polygonNotClosed": "Een importeerde Sperrfläch is nich sluten. De eerste un leste Koordinate mutt bi jede Sperrfläch gliek wesen.",
+                    "polygonNotEnoughPoints": "Sperrflächen mutt ut tominnst 3 Punkten bestahn.",
+                    "tooManyFeatures": "To veel Sperrflächen. Maximaal {{maxFeatures}} Sperrflächen sünd verlöövt.",
+                    "areaTooBig": "Een vun de importeerden Sperrflächen is to groot: {{area}} km². Maximaal {{maxArea}} km² pro Sperrfläch sünd verlöövt.",
+                    "sideTooLong": "Een Siedenlängde vun’n Polygon is länger as de maximal verlöövte Längde vun {{maxSideLength}} km. Siedenlängde: {{distance}} km."
+                }
+            },
+            "isochrones": {
+                "batchProcessing": {
+                    "errorNoEntries": "Keen Indrääg in de CSV",
+                    "errorAllFailed": "All Anfragen sünd fehlslagen. Villicht warrt de Anfraag vun’n Deenst blockeert. De Datei hett keen Resultaat.",
+                    "errorRowContainsEntriesNoNumber": "Koordinaten in Reeg {{row}} sünd keen Tahlen",
+                    "errorSomeFailed": "{{countFailed}} Resultaten köönt nich richtig utrekent warrn. In de Ergebnisdatei sünd an disse Steed leege Feller.",
+                    "errorToManyEntriesInFile": "Maximale Tall vun Reegen överschritten ({{limit}})",
+                    "errorToManyEntriesInRow": "Reeg {{row}} hett mehr as 3 Indrääg, bidde op de Struktur kieken (ID;lon(Startpunkt);lat(Startpunkt))",
+                    "structure": "ID;lon(Startpunkt);lat(Startpunkt)"
+                },
+                "calculate": "Utreken",
+                "hoverMenu": {
+                    "population": "Bevölkerung:",
+                    "area": "Fläch:"
+                },
+                "interval": {
+                    "default": "Intervall",
+                    "count": "Tall vun Intervallen"
+                },
+                "legend": {
+                    "area": "Fläch",
+                    "color": "Klöör",
+                    "distance": "Distanz",
+                    "population": "Bevölkerung",
+                    "time": "Tiet",
+                    "title": "Legende"
+                },
+                "maxDistance": "Maximale Entfernung",
+                "maxTraveltime": "Maximale Reiseduur",
+                "optimization": {
+                    "DISTANCE": "Erreichborkeit na Distanz",
+                    "TIME": "Erreichborkeit na Tiet"
+                },
+                "optimizeHeader": "Optimeren na",
+                "startpoint": "Startpunkt",
+                "tooManyIntervalsInline": "Limit bi Isochronen överschritten. Max. 10 verlöövt."
+            },
+            "moveWaypointDown": "Wegpunkt na nerrn schuven",
+            "moveWaypointUp": "Wegpunkt na baven schuven",
+            "startIndex": "S",
+            "endIndex": "Z",
+            "name": "Routing",
+            "resetSettings": "Instellungen torüchsetten",
+            "restrictions": {
+                "header": "LKW-Parameter",
+                "length": "Längde (m)",
+                "width": "Breed (m)",
+                "height": "Hööchde (m)",
+                "weight": "Gewicht (t)",
+                "axleload": "Achslast (t)",
+                "hazmat": "Gefahrgoot",
+                "tooltip": "Weert twischen {{min}} un {{max}} gültig",
+                "placeholder": "Bidde Weert ingeven"
+            },
+            "settings": {
+                "submit": "Bestätigen"
+            },
+            "speedprofiles": {
+                "CAR": "PKW",
+                "CYCLING": "Fahrrad",
+                "FOOT": "Footgänger",
+                "HGV": "LKW",
+                "WHEELCHAIR": "Rollstohl"
+            },
+            "startpoint": "Startpunkt",
+            "tabs": {
+                "DIRECTIONS": "Routenplanung",
+                "ISOCHRONES": "Erreichborkeit",
+                "TSR": "Travelling Salesman"
+            },
+            "tsr": {
+                "header": "Routenoptschonen ännern",
+                "calculate": "TSR-Route utreken",
+                "upload": {
+                    "header": "Wegpunkte hoochladen",
+                    "description": "Wähl en csv-Datei ut, de egen Wegpunkte för TSR in sik hett. De Punkten mööt in WGS84 (EPSG:4326) angeven warrn. Disse Format mutt inhollen warrn:",
+                    "csvHeaders": "Datei hett Kopfzeil",
+                    "help": "Hülp",
+                    "divider": "oder",
+                    "failTitle": "De Datei kunn nich hoochladen warrn.",
+                    "successTitle": "De Datei is erfolgreich hoochladen worrn.",
+                    "successInfo": "De hoochladen Wegpunkte staht di nu in de List to Verföögung."
+                },
+                "backToTSR": "Routing",
+                "modifyWaypointsTSR": "Wegpunkte bewerken",
+                "outputHeaderTSR": "Gaueste Route",
+                "downloadOutputTSR": "TSR-Route herunnerladen",
+                "downloadCsv": {
+                    "header": "*** Travelling Salesman Routing ***",
+                    "descriptionRoundTrip": "Startpunkt: {{start}} na: Rundtrip",
+                    "descriptionNoRoundTrip": "Startpunkt: {{start}} na: {{end}}",
+                    "optimalOrder": "optimale {{profile}}-Zielreihenfolge:",
+                    "waypoint": "{{pos}}) {{displayName}};{{lon}};{{lat}}"
+                },
+                "selectedPoints": "Utsöchte Wegpunkte",
+                "structure": "ID;lon;lat",
+                "tsrEndpoint": "Wenn nich defineert: Rundtrip",
+                "tsrDuration": "Gesamtdüür: ",
+                "tsrDistance": "Gesamtstreek: ",
+                "errors": {
+                    "wrongFileType": "Falsch Dateiformat. Bidde en CSV-Datei hoochladen.",
+                    "errorNoEntries": "Keen Indrääg in de CSV",
+                    "errorToManyEntriesInFile": "Maximale Tall vun TSR-Punkten överschritten ({{limit}}).",
+                    "wrongNEntriesInRow": "Falsch Tall vun Attributen in Reeg {{row}}. Prööv dat Format (ID;lon;lat) un dat Trennteken (Semikolon).",
+                    "rowContainsEntriesNoNumber": "Koordinaten in Reeg {{row}} sünd keen Tahlen.",
+                    "emptyRow": "De Datei hett tominnst een leegh Reeg.",
+                    "emptyEntriesInRow": "Fehlende Daten in Reeg {{row}}. Prööv de Daten un dat Trennteken (Semikolon).",
+                    "invalidCoordinateRange": "Koordinaten hebbt ungültige Weerten in Reeg {{row}}. Gültig sünd -180 - 180 (Longitude) un -90 - 90 (Latitude).",
+                    "attributeTooLong": "Attributen in Reeg {{row}} sünd länger as 25 Teken.",
+                    "errorCalculation": "De Bereken kunn nich start warrn.",
+                    "notEnoughPoints": "Bidde giff den Startpunkt un tominnst twee anner Punkten an.",
+                    "emptyPoint": "Tominnst een Punkt is leer. Bidde prööv de Punkten in de List.",
+                    "duplicatePoints": "De hoochladen Wegpunkte staht di nu in de List to Verföögung. Duplikaten sünd övergahn worrn.",
+                    "unreachablePoint": "Leider kunn för tominnst een vun de utsöchten Punkten keen Route berekent warrn."
+                }
+            },
+            "waypoint": "Wegpunkt"
+        },
+        "scaleSwitcher": {
+            "description": "Stell den Maßstap üm, ganz ahn to scrollen",
+            "label": "Maßstap",
+            "name": "Maßstap ümstellen"
+        },
+        "searchBar": {
+            "locationFinder": {
+                "errorMsg": "Söök över LocationFinder hett nich klappt",
+                "serverError": "Fehler bi de serverseitige Verarbeiden vun de Anfraag",
+                "unknownProjection": "Resultaten in’n nich bekannt Koordinatensysteem"
+            },
+            "placeholder": {
+                "searchFor": "Söök na",
+                "address": "Söök na Adress",
+                "addressDistrict": "Söök Adress, Stadtdeel",
+                "addressHospitalBplan": "Söök na Adress/Krankenhuus/B-Plan",
+                "addressTopic": "Söök Adress, Stadtdeel, Thema",
+                "addressOrTopic": "Söök na Adressen oder Themen",
+                "addressTopicParcel": "Söök Adress, Stadtdeel, Thema, Flörstück",
+                "startWithAddress": "Hier mit Adress anfangen!"
+            },
+            "showAllResults": "all Resultaten wiesen",
+            "searchResults": "Söökresultaten",
+            "search": "Söök",
+            "searchResultList": "Söököversicht",
+            "searchResultsFrom": "Söökresultaten vun: ",
+            "mark": "Söök dat Thema ut",
+            "add": "Thema to doon",
+            "type": {
+                "address": "Adress",
+                "county": "Bezirk",
+                "district": "Stadtdeel",
+                "folder": "Orner (Fachdaten)",
+                "general": "Fachdaten",
+                "location": "Oort",
+                "parcel": "Flörstück",
+                "street": "Straat",
+                "subject": "Thema",
+                "topic": "Thema (Fachdaten)",
+                "topicBaselayer": "Thema (Hintergrundkoorten)"
+            },
+            "specialWFS": {
+                "ongoing": "in’t Verfahren",
+                "terminated": "faststellt",
+                "hazardous": "Störfallbetrieb",
+                "childcare": "Kita",
+                "bplan": "B-Plan"
+            },
+            "actions": {
+                "activateLayerInTopicTree": "Layer in’n Themenboom wiesen",
+                "addLayerToTopicTree": "Layer to’n Themenboom to doon",
+                "highlightFeature": "Feature markeren",
+                "openGetFeatureInfo": "Informatschonen wiesen",
+                "setMarker": "Marker setten",
+                "zoomToResult": "To’t Resultaat zoom’n",
+                "startRouting": "Route starten",
+                "showInTree": "Thema in’n Orner wiesen",
+                "showLayerInfo": "Informatschonen un Legende"
+            },
+            "noInitialResults": "De eerste Söök hett keen Treffer bröcht.",
+            "showAll": "All wiesen",
+            "layerResultNotShown": "De funnen Layer kann nich wiest warrn.",
+            "layerInfoNotShown": "De Layer-Information kann nich wiest warrn."
+        },
+        "selectFeatures": {
+            "description": "Kriegs Informatschonen över Objekte, de du in de Koort utsöchst",
+            "name": "Features utsöken",
+            "noFeatureChosen": "Keen Features utsöcht. Söök Features ut, indem du de Strg-Tast hölst un en Kasten üm de wünschten Features treckst, oder föög enkelte Features to, wenn du de Strg-Tast hölst un mit de linke Muustast klickst.",
+            "propertylessFeature": "Element ahn Attribute",
+            "clearSelection": "Heel Utwahl opheven",
+            "deselectFeature": "Feature afwählen",
+            "zoomToFeature": "Op dit Feature zoom’n"
+        },
+        "statisticDashboard": {
+            "name": "Statistik-Dashboard",
+            "description": "Filter Statistiken na Themenfeld un laat di tohörige Tabellen un Diagrammen wiesen.",
+            "headings": {
+                "mrhstatistics": "Tahlen, Daten, Fakten vun de MRH - Regionalstatistik",
+                "mrhstatisticsTooltip": "Link to de Metadaten",
+                "addFilter": "Filter to doon",
+                "filter": "Filter",
+                "addStatisticalData": "Statistische Daten utsöken",
+                "addArea": "Gebiete utsöken",
+                "addTime": "Tiedruum utsöken"
+            },
+            "infoText": "Henwies: Bi vele Gebiete warrt eerst bloots en Deel in’t Diagramm wiest. Över dat unner Feld laat sik mehr Gebiete tofögen.",
+            "infoTextNoData": "Dat sünd noch keen oder nich all nöödige Filter toföögt. Dormit statistische Daten in Tabellen un Diagrammen wiest warrt, mööt de Daten eerst filtert warrn.",
+            "button": {
+                "difference": "Differenz",
+                "table": "Tabell",
+                "chart": "Diagramm",
+                "add": "Filter to doon",
+                "edit": "Filter ännern",
+                "arrowLeft": "Na links blättern",
+                "arrowRight": "Na rechts blättern",
+                "reset": "All wegmaken",
+                "filter": "Filter",
+                "showMore": "mehr wiesen...",
+                "showLess": "weniger wiesen...",
+                "done": "Fardig",
+                "all": "All",
+                "statistics": "Statistiken",
+                "geographical": "Geografische Filter",
+                "timeBased": "Tiedbezogene Filter"
+            },
+            "label": {
+                "category": "Kategorie",
+                "area": "Gebiet",
+                "year": "Johr",
+                "statistics": "Statistiken",
+                "communities": "Gemeinden",
+                "districts": "Kreise",
+                "more": "mehr",
+                "time": "Tiedbezogene Filter",
+                "geographical": "Geografische Filter"
+            },
+            "filterInputs": {
+                "additional": "Sonstiges"
+            },
+            "reference": {
+                "title": "Differenzmodus",
+                "optionDate": "Welch Johr schall as Referenz dienen?",
+                "optionArea": "Welch Gebiet schall as Referenz dienen?",
+                "description": "Differenzweerten wiesen, baseert op en Referenzjohr oder -gebiet",
+                "placeholder": "Bidde tominnst een Optschoon utsöken!",
+                "tagLabel": "Referenz",
+                "year": "Referenzjohr {{value}}",
+                "region": "Referenzgebiet {{value}}",
+                "difference": "Differenz"
+            },
+            "legend": {
+                "under": "unner",
+                "between": "{{minimum}} bet unner {{maximum}}",
+                "from": "Vun",
+                "nodata": "De Visualiseren vun Daten vun mehr as een Statistik op de Koort steiht nich to Verföögung.",
+                "legend": "Koortenlegende",
+                "edit": "Bearbeiten",
+                "editClassification": "Klasseneinteilung bearbeiten",
+                "classification": "Klassifikation",
+                "numberOfClasses": "Tall vun Klassen",
+                "colorPalette": "Farbpalette",
+                "betweenValues": "bet unner",
+                "opacity": "Deckkraft",
+                "reset": "Torüchsetten",
+                "range": "Bereich",
+                "color": "Farbe",
+                "equalIntervals": "glieke Intervalle",
+                "quantile": "glieke Klassengröten (Quantile)",
+                "customized": "benutzerdefiniert",
+                "andAbove": "un doröver",
+                "invalidCustomStepsAlert": "Achtung: De utsöchten Bereichsgrenzen vormt keen opstigende Tahlenreeg!",
+                "noValue": "Gebiete mit fehlenden Weert sünd witt infärvt",
+                "previewLegend": "Vorschau Klasseneinteilung"
+            },
+            "totalHint": "Achtung: De Summenfunkschoon ünnerscheedt nich twischen absolute Tahlen, Prozente, Mittelweerten oder relative Gröten (t.B. Inwener per Quadratmeter). De Summen sünd dorüm nich jümmers richtig to deuten. Bidde im Kontext vun de utsöchten Statistik beachten. Fehlende Weerten warrt bi de Bereken nich berücksichtig.",
+            "filterHint": "All Feller mööt heel utfullt wesen, dormit de Filterresultaten wiest warrt.",
+            "backToOverview": "Diagrammöversicht",
+            "backToStatisticDashboard": "Torüch to de Översicht"
+        },
+        "shadow": {
+            "name": "Schadden",
+            "description": "Wies den Schaddenwurf to verschedene Tiedpunkten in de Koort",
+            "pickDate": "Söök en Datum ut:",
+            "shadowDisplayOff": "Schadden in de Koort utblennen",
+            "shadowDisplayOn": "Schadden in de Koort inblennen",
+            "slideHour": "Söök en Tied ut:",
+            "withInfoLabel": "Mit Informatschonen"
+        },
+        "shareView": {
+            "copyErrorAlert": "De <b><a href=\"{{url}}\" target=\"_blank\">URL vun de aktuelle Ansicht</a></b> kunn nich in de Twüschenaflaag kopeert warrn. Disse Funkschoon geiht bloots op sicker Websieden, de över dat Protokoll HTTPS (https://) to bereiken sünd.<br><br>Bidde neem Kontakt mit den Betreiber vun’t Portal op un bidd üm dat Inrichten vun en sicker Verbinnen.",
+            "description": "Deel en Link to de Koort",
+            "downloadQR": "QR-Code daalladen",
+            "myMap": "Hier is mien Koortenutsnitt: ",
+            "name": "Utwahl delen",
+            "share": "Delen",
+            "shareFacebook": "Aktuelle Ansicht op Facebook delen",
+            "shareHeadline": "Wo wullt du den Link delen?",
+            "shareLink": "Aktuelle Ansicht as Link kopeern",
+            "shareQR": "Aktuelle Ansicht as QR-Code maken",
+            "shareTwitter": "Twitter",
+            "linkCopied": "Link is in de Twüschenaflaag kopeert worrn.",
+            "qrError": "Bi’t Maken vun den QR-Code is en Fehler optraden.",
+            "qrErrorDataTooLarge": "De Daten, de du delen wullt, sünd to groot. Bidde minner Optschonen op de Koort wählen, dormit de Datenmeng lütter warrt."
+        },
+        "styleVT": {
+            "chooseTheme": "Bidde aktives Thema utsöken",
+            "description": "Änner dat Utsehn vun en Layer vun den Typ VectorTile",
+            "introText": "Op VectorTiles-Layer köönt verschedene vordefineerte Styles anwennt warrn, dormit de Ansicht för den jeweeligen Zweck beter passt.",
+            "name": "Style för Vector Tile Layers",
+            "noStyleableLayers": "Opstunns sünd keen Themen verföögbor, op de dit Warktüüch anwennt warrn kunn.",
+            "style": "Style",
+            "theme": "Thema"
+        },
+        "wfsSearch": {
+            "description": "Söök in en Thema na Objekte",
+            "description_parcel": "Söök na en Flurstück",
+            "district": "Gemarkung",
+            "fieldSelectionLabel": "Feld-Utwahl",
+            "instancesSelectLabel": "Instanzen-Utwahl",
+            "name": "WFS-Söök",
+            "noResults": "Dor sünd keen Resultaten för dien Söökkriterien funnen worrn. Versöök dat man nochmaal.",
+            "optionsPlaceholder": "Bidde en Optschoon utsöken!",
+            "parcelNumber": "Flurstücksnummer",
+            "parcelSearch": "Flurstückssöök",
+            "resetButton": "Torüchsetten",
+            "searchButton": "Söken",
+            "searchError": "Fehler bi de Söök vun Feature: {{error}}.",
+            "showResultHeading": "Söökresultaten:",
+            "userHelp": {
+                "and": "un",
+                "label": "Informatschonen to de Söökresultaten",
+                "or": "oder",
+                "text": "De Resultaten vun de Söök schüllt de Bedingen / Klauseln {{userHelp}} erfüllen. <br /> *Pflichtfeld"
+            },
+            "wrongConfig": "De Layer mit de Id \"{{id}}\" vun de Söök-Instanz \"{{title}}\" is nich defineert."
+        },
+        "wfst": {
+            "deleteInteraction": {
+                "headline": "Achtung",
+                "text": "Büst du di seker, dat du disse Geometrie löschen wullt?"
+            },
+            "description": "Objekte maken, opfrischen un löschen",
+            "descriptionNeueInfo": "Niege Informatschonen intragen",
+            "error": {
+                "allLayersNotSelected": "Aktiveer en konfigureerten WFS-T-Layer in’n Themenboom",
+                "geometryOutOfRange": "De teekente Geometrie liggt buten den tolaten Bereich vun den Layer.",
+                "layerNotConfiguredCorrectly": "Dor gifft Problemen mit de Konfiguratschoon vun den utsöchten Layer för dit Warktüüch; villicht fehlt de Parameter 'featurePrefix'.",
+                "layerNotSelected": "De utsöchte Layer is noch nich in’n Themenboom aktiveert.",
+                "noFeature": "Bidde teeken en Geometrie, de to dien Inträgen tohöört.",
+                "onlyNumbersAllowed": "Dat Ingaavfeld laat bloots Tahlen to.",
+                "requiredPropertiesNotSet": "Bidde giff en gellten Weert för de Pflichtfeller {{properties}} in.",
+                "fetchFeaturePropError": "Dat Laden vun de Parameter duert länger as normaal. Versöök dat man nochmaal."
+            },
+            "mandatoryInputError": {
+                "text": "Normale Texttekens un Sünnertekens as , . / \\ [ ] Lääruum un düütsche Tekens ö ä ü Ö Ä Ü ß (un nich bloots Tahlen) sünd nödig.",
+                "number": "En Tahl, Deel-Tahl oder negative Tahl is nödig.",
+                "date": "Dat komplette Datum is nödig.",
+                "datetime-local": "Komplett Datum un Uhrtied sünd nödig."
+            },
+            "form": {
+                "discard": "Wegsmieten",
+                "save": "Spiekern"
+            },
+            "interactionSelect": {
+                "delete": "Geometrie löschen",
+                "line": "Linie opnehmen",
+                "point": "Punkt opnehmen",
+                "polygon": "Flääch opnehmen",
+                "update": "Bearbeiten",
+                "multiUpdate": "Bearbeiten",
+                "multiPolygon": "Multipolygon opnehmen"
+            },
+            "multiUpdate": {
+                "oneSelected": "Objekt is utsöcht:",
+                "multipleSelected": "Objekte sünd utsöcht:",
+                "noItemsSelected": "Keen Objekte utsöcht",
+                "warningText": "Achtung! Eventuell vörhannen Inträgen warrt hier nich wiest! Bi’t Spiekern vun niege Inträgen warrt solche ahn Warnung överschreven.",
+                "buttonIcon": {
+                    "active": {
+                        "pen": "Lasso-Utwahl deaktivieren",
+                        "box": "Rechteck-Utwahl deaktivieren"
+                    },
+                    "notActive": {
+                        "pen": "Lasso-Utwahl aktivieren",
+                        "box": "Rechteck-Utwahl aktivieren"
+                    }
+                }
+            },
+            "confirmVoidFeatureCreation": {
+                "textContent": "Wullt du en Multipolygon mit en void (Donut-Polygon) maken?",
+                "headline": "Polygon maken mit void"
+            },
+            "layerSelectLabel": "Aktueller Layer:",
+            "name": "WFS-T-Warktüüch",
+            "polygonHint": "Hool de Strg-Tast drückt un beweeg de Muus mit drückte Muustast, üm en Polygon to verschuven.",
+            "fieldRequired": "Pflichtfeld",
+            "transaction": {
+                "error": {
+                    "axios": "Dat Spiekern bzw. Löschen vun de Geometrie un ehr Parameter is leider fehl slaan. Bidde wend di an dien Administrator.",
+                    "InvalidParameterValue": "Dat Spiekern vun de Geometrie un ehr Parameter is leider fehl slaan. Een vun de Ingaaven is nich tolaten oder nich in’t richtige Format.",
+                    "MissingParameterValue": "Dat Spiekern vun de Geometrie un ehr Parameter is leider fehl slaan. Een oder mehr Parameter hebbt keen Ingaav un de Deenst hett keen Defaultweert.",
+                    "OperationNotSupported": "Dat Spiekern vun de Geometrie un ehr Parameter is leider fehl slaan. De Deenst ünnerstütt de dörföhrte Operatschoon nich.",
+                    "OperationParsingFailed": "Dat Spiekern vun de Geometrie un ehr Parameter is leider fehl slaan. De Transakschoon kunn vun den Deenst nich verarbeidt warrn. Bidde wend di an den Administrator.",
+                    "OperationProcessingFailed": "Dat Spiekern vun de Geometrie un ehr Parameter is leider fehl slaan. Bi de Transakschoon is en Fehler optraden."
+                },
+                "success": {
+                    "baseSuccess": "Dat {{transaction}} weer erfolgreich.",
+                    "delete": "Löschen",
+                    "insert": "Spiekern",
+                    "selectedUpdate": "Bearbeiten",
+                    "batchInfo": "Disse Inträgen vun den Layer {{layer}} sünd spiekert worrn:</br>"
+                }
+            }
+        },
+        "wmsTime": {
+            "layer": {
+                "errorTimeLayer": "Es ist ein Fehler bei der Vorbereitung des Layer mit der id {{id}} aufgetreten: {{error}}"
+            },
+            "layerSwiper": {
+                "description": "De Swiper kann mit de Muus oder mit de Pieltasten vun de Tastatur bewegt warrn. Wenn de Pieltasten bruukt warrt, verschuuvt sik de Swiper {{amount}}px in de jeweelige Richt.",
+                "title": "Layer verglieken"
+            },
+            "timeSlider": {
+                "buttons": {
+                    "backward": "Een Tietpunkt torüch",
+                    "deactivateLayerSwiper": "Layer wegmaken",
+                    "forward": "Een Tietpunkt vöran",
+                    "layerSwiper": "Tietpunkten verglieken",
+                    "play": "All Tietpunkten automaatsch afspelen, utgahn vun den aktuell utsöchten Tietpunkt"
+                },
+                "inputRangeLabel": "Een Tietpunkt utsöken"
+            }
+        },
+        "pagination": {
+            "aria": {
+                "previous": "Vörige Siet",
+                "next": "Nächste Siet",
+                "go": "Gahn to Siet"
+            },
+            "input": {
+                "label": "Siet",
+                "placeholder": "Siet",
+                "tooltip": "Sietentall ingeven un Enter drücken oder op den Piel klicken, üm to disse Siet to springen"
+            },
+            "button": {
+                "goTooltip": "To de ingevene Siet springen"
+            }
         }
-      },
-      "draw": {
-        "drawEdit": {
-          "delete": "Geometrie / Text wegmaken",
-          "deleteAll": "Allens wegmaken",
-          "modify": "Geometrie / Text ännern",
-          "redo": "Wedderhalen",
-          "undo": "Torüchnehmen"
+    },
+    "shared": {
+        "js": {
+            "api": {
+                "cswParser": {
+                    "annually": "all Johr",
+                    "asNeeded": "wenn nödig",
+                    "biannually": "twee Mal in’t Johr",
+                    "continual": "dauern",
+                    "daily": "daglich",
+                    "fortnightly": "all veertien Daag",
+                    "irregular": "unregelmatig Tieden",
+                    "monthly": "maandlich",
+                    "notPlanned": "nich plaant",
+                    "quarterly": "vierteljohrlich",
+                    "unknown": "nich bekannt",
+                    "weekly": "wöchentlich"
+                }
+            },
+            "utils": {
+                "buildings": "Gebäuden",
+                "selectedFeatures": "Utwahl:"
+            }
         },
-        "drawLayout": {
-          "fillColor": "Füllklöör",
-          "fillTransparency": "Dörchsichtigkeit",
-          "innerCircle": "Innerer Kring:",
-          "outerCircle": "Buuterer Kring:",
-          "strokeColor": "Randklöör",
-          "strokeWidth": "Strichstärk",
-          "extrudedHeight": "Extrudeerte Hööchd"
-        },
-        "drawSettingsCircle": {
-          "interactive": "Interaktiv",
-          "radii": {
-            "innerRadius": "Innerer Radius",
-            "outerRadius": "Buuterer Radius",
-            "radius": "Radius"
-          },
-          "settings": {
-            "circle": "Instellungen Kring:",
-            "doubleCircle": "Instellungen Doppeltkring:"
-          },
-          "unit": "Eenheit"
-        },
-        "drawTypes": {
-          "box": "Kasten",
-          "circle": "Kring",
-          "doubleCircle": "Doppeltkring",
-          "geometries": "Geometrien",
-          "line": "Lienen",
-          "pen": "Stift",
-          "point": "Punkt",
-          "polygon": "Fläch",
-          "rectangle": "Rechteck",
-          "symbols": "Symbolen"
+        "modules": {
+            "buttons": {
+                "download": "Runnerladen",
+                "error": {
+                    "download": "Bi’t Runnerladen vun de wünschten Daten is’n Fehler optraten."
+                }
+            },
+            "draw": {
+                "drawEdit": {
+                    "delete": "Geometrie / Text wegmaken",
+                    "deleteAll": "Allens wegmaken",
+                    "modify": "Geometrie / Text ännern",
+                    "redo": "Wedderhalen",
+                    "undo": "Torüchnehmen"
+                },
+                "drawLayout": {
+                    "fillColor": "Füllklöör",
+                    "fillTransparency": "Dörchsichtigkeit",
+                    "innerCircle": "Innerer Kring:",
+                    "outerCircle": "Buuterer Kring:",
+                    "strokeColor": "Randklöör",
+                    "strokeWidth": "Strichstärk",
+                    "extrudedHeight": "Extrudeerte Hööchd"
+                },
+                "drawSettingsCircle": {
+                    "interactive": "Interaktiv",
+                    "radii": {
+                        "innerRadius": "Innerer Radius",
+                        "outerRadius": "Buuterer Radius",
+                        "radius": "Radius"
+                    },
+                    "settings": {
+                        "circle": "Instellungen Kring:",
+                        "doubleCircle": "Instellungen Doppeltkring:"
+                    },
+                    "unit": "Eenheit"
+                },
+                "drawTypes": {
+                    "box": "Kasten",
+                    "circle": "Kring",
+                    "doubleCircle": "Doppeltkring",
+                    "geometries": "Geometrien",
+                    "line": "Lienen",
+                    "pen": "Stift",
+                    "point": "Punkt",
+                    "polygon": "Fläch",
+                    "rectangle": "Rechteck",
+                    "symbols": "Symbolen"
+                }
+            },
+            "graphicalSelect": {
+                "alert": {
+                    "notSupportedElement": "Template-Element vun de grafische Utwahl warrt nich ünnerstütt! Verföögbor sünd:",
+                    "notSupportedOption": "Grafische Utwahl hett nich ünnerstütt Elemente! Verföögbor sünd:",
+                    "notSupportedSelection": "SelectedOption vun de grafische Utwahl warrt nich ünnerstütt! Verföögbor sünd:"
+                },
+                "displayName": "Geometrie utsöken",
+                "selectByCircle": "Kring trecken",
+                "selectByPolygon": "Fläch tekenen",
+                "selectBySquare": "Rechteck trecken",
+                "selectByLine": "Liene tekenen",
+                "bufferDistance": "Buffer-Afstahn (Meter): ",
+                "tooltipMessage": "Klicken üm to starten un to stoppen",
+                "tooltipMessagePolygon": "Klicken üm Stützpunkt tofögen"
+            },
+            "inputs": {
+                "fileUpload": {
+                    "browse": "Datei utsöken",
+                    "dropzone": "Datei hier afleggen",
+                    "or": "oder "
+                }
+            },
+            "list": {
+                "pagination": "Resultaatsiet",
+                "replace": {
+                    "no": "nee",
+                    "true": "jo"
+                },
+                "selection": "Reegen-Utwahl",
+                "zoomToResult": "To’t Resultaat zoomen",
+                "zoomToResults": "To de Utwahl zoomen"
+            },
+            "table": {
+                "fixColumnAriaLabel": "Hier klicken üm disse Spalt fasttosetten",
+                "download": "Runnerladen",
+                "reset": "Tabell torüchsetten",
+                "settings": "Tabell anpassen",
+                "total": "Allens tosamen",
+                "totalTitle": "All Tahlen vun jede List utreken",
+                "fullscreenViewToolTip": "To’n grötteren Tabellenansicht wesseln",
+                "fullscreenViewActiveToolTip": "To’n lütteren Tabellenansicht wesseln",
+                "settingsTooltip": "Tabelleninhalt filtern",
+                "resetToolTip": "Tabellenfilter torüchsetten",
+                "fullscreenView": "Vullbildansicht",
+                "fullscreenViewActive": "Kompaktansicht"
+            }
         }
-      },
-      "graphicalSelect": {
-        "alert": {
-          "notSupportedElement": "Template-Element vun de grafische Utwahl warrt nich ünnerstütt! Verföögbor sünd:",
-          "notSupportedOption": "Grafische Utwahl hett nich ünnerstütt Elemente! Verföögbor sünd:",
-          "notSupportedSelection": "SelectedOption vun de grafische Utwahl warrt nich ünnerstütt! Verföögbor sünd:"
-        },
-        "displayName": "Geometrie utsöken",
-        "selectByCircle": "Kring trecken",
-        "selectByPolygon": "Fläch tekenen",
-        "selectBySquare": "Rechteck trecken",
-        "selectByLine": "Liene tekenen",
-        "bufferDistance": "Buffer-Afstahn (Meter): ",
-        "tooltipMessage": "Klicken üm to starten un to stoppen",
-        "tooltipMessagePolygon": "Klicken üm Stützpunkt tofögen"
-      },
-      "inputs": {
-        "fileUpload": {
-          "browse": "Datei utsöken",
-          "dropzone": "Datei hier afleggen",
-          "or": "oder "
+    },
+    "aria": {
+        "sliderAria": "Schieberegeler för "
+    },
+    "libraries": {
+        "vue-datepicker-next": {
+            "lang": {
+                "formatLocale": {
+                    "months": [
+                        "Januar",
+                        "Februar",
+                        "März",
+                        "April",
+                        "Mai",
+                        "Juni",
+                        "Juli",
+                        "August",
+                        "September",
+                        "Oktober",
+                        "November",
+                        "Dezember"
+                    ],
+                    "monthsShort": [
+                        "Jan",
+                        "Feb",
+                        "Mär",
+                        "Apr",
+                        "Mai",
+                        "Jun",
+                        "Jul",
+                        "Aug",
+                        "Sep",
+                        "Okt",
+                        "Nov",
+                        "Dez"
+                    ],
+                    "weekdays": [
+                        "Sonndag",
+                        "Mondag",
+                        "Dinstag",
+                        "Mittwoch",
+                        "Donnerdag",
+                        "Freitag",
+                        "Samstag"
+                    ],
+                    "weekdaysShort": [
+                        "Son",
+                        "Mon",
+                        "Die",
+                        "Mit",
+                        "Don",
+                        "Fre",
+                        "Sam"
+                    ],
+                    "weekdaysMin": [
+                        "So",
+                        "Mo",
+                        "Di",
+                        "Mi",
+                        "Do",
+                        "Fr",
+                        "Sa"
+                    ],
+                    "firstDayOfWeek": 1,
+                    "firstWeekContainsDate": 4
+                }
+            }
         }
-      },
-      "list": {
-        "pagination": "Resultaatsiet",
-        "replace": {
-          "no": "nee",
-          "true": "jo"
-        },
-        "selection": "Reegen-Utwahl",
-        "zoomToResult": "To’t Resultaat zoomen",
-        "zoomToResults": "To de Utwahl zoomen"
-      },
-      "table": {
-        "fixColumnAriaLabel": "Hier klicken üm disse Spalt fasttosetten",
-        "download": "Runnerladen",
-        "reset": "Tabell torüchsetten",
-        "settings": "Tabell anpassen",
-        "total": "Allens tosamen",
-        "totalTitle": "All Tahlen vun jede List utreken",
-        "fullscreenViewToolTip": "To’n grötteren Tabellenansicht wesseln",
-        "fullscreenViewActiveToolTip": "To’n lütteren Tabellenansicht wesseln",
-        "settingsTooltip": "Tabelleninhalt filtern",
-        "resetToolTip": "Tabellenfilter torüchsetten",
-        "fullscreenView": "Vullbildansicht",
-        "fullscreenViewActive": "Kompaktansicht"
-      }
     }
-  },
-  "aria": {
-    "sliderAria": "Schieberegeler för "
-  },
-  "libraries": {
-    "vue-datepicker-next": {
-      "lang": {
-        "formatLocale": {
-          "months": [
-            "Januar",
-            "Februar",
-            "März",
-            "April",
-            "Mai",
-            "Juni",
-            "Juli",
-            "August",
-            "September",
-            "Oktober",
-            "November",
-            "Dezember"
-          ],
-          "monthsShort": [
-            "Jan",
-            "Feb",
-            "Mär",
-            "Apr",
-            "Mai",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Okt",
-            "Nov",
-            "Dez"
-          ],
-          "weekdays": [
-            "Sonndag",
-            "Mondag",
-            "Dinstag",
-            "Mittwoch",
-            "Donnerdag",
-            "Freitag",
-            "Samstag"
-          ],
-          "weekdaysShort": [
-            "Son",
-            "Mon",
-            "Die",
-            "Mit",
-            "Don",
-            "Fre",
-            "Sam"
-          ],
-          "weekdaysMin": [
-            "So",
-            "Mo",
-            "Di",
-            "Mi",
-            "Do",
-            "Fr",
-            "Sa"
-          ],
-          "firstDayOfWeek": 1,
-          "firstWeekContainsDate": 4
-        }
-      }
-    }
-  }
 }

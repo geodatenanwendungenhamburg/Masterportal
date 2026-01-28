@@ -1,588 +1,588 @@
 {
-  "portalConfig": {
-    "map": {
-      "mapView": {
-        "backgroundImage": "https://geodienste.hamburg.de/lgv-config/img/backgroundCanvas.jpeg",
-        "extent": [
-          442800,
-          5809000,
-          738000,
-          6102200
-        ],
-        "startResolution": 5.2916638091682096,
-        "options": [
-          {
-            "resolution": 661.4579761460263,
-            "scale": 2500000,
-            "zoomLevel": 0
-          },
-          {
-            "resolution": 264.58319045841046,
-            "scale": 1000000,
-            "zoomLevel": 1
-          },
-          {
-            "resolution": 66.14579761460263,
-            "scale": 250000,
-            "zoomLevel": 2
-          },
-          {
-            "resolution": 26.458319045841044,
-            "scale": 100000,
-            "zoomLevel": 3
-          },
-          {
-            "resolution": 15.874991427504629,
-            "scale": 60000,
-            "zoomLevel": 4
-          },
-          {
-            "resolution": 10.583327618336419,
-            "scale": 40000,
-            "zoomLevel": 5
-          },
-          {
-            "resolution": 5.2916638091682096,
-            "scale": 20000,
-            "zoomLevel": 6
-          },
-          {
-            "resolution": 2.6458319045841048,
-            "scale": 10000,
-            "zoomLevel": 7
-          },
-          {
-            "resolution": 1.3229159522920524,
-            "scale": 5000,
-            "zoomLevel": 8
-          },
-          {
-            "resolution": 0.6614579761460262,
-            "scale": 2500,
-            "zoomLevel": 9
-          },
-          {
-            "resolution": 0.2645831904584105,
-            "scale": 1000,
-            "zoomLevel": 10
-          },
-          {
-            "resolution": 0.13229159522920522,
-            "scale": 500,
-            "zoomLevel": 11
-          },
-          {
-            "resolution": 0.06614579761460261,
-            "scale": 250,
-            "zoomLevel": 12
-          }
-        ]
-      },
-      "controls": {
-        "rotation":  {
-          "showResetRotationAlways": false,
-          "showResetRotation": true,
-          "rotationIcons": true
-        } ,
-        "tiltView": true,
-        "zoom": true,
-        "button3d": true,
-        "expandable": {
-          "totalView": true,
-          "backForward": true,
-          "fullScreen": true
-        }
-      },
-      "layerPills": {
-        "active": true
-      }
-    },
-    "tree": {
-      "type": "auto",
-      "addLayerButton": {
-        "active" :true,
-        "searchBar": {
-          "active": true,
-          "searchInterfaceInstances": [
-            {
-              "id":"topicTree",
-              "searchCategory": "Thema"
-            },
-            {
-              "id":"elasticSearch_0",
-              "searchCategory": "Thema (externe Fachdaten)"
-            }
-          ]
-        }
-      },
-      "validLayerTypesAutoTree": [
-        "WMS",
-        "SENSORTHINGS",
-        "TERRAIN3D",
-        "TILESET3D",
-        "OBLIQUE"
-      ],
-      "categories": [
-        {
-          "key": "kategorie_opendata",
-          "name": "common:modules.layerTree.categoryOpendata",
-          "active": true
-        },
-        {
-          "key": "kategorie_inspire",
-          "name": "common:modules.layerTree.categoryInspire"
-        },
-        {
-          "key": "kategorie_organisation",
-          "name": "common:modules.layerTree.categoryOrganisation"
-        }
-      ],
-      "layerIDsToIgnore": [
-        "1912",
-        "1913",
-        "1914",
-        "1915",
-        "1916",
-        "1917",
-        "2298",
-        "2297",
-        "1791",
-        "20170",
-        "20171",
-        "20172",
-        "20173",
-        "20174",
-        "20175",
-        "20176",
-        "19970",
-        "19971",
-        "20058",
-        "20059"
-      ],
-      "layerIDsToStyle": [
-        {
-          "id": "1933",
-          "styles": "geofox_stations",
-          "name": "Haltestellen",
-          "legendURL": "https://geoportal.metropolregion.hamburg.de/legende_mrh/hvv-bus.png"
-        },
-        {
-          "id": "1935",
-          "styles": [
-            "geofox_Faehre",
-            "geofox-bahn",
-            "geofox-bus",
-            "geofox_BusName"
-          ],
-          "name": [
-            "Fährverbindungen",
-            "Bahnlinien",
-            "Buslinien",
-            "Busliniennummern"
-          ],
-          "legendURL": [
-            "https://geoportal.metropolregion.hamburg.de/legende_mrh/hvv-faehre.png",
-            "https://geoportal.metropolregion.hamburg.de/legende_mrh/hvv-bahn.png",
-            "https://geoportal.metropolregion.hamburg.de/legende_mrh/hvv-bus.png",
-            "https://geoportal.metropolregion.hamburg.de/legende_mrh/hvv-bus.png"
-          ]
-        }
-      ],
-      "metaIDsToMerge": [
-        "57A1D605-A216-4E42-8F2D-BBCF8BF3ADA9",
-        "4AC1B569-65AA-4FAE-A5FC-E477DFE5D303",
-        "3EE8938B-FF9E-467B-AAA2-8534BB505580",
-        "F691CFB0-D38F-4308-B12F-1671166FF181",
-        "FE4DAF57-2AF6-434D-85E3-220A20B8C0F1"
-      ],
-      "metaIDsToIgnore": [
-        "09DE39AB-A965-45F4-B8F9-0C339A45B154",
-        "51656D3F-E801-497C-952C-4F1F605843DD",
-        "AD579C62-0471-4FA5-8C9A-38B3DCB5B2CB",
-        "14E3AFAE-99BE-4F1D-A3A6-6A68A1CDAC7B",
-        "56110E55-72C7-41F2-9F92-1C598E4E0A02",
-        "88A22736-FE87-46F7-8A38-84F9E0E945F7",
-        "DDB01922-D7B5-4323-9DDF-B68A42C559E6",
-        "AA06AD76-6110-4718-89E1-F1EDDA1DF4CF",
-        "1C8086F7-059F-4ACF-96C5-7AFEB8F8B751",
-        "A46086BA-4A4C-48A4-AC1D-9735DDB4FDDE",
-        "DB433BD1-1640-4FBC-A879-72402BD5CFDB",
-        "6A0D8B9D-1BBD-441B-BA5C-6159EE41EE71",
-        "3233E124-E576-4B5D-978E-164720C4E75F",
-        "24513F73-D928-450C-A334-E30037945729",
-        "7595A206-F07E-470D-A6C1-2F74F0B0C64E",
-        "47233BC2-8D3F-4D9E-B760-BA153327F0E8",
-        "BD9B5D2E-B6B8-4857-99A5-306B0411E48B",
-        "4C2CB09B-5F74-4BDF-BE10-3F4DBEF5BB02"
-      ]
-    },
-    "mainMenu": {
-      "expanded": true,
-      "title": {
-        "text": "Master Auto",
-        "logo": "https://geodienste.hamburg.de/lgv-config/img/hh-logo.png",
-        "link": "https://geoinfo.hamburg.de",
-        "toolTip": "Landesbetrieb Geoinformation und Vermessung"
-      },
-      "searchBar": {
-        "searchInterfaces": [
-          {
-            "type": "topicTree",
-            "searchInterfaceId":"topicTree",
-            "hitTemplate": "layer"
-          },
-          {
-            "type": "gazetteer",
-            "serviceId": "6",
-            "searchAddress": true,
-            "searchStreets": true,
-            "searchHouseNumbers": true,
-            "searchDistricts": true,
-            "searchParcels": true,
-            "searchStreetKey": true,
-            "resultEvents": {
-              "onClick": [
-                "setMarker",
-                "zoomToResult"
-              ],
-              "onHover": [
-                "setMarker"
-              ],
-              "buttons": [
-                "startRouting"
-              ]
-            }
-          },
-          {
-            "type": "elasticSearch",
-            "searchInterfaceId":"elasticSearch_1",
-            "serviceId": "elastic_address",
-            "requestType": "POST",
-            "epsg": "EPSG:4326",
-            "searchStringAttribute": "query_str",
-            "hitType": "_source.properties.type",
-            "payload": {
-              "id": "addr_search",
-              "params": {
-                "query_str": ""
-              }
-            },
-            "responseEntryPath": "hits.hits",
-            "hitMap": {
-              "name": "_source.properties.searchfield",
-              "id": "_source.id",
-              "coordinate": "_source.geometry.coordinates"
-            },
-            "resultEvents": {
-              "onClick": [
-                "setMarker",
-                "zoomToResult"
-              ],
-              "onHover": [
-                "setMarker"
-              ],
-              "buttons": [
-                "startRouting",
-                "setMarker",
-                "zoomToResult"
-              ]
-            }
-          },
-          {
-            "type": "elasticSearch",
-            "searchInterfaceId":"elasticSearch_0",
-            "serviceId": "elastic_prod",
-            "requestType": "GET",
-            "hitTemplate": "layer",
-            "payload": {
-              "id": "query",
-              "params": {
-                "query_string": "",
-                "typ": [
-                  "sensorthings",
-                  "wms"
+    "portalConfig": {
+        "map": {
+            "mapView": {
+                "backgroundImage": "https://geodienste.hamburg.de/lgv-config/img/backgroundCanvas.jpeg",
+                "extent": [
+                    442800,
+                    5809000,
+                    738000,
+                    6102200
                 ],
-                "size": 30
-              }
-            },
-            "searchStringAttribute": "query_string",
-            "responseEntryPath": "hits.hits",
-            "hitMap": {
-              "name": "_source.name",
-              "id": "_source.id",
-              "source": "_source",
-              "layerId": "_source.id",
-              "toolTip": [
-                "_source.name",
-                "_source.datasets.md_name"
-              ]
-            },
-            "resultEvents": {
-              "onClick": [
-                "addLayerToTopicTree"
-              ],
-              "buttons": [
-                "showInTree",
-                "showLayerInfo"
-              ]
-            }
-          }
-        ]
-      },
-      "sections": [
-        [
-          {
-            "name": "Lessing-Denkmal am Gänsemarkt",
-            "icon": "bi-bullseye",
-            "type": "customMenuElement",
-            "supportedMapModes": [
-              "3D"
-            ],
-            "execute": {
-              "action": "Maps/activateViewpoint",
-              "payload": {
-                "layerIds": [
-                  "33362"
-                ],
-                "heading": 220,
-                "tilt": -90,
-                "altitude": 31.168335673232216,
-                "center": [565482.9147514624,5934483.0747392505],
-                "zoom": 11
-              }
-            }
-          },
-          {
-            "type": "legend"
-          },
-          {
-            "type": "scaleSwitcher"
-          },
-          {
-            "type": "coordToolkit",
-            "heightLayerId": "19173",
-            "heightElementName": "value_0",
-            "heightValueWater": "-20",
-            "heightValueBuilding": "200",
-            "zoomLevel": 5
-          },
-        
-          {
-            "type": "openConfig"
-          },
-          {
-            "type": "print",
-            "printServiceId": "mapfish",
-            "printAppId": "master",
-            "filename": "Ausdruck",
-            "title": "Mein Titel",
-            "currentLayoutName": "A4 Hochformat"
-          },
-          {
-            "name": "folder1",
-            "icon": "bi-file-plus",
-            "type": "folder",
-            "elements": [
-              {
-                "name": "folder1_1",
-                "icon": "bi-file-plus",
-                "type": "folder",
-                "elements": [
-                  {
-                    "name": "folder1_1_1",
-                    "icon": "bi-file-plus",
-                    "type": "folder",
-                    "elements": []
-                  },
-                  {
-                    "name": "folder1_1_2",
-                    "icon": "bi-file-plus",
-                    "type": "folder",
-                    "elements": []
-                  }
+                "startResolution": 5.2916638091682096,
+                "options": [
+                    {
+                        "resolution": 661.4579761460263,
+                        "scale": 2500000,
+                        "zoomLevel": 0
+                    },
+                    {
+                        "resolution": 264.58319045841046,
+                        "scale": 1000000,
+                        "zoomLevel": 1
+                    },
+                    {
+                        "resolution": 66.14579761460263,
+                        "scale": 250000,
+                        "zoomLevel": 2
+                    },
+                    {
+                        "resolution": 26.458319045841044,
+                        "scale": 100000,
+                        "zoomLevel": 3
+                    },
+                    {
+                        "resolution": 15.874991427504629,
+                        "scale": 60000,
+                        "zoomLevel": 4
+                    },
+                    {
+                        "resolution": 10.583327618336419,
+                        "scale": 40000,
+                        "zoomLevel": 5
+                    },
+                    {
+                        "resolution": 5.2916638091682096,
+                        "scale": 20000,
+                        "zoomLevel": 6
+                    },
+                    {
+                        "resolution": 2.6458319045841048,
+                        "scale": 10000,
+                        "zoomLevel": 7
+                    },
+                    {
+                        "resolution": 1.3229159522920524,
+                        "scale": 5000,
+                        "zoomLevel": 8
+                    },
+                    {
+                        "resolution": 0.6614579761460262,
+                        "scale": 2500,
+                        "zoomLevel": 9
+                    },
+                    {
+                        "resolution": 0.2645831904584105,
+                        "scale": 1000,
+                        "zoomLevel": 10
+                    },
+                    {
+                        "resolution": 0.13229159522920522,
+                        "scale": 500,
+                        "zoomLevel": 11
+                    },
+                    {
+                        "resolution": 0.06614579761460261,
+                        "scale": 250,
+                        "zoomLevel": 12
+                    }
                 ]
-              },
-              {
-                "name": "folder1_2",
-                "icon": "bi-file-plus",
-                "type": "folder",
-                "elements": []
-              }
-            ]
-          }
-        ]
-      ]
-    },
-    "secondaryMenu": {
-      "expanded": false,
-      "sections": [
-        [
-          {
-            "type": "coordToolkit",
-            "heightLayerId": "19173",
-            "heightElementName": "value_0",
-            "heightValueWater": "-20",
-            "heightValueBuilding": "200",
-            "zoomLevel": 5,
-            "heightLayerInfo": "Grundlage der Höheninformation ist das \"Digitale Höhenmodell Hamburg DGM 1\" mit Hohenangaben im Koordinatenrefenerzsystem für Höhenangaben DE_DHHN2016_NH in Metern über Normalhöhennull (NHN).",
-            "coordInfo": {
-              "title": "Koordinatenreferenzsystem für 2D-Lageangaben, Erläuterungen",
-              "explanations": [
-                "ETRS89_UTM32, EPSG 4647 (zE-N): Bezugssystem ETRS89, Abbildungsvorschrift UTM, Zone 32",
-                "EPSG 25832: Bezugssystem ETRS89, Abbildungsvorschrift UTM, Zone 32, ist identisch mit ETRS89_UTM32 jedoch ohne Angabe der Zonenkennung „32“ beim East-Wert",
-                "ETRS89_3GK3: Bezugssystem ETRS89, Abbildungsvorschrift Gauß-Krüger, 3. Meridianstreifen",
-                "EPSG 8395: Bezugssystem ETRS89, Abbildungsvorschrift Gauß-Krüger, 3. Meridianstreifen, ist identisch mit ETRS89_3GK3 jedoch ohne Angabe der Streifenkennung „3“ beim Rechtswert",
-                "DE_DHDN_3GK3, EPSG 31467: Bezugssystem DHDN, Abbildungsvorschrift Gauß-Krüger, 3. Meridianstreifen"
-              ]
+            },
+            "controls": {
+                "rotation": {
+                    "showResetRotationAlways": false,
+                    "showResetRotation": true,
+                    "rotationIcons": true
+                } ,
+                "tiltView": true,
+                "zoom": true,
+                "button3d": true,
+                "expandable": {
+                    "totalView": true,
+                    "backForward": true,
+                    "fullScreen": true
+                }
+            },
+            "layerPills": {
+                "active": true
             }
-          },
-          {
-            "type": "legend"
-          },
-          {
-            "type": "shareView"
-          }
-        ]
-      ]
-    }
-  },
-  "layerConfig": {
-    "baselayer": {
-      "elements": [
-        {
-          "id": "34127",
-          "name": "Luftbilder DOP 20 (DOP 40 mit Umland)",
-          "shortname": "DOP 20",
-          "visibility": true,
-          "time": false
         },
-        {
-          "id": "33797",
-          "name": "Geobasiskarten (Schriftplatte)",
-          "shortname": "Schriftplatte",
-          "showInLayerTree": false,
-          "preview": {
-            "center": [
-              564510.09,
-              5935255.24
-            ],
-            "zoomLevel": 3
-          }
-        },
-        {
-          "id": "453",
-          "shortname": "Geobasiskarten",
-          "showInLayerTree": false
-        }
-      ]
-    },
-    "subjectlayer": {
-      "elements": [
-        {
-          "id": "2423",
-          "name": "Gemarkungen",
-          "typ": "WMS",
-          "visibility": true,
-          "showInLayerTree": true
-        },
-        {
-          "id": "2426",
-          "name": "Bezirke",
-          "typ": "WMS",
-          "visibility": true,
-          "showInLayerTree": true
-        },
-        {
-        "name": "3D Daten",
-        "type": "folder",
-        "elements": [
-          {
-            "name": "3D-Basisdaten",
-            "type": "folder",
-            "elements": [
-              {
-                "id": "12883",
-                "name": "Digitales Geländemodell (DGM)",
-                "visibility": true
-              },
-              {
-                "id": "18813",
-                "name": "Texturiertes Oberflächenmodell (3D-Mesh)",
-                "visibility": false
-              }
-            ]
-          },
-          {
-            "name": "3D-Gebäudedaten",
-            "type": "folder",
-            "elements": [
-              {
-                "name": "3D-Gebäudemodell (LoD3.0- HH)",
-                "id": "34570",
-                "visibility": true
-              },
-              {
-                "name": "3D-Gebäudemodell (LoD3.0- HH) untexturiert",
-                "id": "34573"
-              },
-              {
-                "name": "3D-Gebäudemodell (LoD3.0- HH) hochauflösend",
-                "id": "34572"
-              },
-              {
-                "id": "12884",
-                "name": "3D-Gebäudemodell (LoD2- DE)",
-                "visibility": false
-              },
-              {
-                "id": "24049",
-                "name": "3D-Gebäudemodell (LoD1- DE)",
-                "visibility": false
-              }
-            ]
-          },
-          {
-            "name": "3D-Objektdaten",
-            "type": "folder",
-            "elements": [
-              {
-                "name": "Brücken",
-                "type": "folder",
-                "elements": [
-                  {
-                    "id": "16101",
-                    "name": "Brückenflächen HH",
-                    "visibility": true,
-                    "hiddenObjectIds": [
-                      "UUID_0b173d99-df5a-41f1-851e-3fc006431f57",
-                      "UUID_105a16c2-a938-4da3-b7fd-5662d37d1e1b",
-                      "UUID_9e1430a9-017b-4275-9852-42ebb9808307",
-                      "UUID_ef12f1ea-bd0d-4123-ab4c-38e1e762bc11",
-                      "UUID_d88f2906-864d-4015-ae0e-3d03359d9ca3"
+        "tree": {
+            "type": "auto",
+            "addLayerButton": {
+                "active": true,
+                "searchBar": {
+                    "active": true,
+                    "searchInterfaceInstances": [
+                        {
+                            "id": "topicTree",
+                            "searchCategory": "Thema"
+                        },
+                        {
+                            "id": "elasticSearch_0",
+                            "searchCategory": "Thema (externe Fachdaten)"
+                        }
                     ]
-                  }
-                ]
-              },
-              {
-                "name": "Bäume",
-                "type": "folder",
-                "elements": [
-                  {
-                    "id": "16102",
-                    "name": "3D-Straßenbaumkataster Sommerbäume",
-                    "visibility": true
-                  },
-                  {
-                    "id": "32979",
-                    "name": "3D-Straßenbaumkataster Winterbäume"
-                  }
-                ]
-              }
+                }
+            },
+            "validLayerTypesAutoTree": [
+                "WMS",
+                "SENSORTHINGS",
+                "TERRAIN3D",
+                "TILESET3D",
+                "OBLIQUE"
+            ],
+            "categories": [
+                {
+                    "key": "kategorie_opendata",
+                    "name": "common:modules.layerTree.categoryOpendata",
+                    "active": true
+                },
+                {
+                    "key": "kategorie_inspire",
+                    "name": "common:modules.layerTree.categoryInspire"
+                },
+                {
+                    "key": "kategorie_organisation",
+                    "name": "common:modules.layerTree.categoryOrganisation"
+                }
+            ],
+            "layerIDsToIgnore": [
+                "1912",
+                "1913",
+                "1914",
+                "1915",
+                "1916",
+                "1917",
+                "2298",
+                "2297",
+                "1791",
+                "20170",
+                "20171",
+                "20172",
+                "20173",
+                "20174",
+                "20175",
+                "20176",
+                "19970",
+                "19971",
+                "20058",
+                "20059"
+            ],
+            "layerIDsToStyle": [
+                {
+                    "id": "1933",
+                    "styles": "geofox_stations",
+                    "name": "Haltestellen",
+                    "legendURL": "https://geoportal.metropolregion.hamburg.de/legende_mrh/hvv-bus.png"
+                },
+                {
+                    "id": "1935",
+                    "styles": [
+                        "geofox_Faehre",
+                        "geofox-bahn",
+                        "geofox-bus",
+                        "geofox_BusName"
+                    ],
+                    "name": [
+                        "Fährverbindungen",
+                        "Bahnlinien",
+                        "Buslinien",
+                        "Busliniennummern"
+                    ],
+                    "legendURL": [
+                        "https://geoportal.metropolregion.hamburg.de/legende_mrh/hvv-faehre.png",
+                        "https://geoportal.metropolregion.hamburg.de/legende_mrh/hvv-bahn.png",
+                        "https://geoportal.metropolregion.hamburg.de/legende_mrh/hvv-bus.png",
+                        "https://geoportal.metropolregion.hamburg.de/legende_mrh/hvv-bus.png"
+                    ]
+                }
+            ],
+            "metaIDsToMerge": [
+                "57A1D605-A216-4E42-8F2D-BBCF8BF3ADA9",
+                "4AC1B569-65AA-4FAE-A5FC-E477DFE5D303",
+                "3EE8938B-FF9E-467B-AAA2-8534BB505580",
+                "F691CFB0-D38F-4308-B12F-1671166FF181",
+                "FE4DAF57-2AF6-434D-85E3-220A20B8C0F1"
+            ],
+            "metaIDsToIgnore": [
+                "09DE39AB-A965-45F4-B8F9-0C339A45B154",
+                "51656D3F-E801-497C-952C-4F1F605843DD",
+                "AD579C62-0471-4FA5-8C9A-38B3DCB5B2CB",
+                "14E3AFAE-99BE-4F1D-A3A6-6A68A1CDAC7B",
+                "56110E55-72C7-41F2-9F92-1C598E4E0A02",
+                "88A22736-FE87-46F7-8A38-84F9E0E945F7",
+                "DDB01922-D7B5-4323-9DDF-B68A42C559E6",
+                "AA06AD76-6110-4718-89E1-F1EDDA1DF4CF",
+                "1C8086F7-059F-4ACF-96C5-7AFEB8F8B751",
+                "A46086BA-4A4C-48A4-AC1D-9735DDB4FDDE",
+                "DB433BD1-1640-4FBC-A879-72402BD5CFDB",
+                "6A0D8B9D-1BBD-441B-BA5C-6159EE41EE71",
+                "3233E124-E576-4B5D-978E-164720C4E75F",
+                "24513F73-D928-450C-A334-E30037945729",
+                "7595A206-F07E-470D-A6C1-2F74F0B0C64E",
+                "47233BC2-8D3F-4D9E-B760-BA153327F0E8",
+                "BD9B5D2E-B6B8-4857-99A5-306B0411E48B",
+                "4C2CB09B-5F74-4BDF-BE10-3F4DBEF5BB02"
             ]
-          }
-        ]
-      }
-      ]
+        },
+        "mainMenu": {
+            "expanded": true,
+            "title": {
+                "text": "Master Auto",
+                "logo": "https://geodienste.hamburg.de/lgv-config/img/hh-logo.png",
+                "link": "https://geoinfo.hamburg.de",
+                "toolTip": "Landesbetrieb Geoinformation und Vermessung"
+            },
+            "searchBar": {
+                "searchInterfaces": [
+                    {
+                        "type": "topicTree",
+                        "searchInterfaceId": "topicTree",
+                        "hitTemplate": "layer"
+                    },
+                    {
+                        "type": "gazetteer",
+                        "serviceId": "6",
+                        "searchAddress": true,
+                        "searchStreets": true,
+                        "searchHouseNumbers": true,
+                        "searchDistricts": true,
+                        "searchParcels": true,
+                        "searchStreetKey": true,
+                        "resultEvents": {
+                            "onClick": [
+                                "setMarker",
+                                "zoomToResult"
+                            ],
+                            "onHover": [
+                                "setMarker"
+                            ],
+                            "buttons": [
+                                "startRouting"
+                            ]
+                        }
+                    },
+                    {
+                        "type": "elasticSearch",
+                        "searchInterfaceId": "elasticSearch_1",
+                        "serviceId": "elastic_address",
+                        "requestType": "POST",
+                        "epsg": "EPSG:4326",
+                        "searchStringAttribute": "query_str",
+                        "hitType": "_source.properties.type",
+                        "payload": {
+                            "id": "addr_search",
+                            "params": {
+                                "query_str": ""
+                            }
+                        },
+                        "responseEntryPath": "hits.hits",
+                        "hitMap": {
+                            "name": "_source.properties.searchfield",
+                            "id": "_source.id",
+                            "coordinate": "_source.geometry.coordinates"
+                        },
+                        "resultEvents": {
+                            "onClick": [
+                                "setMarker",
+                                "zoomToResult"
+                            ],
+                            "onHover": [
+                                "setMarker"
+                            ],
+                            "buttons": [
+                                "startRouting",
+                                "setMarker",
+                                "zoomToResult"
+                            ]
+                        }
+                    },
+                    {
+                        "type": "elasticSearch",
+                        "searchInterfaceId": "elasticSearch_0",
+                        "serviceId": "elastic_prod",
+                        "requestType": "GET",
+                        "hitTemplate": "layer",
+                        "payload": {
+                            "id": "query",
+                            "params": {
+                                "query_string": "",
+                                "typ": [
+                                    "sensorthings",
+                                    "wms"
+                                ],
+                                "size": 30
+                            }
+                        },
+                        "searchStringAttribute": "query_string",
+                        "responseEntryPath": "hits.hits",
+                        "hitMap": {
+                            "name": "_source.name",
+                            "id": "_source.id",
+                            "source": "_source",
+                            "layerId": "_source.id",
+                            "toolTip": [
+                                "_source.name",
+                                "_source.datasets.md_name"
+                            ]
+                        },
+                        "resultEvents": {
+                            "onClick": [
+                                "addLayerToTopicTree"
+                            ],
+                            "buttons": [
+                                "showInTree",
+                                "showLayerInfo"
+                            ]
+                        }
+                    }
+                ]
+            },
+            "sections": [
+                [
+                    {
+                        "name": "Lessing-Denkmal am Gänsemarkt",
+                        "icon": "bi-bullseye",
+                        "type": "customMenuElement",
+                        "supportedMapModes": [
+                            "3D"
+                        ],
+                        "execute": {
+                            "action": "Maps/activateViewpoint",
+                            "payload": {
+                                "layerIds": [
+                                    "33362"
+                                ],
+                                "heading": 220,
+                                "tilt": -90,
+                                "altitude": 31.168335673232216,
+                                "center": [565482.9147514624,5934483.0747392505],
+                                "zoom": 11
+                            }
+                        }
+                    },
+                    {
+                        "type": "legend"
+                    },
+                    {
+                        "type": "scaleSwitcher"
+                    },
+                    {
+                        "type": "coordToolkit",
+                        "heightLayerId": "19173",
+                        "heightElementName": "value_0",
+                        "heightValueWater": "-20",
+                        "heightValueBuilding": "200",
+                        "zoomLevel": 5
+                    },
+
+                    {
+                        "type": "openConfig"
+                    },
+                    {
+                        "type": "print",
+                        "printServiceId": "mapfish",
+                        "printAppId": "master",
+                        "filename": "Ausdruck",
+                        "title": "Mein Titel",
+                        "currentLayoutName": "A4 Hochformat"
+                    },
+                    {
+                        "name": "folder1",
+                        "icon": "bi-file-plus",
+                        "type": "folder",
+                        "elements": [
+                            {
+                                "name": "folder1_1",
+                                "icon": "bi-file-plus",
+                                "type": "folder",
+                                "elements": [
+                                    {
+                                        "name": "folder1_1_1",
+                                        "icon": "bi-file-plus",
+                                        "type": "folder",
+                                        "elements": []
+                                    },
+                                    {
+                                        "name": "folder1_1_2",
+                                        "icon": "bi-file-plus",
+                                        "type": "folder",
+                                        "elements": []
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "folder1_2",
+                                "icon": "bi-file-plus",
+                                "type": "folder",
+                                "elements": []
+                            }
+                        ]
+                    }
+                ]
+            ]
+        },
+        "secondaryMenu": {
+            "expanded": false,
+            "sections": [
+                [
+                    {
+                        "type": "coordToolkit",
+                        "heightLayerId": "19173",
+                        "heightElementName": "value_0",
+                        "heightValueWater": "-20",
+                        "heightValueBuilding": "200",
+                        "zoomLevel": 5,
+                        "heightLayerInfo": "Grundlage der Höheninformation ist das \"Digitale Höhenmodell Hamburg DGM 1\" mit Hohenangaben im Koordinatenrefenerzsystem für Höhenangaben DE_DHHN2016_NH in Metern über Normalhöhennull (NHN).",
+                        "coordInfo": {
+                            "title": "Koordinatenreferenzsystem für 2D-Lageangaben, Erläuterungen",
+                            "explanations": [
+                                "ETRS89_UTM32, EPSG 4647 (zE-N): Bezugssystem ETRS89, Abbildungsvorschrift UTM, Zone 32",
+                                "EPSG 25832: Bezugssystem ETRS89, Abbildungsvorschrift UTM, Zone 32, ist identisch mit ETRS89_UTM32 jedoch ohne Angabe der Zonenkennung „32“ beim East-Wert",
+                                "ETRS89_3GK3: Bezugssystem ETRS89, Abbildungsvorschrift Gauß-Krüger, 3. Meridianstreifen",
+                                "EPSG 8395: Bezugssystem ETRS89, Abbildungsvorschrift Gauß-Krüger, 3. Meridianstreifen, ist identisch mit ETRS89_3GK3 jedoch ohne Angabe der Streifenkennung „3“ beim Rechtswert",
+                                "DE_DHDN_3GK3, EPSG 31467: Bezugssystem DHDN, Abbildungsvorschrift Gauß-Krüger, 3. Meridianstreifen"
+                            ]
+                        }
+                    },
+                    {
+                        "type": "legend"
+                    },
+                    {
+                        "type": "shareView"
+                    }
+                ]
+            ]
+        }
+    },
+    "layerConfig": {
+        "baselayer": {
+            "elements": [
+                {
+                    "id": "34127",
+                    "name": "Luftbilder DOP 20 (DOP 40 mit Umland)",
+                    "shortname": "DOP 20",
+                    "visibility": true,
+                    "time": false
+                },
+                {
+                    "id": "33797",
+                    "name": "Geobasiskarten (Schriftplatte)",
+                    "shortname": "Schriftplatte",
+                    "showInLayerTree": false,
+                    "preview": {
+                        "center": [
+                            564510.09,
+                            5935255.24
+                        ],
+                        "zoomLevel": 3
+                    }
+                },
+                {
+                    "id": "453",
+                    "shortname": "Geobasiskarten",
+                    "showInLayerTree": false
+                }
+            ]
+        },
+        "subjectlayer": {
+            "elements": [
+                {
+                    "id": "2423",
+                    "name": "Gemarkungen",
+                    "typ": "WMS",
+                    "visibility": true,
+                    "showInLayerTree": true
+                },
+                {
+                    "id": "2426",
+                    "name": "Bezirke",
+                    "typ": "WMS",
+                    "visibility": true,
+                    "showInLayerTree": true
+                },
+                {
+                    "name": "3D Daten",
+                    "type": "folder",
+                    "elements": [
+                        {
+                            "name": "3D-Basisdaten",
+                            "type": "folder",
+                            "elements": [
+                                {
+                                    "id": "12883",
+                                    "name": "Digitales Geländemodell (DGM)",
+                                    "visibility": true
+                                },
+                                {
+                                    "id": "18813",
+                                    "name": "Texturiertes Oberflächenmodell (3D-Mesh)",
+                                    "visibility": false
+                                }
+                            ]
+                        },
+                        {
+                            "name": "3D-Gebäudedaten",
+                            "type": "folder",
+                            "elements": [
+                                {
+                                    "name": "3D-Gebäudemodell (LoD3.0- HH)",
+                                    "id": "34570",
+                                    "visibility": true
+                                },
+                                {
+                                    "name": "3D-Gebäudemodell (LoD3.0- HH) untexturiert",
+                                    "id": "34573"
+                                },
+                                {
+                                    "name": "3D-Gebäudemodell (LoD3.0- HH) hochauflösend",
+                                    "id": "34572"
+                                },
+                                {
+                                    "id": "12884",
+                                    "name": "3D-Gebäudemodell (LoD2- DE)",
+                                    "visibility": false
+                                },
+                                {
+                                    "id": "24049",
+                                    "name": "3D-Gebäudemodell (LoD1- DE)",
+                                    "visibility": false
+                                }
+                            ]
+                        },
+                        {
+                            "name": "3D-Objektdaten",
+                            "type": "folder",
+                            "elements": [
+                                {
+                                    "name": "Brücken",
+                                    "type": "folder",
+                                    "elements": [
+                                        {
+                                            "id": "16101",
+                                            "name": "Brückenflächen HH",
+                                            "visibility": true,
+                                            "hiddenObjectIds": [
+                                                "UUID_0b173d99-df5a-41f1-851e-3fc006431f57",
+                                                "UUID_105a16c2-a938-4da3-b7fd-5662d37d1e1b",
+                                                "UUID_9e1430a9-017b-4275-9852-42ebb9808307",
+                                                "UUID_ef12f1ea-bd0d-4123-ab4c-38e1e762bc11",
+                                                "UUID_d88f2906-864d-4015-ae0e-3d03359d9ca3"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Bäume",
+                                    "type": "folder",
+                                    "elements": [
+                                        {
+                                            "id": "16102",
+                                            "name": "3D-Straßenbaumkataster Sommerbäume",
+                                            "visibility": true
+                                        },
+                                        {
+                                            "id": "32979",
+                                            "name": "3D-Straßenbaumkataster Winterbäume"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
     }
-  }
 }
