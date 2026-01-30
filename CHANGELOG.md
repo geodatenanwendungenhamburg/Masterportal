@@ -8,7 +8,7 @@
 ### __Breaking Changes__
 
 ### Added
-- Issue #12344: te
+- Issue #12344: tef
 - Issue #1524: draw_old: Added documentation for drawSquareSettings.
 - CopyrightConstraints: Added Parameter `useLayerCswUrl` to use the CSW interface specified in the layers.
 - LayerTree: Added LayerComponentIconCustom to provide a custom action button for layers that can execute Masterportal actions.
