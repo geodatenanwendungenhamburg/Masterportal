@@ -1,12 +1,1 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-echo "Husky pre-commit"
-FILE="CHANGELOG.md"
-
-if [ -f "$FILE" ]; then
-  sed -i.bak 's/Issue #/Issue \\#/g' "$FILE"
-  rm "$FILE.bak"
-  git add "$FILE"
-  echo "Husky pre-commit: changelog fixed"
-fi
+npm run preCommitHook

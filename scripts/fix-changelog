@@ -1,9 +1,9 @@
 #!/bin/sh
-
+echo "[pre-commit] hook started"
 FILE="CHANGELOG.md"
 
 if [ -f "$FILE" ]; then
   sed -i 's/Issue #/Issue \\#/g' "$FILE"
   git add "$FILE"
 fi
-
+echo "[pre-commit] hook finished"
