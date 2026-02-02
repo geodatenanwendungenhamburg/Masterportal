@@ -1,0 +1,9 @@
+#!/bin/sh
+
+FILE="CHANGELOG.md"
+
+if [ -f "$FILE" ]; then
+  sed -i 's/Issue #/Issue \\#/g' "$FILE"
+  git add "$FILE"
+fi
+
