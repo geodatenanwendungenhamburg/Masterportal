@@ -1,3 +1,2 @@
-sed -i 's/#/\\#/g' CHANGELOG.md
-git add CHANGELOG.md
+npm run preCommitHook
 npm run prePushHook
