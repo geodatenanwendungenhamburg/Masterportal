@@ -2,7 +2,7 @@ import epsgCodeToURI from "@modules/filter/utils/epsgCodeToURI.js";
 import isObject from "@shared/js/utils/isObject.js";
 import {getOafAttributeTypes} from "../../utils/getOafAttributeTypes.js";
 import getOAFFeature from "@shared/js/api/oaf/getOAFFeature.js";
-import {fetchAllOafProperties, getUniqueValuesFromFetchedFeatures, getMinMaxFromFetchedFeatures} from "../../utils/fetchAllOafProperties.js";
+import {fetchAllOafProperties, getUniqueValuesFromFetchedFeatures, getMinMaxFromFetchedFeatures, getMinMaxFromEnumValues} from "../../utils/fetchAllOafProperties.js";
 
 /**
  * InterfaceOafExtern is the filter interface for Oaf services
@@ -17,6 +17,8 @@ export default class InterfaceOafExtern {
         this.getCurrentExtent = getCurrentExtent;
         this.axiosControllers = {};
         this.allFetchedProperties = false;
+        this.enumList = false;
+        this.hasEnums = null;
         this.waitingListForFeatures = [];
     }
 
@@ -168,19 +170,31 @@ export default class InterfaceOafExtern {
      * @param {Boolean} [maxOnly=false] if only max is of interest
      * @returns {void}
      */
-    getMinMax (service, attrName, onsuccess, onerror, minOnly = false, maxOnly = false, isDate = false, filterQuestion = {}) {
+    async getMinMax (service, attrName, onsuccess, onerror, minOnly = false, maxOnly = false, isDate = false, filterQuestion = {}) {
         if (Array.isArray(this.allFetchedProperties)) {
             if (typeof onsuccess === "function") {
                 onsuccess(getMinMaxFromFetchedFeatures(this.allFetchedProperties, attrName, minOnly, maxOnly));
             }
             return;
         }
+        else if (this.enumList[attrName]) {
+            onsuccess(getMinMaxFromEnumValues(this.enumList[attrName], minOnly, maxOnly));
+            return;
+        }
 
-        if (!this.allFetchedProperties) {
+        if (this.hasEnums === null) {
+            const schema = await getOAFFeature.getCollectionSchema(service.url, service.collection);
+
+            this.enumList = this.getEnumValues(schema?.properties);
+            this.hasEnums = isObject(this.enumList) && Object.keys(this.enumList).length > 0;
+        }
+
+        if (!this.allFetchedProperties && !this.enumList[attrName]) {
             const controller = new AbortController();
 
             this.axiosControllers[filterQuestion.filterId + ".allProperties"] = controller;
             this.allFetchedProperties = true;
+
             fetchAllOafProperties(service.url, service.collection, service.limit, allProperties => {
                 this.allFetchedProperties = allProperties;
                 while (this.waitingListForFeatures.length) {
@@ -192,6 +206,10 @@ export default class InterfaceOafExtern {
             epsgCodeToURI(filterQuestion.service.srsName),
             controller.signal,
             true);
+        }
+        else if (this.enumList[attrName]) {
+            onsuccess(getMinMaxFromEnumValues(this.enumList[attrName], minOnly, maxOnly));
+            return;
         }
 
         this.waitingListForFeatures.push(() => {
@@ -209,7 +227,7 @@ export default class InterfaceOafExtern {
      * @param {Function} onerror a function(errorMsg)
      * @returns {void}
      */
-    getUniqueValues (service, attrName, onsuccess, onerror, filterQuestion) {
+    async getUniqueValues (service, attrName, onsuccess, onerror, filterQuestion) {
         if (Array.isArray(this.allFetchedProperties)) {
             if (typeof onsuccess === "function") {
                 const uniqueValue = getUniqueValuesFromFetchedFeatures(this.allFetchedProperties, attrName, false, filterQuestion);
@@ -218,8 +236,18 @@ export default class InterfaceOafExtern {
             }
             return;
         }
+        else if (this.enumList[attrName]) {
+            onsuccess(Object.keys(this.enumList[attrName]));
+            return;
+        }
 
-        if (this.allFetchedProperties === false) {
+        if (this.hasEnums === null) {
+            const schema = await getOAFFeature.getCollectionSchema(service.url, service.collection);
+
+            this.enumList = this.getEnumValues(schema?.properties);
+            this.hasEnums = isObject(this.enumList) && Object.keys(this.enumList).length > 0;
+        }
+        if (this.allFetchedProperties === false && !this.enumList[attrName]) {
             const controller = new AbortController();
 
             this.axiosControllers[filterQuestion.filterId + ".allProperties"] = controller;
@@ -235,6 +263,10 @@ export default class InterfaceOafExtern {
             epsgCodeToURI(filterQuestion.service.srsName),
             controller.signal,
             true);
+        }
+        else if (this.enumList[attrName]) {
+            onsuccess(Object.keys(this.enumList[attrName]));
+            return;
         }
 
         this.waitingListForFeatures.push(() => {
@@ -259,9 +291,8 @@ export default class InterfaceOafExtern {
         const controllers = [this.axiosControllers[filterId], this.axiosControllers[filterId + ".allProperties"]];
         let errorOccurred = false;
 
-        controllers.forEach((controller, idx) => {
+        controllers.forEach((controller) => {
             if (controller instanceof AbortController) {
-                console.log("aborts controller", idx);
                 controller.abort();
             }
             else {
@@ -332,5 +363,27 @@ export default class InterfaceOafExtern {
                 });
             })
             .catch(error => onerror(error));
+    }
+
+    /**
+     * Gets enum values from schema properties.
+     * @param {Object} properties The schema properties.
+     * @returns {Object} An object with enum values for each property.
+     */
+    getEnumValues (properties) {
+        const result = {};
+
+        Object.entries(properties).forEach(([key, value]) => {
+            if (!Object.prototype.hasOwnProperty.call(value, "enum")) {
+                return;
+            }
+            const uniqueList = {};
+
+            value.enum.forEach(uniqueValue => {
+                uniqueList[uniqueValue] = true;
+            });
+            result[key] = uniqueList;
+        });
+        return result;
     }
 }

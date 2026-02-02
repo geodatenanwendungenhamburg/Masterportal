@@ -264,28 +264,15 @@ async function getUniqueValuesByScheme (baseUrl, collection, propertiesToGetValu
             headers: {
                 accept: "application/schema+json"
             }
-        }),
-        result = {};
-    let atLeastOneEnumFound = false;
+        });
+    let result = {};
 
     if (response.status !== 200 || !isObject(response.data?.properties)) {
         return this.getUniqueValuesFromCollection(baseUrl, collection, 400, propertiesToGetValuesFor);
     }
 
-    Object.entries(response.data.properties).forEach(([key, value]) => {
-        if (!Object.prototype.hasOwnProperty.call(value, "enum") || (propertiesToGetValuesFor.length && !propertiesToGetValuesFor.includes(key))) {
-            return;
-        }
-        atLeastOneEnumFound = true;
-        const uniqueList = {};
-
-        value.enum.forEach(uniqueValue => {
-            uniqueList[uniqueValue] = true;
-        });
-        result[key] = uniqueList;
-    });
-
-    if (!atLeastOneEnumFound) {
+    result = this.getValuesFromEnum(response.data.properties, propertiesToGetValuesFor);
+    if (!Object.keys(result).length) {
         return this.getUniqueValuesFromCollection(baseUrl, collection, 400, propertiesToGetValuesFor);
     }
     return result;
@@ -339,6 +326,29 @@ async function getTemporalExtent (baseUrl, collection) {
     );
 }
 
+/**
+ * Gets unique values from enum properties.
+ * @param {Object} properties The properties object from the enum
+ * @param {String[]} propertiesToGetValuesFor The properties to get values for.
+ * @returns {Object} a list of unique values for each property
+ */
+function getValuesFromEnum (properties, propertiesToGetValuesFor) {
+    const result = {};
+
+    Object.entries(properties).forEach(([key, value]) => {
+        if (!Object.prototype.hasOwnProperty.call(value, "enum") || (propertiesToGetValuesFor.length && !propertiesToGetValuesFor.includes(key))) {
+            return;
+        }
+        const uniqueList = {};
+
+        value.enum.forEach(uniqueValue => {
+            uniqueList[uniqueValue] = true;
+        });
+        result[key] = uniqueList;
+    });
+    return result;
+}
+
 export default {
     getCollectionSchema,
     getOAFFeatureGet,
@@ -349,5 +359,6 @@ export default {
     getUniqueValuesFromCollection,
     getUniqueValuesByScheme,
     getOAFGeometryFilter,
-    getTemporalExtent
+    getTemporalExtent,
+    getValuesFromEnum
 };

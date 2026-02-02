@@ -179,9 +179,35 @@ function getMinMaxFromFetchedFeatures (allFetchedProperties, attrName, minOnly, 
     return {min, max};
 }
 
+/**
+ * Gets min and max from enum values object.
+ * @param {Object} enumValues The enum values object
+ * @param {Boolean} minOnly True if min only
+ * @param {Boolean} maxOnly True if max only
+ * @returns {Object|Boolean} an object with keys min and max or false on error
+ */
+function getMinMaxFromEnumValues (enumValues, minOnly, maxOnly) {
+    if (!isObject(enumValues)) {
+        return false;
+    }
+    const sorted = Object.keys(enumValues).sort((a, b) => a - b);
+
+    if (minOnly && !maxOnly) {
+        return {min: sorted.length ? sorted[0] : false};
+    }
+    else if (!minOnly && maxOnly) {
+        return {max: sorted.length ? sorted[sorted.length - 1] : false};
+    }
+    return {
+        min: sorted.length ? sorted[0] : false,
+        max: sorted.length ? sorted[sorted.length - 1] : false
+    };
+}
+
 export {
     fetchAllOafProperties,
     fetchAllOafPropertiesRecursionHelper,
     getUniqueValuesFromFetchedFeatures,
-    getMinMaxFromFetchedFeatures
+    getMinMaxFromFetchedFeatures,
+    getMinMaxFromEnumValues
 };

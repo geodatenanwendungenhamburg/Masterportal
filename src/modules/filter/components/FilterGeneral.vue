@@ -570,7 +570,6 @@ export default {
         executeListeners (evt) {
             const runningLister = {};
 
-            console.log("executes listeners", evt.type)
             Object.entries(this.mapMoveListeners).forEach(([filterId, mapMoveListener]) => {
                 if (typeof mapMoveListener === "function") {
                     if (runningLister[filterId]) {
