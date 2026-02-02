@@ -1,2 +1,1 @@
-npm run preCommitHook
 npm run prePushHook
