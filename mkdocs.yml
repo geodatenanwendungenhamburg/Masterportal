@@ -20,6 +20,7 @@ theme:
         - search.suggest
         - toc.follow
         - toc.integrate
+        - versioning
     palette:
         -   scheme: slate
             primary: white
@@ -47,7 +48,8 @@ plugins:
         lang:
             - en
             - de
-
+    - tablestrip:
+        strip_word: "Expert"
     - mike:
           version_selector: true
 
@@ -95,8 +97,6 @@ extra:
     version:
         provider: mike
         alias: true
-        default:
-        - latest
 
 
 extra_css:
