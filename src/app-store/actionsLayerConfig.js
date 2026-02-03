@@ -123,60 +123,60 @@ export default function getActionsLayerConfig () {
      * @param {Number} [payload.time] time information for time-dependent layers e.g. timestamp
      * @returns {Boolean} true, if layer exists an was added or replaced
      */
-     addOrReplaceLayer: function ({dispatch, getters}, {layerId, visibility = true, transparency = 0, showInLayerTree = true, isBaseLayer = false, zIndex, time}) {
-        const layer = getters.layerConfigById(layerId);
-        let newZIndex = zIndex;
+        addOrReplaceLayer: function ({dispatch, getters}, {layerId, visibility = true, transparency = 0, showInLayerTree = true, isBaseLayer = false, zIndex, time}) {
+            const layer = getters.layerConfigById(layerId);
+            let newZIndex = zIndex;
 
-        if (!layer) {
-            const config = rawLayerList.getLayerWhere({id: layerId}),
-                parentKey = isBaseLayer ? treeBaselayersKey : treeSubjectsKey;
+            if (!layer) {
+                const config = rawLayerList.getLayerWhere({id: layerId}),
+                    parentKey = isBaseLayer ? treeBaselayersKey : treeSubjectsKey;
 
-            if (config) {
-                config.type = "layer";
-                config.visibility = visibility;
-                config.transparency = transparency;
-                config.showInLayerTree = showInLayerTree;
-                config.zIndex = newZIndex ?? getters.determineZIndex(layerId);
-                if (time) {
-                    config.time = time;
-                }
+                if (config) {
+                    config.type = "layer";
+                    config.visibility = visibility;
+                    config.transparency = transparency;
+                    config.showInLayerTree = showInLayerTree;
+                    config.zIndex = newZIndex ?? getters.determineZIndex(layerId);
+                    if (time) {
+                        config.time = time;
+                    }
 
-                if (config.styleId && typeof styleList.returnStyleObject(config.styleId) === "undefined") {
-                    styleList.initStyleAndAddToList(getters.configJs, config.styleId).then(() => {
+                    if (config.styleId && typeof styleList.returnStyleObject(config.styleId) === "undefined") {
+                        styleList.initStyleAndAddToList(getters.configJs, config.styleId).then(() => {
+                            dispatch("addLayerToLayerConfig", {layerConfig: config, parentKey});
+                        });
+                    }
+                    else {
                         dispatch("addLayerToLayerConfig", {layerConfig: config, parentKey});
-                    });
+                    }
                 }
                 else {
-                    dispatch("addLayerToLayerConfig", {layerConfig: config, parentKey});
+                    console.warn("addOrReplaceLayer- layer with id: " + layerId + " not added, because it was not found in services.json.");
+                    return false;
                 }
             }
             else {
-                console.warn("addOrReplaceLayer- layer with id: " + layerId + " not added, because it was not found in services.json.");
-                return false;
-            }
-        }
-        else {
-            if (newZIndex === null || newZIndex === undefined) {
-                newZIndex = layer.zIndex ?? newZIndex;
-            }
-
-            if ((layer.zIndex === null || layer.zIndex === null) && !layer.showInLayerTree && visibility) {
-                newZIndex = newZIndex ?? getters.determineZIndex(layerId);
-            }
-
-            dispatch("replaceByIdInLayerConfig", {layerConfigs: [{
-                id: layerId,
-                layer: {
-                    visibility: visibility,
-                    transparency: transparency,
-                    showInLayerTree: showInLayerTree,
-                    zIndex: newZIndex,
-                    time: time
+                if (newZIndex === null || newZIndex === undefined) {
+                    newZIndex = layer.zIndex ?? newZIndex;
                 }
-            }]});
-        }
-        return true;
-    },
+
+                if ((layer.zIndex === null || layer.zIndex === null) && !layer.showInLayerTree && visibility) {
+                    newZIndex = newZIndex ?? getters.determineZIndex(layerId);
+                }
+
+                dispatch("replaceByIdInLayerConfig", {layerConfigs: [{
+                    id: layerId,
+                    layer: {
+                        visibility: visibility,
+                        transparency: transparency,
+                        showInLayerTree: showInLayerTree,
+                        zIndex: newZIndex,
+                        time: time
+                    }
+                }]});
+            }
+            return true;
+        },
 
 
         /**

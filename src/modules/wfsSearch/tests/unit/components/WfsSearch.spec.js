@@ -233,28 +233,30 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
     describe.skip("skipped", () => {
         it("sets zoom according to prop if set", async () => {
             const features = [
-                    {
-                        getGeometry () {
-                            return {
-                                getCoordinates () {
-                                    return undefined;
-                                }
-                            };
-                        },
-                        values_: {
-                            Ort: "Hamburg"
-                        }
-                    }
-                ],
-                wrapper = mount(WfsSearch, {
-                    props: {
-                        zoomLevelProp: 1
+                {
+                    getGeometry () {
+                        return {
+                            getCoordinates () {
+                                return undefined;
+                            }
+                        };
                     },
-                    global: {
-                        plugins: [store]
+                    values_: {
+                        Ort: "Hamburg"
                     }
-                }),
-                setZoomStub = sinon.stub(wrapper.vm, "setZoom");
+                }
+            ];
+            let setZoomStub = null;
+
+            wrapper = mount(WfsSearch, {
+                props: {
+                    zoomLevelProp: 1
+                },
+                global: {
+                    plugins: [store]
+                }
+            });
+            setZoomStub = sinon.stub(wrapper.vm, "setZoom");
 
             sinon.stub(requestProvider, "searchFeatures").returns(features);
             sinon.stub(wrapper.vm, "setCenter");
@@ -286,28 +288,30 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
     describe.skip("skipped", () => {
         it("sets zoom according to config/store if no such prop set", async () => {
             const features = [
-                    {
-                        getGeometry () {
-                            return {
-                                getCoordinates () {
-                                    return undefined;
-                                }
-                            };
-                        },
-                        values_: {
-                            Ort: "Hamburg"
-                        }
-                    }
-                ],
-                wrapper = mount(WfsSearch, {
-                    props: {
-                        zoomLevelProp: undefined
+                {
+                    getGeometry () {
+                        return {
+                            getCoordinates () {
+                                return undefined;
+                            }
+                        };
                     },
-                    global: {
-                        plugins: [store]
+                    values_: {
+                        Ort: "Hamburg"
                     }
-                }),
-                setZoomStub = sinon.stub(wrapper.vm, "setZoom");
+                }
+            ];
+            let setZoomStub = null;
+
+            wrapper = mount(WfsSearch, {
+                props: {
+                    zoomLevelProp: undefined
+                },
+                global: {
+                    plugins: [store]
+                }
+            });
+            setZoomStub = sinon.stub(wrapper.vm, "setZoom");
 
             sinon.stub(requestProvider, "searchFeatures").returns(features);
             sinon.stub(wrapper.vm, "setCenter");
