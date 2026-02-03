@@ -321,12 +321,6 @@ export default [
         }
     },
     {
-        files: ["addons/**/*.{js,vue}"],
-        rules: {
-            "no-restricted-syntax": "off"
-        }
-    },
-    {
         files: ["**/*.spec.js"],
         plugins: {vitest},
         languageOptions: {
