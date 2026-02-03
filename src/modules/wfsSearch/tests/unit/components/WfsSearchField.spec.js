@@ -84,37 +84,27 @@ describe("src/modules/wfsSearch/components/WfsSearchField.vue", () => {
         expect(wrapper.find("label").text()).to.equals("common:modules.wfsSearch.parcelNumber*");
     });
 
-    it("reset value if options changed", async () => {
-        store.commit("Modules/WfsSearch/setResults", []);
-        store.commit("Modules/WfsSearch/setInstances", [{currentInstance: {addedOptions: ["", "fln"]},
-            literals: [
-                {
-                    clause: {
-                        type: "and",
-                        literals: [
-                            {
-                                field: {
-                                    "id": "gmk",
-                                    "fieldName": "gmk",
-                                    "inputLabel": "Gemarkung",
-                                    "required": true,
-                                    "options": "",
-                                    "usesId": true,
-                                    "queryType": "equal"
-                                }
-                            },
-                            {
-                                "field": {
-                                    "id": "fln",
-                                    "fieldName": "fln",
-                                    "inputLabel": "Flurnummer",
-                                    "required": true,
-                                    "options": "fln",
-                                    "queryType": "equal"
-                                }
-                            }
-                        ]
-                    }
+    describe("reset fields", () => {
+
+        beforeEach(() => {
+            store.commit("Modules/WfsSearch/setParsedSource", {
+                Gemarkung1: {
+                    id: "1",
+                    fln: [
+                        {
+                            id: "11"
+                        }]
+                },
+                Gemarkung2: {
+                    id: "2",
+                    fln: [
+                        {
+                            id: "22"
+                        },
+                        {
+                            id: "11"
+                        }
+                    ]
                 }
             });
         });
