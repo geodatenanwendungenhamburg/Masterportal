@@ -720,6 +720,13 @@
       "area": "Fläche",
       "deleteMeasurements": "Messungen löschen",
       "description": "Messen Sie eine Strecke oder Fläche",
+      "edit": {
+        "delete": "Messung löschen",
+        "deleteAll": "Alle Messungen löschen",
+        "modify": "Messung bearbeiten",
+        "redo": "Wiederholen",
+        "undo": "Rückgängig"
+      },
       "finishWithDoubleClick": "Abschließen mit Doppelklick",
       "geometry": "Geometrie",
       "influenceFactors": "Die angezeigten Werte unterliegen Ungenauigkeiten, die u.a. durch folgende Faktoren beeinflusst werden, z.B. Maßstab, Auflösung der Karte und des Bildschirmes.",

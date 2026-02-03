@@ -719,6 +719,13 @@
       "area": "Area",
       "deleteMeasurements": "Delete measurements",
       "description": "Measure a distance or area",
+      "edit": {
+        "delete": "Delete measurement",
+        "deleteAll": "Delete all measurements",
+        "modify": "Edit measurement",
+        "redo": "Redo",
+        "undo": "Undo"
+      },
       "finishWithDoubleClick": "Double click to complete",
       "geometry": "Geometry",
       "influenceFactors": "The displayed values are subject to inaccuracies that are influenced by the following factors, among others, e.g. scale, resolution of the map and the screen.",
