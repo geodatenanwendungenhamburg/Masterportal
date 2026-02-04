@@ -562,8 +562,38 @@ describe("src/core/js/layers/layer2dVectorTile.js", () => {
         });
     });
 
-    describe.skip("fetchSpriteData", () => {
-        it("Creates a VectorTileLayer", async () => {
+    describe("fetchSpriteData", () => {
+        /**
+         * @param {Object} params parameter object
+         * @param {?object} params.styleId style id from config.json
+         * @param {?string} params.givenVtStyles style set from services.json to use
+         * @param {function} params.done to be called finally
+         * @returns {Object} mock context for setStyleById
+         */
+        function makeContext ({styleId, givenVtStyles, done}) {
+            return {
+                isStyleValid: Layer2dVectorTile.prototype.isStyleValid,
+                get: key => ({
+                    styleId,
+                    visibility: Symbol.for("visibility"),
+                    vtStyles: givenVtStyles
+                })[key],
+                set: sinon.spy(),
+                setStyleById: sinon.spy(() => new Promise(r => r())),
+                setStyleByDefinition: sinon.spy(() => new Promise(r => r())),
+                layer: {
+                    setVisible: sinon.spy(v => {
+                        expect(v).to.equal(Symbol.for("visibility"));
+                        done();
+                    })
+                }
+            };
+        }
+
+        it("Creates a VectorTileLayer", async (done) => {
+            const context = makeContext({styleId: "lConfigJson", givenVtStyles: vtStylesDefaultL2, done}),
+                // eslint-disable-next-line no-unused-vars
+                {set} = context;
             const url = "https://testemich.de/vt/tiles/esri/Test_VT_3857/p12/resources/sprites/sprite.json",
                 resp = {
                     config: {transitional: {}, transformRequest: Array(1), transformResponse: Array(1), timeout: 0},

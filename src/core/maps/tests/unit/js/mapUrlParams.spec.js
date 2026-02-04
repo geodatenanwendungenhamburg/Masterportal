@@ -12,11 +12,13 @@ describe("src/core/maps/js/mapUrlParams.js", () => {
     let dispatchCalls = {},
         error,
         map,
+        origDispatch,
         origGetters,
         styleListLoaded;
 
     before(() => {
         origGetters = store.getters;
+        origDispatch = store.dispatch;
     });
 
     beforeEach(() => {
@@ -43,6 +45,7 @@ describe("src/core/maps/js/mapUrlParams.js", () => {
     afterEach(() => {
         sinon.restore();
         store.getters = origGetters;
+        store.dispatch = origDispatch;
     });
 
     describe("setMapAttributes", () =>{

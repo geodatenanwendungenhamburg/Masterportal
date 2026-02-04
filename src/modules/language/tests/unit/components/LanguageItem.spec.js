@@ -48,7 +48,7 @@ describe("src/modules/language/components/LanguageItem.vue", () => {
         expect(wrapper.find("label")).to.exist;
     });
 
-    it.skip("translate() should change i18next language", () => {
+    it("translate() should change i18next language", async () => {
         const wrapper = mount(LanguageComponent, {
             global: {
                 plugins: [store]

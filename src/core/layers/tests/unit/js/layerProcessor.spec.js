@@ -68,7 +68,7 @@ describe("src/core/js/layers/layerProcessor.js", () => {
     });
 
     describe("processLayerConfig", () => {
-        it.skip("should create two ol layers from two visible layers", () => {
+        it("should create two ol layers from two visible layers", () => {
             let olLayers = [];
 
             processLayerConfig(layerConfig);

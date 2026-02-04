@@ -122,7 +122,7 @@ describe("src/core/maps/store/actionsMapsMapMode.js", () => {
             expect(rootState.portalConfig.map.startingMapMode).to.equals("3D");
         });
     });
-    describe.skip("checkInitial3dCenterPositionChange", () => {
+    describe("checkInitial3dCenterPositionChange", () => {
         let rootGetters,
             warnSpy;
 

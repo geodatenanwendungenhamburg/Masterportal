@@ -271,9 +271,13 @@ describe("src/modules/alerting/components/AlertingItem.vue", () => {
     });
 
 
-    it.skip("Checking the initially displayed alerts", async () => {
-        const
-            mountingSettings = {
+    describe("Expecting initially shown 4 category groups", () => {
+        let
+            categoryContainers = [],
+            alertWrappers = [];
+
+        beforeEach(() => {
+            const mountingSettings = {
                 global: {
                     plugins: [store]
                 },
@@ -284,24 +288,23 @@ describe("src/modules/alerting/components/AlertingItem.vue", () => {
                 }
             };
 
-        let
-            categoryContainers = [],
-            alertWrappers = [];
+            wrapper = shallowMount(AlertingItemComponent, mountingSettings);
+
+        });
+        it("Expecting initially shown 4 category groups", async () => {
+            await wrapper.vm.$nextTick();
+            await wrapper.vm.$nextTick();
 
 
-        wrapper = shallowMount(AlertingItemComponent, mountingSettings);
-        await wrapper.vm.$nextTick();
-        await wrapper.vm.$nextTick();
+            categoryContainers = wrapper.findAll(".alertCategoryContainer");
+            alertWrappers = wrapper.findAll(".singleAlertContainer");
 
-
-        categoryContainers = wrapper.findAll(".alertCategoryContainer");
-        alertWrappers = wrapper.findAll(".singleAlertContainer");
-
-        expect(categoryContainers.length).to.equal(4);
-        expect(categoryContainers[0].exists()).to.be.true;
-        expect(categoryContainers[1].exists()).to.be.true;
-        expect(categoryContainers[2].exists()).to.be.true;
-        expect(categoryContainers[3].exists()).to.be.true;
+            expect(categoryContainers.length).to.equal(4);
+            expect(categoryContainers[0].exists()).to.be.true;
+            expect(categoryContainers[1].exists()).to.be.true;
+            expect(categoryContainers[2].exists()).to.be.true;
+            expect(categoryContainers[3].exists()).to.be.true;
+        });
 
         describe("Expecting initially shown 4 category groups", () => {
             it("There are 4 category groups", () => {

@@ -50,7 +50,7 @@ describe("src/modules/layerSelection/store/actionsLayerSelection", () => {
     });
 
     describe("changeVisibility", () => {
-        it.skip("changeVisibility to true for one layers", () => {
+        it("changeVisibility to true for one layers", () => {
             const expectedArg = {
                 layerConfigs: [
                     {
@@ -72,7 +72,7 @@ describe("src/modules/layerSelection/store/actionsLayerSelection", () => {
             expect(dispatch.firstCall.args[1]).to.deep.equals(expectedArg);
         });
 
-        it.skip("changeVisibility to false removes layer from layerTree", () => {
+        it("changeVisibility to false removes layer from layerTree", () => {
             const expectedArg = {
                 layerConfigs: [
                     {
@@ -103,7 +103,7 @@ describe("src/modules/layerSelection/store/actionsLayerSelection", () => {
             expect(dispatch.secondCall.args[1]).to.deep.equals(expectedArg);
         });
 
-        it.skip("changeVisibility to true for one baselayer", () => {
+        it("changeVisibility to true for one baselayer", () => {
             getters = {
                 menuSide: "mainMenu"
             };
@@ -182,7 +182,7 @@ describe("src/modules/layerSelection/store/actionsLayerSelection", () => {
     });
 
     describe("actionsLayerSelection", () => {
-        it.skip("navigateForward from layerTree", () => {
+        it("navigateForward from layerTree", () => {
             const subjectDataLayerConfs = [
                     {
                         id: "1",
@@ -225,7 +225,7 @@ describe("src/modules/layerSelection/store/actionsLayerSelection", () => {
             expect(commit.thirdCall.args[1]).to.be.deep.equals(subjectDataLayerConfs);
         });
 
-        it.skip("navigateBack inside layerSelection", () => {
+        it("navigateBack inside layerSelection", () => {
             const lastSubjectDataLayerConfs = [
                     {
                         id: "root0",

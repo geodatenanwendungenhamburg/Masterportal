@@ -7,7 +7,7 @@ import tabStatus from "../../../constantsTabStatus.js";
 import spatialSelection from "../../../js/getSpatialSelection.js";
 
 describe("src/modules/featureLister/store/actionsFeatureLister", () => {
-    let commit, dispatch, rootGetters;
+    let commit, dispatch, rootGetters, createLayerAddToTreeStub;
     const highlightVectorRulesPolygon = {
             "fill": {
                 "color": [255, 0, 255, 0.9]
@@ -58,13 +58,13 @@ describe("src/modules/featureLister/store/actionsFeatureLister", () => {
                 {name: "dritterLayer", values_: {id: "789"}, features: [{getAttributesToShow: () => "TestAttributes"}], geometryType: "Point"}
             ]
         );
-
+        createLayerAddToTreeStub = sinon.stub(createLayerAddToTreeModule, "createLayerAddToTree");
     });
     afterEach(() => {
         sinon.restore();
     });
 
-    describe.skip("clickOnFeature", () => {
+    describe("clickOnFeature", () => {
         it("handles the click event when clicking in a point-feature in the feature list view", () => {
             const row = {
                     id: "1"
@@ -86,8 +86,7 @@ describe("src/modules/featureLister/store/actionsFeatureLister", () => {
                 getters = {
                     selectedFeature: () => state.features[1],
                     getGeometryType: "Point"
-                },
-                createLayerAddToTreeStub = sinon.spy(createLayerAddToTreeModule, "createLayerAddToTree");
+                };
 
             rootGetters = {treeHighlightedFeatures: {active: true}};
 
@@ -126,8 +125,7 @@ describe("src/modules/featureLister/store/actionsFeatureLister", () => {
                 getters = {
                     selectedFeature: () => state.features[1],
                     getGeometryType: "Polygon"
-                },
-                createLayerAddToTreeStub = sinon.spy(createLayerAddToTreeModule, "createLayerAddToTree");
+                };
 
             rootGetters = {treeHighlightedFeatures: {active: false}};
 

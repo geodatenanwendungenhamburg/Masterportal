@@ -338,7 +338,7 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
             expect(wrapper.vm.attributeValues[4].color).to.equal("#ffffff");
         });
 
-        it.skip("should copy color values", () => {
+        it("should copy color values", () => {
             wrapper.setData({
                 attributeValues: [
                     {id: 1, name: "attr1", color: "#000000"},
@@ -346,7 +346,7 @@ describe("src/modules/tools/modeler3D/components/Modeler3DFilter.vue", () => {
                 ]
             });
             store.commit("Modules/Modeler3D/setFilterList", [
-                {id: 0, values: []}
+                {id: 0, values: [], layer: {name: "name"}}
             ]);
             store.commit("Modules/Modeler3D/setCurrentFilterId", 0);
             wrapper.vm.copyColorValues();

@@ -6,7 +6,14 @@ import sinon from "sinon";
 
 describe("src/core/layers/js/layerUrlParams.js", () => {
     let dispatchCalls = [],
-        zIndex;
+        zIndex,
+        origGetters,
+        origDispatch;
+
+    before(() => {
+        origGetters = store.getters;
+        origDispatch = store.dispatch;
+    });
 
     beforeEach(() => {
         zIndex = 1;
@@ -32,6 +39,8 @@ describe("src/core/layers/js/layerUrlParams.js", () => {
 
     afterEach(() => {
         sinon.restore();
+        store.getters = origGetters;
+        store.dispatch = origDispatch;
     });
 
     describe("setLayers", () =>{

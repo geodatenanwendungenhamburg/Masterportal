@@ -1550,7 +1550,7 @@ describe("src/modules/print/js/buildSpec", function () {
             expect(buildSpec.buildPointStyleCircle(style)).to.be.an("object");
         });
     });
-    describe.skip("buildFillStyle", function () {
+    describe("buildFillStyle", function () {
         it("should return an style object", function () {
             style = {
                 getColor: () => sinon.stub()
@@ -1579,7 +1579,7 @@ describe("src/modules/print/js/buildSpec", function () {
             expect(buildSpec.buildPointStyleIcon(style, vectorLayer).type).to.be.eql("point");
         });
     });
-    describe.skip("buildGraphicPath", function () {
+    describe("buildGraphicPath", function () {
         it("should return a url", function () {
             const src = "https://test/img";
 

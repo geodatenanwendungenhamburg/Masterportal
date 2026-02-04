@@ -29,9 +29,16 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
         subjectDataLayers,
         wrapper,
         treeType,
-        externalSubjectdata;
+        externalSubjectdata,
+        origActions,
+        origState,
+        navigateForwardSpy,
+        navigateBackSpy,
+        changeVisibilitySpy;
 
     beforeEach(() => {
+        origActions = LayerSelection.actions;
+        origState = LayerSelection.state;
         lastFolderNames = [];
         searchInput = "Neuenfelder";
         mapMode = "2D";
@@ -139,16 +146,24 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
         subjectDataLayers = layersWithFolder;
         addLayerButtonSearchActive = true;
         showInTree = false;
-        LayerSelection.actions.navigateForward = sinon.spy();
-        LayerSelection.actions.navigateBack = sinon.spy();
-        LayerSelection.actions.changeVisibility = sinon.spy();
+        navigateForwardSpy = sinon.spy();
+        navigateBackSpy = sinon.spy();
+        changeVisibilitySpy = sinon.spy();
+        const modActions = {
+            navigateForward: navigateForwardSpy,
+            navigateBack: navigateBackSpy,
+            changeVisibility: changeVisibilitySpy
+        };
+
         store = createStore({
             modules: {
                 Modules: {
                     namespaced: true,
                     modules: {
                         namespaced: true,
-                        LayerSelection,
+                        LayerSelection: Object.assign({...LayerSelection,
+                            actions: Object.assign({...LayerSelection.actions}, modActions)
+                        }),
                         LayerInformation: {
                             namespaced: true,
                             getters: {
@@ -229,6 +244,8 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
     });
 
     afterEach(() => {
+        LayerSelection.actions = origActions;
+        LayerSelection.state = origState;
         sinon.restore();
     });
 
@@ -419,7 +436,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
         wrapper.vm.folderClicked("Titel Ebene 1", subjectDataLayers[0].elements);
         await wrapper.vm.$nextTick();
 
-        expect(LayerSelection.actions.navigateForward.calledOnce).to.be.true;
+        expect(navigateForwardSpy.calledOnce).to.be.true;
         expect(wrapper.vm.areFoldersSelectable).to.be.true;
     });
 
@@ -442,7 +459,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
         await wrapper.vm.$nextTick();
 
         await wrapper.vm.$nextTick();
-        expect(LayerSelection.actions.navigateBack.calledOnce).to.be.true;
+        expect(navigateBackSpy.calledOnce).to.be.true;
         expect(provideSelectAllPropsSpy.calledOnce).to.be.true;
         expect(wrapper.vm.areFoldersSelectable).to.be.true;
     });

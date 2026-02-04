@@ -97,7 +97,11 @@ vi.mock("i18next", () => {
             return replaceNameSpaceInLocalesKey(key);
         },
         language: "de",
-        changeLanguage: vi.fn(),
+        changeLanguage: vi.fn((language, callback) => {
+            mock.language = language;
+            // eslint-disable-next-line n/callback-return
+            callback ? callback() : undefined;
+        }),
         init: vi.fn(),
         exists: vi.fn()
 
@@ -130,6 +134,10 @@ config.global.mocks = config.global.mocks || {};
 
 config.global.mocks.t = key => key;
 config.global.mocks.$t = key => key;
+
+if (typeof globalThis.CanvasPattern === "undefined") {
+    globalThis.CanvasPattern = function () {};
+}
 
 // Mock navigation methods to prevent jsdom errors
 if (typeof window !== "undefined") {
