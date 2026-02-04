@@ -126,14 +126,17 @@ describe("src/modules/modeler3D/components/Modeler3D.vue", () => {
 
 
     before(() => {
-        const mapElement = document.createElement("div");
-
-        mapElement.id = "map";
-        document.body.append(mapElement);
+        if (!document.getElementById("map")) {
+            document.body.innerHTML = `
+              <div id="app"></div>
+              <div id="map"></div>
+              <div id="mp-menu-secondaryMenu"></div>
+            `;
+        }
     });
 
     after(() => {
-        document.getElementById("map")?.remove();
+        document.body.innerHTML = "";
     });
 
     beforeEach(() => {
