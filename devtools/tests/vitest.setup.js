@@ -4,8 +4,14 @@ import testConfig from "./testConfig.js";
 import i18next from "i18next";
 import sinon from "sinon";
 import {expect} from "chai";
-import {config} from "@vue/test-utils";
+import {enableAutoUnmount, config} from "@vue/test-utils";
 import {vi, beforeAll as vitestBeforeAll, afterAll as vitestAfterAll, beforeEach as vitestBeforeEach, afterEach as vitestAfterEach, test as vitestTest, it as vitestIt} from "vitest";
+
+// Enable auto-unmount once
+if (!globalThis.__vitest_auto_unmount_initialized__) {
+    enableAutoUnmount(vitestAfterEach);
+    globalThis.__vitest_auto_unmount_initialized__ = true;
+}
 
 if (!globalThis.ResizeObserver) {
     global.ResizeObserver = class ResizeObserver {
@@ -387,3 +393,4 @@ globalThis.after(() => {
 globalThis.afterEach(() => {
     sinon.restore();
 });
+
