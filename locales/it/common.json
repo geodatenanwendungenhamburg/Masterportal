@@ -718,6 +718,14 @@
       "area": "Area",
       "deleteMeasurements": "Elimina misurazioni",
       "description": "Misura una distanza o un’area",
+      "edit": {
+        "delete": "Elimina misurazione",
+        "deleteAll": "Elimina tutte le misurazioni",
+        "modify": "Modifica misurazione",
+        "finishModify": "Termina modifica",
+        "redo": "Ripeti",
+        "undo": "Annulla"
+      },
       "finishWithDoubleClick": "Termina con doppio clic",
       "geometry": "Geometria",
       "influenceFactors": "I valori visualizzati sono soggetti a imprecisioni influenzate, tra l’altro, da fattori quali scala, risoluzione della mappa e dello schermo.",

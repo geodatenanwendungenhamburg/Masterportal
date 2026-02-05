@@ -651,6 +651,14 @@
       "area": "Vlak",
       "deleteMeasurements": "Metingen verwijderen",
       "description": "Meet een afstand of oppervlakte",
+      "edit": {
+        "delete": "Meting verwijderen",
+        "deleteAll": "Alle metingen verwijderen",
+        "modify": "Meting bewerken",
+        "finishModify": "Bewerken voltooien",
+        "redo": "Herhalen",
+        "undo": "Ongedaan maken"
+      },
       "finishWithDoubleClick": "Voltooi met een dubbelklik",
       "geometry": "geometrie",
       "influenceFactors": "De weergegeven waarden zijn onderhevig aan onnauwkeurigheden, die worden beïnvloed door de volgende factoren, b.v. schaal, resolutie van de kaart en het scherm.",
