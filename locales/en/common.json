@@ -723,6 +723,7 @@
         "delete": "Delete measurement",
         "deleteAll": "Delete all measurements",
         "modify": "Edit measurement",
+        "finishModify": "Finish editing",
         "redo": "Redo",
         "undo": "Undo"
       },

@@ -718,6 +718,14 @@
       "area": "Flach",
       "deleteMeasurements": "Maaten löschen",
       "description": "Maat en Streek oder en Flach",
+      "edit": {
+        "delete": "Maten löschen",
+        "deleteAll": "All Maten löschen",
+        "modify": "Maten bewarken",
+        "finishModify": "Bewarken beenden",
+        "redo": "Wedderhalen",
+        "undo": "Torüchnehmen"
+      },
       "finishWithDoubleClick": "Afsluten mit Dubbelklick",
       "geometry": "Geometrie",
       "influenceFactors": "De wiest Werten sünd nich ganz genau; dat kann ünner annern dorvun kamen, t.B. Maßstap, Oplösen vun de Koort un vun’n Schirm.",
