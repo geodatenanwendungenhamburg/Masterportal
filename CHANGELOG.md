@@ -14,6 +14,7 @@
 - CoordToolkit: Added configurable parameter `keepMarkerVisible` to optionally keep the coordinate marker visible on the map after closing the tool (default: false).
 - Calendar: Added women's day, liberation day and children day as holidays.
 - GetFeatureInfo: Added `stickyHeader` configuration option to keep GFI title and navigation arrows visible when scrolling through long content.
+- Measure: Added a list of all measurements, each measurement can be now be edited individually (undo, redo, edit, delete).
 
 ### Changed
 - WMS-Time:
