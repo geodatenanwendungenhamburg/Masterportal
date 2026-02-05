@@ -513,7 +513,7 @@ export default {
 
             this.currentModifyInteraction.on("modifyend", (event) => {
                 event.features.forEach(feature => {
-                    const featureId = feature.ol_uid;
+                    const modifiedFeatureId = feature.ol_uid;
                     const geometry = feature.getGeometry();
                     const geometryType = geometry.getType();
                     const beforeCoords = feature.get("_beforeModifyCoords");
@@ -526,7 +526,7 @@ export default {
                         afterCoords = geometry.getCoordinates()[0];
                     }
 
-                    this.addUndoForFeature(featureId, {
+                    this.addUndoForFeature(modifiedFeatureId, {
                         mode: "modifyCoordinates",
                         timestamp: Date.now(),
                         data: {
@@ -538,7 +538,7 @@ export default {
 
                     feature.unset("_beforeModifyCoords");
 
-                    if (this.lines[featureId] || this.polygons[featureId]) {
+                    if (this.lines[modifiedFeatureId] || this.polygons[modifiedFeatureId]) {
                         this.$store.commit("Modules/Measure/addFeature", feature);
                     }
                 });
@@ -857,13 +857,32 @@ export default {
 
         /**
          * Handles modify measurement event from MeasureList.
-         * Initiates modify mode for a specific feature.
+         * Toggles modify mode for a specific feature.
+         * If the feature is already being modified, exits modify mode and returns to draw mode.
          * @param {String} featureId - The feature ID to modify
          * @returns {void}
          */
         handleModifyMeasurement (featureId) {
-            this.selectedEditInteraction = "modify";
-            this.regulateModify(featureId);
+            const normalizedFeatureId = typeof featureId === "string" ? parseInt(featureId, 10) : featureId;
+            const currentlyModifyingId = this.currentlyModifyingFeatureId ?
+                parseInt(this.currentlyModifyingFeatureId, 10) : null;
+
+            if (this.selectedEditInteraction === "modify" && currentlyModifyingId === normalizedFeatureId) {
+                this.handleUnhighlightFeature(featureId);
+
+                if (this.currentModifyInteraction) {
+                    this.removeInteraction(this.currentModifyInteraction);
+                    this.currentModifyInteraction = null;
+                }
+
+                this.selectedEditInteraction = "";
+                this.currentlyModifyingFeatureId = null;
+                this.createDrawInteraction();
+            }
+            else {
+                this.selectedEditInteraction = "modify";
+                this.regulateModify(featureId);
+            }
         },
 
         /**
@@ -1013,6 +1032,7 @@ export default {
         <MeasureList
             :measurement-list="enrichedMeasurementList"
             :selected-feature-id="featureId"
+            :currently-modifying-feature-id="currentlyModifyingFeatureId"
             @modify-measurement="handleModifyMeasurement"
             @delete-measurement="handleDeleteMeasurement"
             @undo-action="regulateUndo"

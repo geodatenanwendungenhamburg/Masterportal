@@ -24,6 +24,13 @@ export default {
         selectedFeatureId: {
             type: String,
             default: null
+        },
+        /**
+         * ID of the feature currently being modified
+         */
+        currentlyModifyingFeatureId: {
+            type: [String, Number],
+            default: null
         }
     },
     emits: [
@@ -100,6 +107,32 @@ export default {
          */
         unhighlightFeature (featureId) {
             this.$emit("unhighlight-feature", featureId);
+        },
+        /**
+         * Checks if a feature is currently being modified
+         * @param {String} featureId - The feature ID
+         * @returns {Boolean} True if the feature is being modified
+         */
+        isModifying (featureId) {
+            if (!this.currentlyModifyingFeatureId) {
+                return false;
+            }
+            const normalizedCurrent = typeof this.currentlyModifyingFeatureId === "string" ?
+                parseInt(this.currentlyModifyingFeatureId, 10) : this.currentlyModifyingFeatureId;
+            const normalizedFeature = typeof featureId === "string" ?
+                parseInt(featureId, 10) : featureId;
+
+            return normalizedCurrent === normalizedFeature;
+        },
+        /**
+         * Gets the modify button text based on whether feature is being modified
+         * @param {String} featureId - The feature ID
+         * @returns {String} Button text
+         */
+        getModifyButtonText (featureId) {
+            return this.isModifying(featureId)
+                ? this.$t("common:modules.measure.edit.finishModify")
+                : this.$t("common:modules.measure.edit.modify");
         }
     }
 };
@@ -154,10 +187,11 @@ export default {
                     />
                     <IconButton
                         :id="'measure-item-modify-' + measurement.id"
-                        :aria="$t('common:modules.measure.edit.modify')"
-                        :class-array="['btn-sm', 'btn-light']"
+                        :aria="getModifyButtonText(measurement.id)"
+                        :class-array="['btn-sm', isModifying(measurement.id) ? 'btn-success' : 'btn-light']"
                         :interaction="() => modifyMeasurement(measurement.id)"
                         icon="bi-tools"
+                        :title="getModifyButtonText(measurement.id)"
                     />
                     <IconButton
                         :id="'measure-item-delete-' + measurement.id"
