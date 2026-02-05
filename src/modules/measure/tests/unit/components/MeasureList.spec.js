@@ -254,7 +254,7 @@ describe("src/modules/measure/components/MeasureList.vue", () => {
                 canRedo: false
             }
         ];
-        
+
         wrapper = shallowMount(MeasureList, {
             props: {
                 measurementList: measurementsWithoutUndo,
@@ -283,7 +283,7 @@ describe("src/modules/measure/components/MeasureList.vue", () => {
                 canRedo: false
             }
         ];
-        
+
         wrapper = shallowMount(MeasureList, {
             props: {
                 measurementList: measurementsWithoutRedo,
