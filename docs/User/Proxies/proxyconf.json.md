@@ -36,6 +36,6 @@ The first line of the object holds the domain name rewritten by the Masterportal
 1. **target**: Domain the request is to be forwarded to.
 2. **pathRewrite**: Contains a replacement rule to remove the previously rewritten domain from the request.
 3. **agent**: Used to reach an internet address from behind an intranet corporate proxy. This value is automatically filled on server start from the system environment (process.env).
-4. **Further parameters** are listed on **[https://webpack.js.org/](https://webpack.js.org/configuration/dev-server/#devserverproxy)**.
+4. **Further parameters** are listed on **[node-http-proxy](https://github.com/http-party/node-http-proxy#options)**.
 
 In Hamburg, we use a reverse proxy on one of our servers to avoid replicating the **pathRewrite** rules to each separate local development environment. In that scenario, another request to the actual domain is handled by the reverse proxy itself, and the rules only have to be kept on that single server.

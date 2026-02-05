@@ -20,6 +20,7 @@ export default defineConfig(mode => mergeConfig(
         test: {
             reporters: ["default"],
             // reporters: ["default", "html"],
+            allowOnly: true,
             pool: "forks",
             globals: true,
             environment: "jsdom",
@@ -32,10 +33,10 @@ export default defineConfig(mode => mergeConfig(
             isolate: false,
             fileParallelism: false,
             hookTimeout: 500, // reduce from 20000 to 500 ms
-            // include: [
-            //     "src/**/layer2dRasterWmsTime.spec.js",
-            //     // "addons/**/*.spec.js"
-            // ],
+            include: [
+                "src/**/*.spec.js",
+                "addons/**/*.spec.js"
+            ],
             exclude: [
                 // an G31: https://lgv-hamburg.atlassian.net/browse/G31DEV1-3566
                 "**/VerkehrsstaerkenTheme.spec.js",

@@ -198,65 +198,6 @@ $ npm update
 Please refer to the [npm update documentation](https://docs.npmjs.com/cli/v6/commands/npm-update) on how caret and tilde prefixes to versions in the `package.json` are handled by this step.
 
 
-
-## Set up Debugging in Visual Studio Code
-
-1. Install extension Firefox/Chrome-Debugger
-
-   ![Debugger for Chrome on the marketplace](https://vscode-westus.azurewebsites.net/assets/docs/nodejs/reactjs/debugger-for-chrome.png)
-
-2. Switch to debugger view
-
-   ![Debugger view](https://i0.wp.com/www.mattgoldspink.co.uk/wp-content/uploads/2019/02/Screenshot-2019-02-01-at-21.03.13.png?w=640&ssl=1)
-
-3. Open `launch.json` configuration
-
-   ![Open launch.json configuration](https://docs.microsoft.com/ja-jp/windows/images/vscode-debug-launch-configuration.png)
-
-4. Add a new Firefox configuration to the opened `launch.json` file
-```javascript
-    {
-        "name": "Launch localhost",
-        "type": "firefox",
-        "request": "launch",
-        "reAttach": true,
-        "url": "https://localhost:9001/",
-        "webRoot": "${workspaceFolder}/build",
-        "pathMappings": [
-            {
-            "url": "webpack:///modules/core",
-            "path": "${workspaceFolder}/modules/core"
-            }
-        ]
-    },
-```
-
-and/or a Chrome configuration.
-
-```javascript
-    {
-        "name": "Launch Chrome",
-        "type": "chrome",
-        "request": "launch",
-        "url": "https://localhost:9001/",
-        "webRoot": "${workspaceFolder}/build",
-    },
-```
-
-5. Start server
-```console
-$ npm start
-```
-
-6. Choose (1) and start (2) a debugger
-
-   ![Choose and start debugger](https://i.stack.imgur.com/aJatw.png)
-
-7. Set a breakpoint
-
-    ![Set a breakpoint](https://docs.microsoft.com/en-us/sharepoint/dev/images/vscode-debugging-breakpoint-configured.png)
-
-
 ## Local Documentation Preview
 
 Optionally, you can install the documentation framework locally to preview advanced changes to the docs.

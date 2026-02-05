@@ -5,7 +5,7 @@ import Backend from "i18next-http-backend";
 
 /**
  * Initialization. Wrapped in a function to avoid calling it initially
- * in a mochapack run.
+ * in a test run.
  * @param {Object} app Vue-app
  * @returns {void}
  */

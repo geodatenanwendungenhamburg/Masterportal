@@ -382,7 +382,7 @@ describe("src/core/js/layers/layer2dVectorTile.js", () => {
             };
 
         /**
-         * @param {function} done mocha callback done
+         * @param {function} done callback done
          * @returns {Object} mock context for setStyleById
          */
         function makeContext (done) {

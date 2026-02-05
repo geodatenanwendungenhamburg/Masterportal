@@ -1,6 +1,6 @@
 # Unit Tests in Vue
 
-For an example test suite, see *masterportal/src/modules/tools/scaleSwitcher/tests*. Tests can be started in the Masterportal's root folder by either calling `npm run test:vue` (one-time run) or `npm run test:vue:watch` (updates on file changes).
+For an example test suite, see *masterportal/src/modules/tools/scaleSwitcher/tests*. Tests can be started in the Masterportal's root folder by either calling `npm run test` (one-time run) or `npm run test:watch` (updates on file changes).
 
 ## How to write tests
 
@@ -232,11 +232,15 @@ describe("src/modules/scaleSwitcher/store/gettersScaleSwitcher.js", () => {
 
 ## About the libraries
 
-### Mocha
+### Vitest
 
 `describe` is used to declare a section. In the example, the outer `describe` is used to describe the module being tested. Nested `describe`s are used to name the function currently under test.
 
 You may use `describe.only` to run only a specific test section, or `describe.skip` to temporarily comment out tests during development.
+
+With vite, `only` behaves differently than in mocha. It works only with --watch. All tests run once, and only then is the `only` taken into account.
+
+We recommend adding the test name or part of it at the end of the command `npm run test:watch actionsAlerting`.
 
 ```js
 describe(name, callback)
@@ -246,19 +250,21 @@ With `it`, the single test cases are encapsulated. For the first parameter, prov
 
 For the second parameter, provide a callback function that checks whether this described property actually holds. Use `expect` (see below) for checks.
 
+ No nested `it`s are allowd.
+
 The suffixes `.skip` and `.only` work the same way as described for `describe`.
 
 ```js
 it(testCaseDescription, callback)
 ```
 
-The function `before` is used for test preparations for multiple `it` cases and is executed *once* within the surrounding `describe`.
+The function `beforeAll` is used for test preparations for multiple `it` cases and is executed *once* within the surrounding `describe`.
 
 The function `beforeEach` is used for test preparations per `it` case and is therefore executed `once` per `it` in the surrounding `describe`.
 
-The functions `after` and `afterEach` work comparably after test execution.
+The functions `afterAll` and `afterEach` work comparably after test execution.
 
-For more documentation regarding Mocha, please read the [Mocha documentation pages](https://mochajs.org/).
+For more documentation regarding vitest, please read the [vitest documentation pages](https://vitest.dev/).
 
 ### Chai
 
