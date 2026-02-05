@@ -38,7 +38,6 @@ export default {
             selectedEditInteraction: null,
             currentSketch: null,
             drawingPointHistory: [],
-            mode: "",
             featureHistories: {}
         };
     },
@@ -184,10 +183,6 @@ export default {
                 });
             }
         }, {immediate: true});
-
-        this.source.on("clear", () => {
-            this.mode = "";
-        });
     },
     unmounted () {
         this.removeIncompleteDrawing();
@@ -390,7 +385,6 @@ export default {
          */
         regulateDelete () {
             this.selectedEditInteraction = "delete";
-            this.mode = "delete";
 
             this.removeIncompleteDrawing();
             this.removeDrawInteraction();
@@ -413,7 +407,6 @@ export default {
                             this.currentSelectInteractions.forEach(interaction => this.removeInteraction(interaction));
                             this.currentSelectInteractions = [];
                             this.selectedEditInteraction = "";
-                            this.mode = "";
                             this.createDrawInteraction();
                             selectInteractionInstance.un("select", removeHandler);
                         }, 100);
@@ -446,14 +439,12 @@ export default {
          * @returns {void}
          */
         regulateDeleteAll () {
-            this.mode = "deleteAll";
             this.removeDrawInteraction();
             this.featureHistories = {};
             this.deleteFeatures();
 
             setTimeout(() => {
                 this.selectedEditInteraction = "";
-                this.mode = "";
                 this.createDrawInteraction();
             }, 100);
         },
@@ -821,10 +812,6 @@ export default {
          * @returns {void}
          */
         removeTooltipForFeature (featureId) {
-            const previousMode = this.mode;
-
-            this.mode = "removingTooltip";
-
             const featuresToRemove = [];
 
             this.source.forEachFeature(f => {
@@ -838,8 +825,6 @@ export default {
             featuresToRemove.forEach(f => {
                 this.source.removeFeature(f);
             });
-
-            this.mode = previousMode;
         },
 
         /**

@@ -66,7 +66,6 @@ const simpleGetters = {
     measurementList: ({lines, polygons}, getters) => {
         const measurements = [];
 
-        // Add line measurements
         Object.keys(lines).forEach(featureId => {
             measurements.push({
                 id: featureId,
@@ -76,7 +75,6 @@ const simpleGetters = {
             });
         });
 
-        // Add polygon measurements
         Object.keys(polygons).forEach(featureId => {
             measurements.push({
                 id: featureId,
