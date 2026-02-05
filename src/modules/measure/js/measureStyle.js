@@ -10,7 +10,7 @@ function getStyle (color) {
         // general style
         new Style({
             fill: new Fill({
-                color: color.with(3, 0.3)
+                color: [...color.slice(0, 3), 0.3]
             }),
             stroke: new Stroke({
                 color,
@@ -23,7 +23,7 @@ function getStyle (color) {
                     width: 3
                 }),
                 fill: new Fill({
-                    color: color.with(3, 0.4)
+                    color: [...color.slice(0, 3), 0.4]
                 })
             })
         }),
@@ -36,7 +36,7 @@ function getStyle (color) {
                     width: 3
                 }),
                 fill: new Fill({
-                    color: color.with(3, 0.4)
+                    color: [...color.slice(0, 3), 0.4]
                 })
             }),
             geometry: function (feature) {
@@ -57,7 +57,7 @@ function getStyle (color) {
                     width: 3
                 }),
                 fill: new Fill({
-                    color: color.with(3, 0.4)
+                    color: [...color.slice(0, 3), 0.4]
                 })
             }),
             geometry: function (feature) {

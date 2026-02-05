@@ -46,11 +46,13 @@ function makeDraw ({state}, type, addFeature, setIsDrawing, setFeatureId, setToo
     });
 
     draw.on("drawend", function () {
-        sketch.getGeometry().un("change", listener);
-        sketch.set("isBeingDrawn", false);
-        sketch.set("styleId", `__measureStyle_draw_${styleIdCounter++}`);
-        sketch = null;
-        listener = null;
+        if (sketch) {
+            sketch.getGeometry().un("change", listener);
+            sketch.set("isBeingDrawn", false);
+            sketch.set("styleId", `__measureStyle_draw_${styleIdCounter++}`);
+            sketch = null;
+            listener = null;
+        }
         setIsDrawing(false);
     });
 
