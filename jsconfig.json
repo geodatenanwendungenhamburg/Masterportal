@@ -1,7 +1,7 @@
 // This file configures module path aliases for JavaScript projects.
 // It allows VS Code and other tools to resolve @alias paths like @shared/*,
 // improving IntelliSense, navigation, and code readability.
-// Essential when using Webpack aliases in non-TypeScript (JavaScript) projects.
+// Essential when using aliases in non-TypeScript (JavaScript) projects.
 {
     "compilerOptions": {
       "baseUrl": ".",

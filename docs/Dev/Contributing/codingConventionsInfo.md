@@ -59,7 +59,7 @@ function untestableFunction (param) {
 
 For more information on unit tests in Vue, refer to [the Vue unit test documentation](../unitTestVue.md).
 
-Tests employ the libraries **[Chai](https://www.chaijs.com/)** and **[Mocha](https://mochajs.org/)**.
+Tests employ the libraries **[chai](https://www.chaijs.com/)** and **[vitest](https://vitest.dev/)**.
 
 ---
 

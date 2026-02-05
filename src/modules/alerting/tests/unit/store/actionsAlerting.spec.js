@@ -52,7 +52,7 @@ describe("src/modules/alerting/store/actionsAlerting.js", () => {
         }
     }
 
-    global.localStorage = new LocalStorageMock();
+    globalThis.localStorage = new LocalStorageMock();
 
     beforeEach(() => {
         commit = sinon.spy();
