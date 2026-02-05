@@ -56,6 +56,7 @@ export default {
             })) {
                 return "secondaryMenu";
             }
+
             return null;
         }
     },
