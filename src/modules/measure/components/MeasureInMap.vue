@@ -5,8 +5,8 @@ import {pointerMove} from "ol/events/condition.js";
 import selectInteraction from "@masterportal/masterportalapi/src/maps/interactions/selectInteraction.js";
 import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactions/modifyInteraction.js";
 import MeasureInMapTooltip from "./MeasureInMapTooltip.vue";
+import MeasureList from "./MeasureList.vue";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
-import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 import source from "../js/measureSource.js";
 import getStyle from "../js/measureStyle.js";
 
@@ -19,13 +19,13 @@ export default {
     name: "MeasureInMap",
     components: {
         MeasureInMapTooltip,
-        FlatButton,
-        IconButton
+        MeasureList,
+        FlatButton
     },
     data () {
         return {
             deleteIcon: "bi-trash",
-            measureEdits: ["deleteAll", "delete", "modify", "undo", "redo"],
+            measureEdits: ["delete", "modify", "undo", "redo"],
             measureIcons: {
                 delete: "bi-eraser-fill",
                 deleteAll: "bi-trash",
@@ -39,8 +39,7 @@ export default {
             currentSketch: null,
             drawingPointHistory: [],
             mode: "",
-            redoFeatures: [],
-            undoFeatures: []
+            featureHistories: {}
         };
     },
     computed: {
@@ -59,10 +58,29 @@ export default {
             "selectedGeometry",
             "selectedLineStringUnit",
             "selectedPolygonUnit",
-            "currentUnits"
+            "currentUnits",
+            "measurementList"
         ]),
         ...mapGetters(["uiStyle"]),
-        ...mapGetters("Maps", ["mode"])
+        ...mapGetters("Maps", ["mode"]),
+
+        /**
+         * Enriches measurement list with per-feature undo/redo state
+         * @returns {Array} Measurement list with canUndo/canRedo properties
+         */
+        enrichedMeasurementList () {
+            return this.measurementList.map(measurement => {
+                const featureId = measurement.id;
+                const normalizedId = typeof featureId === "string" ? parseInt(featureId, 10) : featureId;
+                const history = this.featureHistories[normalizedId];
+
+                return {
+                    ...measurement,
+                    canUndo: history ? history.undo.length > 0 : false,
+                    canRedo: history ? history.redo.length > 0 : false
+                };
+            });
+        }
     },
     watch: {
         mode () {
@@ -81,6 +99,26 @@ export default {
          */
         selectedGeometry () {
             this.createDrawInteraction();
+        },
+        /**
+         * Ensures all measurements have a history entry
+         * @returns {void}
+         */
+        measurementList: {
+            handler (newList) {
+                newList.forEach(measurement => {
+                    const featureId = measurement.id;
+                    const normalizedId = typeof featureId === "string" ? parseInt(featureId, 10) : featureId;
+
+                    if (!this.featureHistories[normalizedId]) {
+                        this.featureHistories[normalizedId] = {
+                            undo: [],
+                            redo: []
+                        };
+                    }
+                });
+            },
+            immediate: true
         }
     },
     created () {
@@ -110,37 +148,42 @@ export default {
                     this.drawingPointHistory = [];
                 });
 
-                newInteraction.on("drawend", () => {
+                newInteraction.on("drawend", (evt) => {
+                    const featureId = evt.feature.ol_uid;
+                    const geometry = evt.feature.getGeometry();
+                    const geometryType = geometry.getType();
+                    const history = this.getFeatureHistory(featureId);
+
+                    let coordinates;
+
+                    if (geometryType === "LineString") {
+                        coordinates = geometry.getCoordinates();
+                    }
+                    else if (geometryType === "Polygon") {
+                        coordinates = geometry.getCoordinates()[0].slice(0, -1);
+                    }
+
+                    if (coordinates && coordinates.length > 2) {
+                        for (let i = 2; i < coordinates.length; i++) {
+                            history.undo.push({
+                                mode: "addPoint",
+                                timestamp: Date.now(),
+                                data: {
+                                    point: coordinates[i],
+                                    pointIndex: i,
+                                    geometryType: geometryType
+                                }
+                            });
+                        }
+                    }
+
+                    history.redo = [];
+
                     this.currentSketch = null;
                     this.drawingPointHistory = [];
                 });
             }
         }, {immediate: true});
-
-        this.source.on("addfeature", event => {
-            const isBeingDrawn = event.feature.get("isBeingDrawn");
-            const featureId = event.feature.get("featureId");
-            const hasFeatureId = featureId !== undefined;
-
-            if (hasFeatureId) {
-                return;
-            }
-
-            if (isBeingDrawn === false && this.mode === "") {
-                this.shiftUndoRedoFeatures(event.feature, "draw", this.mode);
-            }
-        });
-
-        this.source.on("removefeature", event => {
-            const featureId = event.feature.get("featureId");
-            const hasFeatureId = featureId !== undefined;
-
-            if (hasFeatureId) {
-                return;
-            }
-
-            this.shiftUndoRedoFeatures(event.feature, "delete", this.mode);
-        });
 
         this.source.on("clear", () => {
             this.mode = "";
@@ -170,6 +213,121 @@ export default {
                 }
                 else if (this.$refs["measure-tool-unit-select"]) {
                     this.$refs["measure-tool-unit-select"].focus();
+                }
+            });
+        },
+
+        /**
+         * Gets or creates history object for a feature
+         * @param {String|Number} featureId - ol_uid of feature
+         * @returns {Object} {undo: [], redo: []}
+         */
+        getFeatureHistory (featureId) {
+            const normalizedId = typeof featureId === "string" ? parseInt(featureId, 10) : featureId;
+
+            if (!this.featureHistories[normalizedId]) {
+                this.featureHistories[normalizedId] = {
+                    undo: [],
+                    redo: []
+                };
+            }
+            return this.featureHistories[normalizedId];
+        },
+
+        /**
+         * Adds an undo entry for a specific feature
+         * @param {String|Number} featureId - The feature ID
+         * @param {Object} historyEntry - The history entry to add
+         * @returns {void}
+         */
+        addUndoForFeature (featureId, historyEntry) {
+            const history = this.getFeatureHistory(featureId);
+
+            history.undo.push(historyEntry);
+            history.redo = [];
+        },
+
+        /**
+         * Checks if feature can undo
+         * @param {String|Number} featureId - The feature ID
+         * @returns {Boolean} True if undo is available
+         */
+        canUndoFeature (featureId) {
+            const normalizedId = typeof featureId === "string" ? parseInt(featureId, 10) : featureId;
+            const history = this.featureHistories[normalizedId];
+
+            return history && history.undo.length > 0;
+        },
+
+        /**
+         * Checks if feature can redo
+         * @param {String|Number} featureId - The feature ID
+         * @returns {Boolean} True if redo is available
+         */
+        canRedoFeature (featureId) {
+            const normalizedId = typeof featureId === "string" ? parseInt(featureId, 10) : featureId;
+            const history = this.featureHistories[normalizedId];
+
+            return history && history.redo.length > 0;
+        },
+
+        /**
+         * Cleans up history when feature is deleted
+         * @param {String|Number} featureId - The feature ID
+         * @returns {void}
+         */
+        deleteFeatureHistory (featureId) {
+            const normalizedId = typeof featureId === "string" ? parseInt(featureId, 10) : featureId;
+
+            delete this.featureHistories[normalizedId];
+        },
+
+        /**
+         * Gets a feature by its ID
+         * @param {String} featureId - The ol_uid of the feature
+         * @returns {ol/Feature|undefined} The feature or undefined
+         */
+        getFeatureById (featureId) {
+            const allFeatures = this.source.getFeatures();
+            const normalizedId = parseInt(featureId, 10);
+
+            return allFeatures.find(f => parseInt(f.ol_uid, 10) === normalizedId);
+        },
+
+        /**
+         * Updates the tooltip position for a specific feature
+         * @param {ol/Feature} feature - The feature whose tooltip to update
+         * @returns {void}
+         */
+        updateTooltipPositionForFeature (feature) {
+            const featureId = feature.ol_uid;
+            const normalizedFeatureId = parseInt(featureId, 10);
+            const geometry = feature.getGeometry();
+            const geometryType = geometry.getType();
+            let newCoord = null;
+
+            if (geometryType === "LineString") {
+                newCoord = geometry.getLastCoordinate();
+            }
+            else if (geometryType === "Polygon") {
+                const coordinates = geometry.getCoordinates()[0];
+
+                newCoord = coordinates[coordinates.length - 2];
+            }
+
+            if (!newCoord) {
+                return;
+            }
+
+            this.source.forEachFeature(f => {
+                const tooltipFeatureId = f.get("featureId");
+
+                if (tooltipFeatureId && parseInt(tooltipFeatureId, 10) === normalizedFeatureId) {
+                    const tooltipGeometry = f.getGeometry();
+
+                    if (tooltipGeometry && tooltipGeometry.getType() === "Point") {
+                        tooltipGeometry.setCoordinates(newCoord);
+                    }
                 }
             });
         },
@@ -234,9 +392,6 @@ export default {
             this.selectedEditInteraction = "delete";
             this.mode = "delete";
 
-            this.undoFeatures = [];
-            this.redoFeatures = [];
-
             this.removeIncompleteDrawing();
             this.removeDrawInteraction();
 
@@ -252,6 +407,7 @@ export default {
                         const featureId = selectedFeature.ol_uid;
 
                         this.removeTooltipForFeature(featureId);
+                        this.deleteFeatureHistory(featureId);
 
                         setTimeout(() => {
                             this.currentSelectInteractions.forEach(interaction => this.removeInteraction(interaction));
@@ -291,12 +447,8 @@ export default {
          */
         regulateDeleteAll () {
             this.mode = "deleteAll";
-
             this.removeDrawInteraction();
-
-            this.undoFeatures = [];
-            this.redoFeatures = [];
-
+            this.featureHistories = {};
             this.deleteFeatures();
 
             setTimeout(() => {
@@ -310,11 +462,11 @@ export default {
          * Regulate the measure modify interaction.
          * The previous modify interaction is removed from the map and newly created modify interaction is added.
          * Measurements are recalculated when features are modified.
+         * Coordinate changes are tracked in per-feature history.
          * @returns {void}
          */
         regulateModify () {
             this.selectedEditInteraction = "modify";
-
             this.removeDrawInteraction();
 
             if (this.currentModifyInteraction) {
@@ -323,9 +475,49 @@ export default {
 
             this.currentModifyInteraction = modifyInteraction.createModifyInteraction(this.source);
 
+            this.currentModifyInteraction.on("modifystart", (event) => {
+                event.features.forEach(feature => {
+                    const geometry = feature.getGeometry();
+                    const geometryType = geometry.getType();
+                    let coords;
+
+                    if (geometryType === "LineString") {
+                        coords = geometry.getCoordinates();
+                    }
+                    else if (geometryType === "Polygon") {
+                        coords = geometry.getCoordinates()[0];
+                    }
+
+                    feature.set("_beforeModifyCoords", JSON.parse(JSON.stringify(coords)));
+                });
+            });
+
             this.currentModifyInteraction.on("modifyend", (event) => {
                 event.features.forEach(feature => {
                     const featureId = feature.ol_uid;
+                    const geometry = feature.getGeometry();
+                    const geometryType = geometry.getType();
+                    const beforeCoords = feature.get("_beforeModifyCoords");
+                    let afterCoords;
+
+                    if (geometryType === "LineString") {
+                        afterCoords = geometry.getCoordinates();
+                    }
+                    else if (geometryType === "Polygon") {
+                        afterCoords = geometry.getCoordinates()[0];
+                    }
+
+                    this.addUndoForFeature(featureId, {
+                        mode: "modifyCoordinates",
+                        timestamp: Date.now(),
+                        data: {
+                            previousCoordinates: beforeCoords,
+                            newCoordinates: JSON.parse(JSON.stringify(afterCoords)),
+                            geometryType: geometryType
+                        }
+                    });
+
+                    feature.unset("_beforeModifyCoords");
 
                     if (this.lines[featureId] || this.polygons[featureId]) {
                         this.$store.commit("Modules/Measure/addFeature", feature);
@@ -337,51 +529,78 @@ export default {
         },
 
         /**
-         * Regulate the measure undo.
+         * Regulate the measure undo for a specific feature.
+         * @param {String} featureId - The feature ID to undo
          * @returns {void}
          */
-        regulateUndo () {
-            if (this.currentSketch) {
+        regulateUndo (featureId) {
+            if (this.currentSketch && this.currentSketch.ol_uid === parseInt(featureId, 10)) {
                 this.undoLastPointInSketch();
-            }
-            else if (this.undoFeatures.length > 0) {
-                const lastItem = this.undoFeatures[this.undoFeatures.length - 1];
-
-                if (lastItem.feature && lastItem.mode === "draw" && this.canRemovePointFromFeature(lastItem.feature)) {
-                    this.removeLastPointFromFeature(lastItem.feature);
-                }
-                else {
-                    this.redoFeatures = [];
-                    this.undoRedoFeatures(this.undoFeatures, "undo", true);
-                }
+                return;
             }
 
+            const history = this.getFeatureHistory(featureId);
+
+            if (history.undo.length === 0) {
+                return;
+            }
+
+            const feature = this.getFeatureById(featureId);
+
+            if (!feature) {
+                return;
+            }
+
+            const historyEntry = history.undo.pop();
+
+            if (historyEntry.mode === "addPoint") {
+                this.undoAddPoint(feature, historyEntry);
+            }
+            else if (historyEntry.mode === "modifyCoordinates") {
+                this.undoModifyCoordinates(feature, historyEntry);
+            }
+
+            history.redo.push(historyEntry);
         },
 
         /**
-         * Regulate the measure redo.
+         * Regulate the measure redo for a specific feature.
+         * @param {String} featureId - The feature ID to redo
          * @returns {void}
          */
-        regulateRedo () {
-            if (this.redoFeatures.length > 0) {
-                const lastItem = this.redoFeatures[this.redoFeatures.length - 1];
+        regulateRedo (featureId) {
+            const history = this.getFeatureHistory(featureId);
 
-                if (lastItem.mode === "addPoint") {
-                    this.redoAddPoint(lastItem);
-                }
-                else {
-                    this.undoRedoFeatures(this.redoFeatures, "redo");
-                }
+            if (history.redo.length === 0) {
+                return;
             }
+
+            const feature = this.getFeatureById(featureId);
+
+            if (!feature) {
+                return;
+            }
+
+            const historyEntry = history.redo.pop();
+
+            if (historyEntry.mode === "addPoint") {
+                this.redoAddPoint(feature, historyEntry);
+            }
+            else if (historyEntry.mode === "modifyCoordinates") {
+                this.redoModifyCoordinates(feature, historyEntry);
+            }
+
+            history.undo.push(historyEntry);
         },
 
         /**
          * Redoes a point addition (adds back a removed point).
-         * @param {Object} redoItem The redo item containing feature and point info.
+         * @param {ol/Feature} feature - The feature to modify
+         * @param {Object} historyEntry - The history entry containing point info
          * @returns {void}
          */
-        redoAddPoint (redoItem) {
-            const {feature, point, geometryType} = redoItem;
+        redoAddPoint (feature, historyEntry) {
+            const {point, geometryType} = historyEntry.data;
             const geometry = feature.getGeometry();
 
             if (geometryType === "LineString") {
@@ -389,21 +608,89 @@ export default {
 
                 coordinates.push(point);
                 geometry.setCoordinates(coordinates);
-
-                this.$store.commit("Modules/Measure/setTooltipCoord", point);
             }
             else if (geometryType === "Polygon") {
                 const coordinates = geometry.getCoordinates()[0];
 
                 coordinates.splice(coordinates.length - 1, 0, point);
                 geometry.setCoordinates([coordinates]);
-
-                this.$store.commit("Modules/Measure/setTooltipCoord", point);
             }
 
-            this.redoFeatures.pop();
+            this.$store.commit("Modules/Measure/addFeature", feature);
+            this.updateTooltipPositionForFeature(feature);
+        },
+
+        /**
+         * Undoes a point addition (removes the point).
+         * @param {ol/Feature} feature - The feature to modify
+         * @param {Object} historyEntry - The history entry containing point info
+         * @returns {void}
+         */
+        undoAddPoint (feature, historyEntry) {
+            const {geometryType} = historyEntry.data;
+            const geometry = feature.getGeometry();
+
+            if (geometryType === "LineString") {
+                const coordinates = geometry.getCoordinates();
+
+                if (coordinates.length > 2) {
+                    coordinates.pop();
+                    geometry.setCoordinates(coordinates);
+                }
+            }
+            else if (geometryType === "Polygon") {
+                const coordinates = geometry.getCoordinates()[0];
+
+                if (coordinates.length > 4) {
+                    coordinates.splice(coordinates.length - 2, 1);
+                    geometry.setCoordinates([coordinates]);
+                }
+            }
 
             this.$store.commit("Modules/Measure/addFeature", feature);
+            this.updateTooltipPositionForFeature(feature);
+        },
+
+        /**
+         * Undoes a coordinate modification (restores previous coordinates).
+         * @param {ol/Feature} feature - The feature to modify
+         * @param {Object} historyEntry - The history entry containing coordinate info
+         * @returns {void}
+         */
+        undoModifyCoordinates (feature, historyEntry) {
+            const {previousCoordinates, geometryType} = historyEntry.data;
+            const geometry = feature.getGeometry();
+
+            if (geometryType === "LineString") {
+                geometry.setCoordinates(previousCoordinates);
+            }
+            else if (geometryType === "Polygon") {
+                geometry.setCoordinates([previousCoordinates]);
+            }
+
+            this.$store.commit("Modules/Measure/addFeature", feature);
+            this.updateTooltipPositionForFeature(feature);
+        },
+
+        /**
+         * Redoes a coordinate modification (applies new coordinates).
+         * @param {ol/Feature} feature - The feature to modify
+         * @param {Object} historyEntry - The history entry containing coordinate info
+         * @returns {void}
+         */
+        redoModifyCoordinates (feature, historyEntry) {
+            const {newCoordinates, geometryType} = historyEntry.data;
+            const geometry = feature.getGeometry();
+
+            if (geometryType === "LineString") {
+                geometry.setCoordinates(newCoordinates);
+            }
+            else if (geometryType === "Polygon") {
+                geometry.setCoordinates([newCoordinates]);
+            }
+
+            this.$store.commit("Modules/Measure/addFeature", feature);
+            this.updateTooltipPositionForFeature(feature);
         },
 
         /**
@@ -467,10 +754,12 @@ export default {
 
         /**
          * Removes the last point from a completed feature and updates measurements.
+         * Records the action in per-feature history.
          * @param {ol/Feature} feature The feature to modify.
          * @returns {void}
          */
         removeLastPointFromFeature (feature) {
+            const featureId = feature.ol_uid;
             const geometry = feature.getGeometry();
             const geometryType = geometry.getType();
 
@@ -480,11 +769,14 @@ export default {
                 if (coordinates.length > 2) {
                     const removedPoint = coordinates.pop();
 
-                    this.redoFeatures.push({
-                        feature: feature,
+                    this.addUndoForFeature(featureId, {
                         mode: "addPoint",
-                        point: removedPoint,
-                        geometryType: "LineString"
+                        timestamp: Date.now(),
+                        data: {
+                            point: removedPoint,
+                            pointIndex: coordinates.length,
+                            geometryType: "LineString"
+                        }
                     });
 
                     geometry.setCoordinates(coordinates);
@@ -502,11 +794,14 @@ export default {
                 if (coordinates.length > 4) {
                     const removedPoint = coordinates[coordinates.length - 2];
 
-                    this.redoFeatures.push({
-                        feature: feature,
+                    this.addUndoForFeature(featureId, {
                         mode: "addPoint",
-                        point: removedPoint,
-                        geometryType: "Polygon"
+                        timestamp: Date.now(),
+                        data: {
+                            point: removedPoint,
+                            pointIndex: coordinates.length - 2,
+                            geometryType: "Polygon"
+                        }
                     });
 
                     coordinates.splice(coordinates.length - 2, 1);
@@ -517,75 +812,6 @@ export default {
                     this.$store.commit("Modules/Measure/setTooltipCoord", newLastCoord);
                     this.$store.commit("Modules/Measure/addFeature", feature);
                 }
-            }
-        },
-
-        /**
-         * Regulates the undo or redo features,
-         * depending on whether the last feature was drawn, deleted or is an array of features (delete all).
-         * @param {Array} features The undo or redo features.
-         * @param {String} mode The undo or redo mode.
-         * @param {Boolean} clearRedo If true, prevents adding the feature to redoFeatures (used when removing a feature completely after point-by-point undo).
-         * @returns {void}
-         */
-        undoRedoFeatures (features, mode, clearRedo = false) {
-            if (features.length > 0) {
-                const feature = features[features.length - 1];
-
-                this.mode = mode;
-
-                if (this.isDeleteAllMode(feature)) {
-                    this.undoRedoDeleteAll(mode, features, this.source);
-                }
-                else if (feature.mode === "draw") {
-                    if (mode === "undo") {
-                        const featureId = feature.feature.ol_uid;
-
-                        this.removeTooltipForFeature(featureId);
-
-                        this.redoFeatures = this.redoFeatures.filter(item => item.mode !== "addPoint");
-
-                        this.mode = "deleteFeatureNoRedo";
-                        this.source.removeFeature(feature.feature);
-                        this.mode = mode;
-                    }
-                    else if (mode === "redo") {
-                        const featureExists = this.source.getFeatures().includes(feature.feature);
-
-                        if (!featureExists) {
-                            this.source.addFeature(feature.feature);
-                        }
-                    }
-                }
-                else if (feature.mode === "delete") {
-                    if (mode === "undo") {
-                        const featureExists = this.source.getFeatures().includes(feature.feature);
-
-                        if (!featureExists) {
-                            this.source.addFeature(feature.feature);
-                        }
-                    }
-                    else if (mode === "redo") {
-                        const featureId = feature.feature.ol_uid;
-
-                        this.removeTooltipForFeature(featureId);
-
-                        this.source.removeFeature(feature.feature);
-                    }
-                }
-
-                if (mode === "undo" && this.undoFeatures.length > 0) {
-                    this.undoFeatures.pop();
-                    if (!clearRedo) {
-                        this.redoFeatures.push(feature);
-                    }
-                }
-                else if (mode === "redo" && this.redoFeatures.length > 0) {
-                    this.redoFeatures.pop();
-                    this.undoFeatures.push(feature);
-                }
-
-                this.mode = "";
             }
         },
 
@@ -617,72 +843,75 @@ export default {
         },
 
         /**
-         * Checks if the feature was created by the edit function deleteAll.
-         * @param {ol/feature|ol/feature[]} feature The undo or redo feature.
-         * @returns {Boolean} The feature is an array of features or not.
+         * Handles modify measurement event from MeasureList.
+         * Initiates modify mode for a specific feature.
+         * @returns {void}
          */
-        isDeleteAllMode (feature) {
-            return Array.isArray(feature);
+        handleModifyMeasurement () {
+            this.selectedEditInteraction = "modify";
+            this.regulateModify();
         },
 
         /**
-         * Regulates the undo redo features, if delete all was used.
-         * With undo, the features are restored.
-         * With redo, the features are deleted again.
-         * @param {String} mode The undo or redo mode.
-         * @param {Array} features The undo or redo features.
-         * @param {ol/source} vectorSource The vector source.
+         * Handles delete measurement event from MeasureList.
+         * Deletes a specific feature from the map.
+         * @param {String} featureId - The feature ID to delete
          * @returns {void}
          */
-        undoRedoDeleteAll (mode, features, vectorSource) {
-            const featureArray = features.pop();
+        handleDeleteMeasurement (featureId) {
+            const normalizedId = parseInt(featureId, 10);
+            const allFeatures = this.source.getFeatures();
+            const feature = allFeatures.find(f => parseInt(f.ol_uid, 10) === normalizedId);
 
-            this.mode = "deleteAll";
-
-            if (mode === "undo") {
-                vectorSource.addFeatures(featureArray);
-                this.redoFeatures.push(featureArray);
+            if (feature) {
+                this.removeTooltipForFeature(featureId);
+                this.source.removeFeature(feature);
+                this.$store.commit("Modules/Measure/removeFeature", feature.ol_uid);
+                this.deleteFeatureHistory(featureId);
             }
-            else if (mode === "redo") {
-                featureArray.forEach(feat => vectorSource.removeFeature(feat));
-                this.undoFeatures.push(featureArray);
-            }
-            this.mode = "";
         },
 
         /**
-         * Changes the position of features in undo and redo feature collections.
-         * The shift is determined based on the triggered edit mode.
-         * @param {ol/feature} feature The ol feature.
-         * @param {String} featureMode Mode of the feature, possible modes are draw or delete.
-         * @param {String} editMode Editing mode that was executed.
+         * Handles highlight feature event from MeasureList.
+         * Highlights a feature on the map when hovering over list item.
+         * @param {String} featureId - The feature ID to highlight
          * @returns {void}
          */
-        shiftUndoRedoFeatures (feature, featureMode, editMode) {
-            if (editMode === "deleteFeatureNoRedo") {
-                return;
-            }
+        handleHighlightFeature (featureId) {
+            const allFeatures = this.source.getFeatures();
+            const feature = allFeatures.find(f => f.ol_uid === parseInt(featureId, 10));
 
-            const undoRedoFeature = {
-                feature: feature,
-                mode: featureMode
-            };
+            if (feature) {
+                if (!feature.get("_originalStyle")) {
+                    feature.set("_originalStyle", feature.getStyle() || this.layer.getStyle());
+                }
+                const highlightColor = [0, 0, 0, 1];
 
-            if (editMode === "undo") {
-                this.mode = "";
-                this.undoFeatures.pop();
-                this.redoFeatures.push(undoRedoFeature);
+                feature.setStyle(getStyle(highlightColor));
             }
-            else if (editMode === "redo") {
-                this.mode = "";
-                this.redoFeatures.pop();
-                this.undoFeatures.push(undoRedoFeature);
-            }
-            else if (editMode === "") {
-                this.undoFeatures.push(undoRedoFeature);
-                this.redoFeatures = [];
-            }
+        },
 
+        /**
+         * Handles unhighlight feature event from MeasureList.
+         * Removes highlight from a feature on the map.
+         * @param {String} featureId - The feature ID to unhighlight
+         * @returns {void}
+         */
+        handleUnhighlightFeature (featureId) {
+            const allFeatures = this.source.getFeatures();
+            const feature = allFeatures.find(f => f.ol_uid === parseInt(featureId, 10));
+
+            if (feature) {
+                const originalStyle = feature.get("_originalStyle");
+
+                if (originalStyle) {
+                    feature.setStyle(originalStyle);
+                    feature.unset("_originalStyle");
+                }
+                else {
+                    feature.setStyle(null);
+                }
+            }
         }
     }
 };
@@ -691,32 +920,6 @@ export default {
 <template lang="html">
     <div id="measure">
         <MeasureInMapTooltip />
-
-        <!-- Edit toolbar for undo/redo/modify -->
-        <div
-            v-if="source?.getFeatures()?.length > 0 || undoFeatures.length > 0 || redoFeatures.length > 0"
-            class="mb-3"
-        >
-            <div class="d-flex">
-                <IconButton
-                    v-for="measureEdit in measureEdits"
-                    :id="'measure-edit-' + measureEdit"
-                    :key="measureEdit"
-                    :aria="$t('common:modules.measure.edit.' + measureEdit)"
-                    :class-array="[
-                        'btn-light',
-                        'me-3',
-                        selectedEditInteraction === measureEdit ? 'active': '',
-                        (measureEdit === 'redo' && redoFeatures.length === 0) ||
-                            (measureEdit === 'undo' && undoFeatures.length === 0) ||
-                            (measureEdit !== 'redo' && measureEdit !== 'undo' && source?.getFeatures()?.length === 0) ? 'disabled' : ''
-                    ].filter(c => c)"
-                    :interaction="() => regulateEditInteraction(measureEdit)"
-                    :icon="measureIcons[measureEdit]"
-                />
-            </div>
-            <hr>
-        </div>
 
         <div class="form-floating mb-3">
             <select
@@ -767,6 +970,18 @@ export default {
                 {{ $t("common:modules.measure.measure") }}
             </label>
         </div>
+
+        <MeasureList
+            :measurement-list="enrichedMeasurementList"
+            :selected-feature-id="featureId"
+            @modify-measurement="handleModifyMeasurement"
+            @delete-measurement="handleDeleteMeasurement"
+            @undo-action="regulateUndo"
+            @redo-action="regulateRedo"
+            @highlight-feature="handleHighlightFeature"
+            @unhighlight-feature="handleUnhighlightFeature"
+        />
+
         <div class="d-flex justify-content-center my-3">
             <FlatButton
                 id="measure-delete"
@@ -774,6 +989,7 @@ export default {
                 :interaction="regulateDeleteAll"
                 :text="$t('common:modules.measure.deleteMeasurements')"
                 :icon="deleteIcon"
+                :disabled="source?.getFeatures()?.length === 0"
             />
         </div>
         <div

@@ -50,9 +50,6 @@ export default {
         setValueAtTooltipLayer (measureValues) {
             if (Object.values(measureValues).length > 0 &&
                 Object.values(measureValues).findIndex((value) => value === "0") === -1) {
-                if (this.currentTextPoint) {
-                    this.currentTextPoint.getGeometry().setCoordinates(this.tooltipCoord);
-                }
 
                 Object.keys(measureValues).forEach(featureId => {
                     const feature = this.lines[featureId] || this.polygons[featureId],
@@ -61,6 +58,21 @@ export default {
                     this.layer.getSource().forEachFeature(aFeature => {
                         if (aFeature.get("featureId") === feature.ol_uid) {
                             aFeature.setStyle(styles);
+                            const geom = feature.getGeometry();
+                            let tooltipCoord = null;
+
+                            if (geom.getType() === "Polygon") {
+                                const coords = geom.getCoordinates()[0];
+
+                                tooltipCoord = coords[coords.length - 2];
+                            }
+                            else if (geom.getType() === "LineString") {
+                                tooltipCoord = geom.getLastCoordinate();
+                            }
+
+                            if (tooltipCoord) {
+                                aFeature.getGeometry().setCoordinates(tooltipCoord);
+                            }
                         }
                     });
                 });

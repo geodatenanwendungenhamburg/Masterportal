@@ -20,6 +20,29 @@ const mutations = {
         };
     },
     /**
+     * Removes a feature from both lines and polygons objects.
+     * @param {Object} state vuex state
+     * @param {String|Number} featureId - The ol_uid of the feature to remove
+     * @returns {void}
+     */
+    removeFeature (state, featureId) {
+        const normalizedId = String(featureId);
+
+        if (state.lines[normalizedId]) {
+            const newLines = {...state.lines};
+
+            delete newLines[normalizedId];
+            state.lines = newLines;
+        }
+
+        if (state.polygons[normalizedId]) {
+            const newPolygons = {...state.polygons};
+
+            delete newPolygons[normalizedId];
+            state.polygons = newPolygons;
+        }
+    },
+    /**
      * Adds an unlisten function to the unlisteners array.
      * @param {Object} state vuex state
      * @param {function} payload added unlisten function
