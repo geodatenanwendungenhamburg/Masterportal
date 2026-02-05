@@ -1,6 +1,8 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
 import VectorLayer from "ol/layer/Vector.js";
+import Collection from "ol/Collection.js";
+import {Modify} from "ol/interaction.js";
 import {pointerMove} from "ol/events/condition.js";
 import selectInteraction from "@masterportal/masterportalapi/src/maps/interactions/selectInteraction.js";
 import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactions/modifyInteraction.js";
@@ -38,7 +40,8 @@ export default {
             selectedEditInteraction: null,
             currentSketch: null,
             drawingPointHistory: [],
-            featureHistories: {}
+            featureHistories: {},
+            currentlyModifyingFeatureId: null
         };
     },
     computed: {
@@ -454,17 +457,42 @@ export default {
          * The previous modify interaction is removed from the map and newly created modify interaction is added.
          * Measurements are recalculated when features are modified.
          * Coordinate changes are tracked in per-feature history.
+         * @param {String} [featureId] - Optional feature ID to modify only that specific feature
          * @returns {void}
          */
-        regulateModify () {
+        regulateModify (featureId = null) {
             this.selectedEditInteraction = "modify";
+            this.currentlyModifyingFeatureId = featureId;
             this.removeDrawInteraction();
 
             if (this.currentModifyInteraction) {
                 this.removeInteraction(this.currentModifyInteraction);
             }
 
-            this.currentModifyInteraction = modifyInteraction.createModifyInteraction(this.source);
+            if (featureId) {
+                const normalizedId = parseInt(featureId, 10);
+                const allFeatures = this.source.getFeatures();
+                const feature = allFeatures.find(f => {
+                    const isTooltipFeature = f.get("featureId") !== undefined;
+
+                    return !isTooltipFeature && parseInt(f.ol_uid, 10) === normalizedId;
+                });
+
+                if (feature) {
+                    const featureCollection = new Collection([feature]);
+
+                    this.currentModifyInteraction = new Modify({
+                        features: featureCollection
+                    });
+                }
+                else {
+                    console.warn("Feature not found for modification:", featureId);
+                    return;
+                }
+            }
+            else {
+                this.currentModifyInteraction = modifyInteraction.createModifyInteraction(this.source);
+            }
 
             this.currentModifyInteraction.on("modifystart", (event) => {
                 event.features.forEach(feature => {
@@ -830,16 +858,18 @@ export default {
         /**
          * Handles modify measurement event from MeasureList.
          * Initiates modify mode for a specific feature.
+         * @param {String} featureId - The feature ID to modify
          * @returns {void}
          */
-        handleModifyMeasurement () {
+        handleModifyMeasurement (featureId) {
             this.selectedEditInteraction = "modify";
-            this.regulateModify();
+            this.regulateModify(featureId);
         },
 
         /**
          * Handles delete measurement event from MeasureList.
          * Deletes a specific feature from the map.
+         * After deleting, restores draw mode if in modify mode.
          * @param {String} featureId - The feature ID to delete
          * @returns {void}
          */
@@ -853,6 +883,17 @@ export default {
                 this.source.removeFeature(feature);
                 this.$store.commit("Modules/Measure/removeFeature", feature.ol_uid);
                 this.deleteFeatureHistory(featureId);
+
+                // If in modify mode, restore draw interaction after deletion
+                if (this.selectedEditInteraction === "modify") {
+                    if (this.currentModifyInteraction) {
+                        this.removeInteraction(this.currentModifyInteraction);
+                        this.currentModifyInteraction = null;
+                    }
+                    this.selectedEditInteraction = "";
+                    this.currentlyModifyingFeatureId = null;
+                    this.createDrawInteraction();
+                }
             }
         },
 
@@ -863,14 +904,20 @@ export default {
          * @returns {void}
          */
         handleHighlightFeature (featureId) {
+            const normalizedId = parseInt(featureId, 10);
             const allFeatures = this.source.getFeatures();
-            const feature = allFeatures.find(f => f.ol_uid === parseInt(featureId, 10));
+            const feature = allFeatures.find(f => {
+                const isTooltipFeature = f.get("featureId") !== undefined;
+
+                return !isTooltipFeature && parseInt(f.ol_uid, 10) === normalizedId;
+            });
 
             if (feature) {
-                if (!feature.get("_originalStyle")) {
-                    feature.set("_originalStyle", feature.getStyle() || this.layer.getStyle());
+                if (!feature.get("_isHighlighted")) {
+                    feature.set("_originalStyle", feature.getStyle());
+                    feature.set("_isHighlighted", true);
                 }
-                const highlightColor = [0, 0, 0, 1];
+                const highlightColor = [0, 89, 255, 1]; // Blue
 
                 feature.setStyle(getStyle(highlightColor));
             }
@@ -883,19 +930,26 @@ export default {
          * @returns {void}
          */
         handleUnhighlightFeature (featureId) {
+            const normalizedId = parseInt(featureId, 10);
             const allFeatures = this.source.getFeatures();
-            const feature = allFeatures.find(f => f.ol_uid === parseInt(featureId, 10));
+            const feature = allFeatures.find(f => {
+                const isTooltipFeature = f.get("featureId") !== undefined;
 
-            if (feature) {
+                return !isTooltipFeature && parseInt(f.ol_uid, 10) === normalizedId;
+            });
+
+            if (feature && feature.get("_isHighlighted")) {
                 const originalStyle = feature.get("_originalStyle");
 
                 if (originalStyle) {
                     feature.setStyle(originalStyle);
-                    feature.unset("_originalStyle");
                 }
                 else {
-                    feature.setStyle(null);
+                    feature.setStyle(getStyle(this.color));
                 }
+
+                feature.unset("_originalStyle");
+                feature.unset("_isHighlighted");
             }
         }
     }
