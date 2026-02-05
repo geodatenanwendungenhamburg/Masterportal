@@ -300,4 +300,40 @@ describe("src/modules/measure/components/MeasureList.vue", () => {
 
         expect(redoButton.exists()).to.be.true;
     });
+
+    it("isModifying returns true when feature is currently being modified", () => {
+        wrapper = shallowMount(MeasureList, {
+            props: {
+                measurementList: mockMeasurements,
+                selectedFeatureId: null,
+                currentlyModifyingFeatureId: "1"
+            },
+            global: {
+                mocks: {
+                    $t: (key) => key
+                }
+            }
+        });
+
+        expect(wrapper.vm.isModifying("1")).to.be.true;
+        expect(wrapper.vm.isModifying("2")).to.be.false;
+    });
+
+    it("getModifyButtonText returns correct translation key based on modify state", () => {
+        wrapper = shallowMount(MeasureList, {
+            props: {
+                measurementList: mockMeasurements,
+                selectedFeatureId: null,
+                currentlyModifyingFeatureId: "1"
+            },
+            global: {
+                mocks: {
+                    $t: (key) => key
+                }
+            }
+        });
+
+        expect(wrapper.vm.getModifyButtonText("1")).to.equal("common:modules.measure.edit.finishModify");
+        expect(wrapper.vm.getModifyButtonText("2")).to.equal("common:modules.measure.edit.modify");
+    });
 });

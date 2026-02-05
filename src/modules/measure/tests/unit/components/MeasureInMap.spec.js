@@ -347,6 +347,84 @@ describe("src/modules/measure/components/MeasureInMap.vue", () => {
             expect(wrapper.vm.selectedEditInteraction).to.equal("modify");
         });
 
+        it("regulateModify with featureId creates feature-specific modify interaction", () => {
+            wrapper = shallowMount(MeasureInMapComponent, {
+                global: {
+                    plugins: [store],
+                    mocks: {
+                        $t: key => key
+                    }
+                }
+            });
+
+            wrapper.vm.source.addFeature(feature1);
+            wrapper.vm.regulateModify(feature1.ol_uid);
+
+            expect(wrapper.vm.currentModifyInteraction).to.not.be.null;
+            expect(wrapper.vm.selectedEditInteraction).to.equal("modify");
+        });
+
+        it("handleModifyMeasurement sets currentlyModifyingFeatureId and calls regulateModify", () => {
+            wrapper = shallowMount(MeasureInMapComponent, {
+                global: {
+                    plugins: [store],
+                    mocks: {
+                        $t: key => key
+                    }
+                }
+            });
+
+            const regulateModifySpy = sinon.spy(wrapper.vm, "regulateModify");
+
+            wrapper.vm.handleModifyMeasurement("test-feature-id");
+
+            expect(wrapper.vm.currentlyModifyingFeatureId).to.equal("test-feature-id");
+            expect(regulateModifySpy.calledWith("test-feature-id")).to.be.true;
+        });
+
+        it("handleModifyMeasurement toggles modify mode when clicking same feature", () => {
+            wrapper = shallowMount(MeasureInMapComponent, {
+                global: {
+                    plugins: [store],
+                    mocks: {
+                        $t: key => key
+                    }
+                }
+            });
+
+            wrapper.vm.currentlyModifyingFeatureId = 12345;
+            wrapper.vm.selectedEditInteraction = "modify";
+
+            wrapper.vm.handleModifyMeasurement(12345);
+
+            expect(wrapper.vm.currentlyModifyingFeatureId).to.be.null;
+            expect(wrapper.vm.selectedEditInteraction).to.equal("");
+        });
+
+        it("handleDeleteMeasurement clears currentlyModifyingFeatureId if deleting modified feature", () => {
+            wrapper = shallowMount(MeasureInMapComponent, {
+                global: {
+                    plugins: [store],
+                    mocks: {
+                        $t: key => key
+                    }
+                }
+            });
+
+            const feature = new Feature({
+                geometry: new LineString([[0, 0], [1, 1]])
+            });
+
+            wrapper.vm.source.addFeature(feature);
+            wrapper.vm.currentlyModifyingFeatureId = feature.ol_uid;
+            wrapper.vm.selectedEditInteraction = "modify";
+
+            wrapper.vm.handleDeleteMeasurement(feature.ol_uid);
+
+            expect(wrapper.vm.currentlyModifyingFeatureId).to.be.null;
+            expect(wrapper.vm.selectedEditInteraction).to.equal("");
+        });
+
         it("regulateDelete clears history for selected features", async () => {
             wrapper = shallowMount(MeasureInMapComponent, {
                 global: {
