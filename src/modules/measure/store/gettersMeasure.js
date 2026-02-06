@@ -90,7 +90,7 @@ const simpleGetters = {
     urlParams: state => {
         const params = {
             selectedGeometry: state.selectedGeometry,
-            selectedLineStringUnit: state.selectedLineStringUnit2,
+            selectedLineStringUnit: state.selectedLineStringUnit,
             selectedPolygonUnit: state.selectedPolygonUnit
         };
 
