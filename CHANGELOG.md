@@ -4,6 +4,27 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## 2025-02-06 v3.15.2 (LTS)
+
+### Added
+- App: All locales can now be overridden with the config.js, and new locales can be added.
+
+### Fixed
+- Issue #1168: Fix autoRefresh for LayerGroups.
+- Issue #1241: WfsSearch: Fix an issue where queryType "like" would not result in a "PropertyIsLike" expression.
+- Issue #1501: Fix bad perfomance of filter module for clustering.
+- Issue #1512: Fix `compareMaps` for mobile devices, where the slider was previously missing.
+- Issue #1517: Fix issue where a single failing GFI request would prevent all requested feature information to be hidden from user.
+- Issue #1519: Fix initialization of print module.
+- Issue #1534: LayerInformation: Fix retrieval URL when using `customMetadata`.
+- Print: 
+    - Layout A0: WMS image layer are printed correctly.
+    - When printing a tiled WMS, the version is now specified, as without this information an error would occur when printing with some services.
+- MapMarker: Fix marker visibility after ShareView.
+- WMS-Time: 
+    - Added the current time parameter (TIME) to ensure time-dynamic layers are correctly represented when printing.
+    - The current timestamp of a WMS-T layer is now captured in the share link and restored upon activation.
+
 ## 2025-11-20 v3.15.1 (LTS)
 
 ### Fixed
