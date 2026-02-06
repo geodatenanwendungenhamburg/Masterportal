@@ -73,7 +73,7 @@ export default {
         enrichedMeasurementList () {
             return this.measurementList.map(measurement => {
                 const featureId = measurement.id;
-                const normalizedId = typeof featureId === "string" ? parseInt(featureId, 10) : featureId;
+                const normalizedId = this.normalizeFeatureId(featureId);
                 const history = this.featureHistories[normalizedId];
 
                 return {
@@ -110,7 +110,7 @@ export default {
             handler (newList) {
                 newList.forEach(measurement => {
                     const featureId = measurement.id;
-                    const normalizedId = typeof featureId === "string" ? parseInt(featureId, 10) : featureId;
+                    const normalizedId = this.normalizeFeatureId(featureId);
 
                     if (!this.featureHistories[normalizedId]) {
                         this.featureHistories[normalizedId] = {
@@ -216,12 +216,21 @@ export default {
         },
 
         /**
+         * Normalizes feature ID to Number type for consistent handling
+         * @param {String|Number} id - The feature ID to normalize
+         * @returns {Number} Normalized feature ID as Number
+         */
+        normalizeFeatureId (id) {
+            return typeof id === "string" ? parseInt(id, 10) : id;
+        },
+
+        /**
          * Gets or creates history object for a feature
          * @param {String|Number} featureId - ol_uid of feature
          * @returns {Object} {undo: [], redo: []}
          */
         getFeatureHistory (featureId) {
-            const normalizedId = typeof featureId === "string" ? parseInt(featureId, 10) : featureId;
+            const normalizedId = this.normalizeFeatureId(featureId);
 
             if (!this.featureHistories[normalizedId]) {
                 this.featureHistories[normalizedId] = {
@@ -251,7 +260,7 @@ export default {
          * @returns {Boolean} True if undo is available
          */
         canUndoFeature (featureId) {
-            const normalizedId = typeof featureId === "string" ? parseInt(featureId, 10) : featureId;
+            const normalizedId = this.normalizeFeatureId(featureId);
             const history = this.featureHistories[normalizedId];
 
             return history && history.undo.length > 0;
@@ -263,7 +272,7 @@ export default {
          * @returns {Boolean} True if redo is available
          */
         canRedoFeature (featureId) {
-            const normalizedId = typeof featureId === "string" ? parseInt(featureId, 10) : featureId;
+            const normalizedId = this.normalizeFeatureId(featureId);
             const history = this.featureHistories[normalizedId];
 
             return history && history.redo.length > 0;
@@ -275,7 +284,7 @@ export default {
          * @returns {void}
          */
         deleteFeatureHistory (featureId) {
-            const normalizedId = typeof featureId === "string" ? parseInt(featureId, 10) : featureId;
+            const normalizedId = this.normalizeFeatureId(featureId);
 
             delete this.featureHistories[normalizedId];
         },
@@ -287,9 +296,9 @@ export default {
          */
         getFeatureById (featureId) {
             const allFeatures = this.source.getFeatures();
-            const normalizedId = parseInt(featureId, 10);
+            const normalizedId = this.normalizeFeatureId(featureId);
 
-            return allFeatures.find(f => parseInt(f.ol_uid, 10) === normalizedId);
+            return allFeatures.find(f => this.normalizeFeatureId(f.ol_uid) === normalizedId);
         },
 
         /**
@@ -299,7 +308,7 @@ export default {
          */
         updateTooltipPositionForFeature (feature) {
             const featureId = feature.ol_uid;
-            const normalizedFeatureId = parseInt(featureId, 10);
+            const normalizedFeatureId = this.normalizeFeatureId(featureId);
             const geometry = feature.getGeometry();
             const geometryType = geometry.getType();
             let newCoord = null;
@@ -320,7 +329,7 @@ export default {
             this.source.forEachFeature(f => {
                 const tooltipFeatureId = f.get("featureId");
 
-                if (tooltipFeatureId && parseInt(tooltipFeatureId, 10) === normalizedFeatureId) {
+                if (tooltipFeatureId && this.normalizeFeatureId(tooltipFeatureId) === normalizedFeatureId) {
                     const tooltipGeometry = f.getGeometry();
 
                     if (tooltipGeometry && tooltipGeometry.getType() === "Point") {
@@ -406,13 +415,15 @@ export default {
                         this.removeTooltipForFeature(featureId);
                         this.deleteFeatureHistory(featureId);
 
-                        setTimeout(() => {
-                            this.currentSelectInteractions.forEach(interaction => this.removeInteraction(interaction));
-                            this.currentSelectInteractions = [];
-                            this.selectedEditInteraction = "";
-                            this.createDrawInteraction();
-                            selectInteractionInstance.un("select", removeHandler);
-                        }, 100);
+                        this.$nextTick(() => {
+                            this.$nextTick(() => {
+                                this.currentSelectInteractions.forEach(interaction => this.removeInteraction(interaction));
+                                this.currentSelectInteractions = [];
+                                this.selectedEditInteraction = "";
+                                this.createDrawInteraction();
+                                selectInteractionInstance.un("select", removeHandler);
+                            });
+                        });
                     }
                 });
 
@@ -446,10 +457,12 @@ export default {
             this.featureHistories = {};
             this.deleteFeatures();
 
-            setTimeout(() => {
-                this.selectedEditInteraction = "";
-                this.createDrawInteraction();
-            }, 100);
+            this.$nextTick(() => {
+                this.$nextTick(() => {
+                    this.selectedEditInteraction = "";
+                    this.createDrawInteraction();
+                });
+            });
         },
 
         /**
@@ -893,9 +906,9 @@ export default {
          * @returns {void}
          */
         handleDeleteMeasurement (featureId) {
-            const normalizedId = parseInt(featureId, 10);
+            const normalizedId = this.normalizeFeatureId(featureId);
             const allFeatures = this.source.getFeatures();
-            const feature = allFeatures.find(f => parseInt(f.ol_uid, 10) === normalizedId);
+            const feature = allFeatures.find(f => this.normalizeFeatureId(f.ol_uid) === normalizedId);
 
             if (feature) {
                 this.removeTooltipForFeature(featureId);
