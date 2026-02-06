@@ -45,7 +45,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@masterportal/masterportalapi": "^2.56.0",
+    "@masterportal/masterportalapi": "git+https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git#master",
     "@popperjs/core": "^2.11.8",
     "axios": "^1.12.2",
     "bootstrap": "^5.3.8",
