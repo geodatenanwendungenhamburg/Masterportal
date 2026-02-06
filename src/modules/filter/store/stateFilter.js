@@ -81,7 +81,8 @@ const state = {
     preventAdjust: false,
     linkText: "",
     questionLink: "",
-    closeDropdownOnSelect: true
+    closeDropdownOnSelect: true,
+    searchInMapExtentState: {}
 };
 
 export default state;

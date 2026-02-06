@@ -39,11 +39,15 @@ export default {
     emits: ["commandChanged"],
     data () {
         return {
-            translationKey: "snippetCheckbox"
+            translationKey: "snippetCheckbox",
+            checked: false
         };
     },
     mounted () {
-        this.$emit("commandChanged", this.preselected);
+        if (typeof this.preselected !== "boolean") {
+            return;
+        }
+        this.checked = this.preselected;
     },
     methods: {
         /**
@@ -51,7 +55,8 @@ export default {
          * @param {event} evt the input switch event.
          * @returns {void}
          */
-        emitCurrentCommand (evt) {
+        updateChecked (evt) {
+            this.checked = evt?.target?.checked;
             this.$emit("commandChanged", evt?.target?.checked);
         }
     }
@@ -65,10 +70,10 @@ export default {
         <div class="form-check form-switch d-flex align-items-center">
             <SwitchInput
                 id="showExistingItems"
+                :checked="checked"
                 :label="$t('common:modules.filter.searchInMapExtent')"
                 :aria="$t('common:modules.filter.searchInMapExtent')"
-                :checked="preselected"
-                :interaction="emitCurrentCommand"
+                :interaction="updateChecked"
             />
             <div
                 v-if="info"

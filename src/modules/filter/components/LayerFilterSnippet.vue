@@ -135,7 +135,6 @@ export default {
             },
             disabled: false,
             showStop: false,
-            searchInMapExtent: false,
             snippets: [],
             showSpinner: true,
             postSnippetKey: 0,
@@ -165,7 +164,8 @@ export default {
             "onValueDeselect",
             "rulesOfFilters",
             "triggerAllTagsDeleted",
-            "totalResults"
+            "totalResults",
+            "searchInMapExtentState"
         ]),
         labelFilterButton () {
             if (typeof this.layerConfig.labelFilterButton === "string") {
@@ -361,6 +361,9 @@ export default {
             });
         }
         this.filterButtonDisabled = typeof this.layerConfig?.filterButtonDisabled === "boolean" ? this.layerConfig.filterButtonDisabled : false;
+        if (this.layerConfig.searchInMapExtent && this.layerConfig.searchInMapExtentPreselected && this.searchInMapExtentState[this.layerConfig.filterId] !== false) {
+            this.setSearchInMapExtent(true);
+        }
     },
     mounted () {
         this.$nextTick(() => {
@@ -574,7 +577,7 @@ export default {
          * @returns {Boolean} the value of searchInMapExtent
          */
         getSearchInMapExtent () {
-            return this.searchInMapExtent;
+            return this.searchInMapExtentState[this.layerConfig.filterId] ?? false;
         },
         /**
          * Changes the internal value for searchInMapExtent.
@@ -582,7 +585,7 @@ export default {
          * @returns {void}
          */
         setSearchInMapExtent (value) {
-            this.searchInMapExtent = value;
+            this.searchInMapExtentState[this.layerConfig.filterId] = value;
 
             if (value === true && this.layerConfig?.searchInMapExtentProactive !== false && !this.layerConfig?.searchInMapExtentPreselected && this.isStrategyActive()) {
                 this.handleActiveStrategy();
@@ -1353,7 +1356,7 @@ export default {
                 <SnippetCheckboxFilterInMapExtent
                     :info="layerConfig.searchInMapExtentInfo"
                     :filter-id="layerConfig.filterId"
-                    :preselected="layerConfig.searchInMapExtentPreselected"
+                    :preselected="getSearchInMapExtent()"
                     @command-changed="setSearchInMapExtent"
                 />
             </div>
