@@ -24,6 +24,7 @@
 - WMS-Time: 
     - Added the current time parameter (TIME) to ensure time-dynamic layers are correctly represented when printing.
     - The current timestamp of a WMS-T layer is now captured in the share link and restored upon activation.
+- WFS-cluster: Fix a recursive style loop that triggered a ‘Maximum call stack size exceeded’ error.
 
 ## 2025-11-20 v3.15.1 (LTS)
 
