@@ -131,39 +131,61 @@ async function oafRecursionHelper (result, url, signal) {
  * Fetches OAF features as a readable stream, following next links.
  * @param {String} url - The initial OAF endpoint URL.
  * @param {Object} searchParams - OAF-specific search parameters.
+ * @param {Function} normalizeNextUrl - Function to normalize next link URLs.
+ * @param {AbortSignal} [signal] - Optional AbortSignal to cancel requests.
+ * @param {Function} onerror - Error callback function.
  * @returns {ReadableStream} - A readable stream of features.
  */
-function getOAFFeatureStream (url, searchParams = {}) {
+function getOAFFeatureStream (url, searchParams, normalizeNextUrl, signal, onerror) {
     const geoJSON = new GeoJSON();
 
     return new ReadableStream({
         async start (controller) {
+            const temp = {};
             let nextUrl = url,
-                params = {...searchParams};
+                params = {},
+                loaded = 0,
+                total = null;
 
+            Object.entries(searchParams).forEach(([key, value]) => {
+                if (typeof value !== "undefined" && value !== null && value !== "") {
+                    temp[key] = value;
+                }
+            });
+            params = temp;
             try {
                 while (nextUrl) {
-                    const response = await axios.get(nextUrl, {params}),
+                    const response = Object.keys(params).length ? await axios.get(nextUrl, {params, signal}) : await axios.get(nextUrl, signal),
                         nextLink = response.data.links?.find(link => link.rel === "next");
 
-                    response.data.features.forEach(feature => {
+                    if (total === null && Number.isFinite(response.data.numberMatched)) {
+                        total = response.data.numberMatched;
+                    }
+                    for (const feature of response.data.features) {
+                        if (signal?.aborted) {
+                            throw new DOMException("Request aborted", "AbortError");
+                        }
                         const olFeature = geoJSON.readFeature(feature);
 
-                        controller.enqueue(olFeature);
-                    });
+                        controller.enqueue({type: "feature", feature: olFeature});
+                        loaded++;
+                    }
 
-                    nextUrl = nextLink ? nextLink.href : null;
+                    controller.enqueue({type: "progress", loaded, total});
+
+                    nextUrl = nextLink ? normalizeNextUrl(nextLink.href) : null;
                     params = {};
                 }
 
                 controller.close();
             }
             catch (err) {
-                controller.error(err);
+                onerror(err);
             }
         }
     });
 }
+
 
 /**
  * Gets the schema of the given collection.

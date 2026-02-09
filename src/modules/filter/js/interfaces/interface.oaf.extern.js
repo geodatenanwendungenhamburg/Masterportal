@@ -289,13 +289,15 @@ export default class InterfaceOafExtern {
      */
     stop (filterId, onsuccess, onerror) {
         const controllers = [this.axiosControllers[filterId], this.axiosControllers[filterId + ".allProperties"]];
-        let errorOccurred = false;
+        let errorOccurred = false,
+            foundController = false;
 
         controllers.forEach((controller) => {
             if (controller instanceof AbortController) {
                 controller.abort();
+                foundController = true;
             }
-            else {
+            else if (foundController === false) {
                 errorOccurred = true;
             }
         });
@@ -315,7 +317,7 @@ export default class InterfaceOafExtern {
      * @param {Boolean} ignoreRules should ignore rules and just start a filter request without.
      * @returns {void}
      */
-    filter (filterQuestion, onsuccess, onerror, axiosMock = false, ignoreRules = false) {
+    async filter (filterQuestion, onsuccess, onerror, axiosMock = false, ignoreRules = false) {
         if (axiosMock) {
             console.warn("Parameter axiosMock not supported in InterfaceOafExtern.filter()");
         }
@@ -324,45 +326,55 @@ export default class InterfaceOafExtern {
             progress = 1,
             bbox = filterQuestion.commands.searchInMapExtent ? this.getCurrentExtent?.()?.join(",") : undefined,
             filter = this.getFilter(filterQuestion.rules, filterQuestion.commands?.geometryName, filterQuestion.commands?.filterGeometry, ignoreRules);
+        let stream = null,
+            items = [];
 
         this.callEmptySuccess(onsuccess, filterQuestion, progress);
 
         this.axiosControllers[filterQuestion.filterId] = controller;
 
-        getOAFFeature.getOAFFeatureGet(
-            filterQuestion.service.url,
-            filterQuestion.service.collection,
-            {
-                limit: filterQuestion.service.limit,
-                filter,
-                filterCrs: epsgCodeToURI(filterQuestion.service.srsName),
-                crs: epsgCodeToURI(filterQuestion.service.srsName),
-                bbox,
-                bboxCrs: epsgCodeToURI(filterQuestion.service.srsName),
-                signal: controller.signal
+        stream = getOAFFeature.getOAFFeatureStream(`${filterQuestion.service.url}/collections/${filterQuestion.service.collection}/items`, {
+            filter,
+            "filter-crs": epsgCodeToURI(filterQuestion.service.srsName),
+            crs: epsgCodeToURI(filterQuestion.service.srsName),
+            bbox,
+            "bbox-crs": epsgCodeToURI(filterQuestion.service.srsName),
+            limit: filterQuestion.service.limit
+        },
+        (nextUrl) => {
+            const u = new URL(nextUrl),
+                filterSearchParam = u.searchParams.get("filter");
+
+            if (filterSearchParam) {
+                u.searchParams.set("filter", filterSearchParam.replaceAll("+", " "));
             }
-        )
-            .then(features => {
-                if (!Array.isArray(features) || typeof onsuccess !== "function") {
-                    this.callEmptySuccess(onsuccess, filterQuestion, 100);
-                    return;
-                }
-                this.callEmptySuccess(onsuccess, filterQuestion, 99);
+            return u.toString();
+        },
+        controller.signal,
+        onerror);
 
-                const items = getOAFFeature.readAllOAFToGeoJSON(features);
 
+        for await (const evt of stream) {
+            if (controller.signal.aborted) {
+                return;
+            }
+            if (evt.type === "progress") {
                 onsuccess({
                     service: filterQuestion.service,
                     filterId: filterQuestion.filterId,
                     snippetId: filterQuestion.snippetId,
                     paging: {
-                        page: 100,
-                        total: 100
+                        page: evt.loaded,
+                        total: evt.total
                     },
                     items
                 });
-            })
-            .catch(error => onerror(error));
+                items = [];
+            }
+            else {
+                items.push(evt.feature);
+            }
+        }
     }
 
     /**
