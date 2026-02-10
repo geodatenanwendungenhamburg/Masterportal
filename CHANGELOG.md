@@ -6,6 +6,8 @@
 
 ## Unreleased - in development
 ### __Breaking Changes__
+- Bundler: From now on, we no longer support webpack; we use vite as our bundler. It is important for the portal configuration that `type="module"` must now be set in `index.html`. Information on this can be found [here](https://bitbucket.org/geowerkstatt-hamburg/masterportal/wiki/Vite%20and%20Vitest)
+
 
 ### Added
 - Issue \#1377: GetFeatureInfo: Added page counter display showing current position and total count of GFI responses.
