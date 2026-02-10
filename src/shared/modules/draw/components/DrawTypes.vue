@@ -3,6 +3,7 @@ import drawInteraction from "@masterportal/masterportalapi/src/maps/interactions
 import {mapActions, mapGetters, mapState} from "vuex";
 import IconButton from "../../buttons/components/IconButton.vue";
 import {nextTick} from "vue";
+import {createTooltipOverlay} from "../js/createTooltipOverlay.js";
 
 /**
  * Shared component that provides buttons for two-level selection of geometries and symbols.
@@ -130,7 +131,7 @@ export default {
             required: false
         }
     },
-    emits: ["drawstart", "drawend", "start-drawing", "stop-drawing"],
+    emits: ["drawstart", "drawend", "start-drawing", "stop-drawing", "circle-radius"],
     data () {
         return {
             currentDrawInteraction: null
@@ -250,10 +251,64 @@ export default {
          */
         regulateDrawInteraction (drawType) {
             this.currentDrawInteraction = drawInteraction.createDrawInteraction(drawType, this.source);
+            let onGeometryChange;
+            const {tooltipOverlay, tooltipElement} = createTooltipOverlay(),
+                map = mapCollection.getMap("2D");
+
+            tooltipElement.style.display = "none";
+
+            map.addOverlay(tooltipOverlay);
+            map.on("pointermove", (event) => {
+                if (event.dragging) {
+                    return;
+                }
+
+                const coordinate = event.coordinate;
+
+                tooltipOverlay.setPosition(coordinate);
+            });
 
             if (this.currentDrawInteraction !== null) {
-                this.currentDrawInteraction.on("drawstart", (evt) => this.$emit("drawstart", evt));
-                this.currentDrawInteraction.on("drawend", (evt) => this.$emit("drawend", evt));
+                this.currentDrawInteraction.on("drawstart", (evt) => {
+                    this.$emit("drawstart", evt);
+
+                    if (drawType === "circle" || drawType === "doubleCircle") {
+                        tooltipElement.style.display = "block";
+                        const geometry = evt.feature.getGeometry();
+
+                        if (drawType === "circle") {
+                            onGeometryChange = () => {
+                                let radius = geometry.getRadius();
+
+                                radius = Math.round(radius);
+
+                                tooltipElement.innerHTML = `${radius} m`;
+                                this.$emit("circle-radius", radius);
+                            };
+
+                            geometry.on("change", onGeometryChange);
+                        }
+                    }
+                });
+                this.currentDrawInteraction.on("drawend", (evt) => {
+                    tooltipElement.style.display = "none";
+                    this.$emit("drawend", evt);
+
+                    if (drawType === "circle" || drawType === "doubleCircle") {
+                        const geometry = evt.feature.getGeometry();
+
+                        if (drawType === "circle") {
+                            let radius = geometry.getRadius();
+
+                            radius = Math.round(radius);
+
+                            this.$emit("circle-radius", radius);
+                            tooltipElement.innerHTML = "";
+                            tooltipOverlay.setPosition(undefined);
+                            geometry.un("change", onGeometryChange);
+                        }
+                    }
+                });
                 if (drawType === "circle" || drawType === "doubleCircle") {
                     this.regulateStaticCircleInteraction(drawType);
                 }
@@ -335,3 +390,23 @@ export default {
         :draw-layout="drawLayout"
     />
 </template>
+
+<style lang="scss">
+@import "~variables";
+@import "~mixins";
+
+div.draw-tooltip {
+    background-color: white;
+    color: black;
+    padding: 2px 4px;
+    border: 1px solid black;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    pointer-events: none;
+}
+
+</style>
+
