@@ -131,6 +131,7 @@
     - webpack-merge
     - worker-loader
     - zip-a-folder
+- Tests: `npm run test:single` was removed, use `npm run test` instead followed by path or search string.
 
 ### Fixed
 - Issue \#1497: FeatureViaUrl: Fixed initial `"zoomTo"` feature for FeatureViaUrl-created vector layers.
