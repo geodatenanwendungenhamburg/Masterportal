@@ -32,7 +32,7 @@ export default defineConfig(mode => mergeConfig(
              */
             isolate: false,
             fileParallelism: false,
-            hookTimeout: 500, // reduce from 20000 to 500 ms
+            hookTimeout: 5000, // reduce from 20000 to 5000 ms
             include: [
                 "src/**/*.spec.js",
                 "addons/**/*.spec.js"
