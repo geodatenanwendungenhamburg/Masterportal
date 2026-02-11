@@ -273,12 +273,13 @@ export default {
                 this.currentDrawInteraction.on("drawstart", (evt) => {
                     this.$emit("drawstart", evt);
 
-                    if (drawType === "circle" || drawType === "box") {
+                    if (["circle", "box", "line", "polygon"].includes(drawType)) {
                         tooltipElement.style.display = "block";
                         const geometry = evt.feature.getGeometry();
 
-                        if (drawType === "circle") {
-                            onGeometryChange = () => {
+
+                        onGeometryChange = () => {
+                            if (drawType === "circle") {
                                 let radius = geometry.getRadius();
 
                                 radius = Math.round(radius);
@@ -286,29 +287,39 @@ export default {
 
                                 tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawSettingsCircle.radii.radius")}: ${radius}m`;
                                 this.$emit("circle-radius", radius);
-                            };
+                            }
+                            if (drawType === "box" || drawType === "polygon") {
 
-                            geometry.on("change", onGeometryChange);
-                        }
-                        if (drawType === "box") {
-                            onGeometryChange = () => {
                                 const coordinates = geometry.getCoordinates()[0],
                                     width = Math.abs(coordinates[1][0] - coordinates[0][0]),
                                     height = Math.abs(coordinates[2][1] - coordinates[1][1]),
                                     area = width * height;
 
-                                tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawLayout.area")}: ${Math.round(area)}m²<br>${this.$t("common:shared.modules.draw.drawLayout.width")}: ${Math.round(width)}m<br>${this.$t("common:shared.modules.draw.drawLayout.height")}: ${Math.round(height)}m`;
-                            };
+                                if (drawType === "box") {
+                                    tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawLayout.area")}: ${Math.round(area)}m²<br>${this.$t("common:shared.modules.draw.drawLayout.width")}: ${Math.round(width)}m<br>${this.$t("common:shared.modules.draw.drawLayout.height")}: ${Math.round(height)}m`;
+                                }
+                                else {
+                                    tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawLayout.area")}: ${Math.round(area)}m²`;
+                                }
 
-                            geometry.on("change", onGeometryChange);
-                        }
+                            }
+                            if (drawType === "line") {
+                                const length = geometry.getLength();
+
+                                tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawLayout.length")}: ${Math.round(length)}m`;
+
+                            }
+                        };
+
+                        geometry.on("change", onGeometryChange);
+
                     }
                 });
                 this.currentDrawInteraction.on("drawend", (evt) => {
                     tooltipElement.style.display = "none";
                     this.$emit("drawend", evt);
 
-                    if (drawType === "circle" || drawType === "box") {
+                    if (["circle", "box", "line", "polygon"].includes(drawType)) {
                         const geometry = evt.feature.getGeometry();
 
                         if (drawType === "circle") {

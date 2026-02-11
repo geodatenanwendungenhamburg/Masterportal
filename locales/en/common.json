@@ -1613,7 +1613,8 @@
           "extrudedHeight": "Extruded Height",
           "height": "Height",
           "width": "Width",
-          "area": "Area"
+          "area": "Area",
+          "length": "Length"
         },
         "drawSettingsCircle": {
           "interactive": "Interactive",
