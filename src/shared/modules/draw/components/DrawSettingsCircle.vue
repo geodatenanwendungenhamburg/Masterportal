@@ -97,7 +97,6 @@ export default {
             />
         </div>
         <div
-            v-if="!circleOptions.interactive || selectedDrawType === 'doubleCircle'"
             class="circle-settings"
         >
             <div class="form-floating mb-3 mt-2">
@@ -106,6 +105,7 @@ export default {
                     :ref="'draw-circle-settings-' + selectedDrawType"
                     v-model="currentUnit"
                     class="form-select"
+                    :disabled="selectedDrawType === 'circle' && circleOptions.interactive"
                 >
                     <option
                         v-for="unit in units"
@@ -133,6 +133,7 @@ export default {
                         class="form-control"
                         min="0"
                         step="1"
+                        :disabled="selectedDrawType === 'circle' && circleOptions.interactive"
                         @input="updateRadiusInCircleOptions($event.target.value, radius)"
                     >
                     <label :for="'draw-circle-settings-' + radius">
