@@ -1610,7 +1610,10 @@
           "outerCircle": "Outer circle:",
           "strokeColor": "Outline color",
           "strokeWidth": "Stroke width",
-          "extrudedHeight": "Extruded Height"
+          "extrudedHeight": "Extruded Height",
+          "height": "Height",
+          "width": "Width",
+          "area": "Area"
         },
         "drawSettingsCircle": {
           "interactive": "Interactive",

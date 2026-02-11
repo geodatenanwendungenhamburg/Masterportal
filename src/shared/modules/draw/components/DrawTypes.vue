@@ -1,6 +1,6 @@
 <script>
 import drawInteraction from "@masterportal/masterportalapi/src/maps/interactions/drawInteraction.js";
-import {mapActions, mapGetters, mapState} from "vuex";
+import {mapActions, mapGetters, mapState, mapMutations} from "vuex";
 import IconButton from "../../buttons/components/IconButton.vue";
 import {nextTick} from "vue";
 import {createTooltipOverlay} from "../js/createTooltipOverlay.js";
@@ -184,6 +184,7 @@ export default {
     },
     methods: {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
+        ...mapMutations("Modules/Draw", ["setCircleOptions"]),
 
         /**
          * Start drawing initial, if a selectedDrawType is specified.
@@ -272,7 +273,7 @@ export default {
                 this.currentDrawInteraction.on("drawstart", (evt) => {
                     this.$emit("drawstart", evt);
 
-                    if (drawType === "circle" || drawType === "doubleCircle") {
+                    if (drawType === "circle" || drawType === "box") {
                         tooltipElement.style.display = "block";
                         const geometry = evt.feature.getGeometry();
 
@@ -281,9 +282,22 @@ export default {
                                 let radius = geometry.getRadius();
 
                                 radius = Math.round(radius);
+                                this.setCircleOptions({innerRadius: radius});
 
-                                tooltipElement.innerHTML = `${radius} m`;
+                                tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawSettingsCircle.radii.radius")}: ${radius}m`;
                                 this.$emit("circle-radius", radius);
+                            };
+
+                            geometry.on("change", onGeometryChange);
+                        }
+                        if (drawType === "box") {
+                            onGeometryChange = () => {
+                                const coordinates = geometry.getCoordinates()[0],
+                                    width = Math.abs(coordinates[1][0] - coordinates[0][0]),
+                                    height = Math.abs(coordinates[2][1] - coordinates[1][1]),
+                                    area = width * height;
+
+                                tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawLayout.area")}: ${Math.round(area)}m²<br>${this.$t("common:shared.modules.draw.drawLayout.width")}: ${Math.round(width)}m<br>${this.$t("common:shared.modules.draw.drawLayout.height")}: ${Math.round(height)}m`;
                             };
 
                             geometry.on("change", onGeometryChange);
@@ -294,7 +308,7 @@ export default {
                     tooltipElement.style.display = "none";
                     this.$emit("drawend", evt);
 
-                    if (drawType === "circle" || drawType === "doubleCircle") {
+                    if (drawType === "circle" || drawType === "box") {
                         const geometry = evt.feature.getGeometry();
 
                         if (drawType === "circle") {
@@ -393,18 +407,16 @@ export default {
 
 <style lang="scss">
 @import "~variables";
-@import "~mixins";
 
 div.draw-tooltip {
-    background-color: white;
-    color: black;
+    background-color: $white;;
+    color: $black;
     padding: 2px 4px;
-    border: 1px solid black;
+    border: 1px solid $black;;
     border-radius: 4px;
     font-size: 14px;
     white-space: nowrap;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    box-shadow: 0px 4px 6px $tool_box_shadow;
     pointer-events: none;
 }
 
