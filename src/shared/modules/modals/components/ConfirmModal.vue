@@ -288,7 +288,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    @import "~variables";
 
     div#modal-confirm {
         display: none;

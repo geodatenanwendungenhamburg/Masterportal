@@ -29,7 +29,7 @@ export function initiateVueI18Next (app) {
 */
 export function initLanguage (portalLanguageConfig, portalLocales) {
     const portalId = window.location.pathname.split("/")[2] || window.location.hostname.split(".")[0],
-    const rawBasePath = typeof MASTERPORTAL_BASE_PATH === "string"
+        rawBasePath = typeof MASTERPORTAL_BASE_PATH === "string"
             ? MASTERPORTAL_BASE_PATH
             : "/",
 
