@@ -57,13 +57,15 @@ export default {
     },
     mounted () {
         if (this.highlightLayerId === this.conf.id) {
-            const el = document.querySelector("#layer-selection-treenode-" + escapeId(this.highlightLayerId));
+            this.$nextTick(() => {
+                const el = document.querySelector("#layer-selection-treenode-" + escapeId(this.highlightLayerId));
 
-            if (el) {
-                this.$nextTick(() => {
-                    el.scrollIntoView({block: "nearest", behavior: "smooth"});
-                });
-            }
+                if (!el || this.hasAutoScrolled) {
+                    return;
+                }
+                this.hasAutoScrolled = true;
+                setTimeout(() => el.scrollIntoView({block: "nearest", behavior: "smooth"}), 0);
+            });
         }
     },
     methods: {
