@@ -64,7 +64,7 @@ export default {
                 icon: "bi-border-width"
             },
             fillTransparency: {
-                drawTypes: ["box", "circle", "doubleCircle", "point", "polygon", "rectangle", "writeText"],
+                drawTypes: ["box", "circle", "doubleCircle", "point", "polygon", "rectangle", "writeText", "pen", "line"],
                 icon: "bi-droplet-half"
             }
         };
