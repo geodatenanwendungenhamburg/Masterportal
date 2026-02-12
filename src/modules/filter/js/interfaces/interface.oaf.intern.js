@@ -44,7 +44,7 @@ export default class InterfaceOafIntern {
      * @returns {void}
      */
     getMinMax (service, attrName, onsuccess, onerror, minOnly, maxOnly, isDate, filterQuestion) {
-        return this.interfaceOafExtern.getMinMax(service, attrName, onsuccess, onerror, minOnly, maxOnly, isDate, filterQuestion);
+        return this.interfaceOafExtern.getMinMax(service, attrName, onsuccess, onerror, minOnly, maxOnly, filterQuestion, isDate);
     }
 
     /**

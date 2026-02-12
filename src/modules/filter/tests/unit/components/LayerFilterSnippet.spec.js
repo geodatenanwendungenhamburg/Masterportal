@@ -49,7 +49,8 @@ describe("src/modules/filter/components/LayerFilterSnippet.vue", () => {
                                 triggerAllTagsDeleted: sinon.stub(),
                                 totalResults: sinon.stub(),
                                 rulesOfFilters: () => [[{value: "rule2"}]],
-                                onValueDeselect: sinon.stub()
+                                onValueDeselect: sinon.stub(),
+                                searchInMapExtentState: () => []
                             }
                         }
                     }
@@ -477,9 +478,9 @@ describe("src/modules/filter/components/LayerFilterSnippet.vue", () => {
 
         describe("setSearchInMapExtent", () => {
             it("should set the internal searchInMapExtent variable to the given value", () => {
-                expect(wrapper.vm.searchInMapExtent).to.be.false;
+                expect(wrapper.vm.searchInMapExtentState.length).to.equal(0);
                 wrapper.vm.setSearchInMapExtent(true);
-                expect(wrapper.vm.searchInMapExtent).to.be.true;
+                expect(wrapper.vm.getSearchInMapExtent()).to.be.true;
             });
         });
 

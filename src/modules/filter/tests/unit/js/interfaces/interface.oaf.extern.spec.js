@@ -202,7 +202,7 @@ describe("src/modules/filter/interfaces/utils/interface.oaf.extern.js", () => {
     });
 
     describe("filter", () => {
-        let filterQuestion, onsuccess, onerror, getOAFStub, readAllOAFToGeoJSONStub;
+        let filterQuestion, onsuccess, onerror, getOAFFeatureStream, readAllOAFToGeoJSONStub;
 
         beforeEach(() => {
             filterQuestion = {
@@ -223,17 +223,17 @@ describe("src/modules/filter/interfaces/utils/interface.oaf.extern.js", () => {
             };
             onsuccess = sinon.spy();
             onerror = sinon.spy();
-            getOAFStub = sinon.stub(getOAFFeature, "getOAFFeatureGet");
+            getOAFFeatureStream = sinon.stub(getOAFFeature, "getOAFFeatureStream");
             readAllOAFToGeoJSONStub = sinon.stub(getOAFFeature, "readAllOAFToGeoJSON").returns([{id: 1}, {id: 2}]);
         });
 
         afterEach(() => {
-            getOAFStub.restore();
+            getOAFFeatureStream.restore();
             readAllOAFToGeoJSONStub.restore();
         });
 
         it("should call onsuccess with items if features are returned", () => {
-            getOAFStub.resolves([{feature: 1}, {feature: 2}]);
+            getOAFFeatureStream.resolves([{feature: 1}, {feature: 2}]);
 
             interfaceOafExtern.filter(filterQuestion, successResult => {
                 if (successResult.paging.page === 100) {
@@ -252,7 +252,7 @@ describe("src/modules/filter/interfaces/utils/interface.oaf.extern.js", () => {
         });
 
         it.skip("should call onerror if getOAFFeatureGet rejects", () => {
-            getOAFStub.rejects("Fehler");
+            getOAFFeatureStream.rejects("Fehler");
             interfaceOafExtern.filter(filterQuestion, onsuccess, error => {
                 expect(error).to.equal("Fehler");
             });
@@ -261,10 +261,10 @@ describe("src/modules/filter/interfaces/utils/interface.oaf.extern.js", () => {
         it("should use bbox if searchInMapExtent is true", () => {
             interfaceOafExtern = new InterfaceOafExtern({getCurrentExtent: () => [1, 2, 3, 4]});
             filterQuestion.commands.searchInMapExtent = true;
-            getOAFStub.resolves([{feature: 1}]);
+            getOAFFeatureStream.resolves([{feature: 1}]);
             interfaceOafExtern.filter(filterQuestion, onsuccess, onerror);
 
-            expect(getOAFStub.firstCall.args[2]).to.have.property("bbox", "1,2,3,4");
+            expect(getOAFFeatureStream.firstCall.args[1]).to.have.property("bbox", "1,2,3,4");
         });
     });
 });

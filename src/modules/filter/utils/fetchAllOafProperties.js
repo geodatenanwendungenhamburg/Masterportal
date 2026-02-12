@@ -14,7 +14,7 @@ import axios from "axios";
  * @param {Function|Boolean} [axiosMock=false] false to use axios, a function that is called with the axios configuration if mock is needed
  * @returns {void}
  */
-function fetchAllOafProperties (url, collection, limit, onsuccess, onerror, bbox, bboxCrs, signal, skipGeometry = false, propertyNames = undefined, axiosMock = false) {
+function fetchAllOafProperties ({url, collection, limit}, {onsuccess, onerror}, {bbox, bboxCrs}, signal, skipGeometry = false, propertyNames = undefined, axiosMock = false) {
     if (typeof url !== "string") {
         if (typeof onerror === "function") {
             onerror(new Error("fetchAllOafProperties: the url parameter has to be a string"));
@@ -51,6 +51,7 @@ function fetchAllOafProperties (url, collection, limit, onsuccess, onerror, bbox
  * @param {String} url the url to the oaf service
  * @param {Function} onsuccess a function(Object[]) to call on success
  * @param {Function} onerror a function(Error) to call on error
+ * @param {AbortSignal} signal the abort signal reference
  * @param {Function} axiosObject an object to use for the axios request
  * @returns {void}
  */
@@ -96,7 +97,7 @@ function fetchAllOafPropertiesRecursionHelper (result, url, onsuccess, onerror, 
  * @param {Boolean} nested If set to true, for each attrName an nested object is created. Only works if attrName is an array
  * @returns {Object|Boolean} an object with the values as keys ({value1: true, ...}) or false if an error occured
  */
-function getUniqueValuesFromFetchedFeatures (allFetchedProperties, attrName, nested, {rules, filterId, commands}) {
+function getUniqueValuesFromFetchedFeatures (allFetchedProperties, attrName, nested, {rules, filterId, commands} = {}) {
     if (!Array.isArray(allFetchedProperties)) {
         return false;
     }

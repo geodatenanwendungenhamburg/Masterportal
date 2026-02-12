@@ -180,7 +180,7 @@ describe("src/modules/filter/utils/fetchAllOafProperties.js", () => {
 
             await fetchAllOafPropertiesRecursionHelper("result", "url", "onsuccess", error => {
                 lastError = error;
-            }, config => {
+            }, undefined, config => {
                 lastConfig = config;
                 return new Promise(resolve => {
                     resolve();
@@ -193,7 +193,8 @@ describe("src/modules/filter/utils/fetchAllOafProperties.js", () => {
                 url: "url",
                 headers: {
                     accept: "application/geo+json"
-                }
+                },
+                signal: undefined
             });
         });
     });

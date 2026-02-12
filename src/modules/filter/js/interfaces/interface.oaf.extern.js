@@ -168,9 +168,10 @@ export default class InterfaceOafExtern {
      * @param {Function} onerror a function(errorMsg)
      * @param {Boolean} [minOnly=false] if only min is of interest
      * @param {Boolean} [maxOnly=false] if only max is of interest
+     * @param {Object} [filterQuestion={}] the filterQuestion to receive additional information like searchInMapExtent and srsName for fetching all properties if needed
      * @returns {void}
      */
-    async getMinMax (service, attrName, onsuccess, onerror, minOnly = false, maxOnly = false, isDate = false, filterQuestion = {}) {
+    async getMinMax (service, attrName, onsuccess, onerror, minOnly = false, maxOnly = false, filterQuestion = {}) {
         if (Array.isArray(this.allFetchedProperties)) {
             if (typeof onsuccess === "function") {
                 onsuccess(getMinMaxFromFetchedFeatures(this.allFetchedProperties, attrName, minOnly, maxOnly));
@@ -195,7 +196,7 @@ export default class InterfaceOafExtern {
             this.axiosControllers[filterQuestion.filterId + ".allProperties"] = controller;
             this.allFetchedProperties = true;
 
-            fetchAllOafProperties(service.url, service.collection, service.limit, allProperties => {
+            fetchAllOafProperties({url: service.url, collection: service.collection, limit: service.limit}, allProperties => {
                 this.allFetchedProperties = allProperties;
                 while (this.waitingListForFeatures.length) {
                     this.waitingListForFeatures.shift()();
@@ -252,7 +253,7 @@ export default class InterfaceOafExtern {
 
             this.axiosControllers[filterQuestion.filterId + ".allProperties"] = controller;
             this.allFetchedProperties = true;
-            fetchAllOafProperties(service.url, service.collection, service.limit, allProperties => {
+            fetchAllOafProperties({url: service.url, collection: service.collection, limit: service.limit}, allProperties => {
                 this.allFetchedProperties = allProperties;
                 while (this.waitingListForFeatures.length) {
                     this.waitingListForFeatures.shift()();
