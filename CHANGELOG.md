@@ -19,6 +19,9 @@
 - WMS-Time:
     - The time slider for WMS time services can now be configured as a dual-range slider with the `dualRangeSlider` attribute. In this case, the `default` attribute can be configured as an array with start and end values.
     - The slider from the shared components is now being used.
+- The following packages have been updated:
+  - devDependencies:
+    - @masterportal/masterportalapi: 2.56.0 to 2.57.0
 
 ### Deprecated
 
