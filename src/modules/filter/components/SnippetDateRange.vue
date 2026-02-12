@@ -793,9 +793,9 @@ export default {
             v-if="display === 'all' || display === 'slider'"
             class="sliderWrapper"
         >
-            <div :class="['track', outOfZoom ? 'disabledClass' : '']">
+            <div :class="['track', disabled || outOfZoom ? 'disabledClass' : '']">
                 <div
-                    :class="['measure', outOfZoom ? 'disabledClass' : '']"
+                    :class="['measure', disabled || outOfZoom ? 'disabledClass' : '']"
                     :style="{ left: getMeasureLeft(), width: getMeasureWidth() }"
                 />
             </div>
@@ -882,6 +882,9 @@ export default {
     .snippetDateRangeContainer {
         height: auto;
 
+        .disabledClass {
+            cursor: wait;
+        }
         .titleWrapper {
             display: flex;
             position: relative;
@@ -904,6 +907,7 @@ export default {
                 transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
                 &.disabledClass {
                     color: #9B9A9A;
+                    background-color: $light_grey;
                 }
             }
             label {

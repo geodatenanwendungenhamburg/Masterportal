@@ -532,7 +532,7 @@ export default {
          * @returns {void}
          */
         registerMapMoveListeners () {
-            // this.registerListener({type: "loadstart", listener: this.executeListeners.bind(this), keyForBoundFunctions: this.executeListeners.toString() + "loadstart"});
+            this.registerListener({type: "loadstart", listener: this.executeListeners.bind(this), keyForBoundFunctions: this.executeListeners.toString() + "loadstart"});
             this.registerListener({type: "loadend", listener: this.executeListeners.bind(this), keyForBoundFunctions: this.executeListeners.toString() + "loadend"});
             this.registerListener({type: "moveend", listener: this.executeListeners.bind(this), keyForBoundFunctions: this.executeListeners.toString() + "moveend"});
         },
