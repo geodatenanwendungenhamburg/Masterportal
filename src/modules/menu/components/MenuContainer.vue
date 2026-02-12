@@ -136,9 +136,8 @@ export default {
         },
         /**
          * Keeps track of current menu sizes when user resizes via ResizeHandle.
-         * @param {object} eventData emitted Data from ResizeHandle Event
          */
-        onResize (eventData) {
+        onResize () {
             if (this.uiStyle === "DEFAULT") {
                 const menuElement = document.getElementById(`mp-menu-${this.side}`);
 
@@ -233,7 +232,7 @@ export default {
             :max-width="0.95"
             :min-height="1"
             :side="side"
-            @resizing="eventData => onResize(eventData)"
+            @resizing="onResize"
         >
             &#8942;
         </ResizeHandle>
