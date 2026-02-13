@@ -352,28 +352,52 @@ export default class InterfaceOafExtern {
             return u.toString();
         },
         controller.signal,
-        onerror);
+        onerror,
+        true);
 
+        try {
+            for await (const evt of stream) {
+                const event = isObject(evt) && typeof evt.type === "string"
+                    ? evt
+                    : {type: "feature", feature: evt};
 
-        for await (const evt of stream) {
-            if (controller.signal.aborted) {
-                return;
+                if (event.type === "progress") {
+                    onsuccess({
+                        service: filterQuestion.service,
+                        filterId: filterQuestion.filterId,
+                        snippetId: filterQuestion.snippetId,
+                        paging: {
+                            page: event.loaded,
+                            total: event.total
+                        },
+                        items
+                    });
+                    items = [];
+                }
+                else {
+                    items.push(event.feature);
+                }
             }
-            if (evt.type === "progress") {
+            if (items.length > 0) {
                 onsuccess({
                     service: filterQuestion.service,
                     filterId: filterQuestion.filterId,
                     snippetId: filterQuestion.snippetId,
                     paging: {
-                        page: evt.loaded,
-                        total: evt.total
+                        loaded: 100,
+                        total: 100
                     },
                     items
                 });
                 items = [];
             }
-            else {
-                items.push(evt.feature);
+        }
+        catch (e) {
+            if (controller.signal.aborted || e?.name === "AbortError") {
+                return;
+            }
+            if (typeof onerror === "function") {
+                onerror(e);
             }
         }
     }

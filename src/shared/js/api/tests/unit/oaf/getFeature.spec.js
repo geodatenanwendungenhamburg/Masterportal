@@ -245,6 +245,173 @@ describe("src/shared/js/api/oaf", () => {
 
             sinon.restore();
         });
+        it("should pass only defined/non-empty searchParams as axios params", async () => {
+            const axiosGetStub = sinon.stub(axios, "get").resolves({
+                    data: {features: []}
+                }),
+                searchParams = {
+                    a: 1,
+                    b: "x",
+                    c: undefined,
+                    d: null,
+                    e: "",
+                    f: 0,
+                    g: false
+                },
+                stream = getOAFFeature.getOAFFeatureStream(
+                    "http://test",
+                    searchParams,
+                    undefined,
+                    undefined,
+                    () => {
+                        return {};
+                    }
+                ),
+                reader = stream.getReader();
+            let result;
+
+            do {
+                result = await reader.read();
+            } while (!result.done);
+
+            expect(axiosGetStub.calledOnce).to.be.true;
+            const [, config] = axiosGetStub.firstCall.args;
+
+            expect(config.params).to.deep.equal({a: 1, b: "x", f: 0, g: false});
+            sinon.restore();
+        });
+        it("should call axios.get with (url, signal) when there are no params", async () => {
+            const signal = {foo: "bar"},
+                axiosGetStub = sinon.stub(axios, "get").resolves({
+                    data: {features: []}
+                }),
+                stream = getOAFFeature.getOAFFeatureStream(
+                    "http://test",
+                    {}, // no params
+                    undefined,
+                    signal,
+                    () => {
+                        return {};
+                    }
+                ),
+                reader = stream.getReader();
+            let result;
+
+            do {
+                result = await reader.read();
+            } while (!result.done);
+
+            expect(axiosGetStub.calledOnce).to.be.true;
+            expect(axiosGetStub.firstCall.args[0]).to.equal("http://test");
+            expect(axiosGetStub.firstCall.args[1]).to.equal(signal);
+
+            sinon.restore();
+        });
+        it("should emit progress events when getProgress=true (and include total from numberMatched)", async () => {
+            sinon.stub(axios, "get").resolves({
+                data: {
+                    numberMatched: 2,
+                    features: [
+                        {type: "Feature", geometry: null, properties: {id: 1}},
+                        {type: "Feature", geometry: null, properties: {id: 2}}
+                    ]
+                }
+            });
+
+            const stream = getOAFFeature.getOAFFeatureStream(
+                    "http://test",
+                    {},
+                    undefined,
+                    undefined,
+                    () => {
+                        return {};
+                    },
+                    true
+                ),
+                reader = stream.getReader(),
+                events = [];
+            let done, value;
+
+            do {
+                ({done, value} = await reader.read());
+                if (value) {
+                    events.push(value);
+                }
+            } while (!done);
+
+            expect(events).to.have.length(3);
+            expect(events[0]).to.have.property("type", "feature");
+            expect(events[0]).to.have.property("feature");
+            expect(events[0].feature).to.be.instanceOf(Feature);
+            expect(events[1]).to.have.property("type", "feature");
+            expect(events[1].feature).to.be.instanceOf(Feature);
+            expect(events[2]).to.deep.equal({type: "progress", loaded: 2, total: 2});
+
+            sinon.restore();
+        });
+        it("should keep total as null when numberMatched is not finite", async () => {
+            sinon.stub(axios, "get").resolves({
+                data: {
+                    numberMatched: "not-a-number",
+                    features: [
+                        {type: "Feature", geometry: null, properties: {id: 1}}
+                    ]
+                }
+            });
+
+            const stream = getOAFFeature.getOAFFeatureStream(
+                    "http://test",
+                    {},
+                    undefined,
+                    undefined,
+                    () => {
+                        return {};
+                    },
+                    true
+                ),
+                reader = stream.getReader(),
+                events = [];
+            let done, value;
+
+            do {
+                ({done, value} = await reader.read());
+                if (value) {
+                    events.push(value);
+                }
+            } while (!done);
+
+            expect(events).to.have.length(2);
+            expect(events[1]).to.deep.equal({type: "progress", loaded: 1, total: null});
+
+            sinon.restore();
+        });
+        it("should throw an error when axios.get rejects", async () => {
+            const err = new Error("network fail");
+            const onerror = sinon.spy();
+
+            sinon.stub(axios, "get").rejects(err);
+
+            const stream = getOAFFeature.getOAFFeatureStream(
+                "http://test",
+                {},
+                undefined,
+                undefined,
+                onerror
+            );
+
+            const reader = stream.getReader();
+            let thrown = null;
+
+            try {
+                await reader.read();
+            }
+            catch (e) {
+                thrown = e;
+            }
+            expect(thrown).to.equal(err);
+
+            sinon.restore();
+        });
     });
     describe("getUniqueValuesByScheme", () => {
         it("should return an empty object if first param is not a string", async () => {

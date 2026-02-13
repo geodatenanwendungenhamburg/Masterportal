@@ -133,10 +133,10 @@ async function oafRecursionHelper (result, url, signal) {
  * @param {Object} searchParams - OAF-specific search parameters.
  * @param {Function} normalizeNextUrl - Function to normalize next link URLs.
  * @param {AbortSignal} [signal] - Optional AbortSignal to cancel requests.
- * @param {Function} onerror - Error callback function.
+ * @param {Boolean} getProgress - Whether to enqueue progress updates with loaded and total counts.
  * @returns {ReadableStream} - A readable stream of features.
  */
-function getOAFFeatureStream (url, searchParams, normalizeNextUrl, signal, onerror) {
+function getOAFFeatureStream (url, searchParams, normalizeNextUrl, signal, getProgress = false) {
     const geoJSON = new GeoJSON();
 
     return new ReadableStream({
@@ -147,7 +147,7 @@ function getOAFFeatureStream (url, searchParams, normalizeNextUrl, signal, onerr
                 loaded = 0,
                 total = null;
 
-            Object.entries(searchParams).forEach(([key, value]) => {
+            Object.entries(searchParams || {}).forEach(([key, value]) => {
                 if (typeof value !== "undefined" && value !== null && value !== "") {
                     temp[key] = value;
                 }
@@ -167,20 +167,22 @@ function getOAFFeatureStream (url, searchParams, normalizeNextUrl, signal, onerr
                         }
                         const olFeature = geoJSON.readFeature(feature);
 
-                        controller.enqueue({type: "feature", feature: olFeature});
+                        controller.enqueue(getProgress ? {type: "feature", feature: olFeature} : olFeature);
                         loaded++;
                     }
 
-                    controller.enqueue({type: "progress", loaded, total});
-
-                    nextUrl = nextLink ? normalizeNextUrl(nextLink.href) : null;
+                    if (getProgress) {
+                        controller.enqueue({type: "progress", loaded, total});
+                    }
+                    nextUrl = nextLink ? nextLink.href : null;
+                    nextUrl = typeof normalizeNextUrl === "function" && nextUrl !== null ? normalizeNextUrl(nextUrl) : nextUrl;
                     params = {};
                 }
 
                 controller.close();
             }
             catch (err) {
-                onerror(err);
+                controller.error(err);
             }
         }
     });
