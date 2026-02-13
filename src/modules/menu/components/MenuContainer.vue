@@ -147,16 +147,20 @@ export default {
             }
         },
         /**
-         * Hides or displays layerPills and Footer depending on width of secondary Menu.
+         * Hides or displays layerPills, Footer and mainMenu depending on width of secondary Menu.
          * @param {number} menuPercentWidth the width of the secondary Menu in percent of the viewport.
          */
         hideElementsForBiggerMenu (menuPercentWidth) {
-            const hideElementBreakPoint = document.documentElement.clientWidth > 1000 ? 0.7 : 0.5,
+            const hideElementBreakPoint = document.documentElement.clientWidth > 1000 ? 0.6 : 0.5,
                 footer = document.getElementById("module-portal-footer");
 
             this.setLayerPillsHidden(menuPercentWidth >= hideElementBreakPoint);
             if (footer) {
                 footer.style.display = menuPercentWidth > hideElementBreakPoint ? "none" : "";
+            }
+
+            if (menuPercentWidth > hideElementBreakPoint && this.mainExpanded) {
+                this.toggleMenu("mainMenu");
             }
         },
         /**
@@ -313,7 +317,7 @@ export default {
 
     .mp-secondaryMenu {
        border-radius: 0;
-       right:0;
+       right: 0;
        width: unset;
        transition: width 0.3s ease;
     }
