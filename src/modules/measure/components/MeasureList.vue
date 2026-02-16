@@ -1,5 +1,6 @@
 <script>
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
+import InputText from "@shared/modules/inputs/components/InputText.vue";
 
 /**
  * Component to display a list of all measurements with actions.
@@ -8,7 +9,8 @@ import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 export default {
     name: "MeasureList",
     components: {
-        IconButton
+        IconButton,
+        InputText
     },
     props: {
         /**
@@ -173,11 +175,15 @@ export default {
             this.editingFeatureId = measurement.id;
             this.editingName = measurement.customName || this.getTypeLabel(measurement.type);
             this.$nextTick(() => {
-                const input = this.$refs[`nameInput-${measurement.id}`];
+                const inputComponent = this.$refs[`nameInput-${measurement.id}`];
 
-                if (input && input[0]) {
-                    input[0].focus();
-                    input[0].select();
+                if (inputComponent && inputComponent[0]) {
+                    inputComponent[0].focus();
+                    const nativeInput = inputComponent[0].$refs.input;
+
+                    if (nativeInput) {
+                        nativeInput.select();
+                    }
                 }
             });
         },
@@ -310,16 +316,18 @@ export default {
                             <span class="measure-item-name">{{ getDisplayName(measurement) }}</span>
                             <i class="bi-pencil-fill edit-icon" />
                         </span>
-                        <input
+                        <InputText
                             v-else
+                            :id="'nameInput-' + measurement.id"
                             :ref="'nameInput-' + measurement.id"
                             v-model="editingName"
-                            type="text"
-                            class="form-control form-control-sm measure-item-name-input"
+                            :label="$t('common:modules.measure.edit.nameLabel')"
+                            :placeholder="$t('common:modules.measure.edit.namePlaceholder')"
+                            :class-obj="['form-control-sm', 'measure-item-name-input']"
                             @keydown.enter="saveEditedName(measurement.id)"
                             @keydown.esc="cancelEditingName"
                             @blur="saveEditedName(measurement.id)"
-                        >
+                        />
                         <span class="measure-item-value">
                             {{ measurement.displayValue }}
                         </span>

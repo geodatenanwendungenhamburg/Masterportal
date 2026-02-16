@@ -725,7 +725,9 @@
         "finishModify": "Termina modifica",
         "redo": "Ripeti",
         "undo": "Annulla",
-        "renameHint": "Doppio clic per rinominare"
+        "renameHint": "Doppio clic per rinominare",
+        "nameLabel": "Nome",
+        "namePlaceholder": "Inserisci nome"
       },
       "finishWithDoubleClick": "Termina con doppio clic",
       "geometry": "Geometria",

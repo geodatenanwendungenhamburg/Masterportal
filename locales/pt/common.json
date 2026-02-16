@@ -725,7 +725,9 @@
     "finishModify": "Concluir edição",
     "redo": "Refazer",
     "undo": "Anular",
-    "renameHint": "Clique duplo para renomear"
+    "renameHint": "Clique duplo para renomear",
+    "nameLabel": "Nome",
+    "namePlaceholder": "Introduzir nome"
   },
   "finishWithDoubleClick": "Concluir com duplo clique",
   "geometry": "Geometria",

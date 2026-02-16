@@ -658,7 +658,9 @@
         "finishModify": "Bewerken voltooien",
         "redo": "Herhalen",
         "undo": "Ongedaan maken",
-        "renameHint": "Dubbelklik om te hernoemen"
+        "renameHint": "Dubbelklik om te hernoemen",
+        "nameLabel": "Naam",
+        "namePlaceholder": "Voer naam in"
       },
       "finishWithDoubleClick": "Voltooi met een dubbelklik",
       "geometry": "geometrie",

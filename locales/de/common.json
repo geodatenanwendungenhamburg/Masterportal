@@ -727,7 +727,9 @@
         "finishModify": "Bearbeiten beenden",
         "redo": "Wiederholen",
         "undo": "Rückgängig",
-        "renameHint": "Doppelklick zum Umbenennen"
+        "renameHint": "Doppelklick zum Umbenennen",
+        "nameLabel": "Name",
+        "namePlaceholder": "Namen eingeben"
       },
       "finishWithDoubleClick": "Abschließen mit Doppelklick",
       "geometry": "Geometrie",

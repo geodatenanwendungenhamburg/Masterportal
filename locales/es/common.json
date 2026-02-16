@@ -725,7 +725,9 @@
         "finishModify": "Finalizar edición",
         "redo": "Rehacer",
         "undo": "Deshacer",
-        "renameHint": "Doble clic para renombrar"
+        "renameHint": "Doble clic para renombrar",
+        "nameLabel": "Nombre",
+        "namePlaceholder": "Introducir nombre"
       },
       "finishWithDoubleClick": "Finalizar con doble clic",
       "geometry": "Geometría",
