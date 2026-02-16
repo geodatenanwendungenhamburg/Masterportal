@@ -724,7 +724,8 @@
         "modify": "Modifica misurazione",
         "finishModify": "Termina modifica",
         "redo": "Ripeti",
-        "undo": "Annulla"
+        "undo": "Annulla",
+        "renameHint": "Doppio clic per rinominare"
       },
       "finishWithDoubleClick": "Termina con doppio clic",
       "geometry": "Geometria",

@@ -724,7 +724,8 @@
         "modify": "Maten bewarken",
         "finishModify": "Bewarken beenden",
         "redo": "Wedderhalen",
-        "undo": "Torüchnehmen"
+        "undo": "Torüchnehmen",
+        "renameHint": "Dubbelt klicken to ümbenamen"
       },
       "finishWithDoubleClick": "Afsluten mit Dubbelklick",
       "geometry": "Geometrie",

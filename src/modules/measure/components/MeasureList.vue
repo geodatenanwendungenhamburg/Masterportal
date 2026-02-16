@@ -280,7 +280,10 @@ export default {
             <h6 class="measure-list-title mb-2">
                 {{ $t("common:modules.measure.measurementList") }}
             </h6>
-            <div class="measure-list">
+            <div
+                class="measure-list"
+                role="list"
+            >
                 <div
                     v-for="measurement in measurementList"
                     :key="measurement.id"
@@ -290,8 +293,8 @@ export default {
                     tabindex="0"
                     @mouseenter="highlightFeature(measurement.id)"
                     @mouseleave="unhighlightFeature(measurement.id)"
-                    @focusin="highlightFeature(measurement.id)"
-                    @focusout="unhighlightFeature(measurement.id)"
+                    @focus="highlightFeature(measurement.id)"
+                    @blur="unhighlightFeature(measurement.id)"
                 >
                     <div class="measure-item-info">
                         <span
@@ -299,11 +302,13 @@ export default {
                             class="measure-item-type"
                             role="button"
                             tabindex="0"
+                            :title="$t('common:modules.measure.edit.renameHint')"
                             @dblclick="startEditingName(measurement)"
                             @keydown.enter="startEditingName(measurement)"
                         >
                             <i :class="getTypeIcon(measurement.type)" />
-                            {{ getDisplayName(measurement) }}
+                            <span class="measure-item-name">{{ getDisplayName(measurement) }}</span>
+                            <i class="bi-pencil-fill edit-icon" />
                         </span>
                         <input
                             v-else
@@ -378,6 +383,7 @@ export default {
         border-radius: 6px;
         background-color: lighten(#001B3D, 70%);
         transition: all 0.2s;
+        cursor: default;
 
         .active-measurement-info {
             display: flex;
@@ -436,6 +442,7 @@ export default {
         padding: 0.5rem;
         border-bottom: 1px solid $light_grey;
         transition: background-color 0.2s;
+        cursor: default;
 
         &:last-child {
             border-bottom: none;
@@ -461,10 +468,39 @@ export default {
                 display: flex;
                 align-items: center;
                 gap: 0.25rem;
-                cursor: text;
+                cursor: pointer;
+                padding: 0.25rem 0.375rem;
+                border-radius: 4px;
+                transition: all 0.2s ease;
+                border: 1px solid transparent;
 
                 i {
                     font-size: 0.9rem;
+                }
+
+                .measure-item-name {
+                    flex: 1;
+                }
+
+                .edit-icon {
+                    font-size: 0.75rem;
+                    opacity: 0;
+                    transition: opacity 0.2s ease;
+                    color: #666;
+                }
+
+                &:hover {
+                    background-color: lighten($light_blue, 5%);
+                    border-color: darken($light_blue, 10%);
+
+                    .edit-icon {
+                        opacity: 1;
+                    }
+                }
+
+                &:focus {
+                    outline: 2px solid #001B3D;
+                    outline-offset: 2px;
                 }
             }
 
