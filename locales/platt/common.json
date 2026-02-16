@@ -725,7 +725,9 @@
         "finishModify": "Bewarken beenden",
         "redo": "Wedderhalen",
         "undo": "Torüchnehmen",
-        "renameHint": "Dubbelt klicken to ümbenamen"
+        "renameHint": "Dubbelt klicken to ümbenamen",
+        "nameLabel": "Naam",
+        "namePlaceholder": "Naam ingeven"
       },
       "finishWithDoubleClick": "Afsluten mit Dubbelklick",
       "geometry": "Geometrie",

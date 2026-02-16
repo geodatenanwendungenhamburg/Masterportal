@@ -725,7 +725,9 @@
         "finishModify": "Düzenlemeyi bitir",
         "redo": "Yinele",
         "undo": "Geri al",
-        "renameHint": "Yeniden adlandırmak için çift tıklayın"
+        "renameHint": "Yeniden adlandırmak için çift tıklayın",
+        "nameLabel": "Ad",
+        "namePlaceholder": "Ad girin"
       },
       "finishWithDoubleClick": "Çift tıklama ile bitir",
       "geometry": "Geometri",

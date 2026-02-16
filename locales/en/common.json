@@ -726,7 +726,9 @@
         "finishModify": "Finish editing",
         "redo": "Redo",
         "undo": "Undo",
-        "renameHint": "Double-click to rename"
+        "renameHint": "Double-click to rename",
+        "nameLabel": "Name",
+        "namePlaceholder": "Enter name"
       },
       "finishWithDoubleClick": "Double click to complete",
       "geometry": "Geometry",
