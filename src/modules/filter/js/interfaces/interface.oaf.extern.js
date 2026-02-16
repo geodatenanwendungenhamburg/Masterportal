@@ -203,8 +203,10 @@ export default class InterfaceOafExtern {
                 }
             },
             onerror,
-            filterQuestion.commands.searchInMapExtent ? this.getCurrentExtent?.()?.join(",") : undefined,
-            epsgCodeToURI(filterQuestion.service.srsName),
+            {
+                bbox: filterQuestion.commands.searchInMapExtent ? this.getCurrentExtent?.()?.join(",") : undefined,
+                bboxCrs: epsgCodeToURI(filterQuestion.service.srsName)
+            },
             controller.signal,
             true);
         }
@@ -260,8 +262,10 @@ export default class InterfaceOafExtern {
                 }
             },
             onerror,
-            filterQuestion.commands.searchInMapExtent ? this.getCurrentExtent?.()?.join(",") : undefined,
-            epsgCodeToURI(filterQuestion.service.srsName),
+            {
+                bbox: filterQuestion.commands.searchInMapExtent ? this.getCurrentExtent?.()?.join(",") : undefined,
+                bboxCrs: epsgCodeToURI(filterQuestion.service.srsName)
+            },
             controller.signal,
             true);
         }

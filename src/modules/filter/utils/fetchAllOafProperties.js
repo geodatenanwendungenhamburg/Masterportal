@@ -14,7 +14,7 @@ import axios from "axios";
  * @param {Function|Boolean} [axiosMock=false] false to use axios, a function that is called with the axios configuration if mock is needed
  * @returns {void}
  */
-function fetchAllOafProperties ({url, collection, limit}, {onsuccess, onerror}, {bbox, bboxCrs}, signal, skipGeometry = false, propertyNames = undefined, axiosMock = false) {
+function fetchAllOafProperties ({url, collection, limit}, onsuccess, onerror, {bbox, bboxCrs}, signal, skipGeometry = false, propertyNames = undefined, axiosMock = false) {
     if (typeof url !== "string") {
         if (typeof onerror === "function") {
             onerror(new Error("fetchAllOafProperties: the url parameter has to be a string"));
