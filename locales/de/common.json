@@ -736,6 +736,7 @@
       "measure": "Einheit",
       "measureDistance": "Strecke der Messlinie bzw. Größe der Messfläche",
       "measurementList": "Messungen",
+      "activeMeasurement": "Aktive Messung",
       "name": "Strecke / Fläche messen",
       "polygon": "Fläche",
       "resolution": "Auflösung der Karte",

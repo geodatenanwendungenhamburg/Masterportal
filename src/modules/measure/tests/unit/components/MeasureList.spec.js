@@ -336,4 +336,137 @@ describe("src/modules/measure/components/MeasureList.vue", () => {
         expect(wrapper.vm.getModifyButtonText("1")).to.equal("common:modules.measure.edit.finishModify");
         expect(wrapper.vm.getModifyButtonText("2")).to.equal("common:modules.measure.edit.modify");
     });
+
+    describe("Inline rename functionality", () => {
+        it("starts editing name on startEditingName call", async () => {
+            const measurementWithCustomName = {
+                id: "3",
+                type: "LineString",
+                feature: {},
+                displayValue: "200 m",
+                customName: "My Route",
+                canUndo: false,
+                canRedo: false
+            };
+
+            wrapper = shallowMount(MeasureList, {
+                props: {
+                    measurementList: [measurementWithCustomName],
+                    selectedFeatureId: null
+                },
+                global: {
+                    mocks: {
+                        $t: (key) => key
+                    }
+                }
+            });
+
+            wrapper.vm.startEditingName(measurementWithCustomName);
+            await wrapper.vm.$nextTick();
+
+            expect(wrapper.vm.editingFeatureId).to.equal("3");
+            expect(wrapper.vm.editingName).to.equal("My Route");
+        });
+
+        it("emits rename-measurement event on saveEditedName", async () => {
+            wrapper = shallowMount(MeasureList, {
+                props: {
+                    measurementList: mockMeasurements,
+                    selectedFeatureId: null
+                },
+                global: {
+                    mocks: {
+                        $t: (key) => key
+                    }
+                }
+            });
+
+            wrapper.vm.editingFeatureId = "1";
+            wrapper.vm.editingName = "New Name";
+
+            wrapper.vm.saveEditedName("1");
+
+            expect(wrapper.emitted("rename-measurement")).to.exist;
+            expect(wrapper.emitted("rename-measurement")[0]).to.deep.equal([{featureId: "1", name: "New Name"}]);
+        });
+
+        it("does not emit rename-measurement if name is empty", () => {
+            wrapper = shallowMount(MeasureList, {
+                props: {
+                    measurementList: mockMeasurements,
+                    selectedFeatureId: null
+                },
+                global: {
+                    mocks: {
+                        $t: (key) => key
+                    }
+                }
+            });
+
+            wrapper.vm.editingFeatureId = "1";
+            wrapper.vm.editingName = "   ";
+
+            wrapper.vm.saveEditedName("1");
+
+            expect(wrapper.emitted("rename-measurement")).to.be.undefined;
+        });
+
+        it("cancels editing on cancelEditingName", () => {
+            wrapper = shallowMount(MeasureList, {
+                props: {
+                    measurementList: mockMeasurements,
+                    selectedFeatureId: null
+                },
+                global: {
+                    mocks: {
+                        $t: (key) => key
+                    }
+                }
+            });
+
+            wrapper.vm.editingFeatureId = "1";
+            wrapper.vm.editingName = "Some Name";
+
+            wrapper.vm.cancelEditingName();
+
+            expect(wrapper.vm.editingFeatureId).to.be.null;
+            expect(wrapper.vm.editingName).to.equal("");
+        });
+
+        it("getDisplayName returns custom name if available, else type label", () => {
+            const measurementWithCustom = {
+                id: "4",
+                type: "Polygon",
+                customName: "My Area"
+            };
+            const measurementWithoutCustom = {
+                id: "5",
+                type: "LineString",
+                customName: null
+            };
+
+            wrapper = shallowMount(MeasureList, {
+                props: {
+                    measurementList: [measurementWithCustom, measurementWithoutCustom],
+                    selectedFeatureId: null
+                },
+                global: {
+                    mocks: {
+                        $t: (key) => {
+                            if (key === "common:modules.measure.lineString") {
+                                return "Line";
+                            }
+                            if (key === "common:modules.measure.polygon") {
+                                return "Polygon";
+                            }
+                            return key;
+                        }
+                    }
+                }
+            });
+
+            expect(wrapper.vm.getDisplayName(measurementWithCustom)).to.equal("My Area");
+            expect(wrapper.vm.getDisplayName(measurementWithoutCustom)).to.equal("Line");
+        });
+    });
 });

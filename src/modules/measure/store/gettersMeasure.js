@@ -61,9 +61,9 @@ const simpleGetters = {
      * Returns a unified list of all measurements with metadata.
      * @param {Object} state measure store state
      * @param {Object} getters measure store getters
-     * @returns {Array<Object>} list of measurements with id, type, feature, and displayValue
+     * @returns {Array<Object>} list of measurements with id, type, feature, displayValue, and customName
      */
-    measurementList: ({lines, polygons}, getters) => {
+    measurementList: ({lines, polygons, customNames}, getters) => {
         const measurements = [];
 
         Object.keys(lines).forEach(featureId => {
@@ -71,7 +71,8 @@ const simpleGetters = {
                 id: featureId,
                 type: "LineString",
                 feature: lines[featureId],
-                displayValue: getters.lineLengths[featureId]
+                displayValue: getters.lineLengths[featureId],
+                customName: customNames[featureId] || null
             });
         });
 
@@ -80,7 +81,8 @@ const simpleGetters = {
                 id: featureId,
                 type: "Polygon",
                 feature: polygons[featureId],
-                displayValue: getters.polygonAreas[featureId]
+                displayValue: getters.polygonAreas[featureId],
+                customName: customNames[featureId] || null
             });
         });
 

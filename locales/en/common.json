@@ -735,6 +735,7 @@
       "measure": "Measure",
       "measureDistance": "Distance of the measuring line or size of the measuring surface",
       "measurementList": "Measurements",
+      "activeMeasurement": "Active Measurement",
       "name": "Measure distance / area",
       "polygon": "Polygon",
       "resolution": "Resolution of the map",

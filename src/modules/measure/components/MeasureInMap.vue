@@ -4,6 +4,7 @@ import VectorLayer from "ol/layer/Vector.js";
 import Collection from "ol/Collection.js";
 import {Modify} from "ol/interaction.js";
 import {pointerMove} from "ol/events/condition.js";
+import {getArea, getLength} from "ol/sphere.js";
 import selectInteraction from "@masterportal/masterportalapi/src/maps/interactions/selectInteraction.js";
 import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactions/modifyInteraction.js";
 import MeasureInMapTooltip from "./MeasureInMapTooltip.vue";
@@ -35,13 +36,15 @@ export default {
                 redo: "bi-arrow-right",
                 undo: "bi-arrow-left"
             },
+            currentMode: "DRAW", // DRAW, MODIFY, DELETE, IDLE
             currentSelectInteractions: [],
             currentModifyInteraction: null,
             selectedEditInteraction: null,
             currentSketch: null,
             drawingPointHistory: [],
             featureHistories: {},
-            currentlyModifyingFeatureId: null
+            currentlyModifyingFeatureId: null,
+            geometryUpdateTrigger: 0
         };
     },
     computed: {
@@ -64,24 +67,194 @@ export default {
             "measurementList"
         ]),
         ...mapGetters(["uiStyle"]),
-        ...mapGetters("Maps", ["mode"]),
+        ...mapGetters("Maps", ["mode", "projection"]),
 
         /**
-         * Enriches measurement list with per-feature undo/redo state
+         * Enriches measurement list with per-feature undo/redo state.
+         * Includes support for undo/redo during active drawing.
+         * Filters out the currently active sketch (shown separately above the list).
          * @returns {Array} Measurement list with canUndo/canRedo properties
          */
         enrichedMeasurementList () {
-            return this.measurementList.map(measurement => {
-                const featureId = measurement.id;
-                const normalizedId = this.normalizeFeatureId(featureId);
-                const history = this.featureHistories[normalizedId];
+            return this.measurementList
+                .filter(measurement => {
+                    if (!this.currentSketch) {
+                        return true;
+                    }
+                    const normalizedId = this.normalizeFeatureId(measurement.id);
+                    const sketchUid = typeof this.currentSketch.ol_uid === "string"
+                        ? parseInt(this.currentSketch.ol_uid, 10)
+                        : this.currentSketch.ol_uid;
+                    const measurementId = typeof normalizedId === "string"
+                        ? parseInt(normalizedId, 10)
+                        : normalizedId;
 
-                return {
-                    ...measurement,
-                    canUndo: history ? history.undo.length > 0 : false,
-                    canRedo: history ? history.redo.length > 0 : false
-                };
-            });
+                    return sketchUid !== measurementId;
+                })
+                .filter(measurement => {
+                    const feature = this.getFeatureById(measurement.id);
+
+                    if (!feature) {
+                        return false;
+                    }
+
+                    const geometry = feature.getGeometry();
+
+                    if (!geometry) {
+                        return false;
+                    }
+
+                    const geometryType = geometry.getType();
+
+                    if (geometryType === "LineString") {
+                        const coordinates = geometry.getCoordinates();
+
+                        if (coordinates.length < 2) {
+                            return false;
+                        }
+                    }
+                    else if (geometryType === "Polygon") {
+                        const coordinates = geometry.getCoordinates()[0];
+
+                        if (coordinates.length < 4) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                })
+                .map(measurement => {
+                    const featureId = measurement.id;
+                    const normalizedId = this.normalizeFeatureId(featureId);
+                    const history = this.featureHistories[normalizedId];
+                    const isActiveSketch = this.currentSketch && this.currentSketch.ol_uid === normalizedId;
+
+                    let canUndo = false;
+                    let canRedo = false;
+
+                    if (isActiveSketch) {
+                        const geometry = this.currentSketch.getGeometry();
+                        const geometryType = geometry.getType();
+                        const coords = geometryType === "LineString" ?
+                            geometry.getCoordinates() :
+                            geometry.getCoordinates()[0];
+
+                        canUndo = coords.length > 0;
+                        canRedo = this.drawingPointHistory.length > 0;
+                    }
+                    else if (history) {
+                        const feature = this.getFeatureById(featureId);
+
+                        canUndo = history.undo.length > 0;
+                        canRedo = history.redo.length > 0;
+
+                        if (!canUndo && feature) {
+                            const geometry = feature.getGeometry();
+                            const geometryType = geometry.getType();
+
+                            if (geometryType === "LineString") {
+                                const coordinates = geometry.getCoordinates();
+
+                                canUndo = coordinates.length > 1;
+                            }
+                            else if (geometryType === "Polygon") {
+                                const coordinates = geometry.getCoordinates()[0];
+
+                                canUndo = coordinates.length > 3;
+                            }
+                        }
+                    }
+
+                    return {
+                        ...measurement,
+                        canUndo,
+                        canRedo
+                    };
+                });
+        },
+
+        /**
+         * Can undo in current sketch (at least 1 point drawn)
+         * @returns {Boolean} True if undo is possible
+         */
+        canUndoCurrentSketch () {
+            if (!this.currentSketch) {
+                return false;
+            }
+            const geometry = this.currentSketch.getGeometry();
+
+            if (!geometry) {
+                return false;
+            }
+            const geometryType = geometry.getType();
+            const coords = geometryType === "LineString" ?
+                geometry.getCoordinates() :
+                geometry.getCoordinates()[0];
+
+            return coords.length > 0;
+        },
+
+        /**
+         * Can redo in current sketch (history exists)
+         * @returns {Boolean} True if redo is possible
+         */
+        canRedoCurrentSketch () {
+            return this.currentSketch && this.drawingPointHistory.length > 0;
+        },
+
+        /**
+         * Info about the active measurement being drawn
+         * @returns {Object|null} Active measurement info or null
+         */
+        activeMeasurementInfo () {
+            this.geometryUpdateTrigger;
+
+            if (!this.currentSketch) {
+                return null;
+            }
+
+            const geometry = this.currentSketch.getGeometry();
+
+            if (!geometry) {
+                return null;
+            }
+
+            const type = geometry.getType();
+            let displayValue = "";
+
+            if (type === "LineString") {
+                const length = getLength(geometry, {projection: this.projection.getCode()});
+                const unit = this.lineStringUnits[this.selectedLineStringUnit];
+
+                if (unit === "m") {
+                    displayValue = `${length.toFixed(1)} m`;
+                }
+                else if (unit === "km") {
+                    displayValue = `${(length / 1000).toFixed(1)} km`;
+                }
+                else if (unit === "nm") {
+                    displayValue = `${(length / 1852).toFixed(1)} nm`;
+                }
+            }
+            else if (type === "Polygon") {
+                const area = getArea(geometry, {projection: this.projection.getCode()});
+                const unit = this.polygonUnits[this.selectedPolygonUnit];
+
+                if (unit === "m²") {
+                    displayValue = `${area.toFixed(1)} m²`;
+                }
+                else if (unit === "ha") {
+                    displayValue = `${(area / 10000).toFixed(2)} ha`;
+                }
+                else if (unit === "km²") {
+                    displayValue = `${(area / 1000000).toFixed(2)} km²`;
+                }
+            }
+
+            return {
+                type,
+                displayValue
+            };
         }
     },
     watch: {
@@ -90,17 +263,16 @@ export default {
                 return;
             }
 
-            this.removeIncompleteDrawing();
-            this.removeDrawInteraction();
-            this.createDrawInteraction();
+            this.setMode("DRAW");
             this.setFocusToFirstControl();
         },
         /**
          * Recreates draw interaction on geometry type update.
+         * Cleans up any active edit modes first to prevent interaction leakage.
          * @returns {void}
          */
         selectedGeometry () {
-            this.createDrawInteraction();
+            this.setMode("DRAW");
         },
         /**
          * Ensures all measurements have a history entry
@@ -148,12 +320,22 @@ export default {
                 newInteraction.on("drawstart", (evt) => {
                     this.currentSketch = evt.feature;
                     this.drawingPointHistory = [];
+                    this.geometryUpdateTrigger++;
+
+                    const geometry = evt.feature.getGeometry();
+
+                    if (geometry) {
+                        geometry.on("change", () => {
+                            this.geometryUpdateTrigger++;
+                        });
+                    }
                 });
 
                 newInteraction.on("drawend", (evt) => {
                     const featureId = evt.feature.ol_uid;
                     const geometry = evt.feature.getGeometry();
                     const geometryType = geometry.getType();
+
                     const history = this.getFeatureHistory(featureId);
 
                     let coordinates;
@@ -222,6 +404,75 @@ export default {
          */
         normalizeFeatureId (id) {
             return typeof id === "string" ? parseInt(id, 10) : id;
+        },
+
+        /**
+         * Deep clones coordinate arrays safely
+         * @param {Array} coords - Coordinate array to clone
+         * @returns {Array} Deep cloned coordinate array
+         */
+        deepCloneCoords (coords) {
+            if (!coords || !Array.isArray(coords)) {
+                return coords;
+            }
+            if (typeof structuredClone === "function") {
+                return structuredClone(coords);
+            }
+            return JSON.parse(JSON.stringify(coords));
+        },
+
+        /**
+         * Central mode state machine - cleanly switches between interaction modes
+         * @param {String} mode - One of: "DRAW", "MODIFY", "DELETE", "IDLE"
+         * @param {Number} [targetFeatureId] - For MODIFY mode: specific feature to edit
+         * @returns {void}
+         */
+        setMode (mode, targetFeatureId = null) {
+            this.cleanupAllInteractions();
+
+            this.currentMode = mode;
+
+            if (mode === "DRAW") {
+                this.selectedEditInteraction = "";
+                this.createDrawInteraction();
+            }
+            else if (mode === "MODIFY") {
+                this.selectedEditInteraction = "modify";
+                this.currentlyModifyingFeatureId = targetFeatureId;
+                this.setupModifyInteraction(targetFeatureId);
+            }
+            else if (mode === "DELETE") {
+                this.selectedEditInteraction = "delete";
+                this.setupDeleteInteraction();
+            }
+            else if (mode === "IDLE") {
+                this.selectedEditInteraction = "";
+            }
+        },
+
+        /**
+         * Cleans up all active interactions (Draw, Modify, Select)
+         * @returns {void}
+         */
+        cleanupAllInteractions () {
+            if (this.interaction) {
+                this.removeDrawInteraction();
+            }
+
+            if (this.currentModifyInteraction) {
+                this.removeInteraction(this.currentModifyInteraction);
+                this.currentModifyInteraction = null;
+            }
+
+            if (this.currentSelectInteractions && this.currentSelectInteractions.length > 0) {
+                this.currentSelectInteractions.forEach(interaction => {
+                    this.removeInteraction(interaction);
+                });
+                this.currentSelectInteractions = [];
+            }
+
+            this.selectedEditInteraction = null;
+            this.currentlyModifyingFeatureId = null;
         },
 
         /**
@@ -389,18 +640,11 @@ export default {
         },
 
         /**
-         * Regulate the measure delete interaction.
-         * The previous select interactions are removed from the map and newly created select interactions are added.
-         * Clears undo/redo stacks when user deletes individual features.
+         * Sets up delete interaction for deleting measurements via click.
          * After deleting, returns to draw mode.
          * @returns {void}
          */
-        regulateDelete () {
-            this.selectedEditInteraction = "delete";
-
-            this.removeIncompleteDrawing();
-            this.removeDrawInteraction();
-
+        setupDeleteInteraction () {
             this.currentSelectInteractions.forEach(interaction => this.removeInteraction(interaction));
 
             this.$nextTick(() => {
@@ -417,10 +661,7 @@ export default {
 
                         this.$nextTick(() => {
                             this.$nextTick(() => {
-                                this.currentSelectInteractions.forEach(interaction => this.removeInteraction(interaction));
-                                this.currentSelectInteractions = [];
-                                this.selectedEditInteraction = "";
-                                this.createDrawInteraction();
+                                this.setMode("DRAW");
                                 selectInteractionInstance.un("select", removeHandler);
                             });
                         });
@@ -466,17 +707,33 @@ export default {
         },
 
         /**
+         * Regulate the measure delete interaction.
+         * Sets up delete mode allowing user to click features to delete them.
+         * @returns {void}
+         */
+        regulateDelete () {
+            this.setMode("DELETE");
+        },
+
+        /**
          * Regulate the measure modify interaction.
-         * The previous modify interaction is removed from the map and newly created modify interaction is added.
-         * Measurements are recalculated when features are modified.
-         * Coordinate changes are tracked in per-feature history.
+         * Sets up modify mode for editing measurements.
          * @param {String} [featureId] - Optional feature ID to modify only that specific feature
          * @returns {void}
          */
         regulateModify (featureId = null) {
-            this.selectedEditInteraction = "modify";
+            this.setMode("MODIFY", featureId);
+        },
+
+        /**
+         * Sets up modify interaction for editing measurements.
+         * Either modifies a specific feature or allows editing all features.
+         * Coordinate changes are tracked in per-feature history.
+         * @param {String} [featureId] - Optional feature ID to modify only that specific feature
+         * @returns {void}
+         */
+        setupModifyInteraction (featureId = null) {
             this.currentlyModifyingFeatureId = featureId;
-            this.removeDrawInteraction();
 
             if (this.currentModifyInteraction) {
                 this.removeInteraction(this.currentModifyInteraction);
@@ -508,20 +765,35 @@ export default {
             }
 
             this.currentModifyInteraction.on("modifystart", (event) => {
-                event.features.forEach(feature => {
-                    const geometry = feature.getGeometry();
-                    const geometryType = geometry.getType();
-                    let coords;
+                try {
+                    event.features.forEach(feature => {
+                        const geometry = feature.getGeometry();
+                        const geometryType = geometry.getType();
+                        let coords;
 
-                    if (geometryType === "LineString") {
-                        coords = geometry.getCoordinates();
-                    }
-                    else if (geometryType === "Polygon") {
-                        coords = geometry.getCoordinates()[0];
-                    }
+                        if (geometryType === "LineString") {
+                            coords = geometry.getCoordinates();
+                        }
+                        else if (geometryType === "Polygon") {
+                            coords = geometry.getCoordinates()[0];
+                        }
 
-                    feature.set("_beforeModifyCoords", JSON.parse(JSON.stringify(coords)));
-                });
+                        try {
+                            feature.set("_beforeModifyCoords", this.deepCloneCoords(coords));
+                        }
+                        catch (error) {
+                            console.warn("[Measure] Failed to clone coordinates on modifystart:", error);
+                            feature.set("_beforeModifyCoords", coords);
+                        }
+                    });
+                }
+                catch (error) {
+                    console.error("[Measure] Critical error in modifystart handler:", error);
+                    if (this.currentModifyInteraction) {
+                        this.currentModifyInteraction.setActive(false);
+                        this.currentModifyInteraction.setActive(true);
+                    }
+                }
             });
 
             this.currentModifyInteraction.on("modifyend", (event) => {
@@ -529,6 +801,7 @@ export default {
                     const modifiedFeatureId = feature.ol_uid;
                     const geometry = feature.getGeometry();
                     const geometryType = geometry.getType();
+
                     const beforeCoords = feature.get("_beforeModifyCoords");
                     let afterCoords;
 
@@ -539,22 +812,33 @@ export default {
                         afterCoords = geometry.getCoordinates()[0];
                     }
 
-                    this.addUndoForFeature(modifiedFeatureId, {
-                        mode: "modifyCoordinates",
-                        timestamp: Date.now(),
-                        data: {
-                            previousCoordinates: beforeCoords,
-                            newCoordinates: JSON.parse(JSON.stringify(afterCoords)),
-                            geometryType: geometryType
-                        }
-                    });
+                    try {
+                        this.addUndoForFeature(modifiedFeatureId, {
+                            mode: "modifyCoordinates",
+                            timestamp: Date.now(),
+                            data: {
+                                previousCoordinates: beforeCoords,
+                                newCoordinates: this.deepCloneCoords(afterCoords),
+                                geometryType: geometryType
+                            }
+                        });
+                    }
+                    catch (error) {
+                        console.warn("[Measure] Failed to record undo history on modifyend:", error);
+                    }
 
                     feature.unset("_beforeModifyCoords");
 
-                    if (this.lines[modifiedFeatureId] || this.polygons[modifiedFeatureId]) {
+                    const isInStore = this.lines[modifiedFeatureId] || this.polygons[modifiedFeatureId];
+
+                    if (!isInStore) {
                         this.$store.commit("Modules/Measure/addFeature", feature);
                     }
                 });
+
+                if (event.mapBrowserEvent) {
+                    event.mapBrowserEvent.stopPropagation();
+                }
             });
 
             this.addInteraction(this.currentModifyInteraction);
@@ -572,14 +856,59 @@ export default {
             }
 
             const history = this.getFeatureHistory(featureId);
-
-            if (history.undo.length === 0) {
-                return;
-            }
-
             const feature = this.getFeatureById(featureId);
 
             if (!feature) {
+                return;
+            }
+
+            if (history.undo.length === 0) {
+                const geometry = feature.getGeometry();
+                const geometryType = geometry.getType();
+
+
+                if (geometryType === "LineString") {
+                    const coordinates = geometry.getCoordinates();
+
+
+                    if (coordinates.length > 1) {
+                        const lastPoint = coordinates[coordinates.length - 1];
+                        const syntheticEntry = {
+                            mode: "addPoint",
+                            timestamp: Date.now(),
+                            data: {
+                                point: lastPoint,
+                                pointIndex: coordinates.length - 1,
+                                geometryType: "LineString"
+                            }
+                        };
+
+                        this.undoAddPoint(feature, syntheticEntry);
+                        history.redo.push(syntheticEntry);
+                        return;
+                    }
+                }
+                else if (geometryType === "Polygon") {
+                    const coordinates = geometry.getCoordinates()[0];
+
+                    if (coordinates.length > 3) {
+                        const lastPoint = coordinates[coordinates.length - 2];
+                        const syntheticEntry = {
+                            mode: "addPoint",
+                            timestamp: Date.now(),
+                            data: {
+                                point: lastPoint,
+                                pointIndex: coordinates.length - 2,
+                                geometryType: "Polygon"
+                            }
+                        };
+
+                        this.undoAddPoint(feature, syntheticEntry);
+                        history.redo.push(syntheticEntry);
+                        return;
+                    }
+                }
+
                 return;
             }
 
@@ -597,10 +926,16 @@ export default {
 
         /**
          * Regulate the measure redo for a specific feature.
+         * Supports redo during active drawing session.
          * @param {String} featureId - The feature ID to redo
          * @returns {void}
          */
         regulateRedo (featureId) {
+            if (this.currentSketch && this.currentSketch.ol_uid === parseInt(featureId, 10)) {
+                this.redoLastPointInSketch();
+                return;
+            }
+
             const history = this.getFeatureHistory(featureId);
 
             if (history.redo.length === 0) {
@@ -661,21 +996,41 @@ export default {
         undoAddPoint (feature, historyEntry) {
             const {geometryType} = historyEntry.data;
             const geometry = feature.getGeometry();
+            const featureId = feature.ol_uid;
+
 
             if (geometryType === "LineString") {
                 const coordinates = geometry.getCoordinates();
 
-                if (coordinates.length > 2) {
+
+                if (coordinates.length > 1) {
                     coordinates.pop();
+
+                    if (coordinates.length === 1) {
+                        this.handleDeleteMeasurement(featureId);
+                        return;
+                    }
+
                     geometry.setCoordinates(coordinates);
                 }
             }
             else if (geometryType === "Polygon") {
                 const coordinates = geometry.getCoordinates()[0];
 
-                if (coordinates.length > 4) {
+
+                if (coordinates.length > 3) {
                     coordinates.splice(coordinates.length - 2, 1);
+
+                    if (coordinates.length < 4) {
+                        this.handleDeleteMeasurement(featureId);
+                        return;
+                    }
+
                     geometry.setCoordinates([coordinates]);
+                }
+                else {
+                    this.handleDeleteMeasurement(featureId);
+                    return;
                 }
             }
 
@@ -727,42 +1082,193 @@ export default {
 
         /**
          * Removes the last point from the currently drawn sketch.
+         * Uses the Draw interaction's native removeLastPoint() method.
          * @returns {void}
          */
         undoLastPointInSketch () {
-            if (!this.currentSketch) {
+            if (!this.currentSketch || !this.interaction) {
                 return;
             }
 
             const geometry = this.currentSketch.getGeometry();
+
+            if (!geometry) {
+                return;
+            }
+
             const geometryType = geometry.getType();
+            let coordinatesBefore;
 
             if (geometryType === "LineString") {
-                const coordinates = geometry.getCoordinates();
-
-                if (coordinates.length > 2) {
-                    const removedPoint = coordinates.pop();
-
-                    this.drawingPointHistory.push({type: "point", coord: removedPoint});
-                    geometry.setCoordinates(coordinates);
-                }
+                coordinatesBefore = geometry.getCoordinates();
             }
             else if (geometryType === "Polygon") {
-                const coordinates = geometry.getCoordinates()[0];
+                coordinatesBefore = geometry.getCoordinates()[0];
+            }
 
+            const minPoints = geometryType === "LineString" ? 1 : 2;
 
-                if (coordinates.length > 4) {
-                    const removedPoint = coordinates[coordinates.length - 2];
+            if (coordinatesBefore.length > minPoints) {
+                try {
+                    this.interaction.removeLastPoint();
+                    let coordinatesAfter;
 
-                    this.drawingPointHistory.push({type: "point", coord: removedPoint});
-                    coordinates.splice(coordinates.length - 2, 1);
-                    geometry.setCoordinates([coordinates]);
+                    if (geometryType === "LineString") {
+                        coordinatesAfter = geometry.getCoordinates();
+                    }
+                    else if (geometryType === "Polygon") {
+                        coordinatesAfter = geometry.getCoordinates()[0];
+                    }
+
+                    const minValidPoints = geometryType === "LineString" ? 2 : 3;
+
+                    if (coordinatesAfter.length <= minValidPoints) {
+                        this.removeTooltipForFeature(this.currentSketch.ol_uid);
+
+                        for (let i = 0; i < coordinatesAfter.length; i++) {
+                            this.drawingPointHistory.push({type: "point", coord: coordinatesAfter[i]});
+                        }
+
+                        this.abortCurrentDrawing();
+                        return;
+                    }
+
+                    const removedPoint = this.findRemovedPoint(coordinatesBefore, coordinatesAfter);
+
+                    if (removedPoint) {
+                        this.drawingPointHistory.push({type: "point", coord: removedPoint});
+                    }
                 }
+                catch (error) {
+                    console.warn("[Measure] Could not remove last point:", error);
+                }
+            }
+            else if (coordinatesBefore.length === minPoints) {
+                this.drawingPointHistory.push({
+                    type: "point",
+                    coord: geometryType === "LineString" ? coordinatesBefore[0] : coordinatesBefore[0]
+                });
+                this.abortCurrentDrawing();
             }
         },
 
         /**
+         * Finds which point was removed by comparing coordinate arrays
+         * @param {Array} before - Coordinates before removal
+         * @param {Array} after - Coordinates after removal
+         * @returns {Array|null} The removed coordinate or null
+         */
+        findRemovedPoint (before, after) {
+            if (!before || !after || before.length <= after.length) {
+                return null;
+            }
+
+            for (let i = 0; i < before.length; i++) {
+                if (i >= after.length) {
+                    return before[i];
+                }
+                if (before[i][0] !== after[i][0] || before[i][1] !== after[i][1]) {
+                    return before[i];
+                }
+            }
+
+            return null;
+        },
+
+        /**
+         * Redoes the last undone point in the currently drawn sketch.
+         * Manually adds the coordinate back and updates the geometry.
+         * @returns {void}
+         */
+        redoLastPointInSketch () {
+            if (!this.currentSketch || !this.interaction || this.drawingPointHistory.length === 0) {
+                return;
+            }
+
+            const lastHistoryEntry = this.drawingPointHistory.pop();
+
+            if (!lastHistoryEntry || lastHistoryEntry.type !== "point") {
+                return;
+            }
+
+            const geometry = this.currentSketch.getGeometry();
+
+            if (!geometry) {
+                return;
+            }
+
+            const geometryType = geometry.getType();
+
+            if (typeof this.interaction.appendCoordinates === "function") {
+                try {
+                    this.interaction.appendCoordinates([lastHistoryEntry.coord]);
+                    return;
+                }
+                catch (error) {
+                    console.warn("[Measure] appendCoordinates failed, using manual method:", error);
+                }
+            }
+
+            if (geometryType === "LineString") {
+                const coordinates = geometry.getCoordinates();
+
+                coordinates.push(lastHistoryEntry.coord);
+                geometry.setCoordinates(coordinates);
+            }
+            else if (geometryType === "Polygon") {
+                const coordinates = geometry.getCoordinates()[0];
+
+                coordinates.splice(coordinates.length - 1, 0, lastHistoryEntry.coord);
+                geometry.setCoordinates([coordinates]);
+            }
+
+            geometry.changed();
+        },
+
+        /**
+         * Aborts the current drawing session cleanly.
+         * @returns {void}
+         */
+        abortCurrentDrawing () {
+            if (this.currentSketch) {
+                const sketchId = this.currentSketch.ol_uid;
+
+                this.removeTooltipForFeature(sketchId);
+                this.source.removeFeature(this.currentSketch);
+                this.$store.commit("Modules/Measure/removeFeature", sketchId);
+            }
+
+            if (this.interaction) {
+                try {
+                    this.interaction.abortDrawing();
+                }
+                catch (error) {
+                    console.warn("[Measure] Could not abort drawing:", error);
+                }
+            }
+            this.currentSketch = null;
+            this.drawingPointHistory = [];
+        },
+
+        /**
+         * Undo wrapper for current sketch (called from button)
+         * @returns {void}
+         */
+        undoCurrentSketch () {
+            this.undoLastPointInSketch();
+        },
+
+        /**
+         * Redo wrapper for current sketch (called from button)
+         * @returns {void}
+         */
+        redoCurrentSketch () {
+            this.redoLastPointInSketch();
+        },
+
+        /**
          * Checks if a point can be removed from a completed feature (maintains minimum points).
+         * Now allows removing down to the last point - feature will be deleted automatically.
          * @param {ol/Feature} feature The feature to check.
          * @returns {Boolean} True if a point can be removed.
          */
@@ -773,7 +1279,7 @@ export default {
             if (geometryType === "LineString") {
                 const coordinates = geometry.getCoordinates();
 
-                return coordinates.length > 2;
+                return coordinates.length > 1;
             }
             else if (geometryType === "Polygon") {
                 const coordinates = geometry.getCoordinates()[0];
@@ -787,6 +1293,7 @@ export default {
         /**
          * Removes the last point from a completed feature and updates measurements.
          * Records the action in per-feature history.
+         * If no points remain, the feature is deleted automatically.
          * @param {ol/Feature} feature The feature to modify.
          * @returns {void}
          */
@@ -795,10 +1302,12 @@ export default {
             const geometry = feature.getGeometry();
             const geometryType = geometry.getType();
 
+
             if (geometryType === "LineString") {
                 const coordinates = geometry.getCoordinates();
 
-                if (coordinates.length > 2) {
+
+                if (coordinates.length > 0) {
                     const removedPoint = coordinates.pop();
 
                     this.addUndoForFeature(featureId, {
@@ -811,19 +1320,23 @@ export default {
                         }
                     });
 
-                    geometry.setCoordinates(coordinates);
+                    if (coordinates.length === 1) {
+                        this.handleDeleteMeasurement(featureId);
+                    }
+                    else {
+                        geometry.setCoordinates(coordinates);
 
-                    const newLastCoord = coordinates[coordinates.length - 1];
+                        const newLastCoord = coordinates[coordinates.length - 1];
 
-                    this.$store.commit("Modules/Measure/setTooltipCoord", newLastCoord);
-                    this.$store.commit("Modules/Measure/addFeature", feature);
+                        this.$store.commit("Modules/Measure/setTooltipCoord", newLastCoord);
+                        this.$store.commit("Modules/Measure/addFeature", feature);
+                    }
                 }
             }
             else if (geometryType === "Polygon") {
                 const coordinates = geometry.getCoordinates()[0];
 
-
-                if (coordinates.length > 4) {
+                if (coordinates.length > 0) {
                     const removedPoint = coordinates[coordinates.length - 2];
 
                     this.addUndoForFeature(featureId, {
@@ -837,12 +1350,19 @@ export default {
                     });
 
                     coordinates.splice(coordinates.length - 2, 1);
-                    geometry.setCoordinates([coordinates]);
 
-                    const newLastCoord = coordinates[coordinates.length - 2];
 
-                    this.$store.commit("Modules/Measure/setTooltipCoord", newLastCoord);
-                    this.$store.commit("Modules/Measure/addFeature", feature);
+                    if (coordinates.length <= 4) {
+                        this.handleDeleteMeasurement(featureId);
+                    }
+                    else {
+                        geometry.setCoordinates([coordinates]);
+
+                        const newLastCoord = coordinates[coordinates.length - 2];
+
+                        this.$store.commit("Modules/Measure/setTooltipCoord", newLastCoord);
+                        this.$store.commit("Modules/Measure/addFeature", feature);
+                    }
                 }
             }
         },
@@ -863,6 +1383,7 @@ export default {
                 }
             });
 
+
             featuresToRemove.forEach(f => {
                 this.source.removeFeature(f);
             });
@@ -882,18 +1403,10 @@ export default {
 
             if (this.selectedEditInteraction === "modify" && currentlyModifyingId === normalizedFeatureId) {
                 this.handleUnhighlightFeature(featureId);
-
-                if (this.currentModifyInteraction) {
-                    this.removeInteraction(this.currentModifyInteraction);
-                    this.currentModifyInteraction = null;
-                }
-
-                this.selectedEditInteraction = "";
-                this.currentlyModifyingFeatureId = null;
-                this.createDrawInteraction();
+                this.setMode("DRAW");
             }
             else {
-                this.selectedEditInteraction = "modify";
+                this.currentlyModifyingFeatureId = featureId;
                 this.regulateModify(featureId);
             }
         },
@@ -910,23 +1423,27 @@ export default {
             const allFeatures = this.source.getFeatures();
             const feature = allFeatures.find(f => this.normalizeFeatureId(f.ol_uid) === normalizedId);
 
+
             if (feature) {
                 this.removeTooltipForFeature(featureId);
                 this.source.removeFeature(feature);
                 this.$store.commit("Modules/Measure/removeFeature", feature.ol_uid);
                 this.deleteFeatureHistory(featureId);
 
-                // If in modify mode, restore draw interaction after deletion
                 if (this.selectedEditInteraction === "modify") {
-                    if (this.currentModifyInteraction) {
-                        this.removeInteraction(this.currentModifyInteraction);
-                        this.currentModifyInteraction = null;
-                    }
                     this.selectedEditInteraction = "";
-                    this.currentlyModifyingFeatureId = null;
-                    this.createDrawInteraction();
+                    this.setMode("DRAW");
                 }
             }
+        },
+
+        /**
+         * Handles rename measurement event from MeasureList.
+         * @param {Object} payload - {featureId: String, name: String}
+         * @returns {void}
+         */
+        handleRenameMeasurement (payload) {
+            this.$store.commit("Modules/Measure/setCustomName", payload);
         },
 
         /**
@@ -1046,12 +1563,18 @@ export default {
             :measurement-list="enrichedMeasurementList"
             :selected-feature-id="featureId"
             :currently-modifying-feature-id="currentlyModifyingFeatureId"
+            :active-measurement="activeMeasurementInfo"
+            :can-undo-active="canUndoCurrentSketch"
+            :can-redo-active="canRedoCurrentSketch"
             @modify-measurement="handleModifyMeasurement"
             @delete-measurement="handleDeleteMeasurement"
             @undo-action="regulateUndo"
             @redo-action="regulateRedo"
             @highlight-feature="handleHighlightFeature"
             @unhighlight-feature="handleUnhighlightFeature"
+            @rename-measurement="handleRenameMeasurement"
+            @undo-active-sketch="undoCurrentSketch"
+            @redo-active-sketch="redoCurrentSketch"
         />
 
         <div class="d-flex justify-content-center my-3">
@@ -1064,9 +1587,7 @@ export default {
                 :disabled="source?.getFeatures()?.length === 0"
             />
         </div>
-        <div
-            v-if="isDefaultStyle()"
-        >
+        <div v-if="isDefaultStyle()">
             <div
                 id="accordionFlushExample"
                 class="accordion accordion-flush"
@@ -1112,6 +1633,5 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-
-
+@import "~variables";
 </style>
