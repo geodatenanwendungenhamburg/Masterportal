@@ -41,6 +41,43 @@ const mutations = {
             delete newPolygons[normalizedId];
             state.polygons = newPolygons;
         }
+
+        if (state.customNames[normalizedId]) {
+            const newCustomNames = {...state.customNames};
+
+            delete newCustomNames[normalizedId];
+            state.customNames = newCustomNames;
+        }
+    },
+    /**
+     * Sets a custom name for a measurement feature.
+     * @param {Object} state vuex state
+     * @param {Object} payload - {featureId: String, name: String}
+     * @returns {void}
+     */
+    setCustomName (state, payload) {
+        const normalizedId = String(payload.featureId);
+
+        state.customNames = {
+            ...state.customNames,
+            [normalizedId]: payload.name
+        };
+    },
+    /**
+     * Removes a custom name for a measurement feature.
+     * @param {Object} state vuex state
+     * @param {String|Number} featureId - The ol_uid of the feature
+     * @returns {void}
+     */
+    removeCustomName (state, featureId) {
+        const normalizedId = String(featureId);
+
+        if (state.customNames[normalizedId]) {
+            const newCustomNames = {...state.customNames};
+
+            delete newCustomNames[normalizedId];
+            state.customNames = newCustomNames;
+        }
     },
     /**
      * Adds an unlisten function to the unlisteners array.

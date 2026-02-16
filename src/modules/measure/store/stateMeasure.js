@@ -60,7 +60,10 @@ const state = {
     source,
     layer: null,
     featureId: null,
-    tooltipCoord: []
+    tooltipCoord: [],
+
+    // custom names for measurements (key = feature ol_uid)
+    customNames: {}
 };
 
 export default state;
