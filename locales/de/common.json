@@ -726,7 +726,8 @@
         "modify": "Messung bearbeiten",
         "finishModify": "Bearbeiten beenden",
         "redo": "Wiederholen",
-        "undo": "Rückgängig"
+        "undo": "Rückgängig",
+        "renameHint": "Doppelklick zum Umbenennen"
       },
       "finishWithDoubleClick": "Abschließen mit Doppelklick",
       "geometry": "Geometrie",

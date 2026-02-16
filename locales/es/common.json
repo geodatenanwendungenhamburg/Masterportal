@@ -724,7 +724,8 @@
         "modify": "Editar medición",
         "finishModify": "Finalizar edición",
         "redo": "Rehacer",
-        "undo": "Deshacer"
+        "undo": "Deshacer",
+        "renameHint": "Doble clic para renombrar"
       },
       "finishWithDoubleClick": "Finalizar con doble clic",
       "geometry": "Geometría",

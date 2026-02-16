@@ -724,7 +724,8 @@
     "modify": "Editar medição",
     "finishModify": "Concluir edição",
     "redo": "Refazer",
-    "undo": "Anular"
+    "undo": "Anular",
+    "renameHint": "Clique duplo para renomear"
   },
   "finishWithDoubleClick": "Concluir com duplo clique",
   "geometry": "Geometria",

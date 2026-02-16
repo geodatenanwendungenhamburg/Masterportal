@@ -725,7 +725,8 @@
         "modify": "Edit measurement",
         "finishModify": "Finish editing",
         "redo": "Redo",
-        "undo": "Undo"
+        "undo": "Undo",
+        "renameHint": "Double-click to rename"
       },
       "finishWithDoubleClick": "Double click to complete",
       "geometry": "Geometry",
