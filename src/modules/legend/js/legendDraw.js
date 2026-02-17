@@ -36,7 +36,28 @@ export default {
 
         return nominalStyle;
     },
-
+    /**
+     * Extracts the opacity from a color definition.
+     *
+     * Supports two formats:
+     * - RGBA array: [r, g, b, a] → returns the 4th value (alpha).
+     * - Hex string: "#RRGGBB" → no alpha information, returns 1 (fully opaque).
+     *
+     * If the alpha channel is missing in an RGBA array, defaults to 1.
+     * For any unsupported format, defaults to 1.
+     *
+     * @param {Array<number>|string} color - Color value as an RGBA array or hex string.
+     * @returns {number} Opacity value between 0 and 1.
+     */
+    getOpacity (color) {
+        if (Array.isArray(color)) {
+            return color[3] ?? 1;
+        }
+        else if (typeof color === "string" && color.startsWith("#")) {
+            return 1;
+        }
+        return 1;
+    },
     /**
      * Creats an SVG for nominal circle segment style.
      * @param {ol.style} styleObject The styleObject.
@@ -100,10 +121,10 @@ export default {
      */
     drawCircleStyle (style) {
         const circleStrokeColor = style.circleStrokeColor ? convertColor(style.circleStrokeColor, "rgbString") : "black",
-            circleStrokeOpacity = style.circleStrokeColor[3] || 0,
+            circleStrokeOpacity = this.getOpacity(style.circleStrokeColor),
             circleStrokeWidth = style.circleStrokeWidth,
             circleFillColor = style.circleFillColor ? convertColor(style.circleFillColor, "rgbString") : "black",
-            circleFillOpacity = style.circleFillColor[3] || 0,
+            circleFillOpacity = this.getOpacity(style.circleFillColor),
             circleRadius = style.circleRadius,
             widthAndHeight = (circleRadius + 1.5) * 2;
         let svg = "data:image/svg+xml;charset=utf-8,";
@@ -134,7 +155,7 @@ export default {
     prepareLegendForLineString  (legendObj, style) {
         const strokeColor = style.lineStrokeColor ? convertColor(style.lineStrokeColor, "rgbString") : "black",
             strokeWidth = style.lineStrokeWidth,
-            strokeOpacity = style.lineStrokeColor[3] || 0,
+            strokeOpacity = this.getOpacity(style.lineStrokeColor),
             strokeDash = style.lineStrokeDash ? style.lineStrokeDash.join(" ") : undefined,
             type = style.type ? style.type.toLowerCase() : style.attributes?.type.toLowerCase();
 
@@ -174,9 +195,9 @@ export default {
         const fillColor = style.polygonFillColor ? convertColor(style.polygonFillColor, "rgbString") : "black",
             strokeColor = style.polygonStrokeColor ? convertColor(style.polygonStrokeColor, "rgbString") : "black",
             strokeWidth = style.polygonStrokeWidth,
-            fillOpacity = style.polygonFillColor?.[3] || 0,
+            fillOpacity = this.getOpacity(style.polygonFillColor),
             fillHatch = style.polygonFillHatch,
-            strokeOpacity = style.polygonStrokeColor?.[3] || 0,
+            strokeOpacity = this.getOpacity(style.polygonStrokeColor),
             strokeCap = style.polygonStrokeCap || "round",
             strokeDash = style.polygonStrokeDash?.toString() || "",
             type = style.type ? style.type.toLowerCase() : style.attributes?.type.toLowerCase();
