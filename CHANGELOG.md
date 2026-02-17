@@ -31,6 +31,7 @@
 ### Fixed
 - Issue \#1542: MenuContainer: Fixed inconsistent menu behavior between 576px and 768px. Secondary menu now opens in full-screen mode like the main menu.
 - Issue \#1552: Strip HTML tags from layer names in UI components other than layer tree.
+- Issue \#1553: Correct opacity for Hex string color format ("#RRGGBB").
 - Issue: \#1555: FeatureLister: Handle WFS with dynamic ids in `getSpatialSelection`.
 - Issue \#1556: Fixed an error, if using layers with `layerSequence` in Firefox.
 - Issue \#1557: WFSSearch: fixed selection bug with deeper nested options.
