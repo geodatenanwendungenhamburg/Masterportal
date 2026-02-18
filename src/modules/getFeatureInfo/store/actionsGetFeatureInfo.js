@@ -265,22 +265,36 @@ export default {
      * @returns {void}
      */
     handleRestore3D ({dispatch, rootGetters}, {attributes, componentName, clickCoordinates}) {
-        const visibleTerrainLayers = rootGetters.visibleLayerConfigs.filter(config => config.typ.toUpperCase() === "TERRAIN3D");
+        const visibleTerrainLayers = rootGetters.visibleLayerConfigs.filter(
+            config => config.typ.toUpperCase() === "TERRAIN3D"
+        );
 
-        // the feature can only be found in 'collectGfiFeatures' if terrain is visible
-        if (visibleTerrainLayers.length > 0) {
-            const clickPixel = transformer.coordToPixel3D(clickCoordinates),
-                scene = mapCollection.getMap("3D").getCesiumScene();
+        if (visibleTerrainLayers.length === 0) {
+            console.warn("A terrain is not available, GFI cannot be restored!");
+            return;
+        }
 
-            scene.globe.tileLoadProgressEvent.addEventListener(function () {
-                if (scene.globe.tilesLoaded) {
-                    dispatch("restoreGFI", {attributes, componentName, clickCoordinates, clickPixel});
+        const scene = mapCollection.getMap("3D").getCesiumScene();
+        const clickPixel = transformer.coordToPixel3D(clickCoordinates);
+
+        scene.globe.tileLoadProgressEvent.addEventListener(function listener () {
+            if (!scene.globe.tilesLoaded) {
+                return;
+            }
+
+            scene.globe.tileLoadProgressEvent.removeEventListener(listener);
+
+            scene.postRender.addEventListener(() => {
+                dispatch("restoreGFI", {attributes, componentName, clickCoordinates, clickPixel});
+
+                if (attributes.lastPickedFeatureId) {
+                    applyTileStyle(
+                        attributes.lastPickedFeatureId,
+                        get3DHighlightColor(attributes.coloredHighlighting3D?.color, "RED")
+                    );
                 }
             });
-        }
-        else {
-            console.warn("A terrain is not available, GFI cannot be restored!");
-        }
+        });
     },
 
     /**
