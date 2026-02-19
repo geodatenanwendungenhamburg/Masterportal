@@ -1,6 +1,7 @@
 <script>
 import {convertColor} from "@shared/js/utils/convertColor.js";
 import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
+import InputText from "@shared/modules/inputs/components/InputText.vue";
 
 /**
  * Shared component that provides buttons for setting the layout of drawings.
@@ -17,7 +18,8 @@ import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
 export default {
     name: "DrawLayout",
     components: {
-        SliderItem
+        SliderItem,
+        InputText
     },
     props: {
         circleType: {
@@ -181,17 +183,13 @@ export default {
             class="write-text-container mt-4"
         >
             <div class="form-floating mb-3">
-                <input
-                    id="text-input"
-                    type="text"
-                    class="form-control"
+                <InputText
+                    :id="selectedDrawType"
+                    :label="$t('common:shared.modules.draw.drawTypes.writeText')"
                     :placeholder="$t('common:shared.modules.draw.drawTypes.writeText')"
-                    :value="currentLayout.text || ''"
-                    @input="event => updateCurrentLayout('text', event.target.value)"
-                >
-                <label for="text-input">
-                    {{ $t('common:shared.modules.draw.drawTypes.writeText') }}
-                </label>
+                    :model-value="currentLayout.text || ''"
+                    @update:modelValue="val => updateCurrentLayout('text', val)"
+                />
             </div>
             <div class="form-floating mb-3">
                 <select
