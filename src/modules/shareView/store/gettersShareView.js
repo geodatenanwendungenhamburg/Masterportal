@@ -43,6 +43,14 @@ const simpleGetters = {
             shareUrl = new URL(location.origin + location.pathname + "?" + mapParams),
             currentMarker = rootState?.Maps?.currentMarker;
 
+        if (rootGetters["Maps/mode"] === "3D") {
+            const lastPickedFeatureId = rootGetters["Modules/SearchBar/lastPickedFeatureId"];
+
+            if (lastPickedFeatureId) {
+                shareUrl.searchParams.set("HIGHLIGHTED3D", lastPickedFeatureId);
+            }
+        }
+
         layerParams.forEach(layerParam => {
             const layerModel = layerCollection.getLayerById(layerParam.id),
                 time = layerModel?.getLayerSource?.()?.getParams?.()?.TIME;

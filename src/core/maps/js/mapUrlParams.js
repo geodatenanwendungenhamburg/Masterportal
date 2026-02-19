@@ -3,6 +3,9 @@ import crs from "@masterportal/masterportalapi/src/crs.js";
 import store from "@appstore/index.js";
 import highlightFeaturesByAttribute from "./highlightFeaturesByAttribute.js";
 import processUrlParams from "@shared/js/utils/processUrlParams.js";
+import applyTileStyle from "@shared/js/utils/applyTileStyle.js";
+import waitFor3DReady from "@shared/js/utils/waitFor3DReady.js";
+import get3DHighlightColor from "@shared/js/utils/get3DHighlightColor.js";
 
 /**
  * Here the urlParams for the maps are processed.
@@ -139,7 +142,8 @@ const mapUrlParams = {
         MARKER: setMapMarker,
         ZOOMTOEXTENT: zoomToProjExtent,
         ZOOMTOFEATUREID: zoomToFeatures,
-        ZOOMTOGEOMETRY: zoomToFeatures
+        ZOOMTOGEOMETRY: zoomToFeatures,
+        HIGHLIGHTED3D: highlight3DFeatureUrlParam
     },
     legacyMapUrlParams = {
         "API/HIGHLIGHTFEATURESBYATTRIBUTE": highlightFeaturesByAttributes,
@@ -404,6 +408,26 @@ function zoomToProjExtent (params) {
         options: {duration: 0},
         projection: params.PROJECTION || params["MAP/PROJECTION"] || store.getters["Maps/projectionCode"]
     });
+}
+
+/**
+ *
+ */
+async function highlight3DFeatureUrlParam (params) {
+    const featureId = params.HIGHLIGHTED3D;
+
+    if (!featureId) {
+        return;
+    }
+
+    await waitFor3DReady();
+
+    const highlightColor = get3DHighlightColor(
+        store.getters["Modules/SearchBar/coloredHighlighting3D"]?.color,
+        "YELLOW"
+    );
+
+    applyTileStyle(featureId, highlightColor);
 }
 
 export default {
