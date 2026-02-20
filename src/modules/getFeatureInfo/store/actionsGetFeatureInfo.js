@@ -278,22 +278,21 @@ export default {
         const clickPixel = transformer.coordToPixel3D(clickCoordinates);
 
         scene.globe.tileLoadProgressEvent.addEventListener(function listener () {
+
+            if (attributes.lastPickedFeatureId) {
+                applyTileStyle(
+                    attributes.lastPickedFeatureId,
+                    get3DHighlightColor(attributes.coloredHighlighting3D?.color, "RED")
+                );
+            }
+
             if (!scene.globe.tilesLoaded) {
                 return;
             }
 
             scene.globe.tileLoadProgressEvent.removeEventListener(listener);
 
-            scene.postRender.addEventListener(() => {
-                dispatch("restoreGFI", {attributes, componentName, clickCoordinates, clickPixel});
-
-                if (attributes.lastPickedFeatureId) {
-                    applyTileStyle(
-                        attributes.lastPickedFeatureId,
-                        get3DHighlightColor(attributes.coloredHighlighting3D?.color, "RED")
-                    );
-                }
-            });
+            dispatch("restoreGFI", {attributes, componentName, clickCoordinates, clickPixel});
         });
     },
 

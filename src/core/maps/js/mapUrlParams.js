@@ -4,7 +4,6 @@ import store from "@appstore/index.js";
 import highlightFeaturesByAttribute from "./highlightFeaturesByAttribute.js";
 import processUrlParams from "@shared/js/utils/processUrlParams.js";
 import applyTileStyle from "@shared/js/utils/applyTileStyle.js";
-import waitFor3DReady from "@shared/js/utils/waitFor3DReady.js";
 import get3DHighlightColor from "@shared/js/utils/get3DHighlightColor.js";
 
 /**
@@ -411,23 +410,59 @@ function zoomToProjExtent (params) {
 }
 
 /**
+ * Highlights a 3D feature defined via the URL parameter `HIGHLIGHTED3D`.
  *
+ * - Waits until the 3D map mode is active and the Cesium scene is fully ready.
+ * - Retrieves the configured 3D highlight color from the SearchBar module.
+ * - Applies the highlight style to the specified 3D tile feature.
+ *
+ * @async
+ * @param {Object} params The found URL parameters.
+ * @param {String} params.HIGHLIGHTED3D The ID of the 3D feature to highlight.
+ * @returns {Promise<void>} Resolves once the 3D scene is ready and the highlight has been applied.
  */
-async function highlight3DFeatureUrlParam (params) {
+function highlight3DFeatureUrlParam (params) {
     const featureId = params.HIGHLIGHTED3D;
+
 
     if (!featureId) {
         return;
     }
 
-    await waitFor3DReady();
+    store.watch(
+        () => store.getters["Maps/mode"],
+        (mode) => {
+            if (mode !== "3D") {
+                return;
+            }
 
-    const highlightColor = get3DHighlightColor(
-        store.getters["Modules/SearchBar/coloredHighlighting3D"]?.color,
-        "YELLOW"
+            const map3D = mapCollection.getMap("3D");
+
+            if (!map3D || typeof map3D.getCesiumScene !== "function") {
+                console.warn("3D map is not ready yet. Highlight not applied.");
+                return;
+            }
+
+            const scene = map3D.getCesiumScene();
+
+            const highlightColor = get3DHighlightColor(
+                store.getters["Modules/SearchBar/coloredHighlighting3D"]?.color,
+                "YELLOW"
+            );
+
+            scene.globe.tileLoadProgressEvent.addEventListener(function listener () {
+                store.commit(
+                    "Modules/SearchBar/setLastPickedFeatureId",
+                    featureId
+                );
+                applyTileStyle(featureId, highlightColor);
+                if (scene.globe.tilesLoaded) {
+                    scene.globe.tileLoadProgressEvent.removeEventListener(listener);
+                }
+            });
+        },
+        {immediate: true}
     );
-
-    applyTileStyle(featureId, highlightColor);
 }
 
 export default {
