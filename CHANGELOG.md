@@ -17,6 +17,8 @@
 - Calendar: Added women's day, liberation day and children day as holidays.
 - GetFeatureInfo: Added `stickyHeader` configuration option to keep GFI title and navigation arrows visible when scrolling through long content.
 - Menu: Added configuration parameter `closeOppositeMenu` to allow modules to close the opposite menu when opened.
+- GetFeatureInfo: In 3D mode, restored feature highlighting and GFI display via share link.
+- SearchBar: In 3D mode, added restoring of highlighted feature via share link.
 
 ### Changed
 - WMS-Time:
