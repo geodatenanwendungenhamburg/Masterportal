@@ -98,6 +98,7 @@ const state = {
     strokeRange: [1, 16],
     supportedDevices: ["Desktop", "Mobile", "Table"],
     supportedMapModes: ["2D", "3D"],
+    symbolList: [],
     type: "draw",
     units: ["m", "km"],
     buttonsDisabled: false

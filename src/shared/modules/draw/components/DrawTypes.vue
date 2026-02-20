@@ -139,6 +139,7 @@ export default {
     },
     computed: {
         ...mapGetters("Maps", ["projection"]),
+        ...mapGetters("Modules/Draw", ["symbolList"]),
         ...mapState("Modules/Draw", ["drawTypesGeometrie", "drawTypesMain", "drawTypesSymbols", "buttonsDisabled"])
     },
     watch: {
@@ -178,6 +179,9 @@ export default {
         }
 
         this.startDrawingInitial();
+        this.symbolList.forEach(symbol => {
+            this.addToDrawTypesSymbols(symbol.id);
+        });
     },
     unmounted () {
         this.removeInteraction(this.currentDrawInteraction);
@@ -372,7 +376,7 @@ export default {
                     return this.$t(labelEntry.label) || "";
                 }
                 if (allDrawTypes.includes(drawType)) {
-                    return this.$t(`common:shared.modules.draw.drawTypes.${drawType}`);
+                    return this.getDrawTypeName(drawType);
                 }
                 return "";
             }
@@ -390,7 +394,31 @@ export default {
             }
 
             return this.$t(label);
+        },
+        /**
+         * Adds symbols from configs symbolList to DrawTypesSymbols if not already included.
+         * @param {String} id - ID of each symbol.
+         */
+        addToDrawTypesSymbols (id) {
+            if (!this.drawTypesSymbols.includes(id)) {
+                this.drawTypesSymbols.push(id);
+            }
+        },
+        /**
+         * Returns name of a drawType.
+         * @param {String} id - ID of drawType.
+         * @returns {String} - Translation of drawType or ID if symbol from symbolList in config.
+         */
+        getDrawTypeName (id) {
+            const symbol = this.symbolList.find(symbolId => symbolId.id === id);
+
+            if (symbol) {
+                return symbol.id;
+            }
+
+            return this.$t(`common:shared.modules.draw.drawTypes.${id}`);
         }
+
     }
 };
 </script>
@@ -400,7 +428,7 @@ export default {
         v-for="drawType in drawTypes"
         :id="'draw-' + drawType"
         :key="drawType"
-        :aria="$t('common:shared.modules.draw.drawTypes.' + drawType)"
+        :aria="getDrawTypeName(drawType)"
         :class-array="[
             'btn-secondary',
             'icon-button-size',
