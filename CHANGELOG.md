@@ -15,6 +15,7 @@
         - @masterportal/masterportalapi: 2.51.0 to 2.51.1
 
 ### Fixed
+- Issue \#1515: Filter: saveTo: `url` was fixed. Now reads URL params properly and sets them.
 - VectorStyle: Fixed styling of polygons: `"zig-line-horizontal"` and `"diagonal-right"` are rotated by 90°.
 - sortObjects: Ensure stable sortByLayerSequence order in Chrome/Firefox.
 

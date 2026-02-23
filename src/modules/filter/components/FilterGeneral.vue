@@ -126,7 +126,7 @@ export default {
             }
         }
 
-        this.urlHandler.readFromUrlParams(this.appStoreUrlParams?.[this.type.toUpperCase()], this.layerConfigs, this.mapHandler, params => {
+        this.urlHandler.readFromUrlParams(this.getFilterUrlParams(this.appStoreUrlParams), this.layerConfigs, this.mapHandler, params => {
             this.handleStateForAlreadyActiveLayers(params);
             this.deserializeState({...params, setLateActive: true});
             this.addWatcherToWriteUrl();
@@ -150,6 +150,18 @@ export default {
         ]),
         ...mapActions("Maps", ["registerListener", "unregisterListener"]),
         hasUnfixedRules,
+        /**
+         * Gets the filter url params from the app store url params.
+         * @param {Object} appStoreUrlParams The url params from the app store.
+         * @returns {Object} The filter url params.
+         */
+        getFilterUrlParams (appStoreUrlParams) {
+            if (typeof appStoreUrlParams?.FILTER === "string") {
+                return JSON.parse(appStoreUrlParams.FILTER);
+            }
+            return Object.values(JSON.parse(appStoreUrlParams?.MENU || "{}")).filter(value => value.currentComponent === "filter").map(obj => obj.attributes)[0] || {};
+        },
+
         /**
          * Handles the state for already activated layers by given params.
          * The given params are set for the matching layer if it is already active but has no features loaded yet.
