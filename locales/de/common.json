@@ -101,7 +101,8 @@
       "sourceLayerNotFound": "Der gespeicherte Quell-Layer mit der ID {{layerId}} wurde nicht gefunden.",
       "sourceSelectLabel": "Quell-Layer",
       "targetLayerNotFound": "Der gespeicherte Ziel-Layer mit der ID {{layerId}} wurde nicht gefunden.",
-      "targetSelectLabel": "Ziel-Layer"
+      "targetSelectLabel": "Ziel-Layer",
+      "error": "Es ist ein Fehler in der Buffer Analysis aufgetreten. Bitte prüfen Sie die URL."
     },
     "compareMaps": {
       "description": "Zwei Karten nebeneinander oder übereinander vergleichen",

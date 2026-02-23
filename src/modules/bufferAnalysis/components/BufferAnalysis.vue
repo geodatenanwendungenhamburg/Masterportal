@@ -22,6 +22,7 @@ export default {
     data: () => ({resultTypeEnum: ResultType}),
     computed: {
         ...mapGetters("Modules/BufferAnalysis", ["bufferRadius", "selectOptions", "savedUrl"]),
+        ...mapGetters("Modules/ShareView", ["url"]),
         selectedSourceLayer: {
             /**
              * getter for the computed property selectedSourceLayer
@@ -120,7 +121,7 @@ export default {
     },
     methods: {
         ...mapMutations("Modules/BufferAnalysis", ["setSelectOptions", "setInputBufferRadius", "setTimerId", "setResultType", "setSelectedTargetLayer"]),
-        ...mapActions("Modules/BufferAnalysis", ["applyValuesFromSavedUrlBuffer", "applySelectedSourceLayer", "applyBufferRadius", "applySelectedTargetLayer", "buildUrlFromToolState", "initJSTSParser", "loadSelectOptions", "resetModule", "removeGeneratedLayers"]),
+        ...mapActions("Modules/BufferAnalysis", ["applyValuesFromSavedUrlBuffer", "applySelectedSourceLayer", "applyBufferRadius", "applySelectedTargetLayer", "initJSTSParser", "loadSelectOptions", "resetModule", "removeGeneratedLayers"]),
         ...mapActions("Map", ["toggleLayerVisibility"]),
 
         /**
@@ -133,14 +134,6 @@ export default {
                     this.$refs["tool-bufferAnalysis-selectSourceInput"].focus();
                 }
             });
-        },
-        /**
-         * Lets you build and then copy the url to the clipboard.
-         * @returns {void}
-         */
-        buildAndCopyUrl () {
-            this.buildUrlFromToolState();
-            navigator.clipboard.writeText(this.savedUrl);
         },
         /**
          * Sets the new selected buffer radius
@@ -257,16 +250,6 @@ export default {
                 :interaction="resetModule"
                 :text="$t('common:modules.bufferAnalysis.clearButton')"
                 :icon="'bi-x-circle'"
-            />
-        </div>
-        <div class="d-flex justify-content-center row form-floating">
-            <FlatButton
-                id="tool-bufferAnalysis-saveButton"
-                :aria-label="$t('common:modules.bufferAnalysis.saveButton')"
-                :interaction="buildAndCopyUrl"
-                :disabled="!selectedSourceLayer || !selectedTargetLayer || !bufferRadius"
-                :text="$t('common:modules.bufferAnalysis.saveButton')"
-                :icon="'bi-clipboard'"
             />
         </div>
     </div>

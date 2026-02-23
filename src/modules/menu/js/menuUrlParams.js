@@ -73,11 +73,13 @@ function setAttributesToComponent (params) {
 function isInitOpen (params) {
     const {currentComponent, side} = getCurrentComponent(params.ISINITOPEN || params.STARTUPMODUL);
 
-    if (side) {
-        const type = changeCase.upperFirst(currentComponent.type);
-
-        store.dispatch("Menu/activateCurrentComponent", {currentComponent, type, side});
+    if (!currentComponent || !side) {
+        return;
     }
+
+    const type = changeCase.upperFirst(currentComponent.type);
+
+    store.dispatch("Menu/activateCurrentComponent", {currentComponent, type, side});
 }
 
 /**
@@ -86,48 +88,40 @@ function isInitOpen (params) {
  * @param {String} menuSide The menu side.
  * @returns {Object} The current component and the related menu side.
  */
-function getCurrentComponent (searchType, menuSide) {
-    let mainMenuComponent = findInSections(store.getters["Menu/mainMenu"]?.sections, searchType),
-        secondaryMenuComponent = findInSections(store.getters["Menu/secondaryMenu"]?.sections, searchType),
-        side,
-        currentComponent;
+function getCurrentComponent (searchType) {
+    const mainMenuSections = store.getters["Menu/mainMenu"]?.sections || [];
+    const secondaryMenuSections = store.getters["Menu/secondaryMenu"]?.sections || [];
 
-    if (menuSide === "MAIN" && mainMenuComponent && secondaryMenuComponent) {
-        secondaryMenuComponent = undefined;
-    }
-    else if (menuSide === "SECONDARY" && mainMenuComponent && secondaryMenuComponent) {
-        mainMenuComponent = undefined;
-    }
+    const mainMenuComponent = findInSections(mainMenuSections, searchType);
+    const secondaryMenuComponent = findInSections(secondaryMenuSections, searchType);
 
-    if (mainMenuComponent) {
-        currentComponent = mainMenuComponent;
-        side = "mainMenu";
+    if (mainMenuComponent && !secondaryMenuComponent) {
+        return {currentComponent: mainMenuComponent, side: "mainMenu"};
     }
-    else if (secondaryMenuComponent) {
-        currentComponent = secondaryMenuComponent;
-        side = "secondaryMenu";
+    else if (!mainMenuComponent && secondaryMenuComponent) {
+        return {currentComponent: secondaryMenuComponent, side: "secondaryMenu"};
     }
-
-    return {currentComponent, side};
+    else if (mainMenuComponent && secondaryMenuComponent) {
+        return {currentComponent: secondaryMenuComponent, side: "secondaryMenu"};
+    }
+    return {currentComponent: undefined, side: undefined};
 }
 
 /**
- * Find elements in sections by serch type.
+ * Recursively searches sections for the component
  * @param {Object[]} sections Sections that are searched.
  * @param {String} searchType The search type.
  * @returns {Object} The found object.
  */
 function findInSections (sections, searchType) {
-    let currentComponent;
-
-    sections.forEach(elements => {
+    for (const elements of sections) {
         const element = findElement(elements, searchType);
 
         if (element) {
-            currentComponent = element;
+            return element;
         }
-    });
-    return currentComponent;
+    }
+    return undefined;
 }
 
 /**
@@ -137,23 +131,24 @@ function findInSections (sections, searchType) {
  * @returns {Object} The found object.
  */
 function findElement (elements, searchType) {
-    let currentComponent;
-
-    elements.forEach(element => {
-        const type = element.type.toUpperCase();
-
-        if (currentComponent) {
-            return;
+    for (const element of elements || []) {
+        if (!element.type) {
+            continue;
         }
 
-        if (type === searchType.toUpperCase()) {
-            currentComponent = element;
+        if (element.type.toUpperCase() === searchType.toUpperCase()) {
+            return element;
         }
-        else if (type === "FOLDER") {
-            currentComponent = findElement(element.elements, searchType);
+
+        if (element.type.toUpperCase() === "FOLDER" && Array.isArray(element.elements)) {
+            const found = findElement(element.elements, searchType);
+
+            if (found) {
+                return found;
+            }
         }
-    });
-    return currentComponent;
+    }
+    return undefined;
 }
 
 

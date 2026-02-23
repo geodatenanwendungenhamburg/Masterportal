@@ -243,45 +243,83 @@ const actions = {
         bufferLayer.setOpacity(0.5);
     },
     /**
-     * generates URL from state
-     *
-     * @return {void}
-     */
-    buildUrlFromToolState ({commit, getters: {selectedSourceLayer, bufferRadius, resultType, selectedTargetLayer, type}}) {
-        const toolState = {
-            applySelectedSourceLayer: selectedSourceLayer.id,
-            applyBufferRadius: bufferRadius,
-            setResultType: resultType,
-            applySelectedTargetLayer: selectedTargetLayer.id
-        };
-
-        commit("setSavedUrl", location.origin +
-            location.pathname +
-            "?isinitopen=" +
-            type +
-            "&initvalues=" +
-            JSON.stringify(toolState));
-    },
-    /**
      * Applies values from previous saved buffer analysis
      * that was copied into the URL.
      * @return {void}
      */
     applyValuesFromSavedUrlBuffer ({rootState, state, dispatch, commit}) {
-        if (rootState.urlParams && rootState.urlParams["Tools/bufferAnalysis/active"]) {
-            const extractedParams = rootState.urlParams.initvalues.map((element) => {
-                    return element.replace(/\\"/g, "\"").split(":")[1].replaceAll("\"", "").replaceAll("}", "");
-                }),
-                selectedSourceLayerFromUrl = state.selectOptions.find(layer => layer.id === extractedParams[0]),
-                bufferRadiusFromUrl = extractedParams[1],
-                resultTypeFromUrl = extractedParams[2],
-                selectedTargetLayerFromUrl = state.selectOptions.find(layer => layer.id === extractedParams[3]);
+        const menuString = rootState.urlParams?.MENU;
+        const initOpen = rootState.urlParams?.ISINITOPEN;
+        const initValues = rootState.urlParams?.INITVALUES;
 
-            dispatch("applySelectedSourceLayer", selectedSourceLayerFromUrl);
-            commit("setInputBufferRadius", bufferRadiusFromUrl);
-            dispatch("applyBufferRadius", bufferRadiusFromUrl);
-            commit("setResultType", resultTypeFromUrl);
-            dispatch("applySelectedTargetLayer", selectedTargetLayerFromUrl);
+        try {
+            if (menuString) {
+                let menu;
+
+                if (typeof menuString === "string") {
+                    menu = JSON.parse(menuString);
+                }
+                else {
+                    menu = menuString;
+                }
+
+                const secondary = menu?.secondary;
+                const attrs = secondary?.attributes;
+
+                if (attrs && secondary?.currentComponent === "bufferAnalysis") {
+                    const sourceLayer = state.selectOptions.find(l => l.id === attrs.source);
+                    const targetLayer = state.selectOptions.find(l => l.id === attrs.target);
+                    const radius = Number(attrs.radius);
+                    const result = Number(attrs.result);
+
+                    if (sourceLayer) {
+                        dispatch("applySelectedSourceLayer", sourceLayer);
+                    }
+                    if (radius) {
+                        commit("setInputBufferRadius", radius);
+                        dispatch("applyBufferRadius", radius);
+                    }
+                    if (result !== undefined) {
+                        commit("setResultType", result);
+                    }
+                    if (targetLayer) {
+                        dispatch("applySelectedTargetLayer", targetLayer);
+                    }
+
+                    return;
+                }
+            }
+
+            // Legacy format
+            if (initOpen === "bufferAnalysis" && initValues) {
+                const parsed = JSON.parse(initValues);
+
+                const sourceLayer = state.selectOptions.find(l => l.id === parsed.applySelectedSourceLayer);
+                const targetLayer = state.selectOptions.find(l => l.id === parsed.applySelectedTargetLayer);
+                const radius = Number(parsed.applyBufferRadius);
+                const result = Number(parsed.setResultType);
+
+                if (sourceLayer) {
+                    dispatch("applySelectedSourceLayer", sourceLayer);
+                }
+                if (radius) {
+                    commit("setInputBufferRadius", radius);
+                    dispatch("applyBufferRadius", radius);
+                }
+                if (result !== undefined) {
+                    commit("setResultType", result);
+                }
+                if (targetLayer) {
+                    dispatch("applySelectedTargetLayer", targetLayer);
+                }
+            }
+        }
+        catch (err) {
+            console.error("Failed to apply bufferAnalysis values from URL:", err);
+            dispatch("Alerting/addSingleAlert", {
+                category: "error",
+                content: i18next.t("common:modules.bufferAnalysis.error")
+            }, {root: true});
         }
     }
 };

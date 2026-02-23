@@ -101,7 +101,8 @@
       "sourceLayerNotFound": "The saved source layer with ID {{layerId}} was not found",
       "sourceSelectLabel": "source layer",
       "targetLayerNotFound": "The saved target layer with the ID {{layerId}} was not found",
-      "targetSelectLabel": "target layer"
+      "targetSelectLabel": "target layer",
+      "error": "An error in Buffer Analysis occurred. Please check the URL."
     },
     "compareMaps": {
       "description": "Compare two maps side by side or on top of each other",

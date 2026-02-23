@@ -203,4 +203,68 @@ describe("src/modules/bufferAnalysis/store/actionsBufferAnalysis.js", () => {
             expect(dispatch.callCount).to.equal(3);
         });
     });
+
+    describe("applyValuesFromSavedUrlBuffer", () => {
+        beforeEach(() => {
+            state.selectOptions = createLayerConfigsArray(3);
+        });
+
+        it("applies values correctly from new MENU format", async () => {
+            const rootStateNew = {
+                urlParams: {
+                    MENU: JSON.stringify({
+                        main: {currentComponent: "root"},
+                        secondary: {
+                            currentComponent: "bufferAnalysis",
+                            attributes: {
+                                source: state.selectOptions[0].id,
+                                target: state.selectOptions[1].id,
+                                radius: "400",
+                                result: 1
+                            }
+                        }
+                    })
+                }
+            };
+
+            await actions.applyValuesFromSavedUrlBuffer({rootState: rootStateNew, state, commit, dispatch});
+
+            expect(dispatch.calledWith("applySelectedSourceLayer", state.selectOptions[0])).to.be.true;
+            expect(dispatch.calledWith("applySelectedTargetLayer", state.selectOptions[1])).to.be.true;
+            expect(commit.calledWith("setInputBufferRadius", 400)).to.be.true;
+            expect(commit.calledWith("setResultType", 1)).to.be.true;
+        });
+
+        it("applies values correctly from legacy initvalues format", async () => {
+            const legacyValues = {
+                applySelectedSourceLayer: state.selectOptions[0].id,
+                applyBufferRadius: 500,
+                setResultType: 0,
+                applySelectedTargetLayer: state.selectOptions[2].id
+            };
+
+            const rootStateLegacy = {
+                urlParams: {
+                    ISINITOPEN: "bufferAnalysis",
+                    INITVALUES: JSON.stringify(legacyValues)
+                }
+            };
+
+            await actions.applyValuesFromSavedUrlBuffer({rootState: rootStateLegacy, state, commit, dispatch});
+
+            expect(dispatch.calledWith("applySelectedSourceLayer", state.selectOptions[0])).to.be.true;
+            expect(dispatch.calledWith("applySelectedTargetLayer", state.selectOptions[2])).to.be.true;
+            expect(commit.calledWith("setInputBufferRadius", 500)).to.be.true;
+            expect(commit.calledWith("setResultType", 0)).to.be.true;
+        });
+
+        it("does nothing if URL params are missing", async () => {
+            const emptyRootState = {urlParams: {}};
+
+            await actions.applyValuesFromSavedUrlBuffer({rootState: emptyRootState, state, commit, dispatch});
+
+            expect(dispatch.called).to.be.false;
+            expect(commit.called).to.be.false;
+        });
+    });
 });

@@ -18,6 +18,7 @@
 - Issue \#1515: Filter: saveTo: `url` was fixed. Now reads URL params properly and sets them.
 - VectorStyle: Fixed styling of polygons: `"zig-line-horizontal"` and `"diagonal-right"` are rotated by 90°.
 - sortObjects: Ensure stable sortByLayerSequence order in Chrome/Firefox.
+- BufferAnalysis: Fixed applying values from URL. New and legacy format are now correctly parsed and applied.
 
 ---
 ## 2025-02-06 v3.15.2 (LTS)

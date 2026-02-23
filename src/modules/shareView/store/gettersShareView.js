@@ -64,6 +64,23 @@ const simpleGetters = {
             delete menuParams.secondary.attributes;
         }
 
+        const bufferState = rootState?.Modules?.BufferAnalysis;
+
+        if (
+            bufferState?.selectedSourceLayer &&
+            bufferState?.selectedTargetLayer &&
+            bufferState?.bufferRadius
+        ) {
+            menuParams.secondary = menuParams.secondary || {};
+            menuParams.secondary.currentComponent = "bufferAnalysis";
+            menuParams.secondary.attributes = {
+                source: bufferState.selectedSourceLayer.id,
+                target: bufferState.selectedTargetLayer.id,
+                radius: bufferState.bufferRadius,
+                result: bufferState.resultType
+            };
+        }
+
         areAttributesValid(menuParams.main);
         areAttributesValid(menuParams.secondary);
 

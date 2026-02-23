@@ -20,13 +20,14 @@ describe("src/modules/menu/js/menuUrlParams.js", () => {
         beforeEach(() => {
             store.getters = {
                 "Menu/mainMenu": {
-                    sections: []
+                    sections: [[{type: "root"}]]
                 },
                 "Menu/secondaryMenu": {
                     sections: [[
                         {
                             type: "measure"
-                        }
+                        },
+                        {type: "bufferAnalysis"}
                     ]]
                 }
             };
@@ -79,6 +80,23 @@ describe("src/modules/menu/js/menuUrlParams.js", () => {
                 foo: "bar"
             });
         });
+
+
+        it("activates bufferAnalysis in secondary menu even if main menu exists", () => {
+            const params = {
+                MENU: "{\"main\":{\"currentComponent\":\"root\"},\"secondary\":{\"currentComponent\":\"bufferAnalysis\"}}"
+            };
+
+            menuUrlParams.setAttributesToComponent(params);
+
+            const activate = dispatchCalls["Menu/activateCurrentComponent"];
+
+            expect(activate).to.deep.equals({
+                currentComponent: {type: "bufferAnalysis"},
+                type: "BufferAnalysis",
+                side: "secondaryMenu"
+            });
+        });
     });
 
     describe("isInitOpen", () =>{
@@ -92,7 +110,14 @@ describe("src/modules/menu/js/menuUrlParams.js", () => {
                     ]]
                 },
                 "Menu/secondaryMenu": {
-                    sections: []
+                    sections: [[
+                        {
+                            type: "measure"
+                        },
+                        {
+                            type: "bufferAnalysis"
+                        }
+                    ]]
                 }
             };
         });
@@ -128,6 +153,34 @@ describe("src/modules/menu/js/menuUrlParams.js", () => {
                 side: "mainMenu"
             });
         });
+
+        it("activates bufferAnalysis from ISINITOPEN legacy URL in correct menu", () => {
+            const params = {ISINITOPEN: "bufferAnalysis"};
+
+            menuUrlParams.isInitOpen(params);
+
+            const activate = dispatchCalls["Menu/activateCurrentComponent"];
+
+            expect(activate).to.deep.equals({
+                currentComponent: {type: "bufferAnalysis"},
+                type: "BufferAnalysis",
+                side: "secondaryMenu"
+            });
+        });
+
+        it("activates bufferAnalysis from STARTUPMODUL legacy URL in correct menu", () => {
+            const params = {STARTUPMODUL: "bufferAnalysis"};
+
+            menuUrlParams.isInitOpen(params);
+
+            const activate = dispatchCalls["Menu/activateCurrentComponent"];
+
+            expect(activate).to.deep.equals({
+                currentComponent: {type: "bufferAnalysis"},
+                type: "BufferAnalysis",
+                side: "secondaryMenu"
+            });
+        });
     });
 
     describe("getCurrentComponent", () =>{
@@ -143,7 +196,11 @@ describe("src/modules/menu/js/menuUrlParams.js", () => {
                     ]]
                 },
                 "Menu/secondaryMenu": {
-                    sections: []
+                    sections: [[
+                        {
+                            type: "bufferAnalysis"
+                        }
+                    ]]
                 }
             };
         });
@@ -180,6 +237,14 @@ describe("src/modules/menu/js/menuUrlParams.js", () => {
                 currentComponent: {
                     type: "fileImport"
                 },
+                side: "secondaryMenu"
+            });
+        });
+        it("returns correct side for bufferAnalysis", () => {
+            const result = menuUrlParams.getCurrentComponent("bufferAnalysis");
+
+            expect(result).to.deep.equals({
+                currentComponent: {type: "bufferAnalysis"},
                 side: "secondaryMenu"
             });
         });
