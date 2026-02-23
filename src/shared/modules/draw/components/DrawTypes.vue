@@ -288,8 +288,9 @@ export default {
 
                                 radius = Math.round(radius);
                                 this.setCircleOptions({innerRadius: radius});
+                                const formattedRadius = radius.toLocaleString("de-DE");
 
-                                tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawSettingsCircle.radii.radius")}: ${radius}m`;
+                                tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawSettingsCircle.radii.radius")}: ${formattedRadius}m`;
                                 this.$emit("circle-radius", radius);
                             }
                             if (drawType === "box" || drawType === "polygon") {
@@ -297,13 +298,16 @@ export default {
                                 const coordinates = geometry.getCoordinates()[0],
                                     width = Math.abs(coordinates[1][0] - coordinates[0][0]),
                                     height = Math.abs(coordinates[2][1] - coordinates[1][1]),
-                                    area = width * height;
+                                    area = Math.round(width * height),
+                                    formattedWidth = Math.round(width).toLocaleString("de-DE"),
+                                    formattedHeight = Math.round(height).toLocaleString("de-DE"),
+                                    formattedArea = area.toLocaleString("de-DE");
 
                                 if (drawType === "box") {
-                                    tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawLayout.area")}: ${Math.round(area)}m²<br>${this.$t("common:shared.modules.draw.drawLayout.width")}: ${Math.round(width)}m<br>${this.$t("common:shared.modules.draw.drawLayout.height")}: ${Math.round(height)}m`;
+                                    tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawLayout.area")}: ${formattedArea}m²<br>${this.$t("common:shared.modules.draw.drawLayout.width")}: ${formattedWidth}m<br>${this.$t("common:shared.modules.draw.drawLayout.height")}: ${formattedHeight}m`;
                                 }
                                 else {
-                                    tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawLayout.area")}: ${Math.round(area)}m²`;
+                                    tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawLayout.area")}: ${formattedArea}m²`;
                                 }
 
                             }
