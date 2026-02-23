@@ -7,6 +7,7 @@ import View from "ol/View.js";
 import highlightFeaturesByAttribute from "@core/maps/js/highlightFeaturesByAttribute.js";
 import mapUrlParams from "@core/maps/js/mapUrlParams.js";
 import store from "@appstore/index.js";
+import applyTileStyle from "@shared/js/utils/applyTileStyle.js";
 
 describe("src/core/maps/js/mapUrlParams.js", () => {
     let dispatchCalls = {},
@@ -31,7 +32,11 @@ describe("src/core/maps/js/mapUrlParams.js", () => {
             dispatchCalls[arg1] = arg2 !== undefined ? arg2 : "called";
         };
         store.getters = {
-            styleListLoaded: sinon.stub().returns(styleListLoaded)
+            styleListLoaded: sinon.stub().returns(styleListLoaded),
+            "Maps/mode": "3D",
+            "Modules/SearchBar/coloredHighlighting3D": {
+                color: "RED"
+            }
         };
 
         mapCollection.clear();
@@ -606,6 +611,52 @@ describe("src/core/maps/js/mapUrlParams.js", () => {
                 options: {duration: 0},
                 projection: "EPSG:25832"
             });
+        });
+    });
+
+    describe("highlight3DFeatureUrlParam", () => {
+        let watchStub, getMapStub, applyTileStyleStub;
+
+        beforeEach(() => {
+            watchStub = sinon.stub(store, "watch");
+            getMapStub = sinon.stub(mapCollection, "getMap");
+
+            applyTileStyleStub = sinon.spy(applyTileStyle);
+
+            store.getters = {
+                styleListLoaded: true,
+                "Maps/mode": "3D",
+                "Modules/SearchBar/coloredHighlighting3D": {color: "RED"}
+            };
+        });
+
+        afterEach(() => {
+            sinon.restore();
+        });
+
+        it("should return immediately if HIGHLIGHTED3D param is missing", () => {
+            mapUrlParams.highlight3DFeatureUrlParam({});
+            expect(watchStub.called).to.be.false;
+        });
+
+        it("should register a watcher if HIGHLIGHTED3D exists", () => {
+            mapUrlParams.highlight3DFeatureUrlParam({HIGHLIGHTED3D: "TEST_ID"});
+            expect(watchStub.calledOnce).to.be.true;
+        });
+
+        it("should not apply highlight if mode is not 3D", () => {
+            watchStub.callsFake((getter, callback) => callback("2D"));
+
+            mapUrlParams.highlight3DFeatureUrlParam({HIGHLIGHTED3D: "TEST_ID"});
+            expect(applyTileStyleStub.called).to.be.false;
+        });
+
+        it("should not apply highlight if 3D map is not ready", () => {
+            watchStub.callsFake((getter, callback) => callback("3D"));
+            getMapStub.returns(undefined);
+
+            mapUrlParams.highlight3DFeatureUrlParam({HIGHLIGHTED3D: "TEST_ID"});
+            expect(applyTileStyleStub.called).to.be.false;
         });
     });
 });

@@ -471,6 +471,7 @@ export default {
     featureViaUrl,
     highlightFeature,
     highlightFeaturesByAttributes,
+    highlight3DFeatureUrlParam,
     processProjection,
     setMapMarker,
     setCamera,
