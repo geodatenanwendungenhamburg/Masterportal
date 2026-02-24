@@ -44,7 +44,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@masterportal/masterportalapi": "^2.62.0",
+    "@masterportal/masterportalapi": "git+https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git#drawtool",
     "@popperjs/core": "^2.11.8",
     "axios": "^1.16.0",
     "bootstrap": "^5.3.8",
