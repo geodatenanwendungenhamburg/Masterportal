@@ -39,7 +39,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
 div {
     border: 2px solid var(--border-color);
     border-radius: 10px;
