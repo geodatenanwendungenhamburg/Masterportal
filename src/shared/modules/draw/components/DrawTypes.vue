@@ -449,7 +449,6 @@ export default {
 </template>
 
 <style lang="scss">
-@import "~variables";
 
 div.draw-tooltip {
     background-color: $white;;
