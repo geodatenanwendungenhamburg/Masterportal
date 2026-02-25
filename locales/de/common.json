@@ -1625,6 +1625,7 @@
             "outerRadius": "Äußerer Radius",
             "radius": "Radius"
           },
+          "radiusValidation" : "Der äußere Radius sollte größer sein als der innere Radius.",
           "settings": {
             "circle": "Einstellungen Kreis:",
             "doubleCircle": "Einstellungen Doppelkreis:"
