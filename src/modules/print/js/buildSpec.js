@@ -897,7 +897,7 @@ const BuildSpecModel = {
             }, "[").slice(0, -1) + "]";
         }
         // feature with geometry style and label style
-        if (styleFromStyleList !== undefined && styleFromStyleList.attributes.labelField && styleFromStyleList.attributes.labelField.length > 0) {
+        if (styleFromStyleList?.attributes?.labelField?.length > 0) {
             const labelField = styleFromStyleList.attributes.labelField;
 
             return styleAttr.reduce((acc, curr) => acc + `${curr}='${feature.get(curr)}' AND ${labelField}='${feature.get(labelField)}',`, "[").slice(0, -1)
@@ -1005,14 +1005,36 @@ const BuildSpecModel = {
         clonedFeature.unset("Datastreams", {silent: true});
 
         convertedFeature = geojsonFormat.writeFeatureObject(clonedFeature);
-        if (clonedFeature.getGeometry().getCoordinates().length === 0) {
+
+        if (this.isEmptyGeometry(clonedFeature?.getGeometry?.())) {
             convertedFeature = undefined;
         }
+
         // if its a cluster remove property features
         if (convertedFeature?.properties && Object.prototype.hasOwnProperty.call(convertedFeature.properties, "features")) {
             delete convertedFeature.properties.features;
         }
         return convertedFeature;
+    },
+    /**
+     * Checks whether a given geometry should be considered empty.
+     * @param {ol/geom/Geometry|null|undefined} geom - The OpenLayers geometry to check.
+     * @returns {Boolean} `true` if the geometry is considered empty; otherwise `false`.
+     */
+    isEmptyGeometry (geom) {
+        if (!geom) {
+            return true;
+        }
+
+        const hasCoords = typeof geom.getCoordinates === "function",
+            hasGeoms = typeof geom.getGeometries === "function";
+
+        if ((hasCoords && (!Array.isArray(geom.getCoordinates()) || geom.getCoordinates().length === 0))
+            || (hasGeoms && (!Array.isArray(geom.getGeometries()) || geom.getGeometries().length === 0))) {
+            return true;
+        }
+
+        return false;
     },
     /**
      * Generates the point Style
