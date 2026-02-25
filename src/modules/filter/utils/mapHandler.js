@@ -488,7 +488,7 @@ export default class MapHandler {
         const layerModel = layerCollection.getLayerById(layerId),
             layerSource = layerModel?.layerSource;
 
-        if (typeof layerModel?.get !== "function" || layerModel.get("legendURL")) {
+        if (typeof layerModel?.get !== "function" || typeof layerSource?.getFeatures !== "function" || layerModel.get("legendURL")) {
             return;
         }
 

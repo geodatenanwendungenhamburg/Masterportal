@@ -4,6 +4,7 @@ import LayerGroup from "ol/layer/Group.js";
 import isObject from "@shared/js/utils/isObject.js";
 import layerCollection from "@core/layers/js/layerCollection.js";
 import Cluster from "ol/source/Cluster.js";
+import {getWebglFeaturesFromLayers} from "@shared/js/utils/getWebglFeaturesFromLayers.js";
 
 /**
  * Returns the map projection.
@@ -60,9 +61,17 @@ function getVectorTileFeaturesByLayerId (layerId) {
     if (typeof layerId === "undefined") {
         return [];
     }
-    const layerModel = layerCollection.getLayerById(layerId);
 
-    return layerModel.layerSource.getFeaturesInExtent(store.getters["Maps/extent"]);
+    const layerModel = layerCollection.getLayerById(layerId);
+    const layer = layerModel.getLayer();
+    const map = mapCollection.getMap("2D");
+    const extent = store.getters["Maps/extent"];
+
+    return getWebglFeaturesFromLayers(
+        map,
+        [layer],
+        () => extent
+    );
 }
 
 /**

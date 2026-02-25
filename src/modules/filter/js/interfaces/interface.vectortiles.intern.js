@@ -5,6 +5,8 @@ import {getMinMaxFromFetchedFeatures, getUniqueValuesFromFetchedFeatures} from "
 import InterfaceOafExtern from "./interface.oaf.extern.js";
 import InterfaceWfsIntern from "./interface.wfs.intern.js";
 import layerCollection from "@core/layers/js/layerCollection.js";
+import mapCollection from "@core/maps/js/mapCollection.js";
+import {getWebglFeaturesFromLayers} from "@shared/js/utils/getWebglFeaturesFromLayers.js";
 /**
  * InterfaceVectorTilesIntern is the filter interface for VectorTiles filtered by OpenLayers.
  * It uses the the OAF Extern interface under the hood for api requests like getUniqueValues.
@@ -48,7 +50,7 @@ export default class InterfaceVectorTilesIntern {
             return;
         }
 
-        featuresInCurrentExtent = layerModel.getLayerSource().getFeaturesInExtent(store.getters["Maps/extent"]);
+        featuresInCurrentExtent = this.getFeaturesInExtent(layerModel);
 
         featuresInCurrentExtent.forEach(feature => {
             if (typeof feature?.getProperties !== "function") {
@@ -116,7 +118,7 @@ export default class InterfaceVectorTilesIntern {
             }
             return;
         }
-        featuresInCurrentExtent = layerModel.getLayerSource().getFeaturesInExtent(store.getters["Maps/extent"]);
+        featuresInCurrentExtent = this.getFeaturesInExtent(layerModel);
 
         featuresInCurrentExtent.forEach(feature => {
             if (typeof feature.getProperties !== "function") {
@@ -161,7 +163,7 @@ export default class InterfaceVectorTilesIntern {
             return;
         }
 
-        featuresInCurrentExtent = layerModel.getLayerSource().getFeaturesInExtent(store.getters["Maps/extent"]);
+        featuresInCurrentExtent = this.getFeaturesInExtent(layerModel);
 
         featuresInCurrentExtent.forEach(feature => {
             if (typeof feature.getProperties !== "function") {
@@ -180,6 +182,22 @@ export default class InterfaceVectorTilesIntern {
         if (typeof onsuccess === "function") {
             onsuccess(isObject(uniqueValues) ? Object.keys(uniqueValues) : []);
         }
+    }
+
+    /**
+     * Returns OL features of a VectorTile layer within the current map extent.
+     * @param {Object} layerModel the layer model
+     * @returns {Array<ol.Feature>} The OpenLayers features found inside the current map extent.
+     */
+    getFeaturesInExtent (layerModel) {
+        const map = mapCollection.getMap("2D");
+        const layer = layerModel.getLayer();
+
+        return getWebglFeaturesFromLayers(
+            map,
+            [layer],
+            () => store.getters["Maps/extent"]
+        ).map(gfi => gfi.getFeature?.() ?? gfi.feature);
     }
 
     /**

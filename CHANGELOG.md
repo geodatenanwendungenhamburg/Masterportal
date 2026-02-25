@@ -25,6 +25,7 @@
 - The following packages have been updated:
     - devDependencies:
         - @masterportal/masterportalapi: 2.56.0 to 2.58.0 (This also raised ol to version 10.8.0)
+- VectorTile, WebGL: Feature detection uses forEachFeatureAtPixel to support WebGL-rendered layers and avoid issues with getFeaturesInExtent.
 
 ### Deprecated
 

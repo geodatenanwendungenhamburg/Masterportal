@@ -13,6 +13,7 @@ import omit from "@shared/js/utils/omit.js";
 import {isUrl} from "@shared/js/utils/urlHelper.js";
 import {isEmailAddress} from "@shared/js/utils/isEmailAddress.js";
 import {isPhoneNumber, getPhoneNumberAsWebLink} from "@shared/js/utils/isPhoneNumber.js";
+import {getWebglFeaturesFromLayers} from "@shared/js/utils/getWebglFeaturesFromLayers.js";
 
 /**
  * Select Features
@@ -158,7 +159,11 @@ export default {
                 .filter(layer => layer.get("visible") && layer.get("source") instanceof VectorSource)
                 .forEach(layer => {
                     if (layer.get("typ") === "VectorTile" && layer.get("renderer") === "webgl") {
-                        const features = layer.get("source")?.getFeaturesInExtent(extent);
+                        const features = getWebglFeaturesFromLayers(
+                            map,
+                            [layer],
+                            () => extent
+                        ).map(gfi => gfi.getFeature?.() ?? gfi.feature);
 
                         features.forEach(feature => {
                             const featureId = feature.getId(),

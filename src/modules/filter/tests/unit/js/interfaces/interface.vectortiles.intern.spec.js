@@ -92,11 +92,13 @@ describe("src/modules/filter/interfaces/utils/interface.vectortiles.intern.js", 
         });
         it("should call the onsuccess function with {min: false, max:false} param, if no features exists in current extent.", () => {
             sinon.stub(layerCollection, "getLayerById").returns({
-                getLayerSource: () => {
-                    return {
-                        getFeaturesInExtent: () => []
-                    };
-                }
+                getLayer: () => ({
+                    getSource: () => ({
+                        forEachFeatureIntersectingExtent: () => {
+                            [];
+                        }
+                    })
+                })
             });
 
             store.getters = {
