@@ -66,6 +66,13 @@ export default {
             }
 
             return ["radius"];
+        },
+        /**
+         * Checks if the inner radius is greater than the outer radius.
+         * @returns {Boolean} True if the condition is violated, false otherwise.
+         */
+        isRadiusInvalid () {
+            return this.circleOptions.innerRadius > this.circleOptions.outerRadius;
         }
     },
     watch: {
@@ -171,6 +178,9 @@ export default {
                         {{ $t("common:shared.modules.draw.drawSettingsCircle.radii." + radius) }}
                     </label>
                 </div>
+            </div>
+            <div v-if="isRadiusInvalid && this.selectedDrawType === `doubleCircle`" class="text-danger mt-2">
+                {{ $t("common:shared.modules.draw.drawSettingsCircle.radiusValidation") }}
             </div>
         </div>
     </div>
