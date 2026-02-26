@@ -50,6 +50,7 @@
 - FeatureLister: Use configured parameter `featurePrefix` if configured instead of fallback.
 - Legend: Removed fallback legend as it caused problems with other legends.
 - BufferAnalysis: Fixed applying values from URL. New and legacy format are now correctly parsed and applied.
+- Issue: \#1563: Legend is displayed in the correct order.
 
 ---
 

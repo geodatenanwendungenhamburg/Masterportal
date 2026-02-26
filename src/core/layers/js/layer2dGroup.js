@@ -65,25 +65,6 @@ Layer2dGroup.prototype.createLayer = function (attributes) {
 };
 
 /**
- * Updates the layer values of the Layer2dGroup.
- * Passes the visibility of the group to its children.
- * @param {Object} attributes The attributes of the layer configuration.
- * @returns {void}
- */
-Layer2dGroup.prototype.updateLayerValues = function (attributes) {
-    Layer2d.prototype.updateLayerValues.call(this, attributes);
-
-    this.getLayerSource().forEach(l => {
-        const childProps = {
-            ...l.attributes,
-            visibility: attributes.visibility
-        };
-
-        l.updateLayerValues(childProps);
-    });
-};
-
-/**
  * No-op
  * The group itself does not control any autoRefreshing.
  * Instead, we let the actual layers handle their refreshing

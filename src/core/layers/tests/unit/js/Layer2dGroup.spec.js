@@ -117,28 +117,6 @@ describe("src/core/js/layers/Layer2dGroup.js", () => {
         });
     });
 
-    describe("updateLayerValues", () => {
-        it("should update the values of the group", () => {
-            const groupLayer = new Layer2dGroup(attributes, layerFactory);
-
-            expect(groupLayer.getLayer().getVisible()).to.be.true;
-
-            groupLayer.updateLayerValues({
-                ...attributes,
-                visibility: false
-            });
-
-            expect(groupLayer.getLayer().getVisible()).to.be.false;
-        });
-        it("should update the visibility of children", () => {
-            const groupLayer = new Layer2dGroup(attributes, layerFactory);
-
-            groupLayer.updateLayerValues(attributes);
-
-            expect(updateLayerValuesStub.callCount).to.equal(2);
-        });
-    });
-
     describe("setLayerSource", () => {
         it("setLayerSource shall be called on creation", () => {
             const groupLayer = new Layer2dGroup(attributes, layerFactory);
