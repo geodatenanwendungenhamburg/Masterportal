@@ -558,6 +558,7 @@ Please see the [OpenLayers Fill](https://openlayers.org/en/latest/apidoc/module-
 |polygonStrokeMiterLimit||Integer|`10`|`Miter limit`|
 |polygonFillColor|no|Integer[]|`[10, 200, 100, 0.5]`|Fill color in rgba|
 |polygonFillHatch|no|**[polygonFillHatch](#polygonpolygonfillhatch)**[]|`undefined`|Can be used to define a hatch pattern. Mutually exclusive to polygonFillColor – only one of the fields may be used. If both are defined, `polygonFillHatch` takes precedence.|
+|polygonImage|no|String|`"blank.svg"`|Image displayed as centered Icon in Polygon. May contain the icon name or a relative path to config.js `wfsImgPath`.|
 
 #### Polygon.polygonFillHatch
 

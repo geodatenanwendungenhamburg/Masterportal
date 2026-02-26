@@ -318,7 +318,19 @@ export default {
             legendObj = this.prepareLegendForLineString(legendObj, style);
         }
         else if (geometryType === "Polygon") {
-            legendObj = this.prepareLegendForPolygon(legendObj, style);
+            if (style?.polygonImage) {
+                const legendStyle = structuredClone(style);
+
+                legendStyle.type = "icon";
+                legendStyle.imageName = style?.polygonImage;
+                if (!legendStyle.imagePath) {
+                    legendStyle.imagePath = Config.wfsImgPath;
+                }
+                legendObj = this.prepareLegendForPoint(legendObj, legendStyle);
+            }
+            else {
+                legendObj = this.prepareLegendForPolygon(legendObj, style);
+            }
         }
         else if (geometryType === "cesium") {
             legendObj.name = this.prepareNameForCesium(style);
