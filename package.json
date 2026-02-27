@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@masterportal/masterportalapi": "^2.58.0",
+    "@mdi/font": "^7.4.47",
     "@popperjs/core": "^2.11.8",
     "axios": "^1.12.2",
     "bootstrap": "^5.3.8",
