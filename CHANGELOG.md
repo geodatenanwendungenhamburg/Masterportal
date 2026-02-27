@@ -29,6 +29,9 @@
 ### Deprecated
 
 ### Removed
+- The following packages have been removed:
+  - devDependencies:
+    - text-loader: ^0.0.1
 
 ### Fixed
 - Issue \#1515: Filter: saveTo: `url` was fixed. Now reads URL params properly and sets them.
