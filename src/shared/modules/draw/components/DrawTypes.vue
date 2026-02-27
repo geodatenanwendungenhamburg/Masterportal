@@ -4,6 +4,8 @@ import {mapActions, mapGetters, mapState, mapMutations} from "vuex";
 import IconButton from "../../buttons/components/IconButton.vue";
 import {nextTick} from "vue";
 import {createTooltipOverlay} from "../js/createTooltipOverlay.js";
+import Style from "ol/style/Style.js";
+import Icon from "ol/style/Icon.js";
 
 /**
  * Shared component that provides buttons for two-level selection of geometries and symbols.
@@ -258,7 +260,9 @@ export default {
             this.currentDrawInteraction = drawInteraction.createDrawInteraction(drawType, this.source);
             let onGeometryChange;
             const {tooltipOverlay, tooltipElement} = createTooltipOverlay(),
-                map = mapCollection.getMap("2D");
+                map = mapCollection.getMap("2D"),
+                symbol = this.symbolList.find(val => val.id === drawType);
+
 
             tooltipElement.style.display = "none";
 
@@ -321,6 +325,16 @@ export default {
 
                         geometry.on("change", onGeometryChange);
 
+                    }
+                    else if (symbol) {
+                        const feature = evt.feature;
+
+                        feature.setStyle(new Style({
+                            image: new Icon({
+                                src: symbol.value,
+                                scale: symbol.scale || 1
+                            })
+                        }));
                     }
                 });
                 this.currentDrawInteraction.on("drawend", (evt) => {
@@ -448,7 +462,7 @@ export default {
     />
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 div.draw-tooltip {
     background-color: $white;;
