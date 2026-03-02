@@ -718,11 +718,10 @@
     },
     "measure": {
       "area": "Fläche",
-      "deleteMeasurements": "Messungen löschen",
+      "deleteAll": "Alle Messungen löschen",
       "description": "Messen Sie eine Strecke oder Fläche",
       "edit": {
         "delete": "Messung löschen",
-        "deleteAll": "Alle Messungen löschen",
         "modify": "Messung bearbeiten",
         "finishModify": "Bearbeiten beenden",
         "redo": "Wiederholen",

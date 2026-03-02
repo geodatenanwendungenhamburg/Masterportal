@@ -716,11 +716,10 @@
     },
     "measure": {
       "area": "Área",
-      "deleteMeasurements": "Eliminar mediciones",
+      "deleteAll": "Eliminar todas las mediciones",
       "description": "Mida una distancia o un área",
       "edit": {
         "delete": "Eliminar medición",
-        "deleteAll": "Eliminar todas las mediciones",
         "modify": "Editar medición",
         "finishModify": "Finalizar edición",
         "redo": "Rehacer",

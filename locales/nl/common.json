@@ -649,11 +649,10 @@
     },
     "measure": {
       "area": "Vlak",
-      "deleteMeasurements": "Metingen verwijderen",
+      "deleteAll": "Alle metingen verwijderen",
       "description": "Meet een afstand of oppervlakte",
       "edit": {
         "delete": "Meting verwijderen",
-        "deleteAll": "Alle metingen verwijderen",
         "modify": "Meting bewerken",
         "finishModify": "Bewerken voltooien",
         "redo": "Herhalen",

@@ -716,11 +716,10 @@
     },
     "measure": {
       "area": "Flach",
-      "deleteMeasurements": "Maaten löschen",
+      "deleteAll": "All Maten löschen",
       "description": "Maat en Streek oder en Flach",
       "edit": {
         "delete": "Maten löschen",
-        "deleteAll": "All Maten löschen",
         "modify": "Maten bewarken",
         "finishModify": "Bewarken beenden",
         "redo": "Wedderhalen",

@@ -1580,9 +1580,9 @@ export default {
         <div class="d-flex justify-content-center my-3">
             <FlatButton
                 id="measure-delete"
-                aria-label="$t('common:modules.measure.deleteMeasurements')"
+                aria-label="$t('common:modules.measure.deleteAll')"
                 :interaction="regulateDeleteAll"
-                :text="$t('common:modules.measure.deleteMeasurements')"
+                :text="$t('common:modules.measure.deleteAll')"
                 :icon="deleteIcon"
                 :disabled="source?.getFeatures()?.length === 0"
             />

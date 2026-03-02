@@ -716,11 +716,10 @@
     },
     "measure": {
       "area": "Alan",
-      "deleteMeasurements": "Ölçümleri sil",
+      "deleteAll": "Tüm ölçümleri sil",
       "description": "Bir mesafe veya alan ölçün",
       "edit": {
         "delete": "Ölçümü sil",
-        "deleteAll": "Tüm ölçümleri sil",
         "modify": "Ölçümü düzenle",
         "finishModify": "Düzenlemeyi bitir",
         "redo": "Yinele",
