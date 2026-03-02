@@ -52,8 +52,9 @@ EOF
 upload_dir "$BITBUCKET_CLONE_DIR/$BITBUCKET_TAG" "/$BITBUCKET_TAG"
 # Latest deploy (conditional)
 if [[ "$DEPLOY_LATEST" == "true" ]]; then
-  cp -R "$BITBUCKET_CLONE_DIR/$BITBUCKET_TAG" "$BITBUCKET_CLONE_DIR/Latest"
-  upload_dir "$BITBUCKET_CLONE_DIR/Latest" "/Latest"
+#   cp -R "$BITBUCKET_CLONE_DIR/$BITBUCKET_TAG" "$BITBUCKET_CLONE_DIR/Latest"
+#   upload_dir "$BITBUCKET_CLONE_DIR/Latest" "/Latest"
+  echo "✅  Deploy Latest deployment"
 else
   echo "⏭️  Skipping Latest deployment"
 fi
