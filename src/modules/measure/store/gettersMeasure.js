@@ -26,14 +26,14 @@ const simpleGetters = {
      * @param {Object} rootGetters root getters
      * @return {String[]} calculated display values
      */
-    lineLengths ({lines, earthRadius, measurementAccuracy, selectedLineStringUnit, selectedGeometry, lineStringUnits}, getters, rootState, rootGetters) {
+    lineLengths ({lines, earthRadius, measurementAccuracy, selectedLineStringUnit, lineStringUnits}, getters, rootState, rootGetters) {
         return calculateLineLengths(
             rootGetters["Maps/projection"].getCode(),
             lines,
             earthRadius,
             measurementAccuracy,
             selectedLineStringUnit,
-            selectedGeometry,
+            "LineString",
             lineStringUnits
         );
     },
@@ -45,14 +45,14 @@ const simpleGetters = {
      * @param {Object} rootGetters root getters
      * @return {String[]} calculated display values
      */
-    polygonAreas ({polygons, earthRadius, measurementAccuracy, selectedPolygonUnit, selectedGeometry, polygonUnits}, getters, rootState, rootGetters) {
+    polygonAreas ({polygons, earthRadius, measurementAccuracy, selectedPolygonUnit, polygonUnits}, getters, rootState, rootGetters) {
         return calculatePolygonAreas(
             rootGetters["Maps/projection"].getCode(),
             polygons,
             earthRadius,
             measurementAccuracy,
             selectedPolygonUnit,
-            selectedGeometry,
+            "Polygon",
             polygonUnits
         );
     },

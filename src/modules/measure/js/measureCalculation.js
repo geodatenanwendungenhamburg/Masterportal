@@ -33,6 +33,9 @@ export function calculateLineLengths (
     selectedGeometry,
     lineStringUnits
 ) {
+    if (selectedGeometry !== "LineString") {
+        return {};
+    }
     return Object.keys(lines).reduce((accumulator, lineKey) => {
         const line = lines[lineKey],
             length = getLength(line.getGeometry(), {projection, radius}),
@@ -88,6 +91,9 @@ export function calculatePolygonAreas (
     selectedGeometry,
     polygonUnits
 ) {
+    if (selectedGeometry !== "Polygon") {
+        return {};
+    }
     return Object.keys(polygons).reduce((accumulator, polygonKey) => {
         const polygon = polygons[polygonKey],
             area = getArea(polygon.getGeometry(), {projection, radius}),
