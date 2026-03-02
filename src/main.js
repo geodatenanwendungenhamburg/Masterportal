@@ -1,4 +1,3 @@
-import "vuetify/styles";
 import "@/assets/css/bootstrap-custom.scss";
 import "@/assets/css/masterportal.css";
 
@@ -11,15 +10,8 @@ import store from "./app-store/index.js";
 // import "bootstrap/js/dist/offcanvas";
 // import remoteInterface from "./plugins/remoteInterface";
 // import utilsLogin from "../src/modules/login/js/utilsLogin";
-// import {instantiateVuetify} from "./plugins/vuetify";
-import vuetify from "@plugins/vuetify.js";
-import {initiateMatomo} from "./plugins/matomo.js";
-
-/*
-### #### #VITE ATTENTION ### ###
- - this file was renamed to masterportal.js
- - this file shall stay here until merge to dev, to provide easier rebase
-*/
+import {initiateMatomo} from "@plugins/matomo";
+import {instantiateVuetify} from "@plugins/vuetify.js";
 
 let app;
 
@@ -57,11 +49,17 @@ loadConfigJs.then(() => {
     // if (Object.prototype.hasOwnProperty.call(Config, "remoteInterface")) {
     //     app.use(remoteInterface, Config.remoteInterface);
     // }
-    app.use(vuetify);
     app.use(store);
     store.$app = app;
     if (Config.matomo) {
         initiateMatomo(app);
+    }
+    if (Config.vuetifyFolder) {
+        instantiateVuetify().then(vuetify => {
+            if (vuetify) {
+                app.use(vuetify);
+            }
+        });
     }
 
 
