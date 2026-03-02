@@ -178,8 +178,10 @@ export default {
                 const inputComponent = this.$refs[`nameInput-${measurement.id}`];
 
                 if (inputComponent && inputComponent[0]) {
-                    inputComponent[0].focus();
-                    const nativeInput = inputComponent[0].$refs.input;
+                    if (typeof inputComponent[0].focus === "function") {
+                        inputComponent[0].focus();
+                    }
+                    const nativeInput = inputComponent[0].$refs?.input;
 
                     if (nativeInput) {
                         nativeInput.select();
@@ -372,7 +374,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
 
 .active-measurement-container {
     .active-measurement-title {

@@ -739,7 +739,9 @@
       "resolution": "Роздільна здатність карти",
       "scale": "Масштаб",
       "screenResolution": "Роздільна здатність екрана",
-      "stretch": "Відстань"
+      "stretch": "Відстань",
+      "height3d": "Висота",
+      "distance3d": "Відстань"
     },
     "menu": {
       "ariaLabelClose": "Закрити $t(menu.name)",

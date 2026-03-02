@@ -1,6 +1,19 @@
 import {getArea, getLength} from "ol/sphere.js";
 
 /**
+ * Formats a number with German thousands separators and fixed decimal places.
+ * @param {Number} value - The number to format
+ * @param {Number} decimals - The number of decimal places
+ * @returns {String} The formatted number string (e.g. 1.234.567,8)
+ */
+function formatNumber (value, decimals) {
+    return value.toLocaleString("de-DE", {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+    });
+}
+
+/**
  * Calculates lengths and deviations of a line array.
  * @param {String} projection EPSG projection code
  * @param {module:ol/geom/LineString[]} lines lines to calculate length of
@@ -24,11 +37,11 @@ export function calculateLineLengths (projection, lines, radius, accuracy, selec
             }
             else if (selectedUnitName === "m") {
                 accumulator[lineKey] = measurementAccuracy === "decimeter" || (measurementAccuracy === "dynamic" && length < 10)
-                    ? `${length.toFixed(1)} m`
-                    : `${length.toFixed(0)} m`;
+                    ? `${formatNumber(length, 1)} m`
+                    : `${formatNumber(length, 0)} m`;
             }
             else if (selectedUnitName === "km") {
-                accumulator[lineKey] = `${(length / 1000).toFixed(1)} km`;
+                accumulator[lineKey] = `${formatNumber(length / 1000, 1)} km`;
             }
             else if (selectedUnitName === "nm") {
                 // see https://en.wikipedia.org/wiki/Nautical_mile
@@ -36,8 +49,8 @@ export function calculateLineLengths (projection, lines, radius, accuracy, selec
                     unitLength = length / metresPerNm;
 
                 accumulator[lineKey] = measurementAccuracy === "decimeter" || (measurementAccuracy === "dynamic" && unitLength < 10)
-                    ? `${unitLength.toFixed(1)} nm`
-                    : `${unitLength.toFixed(0)} nm`;
+                    ? `${formatNumber(unitLength, 1)} nm`
+                    : `${formatNumber(unitLength, 0)} nm`;
             }
 
             return accumulator;
@@ -71,18 +84,18 @@ export function calculatePolygonAreas (projection, polygons, radius, accuracy, s
             }
             else if (selectedUnitName === "m²") {
                 accumulator[polygonKey] = measurementAccuracy === "decimeter" || (measurementAccuracy === "dynamic" && area < 10)
-                    ? `${area.toFixed(1)} m²`
-                    : `${area.toFixed(0)} m²`;
+                    ? `${formatNumber(area, 1)} m²`
+                    : `${formatNumber(area, 0)} m²`;
             }
             else if (selectedUnitName === "ha") {
                 const unitArea = area / 10000;
 
                 accumulator[polygonKey] = measurementAccuracy === "decimeter" || (measurementAccuracy === "dynamic" && unitArea < 10)
-                    ? `${unitArea.toFixed(1)} ha`
-                    : `${unitArea.toFixed(0)} ha`;
+                    ? `${formatNumber(unitArea, 1)} ha`
+                    : `${formatNumber(unitArea, 0)} ha`;
             }
             else if (selectedUnitName === "km²") {
-                accumulator[polygonKey] = `${(area / 1000000).toFixed(1)} km²`;
+                accumulator[polygonKey] = `${formatNumber(area / 1000000, 1)} km²`;
             }
 
             return accumulator;

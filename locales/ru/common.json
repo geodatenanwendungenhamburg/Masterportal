@@ -739,7 +739,9 @@
       "resolution": "Разрешение карты",
       "scale": "Масштаб",
       "screenResolution": "Разрешение экрана",
-      "stretch": "Длина"
+      "stretch": "Длина",
+      "height3d": "Высота",
+      "distance3d": "Расстояние"
     },
     "menu": {
       "ariaLabelClose": "Закрыть $t(menu.name)",

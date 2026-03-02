@@ -465,7 +465,7 @@ describe("src/modules/measure/components/MeasureInMap.vue", () => {
         });
 
         it("created hook dispatches checkLayer action", async () => {
-            const checkLayerSpy = sinon.spy();
+            const checkLayerSpy = sinon.stub().resolves(true);
 
             store._actions["Maps/checkLayer"] = [checkLayerSpy];
 

@@ -672,7 +672,9 @@
       "resolution": "Resolutie van de kaart",
       "scale": "schaal",
       "screenResolution": "Resolutie van het scherm",
-      "stretch": "Lijn"
+      "stretch": "Lijn",
+      "height3d": "Hoogte",
+      "distance3d": "Afstand"
     },
     "menu": {
       "ariaLabelClose": "$t(menu.name) sluit",

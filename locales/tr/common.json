@@ -739,7 +739,9 @@
       "resolution": "Harita çözünürlüğü",
       "scale": "Ölçek",
       "screenResolution": "Ekran çözünürlüğü",
-      "stretch": "Mesafe"
+      "stretch": "Mesafe",
+      "height3d": "Yükseklik",
+      "distance3d": "Mesafe"
     },
     "menu": {
       "ariaLabelClose": "$t(menu.name) kapat",

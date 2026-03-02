@@ -745,7 +745,9 @@
       "resolution": "Auflösung der Karte",
       "scale": "Maßstab",
       "screenResolution": "Auflösung des Bildschirmes",
-      "stretch": "Strecke"
+      "stretch": "Strecke",
+      "height3d": "Höhe",
+      "distance3d": "Entfernung"
     },
     "menu": {
       "ariaLabelClose": "$t(menu.name) schließen",

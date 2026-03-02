@@ -3,6 +3,18 @@ let pinPositions = [],
     firstPosition = null;
 
 /**
+ * Formats a number with German thousands separators and one decimal place.
+ * @param {Number} value - The number to format
+ * @returns {String} The formatted number string
+ */
+function formatNumber (value) {
+    return value.toLocaleString("de-DE", {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+    });
+}
+
+/**
  * Creates a new cesium label entity.
  * @param {String} text - The text for the label.
  * @param {Cesium.Cartesian3} position - The cartesian position for the label.
@@ -80,7 +92,7 @@ export function onClick () {
         entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
         cartographic = scene.globe.ellipsoid.cartesianToCartographic(currentPosition) ?? new Cesium.Cartographic(),
         height = cartographic.height - scene.globe.getHeight(cartographic),
-        heightLabel = createLabelEntity("Höhe:\n" + height.toFixed(1) + "m", currentPosition);
+        heightLabel = createLabelEntity(i18next.t("common:modules.measure.height3d") + ":\n" + formatNumber(height) + "m", currentPosition);
     let positionAbove,
         pin = null;
 
@@ -102,7 +114,7 @@ export function onClick () {
         let distanceLabel = null;
 
         Cesium.Cartesian3.midpoint(firstPosition, currentPosition, middlePosition);
-        distanceLabel = createLabelEntity("Entfernung:\n" + distance.toFixed(1) + "m", middlePosition);
+        distanceLabel = createLabelEntity(i18next.t("common:modules.measure.distance3d") + ":\n" + formatNumber(distance) + "m", middlePosition);
 
         entities.add(distanceLine);
         entities.add(distanceLabel);

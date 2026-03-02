@@ -739,7 +739,9 @@
       "resolution": "Oplösen vun de Koort",
       "scale": "Maßstap",
       "screenResolution": "Oplösen vun’n Schirm",
-      "stretch": "Streek"
+      "stretch": "Streek",
+      "height3d": "Höchte",
+      "distance3d": "Afstand"
     },
     "menu": {
       "ariaLabelClose": "$t(menu.name) tomaken",

@@ -741,7 +741,9 @@
   "resolution": "Resolução do mapa",
   "scale": "Escala",
   "screenResolution": "Resolução do ecrã",
-  "stretch": "Distância"
+  "stretch": "Distância",
+  "height3d": "Altura",
+  "distance3d": "Distância"
 },
 "menu": {
   "ariaLabelClose": "Fechar $t(menu.name)",
