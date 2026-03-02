@@ -132,7 +132,8 @@ export default {
         ]),
         ...mapGetters("Modules/Filter", [
             "type",
-            "menuSide"
+            "menuSide",
+            "triggerAllTagsDeleted"
         ])
     },
     watch: {
@@ -159,7 +160,7 @@ export default {
             }
             const selectedGeometry = this.getSelectedGeometry(newValue);
 
-            if (newValue >= 0) {
+            if (newValue >= 0 && selectedGeometry?.type !== "additional") {
                 this.setHasMouseMapInteractions(true);
                 this.setCurrentMouseMapInteractionsComponent(this.type);
             }
@@ -211,6 +212,9 @@ export default {
                 this.allGeometries = this.getGeometries();
             },
             deep: true
+        },
+        triggerAllTagsDeleted () {
+            this.reset();
         }
     },
     created () {

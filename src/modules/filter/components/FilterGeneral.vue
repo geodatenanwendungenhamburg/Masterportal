@@ -99,10 +99,12 @@ export default {
         }
     },
     watch: {
-        rulesOfFilters: {
-            handler (val) {
-                this.generateLayerRules(val);
-                this.isFilterActive = this.layerRules.length > 0;
+        totalResults: {
+            handler (results) {
+                this.generateLayerRules(this.rulesOfFilters);
+                console.log("generatedLayerRules", this.layerRules);
+                console.log("results", results);
+                this.isFilterActive = this.layerRules.length > 0 || Object.values(results || {}).filter(val => val).length > 0;
             },
             deep: true
         }
@@ -208,28 +210,45 @@ export default {
         generateLayerRules (rules) {
             const tmpRules = [];
 
-            [...this.flattenPreparedLayerGroups, ...this.layerConfigs.layers].forEach(layerConfig => {
-                if (rules[layerConfig.filterId] && rules[layerConfig.filterId].filter(rule => rule !== false && rule !== null && !rule?.fixed).length) {
-                    const rulesToShow = [];
+            const hasGeometryFilter = Boolean(this.filterGeometry);
+            const selectedFilterIds = new Set((this.selectedAccordions || []).map(a => a.filterId));
 
-                    rules[layerConfig.filterId].forEach(rule => {
-                        if (!this.isRule(rule)) {
-                            return;
-                        }
-                        if (Array.isArray(rule.appliedPassiveValues) && !rule?.appliedPassiveValues?.length) {
-                            return;
-                        }
-                        rulesToShow.push(rule);
-                    });
-                    if (rulesToShow.length === 0) {
+            [...this.flattenPreparedLayerGroups, ...this.layerConfigs.layers].forEach(layerConfig => {
+                const filterId = layerConfig.filterId;
+
+                const hasNonFixedRules = Array.isArray(rules?.[filterId])
+                    && rules[filterId].filter(rule => rule !== false && rule !== null && !rule?.fixed).length > 0;
+
+                // “Geometry-only” aktiv heißt: Geometrie gesetzt + Accordion ist geöffnet/selected
+                const isGeometryOnlyActiveForThisAccordion = hasGeometryFilter && selectedFilterIds.has(filterId);
+
+                // Nur aufnehmen, wenn entweder echte Rules existieren ODER Geometry-only greift
+                if (!hasNonFixedRules && !isGeometryOnlyActiveForThisAccordion) {
+                    return;
+                }
+
+                const rulesToShow = [];
+
+                (rules?.[filterId] || []).forEach(rule => {
+                    if (!this.isRule(rule)) {
                         return;
                     }
-                    tmpRules.push({
-                        filterId: layerConfig.filterId,
-                        layerTitle: layerConfig.title,
-                        rule: rulesToShow
-                    });
+                    if (Array.isArray(rule.appliedPassiveValues) && !rule?.appliedPassiveValues?.length) {
+                        return;
+                    }
+                    rulesToShow.push(rule);
+                });
+
+                // Wenn keine Rules sichtbar sind, nur dann überspringen, wenn es NICHT Geometry-only ist
+                if (rulesToShow.length === 0 && !isGeometryOnlyActiveForThisAccordion) {
+                    return;
                 }
+
+                tmpRules.push({
+                    filterId,
+                    layerTitle: layerConfig.title,
+                    rule: rulesToShow // kann bei Geometry-only leer sein -> Titel wird trotzdem angezeigt
+                });
             });
 
             this.layerRules = tmpRules;
@@ -662,6 +681,12 @@ export default {
          */
         triggerDeleteAll () {
             this.setTriggerAllTagsDeleted(!this.triggerAllTagsDeleted);
+            this.updateFilterGeometry(false);
+            this.updateGeometryFeature();
+            this.updateGeometrySelectorOptions({
+                "selectedGeometry": 0,
+                "defaultBuffer": 20
+            });
         },
         /**
          * Sets the isGeometryFilterActive variable true or false.
@@ -705,8 +730,13 @@ export default {
                     class="d-inline-block w-100"
                     :class="getTagClass(index, isFilterShown)"
                 >
-                    <div>
-                        {{ layerRule.layerTitle }}
+                    <div class="title">
+                        <div class="float-start">
+                            {{ layerRule.layerTitle }}
+                        </div>
+                        <span class="float-end">
+                            {{ $t("common:modules.filter.filterResult.unit", {amountOfFilteredItems: totalResults[layerRule.filterId]}) }}
+                        </span>
                     </div>
                     <div class="snippetTagsWrapper mt-1">
                         <div

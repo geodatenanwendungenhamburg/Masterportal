@@ -267,7 +267,7 @@ export default {
             deep: true
         },
         triggerAllTagsDeleted () {
-            this.resetAllSnippets(this.deleteAllRules());
+            this.resetAllSnippets();
         },
         paging (val) {
             if (val?.page >= val?.total) {
@@ -307,11 +307,12 @@ export default {
             deep: true
         },
         amountOfFilteredItems (val) {
-            const currentTotalResult = this.totalResults;
+            const currentTotalResult = JSON.parse(JSON.stringify(this.totalResults));
 
             currentTotalResult[this.layerConfig?.filterId] = val;
 
             this.setTotalResults(currentTotalResult);
+            console.log("SET TOTAL RESULTS")
 
             if (this.isStrategyActive()) {
                 return;
@@ -328,6 +329,11 @@ export default {
         },
         filterGeometry () {
             if (this.isLayerFilterSelected === true || typeof this.isLayerFilterSelected === "function" && this.isLayerFilterSelected(this.layerConfig.filterId)) {
+                if (this.filterGeometry === false) {
+                    this.mapHandler.clearLayer(this.layerConfig?.filterId, this.isExtern());
+                    this.amountOfFilteredItems = false;
+                    return;
+                }
                 this.handleActiveStrategy();
             }
         },
