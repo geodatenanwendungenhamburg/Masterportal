@@ -12,7 +12,8 @@ const mutations = {
      * @returns {void}
      */
     addFeature (state, payload) {
-        const key = state.selectedGeometry === "LineString" ? "lines" : "polygons";
+        const geometryType = payload.getGeometry ? payload.getGeometry().getType() : null,
+            key = geometryType === "LineString" ? "lines" : "polygons";
 
         state[key] = {
             ...state[key],

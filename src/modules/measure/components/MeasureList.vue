@@ -311,7 +311,7 @@ export default {
                             role="button"
                             tabindex="0"
                             :title="$t('common:modules.measure.edit.renameHint')"
-                            @dblclick="startEditingName(measurement)"
+                            @click="startEditingName(measurement)"
                             @keydown.enter="startEditingName(measurement)"
                         >
                             <i :class="getTypeIcon(measurement.type)" />
@@ -376,6 +376,8 @@ export default {
 <style lang="scss" scoped>
 
 .active-measurement-container {
+    margin-top: 1rem;
+
     .active-measurement-title {
         font-weight: bold;
         font-size: 0.9rem;
@@ -437,7 +439,7 @@ export default {
     }
 
     .measure-list {
-        max-height: 300px;
+        max-height: 500px;
         overflow-y: auto;
         border: 1px solid $light_grey;
         border-radius: 4px;
@@ -448,6 +450,7 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 0.5rem;
         padding: 0.5rem;
         border-bottom: 1px solid $light_grey;
         transition: background-color 0.2s;
