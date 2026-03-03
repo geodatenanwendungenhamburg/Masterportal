@@ -1,4 +1,4 @@
-const Config = {
+Config = {
     alerting: {
         fetchBroadcastUrl: "./resources/newsFeedPortalAlerts.json"
     },
