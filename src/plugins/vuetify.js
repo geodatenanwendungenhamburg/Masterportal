@@ -44,15 +44,15 @@ const vuetify = createVuetify({
     directives,
     theme: {
         themes: {
-          dark: {
-            dark: false,
-            colors: {
-              primary: "#E53935",
-              secondary: "#FFCDD2"
+            dark: {
+                dark: false,
+                colors: {
+                    primary: "#E53935",
+                    secondary: "#FFCDD2"
+                }
             }
-          }
         }
-      }
+    }
 });
 
 export default vuetify;

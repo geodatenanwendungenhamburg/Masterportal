@@ -2889,7 +2889,7 @@ Das Filterwerkzeug bietet eine Reihe von Optionen zum Filtern von Vektordaten au
 |closeDropdownOnSelect|nein|Boolean|true|Aktivieren/Deaktivieren des Schließens der Dropdownliste nach Auswahl einer Option.|false|
 |collapseButtons|nein|Boolean|false|Wenn collapseButtons auf `true` gesetzt ist, werden Buttons statt Accordions angezeigt.|false|
 |clearAll|nein|Boolean|false|Beim Klick auf den Zurücksetzen-Button werden alle Features angezeigt. Wird das clearAll-Flag auf `true` gestellt, werden beim Zurücksetzen keine Features angezeigt.|false|
-|shouldSubjectDataSelectedInTree|false|Boolean|false|Filter werden nur angezeigt, wenn der jeweilig Layer im Themenbaum ausgewählt ist.|false|
+|shouldSubjectDataSelectedInTree|no|Boolean|false|Filter werden nur angezeigt, wenn der jeweilig Layer im Themenbaum ausgewählt ist.|false|
 
 **Beispiel**
 
@@ -3448,7 +3448,7 @@ Druckmodul. Konfigurierbar für 2 Druckdienste: den High Resolution PlotService 
 |overviewmapLayerId|nein|String||Über den Parameter layerId kann ein anderer Layer für die Overviewmap verwendet werden. Wird keine Id angegeben, wird der erste Layer der ausgewählten Hintergundkarten verwendet.|false|
 |printAppCapabilities|nein|String|"capabilities.json"|Pfad unter welcher die Konfiguration des Druckdienstes zu finden ist.|false|
 |printAppId|nein|String|"master"|Id der print app des Druckdienstes. Dies gibt dem Druckdienst vor welche/s Template/s er zu verwenden hat.|false|
-|layoutGroups|nein|Object|–|Ermöglicht die Gruppierung der im Druckdialog verfügbaren Layouts in Kategorien (z. B. *A4 – Hochformat*, *A4 – Querformat*). Wenn definiert, werden die Layouts im Dropdown gruppiert angezeigt. Fehlt der Eintrag, bleibt die Anzeige wie bisher.|false|
+|layoutGroups|nein|**[layoutGroups](#portalconfigmenusectionsmodulesprintlayoutgroups)**|{}|Ermöglicht die Gruppierung der im Druckdialog verfügbaren Layouts in Kategorien (z. B. *A4 – Hochformat*, *A4 – Querformat*). Wenn definiert, werden die Layouts im Dropdown gruppiert angezeigt. Fehlt der Eintrag, bleibt die Anzeige wie bisher.|false|
 |printMapMarker|nein|Boolean|false|Wenn dieses Feld auf true gesetzt ist, werden im Bildausschnitt sichtbare MapMarker mitgedruckt. Diese überdecken ggf. interessante Druckinformationen.|false|
 |printService|nein|String|"mapfish"|Flag welcher Druckdienst verwendet werden soll. Bei "plotservice" wird der High Resolution PlotService verwendet, wenn der Parameter nicht gesetzt wird, wird Mapfish 3 verwendet.|false|
 |printServiceId|ja|String||Id des Druckdienstes der verwendet werden soll. Wird in der rest-services.json abgelegt.|false|
@@ -3489,25 +3489,7 @@ Druckmodul. Konfigurierbar für 2 Druckdienste: den High Resolution PlotService 
     "printServiceId": "mapfish_printservice_id",
     "printAppId": "mrh",
     "filename": "Ausdruck",
-    "title": "Mein Titel",
-    "layoutGroups": {
-        "A0 – Hochformat": [
-            "A0 Hochformat Einfach",
-            "A0 Hochformat Umfangreich"
-        ],
-        "A0 – Querformat": [
-            "A0 Querformat Einfach",
-            "A0 Querformat Umfangreich"
-        ],
-        "A4 – Hochformat": [
-            "A4 Hochformat Einfach",
-            "A4 Hochformat Umfangreich"
-        ],
-        "A4 – Querformat": [
-            "A4 Querformat Einfach",
-            "A4 Querformat Umfangreich"
-        ]
-    }
+    "title": "Mein Titel"
 }
 ```
 
@@ -3583,6 +3565,39 @@ Es können beliebige Namen für die Variablen gewählt werden und beliebige Wert
         "exampleParameter1": "example placeholder",
         "exampleParameter2": "example placeholder 2"
     }
+```
+
+***
+
+###### portalConfig.menu.sections.modules.print.layoutGroups {data-toc-label='Print layout-Groups'}
+
+Ermöglicht die Gruppierung der im Druckdialog verfügbaren Layouts in Kategorien.
+
+|Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
+|----|-------------|---|-------|------------|------|
+|layoutGroup|ja|String[]|[]|layer group|false|
+
+**Beispiel Transfer Parameter**
+
+```json
+"layoutGroups": {
+    "A0 – Hochformat": [
+        "A0 Hochformat Einfach",
+        "A0 Hochformat Umfangreich"
+    ],
+    "A0 – Querformat": [
+        "A0 Querformat Einfach",
+        "A0 Querformat Umfangreich"
+    ],
+    "A4 – Hochformat": [
+        "A4 Hochformat Einfach",
+        "A4 Hochformat Umfangreich"
+    ],
+    "A4 – Querformat": [
+        "A4 Querformat Einfach",
+        "A4 Querformat Umfangreich"
+    ]
+}
 ```
 
 ***

@@ -17,7 +17,6 @@ import Layer3dTileset from "./layer3dTileset.js";
 
 const layerTypes2d = {
         GEOJSON: Layer2dVectorGeojson,
-        // to circular dependency
         GROUP: Layer2dGroup,
         OAF: Layer2dVectorOaf,
         SENSORTHINGS: Layer2dVectorSensorThings,
@@ -52,7 +51,6 @@ function createLayer (layerConf, mapMode) {
     else {
         typ = layerConf?.typ?.toUpperCase();
     }
-
     if (layerTypes2d[typ]) {
         layer = new layerTypes2d[typ](layerConf, typ === "GROUP" ? this : undefined);
     }
@@ -68,13 +66,15 @@ function createLayer (layerConf, mapMode) {
  * @returns {Array} The vectorLayer types as an array.
  */
 function getVectorLayerTypes () {
-    return [
-        "GEOJSON",
-        "OAF",
-        "SENSORTHINGS",
-        "VECTORBASE",
-        "WFS"
-    ];
+    const vectorLayerTypes = [];
+
+    Object.keys(layerTypes2d).forEach(layerTyp => {
+        if (layerTypes2d[layerTyp].prototype instanceof Layer2dVector) {
+            vectorLayerTypes.push(layerTyp);
+        }
+    });
+
+    return vectorLayerTypes;
 }
 
 export default {

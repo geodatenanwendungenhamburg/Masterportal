@@ -1,4 +1,4 @@
-import {Group as LayerGroup} from "ol/layer";
+import {Group as LayerGroup} from "ol/layer.js";
 import Layer2d from "./layer2d.js";
 
 /**
@@ -140,3 +140,4 @@ Layer2dGroup.prototype.addErrorListener = function () {
         Layer2d.prototype.addErrorListener.call(sourceLayer.getLayerSource());
     });
 };
+
