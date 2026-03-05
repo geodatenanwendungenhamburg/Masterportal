@@ -54,7 +54,7 @@ function setLayers (params) {
 function collectParams (params) {
     collectedParams = {...collectedParams, ...params};
 
-    if ((collectedParams["MAP/LAYERIDS"] || collectedParams.LAYERIDS) && collectedParams.TRANSPARENCY && collectedParams.VISIBILITY) {
+    if (collectedParams["MAP/LAYERIDS"] || collectedParams.LAYERIDS) {
         setLayerIds(collectedParams);
     }
 }
@@ -149,7 +149,11 @@ function removeCurrentLayerFromLayerTree () {
  */
 function addLayerToLayerTree (layers) {
     layers.forEach((layer, index) => {
-        const isBaseLayer = store.getters.layerConfigById(layer.id).baselayer;
+        let isBaseLayer = false;
+
+        if (store.getters.layerConfigById(layer.id)) {
+            isBaseLayer = store.getters.layerConfigById(layer.id).baselayer;
+        }
         let zIndex;
 
         if (isBaseLayer) {
