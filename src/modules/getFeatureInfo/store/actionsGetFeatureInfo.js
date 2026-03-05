@@ -9,7 +9,8 @@ import changeCase from "@shared/js/utils/changeCase.js";
 import get3DHighlightColor from "@shared/js/utils/get3DHighlightColor.js";
 import applyTileStyle from "@shared/js/utils/applyTileStyle.js";
 import remove3DFeatureHighlight from "@shared/js/utils/remove3DFeatureHighlight.js";
-
+import find3DPickedFeature from "@shared/js/utils/find3DPickedFeature.js";
+import proj4 from "proj4";
 /**
  * The actions for the getFeatureInfo.
  * @module modules/getFeatureInfo/store/actionsGetFeatureInfo
@@ -264,36 +265,91 @@ export default {
      * @param {Object} attributes of urlParams
      * @returns {void}
      */
-    handleRestore3D ({dispatch, rootGetters}, {attributes, componentName, clickCoordinates}) {
+    async  handleRestore3D ({dispatch, rootGetters}, {attributes, componentName, clickCoordinates}) {
+        console.log("[GFI] Restoring 3D feature info...");
+
+        // Only proceed if there is a visible 3D terrain
         const visibleTerrainLayers = rootGetters.visibleLayerConfigs.filter(
             config => config.typ.toUpperCase() === "TERRAIN3D"
         );
 
         if (visibleTerrainLayers.length === 0) {
-            console.warn("A terrain is not available, GFI cannot be restored!");
+            console.warn("[GFI] No 3D terrain available. Cannot restore GFI.");
             return;
         }
 
         const scene = mapCollection.getMap("3D").getCesiumScene();
-        const clickPixel = transformer.coordToPixel3D(clickCoordinates);
 
-        scene.globe.tileLoadProgressEvent.addEventListener(function listener () {
 
-            if (attributes.lastPickedFeatureId) {
-                applyTileStyle(
-                    attributes.lastPickedFeatureId,
-                    get3DHighlightColor(attributes.coloredHighlighting3D?.color, "RED")
-                );
-            }
-
+        // Wait until tiles are loaded
+        const tileLoadListener = async () => {
+            applyTileStyle(
+                attributes.lastPickedFeatureId,
+                get3DHighlightColor(attributes.coloredHighlighting3D?.color, "RED")
+            );
             if (!scene.globe.tilesLoaded) {
                 return;
             }
 
-            scene.globe.tileLoadProgressEvent.removeEventListener(listener);
 
-            dispatch("restoreGFI", {attributes, componentName, clickCoordinates, clickPixel});
-        });
+            scene.globe.tileLoadProgressEvent.removeEventListener(tileLoadListener);
+
+            if (!attributes.lastPickedFeatureId) {
+                console.warn("[GFI] No lastPickedFeatureId available.");
+                return;
+            }
+
+            // Apply highlight style
+
+            // Get the picked feature
+            const pickedFeature = await find3DPickedFeature(scene, attributes.lastPickedFeatureId);
+
+            if (!pickedFeature?.content?.tile) {
+                console.warn("[GFI] No tile found on picked feature.");
+                return;
+            }
+
+            const tile = pickedFeature.content.tile;
+
+            if (!tile.boundingSphere) {
+                console.warn("[GFI] Tile has no boundingSphere.");
+                return;
+            }
+
+            const centerCartesian = tile.boundingSphere.center;
+            const cartographic = Cesium.Cartographic.fromCartesian(centerCartesian);
+
+            // Feature coordinates in WGS84
+            const longitude = Cesium.Math.toDegrees(cartographic.longitude);
+            const latitude = Cesium.Math.toDegrees(cartographic.latitude);
+            const height = cartographic.height;
+
+            console.log("[GFI] Picked feature center (WGS84):", longitude, latitude, height);
+            const coords = [longitude, latitude, height];
+
+            console.log("rootGetters[\"Maps/projection\"].getCode(): ", rootGetters["Maps/projection"].getCode());
+            const targetCoordinates = proj4("EPSG:4326", "EPSG:25832", coords);
+
+            const clickPixel = transformer.coordToPixel3D(targetCoordinates);
+
+            console.log("!!!!!!!!!!targetCoordinates", targetCoordinates);
+            // Optional: convert to map projection / meters using crs if needed
+            console.log("cartographic.longitude", cartographic.longitude);
+            // const projected = crs.transform("EPSG:4326", mapProjection, [longitude, latitude, height]);
+            // console.log("[GFI] Picked feature center (projected):", projected);
+
+            console.log("[GFI] Click coordinates & pixel:", clickCoordinates, clickPixel);
+
+            // Dispatch the restore action
+            dispatch("restoreGFI", {
+                attributes,
+                componentName,
+                targetCoordinates,
+                clickPixel
+            });
+        };
+
+        scene.globe.tileLoadProgressEvent.addEventListener(tileLoadListener);
     },
 
     /**
@@ -357,6 +413,7 @@ export default {
      * @returns {void}
      */
     restoreGFI ({getters, commit, dispatch}, {attributes, componentName, clickCoordinates, clickPixel}) {
+        console.log(attributes, componentName, clickCoordinates, clickPixel);
         commit("Maps/setClickCoordinate", clickCoordinates, {root: true});
         commit("Maps/setClickPixel", clickPixel, {root: true});
         commit("setClickCoordinates", clickCoordinates);
