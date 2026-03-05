@@ -19,12 +19,9 @@ function isDeleteAllMode (feature) {
  * @returns {void}
  */
 export default function undoRedoFeatures (features, stack, mode, source) {
-    this.redoing = true;
     console.warn("undoRedoFeatures called!", {features, stack, mode, source});
     if (features.length > 0) {
         const feature = features[features.length - 1];
-
-        this.mode = mode;
 
         if (isDeleteAllMode(feature)) {
             this.undoRedoDeleteAll(mode, features, source);
@@ -88,7 +85,6 @@ export default function undoRedoFeatures (features, stack, mode, source) {
             }
         }
     }
-    this.redoing = false;
 }
 
 
