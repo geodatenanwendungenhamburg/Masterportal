@@ -4,7 +4,6 @@ import {WFS} from "ol/format.js";
 import isObject from "@shared/js/utils/isObject.js";
 import {describeFeatureType, getFeatureDescription} from "@shared/js/api/wfs/describeFeatureType.js";
 import getOAFFeature from "@shared/js/api/oaf/getOAFFeature.js";
-import js from "@eslint/js";
 
 /**
  * Gets the unique values for the given attributes.

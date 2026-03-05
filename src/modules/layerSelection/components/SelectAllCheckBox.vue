@@ -132,11 +132,9 @@ export default {
          */
         getLabelText () {
             if (this.isChecked()) {
-                return "Alle entfernen";
-                // return i18next.t("common:modules.layerSelection.deselectAll");
+                return i18next.t("common:modules.layerSelection.deselectAll");
             }
-            return "Alle hinzufügen";
-            // return i18next.t("common:modules.layerSelection.selectAll");
+            return i18next.t("common:modules.layerSelection.selectAll");
         }
     }
 };

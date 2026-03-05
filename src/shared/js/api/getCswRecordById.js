@@ -2,10 +2,9 @@ import axios from "axios";
 import dayjs from "dayjs";
 
 import getNestedValues from "../utils/getNestedValues.js";
-import axiosErrorHandler from "@shared/js/utils/handleAxiosError.js";
-import xml2json from "../utils/xml2json";
+import handleAxiosError from "@shared/js/utils/handleAxiosError.js";
+import xml2json from "../utils/xml2json.js";
 import {setWebLinks} from "../utils/urlHelper.js";
-import i18next from "i18next";
 
 /**
  * Handles the GetRecordById request.
@@ -29,7 +28,7 @@ function getRecordById (url, metadataId, outputSchema = "http://www.isotc211.org
     })
         .then(response => xml2json(response.request.responseXML))
         .then(json => getMetadata(json))
-        .catch(error => axiosErrorHandler.handleAxiosError(error, "getRecordById"));
+        .catch(error => handleAxiosError(error, "getRecordById"));
 }
 
 /**

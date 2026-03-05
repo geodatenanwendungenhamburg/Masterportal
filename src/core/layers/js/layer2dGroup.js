@@ -140,3 +140,4 @@ Layer2dGroup.prototype.addErrorListener = function () {
         Layer2d.prototype.addErrorListener.call(sourceLayer.getLayerSource());
     });
 };
+
