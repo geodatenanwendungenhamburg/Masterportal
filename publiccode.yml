@@ -110,8 +110,8 @@ maintenance:
 name: Masterportal
 platforms:
   - web
-releaseDate: '2026-03-04'
+releaseDate: '2026-03-06'
 roadmap: 'https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/'
 softwareType: standalone/web
-softwareVersion: 3.20.0
+softwareVersion: 3.20.1
 url: 'https://bitbucket.org/geowerkstatt-hamburg/masterportal.git'

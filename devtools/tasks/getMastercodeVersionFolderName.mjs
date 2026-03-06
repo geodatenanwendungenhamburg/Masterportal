@@ -23,10 +23,10 @@ export default function getMastercodeVersionFolderName() {
     const long = git("git rev-parse --short HEAD", repoRoot);
     const dateStr = git("git log -1 --format=%cd --date=format:'%Y-%m-%d__%H-%M-%S'", repoRoot).replace(/'/g, "");
 
-    if (stableVersionNumber !== tag || !branch.includes(long)) {
+    /*     if (stableVersionNumber !== tag || !branch.includes(long)) {
         const gitLastCommitDate = dateStr || dayjs().format("YYYY-MM-DD__HH-mm-ss");
         folderName += `_${branch}_git_last_commit_at_${gitLastCommitDate}`;
-    }
+    } */
 
     return folderName.replace(/[\s:]+/g, "").replace(/#/g, "");
 }
