@@ -14,13 +14,11 @@
 ### Deprecated
 
 ### Removed
-- The following packages have been removed:
-  - devDependencies:
-    - text-loader: ^0.0.1
 
 ### Fixed
-- Min/MaxScale: The scale restriction for grouped layers has been fixed.
-- UrlParams: Fixed an issue where old links with non-existent layers would fail to load by adding a fail-safe mechanism.
+- UrlParams:
+  - Fixed an issue where old links with non-existent layers would fail to load by adding a fail-safe mechanism.
+  - Fixed WMS-Time layers not working with legacy URL parameters.
 
 ---
 

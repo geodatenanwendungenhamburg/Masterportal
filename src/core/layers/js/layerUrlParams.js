@@ -149,11 +149,16 @@ function removeCurrentLayerFromLayerTree () {
  */
 function addLayerToLayerTree (layers) {
     layers.forEach((layer, index) => {
-        let isBaseLayer = false;
+        let isBaseLayer = false,
+            time;
 
         if (store.getters.layerConfigById(layer.id)) {
             isBaseLayer = store.getters.layerConfigById(layer.id).baselayer;
+            if (store.getters.layerConfigById(layer.id).time) {
+                time = store.getters.layerConfigById(layer.id).time;
+            }
         }
+
         let zIndex;
 
         if (isBaseLayer) {
@@ -175,7 +180,7 @@ function addLayerToLayerTree (layers) {
             transparency: layer.transparency || 0,
             showInLayerTree: true,
             zIndex: zIndex,
-            time: layer.params?.TIME ? {default: layer.params.TIME} : undefined
+            time: layer.params?.TIME ? {default: layer.params.TIME} : time
         },
         {root: true}).then((success) => {
             if (!success) {
