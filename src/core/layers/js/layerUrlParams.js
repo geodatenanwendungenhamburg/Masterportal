@@ -23,6 +23,9 @@ const layerUrlParams = {
         VISIBILITY: setLayerIds
     };
 
+let baselayerExists = false,
+    baselayerIndex = 0;
+
 /**
  * Process the menu url params.
  * @returns {void}
@@ -133,13 +136,38 @@ function removeCurrentLayerFromLayerTree () {
  */
 function addLayerToLayerTree (layers) {
     layers.forEach((layer, index) => {
+        let isBaseLayer = false,
+            time;
+
+        if (store.getters.layerConfigById(layer.id)) {
+            isBaseLayer = store.getters.layerConfigById(layer.id).baselayer;
+            if (store.getters.layerConfigById(layer.id).time) {
+                time = store.getters.layerConfigById(layer.id).time;
+            }
+        }
+
+        let zIndex;
+
+        if (isBaseLayer) {
+            if (!baselayerExists) {
+                baselayerIndex = 0;
+                baselayerExists = true;
+            }
+            zIndex = baselayerIndex;
+            baselayerIndex++;
+
+        }
+        else {
+            zIndex = index + baselayerIndex;
+        }
+
         store.dispatch("addOrReplaceLayer", {
             layerId: layer.id,
             visibility: typeof layer.visibility === "boolean" ? layer.visibility : true,
             transparency: layer.transparency || 0,
             showInLayerTree: true,
-            zIndex: index,
-            time: layer.params?.TIME ? {default: layer.params.TIME} : undefined
+            zIndex: zIndex,
+            time: layer.params?.TIME ? {default: layer.params.TIME} : time
         },
         {root: true}).then((success) => {
             if (!success) {

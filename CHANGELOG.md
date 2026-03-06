@@ -19,6 +19,9 @@
 - VectorStyle: Fixed styling of polygons: `"zig-line-horizontal"` and `"diagonal-right"` are rotated by 90°.
 - sortObjects: Ensure stable sortByLayerSequence order in Chrome/Firefox.
 - BufferAnalysis: Fixed applying values from URL. New and legacy format are now correctly parsed and applied.
+- UrlParams:
+  - Fixed an issue where old links with non-existent layers would fail to load by adding a fail-safe mechanism.
+  - Fixed WMS-Time layers not working with legacy URL parameters.
 
 ---
 ## 2025-02-06 v3.15.2 (LTS)
