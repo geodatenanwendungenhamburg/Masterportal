@@ -960,51 +960,6 @@
               "defaultStyle": true
             }
           ]
-        },
-        {
-          "id": "1",
-          "name": "BaseMap (VectorTile)",
-          "shortname": "BaseMap",
-          "url": "https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/tiles/v1/bm_web_de_3857/{z}/{x}/{y}.pbf",
-          "epsg": "EPSG:3857",
-          "maxZoom": 15,
-          "minZoom": 0,
-          "resolutions": [
-            78271.51696401172, 39135.75848200586, 19567.87924100293,
-            9783.939620501465, 4891.969810250733, 2445.9849051253664,
-            1222.9924525626832, 611.4962262813416, 305.7481131406708,
-            152.8740565703354, 76.4370282851677, 38.21851414258385,
-            19.109257071291925, 9.554628535645962, 4.777314267822981,
-            2.3886571339114906
-          ],
-           "preview": {
-            "src": "./resources/webVector.png"
-          },
-          "typ": "VectorTile",
-          "transparency": 0,
-          "supported": ["2D"],
-          "legendURL": "ignore",
-          "gfiAttributes": "ignore",
-          "gfiTheme": "default",
-          "zDirection": -1,
-          "vtStyles": [
-            {
-              "id": "relief",
-              "name": "Relief",
-              "url": "https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/styles/bm_web_top.json"
-            },
-            {
-              "id": "farbe",
-              "name": "Farbe",
-              "url": "https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/styles/bm_web_col.json",
-              "defaultStyle": true
-            },
-            {
-              "id": "grau",
-              "name": "Grau",
-              "url": "https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/styles/bm_web_gry.json"
-            }
-          ]
         }
       ]
     },
