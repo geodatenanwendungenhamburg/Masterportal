@@ -16,6 +16,11 @@
 ### Removed
 
 ### Fixed
+
+---
+
+## 2026-03-06 v3.20.1
+### Fixed
 - UrlParams:
   - Fixed an issue where old links with non-existent layers would fail to load by adding a fail-safe mechanism.
   - Fixed WMS-Time layers not working with legacy URL parameters.
