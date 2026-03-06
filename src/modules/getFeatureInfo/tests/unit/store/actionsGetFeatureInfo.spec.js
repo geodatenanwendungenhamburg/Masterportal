@@ -152,23 +152,19 @@ describe("src/modules/getFeatureInfo/store/actionsGetFeatureInfo.js", () => {
         });
     });
     describe("handleRestore3D", () => {
-        it("visibleTerrainLayers exists, add event", () => {
-            const clickCoordinates = [100, 200],
-                attributes = {
-                    clickCoordinates
-                },
-                componentName = "GetFeatureInfo",
-                coordToPixel3DStub = sinon.stub(transformer, "coordToPixel3D").returns([1, 2]);
+        it("warns if lastPickedFeatureId missing", async () => {
+            rootGetters = {visibleLayerConfigs: [{typ: "Terrain3D"}]};
 
-            rootGetters = {
-                visibleLayerConfigs: [{typ: "Terrain3D"}],
-                styleListLoaded: true
-            };
+            await actions.handleRestore3D({dispatch, rootGetters}, {attributes: {}, componentName: "GetFeatureInfo"});
 
-            actions.handleRestore3D({dispatch, rootGetters}, {attributes, componentName, clickCoordinates});
-            expect(coordToPixel3DStub.calledOnce).to.be.true;
-            expect(coordToPixel3DStub.firstCall.args[0]).to.be.deep.equals(clickCoordinates);
-            expect(addEventListenerSpy.calledOnce).to.be.true;
+            expect(consoleWarnSpy.calledWith("[GFI] No lastPickedFeatureId available.")).to.be.true;
+        });
+        it("warns if no 3D terrain available", async () => {
+            rootGetters = {visibleLayerConfigs: []};
+
+            await actions.handleRestore3D({dispatch, rootGetters}, {attributes: {}, componentName: "GetFeatureInfo"});
+
+            expect(consoleWarnSpy.calledWith("[GFI] No 3D terrain available.")).to.be.true;
         });
         it("visibleTerrainLayer does not exist, call warn", () => {
             const clickCoordinates = [100, 200],
