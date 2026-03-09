@@ -8,15 +8,17 @@ export default (options) => ({
 
         server.middlewares.use((req, res, next) => {
             const originalUrl = req.url;
+            let cleanUrl = originalUrl.split("?")[0].split("#")[0];
 
-            if ((/^\/(portal|portalconfigs)\//).test(originalUrl) && !path.extname(originalUrl)) {
-                let cleanUrl = originalUrl.split("?")[0].split("#")[0];
+            if ((/^\/(portal|portalconfigs)\//).test(cleanUrl) && !path.extname(cleanUrl)) {
 
                 if (!(/\/$/).test(cleanUrl)) {
                     // console.log("[Middleware] no slash");
+                    const queryAndHash = originalUrl.substring(cleanUrl.length);
+
                     cleanUrl += "/";
                     res.writeHead(301, {
-                        Location: `${req.url}/`
+                        Location: `${cleanUrl}${queryAndHash}`
                     });
                     res.end();
                     return;

@@ -22,6 +22,7 @@
 
 ### Fixed
 - Issue \#1563: Legend: Fixed sorting error of legend that would occur when using grouplayers.
+- Issue \#1579: Fix OIDC login by preserving query parameters when processing portal URL redirects.
 - Issue \#1580: Prevent layer reset in CompareMaps by activating oder deactivating other layers in layer tree.
 - Min/MaxScale: The scale restriction for grouped layers has been fixed.
 - Vite: 
