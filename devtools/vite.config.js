@@ -12,6 +12,7 @@ import cp from "vite-plugin-cp";
 import htmlExtFallback from "./tasks/html-ext-fallback-plugin.js";
 import { directoryListing } from "./tasks/directory-listing-plugin.js";
 import addonModules from "./tasks/addon-modules-plugin.js";
+import emptyAddonModulesPlugin from "./tasks/empty-addon-modules-plugin.js";
 import getMastercodeVersionFolderName from "./tasks/getMastercodeVersionFolderName.mjs";
 import zipPack from "vite-plugin-zip-pack";
 
@@ -47,7 +48,9 @@ const examplesOnly = process.env.EXAMPLES_ONLY === "true",
         key: fs.existsSync("devtools/certificate/localhost.key")
             ? fs.readFileSync("devtools/certificate/localhost.key")
             : undefined
-    };
+    },
+    addonConfigPath = path.resolve(rootPath, "addons/addonsConf.json"),
+    hasAddonConfig = fs.existsSync(addonConfigPath);
 
 let portalEntries = glob.sync(`${portalFolderName}/**/index.html`, { cwd: rootPath }).map(file => {
     const portalName = file.split("/").at(-2); // foldernames of portals
@@ -113,10 +116,12 @@ export default defineConfig(({ mode }) => {
                 rootDir: __dirname
             }),
             directoryListing,
-            addonModules({
-                configPath: "addons/addonsConf.json",
-                baseDir: "addons"
-            }),
+            hasAddonConfig
+            ? addonModules({
+                configPath: addonConfigPath,
+                baseDir: path.resolve(rootPath, "addons")
+              })
+            : emptyAddonModulesPlugin(),
             {
                 name: "remove-crossorigin",
                 apply: "build",
@@ -196,7 +201,7 @@ export default defineConfig(({ mode }) => {
                 outFileName: `examples-${mastercodeVersionFolderName}.zip`,
                 pathPrefix: ""
             })
-        ],
+        ].filter(Boolean),
 
         css: {
             devSourcemap: false,
