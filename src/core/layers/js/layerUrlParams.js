@@ -25,7 +25,8 @@ const layerUrlParams = {
 
 let baselayerExists = false,
     baselayerIndex = 0,
-    collectedParams = {};
+    collectedParams = {},
+    legacyParamsTimeout = null;
 
 /**
  * Process the menu url params.
@@ -54,10 +55,28 @@ function setLayers (params) {
 function collectParams (params) {
     collectedParams = {...collectedParams, ...params};
 
-    if (collectedParams["MAP/LAYERIDS"] || collectedParams.LAYERIDS) {
+    clearTimeout(legacyParamsTimeout);
+
+    legacyParamsTimeout = setTimeout(() => {
+        if (!collectedParams["MAP/LAYERIDS"] && !collectedParams.LAYERIDS) {
+            collectedParams = {};
+            return;
+        }
+
+        if (!collectedParams.VISIBILITY) {
+            collectedParams.VISIBILITY = "true";
+        }
+
+        if (!collectedParams.TRANSPARENCY) {
+            collectedParams.TRANSPARENCY = "0";
+        }
+
         setLayerIds(collectedParams);
-    }
+
+        collectedParams = {};
+    }, 0);
 }
+
 
 /**
  * Sets the layer ids.
