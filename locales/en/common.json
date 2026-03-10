@@ -1627,7 +1627,8 @@
           "polygon": "Area",
           "rectangle": "Rectangle",
           "symbols": "Symbol",
-          "writeText": "Text"
+          "writeText": "Text",
+          "square": "Square"
         },
         "writeTextOptions": {
           "fontSize": "Font Size",
