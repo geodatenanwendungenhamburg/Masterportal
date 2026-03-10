@@ -197,7 +197,7 @@ export default {
             v-if="
                 selectedDrawTypeMain === 'pen' ||
                     selectedDrawTypeMain === 'writeText' ||
-                    ['line', 'box', 'circle', 'polygon', 'doubleCircle', 'point'].includes(selectedDrawType)
+                    ['line', 'box', 'circle', 'polygon', 'doubleCircle', 'point', 'square'].includes(selectedDrawType)
             "
             triangle
             :triangle-position="getTrianglePosition(selectedDrawTypeMain, selectedDrawType, 'second')"
