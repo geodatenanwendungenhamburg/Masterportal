@@ -245,6 +245,7 @@ export default defineConfig(({ mode }) => {
                             secure: false
                         }
                     ];
+
                     return proxyEntry;
                 })
             )
@@ -292,7 +293,7 @@ export default defineConfig(({ mode }) => {
                     if (pid.includes("/node_modules/")) {
                         return false;
                     }
-                    //todo vite: sind die notwendig?
+                    // todo vite: sind die notwendig?
                     if (pid.endsWith("/rollup.config.js")) {
                         return true;
                     }
@@ -306,7 +307,6 @@ export default defineConfig(({ mode }) => {
                 }
             }
         },
-
         define: {
             __VUE_OPTIONS_API__: true,
             __VUE_PROD_DEVTOOLS__: false,
@@ -318,7 +318,7 @@ export default defineConfig(({ mode }) => {
             )
         },
 
-          optimizeDeps: {
+        optimizeDeps: {
             allowNodeBuiltins: true,
             include: [
                 "vue",
