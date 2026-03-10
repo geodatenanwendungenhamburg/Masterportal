@@ -3448,7 +3448,10 @@ Druckmodul. Konfigurierbar für 2 Druckdienste: den High Resolution PlotService 
 |overviewmapLayerId|nein|String||Über den Parameter layerId kann ein anderer Layer für die Overviewmap verwendet werden. Wird keine Id angegeben, wird der erste Layer der ausgewählten Hintergundkarten verwendet.|false|
 |printAppCapabilities|nein|String|"capabilities.json"|Pfad unter welcher die Konfiguration des Druckdienstes zu finden ist.|false|
 |printAppId|nein|String|"master"|Id der print app des Druckdienstes. Dies gibt dem Druckdienst vor welche/s Template/s er zu verwenden hat.|false|
+<<<<<<< HEAD
 |layoutGroups|nein|**[layoutGroups](#portalconfigmenusectionsmodulesprintlayoutgroups)**|{}|Ermöglicht die Gruppierung der im Druckdialog verfügbaren Layouts in Kategorien (z. B. *A4 – Hochformat*, *A4 – Querformat*). Wenn definiert, werden die Layouts im Dropdown gruppiert angezeigt. Fehlt der Eintrag, bleibt die Anzeige wie bisher.|false|
+=======
+>>>>>>> parent of de216efe9e (G31DEV1-3423 - group print layouts by category)
 |printMapMarker|nein|Boolean|false|Wenn dieses Feld auf true gesetzt ist, werden im Bildausschnitt sichtbare MapMarker mitgedruckt. Diese überdecken ggf. interessante Druckinformationen.|false|
 |printService|nein|String|"mapfish"|Flag welcher Druckdienst verwendet werden soll. Bei "plotservice" wird der High Resolution PlotService verwendet, wenn der Parameter nicht gesetzt wird, wird Mapfish 3 verwendet.|false|
 |printServiceId|ja|String||Id des Druckdienstes der verwendet werden soll. Wird in der rest-services.json abgelegt.|false|
