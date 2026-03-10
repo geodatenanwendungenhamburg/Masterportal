@@ -624,6 +624,7 @@ export default {
                         >
                             {{ getSelectedStatisticNames(selectedStatistics).length }}
                         </span>
+                        <i class="toolbar-button-icon bi bi-caret-down-fill" />
                     </button>
                     <div
                         class="dropdown-menu p-4"
@@ -784,6 +785,7 @@ export default {
                         >
                             {{ selectedRegions.length }}
                         </span>
+                        <i class="toolbar-button-icon bi bi-caret-down-fill" />
                     </button>
                     <div class="dropdown-menu p-4">
                         <div class="col-md-12">
@@ -825,6 +827,7 @@ export default {
                         >
                             {{ selectedDates.length }}
                         </span>
+                        <i class="toolbar-button-icon bi bi-caret-down-fill" />
                     </button>
                     <div class="dropdown-menu p-4">
                         <div class="col-md-12">
@@ -943,6 +946,7 @@ export default {
                             >
                                 1
                             </span>
+                            <i class="toolbar-button-icon bi bi-caret-down-fill" />
                         </button>
                         <div
                             id="difference-modal-container"

@@ -262,7 +262,7 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
             });
             expect(called_onActivated).to.be.false;
         });
-        it.skip("should set featuresloadend event once, set showInLayerTree to true if layer is not activated yet", () => {
+        it("should set featuresloadend event once, set showInLayerTree to true if layer is not activated yet", () => {
             let called_onceEvent = false;
             const map = createMapHandler(onerror.call, {});
 
@@ -311,7 +311,7 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
                 expect(called_onActivated).to.be.true;
             });
         });
-        it.skip("should call onActivated and set showInLayerTree to true if layer is activated but not visible on the map yet", () => {
+        it("should call onActivated and set showInLayerTree to true if layer is activated but not visible on the map yet", () => {
             let called_onActivated = false;
             const map = createMapHandler(onerror.call, {});
 
@@ -513,7 +513,7 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
             expect(map.filteredIds.filterId).to.deep.equal({"10": true, "20": true, "30": true});
             expect(called_showFeaturesByIds).to.deep.equal({"10": true, "20": true, "30": true});
         });
-        it.skip("should push items to filteredIds and try to set them on the map if extern is false", () => {
+        it("should push items to filteredIds and try to set them on the map if extern is false", () => {
             let called_showFeaturesByIds = false;
             const map = createMapHandler(onerror.call, {
                 showFeaturesByIds: (layerId, ids) => {

@@ -1,6 +1,5 @@
 const Config = {
-    addons: ["dataTable", "exampleSearch", "populationRequest", "schulinfo"],
-    addonsOrig: ["exampleControl", "bildungsatlas", "dataTable", "dipas", "exampleSearch", "populationRequest", "schulinfo", "sturmflut", "trafficCount", "trinkwasser", "verkehrsstaerken"],
+    addons: ["exampleControl", "bildungsatlas", "dataTable", "dipas", "exampleSearch", "populationRequest", "schulinfo", "sturmflut", "trafficCount", "trinkwasser", "verkehrsstaerken"],
     ignoredKeys: ["BOUNDEDBY", "SHAPE", "SHAPE_LENGTH", "SHAPE_AREA", "OBJECTID", "GLOBALID", "GEOMETRY", "SHP", "SHP_AREA", "SHP_LENGTH", "GEOM"],
     namedProjections: [
         // ETRS89 UTM
@@ -16,7 +15,7 @@ const Config = {
         // WGS84
         ["EPSG:4326", "+title=WGS84_Lat-Lon (Grad, Minuten, Sekunden), EPSG 4326 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"]
     ],
-    layerConf: "https://geodienste.hamburg.de/services-fhhnet.json",
+    layerConf: "https://geodienste.hamburg.de/services-internet.json",
     restConf: "https://geodienste.hamburg.de/lgv-config/rest-services-internet.json",
     styleConf: "https://geodienste.hamburg.de/lgv-config/style_v3.json",
     wfsImgPath: "https://geodienste.hamburg.de/lgv-config/img/",

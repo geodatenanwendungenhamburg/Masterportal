@@ -669,3 +669,4 @@ function migrate (answers) {
 export default {
     migrate
 };
+

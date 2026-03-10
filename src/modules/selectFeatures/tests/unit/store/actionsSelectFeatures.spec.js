@@ -73,7 +73,7 @@ describe("src/modules/selectFeatures/store/actionsSelectFeatures.js", () => {
             expect(createLayerAddToTreeStub.firstCall.args[3]).to.be.deep.equals(rootGetters.treeHighlightedFeatures);
         });
 
-        it.skip("highlightFeature treeHighlightedFeatures is not active", () => {
+        it("highlightFeature treeHighlightedFeatures is not active", () => {
             rootGetters.treeHighlightedFeatures.active = false;
             actions.highlightFeature({state, rootGetters, dispatch}, {feature, layerId});
 

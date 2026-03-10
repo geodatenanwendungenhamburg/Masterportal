@@ -137,7 +137,7 @@ Layer2dVector.prototype.loadingParams = function (attributes) {
         xhrParameters: attributes.isSecured ? {credentials: "include"} : undefined,
         propertyname: this.propertyNames(attributes) || undefined,
         // only used if loading strategy is all
-        bbox: attributes.bboxGeometryExtent ? attributes.bboxGeometryExtent.toString() : undefined
+        bbox: attributes.bboxGeometry ? attributes.bboxGeometry.getExtent().toString() : undefined
     };
 
     return loadingParams;
@@ -234,8 +234,7 @@ Layer2dVector.prototype.createStyle = async function (attrs) {
         this.setStyle(style);
     }
     else {
-        console.warn("common:core.layers.errorHandling.wrongStyleId", styleId);
-        // console.warn(i18next.t("common:core.layers.errorHandling.wrongStyleId", {styleId}));
+        console.warn(i18next.t("common:core.layers.errorHandling.wrongStyleId", {styleId}));
     }
 };
 

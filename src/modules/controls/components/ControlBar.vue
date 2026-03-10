@@ -142,46 +142,44 @@ export default {
 </script>
 
 <template>
-    <div class="control-bar">
+    <div
+        class="btn-group-vertical my-5 btn-group-controls shadow"
+        role="group"
+    >
         <div
-            class="btn-group-vertical my-5 btn-group-controls shadow"
-            role="group"
+            v-for="(control, index) in categorizedControls.initialVisible"
+            :key="index"
         >
+            <component
+                :is="control.componentKey"
+                v-if="checkIsVisible(control.key)"
+            />
+        </div>
+        <div v-if="categorizedControls.expandable.length >= 1">
+            <hr>
             <div
-                v-for="(control, index) in categorizedControls.initialVisible"
-                :key="index"
+                class="btn-group-vertical"
+                role="group"
             >
-                <component
-                    :is="control.componentKey"
-                    v-if="checkIsVisible(control.key)"
-                />
-            </div>
-            <div v-if="categorizedControls.expandable.length >= 1">
-                <hr>
-                <div
-                    class="btn-group-vertical"
-                    role="group"
-                >
-                    <div v-if="activatedExpandable">
-                        <div
-                            v-for="(control, index) in categorizedControls.expandable"
-                            :key="index"
-                        >
-                            <component
-                                :is="control.componentKey"
-                                v-if="checkIsVisible(control.key)"
-                                :key="control.key"
-                            />
-                        </div>
-                    </div>
-                    <button
-                        type="button"
-                        class="btn control-icon-controls bootstrap-icon my-1 control-button-controls btn-light"
-                        @click="setActivatedExpandable(!activatedExpandable)"
+                <div v-if="activatedExpandable">
+                    <div
+                        v-for="(control, index) in categorizedControls.expandable"
+                        :key="index"
                     >
-                        <i class="bi-three-dots" />
-                    </button>
+                        <component
+                            :is="control.componentKey"
+                            v-if="checkIsVisible(control.key)"
+                            :key="control.key"
+                        />
+                    </div>
                 </div>
+                <button
+                    type="button"
+                    class="btn control-icon-controls bootstrap-icon my-1 control-button-controls btn-light"
+                    @click="setActivatedExpandable(!activatedExpandable)"
+                >
+                    <i class="bi-three-dots" />
+                </button>
             </div>
         </div>
     </div>
@@ -222,4 +220,5 @@ export default {
             right: 2rem;
         }
     }
+
 </style>

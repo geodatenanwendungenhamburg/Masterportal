@@ -32,7 +32,7 @@ describe("src/core/maps/js/zoomToGetAndFilterFeatures.js", () => {
             });
     });
 
-    it.skip("should call the axois request, if layer exists", () => {
+    it("should call the axois request, if layer exists", () => {
         const axiosSpy = sinon.stub(axios, "get").callsFake(() => new Promise(resolve => resolve({status: 200, statusText: "OK", data: exampleFeatureCollection}))),
             layer = {
                 id: "id",
@@ -63,7 +63,7 @@ describe("src/core/maps/js/zoomToGetAndFilterFeatures.js", () => {
             });
     });
     describe("createUrl", () => {
-        it.skip("test params", () => {
+        it("test params", () => {
             const url = "https://geodienste.hamburg.de/",
                 version = "1.1.1",
                 featureType = "featureType",
