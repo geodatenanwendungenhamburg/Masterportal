@@ -43,8 +43,6 @@ function processLayerUrlParams () {
 function setLayers (params) {
     const layers = JSON.parse(params.LAYERS);
 
-    console.log("Layers neu", layers);
-
     removeCurrentLayerFromLayerTree();
     addLayerToLayerTree(layers);
 }
@@ -74,14 +72,11 @@ function setLayerIds (params) {
         groupLayerConfigs = store.getters.layerConfigsByAttributes({baselayer: true, typ: "GROUP"});
     let layers = [];
 
-    console.log("LayerIds", layerIds);
-
     [...layerIds].forEach((layerId, index) => {
         const group = groupLayerConfigs.find(groupConfig => groupConfig.id.split("-").indexOf(layerId) > -1);
 
         if (group) {
             layerIds.splice(index, 1, group.id);
-            console.log("ist Gruppe?");
         }
     });
 
@@ -96,7 +91,6 @@ function setLayerIds (params) {
     if (!((params.MDID || params["MAP/MDID"]) && (params["MAP/LAYERIDS"] || params.LAYERIDS))) {
         removeCurrentLayerFromLayerTree();
     }
-    console.log(layers);
     addLayerToLayerTree(layers);
 }
 
@@ -184,7 +178,6 @@ function addLayerToLayerTree (layers) {
         else {
             zIndex = index + baselayerIndex;
         }
-        console.log("welche params haben wir", layer.params);
 
 
         store.dispatch("addOrReplaceLayer", {
