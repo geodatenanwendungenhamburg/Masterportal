@@ -249,7 +249,7 @@ export default {
         else {
             store.watch((_, getters) => getters["Maps/mode"], mapMode => {
                 if (mapMode === "3D") {
-                    dispatch("handleRestore3D", {attributes, componentName});
+                    dispatch("handleRestore3D", {attributes, componentName, clickCoordinates});
                 }
             });
         }
@@ -265,7 +265,7 @@ export default {
      * @param {Object} attributes of urlParams
      * @returns {void}
      */
-    async handleRestore3D ({dispatch, rootGetters}, {attributes, componentName}) {
+    async handleRestore3D ({dispatch, rootGetters}, {attributes, componentName, clickCoordinates}) {
         const visibleTerrainLayers = rootGetters.visibleLayerConfigs.filter(
             config => config.typ.toUpperCase() === "TERRAIN3D"
         );
@@ -312,12 +312,12 @@ export default {
                 height = cartographic.height,
                 coords = [longitude, latitude, height],
                 targetCoordinates = proj4("EPSG:4326", "EPSG:25832", coords),
-                clickPixel = transformer.coordToPixel3D(targetCoordinates);
+                clickPixel = transformer.coordToPixel3D(clickCoordinates);
 
             dispatch("restoreGFI", {
                 attributes,
                 componentName,
-                targetCoordinates,
+                clickCoordinates: targetCoordinates,
                 clickPixel
             });
         }
