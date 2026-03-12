@@ -153,6 +153,7 @@ export default {
         this.currentSelectInteractions.forEach(currentSelectInteraction => this.removeInteraction(currentSelectInteraction));
         if (this.currentModifyInteraction) {
             this.removeInteraction(this.currentModifyInteraction);
+            this.currentModifyInteraction.dispose();
             this.currentModifyInteraction = null;
         }
     },
@@ -228,6 +229,7 @@ export default {
          */
         regulateModify () {
             if (typeof this.setSelectedInteraction === "function") {
+                console.warn("HE, regulateModify");
                 this.setSelectedInteraction("modify");
             }
 
@@ -257,6 +259,7 @@ export default {
             );
             this.addInteraction(this.currentModifyInteraction);
             this.currentModifyInteraction.setActive(true);
+            console.warn("YOOO", this.currentModifyInteraction);
             this.showFrame = true;
         },
 
