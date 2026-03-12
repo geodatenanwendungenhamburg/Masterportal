@@ -45,7 +45,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@masterportal/masterportalapi": "git+https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git#drawtool",
+    "@masterportal/masterportalapi": "git+https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git#BG-4160-draw-exportItem",
     "@popperjs/core": "^2.11.8",
     "axios": "^1.19.0",
     "bootstrap": "^5.3.8",
