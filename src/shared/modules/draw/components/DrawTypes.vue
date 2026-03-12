@@ -435,6 +435,7 @@ export default {
                 this.currentDrawInteraction.on("drawend", (evt) => {
                     tooltipElement.style.display = "none";
                     this.$emit("drawend", evt);
+                    console.warn("On drawEnd", evt);
 
                     if (["circle", "box", "line", "polygon"].includes(drawType)) {
                         const geometry = evt.feature.getGeometry();
