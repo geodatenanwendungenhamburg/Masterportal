@@ -153,6 +153,7 @@ export default {
         this.currentSelectInteractions.forEach(currentSelectInteraction => this.removeInteraction(currentSelectInteraction));
         if (this.currentModifyInteraction) {
             this.removeInteraction(this.currentModifyInteraction);
+            this.currentModifyInteraction.dispose();
             this.currentModifyInteraction = null;
         }
     },
@@ -228,6 +229,7 @@ export default {
          */
         regulateModify () {
             if (typeof this.setSelectedInteraction === "function") {
+                console.warn("HE, regulateModify");
                 this.setSelectedInteraction("modify");
             }
 
@@ -235,6 +237,7 @@ export default {
                 {
                     onModifyEnd: (event) => {
                         event.features.forEach(feature => {
+                            console.warn("On Modify End");
                             const originalGeometry = this.originalGeometry,
                                 modifiedGeometry = feature.getGeometry().clone();
 
@@ -249,6 +252,7 @@ export default {
                         this.nonReactiveRedoFeatures = markRaw([]);
                     },
                     onModifyStart: (event) => {
+                        console.warn("On Modify Start");
                         event.features.forEach(feature => {
                             this.originalGeometry = feature.getGeometry().clone();
                         });
@@ -257,6 +261,7 @@ export default {
             );
             this.addInteraction(this.currentModifyInteraction);
             this.currentModifyInteraction.setActive(true);
+            console.warn("YOOO", this.currentModifyInteraction);
             this.showFrame = true;
         },
 
