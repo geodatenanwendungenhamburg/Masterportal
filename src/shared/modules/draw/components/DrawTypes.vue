@@ -1,5 +1,6 @@
 <script>
 import drawInteraction from "@masterportal/masterportalapi/src/maps/interactions/drawInteraction.js";
+import handleDrawEvent from "../js/handleDrawEvent.js";
 import {mapActions, mapGetters, mapState, mapMutations} from "vuex";
 import IconButton from "../../buttons/components/IconButton.vue";
 import {nextTick} from "vue";
@@ -344,6 +345,7 @@ export default {
                 this.currentDrawInteraction.on("drawend", (evt) => {
                     tooltipElement.style.display = "none";
                     this.$emit("drawend", evt);
+                    console.warn("On drawEnd", evt);
 
                     if (["circle", "box", "line", "polygon"].includes(drawType)) {
                         const geometry = evt.feature.getGeometry();
@@ -359,6 +361,7 @@ export default {
                             geometry.un("change", onGeometryChange);
                         }
                     }
+                    handleDrawEvent(evt);
                 });
                 if (drawType === "circle" || drawType === "doubleCircle") {
                     this.regulateStaticCircleInteraction(drawType);
