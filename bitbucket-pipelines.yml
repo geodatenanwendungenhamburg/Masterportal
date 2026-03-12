@@ -180,21 +180,25 @@ pipelines:
                         - mike deploy $BITBUCKET_TAG
                         - zip -r masterportal_docs.zip /opt/atlassian/pipelines/agent/build/site
                         - curl -X POST --user "$bbapi_name:$bbapi_key" "https://api.bitbucket.org/2.0/repositories/geowerkstatt-hamburg/masterportal/downloads/" --form files=@"masterportal_docs.zip" --verbose;
-        build and deploy examples zip:
-            - variables:
-                - name: BITBUCKET_TAG
-                  description: tag to create examples for, e.g. v3.1.0
-            -   step:
-                    name: build examples
-                    caches:
-                        - node
-                    artifacts:
-                        - dist/**
-                    script:
-                        - git fetch --all --tags
-                        - git checkout tags/$BITBUCKET_TAG
-                        - npm install
-                        - npm run buildExamples
+        test buildExamples only:
+            - step:
+                name: test buildExamples only (safe)
+                caches:
+                    - node
+                artifacts:
+                    - dist/**
+                script:
+                    - export NODE_OPTIONS=--openssl-legacy-provider
+                    - node -v
+                    - npm -v
+                    - pwd
+                    - ls -la
+                    - ls -la addons || true
+                    - ls -la addons/addonsConf.json || true
+                    - npm install
+                    - npm run buildExamples
+                    - ls -la dist || true
+                    - find dist -maxdepth 3 -type f | sort || true   
         tag to lts in OpenCode:
             -   step:
                     name: deploy lts tag to openCode
