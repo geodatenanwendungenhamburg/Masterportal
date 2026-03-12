@@ -10,7 +10,7 @@ import get3DHighlightColor from "@shared/js/utils/get3DHighlightColor.js";
 import applyTileStyle from "@shared/js/utils/applyTileStyle.js";
 import remove3DFeatureHighlight from "@shared/js/utils/remove3DFeatureHighlight.js";
 import find3DPickedFeature from "@shared/js/utils/find3DPickedFeature.js";
-import proj4 from "proj4";
+
 /**
  * The actions for the getFeatureInfo.
  * @module modules/getFeatureInfo/store/actionsGetFeatureInfo
@@ -304,20 +304,12 @@ export default {
                 return;
             }
 
-            const tile = pickedFeature.content.tile,
-                centerCartesian = tile.boundingSphere.center,
-                cartographic = Cesium.Cartographic.fromCartesian(centerCartesian),
-                longitude = Cesium.Math.toDegrees(cartographic.longitude),
-                latitude = Cesium.Math.toDegrees(cartographic.latitude),
-                height = cartographic.height,
-                coords = [longitude, latitude, height],
-                targetCoordinates = proj4("EPSG:4326", "EPSG:25832", coords),
-                clickPixel = transformer.coordToPixel3D(clickCoordinates);
+            const clickPixel = transformer.coordToPixel3D(clickCoordinates);
 
             dispatch("restoreGFI", {
                 attributes,
                 componentName,
-                clickCoordinates: targetCoordinates,
+                clickCoordinates,
                 clickPixel
             });
         }
