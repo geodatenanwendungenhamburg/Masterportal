@@ -153,6 +153,7 @@ export default {
         this.currentSelectInteractions.forEach(currentSelectInteraction => this.removeInteraction(currentSelectInteraction));
         if (this.currentModifyInteraction) {
             this.removeInteraction(this.currentModifyInteraction);
+            this.currentModifyInteraction.dispose();
             this.currentModifyInteraction = null;
         }
     },
@@ -237,6 +238,7 @@ export default {
                     onModifyEnd: (event) => {
                         console.warn("On Modify End");
                         event.features.forEach(feature => {
+                            console.warn("On Modify End");
                             const originalGeometry = this.originalGeometry,
                                 modifiedGeometry = feature.getGeometry().clone();
 
