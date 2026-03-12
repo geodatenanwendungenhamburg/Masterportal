@@ -1,4 +1,4 @@
-# Welcome to the Masterportal Documentation
+--8<-- "docs/_snippets/index_title.md"
 
 The Masterportal is a web-based GIS application that allows you to display and edit spatial data.
 It is based on the Open Source JavaScript library [OpenLayers](https://openlayers.org/) and the [Vue.js](https://vuejs.org/) framework.
