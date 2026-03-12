@@ -257,13 +257,15 @@ export default {
          * @returns {void}
          */
         regulateDrawInteraction (drawType) {
-            this.currentDrawInteraction = drawInteraction.createDrawInteraction(drawType, this.source);
+            this.currentDrawInteraction = drawInteraction.createDrawInteraction(drawType, this.source, this.symbolList);
             let onGeometryChange;
             const {tooltipOverlay, tooltipElement} = createTooltipOverlay(),
                 map = mapCollection.getMap("2D"),
                 symbol = this.symbolList.find(val => val.id === drawType);
 
+            console.log("Symbol in regulateDrawInteraction", symbol);
 
+            tooltipElement.innerHTML = "";
             tooltipElement.style.display = "none";
 
             map.addOverlay(tooltipOverlay);
@@ -281,7 +283,7 @@ export default {
                 this.currentDrawInteraction.on("drawstart", (evt) => {
                     this.$emit("drawstart", evt);
 
-                    if (["circle", "box", "line", "polygon"].includes(drawType)) {
+                    if (["circle", "box", "line", "polygon", "square"].includes(drawType)) {
                         tooltipElement.style.display = "block";
                         const geometry = evt.feature.getGeometry();
 
@@ -297,17 +299,17 @@ export default {
                                 tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawSettingsCircle.radii.radius")}: ${formattedRadius}m`;
                                 this.$emit("circle-radius", radius);
                             }
-                            if (drawType === "box" || drawType === "polygon") {
+                            if (drawType === "box" || drawType === "polygon" || drawType === "square") {
 
                                 const coordinates = geometry.getCoordinates()[0],
                                     width = Math.abs(coordinates[1][0] - coordinates[0][0]),
                                     height = Math.abs(coordinates[2][1] - coordinates[1][1]),
-                                    area = Math.round(width * height),
+                                    area = Math.round(geometry.getArea()),
                                     formattedWidth = Math.round(width).toLocaleString("de-DE"),
                                     formattedHeight = Math.round(height).toLocaleString("de-DE"),
                                     formattedArea = area.toLocaleString("de-DE");
 
-                                if (drawType === "box") {
+                                if (drawType === "box" || drawType === "square") {
                                     tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawLayout.area")}: ${formattedArea}m²<br>${this.$t("common:shared.modules.draw.drawLayout.width")}: ${formattedWidth}m<br>${this.$t("common:shared.modules.draw.drawLayout.height")}: ${formattedHeight}m`;
                                 }
                                 else {
@@ -326,13 +328,16 @@ export default {
                         geometry.on("change", onGeometryChange);
 
                     }
-                    else if (symbol) {
-                        const feature = evt.feature;
+                    else if (symbol && symbol.type === "image") {
+                        const iconSrc = symbol.value.startsWith("/")
+                            ? symbol.value
+                            : `https://geodienste.hamburg.de/lgv-config/img/${symbol.value}`;
 
-                        feature.setStyle(new Style({
+                        evt.feature.setStyle(new Style({
                             image: new Icon({
-                                src: symbol.value,
-                                scale: symbol.scale || 1
+                                src: iconSrc,
+                                scale: symbol.scale || 1,
+                                anchor: [0.5, 1]
                             })
                         }));
                     }
@@ -462,7 +467,7 @@ export default {
     />
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 div.draw-tooltip {
     background-color: $white;;
