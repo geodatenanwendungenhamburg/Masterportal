@@ -147,23 +147,23 @@ export default {
          * @returns {void}
          */
         updateCurrentLayout (layoutKey, value) {
-            const currentLayout = {...this.currentLayout};
+            let normalizedValue;
 
             if (layoutKey === "fillColor" || layoutKey === "strokeColor") {
-                currentLayout[layoutKey] = convertColor(value, "rgb");
+                normalizedValue = convertColor(value, "rgb");
             }
             else if (layoutKey === "text" || layoutKey === "font") {
-                currentLayout[layoutKey] = value;
+                normalizedValue = value;
             }
             else if (layoutKey === "fontSize") {
-                currentLayout[layoutKey] = parseInt(value, 10);
+                normalizedValue = parseInt(value, 10);
             }
             else {
-                currentLayout[layoutKey] = parseFloat(value);
+                normalizedValue = parseFloat(value);
             }
 
-            this.setCurrentLayout(currentLayout);
-            this.$emit("update-current-layout", currentLayout);
+            this.setCurrentLayout({[layoutKey]: normalizedValue});
+            this.$emit("update-current-layout", {[layoutKey]: normalizedValue});
         }
     }
 };
