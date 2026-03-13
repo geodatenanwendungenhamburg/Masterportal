@@ -102,7 +102,8 @@ const state = {
     symbolList: [],
     type: "draw",
     units: ["m", "km"],
-    buttonsDisabled: false
+    buttonsDisabled: false,
+    drawSymbolImgPath: "https://geodienste.hamburg.de/lgv-config/img/"
 };
 
 export default state;
