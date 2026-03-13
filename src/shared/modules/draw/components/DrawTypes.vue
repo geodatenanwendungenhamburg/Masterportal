@@ -142,7 +142,7 @@ export default {
     computed: {
         ...mapGetters("Maps", ["projection"]),
         ...mapGetters("Modules/Draw", ["symbolList"]),
-        ...mapState("Modules/Draw", ["drawTypesGeometrie", "drawTypesMain", "drawTypesSymbols", "buttonsDisabled"])
+        ...mapState("Modules/Draw", ["drawTypesGeometrie", "drawTypesMain", "drawTypesSymbols", "buttonsDisabled", "drawSymbolImgPath"])
     },
     watch: {
         "circleOptions.interactive" () {
@@ -182,7 +182,7 @@ export default {
 
         this.startDrawingInitial();
         this.symbolList.forEach(symbol => {
-            this.addToDrawTypesSymbols(symbol.id);
+            this.addDrawTypeSymbol(symbol.id);
         });
     },
     unmounted () {
@@ -190,7 +190,7 @@ export default {
     },
     methods: {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
-        ...mapMutations("Modules/Draw", ["setCircleOptions"]),
+        ...mapMutations("Modules/Draw", ["setCircleOptions", "addDrawTypeSymbol"]),
 
         /**
          * Start drawing initial, if a selectedDrawType is specified.
@@ -263,8 +263,6 @@ export default {
                 map = mapCollection.getMap("2D"),
                 symbol = this.symbolList.find(val => val.id === drawType);
 
-            console.log("Symbol in regulateDrawInteraction", symbol);
-
             tooltipElement.innerHTML = "";
             tooltipElement.style.display = "none";
 
@@ -331,7 +329,7 @@ export default {
                     else if (symbol && symbol.type === "image") {
                         const iconSrc = symbol.value.startsWith("/")
                             ? symbol.value
-                            : `https://geodienste.hamburg.de/lgv-config/img/${symbol.value}`;
+                            : `${this.drawSymbolImgPath}${symbol.value}`;
 
                         evt.feature.setStyle(new Style({
                             image: new Icon({
@@ -417,15 +415,6 @@ export default {
             }
 
             return this.$t(label);
-        },
-        /**
-         * Adds symbols from configs symbolList to DrawTypesSymbols if not already included.
-         * @param {String} id - ID of each symbol.
-         */
-        addToDrawTypesSymbols (id) {
-            if (!this.drawTypesSymbols.includes(id)) {
-                this.drawTypesSymbols.push(id);
-            }
         },
         /**
          * Returns name of a drawType.
