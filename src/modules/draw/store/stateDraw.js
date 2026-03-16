@@ -11,6 +11,9 @@
  * @property {Number} [currentLayout.fillTransparency=0] The fill transparency in percent.
  * @property {Number[]} [currentLayout.strokeColor=[0, 0, 0]] The stroke color in rgb.
  * @property {Number} [currentLayout.strokeWidth=1] The stroke width in pixel.
+ * @property {String} [currentLayout.text=""] The text content for writeText.
+ * @property {String} [currentLayout.font="Arial"] The font for writeText.
+ * @property {Number} [currentLayout.fontSize=10] The font size in pixel for writeText.
  * @property {Object} [currentLayoutOuterCircle= fillColor: [0, 0, 0], fillTransparency: 100, strokeColor: [200, 0, 0], strokeWidth: 1}] The current layout for styling the outer circle. Only used for double circle.
  * @property {Number[]} [currentLayoutOuterCircle.fillColor=[0, 0, 0]] The fill color in rgb.
  * @property {Number} [currentLayoutOuterCircle.fillTransparency=100] The fill transparency in percent.
@@ -55,7 +58,10 @@ const state = {
         fillColor: [55, 126, 184],
         fillTransparency: 0,
         strokeColor: [0, 0, 0],
-        strokeWidth: 1
+        strokeWidth: 1,
+        text: "",
+        font: "Arial",
+        fontSize: 10
     },
     currentLayoutOuterCircle: {
         fillColor: [0, 0, 0],

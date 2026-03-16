@@ -187,7 +187,7 @@ export default {
                     :id="selectedDrawType"
                     :label="$t('common:shared.modules.draw.drawTypes.writeText')"
                     :placeholder="$t('common:shared.modules.draw.drawTypes.writeText')"
-                    :model-value="currentLayout.text || ''"
+                    :model-value="currentLayout.text"
                     @update:modelValue="val => updateCurrentLayout('text', val)"
                 />
             </div>
@@ -195,7 +195,7 @@ export default {
                 <select
                     id="font-size-select"
                     class="form-select"
-                    :value="currentLayout.fontSize || 10"
+                    :value="currentLayout.fontSize"
                     @change="event => updateCurrentLayout('fontSize', event.target.value)"
                 >
                     <option
@@ -214,7 +214,7 @@ export default {
                 <select
                     id="font-select"
                     class="form-select"
-                    :value="currentLayout.font || 'Arial'"
+                    :value="currentLayout.font"
                     @change="event => updateCurrentLayout('font', event.target.value)"
                 >
                     <option
