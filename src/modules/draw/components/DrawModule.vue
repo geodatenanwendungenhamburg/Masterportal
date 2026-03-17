@@ -130,7 +130,10 @@ export default {
             id="draw-types"
             class="mb-2"
         >
-            <div class="d-flex mb-5 drawtypes-container">
+            <div
+                id="main-drawtypes-container"
+                class="d-flex mb-2 drawtypes-container"
+            >
                 <DrawTypes
                     :circle-options="circleOptions"
                     :current-layout="currentLayout"
@@ -212,8 +215,8 @@ export default {
                 />
             </div>
             <div
-                v-if="selectedDrawTypeMain === 'geometries' || selectedDrawTypeMain === 'symbols'"
-                class="d-flex mb-5"
+                id="draw-layouts"
+                class="mb-2"
             >
                 <DrawLayout
                     v-if="selectedDrawType !== ''"
