@@ -4,12 +4,11 @@ import {getWmsFeaturesByMimeType} from "@shared/js/utils/getWmsFeaturesByMimeTyp
 import {getVisibleWmsLayersAtResolution} from "../js/getLayers.js";
 import store from "@appstore/index.js";
 import layerCollection from "@core/layers/js/layerCollection.js";
-import transformer from "@shared/js/utils/coordToPixel3D.js";
 import changeCase from "@shared/js/utils/changeCase.js";
 import get3DHighlightColor from "@shared/js/utils/get3DHighlightColor.js";
 import applyTileStyle from "@shared/js/utils/applyTileStyle.js";
 import remove3DFeatureHighlight from "@shared/js/utils/remove3DFeatureHighlight.js";
-import find3DPickedFeature from "@shared/js/utils/find3DPickedFeature.js";
+import {waitForFeatureReady, waitForRenderComplete, getClickPixel} from "@shared/js/utils/sceneRenderUtils.js";
 
 /**
  * The actions for the getFeatureInfo.
@@ -265,56 +264,30 @@ export default {
      * @param {Object} attributes of urlParams
      * @returns {void}
      */
-    async handleRestore3D ({dispatch, rootGetters}, {attributes, componentName, clickCoordinates}) {
-        const visibleTerrainLayers = rootGetters.visibleLayerConfigs.filter(
-            config => config.typ.toUpperCase() === "TERRAIN3D"
-        );
+    async handleRestore3D ({dispatch, commit, rootGetters}, {attributes, componentName, clickCoordinates}) {
+        const visibleTerrainLayers = rootGetters.visibleLayerConfigs.filter(c => c.typ.toUpperCase() === "TERRAIN3D");
 
         if (visibleTerrainLayers.length === 0) {
-            console.warn("[GFI] No 3D terrain available.");
+            return;
+        }
+        if (!attributes.lastPickedFeatureId) {
             return;
         }
 
         const scene = mapCollection.getMap("3D").getCesiumScene();
 
-        if (!attributes.lastPickedFeatureId) {
-            console.warn("[GFI] No lastPickedFeatureId available.");
-            return;
-        }
+        await waitForFeatureReady(scene, attributes.lastPickedFeatureId, attributes.coloredHighlighting3D?.color);
 
-        /**
-         * Waits until the 3D feature is available and restores the GFI.
-         * Retries each frame until the feature's tile is loaded.
-         *
-         * @returns {Promise<void>}
-         */
-        async function waitForFeature () {
-            applyTileStyle(
-                attributes.lastPickedFeatureId,
-                get3DHighlightColor(attributes.coloredHighlighting3D?.color, "RED")
-            );
+        let clickPixel = getClickPixel(clickCoordinates);
 
-            const pickedFeature = await find3DPickedFeature(
-                scene,
-                attributes.lastPickedFeatureId
-            );
+        dispatch("restoreGFI", {attributes, componentName, clickCoordinates, clickPixel});
 
-            if (!pickedFeature?.content?.tile?.boundingSphere) {
-                requestAnimationFrame(waitForFeature);
-                return;
-            }
+        await waitForRenderComplete(scene);
 
-            const clickPixel = transformer.coordToPixel3D(clickCoordinates);
-
-            dispatch("restoreGFI", {
-                attributes,
-                componentName,
-                clickCoordinates,
-                clickPixel
-            });
-        }
-
-        waitForFeature();
+        // Re-collect GFI features after the scene is fully rendered to ensure all 3D features are captured
+        clickPixel = getClickPixel(clickCoordinates);
+        commit("Maps/setClickPixel", clickPixel, {root: true});
+        dispatch("Modules/GetFeatureInfo/collectGfiFeatures", null, {root: true});
     },
 
     /**

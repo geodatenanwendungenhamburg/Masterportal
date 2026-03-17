@@ -1,7 +1,6 @@
 import {expect} from "chai";
 import sinon from "sinon";
 import VectorSource from "ol/source/Vector.js";
-import transformer from "@shared/js/utils/coordToPixel3D.js";
 import actions from "@modules/getFeatureInfo/store/actionsGetFeatureInfo.js";
 import layerCollection from "@core/layers/js/layerCollection.js";
 
@@ -152,37 +151,29 @@ describe("src/modules/getFeatureInfo/store/actionsGetFeatureInfo.js", () => {
         });
     });
     describe("handleRestore3D", () => {
-        it("warns if lastPickedFeatureId missing", async () => {
-            rootGetters = {visibleLayerConfigs: [{typ: "Terrain3D"}]};
-
-            await actions.handleRestore3D({dispatch, rootGetters}, {attributes: {}, componentName: "GetFeatureInfo"});
-
-            expect(consoleWarnSpy.calledWith("[GFI] No lastPickedFeatureId available.")).to.be.true;
+        beforeEach(() => {
+            dispatch = sinon.spy();
+            commit = sinon.spy();
+            rootGetters = {visibleLayerConfigs: [{typ: "TERRAIN3D"}]};
         });
-        it("warns if no 3D terrain available", async () => {
-            rootGetters = {visibleLayerConfigs: []};
 
-            await actions.handleRestore3D({dispatch, rootGetters}, {attributes: {}, componentName: "GetFeatureInfo"});
+        it("does nothing if lastPickedFeatureId is missing", async () => {
+            const attributes = {};
 
-            expect(consoleWarnSpy.calledWith("[GFI] No 3D terrain available.")).to.be.true;
+            await actions.handleRestore3D({dispatch, commit, rootGetters}, {attributes, componentName: "GetFeatureInfo"});
+
+            expect(dispatch.called).to.be.false;
+            expect(commit.called).to.be.false;
         });
-        it("visibleTerrainLayer does not exist, call warn", () => {
-            const clickCoordinates = [100, 200],
-                attributes = {
-                    clickCoordinates
-                },
-                componentName = "GetFeatureInfo",
-                coordToPixel3DStub = sinon.stub(transformer, "coordToPixel3D").returns([1, 2]);
 
-            rootGetters = {
-                visibleLayerConfigs: [{typ: "WMS"}],
-                styleListLoaded: true
-            };
+        it("does nothing if no 3D terrain available", async () => {
+            rootGetters.visibleLayerConfigs = [];
+            const attributes = {lastPickedFeatureId: "feature1"};
 
-            actions.handleRestore3D({dispatch, rootGetters}, {attributes, componentName, clickCoordinates});
-            expect(coordToPixel3DStub.notCalled).to.be.true;
-            expect(addEventListenerSpy.notCalled).to.be.true;
-            expect(console.warn.called).to.be.true;
+            await actions.handleRestore3D({dispatch, commit, rootGetters}, {attributes, componentName: "GetFeatureInfo"});
+
+            expect(dispatch.called).to.be.false;
+            expect(commit.called).to.be.false;
         });
     });
 
