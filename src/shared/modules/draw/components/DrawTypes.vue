@@ -465,7 +465,7 @@ export default {
         :icon="drawIcons[drawType] || 'bi-circle-square'"
         :label="getButtonLabel(drawType)"
         class="d-flex align-items-center"
-        :draw-layout="true"
+        :draw-layout="drawLayout"
     />
 </template>
 
