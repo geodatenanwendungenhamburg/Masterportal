@@ -126,6 +126,7 @@ export default function handleDrawEvent (event) {
         attributes.squareCoords = geometry.getCoordinates()[0];
     }
 
+
     event.feature.set("masterportal_attributes", attributes, false);
 
     // Apply the correct final style (with proper zIndex) to the feature.
