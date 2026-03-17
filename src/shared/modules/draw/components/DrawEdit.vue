@@ -153,7 +153,6 @@ export default {
         this.currentSelectInteractions.forEach(currentSelectInteraction => this.removeInteraction(currentSelectInteraction));
         if (this.currentModifyInteraction) {
             this.removeInteraction(this.currentModifyInteraction);
-            this.currentModifyInteraction.dispose();
             this.currentModifyInteraction = null;
         }
     },
