@@ -4,7 +4,7 @@
  * @param {string} featureId The ID of the feature to find.
  * @returns {Promise<Cesium.Feature|null>} The picked feature or null if not found.
  */
-export default async function find3DPickedFeature (scene, featureId) {
+async function find3DPickedFeature (scene, featureId) {
     return new Promise((resolve) => {
         const tilesetList = scene._primitives._primitives.filter(p => p instanceof Cesium.Cesium3DTileset);
 
@@ -30,3 +30,7 @@ export default async function find3DPickedFeature (scene, featureId) {
         resolve(null);
     });
 }
+
+export default {
+    find3DPickedFeature
+};

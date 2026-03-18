@@ -1,7 +1,7 @@
 import transformer from "@shared/js/utils/coordToPixel3D.js";
 import get3DHighlightColor from "@shared/js/utils/get3DHighlightColor.js";
 import applyTileStyle from "@shared/js/utils/applyTileStyle.js";
-import find3DPickedFeature from "@shared/js/utils/find3DPickedFeature.js";
+import find3DPickedFeatureProvider from "@shared/js/utils/find3DPickedFeature.js";
 
 /**
  * Waits until the Cesium scene is fully rendered and all globe tiles are loaded.
@@ -37,7 +37,7 @@ export async function waitForFeatureReady (scene, featureId, color = "RED") {
         async function checkFeature () {
             applyTileStyle(featureId, get3DHighlightColor(color, "RED"));
 
-            const pickedFeature = await find3DPickedFeature(scene, featureId);
+            const pickedFeature = await find3DPickedFeatureProvider.find3DPickedFeature(scene, featureId);
 
             if (!pickedFeature?.content?.tile?.boundingSphere) {
                 requestAnimationFrame(checkFeature);

@@ -1,122 +1,103 @@
-// import {expect} from "chai";
-// import {vi} from "vitest";
+import {expect} from "chai";
+import sinon from "sinon";
+import {
+    waitForRenderComplete,
+    waitForFeatureReady,
+    getClickPixel
+} from "@shared/js/utils/sceneRenderUtils.js";
 
-// vi.mock("@shared/js/utils/find3DPickedFeature.js", () => ({
-//     default: vi.fn()
-// }));
+import find3DPickedFeatureProvider from "@shared/js/utils/find3DPickedFeature.js";
+import transformer from "@shared/js/utils/coordToPixel3D.js";
 
-// vi.mock("@shared/js/utils/applyTileStyle.js", () => ({
-//     default: vi.fn()
-// }));
-
-// vi.mock("@shared/js/utils/get3DHighlightColor.js", () => ({
-//     default: vi.fn((c) => c)
-// }));
-
-// vi.mock("@shared/js/utils/coordToPixel3D.js", () => ({
-//     default: {
-//         coordToPixel3D: vi.fn()
-//     }
-// }));
+describe("sceneRenderUtils.js", () => {
 
 
-// import {
-//     waitForRenderComplete,
-//     waitForFeatureReady,
-//     getClickPixel
-// } from "@shared/js/utils/sceneRenderUtils.js";
+    beforeEach(() => {
+        // global.requestAnimationFrame = (cb) => setTimeout(cb, 0);
+         sinon.stub(transformer, "coordToPixel3D").returns([100, 200]);
+        
 
-// import find3DPickedFeature from "@shared/js/utils/find3DPickedFeature.js";
-// import transformer from "@shared/js/utils/coordToPixel3D.js";
+        global.mapCollection = {
+            getMap: () => ({
+                getCesiumScene: () => ({
+                    _primitives: {_primitives: []}
+                })
+            })
+        };
+    });
 
-// describe("sceneRenderUtils.js", () => {
+    describe("waitForRenderComplete", () => {
+        it("resolves when tilesLoaded becomes true", async () => {
 
-//     beforeEach(() => {
-//         vi.clearAllMocks();
+            /**
+             * Placeholder callback function for testing `waitForRenderComplete`.
+             * Will be reassigned to the actual `postRender` callback during the test.
+             *
+             * @returns {void}
+             */
+            function callback () {
+                null;
+            }
 
-//         global.requestAnimationFrame = (cb) => setTimeout(cb, 0);
+            const scene = {
+                globe: {tilesLoaded: false},
+                postRender: {
+                    addEventListener (cb) {
+                        callbackImpl = cb;
+                        return () => undefined;
+                    }
+                }
+            };
 
-//         global.mapCollection = {
-//             getMap: () => ({
-//                 getCesiumScene: () => ({
-//                     _primitives: {_primitives: []}
-//                 })
-//             })
-//         };
-//     });
+            let callbackImpl = callback;
 
-//     describe("waitForRenderComplete", () => {
-//         it("resolves when tilesLoaded becomes true", async () => {
+            const promise = waitForRenderComplete(scene);
 
-//             /**
-//              * Placeholder callback function for testing `waitForRenderComplete`.
-//              * Will be reassigned to the actual `postRender` callback during the test.
-//              *
-//              * @returns {void}
-//              */
-//             function callback () {
-//                 null;
-//             }
+            scene.globe.tilesLoaded = true;
+            callbackImpl();
 
-//             const scene = {
-//                 globe: {tilesLoaded: false},
-//                 postRender: {
-//                     addEventListener (cb) {
-//                         callbackImpl = cb;
-//                         return () => undefined;
-//                     }
-//                 }
-//             };
+            await promise;
 
-//             let callbackImpl = callback;
+            expect(true).to.be.true;
+        });
+    });
 
-//             const promise = waitForRenderComplete(scene);
+    describe("waitForFeatureReady", () => {
 
-//             scene.globe.tilesLoaded = true;
-//             callbackImpl();
+        it("resolves immediately if feature is ready", async () => {
+            // find3DPickedFeature.mockResolvedValue({
+            //     content: {tile: {boundingSphere: true}}
+            // });
 
-//             await promise;
+           const stub = sinon.stub(find3DPickedFeatureProvider, "find3DPickedFeature").returns({content: {tile: {boundingSphere: true}}});
 
-//             expect(true).to.be.true;
-//         });
-//     });
+            await waitForFeatureReady({}, "ready", "BLUE");
 
-//     describe("waitForFeatureReady", () => {
+            expect(stub.callCount).to.equal(1);
+        });
 
-//         it("resolves immediately if feature is ready", async () => {
-//             find3DPickedFeature.mockResolvedValue({
-//                 content: {tile: {boundingSphere: true}}
-//             });
+        it.skip("retries until feature becomes ready", async () => {
+            let calls = 0;
 
-//             await waitForFeatureReady({}, "ready", "BLUE");
+            find3DPickedFeature.mockImplementation(async () => { // hier callsFake benutzen
+                calls++;
+                if (calls < 3) {
+                    return {content: {tile: null}};
+                }
+                return {content: {tile: {boundingSphere: true}}};
+            });
 
-//             expect(find3DPickedFeature.mock.calls.length).to.equal(1);
-//         });
+            await waitForFeatureReady({}, "delayed", "RED");
 
-//         it("retries until feature becomes ready", async () => {
-//             let calls = 0;
+            expect(calls).to.equal(3);
+        });
+    });
 
-//             find3DPickedFeature.mockImplementation(async () => {
-//                 calls++;
-//                 if (calls < 3) {
-//                     return {content: {tile: null}};
-//                 }
-//                 return {content: {tile: {boundingSphere: true}}};
-//             });
+    describe("getClickPixel", () => {
+        it("returns transformer result", () => {
+            const result = getClickPixel([1, 2, 3]);
 
-//             await waitForFeatureReady({}, "delayed", "RED");
-
-//             expect(calls).to.equal(3);
-//         });
-//     });
-
-//     describe("getClickPixel", () => {
-//         it("returns transformer result", () => {
-//             transformer.coordToPixel3D.mockReturnValue([100, 200]);
-
-//             const result = getClickPixel([1, 2, 3]);
-
-//             expect(result).to.deep.equal([100, 200]);
-//         });
-//     });
-// });
+            expect(result).to.deep.equal([100, 200]);
+        });
+    });
+});
