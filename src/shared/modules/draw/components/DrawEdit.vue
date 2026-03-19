@@ -146,6 +146,7 @@ export default {
         layer (layer) {
             if (layer !== null) {
                 this.source.on("addfeature", event => {
+                    this.features.push(event.feature);
                     if (!this.redoing) {
                         const attrs = event.feature.get("masterportal_attributes");
 
@@ -179,6 +180,7 @@ export default {
                 });
 
                 this.source.on("removefeature", event => {
+                    this.features = this.features.filter((feature) => feature.ol_uid !== event.feature.ol_uid);
                     if (!this.redoing) {
                         this.nonReactiveUndoFeatures.push({
                             feature: markRaw(event.feature),
