@@ -95,7 +95,7 @@ export default {
      * @param {Object} state store state.
      * @param {Number} value the line length.
      */
-    setLineLength(state, value) {
+    setLineLength (state, value) {
         state.currentLayout.lineLength = value;
     }
 };
