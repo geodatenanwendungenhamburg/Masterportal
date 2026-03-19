@@ -79,5 +79,23 @@ export default {
      */
     setButtonsDisabled (state, value) {
         state.buttonsDisabled = value;
+    },
+
+    /**
+     * Increments the idCounter used for styleId and zIndex of drawn features.
+     * @param {Object} state store state.
+     * @param {Number} value the value to increment by - usually 1.
+     */
+    incrementIdCounter (state, value) {
+        state.idCounter += value;
+    },
+
+    /**
+     * Sets the length of the most recently drawn line, to be used in preparation for an export of drawings.
+     * @param {Object} state store state.
+     * @param {Number} value the line length.
+     */
+    setLineLength(state, value) {
+        state.currentLayout.lineLength = value;
     }
 };

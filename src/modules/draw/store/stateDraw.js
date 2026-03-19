@@ -14,6 +14,7 @@
  * @property {String} [currentLayout.text=""] The text content for writeText.
  * @property {String} [currentLayout.font="Arial"] The font for writeText.
  * @property {Number} [currentLayout.fontSize=10] The font size in pixel for writeText.
+ * @property {Number} [currentLayout.lineLength=0] The length of a drawn geometry line.
  * @property {Object} [currentLayoutOuterCircle= fillColor: [0, 0, 0], fillTransparency: 100, strokeColor: [200, 0, 0], strokeWidth: 1}] The current layout for styling the outer circle. Only used for double circle.
  * @property {Number[]} [currentLayoutOuterCircle.fillColor=[0, 0, 0]] The fill color in rgb.
  * @property {Number} [currentLayoutOuterCircle.fillTransparency=100] The fill transparency in percent.
@@ -35,8 +36,9 @@
  * @property {String[]} [drawTypesMain=["pen", "writeText", "geometries", "symbols"]] The top level (main) drawing types.
  * @property {String[]} [drawTypesSymbols=["point"]] The drawing types in symbols.
  * @property {Boolean} [hasMouseMapInteractions=true] If this attribute is true, then all other modules will be deactivated when this attribute is also true. Only one module with this attribute true may be open at the same time, since conflicts can arise in the card interactions.
- * @property {String} [icon="bi-pencil"] Icon next to title (config-param)
- * @property {String} [name="common:modules.draw.name"] Displayed as title (config-param)
+ * @property {String} [icon="bi-pencil"] Icon next to title (config-param).
+ * @property {Number} idCounter Counter for features drawn.
+ * @property {String} [name="common:modules.draw.name"] Displayed as title (config-param).
  * @property {String} [selectedDrawType=""] The selected draw type.
  * @property {String} [selectedDrawTypeMain=""] The selected draw type main.
  * @property {String} [selectedInteraction="draw"] The selected interaction.
@@ -61,7 +63,8 @@ const state = {
         strokeWidth: 1,
         text: "",
         font: "Arial",
-        fontSize: 10
+        fontSize: 10,
+        lineLength: 0
     },
     currentLayoutOuterCircle: {
         fillColor: [0, 0, 0],
@@ -99,6 +102,7 @@ const state = {
     drawTypesSymbols: ["point"],
     hasMouseMapInteractions: true,
     icon: "bi-pencil",
+    idCounter: 0,
     name: "common:modules.draw.name",
     selectedDrawType: "",
     selectedDrawTypeMain: "",

@@ -191,7 +191,7 @@ export default {
     },
     methods: {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
-        ...mapMutations("Modules/Draw", ["setCircleOptions", "addDrawTypeSymbol", "setSelectedSymbol"]),
+        ...mapMutations("Modules/Draw", ["setCircleOptions", "addDrawTypeSymbol", "incrementIdCounter", "setLineLength"]),
 
         /**
          * Start drawing initial, if a selectedDrawType is specified.
@@ -320,6 +320,8 @@ export default {
                             if (drawType === "line") {
                                 const length = geometry.getLength();
 
+                                this.setLineLength(Math.round(length));
+
                                 tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawLayout.length")}: ${Math.round(length)}m`;
 
                             }
@@ -362,6 +364,7 @@ export default {
                         }
                     }
                     handleDrawEvent(evt);
+                    this.incrementIdCounter(1);
                 });
                 if (drawType === "circle" || drawType === "doubleCircle") {
                     this.regulateStaticCircleInteraction(drawType);
