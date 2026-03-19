@@ -135,27 +135,63 @@ export default function handleDrawEvent (event) {
         case "line":
             drawState.strokeWidth = stateDrawCopy.currentLayout.strokeWidth;
             drawState.lineLength = stateDrawCopy.currentLayout.lineLength;
+            drawState.drawType = {
+                "id": "drawLine",
+                "geometry": "LineString"
+            };
             break;
         case "pen":
             drawState.strokeWidth = stateDrawCopy.currentLayout.strokeWidth;
+            drawState.drawType = {
+                "id": "drawCurve",
+                "geometry": "LineString"
+            };
             break;
         case "circle":
             drawState.circleRadius = stateDrawCopy.circleOptions.innerRadius;
+            drawState.drawType = {
+                "id": "drawCircle",
+                "geometry": "Circle"
+            };
             break;
         case "doubleCircle":
             drawState.circleRadius = stateDrawCopy.circleOptions.innerRadius;
             drawState.circleOuterRadius = stateDrawCopy.circleOptions.outerRadius;
             stateDrawCopy.currentLayoutOuterCircle.strokeColor.push(1);
             drawState.outerColorContour = stateDrawCopy.currentLayoutOuterCircle.strokeColor;
+            drawState.drawType = {
+                "id": "drawCircle",
+                "geometry": "Circle"
+            };
             break;
         case "writeText":
             drawState.font = stateDrawCopy.currentLayout.font;
             drawState.fontSize = stateDrawCopy.currentLayout.fontSize;
             drawState.text = stateDrawCopy.currentLayout.text;
+            drawState.drawType = {
+                "id": "writeText",
+                "geometry": "Point"
+            };
             break;
         case "point":
             // symbol missing
             drawState.pointSize = stateDrawCopy.pointSize;
+            drawState.drawType = {
+                "id": "drawSymbol",
+                "geometry": "Point"
+            };
+            break;
+        case "box":
+            drawState.drawType = {
+                "id": "drawArea",
+                "geometry": "Polygon"
+            };
+            break;
+        case "polygon":
+            drawState.drawType = {
+                "id": "drawArea",
+                "geometry": "Polygon"
+            };
             break;
         default:
             break;
