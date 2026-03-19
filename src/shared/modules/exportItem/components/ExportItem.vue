@@ -89,9 +89,6 @@ export default {
             console.warn("HE", this.features);
         }
     },
-    mounted () {
-        console.warn("Hey, features:", this.features);
-    },
     unmounted () {
         this.fileName = "";
     },

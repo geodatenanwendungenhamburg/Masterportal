@@ -58,7 +58,7 @@ const state = {
     },
     currentLayout: {
         fillColor: [55, 126, 184],
-        fillTransparency: 0,
+        fillTransparency: 1,
         strokeColor: [0, 0, 0],
         strokeWidth: 1,
         text: "",

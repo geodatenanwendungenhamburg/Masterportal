@@ -121,10 +121,9 @@ export default {
         },
         layer (layer) {
             if (layer !== null) {
-
                 this.source.on("addfeature", event => {
+                    this.features.push(event.feature);
                     if (!this.redoing) {
-                        // console.warn("layer Watcher, addFeature:", event.feature);
                         this.nonReactiveUndoFeatures.push({
                             feature: markRaw(event.feature),
                             mode: "draw"
@@ -134,6 +133,7 @@ export default {
                 });
 
                 this.source.on("removefeature", event => {
+                    this.features = this.features.filter((feature) => feature.ol_uid !== event.feature.ol_uid);
                     if (!this.redoing) {
                         // console.warn("layer Watcher, removeFeature:", event.feature);
                         this.nonReactiveUndoFeatures.push({
