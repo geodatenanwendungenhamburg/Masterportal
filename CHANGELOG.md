@@ -24,6 +24,7 @@
 - UrlParams:
   - Fixed an issue where old links with non-existent layers would fail to load by adding a fail-safe mechanism.
   - Fixed WMS-Time layers not working with legacy URL parameters.
+- GFI: In the gfiTheme `Default`, line breaks have been optimised and the size of the content changes when the sidebar is resized.  
 
 ---
 ## 2025-02-06 v3.15.2 (LTS)

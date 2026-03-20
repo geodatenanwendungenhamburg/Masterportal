@@ -344,8 +344,10 @@ export default {
 }
 .table {
     margin-bottom: 0;
-    @include media-breakpoint-up(sm) {
-        max-width: 400px;
-    }
+}
+.table td:nth-child(2) {
+    hyphens: auto;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 </style>
