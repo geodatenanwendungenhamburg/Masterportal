@@ -336,7 +336,7 @@ describe("src/modules/LayerPills.vue", () => {
 
         it("showLayerInformationInMenu layerConf with datasets calls startLayerInformation", () => {
             const layerConf = {
-                datasets: []
+                datasets: [{md_id: "123"}]
             };
 
             wrapper = createWrapper();
@@ -352,6 +352,35 @@ describe("src/modules/LayerPills.vue", () => {
 
             wrapper = createWrapper();
 
+            wrapper.vm.showLayerInformationInMenu(layerConf);
+
+            expect(startLayerInformationSpy.notCalled).to.be.true;
+        });
+        it("showLayerInformationInMenu GROUP layer with datasets on children calls startLayerInformation", () => {
+            const layerConf = {
+                typ: "GROUP",
+                children: [
+                    {datasets: [{md_id: "123"}]},
+                    {datasets: [{md_id: "456"}]}
+                ]
+            };
+
+            wrapper = createWrapper();
+            wrapper.vm.showLayerInformationInMenu(layerConf);
+
+            expect(startLayerInformationSpy.calledOnce).to.be.true;
+        });
+
+        it("showLayerInformationInMenu GROUP layer without datasets on children does nothing", () => {
+            const layerConf = {
+                typ: "GROUP",
+                children: [
+                    {datasets: []},
+                    {datasets: []}
+                ]
+            };
+
+            wrapper = createWrapper();
             wrapper.vm.showLayerInformationInMenu(layerConf);
 
             expect(startLayerInformationSpy.notCalled).to.be.true;

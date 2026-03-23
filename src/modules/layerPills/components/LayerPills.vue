@@ -190,7 +190,13 @@ export default {
          * @returns {void}
          */
         showLayerInformationInMenu (layerConf) {
-            if (layerConf.datasets) {
+            const isGroup = layerConf.typ?.startsWith("GROUP"),
+                hasDatasets = layerConf.datasets?.length > 0,
+                groupHasDatasets = isGroup && layerConf.children?.some(
+                    child => child.datasets?.length > 0
+                );
+
+            if (hasDatasets || groupHasDatasets) {
                 this.startLayerInformation(layerConf);
             }
         },
@@ -251,7 +257,9 @@ export default {
                     data-bs-placement="bottom"
                     data-bs-custom-class="custom-tooltip"
                     :title="$t(layer.name)"
-                    :class="layer.datasets ? 'nav-link-hover' : ''"
+                    :class="(layer.datasets?.length > 0 ||
+                        (layer.typ?.startsWith('GROUP') && layer.children?.some(c => c.datasets?.length > 0)))
+                        ? 'nav-link-hover' : ''"
                     @click="showLayerInformationInMenu(layer)"
                     @keydown="showLayerInformationInMenu(layer)"
                 >
