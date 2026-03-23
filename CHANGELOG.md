@@ -10,6 +10,7 @@
 ### Added
 - PrintMap: Heatmap layers are now included in the print.
 - Style Configuration: Added parameter `polygonImage` to optionally style WFS polygons with centered icon and show this icon in legend and print
+- Search: Added a checkbox to select all subcategories when opening a folder.
 
 ### Changed
 

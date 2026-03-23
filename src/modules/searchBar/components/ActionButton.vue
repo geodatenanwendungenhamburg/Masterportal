@@ -23,6 +23,7 @@ export default {
             required: true
         }
     },
+    emits: ["action-clicked"],
     computed: {
         ...mapGetters(["isModuleAvailable"]),
         ...mapGetters("Modules/SearchBar", ["showAllResults", "iconsByActions", "searchInputValue"])
@@ -31,6 +32,7 @@ export default {
         ...mapActions("Modules/SearchBar", [
             "activateAction"
         ]),
+        ...mapActions("Modules/LayerSelection", ["provideSelectAllProps"]),
         ...mapMutations("Modules/SearchBar", ["setSearchResultsActive", "setCurrentActionEvent"]),
         /**
          * Checks for special actions, if an icon for the action shall be displayed.
@@ -50,6 +52,11 @@ export default {
         callAction () {
             this.setCurrentActionEvent(this.actionName);
             this.activateAction({actionName: this.actionName, actionArgs: this.actionArgs});
+
+            if (this.actionName === "showInTree") {
+                this.activateAction({actionName: "requestFolderClicked", actionArgs: this.actionArgs});
+            }
+
 
         }
     }

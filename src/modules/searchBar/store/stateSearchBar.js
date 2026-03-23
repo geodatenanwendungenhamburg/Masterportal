@@ -81,7 +81,8 @@ const state = {
         zoomToResult: "bi-zoom-in",
         startRouting: "bi-signpost-2"
     },
-    lastPickedFeatureId: null
+    lastPickedFeatureId: null,
+    folderClickedRequest: null
 };
 
 export default state;

@@ -277,6 +277,12 @@ export default {
         }
 
     },
+    requestFolderClicked ({commit}, actionArgs) {
+        commit("setFolderClickedRequest", {
+            id: Date.now(),
+            obj: actionArgs
+        });
+    },
 
     /**
      * Open the layer information.

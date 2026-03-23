@@ -1,5 +1,5 @@
 <script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import layerTypes from "@core/layers/js/layerTypes.js";
 import sortBy from "@shared/js/utils/sortBy.js";
 import LayerCheckBox from "../../layerTree/components/LayerCheckBox.vue";
@@ -31,7 +31,8 @@ export default {
             selectAllConfigs: [],
             activeCategory: null,
             deactivateShowAllCheckbox: false,
-            rootFolderCount: 0
+            rootFolderCount: 0,
+            lastHandledFolderClickedRequestId: null
         };
     },
     computed: {
@@ -39,6 +40,7 @@ export default {
         ...mapGetters("Maps", ["mode"]),
         ...mapGetters(["activeOrFirstCategory", "allCategories", "portalConfig", "folderById", "layerConfig"]),
         ...mapGetters("Modules/LayerSelection", ["visible", "subjectDataLayerConfs", "baselayerConfs", "lastFolderNames", "layerInfoVisible", "highlightLayerId"]),
+        ...mapState("Modules/SearchBar", ["folderClickedRequest"]),
         categorySwitcher () {
             return this.portalConfig?.tree?.categories;
         },
@@ -128,6 +130,17 @@ export default {
                 }
             },
             deep: true
+        },
+        folderClickedRequest: {
+            handler (req) {
+                if (!req?.id || req.id === this.lastHandledFolderClickedRequestId) {
+                    return;
+                }
+
+                this.resetSelectAllAndProvideProps();
+                this.lastHandledFolderClickedRequestId = req.id;
+            },
+            immediate: true
         }
     },
 
@@ -178,11 +191,7 @@ export default {
                 this.navigateBack();
             }
             this.areFoldersSelectable = Boolean(this.subjectDataLayerConfs?.find(subjectDataLayerConf => subjectDataLayerConf.isFolderSelectable));
-            this.$nextTick(() => {
-                this.selectAllConfId = -1;
-                this.selectAllConfigs = [];
-                this.provideSelectAllProps();
-            });
+            this.resetSelectAllAndProvideProps();
         },
         /**
          * Listener for click on folder.
@@ -191,8 +200,17 @@ export default {
          * @returns {void}
          */
         folderClicked (lastFolderName, subjectDataLayerConfs) {
-            this.navigateForward({lastFolderName, subjectDataLayerConfs: this.sort(subjectDataLayerConfs)});
-            this.areFoldersSelectable = Boolean(subjectDataLayerConfs?.find(subjectDataLayerConf => subjectDataLayerConf.isFolderSelectable));
+            const sortedConfs = this.sort(Array.isArray(subjectDataLayerConfs) ? subjectDataLayerConfs : []);
+
+            this.navigateForward({lastFolderName, subjectDataLayerConfs: sortedConfs});
+            this.areFoldersSelectable = Boolean(sortedConfs.find(subjectDataLayerConf => subjectDataLayerConf.isFolderSelectable));
+            this.resetSelectAllAndProvideProps();
+        },
+        /**
+         * Resets SelectAll state and recalculates props after DOM updates.
+         * @returns {void}
+         */
+        resetSelectAllAndProvideProps () {
             this.$nextTick(() => {
                 this.selectAllConfId = -1;
                 this.selectAllConfigs = [];

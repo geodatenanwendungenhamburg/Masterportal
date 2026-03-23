@@ -58,5 +58,8 @@ export default {
      */
     addSuggestionItem (state, item) {
         state.searchSuggestions.push(item);
+    },
+    setFolderClickedRequest (state, payload) {
+        state.folderClickedRequest = payload;
     }
 };
