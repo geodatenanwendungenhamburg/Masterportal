@@ -51,6 +51,9 @@ export default {
             this.setCurrentActionEvent(this.actionName);
             this.activateAction({actionName: this.actionName, actionArgs: this.actionArgs});
 
+            if (this.actionName === "showInTree") {
+                this.activateAction({actionName: "requestFolderClicked", actionArgs: this.actionArgs});
+            }
         }
     }
 };

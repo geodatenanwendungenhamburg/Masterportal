@@ -58,5 +58,15 @@ export default {
      */
     addSuggestionItem (state, item) {
         state.searchSuggestions.push(item);
+    },
+
+    /**
+     * Sets the folder click request payload.
+     * @param {Object} state The state of search bar.
+     * @param {Object|null} payload The folder click request payload.
+     * @returns {void}
+     */
+    setFolderClickedRequest (state, payload) {
+        state.folderClickedRequest = payload;
     }
 };

@@ -31,6 +31,7 @@
  * @property {Boolean} [addLayerButtonSearchActive=true] Flag indicating whether the "Add Layer" button search is active.
  * @property {Object} [iconsByActions= { addLayerToTopicTree: "bi-plus-circle", activateLayerInTopicTree: "bi-eye", highlightFeature: "bi-lightbulb", openGetFeatureInfo: "bi-info-circle", setMarker: "bi-geo-alt-fill", zoomToResult: "bi-zoom-in", startRouting: "bi-signpost-2" }] - contains the icons by action names to display on buttons.
  * @property {Object} [lastPickedFeatureId=null] The ID of the last feature that was picked or interacted with by the user.
+ * @property {Object|null} [folderClickedRequest=null] Request payload used to trigger opening a folder in layer selection.
 
 */
 const state = {
@@ -81,7 +82,8 @@ const state = {
         zoomToResult: "bi-zoom-in",
         startRouting: "bi-signpost-2"
     },
-    lastPickedFeatureId: null
+    lastPickedFeatureId: null,
+    folderClickedRequest: null
 };
 
 export default state;

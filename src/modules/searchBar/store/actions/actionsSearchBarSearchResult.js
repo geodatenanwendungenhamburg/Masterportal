@@ -278,6 +278,19 @@ export default {
     },
 
     /**
+     * Creates a request object for handling folder click behavior in layer selection.
+     * @param {Object} param.commit the commit
+     * @param {Object} actionArgs The action arguments to forward with the request.
+     * @returns {void}
+     */
+    requestFolderClicked ({commit}, actionArgs) {
+        commit("setFolderClickedRequest", {
+            id: Date.now(),
+            obj: actionArgs
+        });
+    },
+
+    /**
      * Open the layer information.
      * @param {Object} param.commit the commit
      * @param {Object} param.dispatch the dispatch
