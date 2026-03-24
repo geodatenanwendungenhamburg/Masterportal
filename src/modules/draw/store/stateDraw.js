@@ -105,7 +105,13 @@ const state = {
     strokeRange: [1, 16],
     supportedDevices: ["Desktop", "Mobile", "Table"],
     supportedMapModes: ["2D", "3D"],
-    symbolList: [],
+    symbolList: [
+        {
+            "id": "iconPoint",
+            "type": "simple_point",
+            "value": "simple_point"
+        }
+    ],
     type: "draw",
     units: ["m", "km"],
     buttonsDisabled: false,
