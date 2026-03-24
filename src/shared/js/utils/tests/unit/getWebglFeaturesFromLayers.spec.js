@@ -1,25 +1,33 @@
 import {expect} from "chai";
 import {getWebglFeaturesFromLayers} from "@shared/js/utils/getWebglFeaturesFromLayers.js";
-import VectorTileLayer from "ol/layer/VectorTile.js";
 
 describe("getWebglFeaturesFromLayers", () => {
+    const featureMock = {id: 1};
 
-    const featureMock = {
-        getId: () => 1
+    const vectorTileLayerMock = {
+        get: key => {
+            if (key === "typ") {
+                return "VectorTile";
+            }
+            if (key === "renderer") {
+                return "webgl";
+            }
+            return undefined;
+        }
     };
 
-    /**
-     * Mock VectorTileLayer for unit tests.
-     */
-    class VectorTileLayerMock extends VectorTileLayer {}
-    const vectorTileLayerMock = new VectorTileLayerMock();
-
-
     const normalLayerMock = {
-        getSource: () => ({
-            forEachFeatureIntersectingExtent: (extent, cb) => {
-                cb(featureMock);
+        get: key => {
+            if (key === "typ") {
+                return "Vector";
             }
+            if (key === "renderer") {
+                return "webgl";
+            }
+            return undefined;
+        },
+        getSource: () => ({
+            forEachFeatureIntersectingExtent: (extent, cb) => cb(featureMock)
         })
     };
 
@@ -29,9 +37,10 @@ describe("getWebglFeaturesFromLayers", () => {
     };
 
     /**
-     * Returns a fixed hit box for unit testing.
+     * Returns a fixed hitBox extent for testing purposes.
+     * Format: [minX, minY, maxX, maxY]
      *
-     * @returns {number[]} Array representing [minX, minY, maxX, maxY].
+     * @returns {number[]} The test hitBox extent.
      */
     function hitBoxFn () {
         return [0, 0, 1, 1];
@@ -46,6 +55,7 @@ describe("getWebglFeaturesFromLayers", () => {
 
         expect(gfi).to.respondTo("getOlFeature");
         expect(gfi).to.respondTo("getLayerId");
+
         expect(gfi.getOlFeature()).to.equal(featureMock);
     });
 
@@ -53,6 +63,7 @@ describe("getWebglFeaturesFromLayers", () => {
         const result = getWebglFeaturesFromLayers(mapMock, [normalLayerMock], hitBoxFn);
 
         expect(result).to.have.lengthOf(1);
+
         const gfi = result[0];
 
         expect(gfi.getOlFeature()).to.equal(featureMock);
