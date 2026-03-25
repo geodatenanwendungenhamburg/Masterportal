@@ -69,6 +69,7 @@ const state = {
         strokeColor: [200, 0, 0],
         strokeWidth: 1
     },
+    selectedSymbol: null,
     description: "common:modules.draw.description",
     drawEdits: ["deleteAll", "delete", "modify", "editAttributes", "undo", "redo", "hide", "download"],
     drawIcons: {
