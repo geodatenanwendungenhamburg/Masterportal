@@ -16,6 +16,7 @@ export default function addonsFromJson (opts) {
         baseDir = opts.baseDir ?? "addons/",
         virtualId = opts.virtualId ?? "virtual:addon-modules",
         resolvedVirtualId = "\0" + virtualId; // Rollup-Konvention
+    let isProd = false;
 
     /**
      * Reads the configuration from the JSON file
@@ -24,12 +25,29 @@ export default function addonsFromJson (opts) {
     function readConfig () {
         if (fs.existsSync(configPath)) {
             const raw = fs.readFileSync(configPath, "utf-8"),
-                data = JSON.parse(raw);
+                data = JSON.parse(raw),
+                all = Object.entries(data);
+            let toBuild = [];
 
-            return Object.entries(data);
+            if (isProd) {
+                all.forEach(entry => {
+                    /* eslint-disable-next-line no-unused-vars */
+                    const [key, value] = entry;
+
+                    if (value.addToBundleInProdBuild !== false) {
+                        toBuild.push(entry);
+                    }
+                });
+            }
+            else {
+                toBuild = all;
+            }
+            return toBuild;
+
         }
         return [];
     }
+
 
     /**
      * Generates the module code for the virtual module
@@ -77,6 +95,9 @@ export default function addonsFromJson (opts) {
 
     return {
         name: "vite-plugin-addon-modules",
+        configResolved (config) {
+            isProd = config.mode === "production";
+        },
         resolveId (id) {
             if (id === virtualId) {
                 return resolvedVirtualId;

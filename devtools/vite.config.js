@@ -13,6 +13,7 @@ import htmlExtFallback from "./tasks/html-ext-fallback-plugin.js";
 import { directoryListing } from "./tasks/directory-listing-plugin.js";
 import addonModules from "./tasks/addon-modules-plugin.js";
 import emptyAddonModulesPlugin from "./tasks/empty-addon-modules-plugin.js";
+import { analyzer } from "vite-bundle-analyzer";
 import getMastercodeVersionFolderName from "./tasks/getMastercodeVersionFolderName.mjs";
 import zipPack from "vite-plugin-zip-pack";
 
@@ -108,6 +109,7 @@ export default defineConfig(({ mode }) => {
         },
 
         plugins: [
+            analyzer({enabled:true}),
             vmShimPlugin(),
             vue(),
             nodePolyfills({
@@ -374,6 +376,11 @@ async function collectAddons() {
         if (typeof addonEntryPoints[addonName] === "string") {
             entryPointFileName = addonEntryPoints[addonName];
         }
+        //todo, isProd is undefined at this time, is it necessary to filter here?
+        // if(isProd && addonEntryPoints[addonName].addToBundleInProdBuild === false){
+        //     console.log(addonName+" not provided");            
+        //     continue;
+        // }
 
         // An addon is recognized as Vue-Addon, if:
         // - its configuration value is an object

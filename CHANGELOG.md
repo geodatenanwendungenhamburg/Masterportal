@@ -17,12 +17,16 @@
     - Added config.json parameter `legendLabel` as the descriptive text for the legend print checkbox.
     - Added config.json parameter `customLayoutSelectionComponent` to specify an addon to replace the default layout selection within the print module.
 - InputText: Added prop `htmlType` with alternative value "textarea" in shared component InputText.
-- Addons of type `vueComponent` can be loaded.
+- Addons 
+    - Addons of type `vueComponent` can be loaded.
+    - Added the boolean parameter `addToBundleInProdBuild` to configuration of each addon in addonsConf.json to exclude an addon from bundling during production build.
 - Added config.js parameter `vuetifyFolder`: Folder name used as `../../addons/${Config.vuetifyFolder}/plugins/vuetify/index.js` to load an optional vuetify instance.
 - Filter: Added config.json parameter `shouldSubjectDataSelectedInTree` to display filters only when the respective layer is selected in the subject tree.
 - The following packages have been added:
     - dependencies:
-        -    rimraf: 6.1.3
+        - rimraf: 6.1.3
+    - devDependencies:
+        - vite-bundle-analyzer: 1.3.6
 
 ### Changed
 - Modeler3D: adapted no longer existsting `Cesium.defaultValue`.
