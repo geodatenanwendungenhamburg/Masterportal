@@ -142,7 +142,7 @@ export default {
     computed: {
         ...mapGetters("Maps", ["projection"]),
         ...mapGetters("Modules/Draw", ["symbolList"]),
-        ...mapState("Modules/Draw", ["drawTypesGeometrie", "drawTypesMain", "drawTypesSymbols", "buttonsDisabled", "drawSymbolImgPath"])
+        ...mapState("Modules/Draw", ["drawTypesGeometrie", "drawTypesMain", "drawTypesSymbols", "buttonsDisabled", "drawSymbolImgPath", "selectedSymbol"])
     },
     watch: {
         "circleOptions.interactive" () {
@@ -190,7 +190,7 @@ export default {
     },
     methods: {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
-        ...mapMutations("Modules/Draw", ["setCircleOptions", "addDrawTypeSymbol"]),
+        ...mapMutations("Modules/Draw", ["setCircleOptions", "addDrawTypeSymbol", "setSelectedSymbol"]),
 
         /**
          * Start drawing initial, if a selectedDrawType is specified.
@@ -232,6 +232,7 @@ export default {
 
             if (this.selectedDrawType === drawType) {
                 this.setSelectedDrawType("");
+                this.setSelectedSymbol(null);
             }
             else {
                 this.regulateDrawInteraction(drawType);
@@ -365,6 +366,7 @@ export default {
 
                 this.addInteraction(this.currentDrawInteraction);
                 this.setSelectedDrawType(drawType);
+                this.setSelectedSymbol(symbol || null);
             }
         },
 
