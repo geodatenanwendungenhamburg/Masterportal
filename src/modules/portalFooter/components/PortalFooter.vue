@@ -46,12 +46,12 @@ export default {
           * @returns {String|null} The menu where the about module is in.
          */
         aboutModuleSide () {
-            if (this.mainMenu.sections[0].find(m => {
+            if (this.mainMenu.sections.flat().find(m => {
                 return m.type === "about";
             })) {
                 return "mainMenu";
             }
-            else if (this.secondaryMenu.sections[0].find(m => {
+            else if (this.secondaryMenu.sections.flat().find(m => {
                 return m.type === "about";
             })) {
                 return "secondaryMenu";
