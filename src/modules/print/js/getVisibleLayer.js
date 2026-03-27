@@ -1,7 +1,5 @@
 import {Group as LayerGroup} from "ol/layer.js";
-import differenceJS from "@shared/js/utils/differenceJS";
-import sortBy from "@shared/js/utils/sortBy";
-import store from "@appstore";
+import store from "@appstore/index.js";
 /**
  * Collects all visible ol layers, including layers of groups.
  * @param {Boolean} [printMapMarker=false] whether layer "markerPoint" should be filtered out
@@ -106,18 +104,29 @@ function checkLayersInResolution (visibleLayerList) {
 
 /**
  * sorts the visible layer list by zIndex from layer
- * layers with undefined zIndex come to the beginning of array
+ * layers without zIndex keep their original relative order
  * @param {array} visibleLayerList with visible layer
  * @returns {void}
  */
 function sortVisibleLayerListByZindex (visibleLayerList) {
-    const visibleLayerListWithZIndex = visibleLayerList.filter(layer => {
-            return layer.getZIndex() !== undefined;
-        }),
-        visibleLayerListWithoutZIndex = differenceJS(visibleLayerList, visibleLayerListWithZIndex);
+    const sortedVisibleLayerList = [...visibleLayerList]
+        .map((layer, index) => ({
+            layer,
+            index,
+            zIndex: typeof layer?.getZIndex === "function" ? layer.getZIndex() : undefined
+        }))
+        .sort((a, b) => {
+            const aHasZIndex = a.zIndex !== undefined;
+            const bHasZIndex = b.zIndex !== undefined;
 
-    visibleLayerListWithoutZIndex.push(sortBy(visibleLayerListWithZIndex, (layer) => layer.getZIndex()));
-    store.dispatch("Modules/Print/setVisibleLayerList", [].concat(...visibleLayerListWithoutZIndex));
+            if (aHasZIndex && bHasZIndex && a.zIndex !== b.zIndex) {
+                return a.zIndex - b.zIndex;
+            }
+            return a.index - b.index;
+        })
+        .map(item => item.layer);
+
+    store.dispatch("Modules/Print/setVisibleLayerList", sortedVisibleLayerList);
 }
 
 export default {getVisibleLayer, getGroupedLayers, getVisibleLayerList, revertLayerOpacity};
