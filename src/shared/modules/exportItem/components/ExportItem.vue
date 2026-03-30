@@ -1,6 +1,7 @@
 <script>
 import {mapGetters} from "vuex";
 import exportItem from "@masterportal/masterportalapi/src/shared/exportItem.js";
+import kmlfunctions from "@masterportal/masterportalapi/src/shared/kmlExport.js";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 import {GeoJSON, GPX} from "ol/format.js";
@@ -171,13 +172,13 @@ export default {
         },
 
         async handleKMLDownload () {
-            console.warn("Handling KML download...");
-            let dataString = exportItem.setKmlAttributes(this.features);
+            console.warn("Handling KML download...", kmlfunctions);
+            let dataString = kmlfunctions.setKmlAttributes(this.features);
             const projection = this.projectionCode;
 
             console.warn("features after setKMLAttributes:", dataString);
 
-            dataString = await exportItem.convertFeaturesToKml(dataString, projection);
+            dataString = await kmlfunctions.convertFeaturesToKml(dataString, projection);
             console.warn("features after convertFeaturesToKML:", dataString);
 
             console.warn("KML result: ", dataString);

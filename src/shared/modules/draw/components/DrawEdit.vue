@@ -91,7 +91,7 @@ export default {
             nonReactiveRedoFeatures: markRaw([]),
             showFrame: false,
             iconPosition: 0,
-            availableFormats: ["KML", "GEOJSON", "GPX"],
+            availableFormats: ["KML", "GEOJSON", "GPX", "CSV"],
             exportData: null,
             features: [],
             localDrawIcons: {...this.drawIcons},
