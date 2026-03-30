@@ -16,22 +16,23 @@ export default function handleDrawEvent (event) {
     drawState.drawType = stateDrawCopy.selectedDrawType;
     drawState.imgPath = stateDrawCopy.drawSymbolImgPath;
     drawState.zIndex = stateDrawCopy.idCounter;
+    drawState.strokeWidth = stateDrawCopy.currentLayout.strokeWidth;
 
 
     if (["line", "pen"].includes(stateDrawCopy.selectedDrawType)) {
-        stateDrawCopy.currentLayout.strokeColor.push(stateDrawCopy.currentLayout.fillTransparency);
+        stateDrawCopy.currentLayout.strokeColor.push(stateDrawCopy.currentLayout.fillTransparency / 100);
         drawState.colorContour = stateDrawCopy.currentLayout.strokeColor;
     }
     else {
-        stateDrawCopy.currentLayout.fillColor.push(stateDrawCopy.currentLayout.fillTransparency);
+        stateDrawCopy.currentLayout.fillColor.push(stateDrawCopy.currentLayout.fillTransparency / 100);
         stateDrawCopy.currentLayout.strokeColor.push(1);
         drawState.colorContour = stateDrawCopy.currentLayout.strokeColor;
         drawState.color = stateDrawCopy.currentLayout.fillColor;
+        drawState.opacity = stateDrawCopy.currentLayout.fillTransparency / 100;
     }
 
     switch (stateDrawCopy.selectedDrawType) {
         case "line":
-            drawState.strokeWidth = stateDrawCopy.currentLayout.strokeWidth;
             drawState.lineLength = stateDrawCopy.currentLayout.lineLength;
             drawState.drawType = {
                 "id": "drawLine",
@@ -39,7 +40,6 @@ export default function handleDrawEvent (event) {
             };
             break;
         case "pen":
-            drawState.strokeWidth = stateDrawCopy.currentLayout.strokeWidth;
             drawState.drawType = {
                 "id": "drawCurve",
                 "geometry": "LineString"
