@@ -246,10 +246,14 @@ export default {
 }
 
 .selected-drawtypes-container {
-    gap: 1.4rem;
-    width: 5rem;
+    display: flex;
+    flex-wrap: wrap;
     margin-top: 1rem;
-    margin-left: 0.85rem;
+    width: auto;
+    overflow-x: scroll;
+    > div {
+        width: 5rem;
+    }
 }
 
 #draw-layouts {
