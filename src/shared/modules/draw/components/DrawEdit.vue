@@ -377,7 +377,7 @@ export default {
     <div
         class="mb-4"
     >
-        <div class="d-flex">
+        <div class="d-flex draw-edit-container">
             <IconButton
                 v-for="drawEdit in drawEdits"
                 :id="'draw-edit-' + drawEdit"
@@ -418,3 +418,16 @@ export default {
         <hr>
     </div>
 </template>
+
+<style lang="scss" scoped>
+
+.draw-edit-container {
+    flex-wrap: wrap;
+    > div {
+        width: 35px;
+        margin-bottom: 5px;
+        margin-right: 5px;
+    }
+}
+
+</style>
