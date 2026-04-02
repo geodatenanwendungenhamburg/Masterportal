@@ -11,7 +11,6 @@ export default function handleDrawEvent (event) {
         "fromDrawTool": true,
         styleId: stateDrawCopy.idCounter + 1
     }));
-    console.warn("handleDrawEvent, event: ", event);
 
     drawState.drawType = stateDrawCopy.selectedDrawType;
     drawState.imgPath = stateDrawCopy.drawSymbolImgPath;
@@ -95,13 +94,6 @@ export default function handleDrawEvent (event) {
             break;
     }
 
-
-    console.warn("current draw state: ", stateDrawCopy);
-
-
     event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {"drawState": drawState}), false);
-
-
-    console.warn("Feature after handleDrawEvent:", event.feature);
 
 }
