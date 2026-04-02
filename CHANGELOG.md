@@ -28,6 +28,7 @@
   - Fixed WMS-Time layers not working with legacy URL parameters.
 - GFI: In the gfiTheme `Default`, line breaks have been optimised and the size of the content changes when the sidebar is resized.  
 - Print: Fixed print layer sorting for grouped layers without zIndex.
+- SearchBar: Added a checkbox to select all subcategories when opening a folder.
 
 ---
 ## 2025-02-06 v3.15.2 (LTS)

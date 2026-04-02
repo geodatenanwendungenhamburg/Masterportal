@@ -133,6 +133,10 @@ export default {
         if (this.layerConfig?.[treeSubjectsKey]?.elements) {
             this.rootFolderCount = this.layerConfig[treeSubjectsKey].elements.filter(conf => conf.type === "folder").length;
         }
+        this.$nextTick(() => {
+            this.provideSelectAllProps();
+        });
+
     },
 
     unmounted () {
