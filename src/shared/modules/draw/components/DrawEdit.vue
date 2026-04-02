@@ -1,5 +1,7 @@
 <script>
 import {pointerMove} from "ol/events/condition.js";
+import {Fill, Style, Text} from "ol/style.js";
+import {convertColor} from "@shared/js/utils/convertColor.js";
 import selectInteraction from "@masterportal/masterportalapi/src/maps/interactions/selectInteraction.js";
 import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactions/modifyInteraction.js";
 import LayoutFrame from "@shared/modules/layoutFrame/components/LayoutFrame.vue";
@@ -8,6 +10,7 @@ import {markRaw} from "vue";
 import undoRedoFeatures from "../js/undoRedoFeatures.js";
 import IconButton from "../../buttons/components/IconButton.vue";
 import ExportItem from "@shared/modules/exportItem/components/ExportItem.vue";
+import InputText from "@shared/modules/inputs/components/InputText.vue";
 
 /**
  * Shared component that provides buttons to edit drawn features.
@@ -29,7 +32,8 @@ export default {
     components: {
         IconButton,
         LayoutFrame,
-        ExportItem
+        ExportItem,
+        InputText
     },
     props: {
         drawEdits: {
@@ -97,7 +101,14 @@ export default {
             localDrawIcons: {...this.drawIcons},
             drawLayerVisible: true,
             originalGeometry: null,
-            redoing: false
+            redoing: false,
+            selectedTextFeature: null,
+            editText: "",
+            editFontSize: 16,
+            editFont: "Arial",
+            textClickHandler: null,
+            editFillColor: "#000000",
+            editFillTransparency: 0
         };
     },
     computed: {
@@ -110,19 +121,24 @@ export default {
             if (!this.drawEdits.includes(selectedInteraction)) {
                 this.showFrame = false;
             }
-            if (selectedInteraction !== "delete") {
+            if (selectedInteraction !== "delete" && selectedInteraction !== "modify") {
                 this.currentSelectInteractions.forEach(currentSelectInteraction => this.removeInteraction(currentSelectInteraction));
                 this.currentSelectInteractions = [];
             }
             if (selectedInteraction !== "modify") {
                 this.removeInteraction(this.currentModifyInteraction);
                 this.currentModifyInteraction = null;
+                if (this.textClickHandler) {
+                    mapCollection.getMap("2D").un("singleclick", this.textClickHandler);
+                    this.textClickHandler = null;
+                    this.selectedTextFeature = null;
+                }
             }
         },
         layer (layer) {
             if (layer !== null) {
                 this.source.on("addfeature", event => {
-                    this.features.push(event.feature);
+                    // this.features.push(event.feature);
                     if (!this.redoing) {
                         this.nonReactiveUndoFeatures.push({
                             feature: markRaw(event.feature),
@@ -133,9 +149,8 @@ export default {
                 });
 
                 this.source.on("removefeature", event => {
-                    this.features = this.features.filter((feature) => feature.ol_uid !== event.feature.ol_uid);
+                    // this.features = this.features.filter((feature) => feature.ol_uid !== event.feature.ol_uid);
                     if (!this.redoing) {
-                        // console.warn("layer Watcher, removeFeature:", event.feature);
                         this.nonReactiveUndoFeatures.push({
                             feature: markRaw(event.feature),
                             mode: "delete"
@@ -161,6 +176,7 @@ export default {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
         ...mapMutations(["setButtonsDisabled"]),
         undoRedoFeatures,
+        convertColor,
 
         /**
          * Regulate the draw edit interactions.
@@ -229,9 +245,37 @@ export default {
          */
         regulateModify () {
             if (typeof this.setSelectedInteraction === "function") {
-                console.warn("HE, regulateModify");
                 this.setSelectedInteraction("modify");
             }
+
+            this.selectedTextFeature = null;
+            // Statt new Select({...}):
+            this.selectedTextFeature = null;
+            const map = mapCollection.getMap("2D");
+
+            this.textClickHandler = (event) => {
+                let found = false;
+
+                map.forEachFeatureAtPixel(event.pixel, (feature, layer) => {
+                    if (layer === this.layer && feature.get("drawType") === "writeText") {
+                        const fillColor = feature.get("textFillColor") || [0, 0, 0, 1];
+
+                        this.selectedTextFeature = feature;
+                        this.editText = feature.get("textContent") ?? "";
+                        this.editFontSize = feature.get("textFontSize") ?? 16;
+                        this.editFont = feature.get("textFont") ?? "Arial";
+                        this.editFillColor = convertColor(fillColor.slice(0, 3), "hex");
+                        this.editFillTransparency = Math.round((1 - (fillColor[3] ?? 1)) * 100);
+                        found = true;
+                        return true;
+                    }
+                    return false;
+                }, {hitTolerance: 10});
+                if (!found) {
+                    this.selectedTextFeature = null;
+                }
+            };
+            map.on("singleclick", this.textClickHandler);
 
             this.currentModifyInteraction = modifyInteraction.createModifyInteraction(this.source,
                                                                                       {
@@ -259,7 +303,6 @@ export default {
             );
             this.addInteraction(this.currentModifyInteraction);
             this.currentModifyInteraction.setActive(true);
-            console.warn("YOOO", this.currentModifyInteraction);
             this.showFrame = true;
         },
 
@@ -369,6 +412,28 @@ export default {
                 this.drawLayerVisible = !isVisible;
                 drawLayer.setVisible(!isVisible);
             }
+        },
+        applyTextEdit () {
+            const feature = this.selectedTextFeature,
+                alpha = 1 - (this.editFillTransparency / 100),
+                colorArray = [...convertColor(this.editFillColor, "rgb"), alpha];
+
+            if (!feature) {
+                return;
+            }
+            const newStyle = new Style({
+                text: new Text({
+                    text: this.editText,
+                    font: `${this.editFontSize}px ${this.editFont}`,
+                    fill: new Fill({color: colorArray})
+                })
+            });
+
+            feature.set("textFillColor", colorArray);
+            feature.set("textContent", this.editText);
+            feature.set("textFontSize", this.editFontSize);
+            feature.set("textFont", this.editFont);
+            feature.setStyle(newStyle);
         }
     }
 };
@@ -409,9 +474,71 @@ export default {
                 :formats="availableFormats"
                 :features="features"
             />
-            <p v-if="selectedInteraction === 'modify'">
-                You can edit the drawn features on the map through drag and drop. Have fun.
-            </p>
+            <div v-if="selectedInteraction === 'modify'">
+                <div v-if="selectedTextFeature">
+                    <InputText
+                        id="draw-text-edit"
+                        v-model="editText"
+                        label="Text"
+                        placeholder="Text eingeben"
+                        type="text"
+                    />
+                    <select
+                        v-model="editFontSize"
+                        class="form-select mb-2"
+                    >
+                        <option
+                            v-for="s in [10,12,14,16,18,20,24,28,32,36,40,48]"
+                            :key="s"
+                            :value="s"
+                        >
+                            {{ s }} px
+                        </option>
+                    </select>
+                    <select
+                        v-model="editFont"
+                        class="form-select mb-2"
+                    >
+                        <option
+                            v-for="f in ['Arial', 'Times New Roman', 'Calibri']"
+                            :key="f"
+                            :value="f"
+                        >
+                            {{ f }}
+                        </option>
+                    </select>
+                    <div class="d-flex align-items-center mb-2 gap-2">
+                        <label for="draw-text-color">Farbe</label>
+                        <input
+                            id="draw-text-color"
+                            type="color"
+                            :value="editFillColor"
+                            @input="event => editFillColor = event.target.value"
+                        >
+                    </div>
+                    <div class="mb-2">
+                        <label for="draw-text-transparency">Transparenz: {{ editFillTransparency }}%</label>
+                        <input
+                            id="draw-text-transparency"
+                            type="range"
+                            class="form-range"
+                            min="0"
+                            max="100"
+                            :value="editFillTransparency"
+                            @input="event => editFillTransparency = parseInt(event.target.value)"
+                        >
+                    </div>
+                    <button
+                        class="btn btn-primary"
+                        @click="applyTextEdit"
+                    >
+                        Übernehmen
+                    </button>
+                </div>
+                <p v-else>
+                    Wähle ein Feature zum Bearbeiten aus.
+                </p>
+            </div>
             <p v-if="selectedInteraction === 'editAttributes'">
                 Click a feature on the map to edit the attributes. At least that's how it's supposed to work. Right now it doesn't. Haha!
             </p>
