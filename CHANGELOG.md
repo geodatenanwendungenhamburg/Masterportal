@@ -19,6 +19,7 @@
 - Issue \#1472: Improve error handling and robustness of `addInterceptor`.
 - Issue \#1489: Print - fix rotated print masks and add missing rotation for MapFish. Add information regarding missing support of *High Resolution PlotService* to docs.
 - Issue \#1515: Filter: saveTo: `url` was fixed. Now reads URL params properly and sets them.
+- Issue \#1573: LayerPills: On-click shows layerinfomation for groups, too.
 - Issue \#1577: PortalFooter: Fixed About-Module detection to search in all menu sections instead of only the first one.
 - VectorStyle: Fixed styling of polygons: `"zig-line-horizontal"` and `"diagonal-right"` are rotated by 90°.
 - sortObjects: Ensure stable sortByLayerSequence order in Chrome/Firefox.
