@@ -1601,7 +1601,9 @@
           "deleteAll": "Delete all",
           "modify": "Edit geometry",
           "redo": "Redo",
-          "undo": "Undo"
+          "undo": "Undo",
+          "chooseFeature": "Choose a geometry or text to edit.",
+          "textAccept": "Accept"
         },
         "drawLayout": {
           "fillColor": "Fill color",
