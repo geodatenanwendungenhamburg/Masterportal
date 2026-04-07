@@ -6,7 +6,7 @@ import {markRaw} from "vue";
  * @param {ol/feature|ol/feature[]} feature The undo or redo feature.
  * @returns {Boolean} The feature is an array of features or not.
  */
-function isDeleteAllMode (feature) {
+export function isDeleteAllMode (feature) {
     return Array.isArray(feature);
 }
 
