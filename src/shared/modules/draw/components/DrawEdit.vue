@@ -312,7 +312,7 @@ export default {
          */
         regulateUndo () {
             this.redoing = true;
-            undoRedoFeatures(this.nonReactiveUndoFeatures, this.nonReactiveRedoFeatures, "undo", this.source);
+            this.undoRedoFeatures(this.nonReactiveUndoFeatures, this.nonReactiveRedoFeatures, "undo", this.source);
             this.redoing = false;
         },
 
@@ -322,7 +322,7 @@ export default {
          */
         regulateRedo () {
             this.redoing = true;
-            undoRedoFeatures(this.nonReactiveRedoFeatures, this.nonReactiveUndoFeatures, "redo", this.source);
+            this.undoRedoFeatures(this.nonReactiveRedoFeatures, this.nonReactiveUndoFeatures, "redo", this.source);
             this.redoing = false;
         },
 

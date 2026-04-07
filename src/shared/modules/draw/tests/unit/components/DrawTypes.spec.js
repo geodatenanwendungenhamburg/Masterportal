@@ -55,6 +55,9 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
                     modules: {
                         Draw: {
                             namespaced: true,
+                            getters: {
+                                iconList: () => []
+                            },
                             state: {
                                 drawTypesGeometrie: ["line", "box", "polygon", "circle", "doubleCircle"],
                                 drawTypesMain: ["pen", "geometries", "symbols"]
@@ -64,6 +67,13 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
                 }
             }
         });
+        mapCollection.clear();
+        mapCollection.addMap({
+            id: "ol",
+            mode: "2D",
+            addOverlay: sinon.spy(),
+            on: sinon.spy()
+        }, "2D");
     });
 
 

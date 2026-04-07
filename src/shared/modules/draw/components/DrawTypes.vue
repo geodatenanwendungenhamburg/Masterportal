@@ -142,7 +142,7 @@ export default {
     },
     computed: {
         ...mapGetters("Maps", ["projection"]),
-        ...mapGetters("Modules/Draw", ["symbolList"]),
+        ...mapGetters("Modules/Draw", ["iconList"]),
         ...mapState("Modules/Draw", ["drawTypesGeometrie", "drawTypesMain", "drawTypesSymbols", "buttonsDisabled", "drawSymbolImgPath", "selectedSymbol"])
     },
     watch: {
@@ -182,7 +182,7 @@ export default {
         }
 
         this.startDrawingInitial();
-        this.symbolList.forEach(symbol => {
+        this.iconList.forEach(symbol => {
             this.addDrawTypeSymbol(symbol.id);
         });
     },
@@ -259,11 +259,11 @@ export default {
          * @returns {void}
          */
         regulateDrawInteraction (drawType) {
-            this.currentDrawInteraction = drawInteraction.createDrawInteraction(drawType, this.source, this.symbolList);
+            this.currentDrawInteraction = drawInteraction.createDrawInteraction(drawType, this.source, this.iconList);
             let onGeometryChange;
             const {tooltipOverlay, tooltipElement} = createTooltipOverlay(),
                 map = mapCollection.getMap("2D"),
-                symbol = this.symbolList.find(val => val.id === drawType);
+                symbol = this.iconList.find(val => val.id === drawType);
 
             tooltipElement.innerHTML = "";
             tooltipElement.style.display = "none";
@@ -426,10 +426,10 @@ export default {
         /**
          * Returns name of a drawType.
          * @param {String} id - ID of drawType.
-         * @returns {String} - Translation of drawType or ID if symbol from symbolList in config.
+         * @returns {String} - Translation of drawType or ID if symbol from iconList in config.
          */
         getDrawTypeName (id) {
-            const symbol = this.symbolList.find(symbolId => symbolId.id === id);
+            const symbol = this.iconList.find(symbolId => symbolId.id === id);
 
             if (symbol) {
                 return symbol.id;

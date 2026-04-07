@@ -110,7 +110,7 @@ const state = {
     strokeRange: [1, 16],
     supportedDevices: ["Desktop", "Mobile", "Table"],
     supportedMapModes: ["2D", "3D"],
-    symbolList: [
+    iconList: [
         {
             "id": "iconPoint",
             "type": "simple_point",
