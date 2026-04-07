@@ -242,7 +242,7 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
                 mode = "undo";
 
             wrapper.vm.source.addFeatures([feature1, feature2]);
-            wrapper.vm.undoRedoFeatures(features, mode);
+            wrapper.vm.undoRedoFeatures(features, [], mode, wrapper.vm.source);
 
             expect(wrapper.vm.source.getFeatures().length).to.equals(1);
             expect(wrapper.vm.source.getFeatures()[0]).to.deep.equals(feature1);
@@ -259,10 +259,10 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
                         mode: "delete"
                     }
                 ],
-                mode = "redo";
+                mode = "undo";
 
             wrapper.vm.source.addFeatures([feature1]);
-            wrapper.vm.undoRedoFeatures(features, mode);
+            wrapper.vm.undoRedoFeatures(features, [], mode, wrapper.vm.source);
 
             expect(wrapper.vm.source.getFeatures().length).to.equals(2);
             expect(wrapper.vm.source.getFeatures()[0]).to.deep.equals(feature1);
@@ -276,9 +276,9 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
                         feature2
                     ]
                 ],
-                mode = "redo";
+                mode = "undo";
 
-            wrapper.vm.undoRedoFeatures(features, mode);
+            wrapper.vm.undoRedoFeatures(features, [], mode, wrapper.vm.source);
 
             expect(undoRedoDeleteAllSpy.calledOnce).to.be.true;
             expect(undoRedoDeleteAllSpy.firstCall.args[0]).to.equals(mode);
@@ -344,12 +344,12 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
             expect(wrapper.vm.source.getFeatures().length).to.equals(2);
             expect(wrapper.vm.source.getFeatures()[0]).to.deep.equals(feature1);
             expect(wrapper.vm.source.getFeatures()[1]).to.deep.equals(feature2);
-            expect(wrapper.vm.redoFeatures.length).to.equals(1);
-            expect(wrapper.vm.redoFeatures[0]).to.deep.equals([feature1, feature2]);
+            expect(wrapper.vm.nonReactiveRedoFeatures.length).to.equals(1);
+            expect(wrapper.vm.nonReactiveRedoFeatures[0]).to.deep.equals([feature1, feature2]);
             expect(wrapper.vm.mode).to.equals("");
         });
 
-        it("should remove all features from vector source, if mode === redo", async () => {
+        it("should remove all features from vector source, if mode === undo", async () => {
             const mode = "redo",
                 features = [
                     [
@@ -373,8 +373,8 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
             await wrapper.vm.$nextTick();
 
             expect(wrapper.vm.source.getFeatures().length).to.equals(0);
-            expect(wrapper.vm.undoFeatures.length).to.equals(1);
-            expect(wrapper.vm.undoFeatures[0]).to.deep.equals([feature1, feature2]);
+            expect(wrapper.vm.nonReactiveUndoFeatures.length).to.equals(1);
+            expect(wrapper.vm.nonReactiveUndoFeatures[0]).to.deep.equals([feature1, feature2]);
             expect(wrapper.vm.mode).to.equals("");
         });
     });
