@@ -181,8 +181,9 @@ export default {
                 </div>
             </div>
             <div
-                v-if="isRadiusInvalid && selectedDrawType === `doubleCircle`" 
-                class="text-danger mt-2">
+                v-if="isRadiusInvalid && selectedDrawType === 'doubleCircle'"
+                class="text-danger mt-2"
+            >
                 {{ $t("common:shared.modules.draw.drawSettingsCircle.radiusValidation") }}
             </div>
         </div>
