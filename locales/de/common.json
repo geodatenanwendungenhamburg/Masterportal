@@ -1589,7 +1589,9 @@
           "deleteAll": "Alles löschen",
           "modify": "Geometrie / Text bearbeiten",
           "redo": "Wiederholen",
-          "undo": "Rückgängig machen"
+          "undo": "Rückgängig machen",
+          "chooseFeature": "Wählen Sie eine Geometrie oder einen Text zum Bearbeiten aus.",
+          "textAccept": "Übernehmen"
         },
         "drawLayout": {
           "fillColor": "Füllfarbe",

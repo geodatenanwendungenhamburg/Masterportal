@@ -509,7 +509,7 @@ export default {
                         </option>
                     </select>
                     <div class="d-flex align-items-center mb-2 gap-2">
-                        <label for="draw-text-color">Farbe</label>
+                        <label for="draw-text-color">{{ $t("common:shared.modules.draw.drawLayout.fillColor") }}</label>
                         <input
                             id="draw-text-color"
                             type="color"
@@ -518,7 +518,7 @@ export default {
                         >
                     </div>
                     <div class="mb-2">
-                        <label for="draw-text-transparency">Transparenz: {{ editFillTransparency }}%</label>
+                        <label for="draw-text-transparency">{{ $t("common:shared.modules.draw.drawLayout.fillTransparency") }}: {{ editFillTransparency }}%</label>
                         <input
                             id="draw-text-transparency"
                             type="range"
@@ -533,11 +533,11 @@ export default {
                         class="btn btn-primary"
                         @click="applyTextEdit"
                     >
-                        Übernehmen
+                        {{ $t("common:shared.modules.draw.drawEdit.textAccept") }}
                     </button>
                 </div>
                 <p v-else>
-                    Wähle ein Feature zum Bearbeiten aus.
+                    {{ $t("common:shared.modules.draw.drawEdit.chooseFeature") }}
                 </p>
             </div>
             <p v-if="selectedInteraction === 'editAttributes'">
