@@ -60,7 +60,7 @@ export default {
     },
 
     /**
-     * Fill the draw type symbols with a symbolList from the config, if present.
+     * Fill the draw type symbols with an iconList from the config, if present.
      * @param {Object} state store state.
      * @param {String} id The ID of the draw type symbol to add.
      * @returns {void}

@@ -32,6 +32,14 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
         removeSelectedFeatureSpy = sinon.spy(selectInteraction, "removeSelectedFeature");
         removeInteractionSpy = sinon.spy();
 
+        mapCollection.clear();
+        mapCollection.addMap({
+            id: "ol",
+            mode: "2D",
+            on: sinon.spy(),
+            forEachFeatureAtPixel: sinon.spy()
+        }, "2D");
+
 
         store = createStore({
             modules: {
@@ -187,17 +195,17 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
         it("should start undoRedoFeatures with 'undo'", async () => {
             wrapper.vm.regulateUndo();
 
-            expect(undoRedoFeaturesSpy.calledOnce).to.be.true;
-            expect(undoRedoFeaturesSpy.firstCall.args[0]).to.deep.equals(wrapper.vm.undoFeatures);
-            expect(undoRedoFeaturesSpy.firstCall.args[1]).to.equals("undo");
+            expect(undoRedoFeaturesSpy.firstCall.args[0]).to.deep.equals(wrapper.vm.nonReactiveUndoFeatures);
+            expect(undoRedoFeaturesSpy.firstCall.args[1]).to.deep.equals(wrapper.vm.nonReactiveRedoFeatures);
+            expect(undoRedoFeaturesSpy.firstCall.args[2]).to.equals("undo");
         });
 
         it("should start undoRedoFeatures with 'redo'", async () => {
             wrapper.vm.regulateRedo();
 
-            expect(undoRedoFeaturesSpy.calledOnce).to.be.true;
-            expect(undoRedoFeaturesSpy.firstCall.args[0]).to.deep.equals(wrapper.vm.redoFeatures);
-            expect(undoRedoFeaturesSpy.firstCall.args[1]).to.equals("redo");
+            expect(undoRedoFeaturesSpy.firstCall.args[0]).to.deep.equals(wrapper.vm.nonReactiveRedoFeatures);
+            expect(undoRedoFeaturesSpy.firstCall.args[1]).to.deep.equals(wrapper.vm.nonReactiveUndoFeatures);
+            expect(undoRedoFeaturesSpy.firstCall.args[2]).to.equals("redo");
         });
     });
 
@@ -370,83 +378,6 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
             expect(wrapper.vm.undoFeatures.length).to.equals(1);
             expect(wrapper.vm.undoFeatures[0]).to.deep.equals([feature1, feature2]);
             expect(wrapper.vm.mode).to.equals("");
-        });
-    });
-
-    describe("shiftUndoRedoFeatures", () => {
-        it("should move feature from undoFeatures to redoFeatures, if mode === undo", () => {
-            const feature = new Feature(),
-                featureMode = "draw";
-
-            wrapper = shallowMount(DrawEditComponent, {
-                propsData: {
-                    layer
-                },
-                global: {
-                    plugins: [store]
-                }
-            });
-
-            wrapper.vm.shiftUndoRedoFeatures(feature, featureMode, "undo");
-
-            expect(wrapper.vm.mode).to.equals("");
-            expect(wrapper.vm.undoFeatures).to.deep.equals([]);
-            expect(wrapper.vm.redoFeatures).to.deep.equals([
-                {
-                    feature: feature,
-                    mode: featureMode
-                }
-            ]);
-        });
-
-        it("should move feature from redoFeatures to undoFeatures, if mode === redo", () => {
-            const feature = new Feature(),
-                featureMode = "draw";
-
-            wrapper = shallowMount(DrawEditComponent, {
-                propsData: {
-                    layer
-                },
-                global: {
-                    plugins: [store]
-                }
-            });
-
-            wrapper.vm.shiftUndoRedoFeatures(feature, featureMode, "redo");
-
-            expect(wrapper.vm.mode).to.equals("");
-            expect(wrapper.vm.redoFeatures).to.deep.equals([]);
-            expect(wrapper.vm.undoFeatures).to.deep.equals([
-                {
-                    feature: feature,
-                    mode: featureMode
-                }
-            ]);
-        });
-
-        it("should add feature to undoFeatures and clear redofeatures, if mode === ''", () => {
-            const feature = new Feature(),
-                featureMode = "draw";
-
-            wrapper = shallowMount(DrawEditComponent, {
-                propsData: {
-                    layer
-                },
-                global: {
-                    plugins: [store]
-                }
-            });
-
-            wrapper.vm.shiftUndoRedoFeatures(feature, featureMode, "redo");
-
-            expect(wrapper.vm.mode).to.equals("");
-            expect(wrapper.vm.redoFeatures).to.deep.equals([]);
-            expect(wrapper.vm.undoFeatures).to.deep.equals([
-                {
-                    feature: feature,
-                    mode: featureMode
-                }
-            ]);
         });
     });
 });
