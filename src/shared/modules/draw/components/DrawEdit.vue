@@ -7,7 +7,7 @@ import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactio
 import LayoutFrame from "@shared/modules/layoutFrame/components/LayoutFrame.vue";
 import {mapActions, mapMutations} from "vuex";
 import {markRaw} from "vue";
-import undoRedoFeatures from "../js/undoRedoFeatures.js";
+import undoRedoFeatures, {isDeleteAllMode} from "../js/undoRedoFeatures.js";
 import IconButton from "../../buttons/components/IconButton.vue";
 import ExportItem from "@shared/modules/exportItem/components/ExportItem.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
@@ -176,6 +176,7 @@ export default {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
         ...mapMutations(["setButtonsDisabled"]),
         undoRedoFeatures,
+        isDeleteAllMode,
         convertColor,
 
         /**
@@ -247,7 +248,7 @@ export default {
             if (typeof this.setSelectedInteraction === "function") {
                 this.setSelectedInteraction("modify");
             }
-
+            this.removeInteraction(this.currentModifyInteraction);
             this.selectedTextFeature = null;
             // Statt new Select({...}):
             this.selectedTextFeature = null;
