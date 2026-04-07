@@ -32,7 +32,7 @@ describe("src/shared/modules/draw/components/DrawLayout.vue", () => {
             });
 
             expect(wrapper.find("#draw-layout-innerCircle-fillColor").exists()).to.be.false;
-            expect(wrapper.find("#draw-layout-innerCircle-fillTransparency").exists()).to.be.false;
+            expect(wrapper.find("#draw-layout-innerCircle-fillTransparency").exists()).to.be.true;
             expect(wrapper.find("#draw-layout-innerCircle-strokeColor").exists()).to.be.true;
             expect(wrapper.find("#draw-layout-innerCircle-strokeWidth").exists()).to.be.true;
         });
@@ -46,7 +46,7 @@ describe("src/shared/modules/draw/components/DrawLayout.vue", () => {
                 }
             });
 
-            expect(wrapper.find("#text-input").exists()).to.be.true;
+            expect(wrapper.find("#writeText").exists()).to.be.true;
             expect(wrapper.find("#font-size-select").exists()).to.be.true;
             expect(wrapper.find("#font-select").exists()).to.be.true;
         });
@@ -133,17 +133,11 @@ describe("src/shared/modules/draw/components/DrawLayout.vue", () => {
 
             expect(setCurrentLayoutSpy.calledOnce).to.be.true;
             expect(setCurrentLayoutSpy.firstCall.args[0]).to.deep.equals({
-                fillColor: [255, 0, 170],
-                fillTransparency: 0,
-                strokeColor: [0, 0, 0],
-                strokeWidth: 1
+                fillColor: [255, 0, 170]
             });
             expect(wrapper.emitted()["update-current-layout"]).to.exist;
             expect(wrapper.emitted()["update-current-layout"][0]).to.deep.equals([{
-                fillColor: [255, 0, 170],
-                fillTransparency: 0,
-                strokeColor: [0, 0, 0],
-                strokeWidth: 1
+                fillColor: [255, 0, 170]
             }]);
         });
     });
