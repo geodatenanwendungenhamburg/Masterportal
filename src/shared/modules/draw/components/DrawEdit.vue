@@ -11,6 +11,7 @@ import undoRedoFeatures, {isDeleteAllMode} from "../js/undoRedoFeatures.js";
 import IconButton from "../../buttons/components/IconButton.vue";
 import ExportItem from "@shared/modules/exportItem/components/ExportItem.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
+import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
 
 /**
  * Shared component that provides buttons to edit drawn features.
@@ -33,7 +34,8 @@ export default {
         IconButton,
         LayoutFrame,
         ExportItem,
-        InputText
+        InputText,
+        SliderItem
     },
     props: {
         drawEdits: {
@@ -108,7 +110,8 @@ export default {
             editFont: "Arial",
             textClickHandler: null,
             editFillColor: "#000000",
-            editFillTransparency: 0
+            editFillTransparency: 0,
+            activeEditKey: ""
         };
     },
     computed: {
@@ -508,26 +511,62 @@ export default {
                             {{ f }}
                         </option>
                     </select>
-                    <div class="d-flex align-items-center mb-2 gap-2">
-                        <label for="draw-text-color">{{ $t("common:shared.modules.draw.drawLayout.fillColor") }}</label>
-                        <input
-                            id="draw-text-color"
-                            type="color"
-                            :value="editFillColor"
-                            @input="event => editFillColor = event.target.value"
-                        >
+                    <div class="draw-layout-buttons d-flex flex-row align-items-center mb-2">
+                        <div class="button-container text-center">
+                            <button
+                                id="draw-edit-fill-color"
+                                class="btn btn-secondary"
+                            >
+                                <i
+                                    class="bi-paint-bucket"
+                                    role="img"
+                                />
+                                <span
+                                    class="color-preview"
+                                    :style="{ backgroundColor: editFillColor }"
+                                />
+                                <input
+                                    type="color"
+                                    class="color-input-overlay"
+                                    :value="editFillColor"
+                                    @input="event => editFillColor = event.target.value"
+                                >
+                            </button>
+                            <span class="text-center btn-label">
+                                {{ $t("common:shared.modules.draw.drawLayout.fillColor") }}
+                            </span>
+                        </div>
+                        <div class="button-container text-center">
+                            <button
+                                id="draw-edit-fill-transparency"
+                                :class="['btn', 'btn-secondary', activeEditKey === 'fillTransparency' ? 'active' : '']"
+                                @click="activeEditKey = activeEditKey === 'fillTransparency' ? '' : 'fillTransparency'"
+                            >
+                                <i
+                                    class="bi-droplet-half"
+                                    role="img"
+                                />
+                                <span class="btn-value">{{ editFillTransparency + '%' }}</span>
+                            </button>
+                            <span class="text-center btn-label">
+                                {{ $t("common:shared.modules.draw.drawLayout.fillTransparency") }}
+                            </span>
+                        </div>
                     </div>
-                    <div class="mb-2">
-                        <label for="draw-text-transparency">{{ $t("common:shared.modules.draw.drawLayout.fillTransparency") }}: {{ editFillTransparency }}%</label>
-                        <input
-                            id="draw-text-transparency"
-                            type="range"
-                            class="form-range"
+                    <div
+                        v-if="activeEditKey === 'fillTransparency'"
+                        class="d-flex mb-2"
+                    >
+                        <SliderItem
+                            id="slider-edit-fill-transparency"
+                            :aria="`${editFillTransparency}%`"
+                            :label="`${editFillTransparency}%`"
                             min="0"
                             max="100"
-                            :value="editFillTransparency"
-                            @input="event => editFillTransparency = parseInt(event.target.value)"
-                        >
+                            :value="editFillTransparency.toString()"
+                            :step="1"
+                            :interaction="event => editFillTransparency = parseInt(event.target.value)"
+                        />
                     </div>
                     <button
                         class="btn btn-primary"
@@ -557,6 +596,55 @@ export default {
         margin-bottom: 5px;
         margin-right: 5px;
     }
+}
+
+.draw-layout-buttons {
+    flex-wrap: wrap;
+}
+
+.button-container {
+    margin-right: 8px;
+    margin-bottom: 4px;
+}
+
+.btn-label {
+    display: block;
+    font-size: 0.8rem;
+}
+
+.btn-value {
+    font-size: 0.75rem;
+    width: 100%;
+    display: block;
+}
+
+.color-preview {
+    display: block;
+    width: 1.8rem;
+    height: 0.6rem;
+    border-radius: 4px;
+}
+
+.color-input-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.draw-layout-buttons .btn {
+    width: 3.65rem;
+    height: 3.65rem;
+    position: relative;
+    text-align: center;
+    font-size: 1.143rem;
+    border-radius: 50%;
 }
 
 </style>
