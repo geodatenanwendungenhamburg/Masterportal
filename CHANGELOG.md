@@ -4,7 +4,7 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## 2025-02-06 v3.15.2 (LTS)
+## 2026-06-17 v3.15.3 (LTS)
 
 ### Added
  - Security: Added SECURITY.md file.
@@ -21,6 +21,7 @@
 - Issue \#1515: Filter: saveTo: `url` was fixed. Now reads URL params properly and sets them.
 - Issue \#1573: LayerPills: On-click shows layerinfomation for groups, too.
 - Issue \#1577: PortalFooter: Fixed About-Module detection to search in all menu sections instead of only the first one.
+- Issue \#1578: layer2dVector: Fixed legend creation for WFS layers.
 - VectorStyle: Fixed styling of polygons: `"zig-line-horizontal"` and `"diagonal-right"` are rotated by 90°.
 - sortObjects: Ensure stable sortByLayerSequence order in Chrome/Firefox.
 - BufferAnalysis: Fixed applying values from URL. New and legacy format are now correctly parsed and applied.

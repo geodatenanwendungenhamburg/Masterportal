@@ -433,13 +433,56 @@ describe("src/core/js/layers/layer2dVector.js", () => {
         });
     });
 
+    describe("resolveLegend", () => {
+        it("should return legendInfos directly if rules are null", () => {
+            const layerWrapper = new Layer2dVector(attributes),
+                legendInfos = ["legend1", "legend2"];
+
+            expect(layerWrapper.resolveLegend([], null, legendInfos)).to.deep.equals(legendInfos);
+        });
+
+        it("should return legendInfos directly if rules have no conditions", () => {
+            const layerWrapper = new Layer2dVector(attributes),
+                rules = [{}],
+                legendInfos = ["legend1"];
+
+            expect(layerWrapper.resolveLegend([], rules, legendInfos)).to.deep.equals(legendInfos);
+        });
+
+        it("should call filterUniqueLegendInfo if rules have conditions and features exist", () => {
+            const layerWrapper = new Layer2dVector(attributes),
+                features = ["feature1"],
+                rules = [{conditions: {foo: "bar"}}],
+                legendInfos = ["legend1"],
+                filtered = ["filteredLegend"];
+
+            sinon.stub(layerWrapper, "filterUniqueLegendInfo").returns(filtered);
+
+            expect(layerWrapper.resolveLegend(features, rules, legendInfos)).to.deep.equals(filtered);
+            expect(layerWrapper.filterUniqueLegendInfo.calledOnce).to.be.true;
+            expect(layerWrapper.filterUniqueLegendInfo.calledWith(features, rules, legendInfos)).to.be.true;
+        });
+
+        it("should return legendInfos if rules have conditions but features are empty", () => {
+            const layerWrapper = new Layer2dVector(attributes),
+                rules = [{conditions: {foo: "bar"}}],
+                legendInfos = ["legend1"];
+
+            expect(layerWrapper.resolveLegend([], rules, legendInfos)).to.deep.equals(legendInfos);
+        });
+    });
+
+
     describe("createLegend", () => {
         beforeEach(() => {
             attributes = {
                 id: "id",
                 version: "1.3.0"
             };
+
+            sinon.stub(getGeometryTypeFromService, "getGeometryTypeFromWFS").resolves([]);
         });
+
 
         it("createLegend with legendURL", async () => {
             attributes.legendURL = "legendUrl1";
@@ -464,9 +507,175 @@ describe("src/core/js/layers/layer2dVector.js", () => {
                 };
 
             sinon.stub(createStyle, "returnLegendByStyleId").returns({legendInformation});
-            sinon.stub(getGeometryTypeFromService, "getGeometryTypeFromWFS");
 
             expect(await layerWrapper.createLegend()).to.deep.equals(legendInformation);
+        });
+
+        it("createLegend should use legendInfosFromService directly if returned and no rule conditions", async () => {
+            attributes.legend = true;
+            attributes.url = "https://test.de/wfs";
+            attributes.featureType = "testFeatureType";
+            attributes.styleGeometryType = "Point";
+            const layerWrapper = new Layer2dVector(attributes),
+                legendInfosFromService = ["serviceInfo1", "serviceInfo2"],
+                mockSource = {getFeatures: sinon.stub().returns([])};
+
+            layerWrapper.layer = {getSource: sinon.stub().returns(mockSource)};
+            getGeometryTypeFromService.getGeometryTypeFromWFS.resolves(legendInfosFromService);
+
+            expect(await layerWrapper.createLegend()).to.deep.equals(legendInfosFromService);
+        });
+
+        it("createLegend should call filterUniqueLegendInfo if legendInfosFromService returned and rule conditions exist", async () => {
+            const styleObj = {
+                styleId: "styleId",
+                rules: [{conditions: {foo: "bar"}}]
+            };
+
+            styleListStub.restore();
+            sinon.stub(styleList, "returnStyleObject").returns(styleObj);
+
+            attributes.legend = true;
+            attributes.url = "https://test.de/wfs";
+            attributes.featureType = "testFeatureType";
+            attributes.styleGeometryType = "Point";
+            const layerWrapper = new Layer2dVector(attributes),
+                legendInfosFromService = ["serviceInfo1"],
+                features = ["feature1"],
+                filtered = ["filteredLegend"],
+                mockSource = {getFeatures: sinon.stub().returns(features)};
+
+            layerWrapper.layer = {getSource: sinon.stub().returns(mockSource)};
+            getGeometryTypeFromService.getGeometryTypeFromWFS.resolves(legendInfosFromService);
+            sinon.stub(layerWrapper, "filterUniqueLegendInfo").returns(filtered);
+
+            expect(await layerWrapper.createLegend()).to.deep.equals(filtered);
+            expect(layerWrapper.filterUniqueLegendInfo.calledWith(features, styleObj.rules, legendInfosFromService)).to.be.true;
+        });
+
+
+        it("createLegend with styleId 'default' and Point geometry", async () => {
+            const styleObj = {
+                styleId: "default",
+                rules: []
+            };
+
+            styleListStub.restore();
+            sinon.stub(styleList, "returnStyleObject").returns(styleObj);
+
+            attributes.legend = true;
+            const layerWrapper = new Layer2dVector(attributes),
+                pointLegend = {geometryType: "Point", label: "point"},
+                legendInformation = [pointLegend, {geometryType: "LineString", label: "line"}],
+                mockGeometry = {getType: sinon.stub().returns("Point")},
+                mockFeature = {getGeometry: sinon.stub().returns(mockGeometry)},
+                mockSource = {getFeatures: sinon.stub().returns([mockFeature])};
+
+            layerWrapper.layer = {getSource: sinon.stub().returns(mockSource)};
+            sinon.stub(createStyle, "returnLegendByStyleId").returns({legendInformation});
+
+            expect(await layerWrapper.createLegend()).to.deep.equals([pointLegend]);
+        });
+
+        it("createLegend with styleId 'default' and MultiLineString geometry", async () => {
+            const styleObj = {
+                styleId: "default",
+                rules: []
+            };
+
+            styleListStub.restore();
+            sinon.stub(styleList, "returnStyleObject").returns(styleObj);
+
+            attributes.legend = true;
+            const layerWrapper = new Layer2dVector(attributes),
+                lineLegend = {geometryType: "LineString", label: "line"},
+                legendInformation = [{geometryType: "Point", label: "point"}, lineLegend],
+                mockGeometry = {getType: sinon.stub().returns("MultiLineString")},
+                mockFeature = {getGeometry: sinon.stub().returns(mockGeometry)},
+                mockSource = {getFeatures: sinon.stub().returns([mockFeature])};
+
+            layerWrapper.layer = {getSource: sinon.stub().returns(mockSource)};
+            sinon.stub(createStyle, "returnLegendByStyleId").returns({legendInformation});
+
+            expect(await layerWrapper.createLegend()).to.deep.equals([lineLegend]);
+        });
+
+        it("createLegend with styleId 'default' and no matching geometry type returns empty array", async () => {
+            const styleObj = {
+                styleId: "default",
+                rules: []
+            };
+
+            styleListStub.restore();
+            sinon.stub(styleList, "returnStyleObject").returns(styleObj);
+
+            attributes.legend = true;
+            const layerWrapper = new Layer2dVector(attributes),
+                legendInformation = [{geometryType: "Point", label: "point"}],
+                mockGeometry = {getType: sinon.stub().returns("Polygon")},
+                mockFeature = {getGeometry: sinon.stub().returns(mockGeometry)},
+                mockSource = {getFeatures: sinon.stub().returns([mockFeature])};
+
+            layerWrapper.layer = {getSource: sinon.stub().returns(mockSource)};
+            sinon.stub(createStyle, "returnLegendByStyleId").returns({legendInformation});
+
+            expect(await layerWrapper.createLegend()).to.deep.equals([]);
+        });
+
+        it("createLegend should fallback to style legend when service returns empty and no default style filtering applies", async () => {
+            const styleObj = {
+                styleId: "customStyle",
+                rules: []
+            };
+
+            styleListStub.restore();
+            sinon.stub(styleList, "returnStyleObject").returns(styleObj);
+
+            attributes.legend = true;
+            attributes.url = "https://test.de/wfs";
+            attributes.featureType = "testFeatureType";
+            attributes.styleGeometryType = "Point";
+
+            const legendInformation = [
+                    {geometryType: "Point", label: "Point legend"},
+                    {geometryType: "LineString", label: "Line legend"}
+                ],
+                layerWrapper = new Layer2dVector(attributes),
+                mockSource = {getFeatures: sinon.stub().returns([])};
+
+            layerWrapper.layer = {getSource: sinon.stub().returns(mockSource)};
+
+            getGeometryTypeFromService.getGeometryTypeFromWFS.resolves([]);
+
+            sinon.stub(createStyle, "returnLegendByStyleId").returns({legendInformation});
+
+            const result = await layerWrapper.createLegend();
+
+            expect(result).to.deep.equals(legendInformation);
+        });
+
+        it("createLegend custom style fallback with rule conditions should use filterUniqueLegendInfo", async () => {
+            const styleObj = {
+                styleId: "styleId",
+                rules: [{conditions: {foo: "bar"}}]
+            };
+
+            styleListStub.restore();
+            sinon.stub(styleList, "returnStyleObject").returns(styleObj);
+
+            attributes.legend = true;
+            const layerWrapper = new Layer2dVector(attributes),
+                legendInformation = ["legendInfo"],
+                features = ["feature1"],
+                filtered = ["filteredLegend"],
+                mockSource = {getFeatures: sinon.stub().returns(features)};
+
+            layerWrapper.layer = {getSource: sinon.stub().returns(mockSource)};
+            sinon.stub(createStyle, "returnLegendByStyleId").returns({legendInformation});
+            sinon.stub(layerWrapper, "filterUniqueLegendInfo").returns(filtered);
+
+            expect(await layerWrapper.createLegend()).to.deep.equals(filtered);
+            expect(layerWrapper.filterUniqueLegendInfo.calledWith(features, styleObj.rules, legendInformation)).to.be.true;
         });
     });
 
