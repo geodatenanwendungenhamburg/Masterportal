@@ -1598,10 +1598,27 @@
         }
       },
       "draw": {
+        "attributeSelect": {
+          "attributeDuplicatedKeyError": "Der Attribut-Schlüssel existiert bereits.",
+          "attributeKeyError": "Bitte einen Schlüssel für das Attribut angeben.",
+          "add": "Attribut hinzufügen",
+          "remove": "Attribut löschen",
+          "clickHint": "Klicken Sie auf eine Zeichnung, um dessen Attribute zu bearbeiten.",
+          "noFeatureSelected": "Keine Zeichnung ausgewählt. Bitte wählen Sie eine Zeichnung aus.",
+          "input": {
+            "key": "Attributschlüssel",
+            "value": "Attributwert",
+            "newKey": "Neuer Schlüssel",
+            "newValue": "Neuer Wert"
+          }
+        },
         "drawEdit": {
           "delete": "Geometrie / Text löschen",
           "deleteAll": "Alles löschen",
           "modify": "Geometrie / Text bearbeiten",
+          "editAttributes": "Attribute bearbeiten",
+          "hide": "Zeichnung ausblenden",
+          "download": "Herunterladen",
           "redo": "Wiederholen",
           "undo": "Rückgängig machen",
           "chooseFeature": "Wählen Sie eine Geometrie oder einen Text zum Bearbeiten aus.",

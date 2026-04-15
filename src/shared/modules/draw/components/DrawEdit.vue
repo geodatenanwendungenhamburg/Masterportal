@@ -12,6 +12,7 @@ import IconButton from "../../buttons/components/IconButton.vue";
 import ExportItem from "@shared/modules/exportItem/components/ExportItem.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
+import DrawEditAttributes from "./DrawEditAttributes.vue";
 
 /**
  * Shared component that provides buttons to edit drawn features.
@@ -31,6 +32,7 @@ import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
 export default {
     name: "DrawEdit",
     components: {
+        DrawEditAttributes,
         IconButton,
         LayoutFrame,
         ExportItem,
@@ -579,9 +581,10 @@ export default {
                     {{ $t("common:shared.modules.draw.drawEdit.chooseFeature") }}
                 </p>
             </div>
-            <p v-if="selectedInteraction === 'editAttributes'">
-                Click a feature on the map to edit the attributes. At least that's how it's supposed to work. Right now it doesn't. Haha!
-            </p>
+            <DrawEditAttributes
+                v-if="selectedInteraction === 'editAttributes'"
+                :layer="layer"
+            />
         </LayoutFrame>
         <hr>
     </div>
