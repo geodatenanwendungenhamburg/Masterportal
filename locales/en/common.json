@@ -1582,10 +1582,27 @@
         }
       },
       "draw": {
+        "attributeSelect": {
+          "attributeDuplicatedKeyError": "Attribute key already exists.",
+          "attributeKeyError": "Please provide a key for the attribute.",
+          "add": "Add attribute",
+          "remove": "Delete attribute",
+          "clickHint": "Click on a  drawing to edit its attributes.",
+          "noFeatureSelected": "No drawing selected. Please click on a drawing.",
+          "input": {
+            "key": "Attribute key",
+            "value": "Attribute value",
+            "newKey": "New key",
+            "newValue": "New value"
+          }
+        },
         "drawEdit": {
           "delete": "Delete geometry / text",
           "deleteAll": "Delete all",
           "modify": "Edit geometry",
+          "editAttributes": "Edit attributes",
+          "hide": "Hide drawing",
+          "download": "Download",
           "redo": "Redo",
           "undo": "Undo",
           "chooseFeature": "Choose a geometry or text to edit.",
