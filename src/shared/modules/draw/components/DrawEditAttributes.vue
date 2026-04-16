@@ -26,15 +26,14 @@ function createMarkerStyleFn (originalStyle) {
         geometry (feature) {
             const extent = feature.getGeometry().getExtent();
 
-            // Place the marker at the bottom-center of the feature's bounding box
-            return new Point([(extent[0] + extent[2]) / 2, extent[1]]);
+            return new Point([(extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2]);
         },
         text: new Text({
             font: "bold 32px sans-serif",
             fill: new Fill({color: "#93f105"}),
             stroke: new Stroke({width: 4, color: "#2752d9"}),
             text: "*",
-            offsetY: -8
+            offsetY: 0
         }),
         zIndex: Infinity
     });
@@ -97,19 +96,19 @@ export default {
             newKey: "",
             newValue: "",
             newKeyError: "",
+            newValueError: "",
             validKeys: {},
             clickHandler: null
         };
     },
     created () {
-        this.featureStyleBackups = new Map();
+        this._selectionMarker = null;
     },
     mounted () {
         this.registerClickHandler();
-        this.initAttributeMarkers();
     },
     beforeUnmount () {
-        this.clearAllAttributeMarkers();
+        this._clearSelectionMarker();
         this.unregisterClickHandler();
     },
     methods: {
@@ -133,6 +132,7 @@ export default {
                 }, {hitTolerance: 10});
 
                 if (!found) {
+                    this._clearSelectionMarker();
                     this.selectedFeature = null;
                     this.attributes = [];
                     this.validKeys = {};
@@ -143,78 +143,6 @@ export default {
             };
 
             map.on("singleclick", this.clickHandler);
-        },
-
-        /**
-         * Returns true if a feature has at least one user-defined attribute (excluding internal keys).
-         * @param {ol/Feature} feature The feature to check.
-         * @returns {Boolean} True if the feature has user attributes.
-         */
-        featureHasUserAttributes (feature) {
-            return Object.keys(feature.getProperties()).some(k => !EXCLUDED_KEYS.has(k));
-        },
-
-        /**
-         * Applies the attribute marker (*) style to all features with existing attributes.
-         * Called on mount to mark features that already carry attributes.
-         * @returns {void}
-         */
-        initAttributeMarkers () {
-            if (!this.layer) {
-                return;
-            }
-            this.layer.getSource().getFeatures().forEach(feature => {
-                if (this.featureHasUserAttributes(feature)) {
-                    this.applyAttributeMarker(feature);
-                }
-            });
-        },
-
-        /**
-         * Wraps a feature's current style with the attribute marker (*).
-         * The original style is saved for later restoration.
-         * Does nothing if the marker is already applied.
-         * @param {ol/Feature} feature The feature to mark.
-         * @returns {void}
-         */
-        applyAttributeMarker (feature) {
-            if (!feature || this.featureStyleBackups.has(feature.ol_uid)) {
-                return;
-            }
-            const originalStyle = feature.getStyle();
-
-            this.featureStyleBackups.set(feature.ol_uid, {feature, originalStyle});
-            feature.setStyle(createMarkerStyleFn(originalStyle));
-        },
-
-        /**
-         * Restores a feature's original style, removing the attribute marker.
-         * @param {ol/Feature} feature The feature whose marker should be removed.
-         * @returns {void}
-         */
-        removeAttributeMarker (feature) {
-            if (!feature) {
-                return;
-            }
-            const backup = this.featureStyleBackups.get(feature.ol_uid);
-
-            if (!backup) {
-                return;
-            }
-            feature.setStyle(backup.originalStyle);
-            this.featureStyleBackups.delete(feature.ol_uid);
-        },
-
-        /**
-         * Restores all features whose styles were wrapped with the attribute marker.
-         * Called on unmount to clean up.
-         * @returns {void}
-         */
-        clearAllAttributeMarkers () {
-            this.featureStyleBackups.forEach(({feature, originalStyle}) => {
-                feature.setStyle(originalStyle);
-            });
-            this.featureStyleBackups.clear();
         },
 
         /**
@@ -229,11 +157,36 @@ export default {
         },
 
         /**
+         * Applies the selection marker (*) to a feature and saves its original style.
+         * @param {ol/Feature} feature The feature to mark.
+         * @returns {void}
+         */
+        _applySelectionMarker (feature) {
+            const originalStyle = feature.getStyle();
+
+            this._selectionMarker = {feature, originalStyle};
+            feature.setStyle(createMarkerStyleFn(originalStyle));
+        },
+
+        /**
+         * Restores the previously marked feature's original style.
+         * @returns {void}
+         */
+        _clearSelectionMarker () {
+            if (this._selectionMarker) {
+                this._selectionMarker.feature.setStyle(this._selectionMarker.originalStyle);
+                this._selectionMarker = null;
+            }
+        },
+
+        /**
          * Loads the clicked feature's attributes into local state.
          * @param {ol/Feature} feature The clicked feature.
          * @returns {void}
          */
         onFeatureClick (feature) {
+            this._clearSelectionMarker();
+            this._applySelectionMarker(feature);
             this.selectedFeature = feature;
             this.newKey = "";
             this.newValue = "";
@@ -263,13 +216,15 @@ export default {
                 this.newKeyError = this.$t("common:shared.modules.draw.attributeSelect.attributeDuplicatedKeyError");
                 return;
             }
+            if (!this.newValue.trim()) {
+                this.newValueError = this.$t("common:shared.modules.draw.attributeSelect.attributeValueError");
+                return;
+            }
 
             this.newKeyError = "";
+            this.newValueError = "";
             this.attributes.push({key, originalKey: key, value: this.newValue});
             this.selectedFeature?.set(key, this.newValue);
-            if (this.attributes.length === 1 && this.selectedFeature) {
-                this.applyAttributeMarker(this.selectedFeature);
-            }
             this.newKey = "";
             this.newValue = "";
             this.checkAttributes();
@@ -293,9 +248,6 @@ export default {
                 this.selectedFeature?.unset(attr.key);
             }
             this.attributes.splice(idx, 1);
-            if (this.selectedFeature && !this.featureHasUserAttributes(this.selectedFeature)) {
-                this.removeAttributeMarker(this.selectedFeature);
-            }
             this.checkAttributes();
         },
 
@@ -314,7 +266,6 @@ export default {
 
             const trimmedKey = attr.key.trim();
 
-            // Revert to trimmed version
             attr.key = trimmedKey;
 
             if (!trimmedKey || trimmedKey === attr.originalKey) {
@@ -364,7 +315,6 @@ export default {
                     valid = false;
                 }
                 else if (Object.prototype.hasOwnProperty.call(seen, key)) {
-                    // Mark both occurrences as invalid
                     result[key] = {
                         valid: false,
                         message: this.$t("common:shared.modules.draw.attributeSelect.attributeDuplicatedKeyError")
@@ -399,17 +349,12 @@ export default {
 </script>
 
 <template>
-    <form
-        id="draw-attributes"
-        class="draw-attributes-form"
-        @submit.prevent
-    >
-        <p class="draw-attributes-hint">
+    <div>
+        <p>
             {{ $t("common:shared.modules.draw.attributeSelect.clickHint") }}
         </p>
         <div
             v-if="selectedFeature"
-            class="form-group form-group-sm"
         >
             <div
                 v-for="(attribute, idx) in attributes"
@@ -473,6 +418,9 @@ export default {
                         v-model="newValue"
                         :label="$t('common:shared.modules.draw.attributeSelect.input.newValue')"
                         :placeholder="$t('common:shared.modules.draw.attributeSelect.input.newValue')"
+                        :error-message="newValueError || null"
+                        :class-obj="{'is-invalid': !!newValueError}"
+                        @input="newValueError = ''"
                         @keyup.enter="addAttribute"
                     />
                 </div>
@@ -485,35 +433,24 @@ export default {
                     />
                 </div>
             </div>
+            <button
+                class="btn btn-primary"
+                @click="addAttribute"
+            >
+                {{ $t('common:shared.modules.draw.attributeSelect.accept') }}
+            </button>
         </div>
         <p
             v-else
-            class="draw-attributes-no-feature"
         >
             {{ $t("common:shared.modules.draw.attributeSelect.noFeatureSelected") }}
         </p>
-    </form>
+    </div>
 </template>
 
 <style lang="scss" scoped>
-.draw-attributes-form {
-    padding: 0.25rem 0;
-}
-
-.draw-attributes-hint {
-    font-size: 0.85rem;
-    color: #6c757d;
-    margin-bottom: 0.5rem;
-}
-
-.draw-attributes-no-feature {
-    font-size: 0.85rem;
-    color: #6c757d;
-}
-
 .separator-col {
     padding: 0 0.25rem;
-    font-size: 1rem;
     line-height: 1;
     margin-top: 0.5rem;
 }
