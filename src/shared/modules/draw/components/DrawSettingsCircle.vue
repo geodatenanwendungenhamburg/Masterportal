@@ -87,6 +87,13 @@ export default {
 
                 this.setCircleOptions({outerRadius: outerRadius});
             }
+        },
+        "circleOptions.innerRadius" (newInnerRadius) {
+            if (this.selectedDrawType === "doubleCircle") {
+                const outerRadius = this.validateRadii(newInnerRadius, this.circleOptions.outerRadius);
+
+                this.setCircleOptions({outerRadius: outerRadius});
+            }
         }
     },
     methods: {

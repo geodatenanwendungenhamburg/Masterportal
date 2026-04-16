@@ -293,7 +293,6 @@ export default {
                                 let radius = geometry.getRadius();
 
                                 radius = Math.round(radius);
-                                this.setCircleOptions({innerRadius: radius});
                                 const formattedRadius = radius.toLocaleString("de-DE");
 
                                 tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawSettingsCircle.radii.radius")}: ${formattedRadius}m`;
@@ -381,7 +380,13 @@ export default {
          * @returns {void}
          */
         regulateStaticCircleInteraction (drawType) {
-            drawInteraction.drawCircle(this.currentDrawInteraction, drawType, this.projection, this.source, this.circleOptions);
+            const options = {...this.circleOptions};
+
+            if (drawType === "doubleCircle" && options.innerRadius >= options.outerRadius) {
+                options.innerRadius = Math.max(1, Math.round(options.outerRadius / 5));
+                this.setCircleOptions({innerRadius: options.innerRadius});
+            }
+            drawInteraction.drawCircle(this.currentDrawInteraction, drawType, this.projection, this.source, options);
         },
 
         /**

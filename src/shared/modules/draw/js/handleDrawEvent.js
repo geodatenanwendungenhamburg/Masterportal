@@ -45,7 +45,16 @@ export default function handleDrawEvent (event) {
             };
             break;
         case "circle":
-            drawState.circleRadius = stateDrawCopy.circleOptions.innerRadius;
+            if (stateDrawCopy.circleOptions.interactive) {
+                const gRadius = event.feature.getGeometry().getRadius();
+
+                drawState.circleRadius = stateDrawCopy.circleOptions.unit === "km"
+                    ? Math.round(gRadius / 1000)
+                    : Math.round(gRadius);
+            }
+            else {
+                drawState.circleRadius = stateDrawCopy.circleOptions.innerRadius;
+            }
             drawState.drawType = {
                 "id": "drawCircle",
                 "geometry": "Circle"
