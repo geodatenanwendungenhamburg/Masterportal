@@ -1,3 +1,4 @@
+import {createStore} from "vuex";
 import {config, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
@@ -9,6 +10,7 @@ config.global.mocks.$t = key => key;
 describe("src/shared/modules/draw/components/DrawSettingsCircle.vue", () => {
     let circleOptions,
         setCircleOptionsSpy,
+        store,
         wrapper;
 
     beforeEach(() => {
@@ -19,6 +21,21 @@ describe("src/shared/modules/draw/components/DrawSettingsCircle.vue", () => {
             unit: "m"
         };
         setCircleOptionsSpy = sinon.spy();
+        store = createStore({
+            modules: {
+                Modules: {
+                    namespaced: true,
+                    modules: {
+                        Draw: {
+                            namespaced: true,
+                            state: {
+                                currentLayout: {strokeWidth: 1}
+                            }
+                        }
+                    }
+                }
+            }
+        });
     });
 
 
@@ -188,6 +205,98 @@ describe("src/shared/modules/draw/components/DrawSettingsCircle.vue", () => {
             expect(setCircleOptionsSpy.firstCall.args[0]).to.deep.equals({
                 outerRadius: 500
             });
+        });
+    });
+
+    describe("isRadiusInvalid computed", () => {
+        it("should return true if innerRadius > outerRadius", () => {
+            circleOptions.innerRadius = 200;
+            circleOptions.outerRadius = 100;
+
+            wrapper = shallowMount(DrawSettingsCircleComponent, {
+                propsData: {circleOptions, selectedDrawType: "doubleCircle", setCircleOptions: setCircleOptionsSpy},
+                global: {plugins: [store]}
+            });
+
+            expect(wrapper.vm.isRadiusInvalid).to.be.true;
+        });
+
+        it("should return false if innerRadius <= outerRadius", () => {
+            circleOptions.innerRadius = 50;
+            circleOptions.outerRadius = 100;
+
+            wrapper = shallowMount(DrawSettingsCircleComponent, {
+                propsData: {circleOptions, selectedDrawType: "doubleCircle", setCircleOptions: setCircleOptionsSpy},
+                global: {plugins: [store]}
+            });
+
+            expect(wrapper.vm.isRadiusInvalid).to.be.false;
+        });
+    });
+
+    describe("validateRadii", () => {
+        it("should return outerRadius unchanged if innerRadius <= outerRadius", () => {
+            wrapper = shallowMount(DrawSettingsCircleComponent, {
+                propsData: {circleOptions, selectedDrawType: "doubleCircle", setCircleOptions: setCircleOptionsSpy},
+                global: {plugins: [store]}
+            });
+
+            const result = wrapper.vm.validateRadii(50, 100);
+
+            expect(result).to.equal(100);
+        });
+
+        it("should return corrected outerRadius if innerRadius > outerRadius", () => {
+            wrapper = shallowMount(DrawSettingsCircleComponent, {
+                propsData: {circleOptions, selectedDrawType: "doubleCircle", setCircleOptions: setCircleOptionsSpy},
+                global: {plugins: [store]}
+            });
+
+            const result = wrapper.vm.validateRadii(200, 100);
+
+            expect(result).to.equal(202);
+        });
+    });
+
+    describe("selectedDrawType watcher", () => {
+        it("should call setCircleOptions with corrected outerRadius when switching to 'doubleCircle'", async () => {
+            circleOptions.innerRadius = 200;
+            circleOptions.outerRadius = 100;
+
+            wrapper = shallowMount(DrawSettingsCircleComponent, {
+                propsData: {circleOptions, selectedDrawType: "circle", setCircleOptions: setCircleOptionsSpy},
+                global: {plugins: [store]}
+            });
+
+            await wrapper.setProps({selectedDrawType: "doubleCircle"});
+
+            expect(setCircleOptionsSpy.calledOnce).to.be.true;
+            expect(setCircleOptionsSpy.firstCall.args[0]).to.deep.equals({outerRadius: 202});
+        });
+    });
+
+    describe("circleOptions.innerRadius watcher", () => {
+        it("should correct outerRadius when innerRadius exceeds outerRadius in doubleCircle mode", async () => {
+            wrapper = shallowMount(DrawSettingsCircleComponent, {
+                propsData: {circleOptions, selectedDrawType: "doubleCircle", setCircleOptions: setCircleOptionsSpy},
+                global: {plugins: [store]}
+            });
+
+            await wrapper.setProps({circleOptions: {...circleOptions, innerRadius: 200}});
+
+            expect(setCircleOptionsSpy.calledOnce).to.be.true;
+            expect(setCircleOptionsSpy.firstCall.args[0]).to.deep.equals({outerRadius: 202});
+        });
+
+        it("should not call setCircleOptions when not in doubleCircle mode", async () => {
+            wrapper = shallowMount(DrawSettingsCircleComponent, {
+                propsData: {circleOptions, selectedDrawType: "circle", setCircleOptions: setCircleOptionsSpy},
+                global: {plugins: [store]}
+            });
+
+            await wrapper.setProps({circleOptions: {...circleOptions, innerRadius: 200}});
+
+            expect(setCircleOptionsSpy.notCalled).to.be.true;
         });
     });
 });

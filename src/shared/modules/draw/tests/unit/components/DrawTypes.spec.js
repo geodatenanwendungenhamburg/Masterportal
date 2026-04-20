@@ -59,9 +59,20 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
                             getters: {
                                 iconList: () => []
                             },
+                            mutations: {
+                                setCircleOptions: sinon.stub(),
+                                addDrawTypeSymbol: sinon.stub(),
+                                incrementIdCounter: sinon.stub(),
+                                setLineLength: sinon.stub(),
+                                setSelectedSymbol: sinon.stub()
+                            },
                             state: {
                                 drawTypesGeometrie: ["line", "box", "polygon", "circle", "doubleCircle"],
-                                drawTypesMain: ["pen", "geometries", "symbols"]
+                                drawTypesMain: ["pen", "geometries", "symbols"],
+                                drawTypesSymbols: [],
+                                buttonsDisabled: false,
+                                drawSymbolImgPath: "",
+                                selectedSymbol: null
                             }
                         }
                     }
@@ -403,6 +414,437 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
                 outerRadius: 0,
                 unit: "m"
             });
+        });
+    });
+
+    describe("getButtonLabel with textLabels: true", () => {
+        it("should return '' if drawType is null or empty", () => {
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {
+                    currentLayout,
+                    setSelectedDrawType,
+                    source,
+                    textLabels: true
+                },
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.vm.getButtonLabel("")).to.equal("");
+            expect(wrapper.vm.getButtonLabel(null)).to.equal("");
+        });
+
+        it("should return translated label from drawTypeLabels if entry exists for drawType", () => {
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {
+                    currentLayout,
+                    setSelectedDrawType,
+                    source,
+                    textLabels: true,
+                    drawTypeLabels: [{type: "pen", label: "some:label.key"}]
+                },
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.vm.getButtonLabel("pen")).to.equal("some:label.key");
+        });
+
+        it("should return getDrawTypeName result if drawType is in allDrawTypes but not in drawTypeLabels", () => {
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {
+                    currentLayout,
+                    setSelectedDrawType,
+                    source,
+                    textLabels: true,
+                    drawTypeLabels: []
+                },
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.vm.getButtonLabel("pen")).to.equal("common:shared.modules.draw.drawTypes.pen");
+        });
+
+        it("should return '' if drawType is unknown and not in drawTypeLabels", () => {
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {
+                    currentLayout,
+                    setSelectedDrawType,
+                    source,
+                    textLabels: true,
+                    drawTypeLabels: []
+                },
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.vm.getButtonLabel("unknown")).to.equal("");
+        });
+    });
+
+    describe("drawLayout prop", () => {
+        it("should pass drawLayout: true to all rendered IconButtons", () => {
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {
+                    currentLayout,
+                    setSelectedDrawType,
+                    source,
+                    drawLayout: true
+                },
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            wrapper.findAllComponents({name: "IconButton"}).forEach(btn => {
+                expect(btn.props("drawLayout")).to.equal(true);
+            });
+        });
+
+        it("should not pass drawLayout: true to rendered IconButtons by default", () => {
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {
+                    currentLayout,
+                    setSelectedDrawType,
+                    source
+                },
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            wrapper.findAllComponents({name: "IconButton"}).forEach(btn => {
+                expect(btn.props("drawLayout")).to.not.equal(true);
+            });
+        });
+    });
+
+    describe("buttonsDisabled", () => {
+        it("should disable all IconButtons when buttonsDisabled is true in store", () => {
+            const disabledStore = createStore({
+                modules: {
+                    Maps: {
+                        namespaced: true,
+                        actions: {
+                            addInteraction: addInteractionSpy,
+                            removeInteraction: removeInteractionSpy
+                        },
+                        getters: {
+                            projection: () => "EPSG:4326"
+                        }
+                    },
+                    Modules: {
+                        namespaced: true,
+                        modules: {
+                            Draw: {
+                                namespaced: true,
+                                getters: {
+                                    iconList: () => []
+                                },
+                                state: {
+                                    drawTypesGeometrie: ["line", "box", "polygon", "circle", "doubleCircle"],
+                                    drawTypesMain: ["pen", "geometries", "symbols"],
+                                    drawTypesSymbols: [],
+                                    buttonsDisabled: true,
+                                    drawSymbolImgPath: "",
+                                    selectedSymbol: null
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {
+                    currentLayout,
+                    setSelectedDrawType,
+                    source
+                },
+                global: {
+                    plugins: [disabledStore]
+                }
+            });
+
+            wrapper.findAllComponents({name: "IconButton"}).forEach(btn => {
+                expect(btn.props("disabled")).to.equal(true);
+            });
+        });
+
+        it("should not disable IconButtons when buttonsDisabled is false in store", () => {
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {
+                    currentLayout,
+                    setSelectedDrawType,
+                    source
+                },
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            wrapper.findAllComponents({name: "IconButton"}).forEach(btn => {
+                expect(btn.props("disabled")).to.equal(false);
+            });
+        });
+    });
+
+    describe("tooltip logic on drawstart and drawend", () => {
+        let fakeInteraction, callbacks;
+
+        beforeEach(() => {
+            callbacks = {};
+            fakeInteraction = {
+                on: sinon.stub().callsFake((event, cb) => {
+                    callbacks[event] = cb;
+                })
+            };
+            createDrawInteractionSpy.restore();
+            drawCircleSpy.restore();
+            sinon.stub(drawInteraction, "createDrawInteraction").returns(fakeInteraction);
+            sinon.stub(drawInteraction, "drawCircle");
+        });
+
+        it("should emit 'drawstart' event on drawstart", () => {
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {currentLayout, setSelectedDrawType, source},
+                global: {plugins: [store]}
+            });
+            wrapper.vm.regulateDrawInteraction("line");
+
+            const mockGeom = {getLength: () => 100, on: sinon.stub()};
+
+            callbacks.drawstart({feature: {getGeometry: () => mockGeom}});
+
+            expect(wrapper.emitted("drawstart")).to.be.ok;
+        });
+
+        it("should emit 'circle-radius' with rounded radius on geometry change for 'circle'", () => {
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {currentLayout, setSelectedDrawType, source},
+                global: {plugins: [store]}
+            });
+            wrapper.vm.regulateDrawInteraction("circle");
+
+            const geometryCallbacks = {};
+            const mockGeom = {
+                getRadius: () => 150.7,
+                on: sinon.stub().callsFake((event, cb) => {
+                    geometryCallbacks[event] = cb;
+                })
+            };
+
+            callbacks.drawstart({feature: {getGeometry: () => mockGeom}});
+            geometryCallbacks.change();
+
+            expect(wrapper.emitted("circle-radius")).to.be.ok;
+            expect(wrapper.emitted("circle-radius")[0][0]).to.equal(151);
+        });
+
+        it("should call setLineLength with rounded length on geometry change for 'line'", () => {
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {currentLayout, setSelectedDrawType, source},
+                global: {plugins: [store]}
+            });
+            const setLineLengthSpy = sinon.spy(wrapper.vm, "setLineLength");
+
+            wrapper.vm.regulateDrawInteraction("line");
+
+            const geometryCallbacks = {};
+            const mockGeom = {
+                getLength: () => 234.6,
+                on: sinon.stub().callsFake((event, cb) => {
+                    geometryCallbacks[event] = cb;
+                })
+            };
+
+            callbacks.drawstart({feature: {getGeometry: () => mockGeom}});
+            geometryCallbacks.change();
+
+            expect(setLineLengthSpy.calledOnce).to.be.true;
+            expect(setLineLengthSpy.firstCall.args[0]).to.equal(235);
+        });
+
+        it("should emit 'drawend' event on drawend", () => {
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {currentLayout, setSelectedDrawType, source},
+                global: {plugins: [store]}
+            });
+            wrapper.vm.regulateDrawInteraction("box");
+
+            callbacks.drawend({feature: {get: sinon.stub(), set: sinon.stub(), getGeometry: () => ({})}});
+
+            expect(wrapper.emitted("drawend")).to.be.ok;
+        });
+
+        it("should emit 'circle-radius' with rounded radius on drawend for 'circle'", () => {
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {currentLayout, setSelectedDrawType, source},
+                global: {plugins: [store]}
+            });
+            wrapper.vm.regulateDrawInteraction("circle");
+
+            const mockStartGeom = {getRadius: () => 100, on: sinon.stub()};
+
+            callbacks.drawstart({feature: {getGeometry: () => mockStartGeom}});
+
+            const mockEndGeom = {getRadius: () => 250.4, un: sinon.stub()};
+
+            callbacks.drawend({feature: {get: sinon.stub(), set: sinon.stub(), getGeometry: () => mockEndGeom}});
+
+            const emitted = wrapper.emitted("circle-radius");
+
+            expect(emitted).to.be.ok;
+            expect(emitted[emitted.length - 1][0]).to.equal(250);
+        });
+    });
+
+    describe("setSelectedSymbol", () => {
+        it("should call setSelectedSymbol(null) when toggling off the currently active drawType", () => {
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {
+                    currentLayout,
+                    setSelectedDrawType,
+                    source,
+                    selectedDrawType: "pen"
+                },
+                global: {plugins: [store]}
+            });
+
+            const setSelectedSymbolSpy = sinon.spy(wrapper.vm, "setSelectedSymbol");
+
+            wrapper.vm.regulateInteraction("pen");
+
+            expect(setSelectedSymbolSpy.calledOnce).to.be.true;
+            expect(setSelectedSymbolSpy.firstCall.args[0]).to.be.null;
+        });
+
+        it("should call setSelectedSymbol with the symbol object when switching to a symbol drawType", () => {
+            const symbol = {id: "my-symbol", type: "image", value: "/img/s.png"};
+            const symbolStore = createStore({
+                modules: {
+                    Maps: {
+                        namespaced: true,
+                        actions: {addInteraction: addInteractionSpy, removeInteraction: removeInteractionSpy},
+                        getters: {projection: () => "EPSG:4326"}
+                    },
+                    Modules: {
+                        namespaced: true,
+                        modules: {
+                            Draw: {
+                                namespaced: true,
+                                getters: {iconList: () => [symbol]},
+                                mutations: {
+                                    setCircleOptions: sinon.stub(),
+                                    addDrawTypeSymbol: sinon.stub(),
+                                    incrementIdCounter: sinon.stub(),
+                                    setLineLength: sinon.stub(),
+                                    setSelectedSymbol: sinon.stub()
+                                },
+                                state: {
+                                    drawTypesGeometrie: ["line", "box", "polygon", "circle", "doubleCircle"],
+                                    drawTypesMain: ["pen", "geometries", "symbols"],
+                                    drawTypesSymbols: [],
+                                    buttonsDisabled: false,
+                                    drawSymbolImgPath: "",
+                                    selectedSymbol: null
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {currentLayout, setSelectedDrawType, source, selectedDrawType: "pen"},
+                global: {plugins: [symbolStore]}
+            });
+
+            const setSelectedSymbolSpy = sinon.spy(wrapper.vm, "setSelectedSymbol");
+
+            wrapper.vm.regulateInteraction(symbol.id);
+
+            expect(setSelectedSymbolSpy.calledOnce).to.be.true;
+            expect(setSelectedSymbolSpy.firstCall.args[0]).to.deep.equal(symbol);
+        });
+    });
+
+    describe("symbol image style on drawstart", () => {
+        let fakeInteraction, callbacks;
+
+        beforeEach(() => {
+            callbacks = {};
+            fakeInteraction = {
+                on: sinon.stub().callsFake((event, cb) => {
+                    callbacks[event] = cb;
+                })
+            };
+            createDrawInteractionSpy.restore();
+            drawCircleSpy.restore();
+            sinon.stub(drawInteraction, "createDrawInteraction").returns(fakeInteraction);
+            sinon.stub(drawInteraction, "drawCircle");
+        });
+
+        it("should call feature.setStyle with Style and Icon when drawType is an image symbol", () => {
+            const symbolId = "my-symbol";
+            const imageStore = createStore({
+                modules: {
+                    Maps: {
+                        namespaced: true,
+                        actions: {
+                            addInteraction: addInteractionSpy,
+                            removeInteraction: removeInteractionSpy
+                        },
+                        getters: {
+                            projection: () => "EPSG:4326"
+                        }
+                    },
+                    Modules: {
+                        namespaced: true,
+                        modules: {
+                            Draw: {
+                                namespaced: true,
+                                getters: {
+                                    iconList: () => [{id: symbolId, type: "image", value: "/img/symbol.png", scale: 2}]
+                                },
+                                mutations: {
+                                    setCircleOptions: sinon.stub(),
+                                    addDrawTypeSymbol: sinon.stub(),
+                                    incrementIdCounter: sinon.stub(),
+                                    setLineLength: sinon.stub(),
+                                    setSelectedSymbol: sinon.stub()
+                                },
+                                state: {
+                                    drawTypesGeometrie: ["line", "box", "polygon", "circle", "doubleCircle"],
+                                    drawTypesMain: ["pen", "geometries", "symbols"],
+                                    drawTypesSymbols: [],
+                                    buttonsDisabled: false,
+                                    drawSymbolImgPath: "/path/",
+                                    selectedSymbol: null
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {currentLayout, setSelectedDrawType, source},
+                global: {plugins: [imageStore]}
+            });
+
+            wrapper.vm.regulateDrawInteraction(symbolId);
+
+            const setStyleSpy = sinon.spy();
+
+            callbacks.drawstart({feature: {getGeometry: () => ({}), setStyle: setStyleSpy}});
+
+            expect(setStyleSpy.calledOnce).to.be.true;
         });
     });
 });
