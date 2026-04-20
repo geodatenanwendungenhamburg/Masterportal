@@ -140,5 +140,107 @@ describe("src/shared/modules/draw/components/DrawLayout.vue", () => {
                 fillColor: [255, 0, 170]
             }]);
         });
+
+        it("should set text as string without conversion", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {currentLayout, selectedDrawType: "writeText", setCurrentLayout: setCurrentLayoutSpy}
+            });
+
+            wrapper.vm.updateCurrentLayout("text", "Hallo Welt");
+
+            expect(setCurrentLayoutSpy.firstCall.args[0]).to.deep.equals({text: "Hallo Welt"});
+        });
+
+        it("should set font as string without conversion", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {currentLayout, selectedDrawType: "writeText", setCurrentLayout: setCurrentLayoutSpy}
+            });
+
+            wrapper.vm.updateCurrentLayout("font", "Times New Roman");
+
+            expect(setCurrentLayoutSpy.firstCall.args[0]).to.deep.equals({font: "Times New Roman"});
+        });
+
+        it("should set fontSize as integer via parseInt", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {currentLayout, selectedDrawType: "writeText", setCurrentLayout: setCurrentLayoutSpy}
+            });
+
+            wrapper.vm.updateCurrentLayout("fontSize", "24");
+
+            expect(setCurrentLayoutSpy.firstCall.args[0]).to.deep.equals({fontSize: 24});
+        });
+    });
+
+    describe("hasExtrudedHeight", () => {
+        it("should include extrudedHeight in mappingLayout if hasExtrudedHeight is true", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {currentLayout, selectedDrawType: "polygon", setCurrentLayout: setCurrentLayoutSpy, hasExtrudedHeight: true}
+            });
+
+            expect(wrapper.vm.mappingLayout).to.have.property("extrudedHeight");
+        });
+
+        it("should not include extrudedHeight in mappingLayout if hasExtrudedHeight is false", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {currentLayout, selectedDrawType: "polygon", setCurrentLayout: setCurrentLayoutSpy}
+            });
+
+            expect(wrapper.vm.mappingLayout).to.not.have.property("extrudedHeight");
+        });
+
+        it("should render extrudedHeight slider when activeLayoutKey is 'extrudedHeight' and hasExtrudedHeight is true", async () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {
+                    currentLayout: {...currentLayout, extrudedHeight: 10},
+                    selectedDrawType: "polygon",
+                    setCurrentLayout: setCurrentLayoutSpy,
+                    hasExtrudedHeight: true
+                }
+            });
+
+            wrapper.vm.activeLayoutKey = "extrudedHeight";
+            await wrapper.vm.$nextTick();
+
+            expect(wrapper.find("#slider-extruded-height-innerCircle").exists()).to.be.true;
+        });
+    });
+
+    describe("selectedDrawType watcher", () => {
+        it("should reset activeLayoutKey when selectedDrawType changes", async () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {currentLayout, selectedDrawType: "circle", setCurrentLayout: setCurrentLayoutSpy}
+            });
+
+            wrapper.vm.activeLayoutKey = "fillColor";
+            await wrapper.setProps({selectedDrawType: "line"});
+
+            expect(wrapper.vm.activeLayoutKey).to.equal("");
+        });
+
+        it("should call updateTrianglePosition if new selectedDrawType is in drawTypesMain", async () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {currentLayout, selectedDrawType: "circle", setCurrentLayout: setCurrentLayoutSpy}
+            });
+
+            const updateTrianglePositionSpy = sinon.spy(wrapper.vm, "updateTrianglePosition");
+
+            await wrapper.setProps({selectedDrawType: "pen"});
+
+            expect(updateTrianglePositionSpy.calledOnce).to.be.true;
+            expect(updateTrianglePositionSpy.firstCall.args[0]).to.equal("pen");
+        });
+
+        it("should not call updateTrianglePosition if new selectedDrawType is not in drawTypesMain", async () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {currentLayout, selectedDrawType: "circle", setCurrentLayout: setCurrentLayoutSpy}
+            });
+
+            const updateTrianglePositionSpy = sinon.spy(wrapper.vm, "updateTrianglePosition");
+
+            await wrapper.setProps({selectedDrawType: "line"});
+
+            expect(updateTrianglePositionSpy.notCalled).to.be.true;
+        });
     });
 });
