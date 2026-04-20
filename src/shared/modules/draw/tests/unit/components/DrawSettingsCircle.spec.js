@@ -234,8 +234,32 @@ describe("src/shared/modules/draw/components/DrawSettingsCircle.vue", () => {
         });
     });
 
+    describe("validateRadii", () => {
+        it("should return outerRadius unchanged if innerRadius <= outerRadius", () => {
+            wrapper = shallowMount(DrawSettingsCircleComponent, {
+                propsData: {circleOptions, selectedDrawType: "doubleCircle", setCircleOptions: setCircleOptionsSpy},
+                global: {plugins: [store]}
+            });
+
+            const result = wrapper.vm.validateRadii(50, 100);
+
+            expect(result).to.equal(100);
+        });
+
+        it("should return corrected outerRadius if innerRadius > outerRadius", () => {
+            wrapper = shallowMount(DrawSettingsCircleComponent, {
+                propsData: {circleOptions, selectedDrawType: "doubleCircle", setCircleOptions: setCircleOptionsSpy},
+                global: {plugins: [store]}
+            });
+
+            const result = wrapper.vm.validateRadii(200, 100);
+
+            expect(result).to.equal(202);
+        });
+    });
+
     describe("selectedDrawType watcher", () => {
-        it("should not call setCircleOptions when switching to 'doubleCircle'", async () => {
+        it("should call setCircleOptions with corrected outerRadius when switching to 'doubleCircle'", async () => {
             circleOptions.innerRadius = 200;
             circleOptions.outerRadius = 100;
 
@@ -246,12 +270,13 @@ describe("src/shared/modules/draw/components/DrawSettingsCircle.vue", () => {
 
             await wrapper.setProps({selectedDrawType: "doubleCircle"});
 
-            expect(setCircleOptionsSpy.notCalled).to.be.true;
+            expect(setCircleOptionsSpy.calledOnce).to.be.true;
+            expect(setCircleOptionsSpy.firstCall.args[0]).to.deep.equals({outerRadius: 202});
         });
     });
 
     describe("circleOptions.innerRadius watcher", () => {
-        it("should not call setCircleOptions when innerRadius exceeds outerRadius in doubleCircle mode", async () => {
+        it("should correct outerRadius when innerRadius exceeds outerRadius in doubleCircle mode", async () => {
             wrapper = shallowMount(DrawSettingsCircleComponent, {
                 propsData: {circleOptions, selectedDrawType: "doubleCircle", setCircleOptions: setCircleOptionsSpy},
                 global: {plugins: [store]}
@@ -259,7 +284,8 @@ describe("src/shared/modules/draw/components/DrawSettingsCircle.vue", () => {
 
             await wrapper.setProps({circleOptions: {...circleOptions, innerRadius: 200}});
 
-            expect(setCircleOptionsSpy.notCalled).to.be.true;
+            expect(setCircleOptionsSpy.calledOnce).to.be.true;
+            expect(setCircleOptionsSpy.firstCall.args[0]).to.deep.equals({outerRadius: 202});
         });
 
         it("should not call setCircleOptions when not in doubleCircle mode", async () => {
