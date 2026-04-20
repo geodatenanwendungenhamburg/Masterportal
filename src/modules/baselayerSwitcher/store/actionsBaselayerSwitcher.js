@@ -1,5 +1,6 @@
 import baselayerHandler from "../../layerSelection/js/handleSingleBaselayer.js";
 import zIndexManager from "../../../core/layers/js/zIndexManager.js";
+import {treeBaselayersKey} from "@shared/js/utils/constants.js";
 
 const actions = {
     /**
@@ -19,9 +20,7 @@ const actions = {
         let zIndex = zIndexManager.getZIndexForLayer(layerId, isBaselayer, rootGetters);
 
         if (isBaselayer) {
-            const maxBaselayerZIndex = Math.max(
-                ...rootGetters.layerConfigsByAttributes({baselayer: true, showInLayerTree: true}).map(l => l.zIndex)
-            );
+            const maxBaselayerZIndex = zIndexManager.maxZIndexOfLayerConfigsByParentKey(treeBaselayersKey, rootGetters);
 
             dispatch("updateLayerConfigZIndex", {layerContainer: rootGetters.layerConfigsByAttributes({showInLayerTree: true}), maxZIndex: maxBaselayerZIndex}, {root: true});
 

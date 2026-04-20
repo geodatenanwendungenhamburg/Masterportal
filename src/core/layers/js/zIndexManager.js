@@ -2,9 +2,55 @@ import {treeOrder, treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/co
 import {sortObjects} from "@shared/js/utils/sortObjects.js";
 
 /**
- * Gibt den aktuellen zIndex eines Layers zurück.
- * @param {Object} layer - Der Layer, dessen zIndex abgefragt werden soll.
- * @returns {number|null} Der zIndex des Layers oder null, wenn er nicht existiert.
+ * Returns the max zIndex of layer configs filtered by parentKey.
+ * @param {String} parentKey - The parent key to filter by.
+ * @param {Object} rootGetters - Vuex getters with `allLayerConfigsByParentKey`.
+ * @returns {Number} The max zIndex, or -1 if none found.
+ */
+function maxZIndexOfLayerConfigsByParentKey (parentKey, rootGetters) {
+    const layerConfigs = rootGetters.allLayerConfigsByParentKey(parentKey).filter(config => Object.prototype.hasOwnProperty.call(config, "zIndex") && typeof config.zIndex === "number");
+
+    if (layerConfigs.length === 0) {
+        return -1;
+    }
+    return Math.max(...layerConfigs.map(conf => conf.zIndex));
+}
+
+/**
+ * Returns the zIndex for the given layer id. If zIndex already exists at layerConfig, it is returned.
+ * Reads the baselayer flag from the layer config automatically.
+ * @param {String} id - The layer id.
+ * @param {Object} rootGetters - Vuex getters.
+ * @returns {Number|null} The zIndex, or null if the layer config is not found.
+ */
+function determineZIndex (id, rootGetters) {
+    const layerConf = rootGetters.layerConfigById(id);
+
+    if (!layerConf) {
+        return null;
+    }
+    if (Object.prototype.hasOwnProperty.call(layerConf, "zIndex") && typeof layerConf.zIndex === "number") {
+        return layerConf.zIndex;
+    }
+
+    const isBaselayer = Object.prototype.hasOwnProperty.call(layerConf, "baselayer") && layerConf.baselayer,
+        parentKey = isBaselayer ? treeBaselayersKey : treeSubjectsKey;
+    let maxZIndex = maxZIndexOfLayerConfigsByParentKey(parentKey, rootGetters);
+
+    if (maxZIndex === -1) {
+        maxZIndex = isBaselayer
+            ? maxZIndexOfLayerConfigsByParentKey(treeSubjectsKey, rootGetters)
+            : maxZIndexOfLayerConfigsByParentKey(treeBaselayersKey, rootGetters);
+    }
+    return maxZIndex + 1;
+}
+
+/**
+ * Returns the zIndex for the given layer. If zIndex already exists at layerConfig, it is returned.
+ * @param {String} layerId - The layer id.
+ * @param {Boolean} isBaselayer - Whether it is a baselayer.
+ * @param {Object} rootGetters - Vuex getters.
+ * @returns {Number} The zIndex, or 0 if the layer config is not found.
  */
 function getZIndexForLayer (layerId, isBaselayer, rootGetters) {
     const layer = rootGetters.layerConfigById(layerId),
@@ -18,12 +64,12 @@ function getZIndexForLayer (layerId, isBaselayer, rootGetters) {
         return layer.zIndex;
     }
 
-    let maxZIndex = rootGetters.maxZIndexOfLayerConfigsByParentKey(parentKey);
+    let maxZIndex = maxZIndexOfLayerConfigsByParentKey(parentKey, rootGetters);
 
     if (maxZIndex === -1) {
         maxZIndex = isBaselayer
-            ? rootGetters.maxZIndexOfLayerConfigsByParentKey(treeSubjectsKey)
-            : rootGetters.maxZIndexOfLayerConfigsByParentKey(treeBaselayersKey);
+            ? maxZIndexOfLayerConfigsByParentKey(treeSubjectsKey, rootGetters)
+            : maxZIndexOfLayerConfigsByParentKey(treeBaselayersKey, rootGetters);
     }
 
     return maxZIndex + 1;
@@ -86,6 +132,8 @@ function updateAllZIndexes ({getters}) {
 }
 
 export default {
+    maxZIndexOfLayerConfigsByParentKey,
+    determineZIndex,
     getZIndexForLayer,
     getTopBaselayer,
     updateLayerConfigZIndex,

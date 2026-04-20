@@ -23,6 +23,7 @@ describe("baselayerSwitcher/store/actionsBaselayerSwitcher", () => {
         dispatch = sinon.spy();
         rootGetters = {
             layerConfigsByAttributes: () => layerConfigs,
+            allLayerConfigsByParentKey: () => layerConfigs,
             determineZIndex: () => layerConfigs[0].zIndex,
             isBaselayer: () => layerConfigs[0].baselayer,
             layerConfigById: sinon.stub().returns(layerConfigs[0])
