@@ -82,7 +82,7 @@ export default {
                 return this.$store.state.Modules.Print.currentScale;
             },
             set (value) {
-                this.setCurrentScale(value);
+                this.setCurrentScale(Number(value));
             }
         },
         dpiForPdf: {
@@ -153,6 +153,9 @@ export default {
                 this.setFormatList(value);
             }
         },
+        shownScaleList () {
+            return this.scaleList.filter(scaleValue => this.isScaleZoomable(scaleValue));
+        },
         outputTitle: {
             get () {
                 return this.filename;
@@ -189,6 +192,9 @@ export default {
                 this.setIs3d(false);
             }
         },
+        scaleList: function () {
+            this.ensureSelectableScale();
+        },
         isIncreased3DResolutionSelected: function (value) {
             this.update3DResolutionScale(value);
         },
@@ -213,6 +219,7 @@ export default {
             if (this.shownLayoutList.length === 0) {
                 this.retrieveCapabilites();
             }
+            this.ensureSelectableScale();
         });
         this.setCurrentMapScale(this.scale);
     },
@@ -250,8 +257,52 @@ export default {
             this.updateCanvasByFeaturesLoadend(this.visibleLayerList);
             this.setIsScaleSelectedManually(false);
             this.setIsIncreased3DResolutionSelected(false);
+            this.ensureSelectableScale();
             this.updateCanvasLayer();
             this.initialized = true;
+        },
+
+        /**
+         * Checks whether a scale can be represented within current map zoom bounds.
+         * @param {Number} scaleValue The print scale to check.
+         * @returns {Boolean} True if zoomable in map view.
+         */
+        isScaleZoomable (scaleValue) {
+            const mapView = mapCollection.getMapView("2D");
+
+            if (!mapView) {
+                return true;
+            }
+
+            const mapScaleOptions = mapView.get("options") || [],
+                minZoom = mapView.getMinZoom(),
+                maxZoom = mapView.getMaxZoom(),
+                minZoomIndex = Math.max(0, Math.ceil(minZoom)),
+                maxZoomIndex = Math.min(mapScaleOptions.length - 1, Math.floor(maxZoom)),
+                selectableMapScales = mapScaleOptions
+                    .slice(minZoomIndex, maxZoomIndex + 1)
+                    .map(option => Number(option.scale))
+                    .filter(Number.isFinite);
+
+            if (selectableMapScales.length > 0) {
+                return selectableMapScales.includes(Number(scaleValue));
+            }
+
+            return true;
+        },
+
+        /**
+         * Ensures current scale exists in zoomable scale list.
+         * @returns {void}
+         */
+        ensureSelectableScale () {
+            if (!Array.isArray(this.shownScaleList) || this.shownScaleList.length === 0) {
+                return;
+            }
+
+            if (!this.shownScaleList.includes(this.currentScale)) {
+                this.setCurrentScale(this.shownScaleList[0]);
+            }
         },
 
         /**
@@ -300,15 +351,19 @@ export default {
          * @param {event} event the click event
          * @returns {void}
          */
-        async scaleChanged (event) {
-            const scale = parseInt(event.target.value, 10),
+        async scaleChanged () {
+            const scale = Number(this.currentScale),
+                resolutionForScale = this.$store.getters["Maps/getResolutionByScale"](scale, "max"),
                 resolution = {
                     "scale": scale,
                     "mapSize": mapCollection.getMap("2D").getSize(),
                     "printMapSize": this.layoutMapInfo
                 };
 
-            this.setIsScaleSelectedManually(true);
+            this.setIsScaleSelectedManually(!this.autoAdjustScale);
+            if (Number.isFinite(resolutionForScale)) {
+                mapCollection.getMapView("2D").setResolution(resolutionForScale);
+            }
             this.getOptimalResolution(resolution);
             this.updateCanvasLayer();
             await mapCollection.getMap("2D").render();
@@ -647,7 +702,6 @@ export default {
                 <select
                     id="printDpi"
                     class="form-select"
-                    @change="setDpiForPdf($event.target.value)"
                 >
                     <option
                         v-for="(dpi, i) in dpiList"
@@ -668,15 +722,14 @@ export default {
             >
                 <select
                     id="printScale"
-                    v-model="currentScale"
+                    v-model.number="currentScale"
                     class="form-select"
-                    @change="scaleChanged($event)"
+                    @change="scaleChanged"
                 >
                     <option
-                        v-for="(scale, i) in scaleList"
+                        v-for="(scale, i) in shownScaleList"
                         :key="i"
                         :value="scale"
-                        :selected="scale === currentScale"
                     >
                         1 : {{ returnScale(scale) }}
                     </option>
