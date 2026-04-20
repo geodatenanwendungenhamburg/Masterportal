@@ -6,6 +6,7 @@ import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants.js"
 import layerCollection from "@core/layers/js/layerCollection.js";
 import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
 import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
+import zIndexManager from "@core/layers/js/zIndexManager.js";
 
 /**
  * The root actions for layer configurations.
@@ -316,6 +317,10 @@ export default function getActionsLayerConfig () {
      * @param {Object[]} layerContainer The layer configs.
      * @returns {void}
      */
+        updateLayerConfigZIndex (context, {layerContainer, maxZIndex}) {
+            zIndexManager.updateLayerConfigZIndex(context, {layerContainer, maxZIndex});
+        },
+
         updateLayerConfigs ({dispatch, getters, state}, layerContainer) {
             layerContainer.forEach(layerConf => {
                 const rawLayers = getAndMergeRawLayer(layerConf, !getters.showLayerAddButton, state.portalConfig?.tree?.layerIDsToStyle);
