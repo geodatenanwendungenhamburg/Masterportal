@@ -321,6 +321,10 @@ export default function getActionsLayerConfig () {
             zIndexManager.updateLayerConfigZIndex(context, {layerContainer, maxZIndex});
         },
 
+        updateAllZIndexes (context) {
+            zIndexManager.updateAllZIndexes(context);
+        },
+
         updateLayerConfigs ({dispatch, getters, state}, layerContainer) {
             layerContainer.forEach(layerConf => {
                 const rawLayers = getAndMergeRawLayer(layerConf, !getters.showLayerAddButton, state.portalConfig?.tree?.layerIDsToStyle);
