@@ -101,7 +101,6 @@ export default {
             iconPosition: 0,
             availableFormats: ["KML", "GEOJSON", "GPX", "CSV"],
             exportData: null,
-            features: [],
             localDrawIcons: {...this.drawIcons},
             drawLayerVisible: true,
             originalGeometry: null,
@@ -119,6 +118,9 @@ export default {
     computed: {
         source () {
             return this.layer?.getSource();
+        },
+        features () {
+            return this.source?.getFeatures() ?? [];
         }
     },
     watch: {
@@ -481,7 +483,10 @@ export default {
                 :features="features"
             />
             <div v-if="selectedInteraction === 'modify'">
-                <div v-if="selectedTextFeature">
+                <div
+                    v-if="selectedTextFeature"
+                    class="mt-4"
+                >
                     <InputText
                         id="draw-text-edit"
                         v-model="editText"

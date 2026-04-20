@@ -36,6 +36,7 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
             id: "ol",
             mode: "2D",
             on: sinon.spy(),
+            un: sinon.spy(),
             forEachFeatureAtPixel: sinon.spy()
         }, "2D");
 
@@ -50,6 +51,17 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
                     },
                     getters: {
                         projection: () => "EPSG:4326"
+                    }
+                },
+                Modules: {
+                    namespaced: true,
+                    modules: {
+                        Draw: {
+                            namespaced: true,
+                            mutations: {
+                                setButtonsDisabled: sinon.stub()
+                            }
+                        }
                     }
                 }
             }
@@ -376,6 +388,200 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
             expect(wrapper.vm.nonReactiveUndoFeatures.length).to.equals(1);
             expect(wrapper.vm.nonReactiveUndoFeatures[0]).to.deep.equals([feature1, feature2]);
             expect(wrapper.vm.mode).to.equals("");
+        });
+    });
+
+    describe("features computed", () => {
+        it("should return features from the layer source", () => {
+            const feature1 = new Feature(),
+                feature2 = new Feature();
+
+            layer.getSource().addFeatures([feature1, feature2]);
+
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+
+            expect(wrapper.vm.features.length).to.equals(2);
+            expect(wrapper.vm.features[0]).to.deep.equals(feature1);
+            expect(wrapper.vm.features[1]).to.deep.equals(feature2);
+        });
+
+        it("should return an empty array if layer is null", () => {
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer: null},
+                global: {plugins: [store]}
+            });
+
+            expect(wrapper.vm.features).to.deep.equals([]);
+        });
+    });
+
+    describe("regulateEditAttributes", () => {
+        it("should call setSelectedInteraction with 'editAttributes' and set showFrame to true", () => {
+            const setSelectedInteraction = sinon.spy();
+
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer, setSelectedInteraction},
+                global: {plugins: [store]}
+            });
+
+            wrapper.vm.regulateEditAttributes();
+
+            expect(setSelectedInteraction.calledOnce).to.be.true;
+            expect(setSelectedInteraction.firstCall.args[0]).to.equals("editAttributes");
+            expect(wrapper.vm.showFrame).to.be.true;
+        });
+    });
+
+    describe("regulateDownload", () => {
+        it("should call setSelectedInteraction with 'download' and set showFrame to true", () => {
+            const setSelectedInteraction = sinon.spy();
+
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer, setSelectedInteraction},
+                global: {plugins: [store]}
+            });
+
+            wrapper.vm.regulateDownload();
+
+            expect(setSelectedInteraction.calledOnce).to.be.true;
+            expect(setSelectedInteraction.firstCall.args[0]).to.equals("download");
+            expect(wrapper.vm.showFrame).to.be.true;
+        });
+    });
+
+    describe("toggleDrawLayerVisibility", () => {
+        it("should toggle layer visibility from true to false", () => {
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+
+            expect(layer.getVisible()).to.be.true;
+            wrapper.vm.toggleDrawLayerVisibility();
+
+            expect(layer.getVisible()).to.be.false;
+            expect(wrapper.vm.drawLayerVisible).to.be.false;
+        });
+
+        it("should toggle layer visibility from false to true", () => {
+            layer.setVisible(false);
+
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+
+            wrapper.vm.drawLayerVisible = false;
+            wrapper.vm.toggleDrawLayerVisibility();
+
+            expect(layer.getVisible()).to.be.true;
+            expect(wrapper.vm.drawLayerVisible).to.be.true;
+        });
+
+        it("should toggle hide icon between bi-eye and bi-eye-slash", () => {
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+
+            expect(wrapper.vm.localDrawIcons.hide).to.equal("bi-eye");
+            wrapper.vm.toggleDrawLayerVisibility();
+            expect(wrapper.vm.localDrawIcons.hide).to.equal("bi-eye-slash");
+            wrapper.vm.toggleDrawLayerVisibility();
+            expect(wrapper.vm.localDrawIcons.hide).to.equal("bi-eye");
+        });
+    });
+
+    describe("selectedInteraction watcher", () => {
+        it("should set showFrame to false if selectedInteraction is not in drawEdits", async () => {
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer, selectedInteraction: "delete"},
+                global: {plugins: [store]}
+            });
+
+            await wrapper.setData({showFrame: true});
+            await wrapper.setProps({selectedInteraction: "draw"});
+
+            expect(wrapper.vm.showFrame).to.be.false;
+        });
+
+        it("should clear currentSelectInteractions if selectedInteraction is not 'delete' or 'modify'", async () => {
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer, selectedInteraction: "delete"},
+                global: {plugins: [store]}
+            });
+
+            wrapper.vm.currentSelectInteractions = [{fake: true}];
+            await wrapper.setProps({selectedInteraction: "draw"});
+
+            expect(wrapper.vm.currentSelectInteractions).to.deep.equals([]);
+        });
+
+        it("should set currentModifyInteraction to null if selectedInteraction is not 'modify'", async () => {
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer, selectedInteraction: "modify"},
+                global: {plugins: [store]}
+            });
+
+            wrapper.vm.currentModifyInteraction = {fake: true, dispose: sinon.stub()};
+            await wrapper.setProps({selectedInteraction: "draw"});
+
+            expect(wrapper.vm.currentModifyInteraction).to.be.null;
+        });
+    });
+
+    describe("applyTextEdit", () => {
+        it("should do nothing if selectedTextFeature is null", () => {
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+
+            expect(() => wrapper.vm.applyTextEdit()).to.not.throw();
+        });
+
+        it("should set text style and attributes on the selected feature", () => {
+            const feature = new Feature();
+
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+
+            wrapper.vm.selectedTextFeature = feature;
+            wrapper.vm.editText = "Hallo";
+            wrapper.vm.editFontSize = 20;
+            wrapper.vm.editFont = "Arial";
+            wrapper.vm.editFillColor = "#ff0000";
+            wrapper.vm.editFillTransparency = 0;
+
+            wrapper.vm.applyTextEdit();
+
+            expect(feature.get("textContent")).to.equal("Hallo");
+            expect(feature.get("textFontSize")).to.equal(20);
+            expect(feature.get("textFont")).to.equal("Arial");
+        });
+
+        it("should calculate alpha correctly from editFillTransparency", () => {
+            const feature = new Feature();
+
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+
+            wrapper.vm.selectedTextFeature = feature;
+            wrapper.vm.editFillColor = "#000000";
+            wrapper.vm.editFillTransparency = 50;
+
+            wrapper.vm.applyTextEdit();
+
+            const colorArray = feature.get("textFillColor");
+
+            expect(colorArray[3]).to.equal(0.5);
         });
     });
 });
