@@ -28,8 +28,8 @@ List of URL parameters with examples.
 |SECONDARYWIDTH|Sets the width of the secondary Menu|`&SECONDARYWIDTH=50`|
 |SECONDARYCLOSED|Closes the secondary menu on initial load if set to true|`&SECONDARYCLOSED=true`|
 |ZOOMTOEXTENT|Zooms to an extent. May be combined with projection.|`&ZOOMTOEXTENT=510000,5850000,625000,6000000`|
-|ZOOMTOFEATUREID|Zooms to the features of a WFS configured via **[config.zoomTo](../Portal-Config/config.js.md)**.|`&ZOOMTOFEATUREID=18,26`|
-|ZOOMTOGEOMETRY|Zooms to a feature requested from a WFS. Allowed parameters depend on **[config.zoomTo](../Portal-Config/config.js.md)**. As an alternative to the feature name, features may also be addressed by their `geometries` array index, starting at 1.|`&ZOOMTOGEOMETRY=bergedorf`|
+|ZOOMTOFEATUREID|Zooms to the features of a WFS configured via **[config.zoomTo](../Portal-Config/config.json.md)**.|`&ZOOMTOFEATUREID=18,26`|
+|ZOOMTOGEOMETRY|Zooms to a feature requested from a WFS or GeoJSON. Allowed parameters depend on **[config.zoomTo](../Portal-Config/config.json.md)**. As an alternative to the feature name, features may also be addressed by their `geometries` array index, starting at 1.|`&ZOOMTOGEOMETRY=bergedorf`|
 
 ***
 
@@ -61,8 +61,8 @@ List of obsolete URL parameters with examples. Current URL parameters are given 
 |MAP/PROJECTION|Coordinate reference system EPSG code. Only works when used in combination with `MAP/CENTER`, `MAPMARKER` or `MAP/ZOOMTOEXTENT`. The coordinates of the parameters are transformed to the projection. If not set, projection of the map is used. Does not set the projection of the map. |`&PROJECTION=EPSG:31467&MAP/CENTER=[3565836,5945355]` `&PROJECTION=EPSG:31467&MAPMARKER=3565836,5945355` `&PROJECTION=EPSG:4326&MAP/ZOOMTOEXTENT=10.0822,53.6458,10.1781,53.8003`|`&PROJECTION=EPSG:31467&CENTER=[3565836,5945355]` `&PROJECTION=EPSG:31467&MARKER=3565836,5945355` `&PROJECTION=EPSG:4326&ZOOMTOEXTENT=10.0822,53.6458,10.1781,53.8003`|
 |MAP/ZOOMLEVEL|Sets the initial zoom level.|`&MAP/ZOOMLEVEL=7`|`MAPS={"zoom":0}`|
 |MAP/ZOOMTOEXTENT|Zooms to an extent. May be combined with projection.|`&MAP/ZOOMTOEXTENT=510000,5850000,625000,6000000`|`&ZOOMTOEXTENT=510000,5850000,625000,6000000`|
-|MAP/ZOOMTOFEATUREID|Zooms to the features of a WFS configured via **[config.zoomTo](../Portal-Config/config.js.md)**.|`&MAP/ZOOMTOFEATUREID=18,26`|`&ZOOMTOFEATUREID=18,26`|
-|MAP/ZOOMTOGEOMETRY|Zooms to a feature requested from a WFS. Allowed parameters depend on **[config.zoomTo](../Portal-Config/config.js.md)**. As an alternative to the feature name, features may also be addressed by their `geometries` array index, starting at 1.|`&MAP/ZOOMTOGEOMETRY=bergedorf`|`&ZOOMTOGEOMETRY=bergedorf`|
+|MAP/ZOOMTOFEATUREID|Zooms to the features of a WFS configured via **[config.zoomTo](../Portal-Config/config.json.md)**.|`&MAP/ZOOMTOFEATUREID=18,26`|`&ZOOMTOFEATUREID=18,26`|
+|MAP/ZOOMTOGEOMETRY|Zooms to a feature requested from a WFS. Allowed parameters depend on **[config.zoomTo](../Portal-Config/config.json.md)**. As an alternative to the feature name, features may also be addressed by their `geometries` array index, starting at 1.|`&MAP/ZOOMTOGEOMETRY=bergedorf`|`&ZOOMTOGEOMETRY=bergedorf`|
 |PROJECTION|Coordinate reference system EPSG code. Only works when used in combination with `CENTER`, `MARKER` or `ZOOMTOEXTENT`. The coordinates of the parameters are transformed to the projection. If not set, projection of the map is used. Does not set the projection of the map.|`&PROJECTION=EPSG:31467&CENTER=[3565836,5945355]` `&PROJECTION=EPSG:31467&MARKER=3565836,5945355` `&PROJECTION=EPSG:4326&ZOOMTOEXTENT=10.0822,53.6458,10.1781,53.8003`|
 |SEARCH/QUERY|Starts the search via the search bar with any string given|`&SEARCH/QUERY=Neuenfelder Straße 19`|`&QUERY=Neuenfelder Straße 19`|
 |STARTUPMODUL|The module with the specified ID is opened initially in the menu.|`&STARTUPMODUL=Draw`|`&MENU={"secondary":{"currentComponent":"draw"}}`|

@@ -8,18 +8,26 @@ import calculateCenterOfExtent from "@shared/js/utils/calculateCenterOfExtent";
 import {isUrl} from "@shared/js/utils/urlHelper";
 
 /**
+ * Creates a style for a zoom to feature.
  * @param {Feature[]} features Features, which center coordinates should be styled.
  * @param {String} styleId Id of the styleObject.
+ * @param {Boolean} [centerOfExtent=true] Specifies whether the zoom should be applied to the feature itself or its extent.
  * @see {@link https://community.cesium.com/t/cors-and-billboard-image/3920/2} crossOrigin: "anonymous", is necessary for the 3D mode.
  * @returns {Feature[]} Styled features.
  */
-export default function (features, styleId) {
+export default function (features, styleId, centerOfExtent = true) {
     return features
-        .map(feature => calculateCenterOfExtent(feature.getGeometry().getExtent()))
-        .map((centerCoordinates, index) => new Feature({
-            geometry: new Point(centerCoordinates),
-            name: `featureIcon${index}`
-        }))
+        .map((feature, index) => {
+            if (centerOfExtent) {
+                return new Feature({
+                    geometry: new Point(calculateCenterOfExtent(feature.getGeometry().getExtent())),
+                    name: `featureIcon${index}`
+                });
+            }
+
+            feature.set("name", `featureIcon${index}`);
+            return feature;
+        })
         .map(feature => {
             let style;
 

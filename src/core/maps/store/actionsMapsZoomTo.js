@@ -12,6 +12,7 @@ export default {
     zoomToFeatures ({dispatch, rootGetters}, param) {
         const config = rootGetters.zoomTo;
         let addFeatures = true,
+            centerOfExtent = true,
             allowedValues,
             featurePromises = "",
             layerId,
@@ -30,6 +31,7 @@ export default {
                 return new Promise(resolve => resolve([]));
             }
             else if (id === "zoomToFeatureId") {
+                centerOfExtent = conf.centerOfExtent === false ? false : centerOfExtent;
                 urlValues = (Array.isArray(urlValues) ? urlValues : urlValues.split(",")).map(value => String(value));
                 styleId = conf.styleId;
             }
@@ -57,11 +59,12 @@ export default {
                         filteredFeatures = filteredFeatures.filter(feature => allowedValues.includes(feature.get(property).toUpperCase().trim()));
                     }
                     if (styleId) {
-                        filteredFeatures = createStyledFeatures(filteredFeatures, styleId);
+                        filteredFeatures = createStyledFeatures(filteredFeatures, styleId, centerOfExtent);
                     }
                     if (addFeatures && filteredFeatures.length > 0) {
                         dispatch("Maps/addLayer", new VectorLayer({
-                            source: new VectorSource({features: filteredFeatures})
+                            source: new VectorSource({features: filteredFeatures}),
+                            alwaysOnTop: true
                         }), {root: true});
                     }
 

@@ -37,12 +37,106 @@ describe("src/core/maps/store/actionsMapsZoomTo.js", () => {
             sinon.stub(console, "error").callsFake(consoleErrorSpy);
             sinon.stub(console, "warn").callsFake(consoleWarnSpy);
 
-            param = {};
-            rootGetters = {
-                configJs: {}
-            };
-            rawLayerList.getLayerList().push({id, url: "", version: "", featureType: ""});
-            rawLayerList.getLayerList().push({id: idDistrictLayer, url: "", version: "", featureType: ""});
+    afterEach(() => {
+        sinon.restore();
+    });
+
+    it("should returns false if no config is given", async () => {
+        rootGetters.zoomTo = null;
+        const result = await actions.zoomToFeatures({dispatch, rootGetters}, param);
+
+        expect(result).to.be.false;
+        expect(dispatch.notCalled).to.be.true;
+    });
+
+    it("should warns if config exists but no URL param", async () => {
+        rootGetters.zoomTo = [{id: "zoomToFeatureId"}];
+
+        await actions.zoomToFeatures({dispatch, rootGetters}, param);
+
+        expect(consoleWarnSpy.calledOnce).to.be.true;
+        expect(dispatch.notCalled).to.be.true;
+    });
+
+    it("should adds features and zooms if feature request succeeds", async () => {
+        let extent = null;
+
+        rootGetters.zoomTo = [
+            {id: "zoomToFeatureId", layerId: "layer1", styleId: "style"}
+        ];
+        param.ZOOMTOFEATUREID = ["1", "2"];
+
+        sinon.stub(featureProvider, "getAndFilterFeatures").resolves([
+            new Feature({geometry: new Point([0, 0])}),
+            new Feature({geometry: new Point([1, 1])})
+        ]);
+
+        await actions.zoomToFeatures(
+            {dispatch, rootGetters},
+            param,
+            fakeCreateStyledFeatures,
+            fakeCalculateExtent
+        );
+
+        expect(dispatch.firstCall.args[0]).to.equal("Maps/addLayer");
+        expect(dispatch.firstCall.args[1]).to.be.instanceOf(VectorLayer);
+        expect(dispatch.firstCall.args[1].get("alwaysOnTop")).to.be.true;
+
+        const addedFeatures = dispatch.firstCall.args[1].getSource().getFeatures();
+
+        expect(addedFeatures.length).to.equal(2);
+
+        expect(dispatch.firstCall.args[2]).to.eql({root: true});
+
+        expect(dispatch.secondCall.args[0]).to.equal("Maps/zoomToExtent");
+        expect(dispatch.secondCall.args[1]).to.have.property("extent");
+
+        extent = dispatch.secondCall.args[1].extent;
+
+        expect(extent).to.have.lengthOf(4);
+        expect(extent.every(n => typeof n === "number")).to.be.true;
+        expect(dispatch.secondCall.args[2]).to.eql({root: true});
+
+        expect(consoleWarnSpy.notCalled).to.be.true;
+        expect(consoleErrorSpy.notCalled).to.be.true;
+    });
+
+    it("should dispatches alert if feature request fails", async () => {
+        rootGetters.zoomTo = [
+            {id: "zoomToFeatureId", layerId: "layer1", property: "prop"}
+        ];
+        param.ZOOMTOFEATUREID = ["1"];
+
+        sinon.stub(featureProvider, "getAndFilterFeatures")
+            .rejects(new Error("Error!"));
+
+        await actions.zoomToFeatures({dispatch, rootGetters}, param);
+
+        expect(dispatch.callCount).to.equal(1);
+        expect(dispatch.firstCall.args[0]).to.equal("Alerting/addSingleAlert");
+
+        const err = dispatch.firstCall.args[1];
+
+        expect(err).to.be.instanceOf(Error);
+        expect(err.message).to.equal("Error!");
+
+        expect(dispatch.firstCall.args[2]).to.eql({root: true});
+    });
+
+    it("should handles mixed valid + invalid configs", async () => {
+        rootGetters.zoomTo = [
+            {id: "invalidConfig", layerId: "badLayer"},
+            {id: "zoomToFeatureId", layerId: "layer1", property: "prop"}
+        ];
+
+        param.INVALIDCONFIG = ["x"];
+        param.ZOOMTOFEATUREID = ["1"];
+
+        sinon.stub(featureProvider, "getAndFilterFeatures").callsFake(layerId => {
+            if (layerId === "layer1") {
+                return Promise.resolve([new Feature({geometry: new Point([0, 0])})]);
+            }
+            return Promise.reject(new Error("Invalid config!"));
         });
 
         afterEach(() => {

@@ -24,7 +24,7 @@ async function getAndFilterFeatures (layerId, property, values) {
     return axios
         .get(createUrl(layer.url, layer.version, layer.featureType, filter))
         .then(response => handleAxiosResponse(response, "utils/zoomTo/actionsZoomTo/zoomToFeatures"))
-        .then(data => new WFS().readFeatures(data))
+        .then(data => new WFS({version: layer.version}).readFeatures(data))
         .then(features => features.filter(feature => {
             if (!feature.getKeys().includes(property)) {
                 return false;

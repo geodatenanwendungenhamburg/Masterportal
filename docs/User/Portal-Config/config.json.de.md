@@ -1005,6 +1005,7 @@ Konfiguration für die URL-Abfrageparameter `zoomToFeatureId` und `zoomToGeometr
 |----|--------|----|-------|-----------|------|
 |addFeatures|nein|Boolean|true|Gibt an, ob die gewünschten Merkmale in einer separaten Ebene zur Karte hinzugefügt werden sollen.|false|
 |allowedValues|nein|String[]||Nur relevant, wenn `id` gleich `zoomToGeometry` ist. Filtert zusätzlich die in den URL-Abfrageparametern zulässigen Werte.|false|
+|centerOfExtent|nein|Boolean|true|Nur relevant, wenn `id` gleich `zoomToFeatureId` ist. Wenn auf `true` gesetzt, dann wird der Extent jedes features ermittelt und ein Punkt auf dieses Extent geseetzt. Wenn auf `false` gesetzt, dann wird jedes Feature in seiner jeweiligen Geometrie dargestellt.|false|
 |id|ja|enum["zoomToFeatureId", "zoomToGeometry"]||Id des URL-Abfrageparameters, auf den sich die Konfiguration bezieht.|false|
 |layerId|ja|String||Id des Layers, aus der das Feature geholt werden soll.|false|
 |property|ja|String||Name der Eigenschaft, nach der die Merkmale gefiltert werden sollen.|false|
@@ -1033,7 +1034,8 @@ Konfiguration für die URL-Abfrageparameter `zoomToFeatureId` und `zoomToGeometr
             "id": "zoomToFeatureId",
             "layerId": "4560",
             "property": "flaechenid",
-            "styleId": "location_eventlotse"
+            "styleId": "location_eventlotse",
+            "centerOfExtent": true
         }
     ]
 }

@@ -1004,6 +1004,7 @@ Configuration for the URL query parameters `zoomToFeatureId` and `zoomToGeometry
 |----|--------|----|-------|-----------|------|
 |addFeatures|no|Boolean|true|Specifies whether the desired features should be added to the map in a separate layer.|false|
 |allowedValues|no|String[]||Only relevant when `id` equal `zoomToGeometry`. Further filters the values allowed in the URL query parameters.|false|
+|centerOfExtent|no|Boolean|true|Only relevant when `id` equals `zoomToFeatureId`. If set to `true`, the extent of each feature is determined and a point is placed on that extent. If set to `false`, each feature is displayed in its respective geometry.|false|
 |id|yes|enum["zoomToFeatureId", "zoomToGeometry"]||Id of the URL query parameter the configuration refers to.|false|
 |layerId|yes|String||Id of the layer the feature should be fetched from.|false|
 |property|yes|String||Name of the property the features should be filtered by.|false|
@@ -1032,7 +1033,8 @@ Configuration for the URL query parameters `zoomToFeatureId` and `zoomToGeometry
             "id": "zoomToFeatureId",
             "layerId": "4560",
             "property": "flaechenid",
-            "styleId": "location_eventlotse"
+            "styleId": "location_eventlotse",
+            "centerOfExtent": true
         }
     ]
 }

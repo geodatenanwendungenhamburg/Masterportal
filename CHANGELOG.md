@@ -9,6 +9,11 @@
 ### Added
  - Security: Added SECURITY.md file.
  - Architectural Decision Record **[ADR](./docs/Dev/Architecture_Decision_Record.md)**: Added documentation file for architectural decisions in the project.
+ - UrlParams:
+    - ZOOMTOGEOMETRY: Added GeoJSON layer support for ZOOMTOGEOMETRY.
+    - ZOOMTOFEATUREID:
+        - An attribute `centerOfExtent` has been added to control whether a point geometry is set to the extent of the respective feature or whether the feature itself is displayed in its geometry.
+        - WFS versions 1.0.0, 1.1.0, and 2.0.0 are now compatible.
 
 ### Changed
 - The following packages have been updated:
@@ -28,6 +33,8 @@
 - UrlParams:
   - Fixed an issue where old links with non-existent layers would fail to load by adding a fail-safe mechanism.
   - Fixed WMS-Time layers not working with legacy URL parameters.
+  - ZOOMTOFEATUREID: Features that are always at the top of the map are now displayed again.
+  - Links to other config files have been corrected in the `urlParameter` documentation.
 - GFI: In the gfiTheme `Default`, line breaks have been optimised and the size of the content changes when the sidebar is resized.  
 - Print: Fixed print layer sorting for grouped layers without zIndex.
 - SearchBar: Added a checkbox to select all subcategories when opening a folder.
