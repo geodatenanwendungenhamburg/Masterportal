@@ -72,8 +72,7 @@ export default {
             :aria-label="aria"
             :class="classArray"
             :disabled="disabled"
-            @click.stop="interaction"
-            @keydown.enter="interaction"
+            @click="interaction"
         >
             <i
                 :class="iconArray ? iconArray : icon"
