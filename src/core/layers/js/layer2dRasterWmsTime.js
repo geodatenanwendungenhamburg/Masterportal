@@ -316,6 +316,20 @@ Layer2dRasterWmsTimeLayer.prototype.getLayerParams = function (attrs) {
 };
 
 /**
+ * Overrides the parent to block OL visibility until the correct TIME parameter has been
+ * installed by prepareTimeSliderObject (i.e. GetCapabilities has resolved).
+ * This prevents TileLoadErrors caused by tile requests with no or invalid—TIME value.
+ * @param {Object} attributes The new attributes.
+ * @returns {void}
+ */
+Layer2dRasterWmsTimeLayer.prototype.updateLayerValues = function (attributes) {
+    Layer2dRaster.prototype.updateLayerValues.call(this, {
+        ...attributes,
+        visibility: this._timeInitialized === true ? attributes.visibility : false
+    });
+};
+
+/**
  * Gets raw level attributes from parent extended by an attribute TIME.
  * @param {Object} attrs Params of the raw layer.
  * @returns {Object} The raw layer attributes with TIME.
@@ -452,6 +466,10 @@ Layer2dRasterWmsTimeLayer.prototype.prepareTimeSliderObject = function (time, fi
     timeData.layerId = attrs.id;
     store.commit("Modules/WmsTime/addTimeSliderObject", {keyboardMovement: attrs.keyboardMovement, ...timeData});
 
+    this._timeInitialized = true;
+    this.getLayerSource().updateParams({"TIME": defaultValue});
+    this.getLayer().setVisible(this.get("visibility") === true);
+
     return defaultValue;
 };
 
@@ -533,15 +551,6 @@ Layer2dRasterWmsTimeLayer.prototype.retrieveTimeData = function (xmlCapabilities
 Layer2dRasterWmsTimeLayer.prototype.setIsVisibleInMap = function (newValue) {
     store.commit("Modules/WmsTime/setVisibility", newValue);
     Layer2dRaster.prototype.setIsVisibleInMap.call(this, newValue);
-};
-
-/**
- * Sets values to the ol layer.
- * @param {Object} attributes The new attributes.
- * @returns {void}
- */
-Layer2dRasterWmsTimeLayer.prototype.updateLayerValues = function (attributes) {
-    Layer2dRaster.prototype.updateLayerValues.call(this, {...attributes, visibility: false});
 };
 
 /**
