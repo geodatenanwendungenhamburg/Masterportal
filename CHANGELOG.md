@@ -4,7 +4,7 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## 2026-04-01 v3.21.1
+## 2026-04-23 v3.21.1
 
 ### Fixed
 - Routing: Fixed bug where restricted areas (Sperrflächen) couldn't be selected.
