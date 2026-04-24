@@ -51,7 +51,7 @@ let portalEntries = glob.sync(`${portalFolderName}/**/index.html`, {cwd: rootPat
 
 if (examplesOnly) {
     portalEntries = portalEntries.filter(([name]) => name === "portal-basic");
-    examplesZipName = mastercodeVersionFolderName.indexOf("git_last_commit_at") === 1 ? `examples-${mastercodeVersionFolderName.replaceAll("_", ".")}.zip` : `examples-${mastercodeVersionFolderName}.zip`;
+    examplesZipName = mastercodeVersionFolderName.indexOf("git_last_commit_at") === -1 ? `examples-${mastercodeVersionFolderName.replaceAll("_", ".")}.zip` : `examples-${mastercodeVersionFolderName}.zip`;
 }
 if (fs.existsSync("./devtools/proxyconf.json")) {
     proxyConfig = JSON.parse(fs.readFileSync("./devtools/proxyconf.json", "utf-8"));
@@ -285,6 +285,7 @@ export default defineConfig(({mode}) => {
         },
 
         build: {
+            modulePreload: false,
             assetsDir: "js",
             sourcemap: false,
             cssCodeSplit: true,
@@ -292,12 +293,17 @@ export default defineConfig(({mode}) => {
             rollupOptions: {
                 input: Object.fromEntries(portalEntries),
                 output: {
+                    manualChunks: () => "masterportal",
                     assetFileNames: (entry) => {
                         const name = String(entry?.name || ""),
                             extType = name.split(".").at(1),
                             isCss = (/css/i).test(extType);
 
                         if (isProd && examplesOnly && isCss && name.includes("portal-basic")) {
+                            return `${buildBase}/css/masterportal.[ext]`;
+                        }
+
+                        if (!examplesOnly && isCss && name.includes("portal-")) {
                             return `${buildBase}/css/masterportal.[ext]`;
                         }
 
@@ -314,6 +320,10 @@ export default defineConfig(({mode}) => {
                         }
 
                         if (isProd && examplesOnly && entry.name === "portal-basic") {
+                            return `${buildBase}/js/masterportal.js`;
+                        }
+
+                        if (!examplesOnly && entry.name && entry.name.startsWith("portal-")) {
                             return `${buildBase}/js/masterportal.js`;
                         }
 
