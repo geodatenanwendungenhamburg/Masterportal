@@ -8,6 +8,7 @@
 
 ### Added
  - Security: Added SECURITY.md file.
+ - Added CONTRIBUTING.md file.
  - Architectural Decision Record **[ADR](./docs/Dev/Architecture_Decision_Record.md)**: Added documentation file for architectural decisions in the project.
  - UrlParams:
     - ZOOMTOGEOMETRY: Added GeoJSON layer support for ZOOMTOGEOMETRY.
