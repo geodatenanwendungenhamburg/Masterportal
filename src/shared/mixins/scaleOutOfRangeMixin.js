@@ -62,12 +62,13 @@ export default (containerName) => ({
          */
         tooltipText () {
             const [fallbackMinScale, fallbackMaxScale] = this.rawLayersScaleBoundaries || [],
-                minScaleRaw = this.conf?.minScale !== undefined
-                    ? parseInt(this.conf.minScale, 10)
+                container = this[containerName],
+                minScaleRaw = container?.minScale !== undefined
+                    ? parseInt(container.minScale, 10)
                     : fallbackMinScale ?? null,
 
-                maxScale = this.conf?.maxScale !== undefined
-                    ? parseInt(this.conf.maxScale, 10)
+                maxScale = container?.maxScale !== undefined
+                    ? parseInt(container.maxScale, 10)
                     : fallbackMaxScale ?? null,
 
 
@@ -104,8 +105,9 @@ export default (containerName) => ({
          */
         scaleIsOutOfRange () {
             const rawLayer = this.rawLayers.length > 0 ? this.rawLayers[0] : null,
-                minScale = this.conf?.minScale ?? rawLayer?.minScale,
-                maxScale = this.conf?.maxScale ?? rawLayer?.maxScale;
+                container = this[containerName],
+                minScale = container?.minScale ?? rawLayer?.minScale,
+                maxScale = container?.maxScale ?? rawLayer?.maxScale;
 
             if (maxScale === undefined) {
                 return false;

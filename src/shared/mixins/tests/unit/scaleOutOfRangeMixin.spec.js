@@ -144,9 +144,9 @@ describe("scaleOutOfRangeMixin", () => {
             expect(context.$t.called).to.be.false;
         });
 
-        it("returns tooltip from conf minScale/maxScale if rawLayersScaleBoundaries are not available", () => {
-            conf.minScale = "1000";
-            conf.maxScale = "10000";
+        it("returns tooltip from container minScale/maxScale if rawLayersScaleBoundaries are not available", () => {
+            context[containerName].minScale = "1000";
+            context[containerName].maxScale = "10000";
             context.rawLayersScaleBoundaries = [undefined, undefined];
             context.scales = [500, 1000, 10000, 20000, 100000];
 
@@ -190,9 +190,9 @@ describe("scaleOutOfRangeMixin", () => {
             expect(mixin.computed.scaleIsOutOfRange.call(context)).to.be.false;
         });
 
-        it("uses conf minScale/maxScale if rawLayers do not contain scale boundaries", () => {
-            conf.minScale = "1000";
-            conf.maxScale = "2500";
+        it("uses container minScale/maxScale if rawLayers do not contain scale boundaries", () => {
+            context[containerName].minScale = "1000";
+            context[containerName].maxScale = "2500";
             context.scale = 5000;
             context.rawLayers = [
                 {id: "1337"}

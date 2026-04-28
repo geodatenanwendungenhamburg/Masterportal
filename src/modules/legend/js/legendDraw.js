@@ -63,6 +63,9 @@ export default {
                 svgPath = createNominalCircleSegments(olFeature, styleObject.attributes);
                 svg = createSVGStyle(svgPath, 5).getImage().getSrc();
                 svgSize = styleObject.style[0].getImage().getSize();
+                if (!svgSize) {
+                    return;
+                }
                 image = styleObject.style[1].getImage().getSrc();
                 imageSize = [Math.round(svgSize[0] * 1.04), Math.round(svgSize[1] * 1.04)];
                 imageSizeWithScale = [imageSize[0] * imageScale, imageSize[1] * imageScale];
