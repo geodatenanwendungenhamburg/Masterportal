@@ -343,6 +343,7 @@ export default {
                         }));
                     }
                 });
+                this.setSelectedSymbol(symbol || null);
                 this.currentDrawInteraction.on("drawend", (evt) => {
                     tooltipElement.style.display = "none";
                     this.$emit("drawend", evt);
@@ -363,6 +364,7 @@ export default {
                         }
                     }
                     handleDrawEvent(evt);
+                    console.warn("After handleDrawEvent, evt: ", evt);
                     this.incrementIdCounter(1);
                 });
                 if (drawType === "circle" || drawType === "doubleCircle") {
@@ -371,7 +373,6 @@ export default {
 
                 this.addInteraction(this.currentDrawInteraction);
                 this.setSelectedDrawType(drawType);
-                this.setSelectedSymbol(symbol || null);
             }
         },
 

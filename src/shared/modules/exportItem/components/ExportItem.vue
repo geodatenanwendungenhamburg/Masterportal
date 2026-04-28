@@ -121,35 +121,8 @@ export default {
                 console.error("Error in startDownload:", error);
             }
 
-            // The following is not working yet as we do not initialize the masterportal_attributes on draw in the new draw module. drawInteractionOnDrawEvent.js l 49 takes care of said init in draw_old. Purpose is questionable, but it probably needs to be in the new draw too.
-            /*             this.features.forEach((drawnFeature) => {
-                if (!drawnFeature.get("masterportal_attributes").isVisible && drawnFeature.get("masterportal_attributes").invisibleStyle) {
-                    drawnFeature.setStyle(drawnFeature.get("masterportal_attributes").invisibleStyle);
-                }
-                if (state.oldStyle && typeof state.selectedFeature?.get === "function"
-                    && drawnFeature.get("masterportal_attributes").styleId === state.selectedFeature.get("masterportal_attributes").styleId
-                    && (typeof drawnFeature.get("masterportal_attributes").styleId === "number" || typeof drawnFeature.get("masterportal_attributes").styleId === "string")
-                ) {
-                    drawnFeature.setStyle(state.oldStyle);
-                }
-            }); */
-
-
             console.warn("exportItem", exportItem);
             console.warn("Download started with the following features", this.features);
-            // next line is working GeoJSON, gives back valid JSON, just missing styles
-            /*             let dataString = await exportItem.prepareFeatures(this.features);
-
-            dataString = await exportItem.convertFeatures(dataString, new GeoJSON()); */
-
-
-            // Following two lines create a KML error
-            // let dataString = exportItem.setKmlAttributes(this.features);
-
-            // dataString = await exportItem.convertFeaturesToKml(dataString);
-
-
-            // console.warn("the result: ", dataString);
         },
 
         async handleGeoJSONDownload () {
@@ -172,8 +145,9 @@ export default {
         },
 
         async handleKMLDownload () {
-            console.warn("Handling KML download...", kmlfunctions);
-            let dataString = kmlfunctions.setKmlAttributes(this.features);
+            let dataString = kmlfunctions.transformGeometries(this.features);
+
+            dataString = kmlfunctions.setKmlAttributes(dataString);
             const projection = this.projectionCode;
 
             console.warn("features after setKMLAttributes:", dataString);
