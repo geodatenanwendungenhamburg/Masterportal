@@ -713,6 +713,7 @@
             "type": "wfsSearch",
             "description": "common:modules.wfsSearch.description_parcel",
             "zoomLevel": 7,
+            "fullViewEnabled": true,
             "instances": [
               {
                 "title": "common:modules.wfsSearch.parcelSearch",

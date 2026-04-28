@@ -64,6 +64,7 @@ export default {
             "zoomLevel",
             "resultsPerPage",
             "multiSelect",
+            "fullViewEnabled",
             "currentInstance",
             "requiredFields"
         ]),
@@ -586,6 +587,7 @@ export default {
                 select-mode="row"
                 :run-select-row-on-mount="false"
                 table-class="tableHeight"
+                :full-view-enabled="fullViewEnabled"
                 @rowSelected="handleRowSelected"
             >
                 <template

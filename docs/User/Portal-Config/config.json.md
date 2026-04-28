@@ -4585,6 +4585,7 @@ Multiple **[SearchInstances](#portalconfigmenusectionsmoduleswfssearchsearchinst
 |zoomLevel|no|Number|5|Specifies to which zoom level zooming is to be performed. If the feature does not fit into the zoom level, a suitable zoom level is automatically selected.|false|
 |resultsPerPage|no|Number|0|The search result list will at most show this amount of results at a time. Further results will be offered on separate result pages. 0 means display all on one page at the same time.|false|
 |multiSelect|no|Boolean|false|If `true`, a user may select multiple features from the result list by either pressing Strg/Shift or using checkboxes; when zooming, all selected features will be shown.|false|
+|fullViewEnabled|no|Boolean|false|If `true`, the result table can be expanded to a full view by the user.|false|
 
 **Example**
 

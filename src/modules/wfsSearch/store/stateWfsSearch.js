@@ -44,6 +44,7 @@ const state = {
     zoomLevel: 5,
     resultsPerPage: 0,
     multiSelect: false,
+    fullViewEnabled: false,
     supportedDevices: ["Desktop", "Mobile", "Table"],
     supportedMapModes: ["2D", "3D"]
 };

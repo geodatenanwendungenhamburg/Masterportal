@@ -4573,6 +4573,7 @@ Es können mehrere Suchinstanzen (**[SearchInstances](#portalconfigmenusectionsm
 |zoomLevel|nein|Number|5|Gibt an, auf welche Zoomstufe (zoomLevel) gezoomt werden soll. Sollte das Feature nicht in die Zoomstufe passen, wird automatisch eine passende Zoomstufe gewählt.|false|
 |resultsPerPage|nein|Number|0|In der Suchergebnisliste werden höchstens so viele Ergebnisse zugleich angezeigt. Wird diese Anzahl überschritten, bietet die Ergebnisliste eine nächste Ergebnisseite an. Beim Wert 0 werden alle Ergebisse auf einer Seite angezeigt.|false|
 |multiSelect|nein|Boolean|false|Wenn `true`, können Nutzende durch Drücken von Strg oder Shift, oder über Checkboxen, mehrere Features der Ergebnisliste auswählen; beim Zoomen wird dann auf alle ausgewählten Features gezoomed.|false|
+|fullViewEnabled|nein|Boolean|false|Wenn `true`, kann die Ergebnistabelle vom Nutzer in eine Vollansicht erweitert werden.|false|
 
 **Beispiel**
 

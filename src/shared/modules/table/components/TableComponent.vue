@@ -34,7 +34,7 @@ import GeoJSON from "ol/format/GeoJSON.js";
  * @vue-prop {String} exportFileName - sets the name of the downloaded file.
  * @vue-prop {String} id - can be used to set the id of the encapsulating div, default is tableId.
  * @vue-prop {String} tableClass - can be set to use custom classes to the div encapsulating the table.
-  * @vue-prop {Object} fixedColumnWithOrder - can set the column with a fixed order in table.
+ * @vue-prop {Object} fixedColumnWithOrder - can set the column with a fixed order in table.
  * @vue-prop {Object} fixedRow - can set the row in a fixed order in table.
  * @vue-prop {Object} fixedBottomData - can be used for the data only shown in bottom of table.
  * @vue-prop {String|Boolean} selectMode - can be set with "row" or "column" to allow to click a whole row or column in table.
