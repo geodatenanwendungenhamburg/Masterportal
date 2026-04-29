@@ -25,27 +25,19 @@ export default function getActionsLayerConfig () {
      */
     return {
         addLayerToLayerConfig ({dispatch, getters, state}, {layerConfig, parentKey}) {
-            let maxZIndex = -Infinity,
-                configsByParentKey = [];
             const layerContainer = getters.allLayerConfigs.filter(config => Object.prototype.hasOwnProperty.call(config, "zIndex") && typeof config.zIndex === "number"),
-                matchingLayer = layerContainer.find(layer =>layer.id === layerConfig.id);
+                matchingLayer = layerContainer.find(layer => layer.id === layerConfig.id);
+            let maxZIndex = state.layerConfig[parentKey]
+                ? getters.maxZIndexOfLayerConfigsByParentKey(parentKey)
+                : getters.maxZIndexOfLayerConfigsByParentKey(treeSubjectsKey);
 
-            if (state.layerConfig[parentKey]) {
-                configsByParentKey = getters.allLayerConfigsByParentKey(parentKey).filter(config => Object.prototype.hasOwnProperty.call(config, "zIndex") && typeof config.zIndex === "number");
-            }
-            else {
-                configsByParentKey = getters.visibleSubjectDataLayerConfigs.filter(config => Object.prototype.hasOwnProperty.call(config, "zIndex") && typeof config.zIndex === "number");
-            }
-            if (configsByParentKey.length === 0) {
-                maxZIndex = Math.max(...layerContainer.map(layerConf => layerConf.zIndex));
-            }
-            else {
-                maxZIndex = Math.max(...configsByParentKey.map(layerConf => layerConf.zIndex));
+            if (maxZIndex === -1) {
+                maxZIndex = Math.max(...layerContainer.map(layerConf => layerConf.zIndex), -1);
             }
             dispatch("updateLayerConfigZIndex", {layerContainer, maxZIndex});
 
             if (matchingLayer === undefined) {
-                layerConfig.zIndex = maxZIndex + 1;
+                layerConfig.zIndex = layerConfig.zIndex ?? maxZIndex + 1;
                 if (state.layerConfig[parentKey]) {
                     state.layerConfig[parentKey].elements.push(layerConfig);
                 }

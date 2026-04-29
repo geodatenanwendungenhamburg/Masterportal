@@ -3,6 +3,7 @@ import baselayerHandler from "../js/handleSingleBaselayer.js";
 import sortBy from "@shared/js/utils/sortBy.js";
 import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants.js";
 import store from "@appstore/index.js";
+import zIndexManager from "@core/layers/js/zIndexManager.js";
 
 const actions = {
 
@@ -31,10 +32,7 @@ const actions = {
         layerConfigs.push(layerConfig);
         if (value === true) {
             if (rootGetters.isBaselayer(layerId)) {
-                const maxBaselayerZIndex = Math.max(...rootGetters.layerConfigsByAttributes({
-                    baselayer: true,
-                    showInLayerTree: value
-                }).map(layer => layer.zIndex));
+                const maxBaselayerZIndex = zIndexManager.maxZIndexOfLayerConfigsByParentKey(treeBaselayersKey, rootGetters);
 
                 dispatch("updateLayerConfigZIndex", {
                     layerContainer: rootGetters.layerConfigsByAttributes({showInLayerTree: true}),

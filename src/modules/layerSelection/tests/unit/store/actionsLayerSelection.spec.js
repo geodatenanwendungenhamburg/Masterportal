@@ -40,7 +40,8 @@ describe("src/modules/layerSelection/store/actionsLayerSelection", () => {
             layerConfigById: () => layerConfig,
             folderById: () => folder,
             allLayerConfigsStructured: () => [folder],
-            allBaselayerConfigs: [{name: "baselayer"}]
+            allBaselayerConfigs: [{name: "baselayer"}],
+            allLayerConfigsByParentKey: () => []
         };
         baselayerHandlerSpy = sinon.spy(baselayerHandler, "checkAndAdd");
     });
@@ -124,6 +125,9 @@ describe("src/modules/layerSelection/store/actionsLayerSelection", () => {
                     zIndex: 0
                 }
             ];
+            rootGetters.allLayerConfigsByParentKey = (key) => key === "baselayer"
+                ? [{id: "100", zIndex: 1}, {id: "200", zIndex: 0}]
+                : [];
             rootGetters.singleBaselayer = false;
             rootGetters.visibleBaselayerConfigs = [];
 

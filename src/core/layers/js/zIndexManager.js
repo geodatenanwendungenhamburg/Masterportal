@@ -34,13 +34,18 @@ function determineZIndex (id, rootGetters) {
     }
 
     const isBaselayer = Object.prototype.hasOwnProperty.call(layerConf, "baselayer") && layerConf.baselayer,
-        parentKey = isBaselayer ? treeBaselayersKey : treeSubjectsKey;
-    let maxZIndex = maxZIndexOfLayerConfigsByParentKey(parentKey, rootGetters);
+        parentKey = isBaselayer ? treeBaselayersKey : treeSubjectsKey,
+        useGetterFn = typeof rootGetters.maxZIndexOfLayerConfigsByParentKey === "function";
+    let maxZIndex = useGetterFn
+        ? rootGetters.maxZIndexOfLayerConfigsByParentKey(parentKey)
+        : maxZIndexOfLayerConfigsByParentKey(parentKey, rootGetters);
 
     if (maxZIndex === -1) {
-        maxZIndex = isBaselayer
-            ? maxZIndexOfLayerConfigsByParentKey(treeSubjectsKey, rootGetters)
-            : maxZIndexOfLayerConfigsByParentKey(treeBaselayersKey, rootGetters);
+        const fallbackKey = isBaselayer ? treeSubjectsKey : treeBaselayersKey;
+
+        maxZIndex = useGetterFn
+            ? rootGetters.maxZIndexOfLayerConfigsByParentKey(fallbackKey)
+            : maxZIndexOfLayerConfigsByParentKey(fallbackKey, rootGetters);
     }
     return maxZIndex + 1;
 }
@@ -87,9 +92,15 @@ function getTopBaselayer (visibleBaselayers) {
     if (!visibleBaselayers || visibleBaselayers.length === 0) {
         return null;
     }
+    if (visibleBaselayers.length === 1) {
+        return visibleBaselayers[0];
+    }
 
     const maxZIndex = Math.max(...visibleBaselayers.map(l => l.zIndex));
 
+    if (isNaN(maxZIndex)) {
+        return null;
+    }
     return visibleBaselayers.find(l => l.zIndex === maxZIndex) || null;
 }
 
@@ -131,11 +142,31 @@ function updateAllZIndexes ({getters}) {
     });
 }
 
+let initialZIndex = 1;
+
+/**
+ * Returns the next zIndex and increments the internal counter.
+ * @returns {Number} The next zIndex.
+ */
+function getNextInitialZIndex () {
+    return initialZIndex++;
+}
+
+/**
+ * Resets the initial zIndex counter to 1.
+ * @returns {void}
+ */
+function resetInitialZIndex () {
+    initialZIndex = 1;
+}
+
 export default {
     maxZIndexOfLayerConfigsByParentKey,
     determineZIndex,
     getZIndexForLayer,
     getTopBaselayer,
     updateLayerConfigZIndex,
-    updateAllZIndexes
+    updateAllZIndexes,
+    getNextInitialZIndex,
+    resetInitialZIndex
 };

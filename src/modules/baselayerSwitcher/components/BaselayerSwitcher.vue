@@ -57,28 +57,7 @@ export default {
                 showInLayerTree: true
             });
 
-        if (baselayers.length > 1) {
-            const zIndex = [];
-            let max = null,
-                layerWithMaxZIndex = null;
-
-            baselayers.forEach((layer) => {
-                zIndex.push(layer.zIndex);
-            });
-
-            max = Math.max(...zIndex);
-            layerWithMaxZIndex = baselayers.filter(layer => layer.zIndex === max);
-
-            if (layerWithMaxZIndex[0]) {
-                this.setTopBaselayer(layerWithMaxZIndex[0]);
-            }
-        }
-        else if (baselayers.length === 0) {
-            this.setTopBaselayer(null);
-        }
-        else {
-            this.setTopBaselayer(baselayers[0]);
-        }
+        this.setTopBaselayer(ZIndexManager.getTopBaselayer(baselayers));
 
         Object.values(this.allBaselayerConfigs).forEach(layer => {
             if (layer.id !== this.topBaselayer?.id) {

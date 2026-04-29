@@ -267,7 +267,8 @@ describe("src/app-store/actionsLayerConfig.js", () => {
 
             getters = {
                 allLayerConfigs: [],
-                allLayerConfigsByParentKey: () => []
+                allLayerConfigsByParentKey: () => [],
+                maxZIndexOfLayerConfigsByParentKey: () => -1
             };
 
             getActionsLayerConfig().addLayerToLayerConfig({dispatch, getters, state}, {layerConfig: layerToAdd, parentKey: treeSubjectsKey});
@@ -275,7 +276,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
             expect(dispatch.firstCall.args[0]).to.equals("updateLayerConfigZIndex");
             expect(dispatch.firstCall.args[1]).to.deep.equals({
                 layerContainer: [],
-                maxZIndex: -Infinity
+                maxZIndex: -1
             });
             expect(dispatch.secondCall.args[0]).to.equals("addBaselayerAttribute");
             expect(dispatch.secondCall.args[1]).to.be.undefined;
@@ -311,7 +312,8 @@ describe("src/app-store/actionsLayerConfig.js", () => {
             state.layerConfig = layerConfig;
             getters = {
                 allLayerConfigs: [baselayerConfig],
-                allLayerConfigsByParentKey: () => []
+                allLayerConfigsByParentKey: () => [],
+                maxZIndexOfLayerConfigsByParentKey: () => -1
             };
 
             expect(state.layerConfig[treeSubjectsKey]?.elements.length).to.equal(0);
@@ -349,7 +351,8 @@ describe("src/app-store/actionsLayerConfig.js", () => {
 
             getters = {
                 allLayerConfigs: [],
-                allLayerConfigsByParentKey: () => []
+                allLayerConfigsByParentKey: () => [],
+                maxZIndexOfLayerConfigsByParentKey: () => -1
             };
 
             getActionsLayerConfig().addLayerToLayerConfig({dispatch, getters, state}, {layerConfig: layerToAdd, parentKey: treeBaselayersKey});
@@ -357,7 +360,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
             expect(dispatch.firstCall.args[0]).to.equals("updateLayerConfigZIndex");
             expect(dispatch.firstCall.args[1]).to.deep.equals({
                 layerContainer: [],
-                maxZIndex: -Infinity
+                maxZIndex: -1
             });
             expect(dispatch.secondCall.args[0]).to.equals("addBaselayerAttribute");
             expect(dispatch.secondCall.args[1]).to.be.undefined;
@@ -378,7 +381,8 @@ describe("src/app-store/actionsLayerConfig.js", () => {
             getters = {
                 allLayerConfigs: [{layerToAdd}],
                 folderById: () => folder_3,
-                visibleSubjectDataLayerConfigs: []
+                visibleSubjectDataLayerConfigs: [],
+                maxZIndexOfLayerConfigsByParentKey: () => -1
             };
 
             getActionsLayerConfig().addLayerToLayerConfig({dispatch, getters, state}, {layerConfig: layerToAdd, parentKey: "folder_3"});
@@ -386,7 +390,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
             expect(dispatch.firstCall.args[0]).to.equals("updateLayerConfigZIndex");
             expect(dispatch.firstCall.args[1]).to.deep.equals({
                 layerContainer: [],
-                maxZIndex: -Infinity
+                maxZIndex: -1
             });
             expect(dispatch.secondCall.args[0]).to.equals("addBaselayerAttribute");
             expect(dispatch.secondCall.args[1]).to.be.undefined;
@@ -407,7 +411,8 @@ describe("src/app-store/actionsLayerConfig.js", () => {
             getters = {
                 allLayerConfigs: [{layerToAdd}],
                 visibleSubjectDataLayerConfigs: [],
-                folderById: () => folder_3
+                folderById: () => folder_3,
+                maxZIndexOfLayerConfigsByParentKey: () => -1
             };
 
             getActionsLayerConfig().addLayerToLayerConfig({dispatch, getters, state}, {layerConfig: layerToAdd, parentKey: "folder_3"});
@@ -415,7 +420,7 @@ describe("src/app-store/actionsLayerConfig.js", () => {
             expect(dispatch.firstCall.args[0]).to.equals("updateLayerConfigZIndex");
             expect(dispatch.firstCall.args[1]).to.deep.equals({
                 layerContainer: [],
-                maxZIndex: -Infinity
+                maxZIndex: -1
             });
             expect(dispatch.secondCall.args[0]).to.equals("addBaselayerAttribute");
             expect(dispatch.secondCall.args[1]).to.be.undefined;

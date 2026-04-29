@@ -2,8 +2,7 @@ import {rawLayerList} from "@masterportal/masterportalapi/src/index.js";
 import {updateProxyUrl} from "./getProxyUrl.js";
 import layerTypes from "@core/layers/js/layerTypes.js";
 import store from "@appstore/index.js";
-
-let zIndex = 1;
+import zIndexManager from "@core/layers/js/zIndexManager.js";
 
 /**
  * Returns the extended raw layer to the id contained in the layer configuration.
@@ -89,7 +88,7 @@ export function addAdditional (rawLayer, showAllLayerInTree = false) {
         }
 
         if (rawLayer.showInLayerTree === true || rawLayer.visibility === true) {
-            rawLayer.zIndex = zIndex++;
+            rawLayer.zIndex = zIndexManager.getNextInitialZIndex();
         }
         rawLayer.is3DLayer = layerTypes3d.includes(rawLayer.typ?.toUpperCase());
     }
@@ -460,5 +459,5 @@ function mergeByMetaIds (toMergeByMdId, layerList) {
  * @returns {void}
  */
 export function resetZIndex () {
-    zIndex = 1;
+    zIndexManager.resetInitialZIndex();
 }
