@@ -1,5 +1,6 @@
 import {Group as LayerGroup} from "ol/layer.js";
 import store from "@appstore/index.js";
+
 /**
  * Collects all visible ol layers, including layers of groups.
  * @param {Boolean} [printMapMarker=false] whether layer "markerPoint" should be filtered out
@@ -14,9 +15,14 @@ function getVisibleLayer (printMapMarker = false) {
             return !(layer instanceof LayerGroup);
         });
         groupedLayers.forEach(groupedLayer => {
+            const groupZIndex = typeof groupedLayer?.getZIndex === "function" ? groupedLayer.getZIndex() : undefined;
+
             groupedLayer.getLayers().forEach(gLayer => {
                 // layer opacity is only set for printing and later it is reverted
                 gLayer.setOpacity(groupedLayer.getOpacity());
+                if (groupZIndex !== undefined && (typeof gLayer?.getZIndex !== "function" || gLayer.getZIndex() === undefined)) {
+                    gLayer.setZIndex(groupZIndex);
+                }
                 visibleLayerList.push(gLayer);
             });
         });
@@ -109,24 +115,17 @@ function checkLayersInResolution (visibleLayerList) {
  * @returns {void}
  */
 function sortVisibleLayerListByZindex (visibleLayerList) {
-    const sortedVisibleLayerList = [...visibleLayerList]
-        .map((layer, index) => ({
-            layer,
-            index,
-            zIndex: typeof layer?.getZIndex === "function" ? layer.getZIndex() : undefined
-        }))
+    const sorted = visibleLayerList
+        .map((layer, index) => ({layer, index, zIndex: typeof layer?.getZIndex === "function" ? layer.getZIndex() : undefined}))
         .sort((a, b) => {
-            const aHasZIndex = a.zIndex !== undefined;
-            const bHasZIndex = b.zIndex !== undefined;
-
-            if (aHasZIndex && bHasZIndex && a.zIndex !== b.zIndex) {
+            if (a.zIndex !== undefined && b.zIndex !== undefined && a.zIndex !== b.zIndex) {
                 return a.zIndex - b.zIndex;
             }
             return a.index - b.index;
         })
         .map(item => item.layer);
 
-    store.dispatch("Modules/Print/setVisibleLayerList", sortedVisibleLayerList);
+    store.dispatch("Modules/Print/setVisibleLayerList", sorted);
 }
 
 export default {getVisibleLayer, getGroupedLayers, getVisibleLayerList, revertLayerOpacity};
