@@ -365,7 +365,12 @@ export default {
                     }
                     handleDrawEvent(evt);
                     console.warn("After handleDrawEvent, evt: ", evt);
-                    this.incrementIdCounter(1);
+                    if (drawType === "doubleCircle") {
+                        this.incrementIdCounter(2);
+                    }
+                    else {
+                        this.incrementIdCounter(1);
+                    }
                 });
                 if (drawType === "circle" || drawType === "doubleCircle") {
                     this.regulateStaticCircleInteraction(drawType);
