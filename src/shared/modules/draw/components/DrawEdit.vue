@@ -113,7 +113,8 @@ export default {
             textClickHandler: null,
             editFillColor: "#000000",
             editFillTransparency: 0,
-            activeEditKey: ""
+            activeEditKey: "",
+            featureCounter: 1
         };
     },
     computed: {
@@ -177,6 +178,21 @@ export default {
                         }
                         this.nonReactiveRedoFeatures = markRaw([]);
                     }
+                    if (event.feature.getGeometry().getType() === "Circle" && !event.feature.get("masterportal_attributes")) {
+                        event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {
+                            "fromDrawTool": true,
+                            styleId: this.featureCounter,
+                            drawState: {
+                                zIndex: this.featureCounter,
+                                drawType: {
+                                    id: "drawCircle",
+                                    geometry: "Circle"
+                                }
+                            }
+                        }));
+                        this.featureCounter++;
+                    }
+                    this.featureCounter++;
                 });
 
                 this.source.on("removefeature", event => {
