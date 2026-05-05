@@ -36,7 +36,7 @@ export default function handleDrawEvent (event) {
 
 
     if (["line", "pen"].includes(stateDrawCopy.selectedDrawType)) {
-        stateDrawCopy.currentLayout.strokeColor.push(stateDrawCopy.currentLayout.fillTransparency / 100);
+        stateDrawCopy.currentLayout.strokeColor.push(1 - stateDrawCopy.currentLayout.fillTransparency / 100);
         drawState.colorContour = stateDrawCopy.currentLayout.strokeColor;
     }
     else {
