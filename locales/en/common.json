@@ -1654,6 +1654,15 @@
         "writeTextOptions": {
           "fontSize": "Font Size",
           "font": "Font"
+         },
+        "download": {
+          "geometryTypeNotSupported": "Polygon, box, square and circle cannot be downloaded in GPX format. Please choose a different format.",
+          "enterFilename": "Please enter a filename",
+          "filename": "Filename",
+          "format": "Format",
+          "headline": "Download",
+          "pleaseChoose": "Please select",
+          "saveDrawing": "Save drawing"
         }
       },
       "graphicalSelect": {

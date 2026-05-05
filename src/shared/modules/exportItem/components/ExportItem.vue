@@ -14,17 +14,17 @@ export default {
         headline: {
             type: String,
             required: false,
-            default: "common:modules.draw_old.button.download"
+            default: "common:shared.modules.draw.download.headline"
         },
         formatlabel: {
             type: String,
             required: false,
-            default: "common:modules.draw_old.download.format"
+            default: "common:shared.modules.draw.download.format"
         },
         pleaseChoose: {
             type: String,
             required: false,
-            default: "common:modules.draw_old.download.pleaseChoose"
+            default: "common:shared.modules.draw.download.pleaseChoose"
         },
         formats: {
             type: Array,
@@ -48,17 +48,17 @@ export default {
         filenameLabel: {
             type: String,
             required: false,
-            default: "common:modules.draw_old.download.filename"
+            default: "common:shared.modules.draw.download.filename"
         },
         filenameInputLabel: {
             type: String,
             required: false,
-            default: "common:modules.draw_old.download.enterFilename"
+            default: "common:shared.modules.draw.download.enterFilename"
         },
         exportButtonText: {
             type: String,
             required: false,
-            default: "common:modules.draw_old.button.saveDrawing"
+            default: "common:shared.modules.draw.download.saveDrawing"
         },
         features: {
             type: Array,
@@ -84,11 +84,14 @@ export default {
         ...mapGetters("Modules/ExportItem", [
             "exportFileName"
         ]),
-        ...mapGetters("Maps", ["projectionCode"])
-    },
-    watch: {
-        features () {
-            console.warn("HE", this.features);
+        ...mapGetters("Maps", ["projectionCode"]),
+        hasUnsupportedPolygonsForGPX () {
+            return this.exportFormat === "GPX" &&
+                this.features.some(f => {
+                    const type = f.getGeometry()?.getType();
+
+                    return type === "Polygon" || type === "MultiPolygon" || type === "Circle";
+                });
         }
     },
     unmounted () {
@@ -96,36 +99,19 @@ export default {
     },
     methods: {
         onFormatChange (event) {
-            // Errorhandling used to be in the convertFeatures directly, now needs to happen here, i.e. allGeometryTypesNotSupported, notSupportedAlert, siehe actionsDownload function convertFeatures in draw_old
-            console.warn("Format Changed", event);
-            console.warn("features in onFormatChange", this.features.length);
-            console.warn("features in onFormatChange", this.features);
             this.exportFormat = event.target.value;
         },
 
         async startDownload () {
-
-            try {
-                if (!this.exportFormat) {
-                    console.warn("No export format selected.");
-                    return;
-                }
-
-                const handler = this.downloadStrategies[this.exportFormat.toUpperCase()];
-
-                if (handler) {
-                    await handler();
-                }
-                else {
-                    console.error(`No handler defined for format: ${this.exportFormat}`);
-                }
-            }
-            catch (error) {
-                console.error("Error in startDownload:", error);
+            if (!this.exportFormat || this.hasUnsupportedPolygonsForGPX) {
+                return;
             }
 
-            console.warn("exportItem", exportItem);
-            console.warn("Download started with the following features", this.features);
+            const handler = this.downloadStrategies[this.exportFormat.toUpperCase()];
+
+            if (handler) {
+                await handler();
+            }
         },
 
         async handleGeoJSONDownload () {
@@ -203,18 +189,14 @@ export default {
             }
 
             dataString = await exportItem.convertFeatures(dataString, new GeoJSON(), this.projectionCode);
-            console.warn("GeoJSON result: ", dataString);
             this.triggerFileDownload(dataString, `${this.fileName}.geojson`);
         },
 
         async handleGPXDownload () {
-            console.warn("Handling GPX download...");
             const map = mapCollection.getMap("2D");
             let dataString = await exportItem.prepareFeatures(this.features, map);
 
             dataString = await exportItem.convertFeatures(this.features, new GPX(), this.projectionCode);
-
-            console.warn("GPX result: ", dataString);
             this.triggerFileDownload(dataString, `${this.fileName}.gpx`);
         },
 
@@ -225,20 +207,13 @@ export default {
             dataString = kmlfunctions.setKmlAttributes(dataString);
             const projection = this.projectionCode;
 
-            console.warn("features after setKMLAttributes:", dataString);
-
             dataString = await kmlfunctions.convertFeaturesToKml(dataString, projection);
-            console.warn("features after convertFeaturesToKML:", dataString);
-
-            console.warn("KML result: ", dataString);
             this.triggerFileDownload(dataString, `${this.fileName}.kml`);
         },
 
         async handleCSVDownload () {
-            console.warn("Handling CSV download...");
             const dataString = await exportItem.convertFeaturesToCsv(this.features);
 
-            console.warn("CSV result: ", dataString);
             this.triggerFileDownload(dataString, `${this.fileName}.csv`);
         },
 
@@ -297,16 +272,22 @@ export default {
                 <label for="tool-draw-download-format">
                     {{ $t(filenameLabel) }}
                 </label>
+                <p
+                    v-if="hasUnsupportedPolygonsForGPX"
+                    class="text-danger mt-1 mb-0"
+                >
+                    {{ $t("common:shared.modules.draw.download.geometryTypeNotSupported") }}
+                </p>
             </div>
             <div class="form-group form-group-sm row">
                 <div class="col-md-12 d-flex justify-content-center pt-3">
                     <FlatButton
                         id="downloadBtn"
-                        :aria-label="$t('common:modules.draw_old.button.saveDrawing')"
+                        :aria-label="$t('common:shared.modules.draw.download.saveDrawing')"
                         :interaction="() => startDownload()"
                         :text="$t(exportButtonText)"
                         :icon="'bi-save'"
-                        :class="{disabled: fileName.length === 0 || exportFormat === null }"
+                        :class="{disabled: fileName.length === 0 || exportFormat === null || hasUnsupportedPolygonsForGPX}"
                         role="button"
                     />
                 </div>
