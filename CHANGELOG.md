@@ -49,6 +49,7 @@
 - URLParams:
     -  ZOOMTOFEATUREID: Features that are always at the top of the map are now displayed again.
     -  Links to other config files have been corrected in the `urlParameter` documentation.
+- Map: Prevent clientWidth and clientHeight of 0, if starting in invisible iFrame.
 
 ---
 
