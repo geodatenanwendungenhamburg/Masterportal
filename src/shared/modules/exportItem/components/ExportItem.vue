@@ -127,7 +127,8 @@ export default {
 
         async handleGeoJSONDownload () {
             console.warn("Handling GeoJSON download...");
-            let dataString = await exportItem.prepareFeatures(this.features);
+            const reversedFeatures = [...this.features].reverse();
+            let dataString = await exportItem.prepareFeatures(reversedFeatures);
 
             dataString = await exportItem.convertFeatures(dataString, new GeoJSON(), this.projectionCode);
             console.warn("GeoJSON result: ", dataString);
@@ -145,7 +146,8 @@ export default {
         },
 
         async handleKMLDownload () {
-            let dataString = kmlfunctions.transformGeometries(this.features);
+            const reversedFeatures = [...this.features].reverse();
+            let dataString = kmlfunctions.transformGeometries(reversedFeatures);
 
             dataString = kmlfunctions.setKmlAttributes(dataString);
             const projection = this.projectionCode;

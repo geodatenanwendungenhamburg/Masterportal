@@ -7,10 +7,18 @@ export default function handleDrawEvent (event) {
     const stateDrawCopy = JSON.parse(JSON.stringify(store.state.Modules.Draw));
     const drawState = {};
 
-    event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {
-        "fromDrawTool": true,
-        styleId: stateDrawCopy.idCounter + 1
-    }));
+    if (stateDrawCopy.selectedDrawType === "doubleCircle") {
+        event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {
+            "fromDrawTool": true,
+            styleId: stateDrawCopy.idCounter + 2
+        }));
+    }
+    else {
+        event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {
+            "fromDrawTool": true,
+            styleId: stateDrawCopy.idCounter + 1
+        }));
+    }
 
     if (event.feature.getGeometry().getType() === "Polygon" && stateDrawCopy.selectedDrawType === "square") {
         event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {
@@ -23,7 +31,7 @@ export default function handleDrawEvent (event) {
 
     drawState.drawType = stateDrawCopy.selectedDrawType;
     drawState.imgPath = stateDrawCopy.drawSymbolImgPath;
-    drawState.zIndex = stateDrawCopy.idCounter;
+    drawState.zIndex = stateDrawCopy.selectedDrawType === "doubleCircle" ? stateDrawCopy.idCounter + 1 : stateDrawCopy.idCounter;
     drawState.strokeWidth = stateDrawCopy.currentLayout.strokeWidth;
 
 
