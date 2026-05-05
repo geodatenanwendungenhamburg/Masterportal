@@ -19,7 +19,6 @@ export function isDeleteAllMode (feature) {
  * @returns {void}
  */
 export default function undoRedoFeatures (features, stack, mode, source) {
-    console.warn("undoRedoFeatures called!", {features, stack, mode, source});
     if (features.length > 0) {
         const feature = features[features.length - 1];
 
@@ -83,6 +82,12 @@ export default function undoRedoFeatures (features, stack, mode, source) {
                 feature.feature.changed();
                 stack.push(features.pop());
             }
+        }
+        else if (feature.mode === "drawGroup") {
+            const action = mode === "undo" ? f => source.removeFeature(f) : f => source.addFeature(f);
+
+            feature.features.forEach(action);
+            stack.push(features.pop());
         }
     }
 }

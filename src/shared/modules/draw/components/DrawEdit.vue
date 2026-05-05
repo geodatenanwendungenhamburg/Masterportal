@@ -105,6 +105,7 @@ export default {
             drawLayerVisible: true,
             originalGeometry: null,
             redoing: false,
+            pendingInnerCircleFeature: null,
             selectedTextFeature: null,
             editText: "",
             editFontSize: 16,
@@ -145,18 +146,39 @@ export default {
         layer (layer) {
             if (layer !== null) {
                 this.source.on("addfeature", event => {
-                    // this.features.push(event.feature);
                     if (!this.redoing) {
-                        this.nonReactiveUndoFeatures.push({
-                            feature: markRaw(event.feature),
-                            mode: "draw"
-                        });
+                        const attrs = event.feature.get("masterportal_attributes");
+
+                        if (!attrs?.fromDrawTool) {
+                            this.pendingInnerCircleFeature = markRaw(event.feature);
+                            return;
+                        }
+
+                        if (this.pendingInnerCircleFeature !== null && attrs?.drawState?.circleOuterRadius !== undefined) {
+                            this.nonReactiveUndoFeatures.push({
+                                features: [this.pendingInnerCircleFeature, markRaw(event.feature)],
+                                mode: "drawGroup"
+                            });
+                            this.pendingInnerCircleFeature = null;
+                        }
+                        else {
+                            if (this.pendingInnerCircleFeature !== null) {
+                                this.nonReactiveUndoFeatures.push({
+                                    feature: this.pendingInnerCircleFeature,
+                                    mode: "draw"
+                                });
+                                this.pendingInnerCircleFeature = null;
+                            }
+                            this.nonReactiveUndoFeatures.push({
+                                feature: markRaw(event.feature),
+                                mode: "draw"
+                            });
+                        }
                         this.nonReactiveRedoFeatures = markRaw([]);
                     }
                 });
 
                 this.source.on("removefeature", event => {
-                    // this.features = this.features.filter((feature) => feature.ol_uid !== event.feature.ol_uid);
                     if (!this.redoing) {
                         this.nonReactiveUndoFeatures.push({
                             feature: markRaw(event.feature),
@@ -256,8 +278,6 @@ export default {
                 this.setSelectedInteraction("modify");
             }
             this.removeInteraction(this.currentModifyInteraction);
-            this.selectedTextFeature = null;
-            // Statt new Select({...}):
             this.selectedTextFeature = null;
             const map = mapCollection.getMap("2D");
 
