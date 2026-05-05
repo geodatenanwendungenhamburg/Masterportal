@@ -1670,6 +1670,15 @@
         "writeTextOptions": {
           "font": "Schriftart",
           "fontSize": "Schriftgröße"
+        },
+        "download": {
+          "geometryTypeNotSupported": "Polygon, Box, Quadrat und Kreis können im GPX-Format nicht heruntergeladen werden. Bitte wählen Sie ein anderes Format.",
+          "enterFilename": "Bitte Dateiname angeben",
+          "filename": "Dateiname",
+          "format": "Format",
+          "headline": "Herunterladen",
+          "pleaseChoose": "Bitte Auswählen",
+          "saveDrawing": "Zeichnung speichern"
         }
       },
       "graphicalSelect": {

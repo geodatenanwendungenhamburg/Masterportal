@@ -676,7 +676,7 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
             });
             wrapper.vm.regulateDrawInteraction("box");
 
-            callbacks.drawend({feature: {get: sinon.stub(), set: sinon.stub(), getGeometry: () => ({})}});
+            callbacks.drawend({feature: {get: sinon.stub(), set: sinon.stub(), getGeometry: () => ({getType: () => "Polygon"})}});
 
             expect(wrapper.emitted("drawend")).to.be.ok;
         });
@@ -692,7 +692,7 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
 
             callbacks.drawstart({feature: {getGeometry: () => mockStartGeom}});
 
-            const mockEndGeom = {getRadius: () => 250.4, un: sinon.stub()};
+            const mockEndGeom = {getRadius: () => 250.4, getType: () => "Circle", un: sinon.stub()};
 
             callbacks.drawend({feature: {get: sinon.stub(), set: sinon.stub(), getGeometry: () => mockEndGeom}});
 
