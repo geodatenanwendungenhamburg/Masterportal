@@ -143,7 +143,7 @@ export default {
     computed: {
         ...mapGetters("Maps", ["projection"]),
         ...mapGetters("Modules/Draw", ["iconList"]),
-        ...mapState("Modules/Draw", ["drawTypesGeometrie", "drawTypesMain", "drawTypesSymbols", "buttonsDisabled", "drawSymbolImgPath", "selectedSymbol"])
+        ...mapState("Modules/Draw", ["drawTypesGeometrie", "drawTypesMain", "drawTypesSymbols", "buttonsDisabled", "selectedSymbol"])
     },
     watch: {
         "circleOptions.interactive" () {
@@ -259,7 +259,7 @@ export default {
          * @returns {void}
          */
         regulateDrawInteraction (drawType) {
-            this.currentDrawInteraction = drawInteraction.createDrawInteraction(drawType, this.source, this.iconList);
+            this.currentDrawInteraction = drawInteraction.createDrawInteraction(drawType, this.source, this.iconList, Config.wfsImgPath);
             let onGeometryChange;
             const {tooltipOverlay, tooltipElement} = createTooltipOverlay(),
                 map = mapCollection.getMap("2D"),
@@ -332,7 +332,7 @@ export default {
                     else if (symbol && symbol.type === "image") {
                         const iconSrc = symbol.value.startsWith("/")
                             ? symbol.value
-                            : `${this.drawSymbolImgPath}${symbol.value}`;
+                            : `${Config.wfsImgPath}${symbol.value}`;
 
                         evt.feature.setStyle(new Style({
                             image: new Icon({
@@ -347,7 +347,6 @@ export default {
                 this.currentDrawInteraction.on("drawend", (evt) => {
                     tooltipElement.style.display = "none";
                     this.$emit("drawend", evt);
-                    console.warn("On drawEnd", evt);
 
                     if (["circle", "box", "line", "polygon"].includes(drawType)) {
                         const geometry = evt.feature.getGeometry();
@@ -364,7 +363,6 @@ export default {
                         }
                     }
                     handleDrawEvent(evt);
-                    console.warn("After handleDrawEvent, evt: ", evt);
                     if (drawType === "doubleCircle") {
                         this.incrementIdCounter(2);
                     }
