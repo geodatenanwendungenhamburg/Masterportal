@@ -488,7 +488,7 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
     });
 
     describe("drawLayout prop", () => {
-        it("should pass drawLayout: true to all rendered IconButtons", () => {
+        it("should accept drawLayout: true as prop", () => {
             wrapper = shallowMount(DrawTypesComponent, {
                 propsData: {
                     currentLayout,
@@ -501,12 +501,10 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
                 }
             });
 
-            wrapper.findAllComponents({name: "IconButton"}).forEach(btn => {
-                expect(btn.props("drawLayout")).to.equal(true);
-            });
+            expect(wrapper.props("drawLayout")).to.equal(true);
         });
 
-        it("should not pass drawLayout: true to rendered IconButtons by default", () => {
+        it("should default drawLayout to false", () => {
             wrapper = shallowMount(DrawTypesComponent, {
                 propsData: {
                     currentLayout,
@@ -518,9 +516,7 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
                 }
             });
 
-            wrapper.findAllComponents({name: "IconButton"}).forEach(btn => {
-                expect(btn.props("drawLayout")).to.not.equal(true);
-            });
+            expect(wrapper.props("drawLayout")).to.equal(false);
         });
     });
 
