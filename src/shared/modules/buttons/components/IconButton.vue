@@ -56,11 +56,6 @@ export default {
             type: String,
             default: null,
             required: false
-        },
-        drawLayout: {
-            type: Boolean,
-            default: null,
-            required: false
         }
     },
     emits: ["click"],
@@ -78,12 +73,12 @@ export default {
 
 <template>
     <div
-        :class="[label && !drawLayout ? 'btn-wrapper flex-column d-flex align-items-center': drawLayout ? 'btn-wrapper draw-layout flex-column d-flex' : '']"
+        :class="[label ? 'btn-wrapper flex-column d-flex align-items-center': '']"
     >
         <button
             :id="id"
             tabindex="0"
-            class="btn d-flex justify-items-center"
+            class="btn d-flex align-items-center justify-items-center mb-auto"
             type="button"
             :title="aria"
             :aria-label="aria"
@@ -112,30 +107,6 @@ export default {
 
 .btn-wrapper {
     width: 16rem;
-}
-
-.btn-wrapper.draw-layout {
-    width: 5rem;
-}
-
-.btn-wrapper.draw-layout {
-    width: 5rem;
-}
-
-.btn-wrapper.draw-layout {
-    width: 5rem;
-}
-
-.btn-wrapper.draw-layout {
-    width: 5rem;
-}
-
-.btn-wrapper.draw-layout {
-    width: 5rem;
-    > .btn {
-        width: 3.5rem;
-        height: 3.5rem;
-    }
 }
 
 .btn-wrapper > .btn-label {
