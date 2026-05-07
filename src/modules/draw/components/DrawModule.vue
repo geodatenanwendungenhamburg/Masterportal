@@ -265,4 +265,15 @@ export default {
     margin-left: 0.65rem;
 }
 
+#draw-types :deep(.btn-wrapper) {
+    width: 5rem;
+    align-items: center;
+}
+
+#draw-types :deep(.btn) {
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 1.6rem;
+}
+
 </style>
