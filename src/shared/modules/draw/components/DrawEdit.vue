@@ -292,7 +292,6 @@ export default {
          */
         regulateModify () {
             if (typeof this.setSelectedInteraction === "function") {
-                console.warn("HE, regulateModify");
                 this.setSelectedInteraction("modify");
             }
             this.removeInteraction(this.currentModifyInteraction);
@@ -349,7 +348,6 @@ export default {
             );
             this.addInteraction(this.currentModifyInteraction);
             this.currentModifyInteraction.setActive(true);
-            console.warn("YOOO", this.currentModifyInteraction);
             this.showFrame = true;
         },
 
