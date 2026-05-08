@@ -1,7 +1,66 @@
 import {expect} from "chai";
 import getCswRecords from "../../getCswRecords.js";
 
-const {buildGetRecordsXml, parseGetRecordsResponse} = getCswRecords;
+const {buildGetRecordsXml, parseGetRecordsResponse} = getCswRecords,
+    gmdNs = "http://www.isotc211.org/2005/gmd",
+    gcoNs = "http://www.isotc211.org/2005/gco";
+
+/**
+ * Builds a CSW GetRecordsResponse XML string for testing.
+ * @param {object} searchResultsAttrs - Attributes for the SearchResults element.
+ * @param {string} records - XML string of record elements.
+ * @returns {string} The XML string.
+ */
+function buildXml (searchResultsAttrs, records) {
+    const attrs = Object.entries(searchResultsAttrs).map(([k, v]) => `${k}="${v}"`).join(" ");
+
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<csw:GetRecordsResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+  <csw:SearchResults ${attrs}>
+    ${records}
+  </csw:SearchResults>
+</csw:GetRecordsResponse>`;
+}
+
+/**
+ * Builds a gmd:MD_Metadata XML record string for testing.
+ * @param {object} opts - Record options.
+ * @param {string} [opts.fileIdentifier=""] - The file identifier.
+ * @param {string} [opts.title=""] - The record title.
+ * @param {string} [opts.abstract=""] - The record abstract.
+ * @param {object|null} [opts.bbox=null] - Bounding box with west/east/south/north.
+ * @returns {string} The XML string.
+ */
+function buildRecord ({fileIdentifier = "", title = "", abstract = "", bbox = null}) {
+    const bboxXml = bbox ? `
+        <${gmdNs.split("/").pop()}:extent xmlns:gmd="${gmdNs}">
+          <gmd:EX_Extent xmlns:gmd="${gmdNs}">
+            <gmd:geographicElement>
+              <gmd:EX_GeographicBoundingBox xmlns:gmd="${gmdNs}" xmlns:gco="${gcoNs}">
+                <gmd:westBoundLongitude><gco:Decimal>${bbox.west}</gco:Decimal></gmd:westBoundLongitude>
+                <gmd:eastBoundLongitude><gco:Decimal>${bbox.east}</gco:Decimal></gmd:eastBoundLongitude>
+                <gmd:southBoundLatitude><gco:Decimal>${bbox.south}</gco:Decimal></gmd:southBoundLatitude>
+                <gmd:northBoundLatitude><gco:Decimal>${bbox.north}</gco:Decimal></gmd:northBoundLatitude>
+              </gmd:EX_GeographicBoundingBox>
+            </gmd:geographicElement>
+          </gmd:EX_Extent>
+        </gmd:extent>` : "";
+
+    return `<gmd:MD_Metadata xmlns:gmd="${gmdNs}" xmlns:gco="${gcoNs}">
+      <gmd:fileIdentifier><gco:CharacterString>${fileIdentifier}</gco:CharacterString></gmd:fileIdentifier>
+      <gmd:identificationInfo>
+        <gmd:MD_DataIdentification>
+          <gmd:citation>
+            <gmd:CI_Citation>
+              <gmd:title><gco:CharacterString>${title}</gco:CharacterString></gmd:title>
+            </gmd:CI_Citation>
+          </gmd:citation>
+          <gmd:abstract><gco:CharacterString>${abstract}</gco:CharacterString></gmd:abstract>
+          ${bboxXml}
+        </gmd:MD_DataIdentification>
+      </gmd:identificationInfo>
+    </gmd:MD_Metadata>`;
+}
 
 describe("src/shared/js/api/getCswRecords.js", () => {
     describe("buildGetRecordsXml", () => {
@@ -9,23 +68,23 @@ describe("src/shared/js/api/getCswRecords.js", () => {
             it("should build a valid CSW 2.0.2 GetRecords XML with defaults", () => {
                 const xml = buildGetRecordsXml("Hamburger Straßen");
 
-                expect(xml).to.include('xmlns:csw="http://www.opengis.net/cat/csw/2.0.2"');
-                expect(xml).to.include('xmlns:ogc="http://www.opengis.net/ogc"');
-                expect(xml).to.include('version="2.0.2"');
-                expect(xml).to.include('maxRecords="10"');
-                expect(xml).to.include('startPosition="1"');
+                expect(xml).to.include("xmlns:csw=\"http://www.opengis.net/cat/csw/2.0.2\"");
+                expect(xml).to.include("xmlns:ogc=\"http://www.opengis.net/ogc\"");
+                expect(xml).to.include("version=\"2.0.2\"");
+                expect(xml).to.include("maxRecords=\"10\"");
+                expect(xml).to.include("startPosition=\"1\"");
                 expect(xml).to.include("<csw:ElementSetName>summary</csw:ElementSetName>");
                 expect(xml).to.include("<ogc:PropertyName>AnyText</ogc:PropertyName>");
                 expect(xml).to.include("<ogc:Literal>*Hamburger Stra&#xdf;en*</ogc:Literal>");
-                expect(xml).to.include('wildCard="*"');
-                expect(xml).to.include('outputSchema="http://www.isotc211.org/2005/gmd"');
+                expect(xml).to.include("wildCard=\"*\"");
+                expect(xml).to.include("outputSchema=\"http://www.isotc211.org/2005/gmd\"");
             });
 
             it("should respect maxRecords, startPosition and elementSetName options", () => {
                 const xml = buildGetRecordsXml("test", {maxRecords: 20, startPosition: 11, elementSetName: "full"});
 
-                expect(xml).to.include('maxRecords="20"');
-                expect(xml).to.include('startPosition="11"');
+                expect(xml).to.include("maxRecords=\"20\"");
+                expect(xml).to.include("startPosition=\"11\"");
                 expect(xml).to.include("<csw:ElementSetName>full</csw:ElementSetName>");
             });
 
@@ -56,9 +115,9 @@ describe("src/shared/js/api/getCswRecords.js", () => {
             it("should build a valid CSW 3.0 GetRecords XML", () => {
                 const xml = buildGetRecordsXml("Hamburg", {version: "3.0"});
 
-                expect(xml).to.include('xmlns:csw="http://www.opengis.net/cat/csw/3.0"');
-                expect(xml).to.include('xmlns:fes="http://www.opengis.net/fes/2.0"');
-                expect(xml).to.include('version="3.0.0"');
+                expect(xml).to.include("xmlns:csw=\"http://www.opengis.net/cat/csw/3.0\"");
+                expect(xml).to.include("xmlns:fes=\"http://www.opengis.net/fes/2.0\"");
+                expect(xml).to.include("version=\"3.0.0\"");
                 expect(xml).to.include("<fes:ValueReference>anyText</fes:ValueReference>");
                 expect(xml).to.include("<fes:Literal>*Hamburg*</fes:Literal>");
             });
@@ -73,56 +132,13 @@ describe("src/shared/js/api/getCswRecords.js", () => {
         it("should fall back to CSW 2.0.2 for unknown version", () => {
             const xml = buildGetRecordsXml("test", {version: "unknown"});
 
-            expect(xml).to.include('version="2.0.2"');
+            expect(xml).to.include("version=\"2.0.2\"");
             expect(xml).to.include("<ogc:PropertyName>AnyText</ogc:PropertyName>");
             expect(xml).to.include("<ogc:Literal>*test*</ogc:Literal>");
         });
     });
 
     describe("parseGetRecordsResponse", () => {
-        const gmdNs = "http://www.isotc211.org/2005/gmd",
-            gcoNs = "http://www.isotc211.org/2005/gco",
-            buildXml = (searchResultsAttrs, records) => {
-                const attrs = Object.entries(searchResultsAttrs).map(([k, v]) => `${k}="${v}"`).join(" ");
-
-                return `<?xml version="1.0" encoding="UTF-8"?>
-<csw:GetRecordsResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
-  <csw:SearchResults ${attrs}>
-    ${records}
-  </csw:SearchResults>
-</csw:GetRecordsResponse>`;
-            },
-            buildRecord = ({fileIdentifier = "", title = "", abstract = "", bbox = null}) => {
-                const bboxXml = bbox ? `
-        <${gmdNs.split("/").pop()}:extent xmlns:gmd="${gmdNs}">
-          <gmd:EX_Extent xmlns:gmd="${gmdNs}">
-            <gmd:geographicElement>
-              <gmd:EX_GeographicBoundingBox xmlns:gmd="${gmdNs}" xmlns:gco="${gcoNs}">
-                <gmd:westBoundLongitude><gco:Decimal>${bbox.west}</gco:Decimal></gmd:westBoundLongitude>
-                <gmd:eastBoundLongitude><gco:Decimal>${bbox.east}</gco:Decimal></gmd:eastBoundLongitude>
-                <gmd:southBoundLatitude><gco:Decimal>${bbox.south}</gco:Decimal></gmd:southBoundLatitude>
-                <gmd:northBoundLatitude><gco:Decimal>${bbox.north}</gco:Decimal></gmd:northBoundLatitude>
-              </gmd:EX_GeographicBoundingBox>
-            </gmd:geographicElement>
-          </gmd:EX_Extent>
-        </gmd:extent>` : "";
-
-                return `<gmd:MD_Metadata xmlns:gmd="${gmdNs}" xmlns:gco="${gcoNs}">
-      <gmd:fileIdentifier><gco:CharacterString>${fileIdentifier}</gco:CharacterString></gmd:fileIdentifier>
-      <gmd:identificationInfo>
-        <gmd:MD_DataIdentification>
-          <gmd:citation>
-            <gmd:CI_Citation>
-              <gmd:title><gco:CharacterString>${title}</gco:CharacterString></gmd:title>
-            </gmd:CI_Citation>
-          </gmd:citation>
-          <gmd:abstract><gco:CharacterString>${abstract}</gco:CharacterString></gmd:abstract>
-          ${bboxXml}
-        </gmd:MD_DataIdentification>
-      </gmd:identificationInfo>
-    </gmd:MD_Metadata>`;
-            };
-
         it("should parse numberOfRecordsMatched and numberOfRecordsReturned correctly", () => {
             const xml = buildXml({numberOfRecordsMatched: "42", numberOfRecordsReturned: "10", nextRecord: "11"}, ""),
                 result = parseGetRecordsResponse(xml);
@@ -181,7 +197,7 @@ describe("src/shared/js/api/getCswRecords.js", () => {
         });
 
         it("should return empty result and warn when SearchResults element is missing", () => {
-            const result = parseGetRecordsResponse('<?xml version="1.0"?><root><SomethingElse/></root>');
+            const result = parseGetRecordsResponse("<?xml version=\"1.0\"?><root><SomethingElse/></root>");
 
             expect(result.records).to.deep.equal([]);
             expect(result.numberOfRecordsMatched).to.equal(0);
