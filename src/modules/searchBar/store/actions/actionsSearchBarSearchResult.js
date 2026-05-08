@@ -1,5 +1,4 @@
 import axios from "axios";
-import crs from "@masterportal/masterportalapi/src/crs.js";
 import markerHelper from "../../js/marker.js";
 import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 import WKTUtil from "@shared/js/utils/getWKTGeom.js";
