@@ -1,3 +1,4 @@
+import axios from "axios";
 import markerHelper from "../../js/marker.js";
 import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 import WKTUtil from "@shared/js/utils/getWKTGeom.js";
@@ -287,7 +288,13 @@ export default {
      * @returns {void}
      */
     showLayerInfo: async ({commit, dispatch}, {layerId, source}) => {
-        const layerConfig = await dispatch("retrieveLayerConfig", {layerId, source});
+        // For CSW records the source already carries typ + datasets needed by the
+        // LayerInformation panel. Use it directly to avoid adding a URL-less layer
+        // to the topic tree (which would crash the Cesium WMS synchronizer).
+        const isCswSource = source?.typ && Array.isArray(source?.datasets) && source.datasets.length > 0,
+            layerConfig = isCswSource
+                ? source
+                : await dispatch("retrieveLayerConfig", {layerId, source});
 
         if (layerConfig) {
             dispatch("Modules/LayerInformation/startLayerInformation", layerConfig, {root: true});
@@ -568,6 +575,227 @@ export default {
         if (state.lastPickedFeatureId) {
             remove3DFeatureHighlight(state.lastPickedFeatureId);
             commit("setLastPickedFeatureId", null);
+        }
+    },
+
+    /**
+     * Fetches the full CSW metadata record for the given fileIdentifier and adds the
+     * first detected WMS or WFS distribution link as a new layer to the topic tree.
+     * @param {Object} param.dispatch the dispatch
+     * @param {Object} payload The payload.
+     * @param {String} payload.fileIdentifier The CSW fileIdentifier (metadata UUID).
+     * @param {String} payload.cswUrl The URL of the CSW endpoint.
+     * @returns {void}
+     */
+    addLayerFromCswRecord: async ({dispatch}, {fileIdentifier, recordTitle, cswUrl}) => {
+        const WMS_PROTOCOLS = ["OGC:WMS", "WWW:LINK-1.0-http--ogc-wms"],
+            WFS_PROTOCOLS = ["OGC:WFS", "WWW:LINK-1.0-http--ogc-wfs"];
+        let responseXml;
+
+        try {
+            const response = await axios.get(cswUrl, {
+                params: {
+                    service: "CSW",
+                    request: "GetRecordById",
+                    version: "2.0.2",
+                    outputschema: "http://www.isotc211.org/2005/gmd",
+                    elementsetname: "full",
+                    id: fileIdentifier
+                }
+            });
+
+            responseXml = response.request?.responseXML || new DOMParser().parseFromString(response.data, "application/xml");
+        }
+        catch (error) {
+            console.warn("addLayerFromCswRecord: Failed to fetch CSW record.", error);
+            dispatch("Alerting/addSingleAlert", {
+                category: "error",
+                content: i18next.t("common:modules.searchBar.csw.noLayerLink")
+            }, {root: true});
+            return;
+        }
+
+        const gmdNs = "http://www.isotc211.org/2005/gmd",
+            gcoNs = "http://www.isotc211.org/2005/gco",
+            onlineResources = responseXml.getElementsByTagNameNS(gmdNs, "CI_OnlineResource");
+        let layerAdded = false;
+
+        for (let i = 0; i < onlineResources.length; i++) {
+            const resource = onlineResources[i],
+                protocolEl = resource.getElementsByTagNameNS(gmdNs, "protocol")[0]
+                    ?.getElementsByTagNameNS(gcoNs, "CharacterString")[0],
+                protocol = protocolEl?.textContent?.trim() || "",
+                urlEl = resource.getElementsByTagNameNS(gmdNs, "linkage")[0]
+                    ?.getElementsByTagNameNS(gmdNs, "URL")[0],
+                url = urlEl?.textContent?.trim() || "",
+                nameEl = resource.getElementsByTagNameNS(gmdNs, "name")[0]
+                    ?.getElementsByTagNameNS(gcoNs, "CharacterString")[0],
+                layerName = nameEl?.textContent?.trim() || "";
+
+            if (!url) {
+                continue;
+            }
+
+            let typ = null;
+
+            if (WMS_PROTOCOLS.some(p => protocol.toUpperCase().includes(p.toUpperCase()))) {
+                typ = "WMS";
+            }
+            else if (WFS_PROTOCOLS.some(p => protocol.toUpperCase().includes(p.toUpperCase()))) {
+                typ = "WFS";
+            }
+            else if (!protocol) {
+                const upperUrl = url.toUpperCase();
+
+                if (upperUrl.includes("SERVICE=WMS") || upperUrl.includes("/WMS")) {
+                    typ = "WMS";
+                }
+                else if (upperUrl.includes("SERVICE=WFS") || upperUrl.includes("/WFS")) {
+                    typ = "WFS";
+                }
+            }
+
+            if (typ) {
+                const urlQuery = url.includes("?") ? url.split("?")[1] : "",
+                    urlParams = new URLSearchParams(urlQuery),
+                    urlLayerParam = urlParams.get("LAYERS") || urlParams.get("layers") || urlParams.get("Layers") || "",
+                    baseUrl = url.split("?")[0];
+                // CI_OnlineResource/name is sometimes a human-readable description
+                // (e.g. "WMS GetCapabilities Anfrage, welche...") rather than a
+                // technical WMS layer identifier. Only trust it if it contains no
+                // whitespace, which is a reliable indicator of a real layer name.
+                const technicalLayerName = layerName && !layerName.includes(" ") ? layerName : "";
+                let effectiveLayerName = technicalLayerName || urlLayerParam,
+                    wfsVersion = "1.1.0",
+                    wfsOutputFormat = "XML",
+                    wfsFeatureNS = "";
+
+                if (typ === "WMS" && !effectiveLayerName) {
+                    try {
+                        const capResponse = await axios.get(baseUrl, {
+                            params: {SERVICE: "WMS", REQUEST: "GetCapabilities"}
+                        });
+                        const capXml = capResponse.request?.responseXML
+                            || new DOMParser().parseFromString(capResponse.data, "application/xml");
+
+                        effectiveLayerName = Array.from(capXml.getElementsByTagName("Layer"))
+                            .map(el => {
+                                const nameEl2 = el.children && Array.from(el.children).find(c => c.localName === "Name");
+
+                                return nameEl2?.textContent?.trim() || "";
+                            })
+                            .filter(n => n.length > 0)
+                            .join(",");
+                    }
+                    catch (capError) {
+                        console.warn("addLayerFromCswRecord: WMS GetCapabilities failed, layers will be empty.", capError);
+                    }
+                }
+                else if (typ === "WFS") {
+                    // WFS: featureType must be set, fetch GetCapabilities to discover
+                    // FeatureType names and version. deegree WFS 2.0 requires VERSION=2.0.0
+                    // to return a populated FeatureTypeList.
+                    for (const ver of ["2.0.0", "1.1.0", "1.0.0"]) {
+                        try {
+                            const capResponse = await axios.get(baseUrl, {
+                                params: {SERVICE: "WFS", REQUEST: "GetCapabilities", VERSION: ver}
+                            });
+                            const capXml = capResponse.request?.responseXML
+                                || new DOMParser().parseFromString(capResponse.data, "application/xml");
+
+                            // Read declared version from root element attribute
+                            const rootEl = capXml.documentElement;
+                            const declaredVersion = rootEl?.getAttribute("version") || ver;
+
+                            // Collect first FeatureType — name may carry a namespace prefix
+                            // e.g. <Name xmlns:plu="http://...">plu:OfficialDocumentation</Name>
+                            const firstFt = Array.from(capXml.getElementsByTagName("FeatureType"))
+                                .find(ft => {
+                                    const nameEl2 = Array.from(ft.children).find(c => c.localName === "Name");
+
+                                    return nameEl2?.textContent?.trim().length > 0;
+                                });
+
+                            if (firstFt) {
+                                const nameEl2 = Array.from(firstFt.children).find(c => c.localName === "Name");
+                                const fullName = nameEl2.textContent.trim();
+
+                                effectiveLayerName = fullName;
+                                wfsVersion = declaredVersion;
+
+                                // Resolve featureNS from the namespace prefix on the Name element.
+                                // e.g. <Name xmlns:plu="http://inspire.ec.europa.eu/schemas/plu/4.0">plu:OfficialDocumentation</Name>
+                                // → prefix="plu", featureNS="http://inspire.ec.europa.eu/schemas/plu/4.0"
+                                const colonIdx = fullName.indexOf(":");
+
+                                // Resolve featureNS from prefix; keep effectiveLayerName as-is (e.g. plu:OfficialDocumentation)
+                                // so masterportalapi receives the full prefixed name it expects.
+                                if (colonIdx !== -1) {
+                                    const prefix = fullName.slice(0, colonIdx),
+                                        resolvedNs = nameEl2.lookupNamespaceURI(prefix);
+
+                                    wfsFeatureNS = resolvedNs || wfsFeatureNS;
+                                }
+
+                                // Detect the best supported output format
+                                const formats = Array.from(capXml.getElementsByTagName("Format"))
+                                    .map(f => f.textContent?.trim())
+                                    .filter(Boolean);
+                                const preferredFormats = [
+                                    "application/gml+xml; version=3.2",
+                                    "text/xml; subtype=gml/3.2.1",
+                                    "text/xml; subtype=gml/3.1.1",
+                                    "GML32",
+                                    "GML3",
+                                    "GML2",
+                                    "XML"
+                                ];
+
+                                wfsOutputFormat = preferredFormats.find(f => formats.some(cf => cf.toLowerCase() === f.toLowerCase()))
+                                    || formats[0]
+                                    || wfsOutputFormat;
+                                break;
+                            }
+                        }
+                        catch (capError) {
+                            // Try next version
+                        }
+                    }
+                }
+
+                const layerId = `csw-${fileIdentifier}-${i}`,
+                    layerSource = {
+                        id: layerId,
+                        name: recordTitle || effectiveLayerName || fileIdentifier,
+                        url: baseUrl,
+                        typ: typ,
+                        metaID: fileIdentifier,
+                        cswUrl: cswUrl
+                    };
+
+                if (typ === "WMS") {
+                    layerSource.layers = effectiveLayerName;
+                }
+                else if (typ === "WFS") {
+                    layerSource.featureType = effectiveLayerName;
+                    layerSource.version = wfsVersion;
+                    layerSource.outputFormat = wfsOutputFormat;
+                    if (wfsFeatureNS) {
+                        layerSource.featureNS = wfsFeatureNS;
+                    }
+                }
+
+                dispatch("addLayerToTopicTree", {layerId, source: layerSource, showInLayerTree: true, visibility: true});
+                layerAdded = true;
+                break;
+            }
+        }
+
+        if (!layerAdded) {
+            dispatch("Alerting/addSingleAlert", {
+                category: "info",
+                content: i18next.t("common:modules.searchBar.csw.noLayerLink")
+            }, {root: true});
         }
     }
 };
