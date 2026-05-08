@@ -1275,6 +1275,7 @@ Definitions of the search interfaces.
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
 |bkg|no|**[bkg](#portalconfigmenusearchbarsearchinterfacesbkg)**||BKG search service configuration.|false|
+|csw|no|**[csw](#portalconfigmenusearchbarsearchinterfacescsw)**||CSW (Catalogue Service for the Web) metadata search configuration.|false|
 |elasticSearch|no|**[elasticSearch](#portalconfigmenusearchbarsearchinterfaceselasticsearch)**||Elastic search service configuration.|false|
 |gazetteer|no|**[gazetteer](#portalconfigmenusearchbarsearchinterfacesgazetteer)**||Configuration of the Gazetteer search service.|false|
 |komootPhoton|no|**[komootPhoton](#portalconfigmenusearchbarsearchinterfaceskomootphoton)**||Komoot Photon search service configuration.|false|
@@ -1603,6 +1604,55 @@ OpenStreetMap search for city, street, and house number. Only executed on clicki
     "classes": "place,highway,building,shop,historic,leisure,city,county"
 }
 ```
+
+***
+
+###### portalConfig.menu.searchBar.searchInterfaces.csw {data-toc-label='CSW'}
+
+Searches a CSW (Catalogue Service for the Web) endpoint using an ISO 19139 `GetRecords` request with an AnyText full-text filter. Multiple CSW endpoints can be configured via the `definitions` array. The result list shows dataset titles; clicking a result opens the layer information panel, zooms to the dataset extent, or adds the first detected WMS/WFS distribution link as a new layer.
+
+> **Note:** If the CSW endpoint does not send CORS headers, a proxy must be configured. See [proxy configuration](../../User/Proxies/proxy.md).
+
+|Name|Required|Type|Default|Description|Expert|
+|----|--------|----|-------|-----------|------|
+|definitions|yes|**[definition](#portalconfigmenusearchbarsearchinterfacescswdefinition)** *[]||List of CSW endpoint definitions to search.|false|
+|hitTemplate|no|String|`"default"`|Template for rendering result list items.|false|
+|resultEvents|no|**[resultEvents](#portalconfigmenusearchbarsearchinterfacesresultevents)**|`{"onClick": ["showLayerInfo", "zoomToResult"], "buttons": ["addLayerFromCswRecord"]}`|Actions executed when interacting with a result list item.|false|
+|searchInterfaceId|no|String|`"csw"`|Unique identifier for this search interface instance.|false|
+|type|yes|String|`"csw"`|Search interface type.|false|
+
+**Example (GDI Baden-Württemberg catalog)**
+
+```json
+{
+    "type": "csw",
+    "searchInterfaceId": "csw_bw",
+    "definitions": [
+        {
+            "url": "https://metadaten.geoportal-bw.de/geonetwork/srv/ger/csw",
+            "version": "2.0.2",
+            "maxRecords": 10
+        }
+    ],
+    "resultEvents": {
+        "onClick": ["showLayerInfo", "zoomToResult"],
+        "buttons": ["addLayerFromCswRecord"]
+    }
+}
+```
+
+***
+
+###### portalConfig.menu.searchBar.searchInterfaces.csw.definition {data-toc-label='Definition'}
+
+Configuration of a single CSW endpoint within the `definitions` array.
+
+|Name|Required|Type|Default|Description|Expert|
+|----|--------|----|-------|-----------|------|
+|maxRecords|no|Integer|`10`|Maximum number of records returned per request.|false|
+|typeName|no|String|`"gmd:MD_Metadata"`|Type name used in the CSW query (ISO 19139 default).|false|
+|url|yes|String||URL of the CSW endpoint.|false|
+|version|no|String|`"2.0.2"`|CSW version. Supported values: `"2.0.2"` (OGC Filter 1.1) and `"3.0"` (FES 2.0).|false|
 
 ***
 
