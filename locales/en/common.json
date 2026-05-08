@@ -1205,6 +1205,11 @@
       "label": "Scale",
       "name": "Scale switcher"
     },
+    "scaleSwitcherTutorial": {
+      "description": "Change the scale without scrolling",
+      "label": "Scale",
+      "name": "Scale switcher - Tutorial"
+    },
     "searchBar": {
       "locationFinder": {
         "errorMsg": "Searching with LocationFinder failed",

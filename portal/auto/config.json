@@ -359,6 +359,9 @@
             "type": "scaleSwitcher"
           },
           {
+            "type": "scaleSwitcherTutorial"
+          },
+          {
             "type": "coordToolkit",
             "heightLayerId": "19173",
             "heightElementName": "value_0",

@@ -1204,6 +1204,11 @@
       "label": "Maßstap",
       "name": "Maßstap ümstellen"
     },
+    "scaleSwitcherTutorial": {
+      "description": "Stell den Maßstap üm, ganz ahn to scrollen",
+      "label": "Maßstap",
+      "name": "Maßstap ümstellen - Tutorial"
+    },
     "searchBar": {
       "locationFinder": {
         "errorMsg": "Söök över LocationFinder hett nich klappt",

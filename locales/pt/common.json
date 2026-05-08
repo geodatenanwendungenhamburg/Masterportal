@@ -1206,6 +1206,11 @@
       "label": "Escala",
       "name": "Mudar escala"
     },
+    "scaleSwitcherTutorial": {
+      "description": "Altere a escala sem precisar de fazer scroll",
+      "label": "Escala",
+      "name": "Mudar escala - Tutorial"
+    },
     "searchBar": {
       "locationFinder": {
         "errorMsg": "A pesquisa através do LocationFinder falhou",

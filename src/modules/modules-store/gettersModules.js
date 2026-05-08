@@ -38,6 +38,7 @@ const getters = {
             routing: defineAsyncComponent(() => import("../routing/components/RoutingTemplate.vue")),
             searchBar: defineAsyncComponent(() => import("../searchBar/components/SearchBar.vue")),
             scaleSwitcher: defineAsyncComponent(() => import("../scaleSwitcher/components/ScaleSwitcher.vue")),
+            scaleSwitcherTutorial: defineAsyncComponent(() => import("../scaleSwitcherTutorial/components/ScaleSwitcherTutorial.vue")),
             selectFeatures: defineAsyncComponent(() => import("../selectFeatures/components/SelectFeatures.vue")),
             shadow: defineAsyncComponent(() => import("../shadow/components/ShadowTool.vue")),
             shareView: defineAsyncComponent(() => import("../shareView/components/ShareView.vue")),

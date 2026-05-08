@@ -1204,6 +1204,11 @@
       "label": "Масштаб",
       "name": "Переключить масштаб"
     },
+    "scaleSwitcherTutorial": {
+      "description": "Изменяйте масштаб без прокрутки",
+      "label": "Масштаб",
+      "name": "Переключить масштаб - Туториал"
+    },
     "searchBar": {
       "locationFinder": {
         "errorMsg": "Поиск через LocationFinder завершился ошибкой",

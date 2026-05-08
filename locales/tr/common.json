@@ -1204,6 +1204,11 @@
       "label": "Ölçek",
       "name": "Ölçeği değiştir"
     },
+    "scaleSwitcherTutorial": {
+      "description": "Kaydırma yapmadan ölçeği değiştirin",
+      "label": "Ölçek",
+      "name": "Ölçeği değiştir - Öğretici"
+    },
     "searchBar": {
       "locationFinder": {
         "errorMsg": "LocationFinder ile arama başarısız oldu",

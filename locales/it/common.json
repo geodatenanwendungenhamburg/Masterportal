@@ -1204,6 +1204,11 @@
       "label": "Scala",
       "name": "Cambia scala"
     },
+    "scaleSwitcherTutorial": {
+      "description": "Cambia la scala senza dover scorrere",
+      "label": "Scala",
+      "name": "Cambia scala - Tutorial"
+    },
     "searchBar": {
       "locationFinder": {
         "errorMsg": "Suche per LocationFinder fehlgeschlagen",

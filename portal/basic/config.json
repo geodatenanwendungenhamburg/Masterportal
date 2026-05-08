@@ -201,6 +201,9 @@
             "type": "scaleSwitcher"
           },
           {
+            "type": "scaleSwitcherTutorial"
+          },
+          {
             "type": "shareView"
           },
           {

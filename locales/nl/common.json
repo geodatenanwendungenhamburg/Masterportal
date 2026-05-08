@@ -1031,6 +1031,11 @@
       "label": "schaal",
       "name": "Schaal wisselen"
     },
+    "scaleSwitcherTutorial": {
+      "description": "Wijzig de schaal zonder te scrollen",
+      "label": "schaal",
+      "name": "Schaal wisselen - Tutorial"
+    },
     "searchBar": {
       "locationFinder": {
         "errorMsg": "Zoeken via LocationFinder mislukt",
