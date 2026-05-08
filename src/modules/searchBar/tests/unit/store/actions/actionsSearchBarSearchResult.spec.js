@@ -1,5 +1,6 @@
 import sinon from "sinon";
 import {expect} from "chai";
+import axios from "axios";
 import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
 import WKTUtil from "@shared/js/utils/getWKTGeom.js";
 import wmsGFIUtil from "@shared/js/utils/getWmsFeaturesByMimeType.js";
@@ -658,6 +659,162 @@ describe("src/modules/searchBar/store/actions/actionsSearchBarSearchResult.spec.
 
             expect(mockDispatch.notCalled).to.be.true;
             expect(mockCommit.notCalled).to.be.true;
+        });
+    });
+
+    describe("addLayerFromCswRecord", () => {
+        const fileIdentifier = "test-uuid-123",
+            cswUrl = "https://example.com/csw",
+            recordTitle = "Test Layer Title",
+            gmdNs = "http://www.isotc211.org/2005/gmd",
+            gcoNs = "http://www.isotc211.org/2005/gco";
+
+        let axiosStub;
+
+        beforeEach(() => {
+            axiosStub = sinon.stub(axios, "get");
+        });
+
+        afterEach(() => {
+            sinon.restore();
+        });
+
+        it("should dispatch addLayerToTopicTree with WMS source when OGC:WMS protocol is found", async () => {
+            const wmsXml = `<?xml version="1.0"?>
+<csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+  <gmd:MD_Metadata xmlns:gmd="${gmdNs}" xmlns:gco="${gcoNs}">
+    <gmd:distributionInfo>
+      <gmd:MD_Distribution>
+        <gmd:transferOptions>
+          <gmd:MD_DigitalTransferOptions>
+            <gmd:onLine>
+              <gmd:CI_OnlineResource>
+                <gmd:linkage><gmd:URL>https://wms.example.com/service</gmd:URL></gmd:linkage>
+                <gmd:protocol><gco:CharacterString>OGC:WMS</gco:CharacterString></gmd:protocol>
+                <gmd:name><gco:CharacterString>layer_name</gco:CharacterString></gmd:name>
+              </gmd:CI_OnlineResource>
+            </gmd:onLine>
+          </gmd:MD_DigitalTransferOptions>
+        </gmd:transferOptions>
+      </gmd:MD_Distribution>
+    </gmd:distributionInfo>
+  </gmd:MD_Metadata>
+</csw:GetRecordByIdResponse>`,
+                domDoc = new DOMParser().parseFromString(wmsXml, "application/xml");
+
+            axiosStub.resolves({request: {responseXML: domDoc}, data: wmsXml});
+
+            await actions.addLayerFromCswRecord({dispatch}, {fileIdentifier, recordTitle, cswUrl});
+
+            expect(dispatch.calledWith("addLayerToTopicTree")).to.be.true;
+            const addCall = dispatch.getCalls().find(c => c.args[0] === "addLayerToTopicTree");
+
+            expect(addCall.args[1].source.typ).to.equal("WMS");
+            expect(addCall.args[1].source.url).to.equal("https://wms.example.com/service");
+            expect(addCall.args[1].source.metaID).to.equal(fileIdentifier);
+            expect(addCall.args[1].showInLayerTree).to.be.true;
+            expect(addCall.args[1].visibility).to.be.true;
+        });
+
+        it("should dispatch addLayerToTopicTree with WFS source when OGC:WFS protocol is found", async () => {
+            const wfsXml = `<?xml version="1.0"?>
+<csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+  <gmd:MD_Metadata xmlns:gmd="${gmdNs}" xmlns:gco="${gcoNs}">
+    <gmd:distributionInfo>
+      <gmd:MD_Distribution>
+        <gmd:transferOptions>
+          <gmd:MD_DigitalTransferOptions>
+            <gmd:onLine>
+              <gmd:CI_OnlineResource>
+                <gmd:linkage><gmd:URL>https://wfs.example.com/service</gmd:URL></gmd:linkage>
+                <gmd:protocol><gco:CharacterString>OGC:WFS</gco:CharacterString></gmd:protocol>
+                <gmd:name><gco:CharacterString>featureType</gco:CharacterString></gmd:name>
+              </gmd:CI_OnlineResource>
+            </gmd:onLine>
+          </gmd:MD_DigitalTransferOptions>
+        </gmd:transferOptions>
+      </gmd:MD_Distribution>
+    </gmd:distributionInfo>
+  </gmd:MD_Metadata>
+</csw:GetRecordByIdResponse>`,
+                domDoc = new DOMParser().parseFromString(wfsXml, "application/xml");
+
+            axiosStub.resolves({request: {responseXML: domDoc}, data: wfsXml});
+
+            await actions.addLayerFromCswRecord({dispatch}, {fileIdentifier, recordTitle, cswUrl});
+
+            const addCall = dispatch.getCalls().find(c => c.args[0] === "addLayerToTopicTree");
+
+            expect(addCall).to.exist;
+            expect(addCall.args[1].source.typ).to.equal("WFS");
+            expect(addCall.args[1].showInLayerTree).to.be.true;
+            expect(addCall.args[1].visibility).to.be.true;
+        });
+
+        it("should use recordTitle as layer name when CI_OnlineResource name element is empty", async () => {
+            const noNameXml = `<?xml version="1.0"?>
+<csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+  <gmd:MD_Metadata xmlns:gmd="${gmdNs}" xmlns:gco="${gcoNs}">
+    <gmd:distributionInfo>
+      <gmd:MD_Distribution>
+        <gmd:transferOptions>
+          <gmd:MD_DigitalTransferOptions>
+            <gmd:onLine>
+              <gmd:CI_OnlineResource>
+                <gmd:linkage><gmd:URL>https://wms.example.com/service</gmd:URL></gmd:linkage>
+                <gmd:protocol><gco:CharacterString>OGC:WMS</gco:CharacterString></gmd:protocol>
+              </gmd:CI_OnlineResource>
+            </gmd:onLine>
+          </gmd:MD_DigitalTransferOptions>
+        </gmd:transferOptions>
+      </gmd:MD_Distribution>
+    </gmd:distributionInfo>
+  </gmd:MD_Metadata>
+</csw:GetRecordByIdResponse>`,
+                domDoc = new DOMParser().parseFromString(noNameXml, "application/xml");
+
+            axiosStub.resolves({request: {responseXML: domDoc}, data: noNameXml});
+
+            await actions.addLayerFromCswRecord({dispatch}, {fileIdentifier, recordTitle, cswUrl});
+
+            const addCall = dispatch.getCalls().find(c => c.args[0] === "addLayerToTopicTree");
+
+            expect(addCall).to.exist;
+            expect(addCall.args[1].source.name).to.equal(recordTitle);
+        });
+
+        it("should dispatch info alert when no WMS or WFS link is found", async () => {
+            const noLinkXml = `<?xml version="1.0"?>
+<csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+  <gmd:MD_Metadata xmlns:gmd="${gmdNs}" xmlns:gco="${gcoNs}">
+  </gmd:MD_Metadata>
+</csw:GetRecordByIdResponse>`,
+                domDoc = new DOMParser().parseFromString(noLinkXml, "application/xml");
+
+            axiosStub.resolves({request: {responseXML: domDoc}, data: noLinkXml});
+
+            await actions.addLayerFromCswRecord({dispatch}, {fileIdentifier, recordTitle, cswUrl});
+
+            const alertCall = dispatch.getCalls().find(c => c.args[0] === "Alerting/addSingleAlert");
+
+            expect(alertCall).to.exist;
+            expect(alertCall.args[1].category).to.equal("info");
+        });
+
+        it("should warn and dispatch error alert when axios request fails", async () => {
+            const warnSpy = sinon.spy(console, "warn");
+
+            axiosStub.rejects(new Error("Network Error"));
+
+            await actions.addLayerFromCswRecord({dispatch}, {fileIdentifier, recordTitle, cswUrl});
+
+            expect(warnSpy.calledOnce).to.be.true;
+            expect(warnSpy.firstCall.args[0]).to.include("addLayerFromCswRecord");
+
+            const alertCall = dispatch.getCalls().find(c => c.args[0] === "Alerting/addSingleAlert");
+
+            expect(alertCall).to.exist;
+            expect(alertCall.args[1].category).to.equal("error");
         });
     });
 });
