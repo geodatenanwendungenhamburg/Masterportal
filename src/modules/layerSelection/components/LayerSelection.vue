@@ -31,7 +31,8 @@ export default {
             selectAllConfigs: [],
             activeCategory: null,
             deactivateShowAllCheckbox: false,
-            rootFolderCount: 0
+            rootFolderCount: 0,
+            rootElementCount: 0
         };
     },
     computed: {
@@ -89,10 +90,12 @@ export default {
             handler (newVal) {
                 if (newVal && newVal[treeSubjectsKey] && Array.isArray(newVal[treeSubjectsKey].elements)) {
                     const rootLayerConfig = newVal[treeSubjectsKey].elements,
-                        currentFolderCount = rootLayerConfig.filter(conf => conf.type === "folder").length;
+                        currentFolderCount = rootLayerConfig.filter(conf => conf.type === "folder").length,
+                        currentElementCount = rootLayerConfig.length;
 
-                    if (currentFolderCount !== this.rootFolderCount) {
+                    if (currentFolderCount !== this.rootFolderCount || currentElementCount !== this.rootElementCount) {
                         this.rootFolderCount = currentFolderCount;
+                        this.rootElementCount = currentElementCount;
                         let updatedSubjectDataLayerConfs = rootLayerConfig;
 
                         if (this.lastFolderNames.length > 0) {
@@ -136,6 +139,7 @@ export default {
             const rootFolders = this.layerConfig[treeSubjectsKey].elements.filter(conf => conf.type === "folder");
 
             this.rootFolderCount = rootFolders.length;
+            this.rootElementCount = this.layerConfig[treeSubjectsKey].elements.length;
             this.areFoldersSelectable = Boolean(rootFolders.find(rootFolder => rootFolder.isFolderSelectable));
         }
         this.$nextTick(() => {
