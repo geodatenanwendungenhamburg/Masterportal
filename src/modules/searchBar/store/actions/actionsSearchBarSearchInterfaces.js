@@ -3,6 +3,7 @@
  * @module modules/searchBar/store/actions/actionsSearchBarSearchInterfaces
  */
 import SearchInterfaceBkg from "../../searchInterfaces/searchInterfaceBkg.js";
+import SearchInterfaceCSW from "../../searchInterfaces/searchInterfaceCSW.js";
 import SearchInterfaceElasticSearch from "../../searchInterfaces/searchInterfaceElasticSearch.js";
 import SearchInterfaceGazetteer from "../../searchInterfaces/searchInterfaceGazetteer.js";
 import SearchInterfaceKomootPhoton from "../../searchInterfaces/searchInterfaceKomootPhoton.js";
@@ -24,6 +25,7 @@ export default {
     instantiateSearchInterfaces: ({commit, state}, searchInterfaceAddons = []) => {
         const searchInterfacesMapper = {
             bkg: SearchInterfaceBkg,
+            csw: SearchInterfaceCSW,
             elasticSearch: SearchInterfaceElasticSearch,
             gazetteer: SearchInterfaceGazetteer,
             komootPhoton: SearchInterfaceKomootPhoton,
