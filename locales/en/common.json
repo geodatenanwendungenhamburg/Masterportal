@@ -1247,7 +1247,8 @@
         "zoomToResult": "Zoom to result",
         "startRouting": "Start route",
         "showInTree": "Show topic in folder",
-        "showLayerInfo": "Information and legend"
+        "showLayerInfo": "Information and legend",
+        "addLayerFromCswRecord": "Add layer"
       },
       "showAllResults": "Show all results",
       "searchResults": "search results",
@@ -1267,7 +1268,11 @@
         "street": "street",
         "subject": "subject (external topics)",
         "topic": "issues & topics",
+        "csw": "CSW Metadata",
         "topicBaselayer": "Theme (baselayer)"
+      },
+      "csw": {
+        "noLayerLink": "No WMS or WFS link found in the metadata."
       },
       "specialWFS": {
         "ongoing": "in process",
