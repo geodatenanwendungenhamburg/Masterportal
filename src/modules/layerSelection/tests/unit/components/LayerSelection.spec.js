@@ -609,7 +609,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
                 }
             });
 
-            await wrapper.setData({rootFolderCount: 1});
+            await wrapper.setData({rootFolderCount: 1, rootElementCount: 2});
             commitSpy.resetHistory();
             provideSelectAllPropsSpy.resetHistory();
             wrapper.vm.$options.watch.layerConfig.handler.call(wrapper.vm, newConfig);
