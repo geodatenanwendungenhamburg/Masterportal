@@ -14,7 +14,8 @@ describe("src/core/menu/navigation/components/MenuNavigation.vue", () => {
         componentName,
         component,
         previousNavigationEntryText,
-        showHeaderIcon;
+        showHeaderIcon,
+        setSearchInputSpy;
 
     beforeEach(() => {
         side = "mainMenu";
@@ -31,6 +32,7 @@ describe("src/core/menu/navigation/components/MenuNavigation.vue", () => {
             secondaryMenu: {type: "secondaryMenu"}
         };
         navigateBackSpy = sinon.spy();
+        setSearchInputSpy = sinon.spy();
         showHeaderIcon = {
             mainMenu: false,
             secondaryMenu: false
@@ -48,6 +50,17 @@ describe("src/core/menu/navigation/components/MenuNavigation.vue", () => {
                     },
                     actions: {
                         navigateBack: navigateBackSpy
+                    }
+                },
+                Modules: {
+                    namespaced: true,
+                    modules: {
+                        SearchBar: {
+                            namespaced: true,
+                            mutations: {
+                                setSearchInput: setSearchInputSpy
+                            }
+                        }
                     }
                 }
             },
@@ -190,5 +203,19 @@ describe("src/core/menu/navigation/components/MenuNavigation.vue", () => {
             }, propsData: {side}});
 
         expect(wrapper.find("#mp-menu-navigation-secondaryMenu > .mp-menu-navigation-moduletitle > i").exists()).to.be.false;
+    });
+
+    it("clears search input when navigating back", async () => {
+        wrapper = mount(MenuNavigation, {
+            global: {
+                plugins: [store]
+            },
+            propsData: {side}
+        });
+        const navigation = wrapper.find("#mp-navigation-mainMenu");
+
+        await navigation.trigger("click");
+        expect(setSearchInputSpy.calledOnce).to.be.true;
+        expect(setSearchInputSpy.firstCall.args[1]).to.equals("");
     });
 });

@@ -43,7 +43,7 @@
 
 ### Fixed
 - WMS-Time: The `dimensionName` attribute is now being processed correctly again, so queries for individual dimensions are working again.
-
+- Issue \#1603: The search field is now reset when navigating back to the main menu from the topic search.
 ---
 
 ## 2026-05-06 v3.22.0

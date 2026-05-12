@@ -1,5 +1,5 @@
 <script>
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 
 /**
  * Menu Navigation
@@ -42,7 +42,14 @@ export default {
         }
     },
     methods: {
-        ...mapActions("Menu", ["navigateBack", "resetMenu"])
+        ...mapActions("Menu", ["navigateBack", "resetMenu"]),
+        ...mapMutations("Modules/SearchBar", ["setSearchInput"]),
+
+        handleNavigateBack () {
+            this.setSearchInput("");
+            this.navigateBack(this.side);
+        }
+
     }
 };
 </script>
@@ -59,8 +66,8 @@ export default {
                 :id="'mp-navigation-' + side"
                 class="pt-2 mp-menu-navigation-link"
                 href="#"
-                @click.prevent="navigateBack(side)"
-                @keypress="navigateBack(side)"
+                @click.prevent="handleNavigateBack"
+                @keypress="handleNavigateBack"
             >
                 <h6 class="mp-menu-navigation-link-text mb-1"><p class="bi-chevron-left me-2" />{{ previousNavigation }}</h6>
             </a>
