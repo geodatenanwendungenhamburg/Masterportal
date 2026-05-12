@@ -132,6 +132,12 @@ export default {
             type: Boolean,
             default: false,
             required: false
+        },
+        buttonVariant: {
+            type: String,
+            default () {
+                return "btn-primary";
+            }
         }
     },
     emits: ["drawstart", "drawend", "start-drawing", "stop-drawing", "circle-radius"],
@@ -459,7 +465,7 @@ export default {
         :key="drawType"
         :aria="getDrawTypeName(drawType)"
         :class-array="[
-            'btn-secondary',
+            buttonVariant,
             'icon-button-size',
             $attrs,
             selectedDrawType === drawType || selectedDrawTypeMain === drawType ? 'active': ''
