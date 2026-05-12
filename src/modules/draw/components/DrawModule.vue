@@ -150,6 +150,7 @@ export default {
                     :should-emit-events="false"
                     :text-labels="true"
                     :draw-layout="true"
+                    button-variant="btn-secondary"
                 />
             </div>
             <LayoutFrame
@@ -176,6 +177,7 @@ export default {
                         :should-emit-events="false"
                         :text-labels="true"
                         :draw-layout="true"
+                        button-variant="btn-secondary"
                     />
                     <DrawTypes
                         v-else-if="selectedDrawTypeMain === 'symbols'"
@@ -189,6 +191,7 @@ export default {
                         :should-emit-events="false"
                         :text-labels="true"
                         :draw-layout="true"
+                        button-variant="btn-secondary"
                     />
                 </div>
             </LayoutFrame>
@@ -224,6 +227,7 @@ export default {
                     :selected-draw-type="selectedDrawType"
                     :set-current-layout="setCurrentLayout"
                     :stroke-range="strokeRange"
+                    button-variant="btn-secondary"
                 />
                 <DrawLayout
                     v-if="selectedDrawType === 'doubleCircle'"
@@ -233,6 +237,7 @@ export default {
                     :selected-draw-type="selectedDrawType"
                     :set-current-layout="setCurrentLayoutOuterCircle"
                     :stroke-range="strokeRange"
+                    button-variant="btn-secondary"
                 />
             </div>
         </LayoutFrame>
