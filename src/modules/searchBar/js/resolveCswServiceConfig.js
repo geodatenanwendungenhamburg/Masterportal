@@ -17,7 +17,16 @@ export default async function resolveCswServiceConfig (parsedResource) {
 
     const {protocol, url, layerName, urlLayerParam, baseUrl} = parsedResource,
         typ = detectServiceType(protocol, url),
-        technicalLayerName = layerName && !layerName.includes(" ") ? layerName : "";
+        // CI_OnlineResource/name is sometimes a human-readable label rather than a technical
+        // layer identifier. Reject it when it contains whitespace, parentheses, or matches
+        // a known OGC operation name (e.g. "(GetCapabilities)" — InGrid/metaver pattern).
+        OGC_OPERATIONS = ["getcapabilities", "getmap", "getfeature", "gettile", "getlegendgraphic", "getfeatureinfo"],
+        technicalLayerName = layerName
+            && !layerName.includes(" ")
+            && !layerName.includes("(")
+            && !layerName.includes(")")
+            && !OGC_OPERATIONS.includes(layerName.toLowerCase())
+            ? layerName : "";
     let effectiveLayerName = technicalLayerName || urlLayerParam,
         wfsVersion = "1.1.0",
         wfsOutputFormat = "XML",
