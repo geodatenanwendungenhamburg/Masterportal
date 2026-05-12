@@ -404,4 +404,10 @@ input {
     width: 5rem;
     height: 7rem;
 }
+
+.btn-primary.active {
+    background-color: $dark_blue;
+    border-color: $dark_blue;
+    color: $white;
+}
 </style>

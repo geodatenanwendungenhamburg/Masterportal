@@ -285,6 +285,7 @@ export default {
                 tooltipOverlay.setPosition(coordinate);
             });
 
+            this.setSelectedSymbol(symbol || null);
             if (this.currentDrawInteraction !== null) {
                 this.currentDrawInteraction.on("drawstart", (evt) => {
                     this.$emit("drawstart", evt);
@@ -349,7 +350,6 @@ export default {
                         }));
                     }
                 });
-                this.setSelectedSymbol(symbol || null);
                 this.currentDrawInteraction.on("drawend", (evt) => {
                     tooltipElement.style.display = "none";
                     this.$emit("drawend", evt);
@@ -492,5 +492,13 @@ div.draw-tooltip {
     pointer-events: none;
 }
 
+</style>
+
+<style lang="scss" scoped>
+:deep(.btn-primary.active) {
+    background-color: $dark_blue;
+    border-color: $dark_blue;
+    color: $white;
+}
 </style>
 
