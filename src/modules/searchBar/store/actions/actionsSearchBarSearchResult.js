@@ -661,10 +661,17 @@ export default {
                     urlLayerParam = urlParams.get("LAYERS") || urlParams.get("layers") || urlParams.get("Layers") || "",
                     baseUrl = url.split("?")[0];
                 // CI_OnlineResource/name is sometimes a human-readable description
-                // (e.g. "WMS GetCapabilities Anfrage, welche...") rather than a
-                // technical WMS layer identifier. Only trust it if it contains no
-                // whitespace, which is a reliable indicator of a real layer name.
-                const technicalLayerName = layerName && !layerName.includes(" ") ? layerName : "";
+                // rather than a technical layer identifier. Reject it when it:
+                //   - contains whitespace (e.g. "WMS GetCapabilities Anfrage, welche...")
+                //   - contains parentheses (e.g. "(GetCapabilities)" — InGrid/metaver pattern)
+                //   - matches a known OGC operation name
+                const OGC_OPERATIONS = ["getcapabilities", "getmap", "getfeature", "gettile", "getlegendgraphic", "getfeatureinfo"],
+                    technicalLayerName = layerName
+                        && !layerName.includes(" ")
+                        && !layerName.includes("(")
+                        && !layerName.includes(")")
+                        && !OGC_OPERATIONS.includes(layerName.toLowerCase())
+                        ? layerName : "";
                 let effectiveLayerName = technicalLayerName || urlLayerParam,
                     wfsVersion = "1.1.0",
                     wfsOutputFormat = "XML",
