@@ -4,6 +4,7 @@ import exportItem from "@masterportal/masterportalapi/src/shared/exportItem.js";
 import kmlfunctions from "@masterportal/masterportalapi/src/shared/kmlExport.js";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
+import mapCollection from "@core/maps/js/mapCollection.js";
 import {GeoJSON, GPX} from "ol/format.js";
 
 export default {
@@ -97,6 +98,8 @@ export default {
         onFormatChange (event) {
             // Errorhandling used to be in the convertFeatures directly, now needs to happen here, i.e. allGeometryTypesNotSupported, notSupportedAlert, siehe actionsDownload function convertFeatures in draw_old
             console.warn("Format Changed", event);
+            console.warn("features in onFormatChange", this.features.length);
+            console.warn("features in onFormatChange", this.features);
             this.exportFormat = event.target.value;
         },
 
@@ -127,8 +130,8 @@ export default {
 
         async handleGeoJSONDownload () {
             console.warn("Handling GeoJSON download...");
-            const reversedFeatures = [...this.features].reverse();
-            let dataString = await exportItem.prepareFeatures(reversedFeatures);
+            const map = mapCollection.getMap("2D");
+            let dataString = await exportItem.prepareFeatures(this.features, map);
 
             dataString = await exportItem.convertFeatures(dataString, new GeoJSON(), this.projectionCode);
             console.warn("GeoJSON result: ", dataString);
@@ -137,7 +140,8 @@ export default {
 
         async handleGPXDownload () {
             console.warn("Handling GPX download...");
-            let dataString = await exportItem.prepareFeatures(this.features);
+            const map = mapCollection.getMap("2D");
+            let dataString = await exportItem.prepareFeatures(this.features, map);
 
             dataString = await exportItem.convertFeatures(this.features, new GPX(), this.projectionCode);
 
