@@ -87,7 +87,7 @@ describe("src/modules/wmsTime/store/actionsWmsTime.js", () => {
             expect(dispatch.calledWith("replaceByIdInLayerConfig")).to.be.true;
         });
 
-        it("should dispatch updateLayerConfigZIndex with only numeric-zIndex configs and correct maxZIndex when layer has a numeric zIndex", async () => {
+        it("should dispatch updateLayerConfigZIndex and assign correct zIndex when comparing time layers", async () => {
             rootGetters["Modules/LayerSwiper/active"] = true;
             rootGetters.allLayerConfigs = [
                 {id: "layer1", zIndex: 2},
