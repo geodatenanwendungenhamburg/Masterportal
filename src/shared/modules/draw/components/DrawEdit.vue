@@ -147,6 +147,7 @@ export default {
         layer (layer) {
             if (layer !== null) {
                 this.source.on("addfeature", event => {
+                    console.warn("Add Feature", event.feature);
                     this.features.push(event.feature);
                     if (!this.redoing) {
                         const attrs = event.feature.get("masterportal_attributes");
@@ -177,22 +178,22 @@ export default {
                             });
                         }
                         this.nonReactiveRedoFeatures = markRaw([]);
-                    }
-                    if (event.feature.getGeometry().getType() === "Circle" && !event.feature.get("masterportal_attributes")) {
-                        event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {
-                            "fromDrawTool": true,
-                            styleId: this.featureCounter,
-                            drawState: {
-                                zIndex: this.featureCounter,
-                                drawType: {
-                                    id: "drawCircle",
-                                    geometry: "Circle"
+                        if (event.feature.getGeometry().getType() === "Circle" && !event.feature.get("masterportal_attributes")) {
+                            event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {
+                                "fromDrawTool": true,
+                                styleId: this.featureCounter,
+                                drawState: {
+                                    zIndex: this.featureCounter,
+                                    drawType: {
+                                        id: "drawCircle",
+                                        geometry: "Circle"
+                                    }
                                 }
-                            }
-                        }));
+                            }));
+                            this.featureCounter++;
+                        }
                         this.featureCounter++;
                     }
-                    this.featureCounter++;
                 });
 
                 this.source.on("removefeature", event => {
@@ -440,6 +441,7 @@ export default {
          * @returns {void}
          */
         registerFeatures () {
+            console.warn("Register Features", this.features);
             this.features = [...mapCollection.getMap("2D").getLayers().getArray().find(availableLayer => availableLayer.get("id") === "importDrawLayer").getSource().getFeatures()];
         },
 
