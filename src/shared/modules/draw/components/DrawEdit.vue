@@ -148,7 +148,6 @@ export default {
             if (layer !== null) {
                 this.source.on("addfeature", event => {
                     console.warn("Add Feature", event.feature);
-                    this.features.push(event.feature);
                     if (!this.redoing) {
                         const attrs = event.feature.get("masterportal_attributes");
 
