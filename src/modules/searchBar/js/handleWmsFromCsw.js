@@ -24,7 +24,7 @@ export default async function handleWmsFromCsw (baseUrl, dispatch, fileIdentifie
         const allNames = rootLayer ? collectWmsLayerNames(rootLayer) : [];
 
         if (allNames.length > 0) {
-            for (const singleLayerName of allNames) {
+            for (const [index, singleLayerName] of allNames.entries()) {
                 const layerId = `csw-${fileIdentifier}-${resourceIndex}-${singleLayerName}`;
                 const layerSource = {
                     id: layerId,
@@ -36,7 +36,12 @@ export default async function handleWmsFromCsw (baseUrl, dispatch, fileIdentifie
                     layers: singleLayerName
                 };
 
-                dispatch("addLayerToTopicTree", {layerId, source: layerSource, showInLayerTree: true, visibility: true});
+                dispatch("addLayerToTopicTree", {
+                    layerId,
+                    source: layerSource,
+                    showInLayerTree: true,
+                    visibility: index === 0
+                });
             }
             return true;
         }
