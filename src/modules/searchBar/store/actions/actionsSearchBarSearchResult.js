@@ -593,6 +593,7 @@ export default {
      */
     addLayerFromCswRecord: async ({dispatch}, {fileIdentifier, recordTitle, cswUrl}) => {
         let responseXml;
+        const unavailableServiceUrls = new Set();
 
         try {
             const response = await axios.get(cswUrl, {
@@ -652,7 +653,11 @@ export default {
                     wfsFeatureNS = "";
 
                 if (typ === "WMS" && !effectiveLayerName) {
-                    const wmsLayersAdded = await handleWmsFromCsw(baseUrl, dispatch, fileIdentifier, recordTitle, cswUrl, i);
+                    const {layersAdded: wmsLayersAdded, serviceUnavailable} = await handleWmsFromCsw(baseUrl, dispatch, fileIdentifier, recordTitle, cswUrl, i);
+
+                    if (serviceUnavailable) {
+                        unavailableServiceUrls.add(baseUrl);
+                    }
 
                     if (wmsLayersAdded) {
                         layerAdded = true;
@@ -661,12 +666,14 @@ export default {
                 }
                 else if (typ === "WFS") {
                     const wfsConfig = await handleWfsFromCsw(baseUrl);
-                    const featureTypes = wfsConfig?.featureTypes || [];
+                    const featureTypes = wfsConfig.featureTypes || [];
 
-                    if (wfsConfig) {
-                        wfsVersion = wfsConfig.wfsVersion;
-                        wfsOutputFormat = wfsConfig.wfsOutputFormat;
+                    if (wfsConfig.serviceUnavailable) {
+                        unavailableServiceUrls.add(baseUrl);
                     }
+
+                    wfsVersion = wfsConfig.wfsVersion;
+                    wfsOutputFormat = wfsConfig.wfsOutputFormat;
 
                     if (!effectiveLayerName && addWfsFeatureTypeLayers({
                         dispatch,
@@ -687,6 +694,10 @@ export default {
 
                     effectiveLayerName = effectiveLayerName || match?.name || effectiveLayerName;
                     wfsFeatureNS = match?.featureNS || wfsFeatureNS;
+                }
+
+                if ((typ === "WMS" || typ === "WFS") && !effectiveLayerName) {
+                    continue;
                 }
 
                 const layerId = `csw-${fileIdentifier}-${i}`,
@@ -718,6 +729,16 @@ export default {
         }
 
         if (!layerAdded) {
+            if (unavailableServiceUrls.size > 0) {
+                const firstUnavailableServiceUrl = unavailableServiceUrls.values().next().value;
+
+                dispatch("Alerting/addSingleAlert", {
+                    category: "info",
+                    content: `${i18next.t("common:core.layers.errorHandling.getGeometryTypeFromWFSFetchfailedMessage")} (${firstUnavailableServiceUrl})`
+                }, {root: true});
+                return;
+            }
+
             dispatch("Alerting/addSingleAlert", {
                 category: "info",
                 content: i18next.t("common:modules.searchBar.csw.noLayerLink")

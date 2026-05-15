@@ -5,17 +5,19 @@ import axios from "axios";
  * Tries GetCapabilities with versions 2.0.0, 1.1.0, 1.0.0 to find feature types.
  * Resolves feature namespace and selects best output format.
  * @param {String} baseUrl WFS base URL
- * @returns {Promise<Object|null>} Object with {featureTypes, wfsVersion, wfsOutputFormat} or null if failed
+ * @returns {Promise<Object>} Result object with featureTypes, service availability and WFS settings
  */
 export default async function handleWfsFromCsw (baseUrl) {
     let featureTypes = [];
     let wfsVersion = "1.1.0";
     let wfsOutputFormat = "XML";
+    let serviceUnavailable = false;
 
     for (const ver of ["2.0.0", "1.1.0", "1.0.0"]) {
         try {
             const capResponse = await axios.get(baseUrl, {
-                params: {SERVICE: "WFS", REQUEST: "GetCapabilities", VERSION: ver}
+                params: {SERVICE: "WFS", REQUEST: "GetCapabilities", VERSION: ver},
+                timeout: 7000
             });
             const capXml = capResponse.request?.responseXML
                 || new DOMParser().parseFromString(capResponse.data, "application/xml");
@@ -68,9 +70,15 @@ export default async function handleWfsFromCsw (baseUrl) {
             }
         }
         catch (capError) {
+            serviceUnavailable = true;
             // Try next version
         }
     }
 
-    return featureTypes.length > 0 ? {featureTypes, wfsVersion, wfsOutputFormat} : null;
+    return {
+        featureTypes,
+        wfsVersion,
+        wfsOutputFormat,
+        serviceUnavailable
+    };
 }

@@ -10,12 +10,13 @@ import collectWmsLayerNames from "./collectWmsLayerNames.js";
  * @param {String} recordTitle CSW record title
  * @param {String} cswUrl CSW endpoint URL
  * @param {Number} resourceIndex Index of the online resource
- * @returns {Boolean} True if layers were found and added, false otherwise
+ * @returns {Object} Result state with layersAdded and serviceUnavailable
  */
 export default async function handleWmsFromCsw (baseUrl, dispatch, fileIdentifier, recordTitle, cswUrl, resourceIndex) {
     try {
         const capResponse = await axios.get(baseUrl, {
-            params: {SERVICE: "WMS", REQUEST: "GetCapabilities"}
+            params: {SERVICE: "WMS", REQUEST: "GetCapabilities"},
+            timeout: 7000
         });
         const capXml = capResponse.request?.responseXML
             || new DOMParser().parseFromString(capResponse.data, "application/xml");
@@ -43,11 +44,13 @@ export default async function handleWmsFromCsw (baseUrl, dispatch, fileIdentifie
                     visibility: index === 0
                 });
             }
-            return true;
+            return {layersAdded: true, serviceUnavailable: false};
         }
+
+        return {layersAdded: false, serviceUnavailable: false};
     }
     catch (capError) {
         console.warn("handleWmsFromCsw: WMS GetCapabilities failed, layers will be empty.", capError);
+        return {layersAdded: false, serviceUnavailable: true};
     }
-    return false;
 }
