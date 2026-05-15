@@ -15,6 +15,7 @@ import remove3DFeatureHighlight from "@shared/js/utils/remove3DFeatureHighlight.
 import {convertColor} from "@shared/js/utils/convertColor.js";
 import handleWmsFromCsw from "../../js/handleWmsFromCsw.js";
 import handleWfsFromCsw from "../../js/handleWfsFromCsw.js";
+import detectServiceType from "../../js/detectServiceType.js";
 
 /**
  * Contains actions that communicate with other components after an interaction, such as onClick or onHover, with a search result.
@@ -590,8 +591,6 @@ export default {
      * @returns {void}
      */
     addLayerFromCswRecord: async ({dispatch}, {fileIdentifier, recordTitle, cswUrl}) => {
-        const WMS_PROTOCOLS = ["OGC:WMS", "WWW:LINK-1.0-http--ogc-wms"],
-            WFS_PROTOCOLS = ["OGC:WFS", "WWW:LINK-1.0-http--ogc-wfs"];
         let responseXml;
 
         try {
@@ -638,24 +637,7 @@ export default {
                 continue;
             }
 
-            let typ = null;
-
-            if (WMS_PROTOCOLS.some(p => protocol.toUpperCase().includes(p.toUpperCase()))) {
-                typ = "WMS";
-            }
-            else if (WFS_PROTOCOLS.some(p => protocol.toUpperCase().includes(p.toUpperCase()))) {
-                typ = "WFS";
-            }
-            else if (!protocol) {
-                const upperUrl = url.toUpperCase();
-
-                if (upperUrl.includes("SERVICE=WMS") || upperUrl.includes("/WMS")) {
-                    typ = "WMS";
-                }
-                else if (upperUrl.includes("SERVICE=WFS") || upperUrl.includes("/WFS")) {
-                    typ = "WFS";
-                }
-            }
+            const typ = detectServiceType(protocol, url);
 
             if (typ) {
                 const urlQuery = url.includes("?") ? url.split("?")[1] : "",
