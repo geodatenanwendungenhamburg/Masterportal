@@ -660,10 +660,6 @@ export default {
                     urlParams = new URLSearchParams(urlQuery),
                     urlLayerParam = urlParams.get("LAYERS") || urlParams.get("layers") || urlParams.get("Layers") || "",
                     baseUrl = url.split("?")[0];
-                // CI_OnlineResource/name is sometimes a human-readable description
-                // (e.g. "WMS GetCapabilities Anfrage, welche...") rather than a
-                // technical WMS layer identifier. Only trust it if it contains no
-                // whitespace, which is a reliable indicator of a real layer name.
                 const technicalLayerName = layerName && !layerName.includes(" ") ? layerName : "";
                 let effectiveLayerName = technicalLayerName || urlLayerParam,
                     wfsVersion = "1.1.0",
@@ -678,14 +674,48 @@ export default {
                         const capXml = capResponse.request?.responseXML
                             || new DOMParser().parseFromString(capResponse.data, "application/xml");
 
-                        effectiveLayerName = Array.from(capXml.getElementsByTagName("Layer"))
-                            .map(el => {
-                                const nameEl2 = el.children && Array.from(el.children).find(c => c.localName === "Name");
+                        // Recursively collect all <Name> from <Layer> tree
+                        /**
+                         *
+                         */
+                        function collectLayerNames (layerEl) {
+                            let names = [];
 
-                                return nameEl2?.textContent?.trim() || "";
-                            })
-                            .filter(n => n.length > 0)
-                            .join(",");
+                            for (const child of Array.from(layerEl.children || [])) {
+                                if (child.localName === "Name") {
+                                    const n = child.textContent?.trim();
+
+                                    if (n) {
+                                        names.push(n);
+                                    }
+                                }
+                                if (child.localName === "Layer") {
+                                    names = names.concat(collectLayerNames(child));
+                                }
+                            }
+                            return names;
+                        }
+                        const rootLayer = Array.from(capXml.getElementsByTagName("Layer"))[0];
+                        const allNames = rootLayer ? collectLayerNames(rootLayer) : [];
+
+                        if (allNames.length > 0) {
+                            for (const singleLayerName of allNames) {
+                                const layerId = `csw-${fileIdentifier}-${i}-${singleLayerName}`;
+                                const layerSource = {
+                                    id: layerId,
+                                    name: recordTitle ? `${recordTitle} - ${singleLayerName}` : singleLayerName || fileIdentifier,
+                                    url: baseUrl,
+                                    typ: typ,
+                                    metaID: fileIdentifier,
+                                    cswUrl: cswUrl,
+                                    layers: singleLayerName
+                                };
+
+                                dispatch("addLayerToTopicTree", {layerId, source: layerSource, showInLayerTree: true, visibility: true});
+                            }
+                            layerAdded = true;
+                            break;
+                        }
                     }
                     catch (capError) {
                         console.warn("addLayerFromCswRecord: WMS GetCapabilities failed, layers will be empty.", capError);
