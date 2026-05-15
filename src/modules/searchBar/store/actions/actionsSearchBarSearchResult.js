@@ -691,6 +691,7 @@ export default {
                 else if (discoveredLayerEntries.length > 0) {
                     await wfsLoadingStrategyService.applyDiscoveredWfsLoadingStrategies(discoveredLayerEntries);
                 }
+                }
             }
 
             if (discoveredLayerEntries.length > 0 && await addServiceLayersToExternalFolder({
