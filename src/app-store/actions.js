@@ -51,7 +51,7 @@ export default {
             targetPath = state.configJs.portalConf;
         }
 
-        axios.get(targetPath)
+        axios.get(targetPath, {headers: {"Cache-Control": "no-cache"}})
             .then(response => {
                 updateProxyUrl(response.data);
                 commit("setPortalConfig", response.data ? response.data[portalConfigKey] : null);
@@ -102,7 +102,7 @@ export default {
      * @returns {void}
      */
     loadRestServicesJson ({commit, state}) {
-        axios.get(state.configJs?.restConf)
+        axios.get(state.configJs?.restConf, {headers: {"Cache-Control": "no-cache"}})
             .then(response => {
                 updateProxyUrl(response.data);
                 commit("setRestConfig", response.data);
