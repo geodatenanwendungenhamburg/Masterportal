@@ -2,16 +2,15 @@ import axios from "axios";
 
 /**
  * Handles WFS layer discovery and metadata for CSW records.
- * Tries GetCapabilities with versions 2.0.0, 1.1.0, 1.0.0 to find first feature type.
+ * Tries GetCapabilities with versions 2.0.0, 1.1.0, 1.0.0 to find feature types.
  * Resolves feature namespace and selects best output format.
  * @param {String} baseUrl WFS base URL
- * @returns {Promise<Object|null>} Object with {effectiveLayerName, wfsVersion, wfsOutputFormat, wfsFeatureNS} or null if failed
+ * @returns {Promise<Object|null>} Object with {featureTypes, wfsVersion, wfsOutputFormat} or null if failed
  */
 export default async function handleWfsFromCsw (baseUrl) {
-    let effectiveLayerName = null;
+    let featureTypes = [];
     let wfsVersion = "1.1.0";
     let wfsOutputFormat = "XML";
-    let wfsFeatureNS = "";
 
     for (const ver of ["2.0.0", "1.1.0", "1.0.0"]) {
         try {
@@ -25,33 +24,28 @@ export default async function handleWfsFromCsw (baseUrl) {
             const rootEl = capXml.documentElement;
             const declaredVersion = rootEl?.getAttribute("version") || ver;
 
-            // Collect first FeatureType — name may carry a namespace prefix
-            // e.g. <Name xmlns:plu="http://...">plu:OfficialDocumentation</Name>
-            const firstFt = Array.from(capXml.getElementsByTagName("FeatureType"))
-                .find(ft => {
-                    const nameEl2 = Array.from(ft.children).find(c => c.localName === "Name");
+            // Collect FeatureTypes — names may carry namespace prefixes
+            const detectedFeatureTypes = Array.from(capXml.getElementsByTagName("FeatureType"))
+                .map(ft => {
+                    const nameEl = Array.from(ft.children).find(c => c.localName === "Name");
 
-                    return nameEl2?.textContent?.trim().length > 0;
-                });
+                    if (!nameEl?.textContent?.trim()) {
+                        return null;
+                    }
 
-            if (firstFt) {
-                const nameEl2 = Array.from(firstFt.children).find(c => c.localName === "Name");
-                const fullName = nameEl2.textContent.trim();
+                    const fullName = nameEl.textContent.trim();
+                    const colonIdx = fullName.indexOf(":"),
+                        prefix = colonIdx !== -1 ? fullName.slice(0, colonIdx) : "",
+                        featureNS = prefix ? nameEl.lookupNamespaceURI(prefix) || "" : "";
 
-                effectiveLayerName = fullName;
+                    return {name: fullName, featureNS};
+                })
+                .filter(Boolean)
+                .filter((entry, index, arr) => arr.findIndex(other => other.name === entry.name) === index);
+
+            if (detectedFeatureTypes.length > 0) {
+                featureTypes = detectedFeatureTypes;
                 wfsVersion = declaredVersion;
-
-                // Resolve featureNS from the namespace prefix on the Name element.
-                // e.g. <Name xmlns:plu="http://inspire.ec.europa.eu/schemas/plu/4.0">plu:OfficialDocumentation</Name>
-                // → prefix="plu", featureNS="http://inspire.ec.europa.eu/schemas/plu/4.0"
-                const colonIdx = fullName.indexOf(":");
-
-                if (colonIdx !== -1) {
-                    const prefix = fullName.slice(0, colonIdx),
-                        resolvedNs = nameEl2.lookupNamespaceURI(prefix);
-
-                    wfsFeatureNS = resolvedNs || wfsFeatureNS;
-                }
 
                 // Detect the best supported output format
                 const formats = Array.from(capXml.getElementsByTagName("Format"))
@@ -78,5 +72,5 @@ export default async function handleWfsFromCsw (baseUrl) {
         }
     }
 
-    return effectiveLayerName ? {effectiveLayerName, wfsVersion, wfsOutputFormat, wfsFeatureNS} : null;
+    return featureTypes.length > 0 ? {featureTypes, wfsVersion, wfsOutputFormat} : null;
 }

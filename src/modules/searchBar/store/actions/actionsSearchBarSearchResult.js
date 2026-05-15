@@ -16,6 +16,7 @@ import {convertColor} from "@shared/js/utils/convertColor.js";
 import handleWmsFromCsw from "../../js/handleWmsFromCsw.js";
 import handleWfsFromCsw from "../../js/handleWfsFromCsw.js";
 import detectServiceType from "../../js/detectServiceType.js";
+import addWfsFeatureTypeLayers from "../../js/addWfsFeatureTypeLayers.js";
 
 /**
  * Contains actions that communicate with other components after an interaction, such as onClick or onHover, with a search result.
@@ -660,13 +661,32 @@ export default {
                 }
                 else if (typ === "WFS") {
                     const wfsConfig = await handleWfsFromCsw(baseUrl);
+                    const featureTypes = wfsConfig?.featureTypes || [];
 
                     if (wfsConfig) {
-                        effectiveLayerName = wfsConfig.effectiveLayerName;
                         wfsVersion = wfsConfig.wfsVersion;
                         wfsOutputFormat = wfsConfig.wfsOutputFormat;
-                        wfsFeatureNS = wfsConfig.wfsFeatureNS;
                     }
+
+                    if (!effectiveLayerName && addWfsFeatureTypeLayers({
+                        dispatch,
+                        fileIdentifier,
+                        recordTitle,
+                        cswUrl,
+                        resourceIndex: i,
+                        baseUrl,
+                        featureTypes,
+                        wfsVersion,
+                        wfsOutputFormat
+                    })) {
+                        layerAdded = true;
+                        break;
+                    }
+
+                    const match = featureTypes.find(entry => entry.name === effectiveLayerName) || featureTypes[0];
+
+                    effectiveLayerName = effectiveLayerName || match?.name || effectiveLayerName;
+                    wfsFeatureNS = match?.featureNS || wfsFeatureNS;
                 }
 
                 const layerId = `csw-${fileIdentifier}-${i}`,
