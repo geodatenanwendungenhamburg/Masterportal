@@ -13,6 +13,7 @@ import get3DHighlightColor from "@shared/js/utils/get3DHighlightColor.js";
 import applyTileStyle from "@shared/js/utils/applyTileStyle.js";
 import remove3DFeatureHighlight from "@shared/js/utils/remove3DFeatureHighlight.js";
 import {convertColor} from "@shared/js/utils/convertColor.js";
+import collectWmsLayerNames from "../../js/collectWmsLayerNames.js";
 
 /**
  * Contains actions that communicate with other components after an interaction, such as onClick or onHover, with a search result.
@@ -674,29 +675,8 @@ export default {
                         const capXml = capResponse.request?.responseXML
                             || new DOMParser().parseFromString(capResponse.data, "application/xml");
 
-                        // Recursively collect all <Name> from <Layer> tree
-                        /**
-                         *
-                         */
-                        function collectLayerNames (layerEl) {
-                            let names = [];
-
-                            for (const child of Array.from(layerEl.children || [])) {
-                                if (child.localName === "Name") {
-                                    const n = child.textContent?.trim();
-
-                                    if (n) {
-                                        names.push(n);
-                                    }
-                                }
-                                if (child.localName === "Layer") {
-                                    names = names.concat(collectLayerNames(child));
-                                }
-                            }
-                            return names;
-                        }
                         const rootLayer = Array.from(capXml.getElementsByTagName("Layer"))[0];
-                        const allNames = rootLayer ? collectLayerNames(rootLayer) : [];
+                        const allNames = rootLayer ? collectWmsLayerNames(rootLayer) : [];
 
                         if (allNames.length > 0) {
                             for (const singleLayerName of allNames) {
