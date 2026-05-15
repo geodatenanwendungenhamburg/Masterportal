@@ -13,7 +13,8 @@ import get3DHighlightColor from "@shared/js/utils/get3DHighlightColor.js";
 import applyTileStyle from "@shared/js/utils/applyTileStyle.js";
 import remove3DFeatureHighlight from "@shared/js/utils/remove3DFeatureHighlight.js";
 import {convertColor} from "@shared/js/utils/convertColor.js";
-import collectWmsLayerNames from "../../js/collectWmsLayerNames.js";
+import handleWmsFromCsw from "../../js/handleWmsFromCsw.js";
+import handleWfsFromCsw from "../../js/handleWfsFromCsw.js";
 
 /**
  * Contains actions that communicate with other components after an interaction, such as onClick or onHover, with a search result.
@@ -668,108 +669,21 @@ export default {
                     wfsFeatureNS = "";
 
                 if (typ === "WMS" && !effectiveLayerName) {
-                    try {
-                        const capResponse = await axios.get(baseUrl, {
-                            params: {SERVICE: "WMS", REQUEST: "GetCapabilities"}
-                        });
-                        const capXml = capResponse.request?.responseXML
-                            || new DOMParser().parseFromString(capResponse.data, "application/xml");
+                    const wmsLayersAdded = await handleWmsFromCsw(baseUrl, dispatch, fileIdentifier, recordTitle, cswUrl, i);
 
-                        const rootLayer = Array.from(capXml.getElementsByTagName("Layer"))[0];
-                        const allNames = rootLayer ? collectWmsLayerNames(rootLayer) : [];
-
-                        if (allNames.length > 0) {
-                            for (const singleLayerName of allNames) {
-                                const layerId = `csw-${fileIdentifier}-${i}-${singleLayerName}`;
-                                const layerSource = {
-                                    id: layerId,
-                                    name: recordTitle ? `${recordTitle} - ${singleLayerName}` : singleLayerName || fileIdentifier,
-                                    url: baseUrl,
-                                    typ: typ,
-                                    metaID: fileIdentifier,
-                                    cswUrl: cswUrl,
-                                    layers: singleLayerName
-                                };
-
-                                dispatch("addLayerToTopicTree", {layerId, source: layerSource, showInLayerTree: true, visibility: true});
-                            }
-                            layerAdded = true;
-                            break;
-                        }
-                    }
-                    catch (capError) {
-                        console.warn("addLayerFromCswRecord: WMS GetCapabilities failed, layers will be empty.", capError);
+                    if (wmsLayersAdded) {
+                        layerAdded = true;
+                        break;
                     }
                 }
                 else if (typ === "WFS") {
-                    // WFS: featureType must be set, fetch GetCapabilities to discover
-                    // FeatureType names and version. deegree WFS 2.0 requires VERSION=2.0.0
-                    // to return a populated FeatureTypeList.
-                    for (const ver of ["2.0.0", "1.1.0", "1.0.0"]) {
-                        try {
-                            const capResponse = await axios.get(baseUrl, {
-                                params: {SERVICE: "WFS", REQUEST: "GetCapabilities", VERSION: ver}
-                            });
-                            const capXml = capResponse.request?.responseXML
-                                || new DOMParser().parseFromString(capResponse.data, "application/xml");
+                    const wfsConfig = await handleWfsFromCsw(baseUrl);
 
-                            // Read declared version from root element attribute
-                            const rootEl = capXml.documentElement;
-                            const declaredVersion = rootEl?.getAttribute("version") || ver;
-
-                            // Collect first FeatureType — name may carry a namespace prefix
-                            // e.g. <Name xmlns:plu="http://...">plu:OfficialDocumentation</Name>
-                            const firstFt = Array.from(capXml.getElementsByTagName("FeatureType"))
-                                .find(ft => {
-                                    const nameEl2 = Array.from(ft.children).find(c => c.localName === "Name");
-
-                                    return nameEl2?.textContent?.trim().length > 0;
-                                });
-
-                            if (firstFt) {
-                                const nameEl2 = Array.from(firstFt.children).find(c => c.localName === "Name");
-                                const fullName = nameEl2.textContent.trim();
-
-                                effectiveLayerName = fullName;
-                                wfsVersion = declaredVersion;
-
-                                // Resolve featureNS from the namespace prefix on the Name element.
-                                // e.g. <Name xmlns:plu="http://inspire.ec.europa.eu/schemas/plu/4.0">plu:OfficialDocumentation</Name>
-                                // → prefix="plu", featureNS="http://inspire.ec.europa.eu/schemas/plu/4.0"
-                                const colonIdx = fullName.indexOf(":");
-
-                                // Resolve featureNS from prefix; keep effectiveLayerName as-is (e.g. plu:OfficialDocumentation)
-                                // so masterportalapi receives the full prefixed name it expects.
-                                if (colonIdx !== -1) {
-                                    const prefix = fullName.slice(0, colonIdx),
-                                        resolvedNs = nameEl2.lookupNamespaceURI(prefix);
-
-                                    wfsFeatureNS = resolvedNs || wfsFeatureNS;
-                                }
-
-                                // Detect the best supported output format
-                                const formats = Array.from(capXml.getElementsByTagName("Format"))
-                                    .map(f => f.textContent?.trim())
-                                    .filter(Boolean);
-                                const preferredFormats = [
-                                    "application/gml+xml; version=3.2",
-                                    "text/xml; subtype=gml/3.2.1",
-                                    "text/xml; subtype=gml/3.1.1",
-                                    "GML32",
-                                    "GML3",
-                                    "GML2",
-                                    "XML"
-                                ];
-
-                                wfsOutputFormat = preferredFormats.find(f => formats.some(cf => cf.toLowerCase() === f.toLowerCase()))
-                                    || formats[0]
-                                    || wfsOutputFormat;
-                                break;
-                            }
-                        }
-                        catch (capError) {
-                            // Try next version
-                        }
+                    if (wfsConfig) {
+                        effectiveLayerName = wfsConfig.effectiveLayerName;
+                        wfsVersion = wfsConfig.wfsVersion;
+                        wfsOutputFormat = wfsConfig.wfsOutputFormat;
+                        wfsFeatureNS = wfsConfig.wfsFeatureNS;
                     }
                 }
 
