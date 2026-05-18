@@ -1,4 +1,5 @@
 import axios from "axios";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 import markerHelper from "../../js/marker.js";
 import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 import WKTUtil from "@shared/js/utils/getWKTGeom.js";
@@ -489,6 +490,7 @@ export default {
     zoomToResult: ({dispatch, getters}, {coordinates}) => {
         const numberCoordinates = coordinates?.map(coordinate => parseFloat(coordinate, 10));
 
+
         if (numberCoordinates.length === 4) {
             const map = mapCollection.getMap("2D"),
                 view = map.getView(),
@@ -736,6 +738,15 @@ export default {
 
         const gmdNs = "http://www.isotc211.org/2005/gmd",
             onlineResources = responseXml.getElementsByTagNameNS(gmdNs, "CI_OnlineResource");
+
+        // Extract the first bounding box from the GetRecordById response (WGS84).
+        // Used to zoom to the layer extent when bbox loading strategy is applied.
+        const bboxEl = responseXml.getElementsByTagNameNS(gmdNs, "EX_GeographicBoundingBox")[0],
+            recordWest = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "westBoundLongitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null,
+            recordSouth = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "southBoundLatitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null,
+            recordEast = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "eastBoundLongitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null,
+            recordNorth = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "northBoundLatitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null;
+
         let layerAdded = false;
 
         for (let i = 0; i < onlineResources.length; i++) {
