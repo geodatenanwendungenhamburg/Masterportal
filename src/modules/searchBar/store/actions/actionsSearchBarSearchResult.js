@@ -17,6 +17,7 @@ import {uniqueId} from "@shared/js/utils/uniqueId.js";
 import handleWmsFromCsw from "../../js/handleWmsFromCsw.js";
 import handleWfsFromCsw from "../../js/handleWfsFromCsw.js";
 import detectServiceType from "../../js/detectServiceType.js";
+import parseCswOnlineResource from "../../js/parseCswOnlineResource.js";
 
 /**
  * Finds an existing external service folder by name or creates a new one.
@@ -79,7 +80,7 @@ function getHostnameOrUrl (baseUrl) {
  * @param {Object} [param.additionalLayerProps={}] Extra layer props added to each entry
  * @returns {Promise<Boolean>} True if folder exists and layers were processed
  */
-async function addDiscoveredServiceLayersToExternalFolder ({
+async function addServiceLayersToExternalFolder ({
     rootGetters,
     dispatch,
     serviceType,
@@ -734,21 +735,11 @@ export default {
         }
 
         const gmdNs = "http://www.isotc211.org/2005/gmd",
-            gcoNs = "http://www.isotc211.org/2005/gco",
             onlineResources = responseXml.getElementsByTagNameNS(gmdNs, "CI_OnlineResource");
         let layerAdded = false;
 
         for (let i = 0; i < onlineResources.length; i++) {
-            const resource = onlineResources[i],
-                protocolEl = resource.getElementsByTagNameNS(gmdNs, "protocol")[0]
-                    ?.getElementsByTagNameNS(gcoNs, "CharacterString")[0],
-                protocol = protocolEl?.textContent?.trim() || "",
-                urlEl = resource.getElementsByTagNameNS(gmdNs, "linkage")[0]
-                    ?.getElementsByTagNameNS(gmdNs, "URL")[0],
-                url = urlEl?.textContent?.trim() || "",
-                nameEl = resource.getElementsByTagNameNS(gmdNs, "name")[0]
-                    ?.getElementsByTagNameNS(gcoNs, "CharacterString")[0],
-                layerName = nameEl?.textContent?.trim() || "";
+            const {protocol, url, layerName, urlLayerParam, baseUrl} = parseCswOnlineResource(onlineResources[i]);
 
             if (!url) {
                 continue;
@@ -757,10 +748,6 @@ export default {
             const typ = detectServiceType(protocol, url);
 
             if (typ) {
-                const urlQuery = url.includes("?") ? url.split("?")[1] : "",
-                    urlParams = new URLSearchParams(urlQuery),
-                    urlLayerParam = urlParams.get("LAYERS") || urlParams.get("layers") || urlParams.get("Layers") || "",
-                    baseUrl = url.split("?")[0];
                 const technicalLayerName = layerName && !layerName.includes(" ") ? layerName : "";
                 let effectiveLayerName = technicalLayerName || urlLayerParam,
                     wfsVersion = "1.1.0",
@@ -779,7 +766,7 @@ export default {
                         unavailableServiceUrls.add(baseUrl);
                     }
 
-                    if (wmsLayersAdded && await addDiscoveredServiceLayersToExternalFolder({
+                    if (wmsLayersAdded && await addServiceLayersToExternalFolder({
                         rootGetters,
                         dispatch,
                         serviceType: "WMS",
@@ -809,7 +796,7 @@ export default {
                     wfsOutputFormat = wfsConfig.wfsOutputFormat;
                     const serviceTitle = wfsConfig.serviceTitle;
 
-                    if (!effectiveLayerName && await addDiscoveredServiceLayersToExternalFolder({
+                    if (!effectiveLayerName && await addServiceLayersToExternalFolder({
                         rootGetters,
                         dispatch,
                         serviceType: "WFS",
