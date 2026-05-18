@@ -20,6 +20,108 @@ import {addServiceLayersToExternalFolder} from "../../js/externalServiceFolder.j
 import {createWfsLoadingStrategyService} from "../../js/wfsLoadingStrategy.js";
 
 /**
+ * Finds an existing external service folder by name or creates a new one.
+ * @param {Object} rootGetters Vuex rootGetters
+ * @param {Function} dispatch Vuex dispatch
+ * @param {String} serviceName Folder name
+ * @returns {Promise<String|null>} Folder id or null if creation failed
+ */
+async function getOrCreateExternalServiceFolderId (rootGetters, dispatch, serviceName) {
+    const existingFolder = rootGetters.allFolders
+        .find(folder => folder.type === "folder" && folder.isExternal === true && folder.name === serviceName);
+
+    if (existingFolder?.id) {
+        return existingFolder.id;
+    }
+
+    const folderId = uniqueId("folder-");
+    const folderConfig = {
+        id: folderId,
+        type: "folder",
+        isExternal: true,
+        name: serviceName,
+        elements: []
+    };
+    const added = await dispatch("addLayerToLayerConfig", {
+        layerConfig: folderConfig,
+        parentKey: treeSubjectsKey
+    }, {root: true});
+
+    return added ? folderId : rootGetters.allFolders
+        .find(folder => folder.type === "folder" && folder.isExternal === true && folder.name === serviceName)?.id || null;
+}
+
+/**
+ * Returns hostname for service URL if available.
+ * @param {String} baseUrl Service URL
+ * @returns {String} Hostname or original URL
+ */
+function getHostnameOrUrl (baseUrl) {
+    try {
+        return new URL(baseUrl).hostname;
+    }
+    catch (error) {
+        return baseUrl;
+    }
+}
+
+/**
+ * Adds discovered WMS capability layers to an external service folder.
+ * @param {Object} param Parameters
+ * @param {Object} param.rootGetters Vuex root getters
+ * @param {Function} param.dispatch Vuex dispatch
+ * @param {String} param.serviceTitle WMS service title
+ * @param {String[]} param.layerNames Layer names from GetCapabilities
+ * @param {String} param.baseUrl WMS base URL
+ * @param {String} param.fileIdentifier CSW file identifier
+ * @param {String} param.cswUrl CSW endpoint URL
+ * @param {Number} param.resourceIndex Resource index
+ * @returns {Promise<Boolean>} True if folder exists and layers were processed
+ */
+async function addDiscoveredWmsLayersToExternalFolder ({
+    rootGetters,
+    dispatch,
+    serviceTitle,
+    layerNames,
+    baseUrl,
+    fileIdentifier,
+    cswUrl,
+    resourceIndex
+}) {
+    const folderName = serviceTitle || getHostnameOrUrl(baseUrl) || fileIdentifier,
+        folderId = await getOrCreateExternalServiceFolderId(rootGetters, dispatch, folderName);
+
+    if (!folderId) {
+        return false;
+    }
+
+    for (const [index, singleLayerName] of layerNames.entries()) {
+        const layerId = `csw-${fileIdentifier}-${resourceIndex}-${singleLayerName}`,
+            layerConfig = {
+                id: layerId,
+                name: singleLayerName || fileIdentifier,
+                url: baseUrl,
+                typ: "WMS",
+                metaID: fileIdentifier,
+                cswUrl,
+                layers: singleLayerName,
+                type: "layer",
+                isExternal: true,
+                parentId: folderId,
+                showInLayerTree: true,
+                visibility: index === 0
+            };
+
+        await dispatch("addLayerToLayerConfig", {
+            layerConfig,
+            parentKey: folderId
+        }, {root: true});
+    }
+
+    return true;
+}
+
+/**
  * Contains actions that communicate with other components after an interaction, such as onClick or onHover, with a search result.
  * @module modules/searchBar/store/actions/actionsSearchBarSearchResult
  */
