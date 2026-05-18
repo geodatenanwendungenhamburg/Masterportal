@@ -1,5 +1,6 @@
 import axios from "axios";
 import collectWmsLayerNames from "./collectWmsLayerNames.js";
+import collectWmsLayerTitles from "./collectWmsLayerTitles.js";
 
 /**
  * Handles WMS layer discovery for CSW records.
@@ -23,12 +24,14 @@ export default async function handleWmsFromCsw (baseUrl) {
                 || rootLayer?.getElementsByTagName("Title")[0]?.textContent?.trim()
                 || "";
         const allNames = rootLayer ? collectWmsLayerNames(rootLayer) : [];
+        const allTitles = rootLayer ? collectWmsLayerTitles(rootLayer) : [];
 
         return {
             layersAdded: allNames.length > 0,
             serviceUnavailable: false,
             serviceTitle,
-            layerNames: allNames
+            layerNames: allNames,
+            layerTitleEntries: allTitles // [{name, title}]
         };
     }
     catch (capError) {

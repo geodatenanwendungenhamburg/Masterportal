@@ -14,6 +14,7 @@ import buildServiceLayerEntries from "./buildServiceLayerEntries.js";
  * @returns {Promise<Object>} Resolved service configuration.
  */
 export default async function resolveCswServiceConfig (parsedResource) {
+
     const {protocol, url, layerName, urlLayerParam, baseUrl} = parsedResource,
         typ = detectServiceType(protocol, url),
         technicalLayerName = layerName && !layerName.includes(" ") ? layerName : "";
@@ -46,7 +47,8 @@ export default async function resolveCswServiceConfig (parsedResource) {
         serviceTitle = wmsConfig.serviceTitle || "";
 
         if (wmsConfig.layersAdded) {
-            discoveredLayerEntries = buildServiceLayerEntries("WMS", wmsConfig.layerNames || []);
+            // Use layerTitleEntries: [{name, title}]
+            discoveredLayerEntries = buildServiceLayerEntries("WMS", wmsConfig.layerTitleEntries || []);
         }
     }
     else if (typ === "WFS") {
@@ -58,11 +60,25 @@ export default async function resolveCswServiceConfig (parsedResource) {
         wfsVersion = wfsConfig.wfsVersion;
         wfsOutputFormat = wfsConfig.wfsOutputFormat;
 
+        // Try to get titles for WFS featureTypes if available
+        let featureTypesWithTitles = featureTypes;
+
+        if (wfsConfig.featureTypeTitles && Array.isArray(wfsConfig.featureTypeTitles)) {
+            // Merge titles by name
+
+            featureTypesWithTitles = featureTypes.map(ft => {
+
+                const titleObj = wfsConfig.featureTypeTitles.find(t => t.name === ft.name);
+
+                return titleObj ? {...ft, title: titleObj.title} : ft;
+            });
+        }
+
         if (!effectiveLayerName) {
-            discoveredLayerEntries = buildServiceLayerEntries("WFS", featureTypes);
+            discoveredLayerEntries = buildServiceLayerEntries("WFS", featureTypesWithTitles);
         }
         else {
-            const match = featureTypes.find(entry => entry.name === effectiveLayerName) || featureTypes[0];
+            const match = featureTypesWithTitles.find(entry => entry.name === effectiveLayerName) || featureTypesWithTitles[0];
 
             effectiveLayerName = match?.name || effectiveLayerName;
             wfsFeatureNS = match?.featureNS || wfsFeatureNS;
