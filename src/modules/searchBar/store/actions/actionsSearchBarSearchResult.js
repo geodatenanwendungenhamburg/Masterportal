@@ -80,7 +80,7 @@ function getHostnameOrUrl (baseUrl) {
  * @param {Object} [param.additionalLayerProps={}] Extra layer props added to each entry
  * @returns {Promise<Boolean>} True if folder exists and layers were processed
  */
-async function addDiscoveredServiceLayersToExternalFolder ({
+async function addServiceLayersToExternalFolder ({
     rootGetters,
     dispatch,
     serviceType,
