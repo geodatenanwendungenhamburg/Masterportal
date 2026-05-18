@@ -1,6 +1,7 @@
 import detectServiceType from "./detectServiceType.js";
 import handleWmsFromCsw from "./handleWmsFromCsw.js";
 import handleWfsFromCsw from "./handleWfsFromCsw.js";
+import buildServiceLayerEntries from "./buildServiceLayerEntries.js";
 
 /**
  * Resolves service specific config for one parsed CSW online resource.
@@ -45,10 +46,7 @@ export default async function resolveCswServiceConfig (parsedResource) {
         serviceTitle = wmsConfig.serviceTitle || "";
 
         if (wmsConfig.layersAdded) {
-            discoveredLayerEntries = (wmsConfig.layerNames || []).map(layerNameEntry => ({
-                name: layerNameEntry,
-                sourceProps: {layers: layerNameEntry}
-            }));
+            discoveredLayerEntries = buildServiceLayerEntries("WMS", wmsConfig.layerNames || []);
         }
     }
     else if (typ === "WFS") {
@@ -61,18 +59,7 @@ export default async function resolveCswServiceConfig (parsedResource) {
         wfsOutputFormat = wfsConfig.wfsOutputFormat;
 
         if (!effectiveLayerName) {
-            discoveredLayerEntries = featureTypes.map(featureTypeEntry => {
-                const sourceProps = {featureType: featureTypeEntry.name};
-
-                if (featureTypeEntry.featureNS) {
-                    sourceProps.featureNS = featureTypeEntry.featureNS;
-                }
-
-                return {
-                    name: featureTypeEntry.name,
-                    sourceProps
-                };
-            });
+            discoveredLayerEntries = buildServiceLayerEntries("WFS", featureTypes);
         }
         else {
             const match = featureTypes.find(entry => entry.name === effectiveLayerName) || featureTypes[0];
