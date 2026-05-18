@@ -10,22 +10,23 @@ export default function buildServiceLayerEntries (serviceType, entries = []) {
     }
 
     if (serviceType === "WMS") {
-        return entries.map(layerNameEntry => ({
-            name: layerNameEntry,
-            sourceProps: {layers: layerNameEntry}
+        // entries: [{name, title}]
+        return entries.map(layerEntry => ({
+            name: layerEntry.title || layerEntry.name,
+            sourceProps: {layers: layerEntry.name}
         }));
     }
 
     if (serviceType === "WFS") {
+        // entries: [{name, title, featureNS?}]
         return entries.map(featureTypeEntry => {
             const sourceProps = {featureType: featureTypeEntry.name};
 
             if (featureTypeEntry.featureNS) {
                 sourceProps.featureNS = featureTypeEntry.featureNS;
             }
-
             return {
-                name: featureTypeEntry.name,
+                name: featureTypeEntry.title || featureTypeEntry.name,
                 sourceProps
             };
         });

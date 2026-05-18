@@ -26,6 +26,7 @@ export default async function handleWfsFromCsw (baseUrl) {
     let wfsOutputFormat = "XML";
     let serviceUnavailable = false;
     let serviceTitle = "";
+    let featureTypeTitles = [];
 
     for (const ver of ["2.0.0", "1.1.0", "1.0.0"]) {
         try {
@@ -48,6 +49,7 @@ export default async function handleWfsFromCsw (baseUrl) {
             const detectedFeatureTypes = Array.from(capXml.getElementsByTagName("FeatureType"))
                 .map(ft => {
                     const nameEl = Array.from(ft.children).find(c => c.localName === "Name");
+                    const titleEl = Array.from(ft.children).find(c => c.localName === "Title");
 
                     if (!nameEl?.textContent?.trim()) {
                         return null;
@@ -57,11 +59,25 @@ export default async function handleWfsFromCsw (baseUrl) {
                     const colonIdx = fullName.indexOf(":"),
                         prefix = colonIdx !== -1 ? fullName.slice(0, colonIdx) : "",
                         featureNS = prefix ? nameEl.lookupNamespaceURI(prefix) || "" : "";
+                    const title = titleEl?.textContent?.trim() || "";
 
-                    return {name: fullName, featureNS};
+                    return {name: fullName, featureNS, title};
                 })
                 .filter(Boolean)
                 .filter((entry, index, arr) => arr.findIndex(other => other.name === entry.name) === index);
+
+            // Also collect just name/title for merging
+            featureTypeTitles = Array.from(capXml.getElementsByTagName("FeatureType"))
+                .map(ft => {
+                    const nameEl = Array.from(ft.children).find(c => c.localName === "Name");
+                    const titleEl = Array.from(ft.children).find(c => c.localName === "Title");
+
+                    if (!nameEl?.textContent?.trim()) {
+                        return null;
+                    }
+                    return {name: nameEl.textContent.trim(), title: titleEl?.textContent?.trim() || ""};
+                })
+                .filter(Boolean);
 
             if (detectedFeatureTypes.length > 0) {
                 featureTypes = detectedFeatureTypes;
@@ -96,6 +112,7 @@ export default async function handleWfsFromCsw (baseUrl) {
         wfsVersion,
         wfsOutputFormat,
         serviceUnavailable,
-        serviceTitle
+        serviceTitle,
+        featureTypeTitles
     };
 }
