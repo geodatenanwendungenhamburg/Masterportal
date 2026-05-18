@@ -79,7 +79,7 @@ function getHostnameOrUrl (baseUrl) {
  * @param {Object} [param.additionalLayerProps={}] Extra layer props added to each entry
  * @returns {Promise<Boolean>} True if folder exists and layers were processed
  */
-async function addDiscoveredWmsLayersToExternalFolder ({
+async function addDiscoveredServiceLayersToExternalFolder ({
     rootGetters,
     dispatch,
     serviceType,
@@ -779,7 +779,7 @@ export default {
                         unavailableServiceUrls.add(baseUrl);
                     }
 
-                    if (wmsLayersAdded && await addDiscoveredWmsLayersToExternalFolder({
+                    if (wmsLayersAdded && await addDiscoveredServiceLayersToExternalFolder({
                         rootGetters,
                         dispatch,
                         serviceType: "WMS",
@@ -809,7 +809,7 @@ export default {
                     wfsOutputFormat = wfsConfig.wfsOutputFormat;
                     const serviceTitle = wfsConfig.serviceTitle;
 
-                    if (!effectiveLayerName && await addDiscoveredWmsLayersToExternalFolder({
+                    if (!effectiveLayerName && await addDiscoveredServiceLayersToExternalFolder({
                         rootGetters,
                         dispatch,
                         serviceType: "WFS",
