@@ -858,6 +858,36 @@ export default {
                 layerAdded = true;
                 break;
             }
+
+            if ((typ === "WMS" || typ === "WFS") && !effectiveLayerName) {
+                continue;
+            }
+
+            const layerId = `csw-${fileIdentifier}-${i}`,
+                layerSource = {
+                    id: layerId,
+                    name: recordTitle || effectiveLayerName || fileIdentifier,
+                    url: baseUrl,
+                    typ: typ,
+                    metaID: fileIdentifier,
+                    cswUrl: cswUrl
+                };
+
+            if (typ === "WMS") {
+                layerSource.layers = effectiveLayerName;
+            }
+            else if (typ === "WFS") {
+                layerSource.featureType = effectiveLayerName;
+                layerSource.version = wfsVersion;
+                layerSource.outputFormat = wfsOutputFormat;
+                if (wfsFeatureNS) {
+                    layerSource.featureNS = wfsFeatureNS;
+                }
+            }
+
+            dispatch("addLayerToTopicTree", {layerId, source: layerSource, showInLayerTree: true, visibility: true});
+            layerAdded = true;
+            break;
         }
 
         const operationTimestamp = new Date(Date.now() - 1000).toISOString(),
