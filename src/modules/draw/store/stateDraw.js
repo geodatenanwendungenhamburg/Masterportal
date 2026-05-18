@@ -34,7 +34,7 @@
  * @property {String} [drawIcons.symbols="bi-circle-square"] The icon for symbols button.
  * @property {String[]} [drawTypesGeometrie=["line", "box", "polygon", "circle", "doubleCircle", "square"]] The drawing types in geometries.
  * @property {String[]} [drawTypesMain=["pen", "writeText", "geometries", "symbols"]] The top level (main) drawing types.
- * @property {String[]} [drawTypesSymbols=["point"]] The drawing types in symbols.
+ * @property {String[]} [drawTypesSymbols=[]] The drawing types in symbols.
  * @property {Boolean} [hasMouseMapInteractions=true] If this attribute is true, then all other modules will be deactivated when this attribute is also true. Only one module with this attribute true may be open at the same time, since conflicts can arise in the card interactions.
  * @property {String} [icon="bi-pencil"] Icon next to title (config-param).
  * @property {Number} idCounter Counter for features drawn.
@@ -99,7 +99,7 @@ const state = {
     },
     drawTypesGeometrie: ["line", "box", "polygon", "circle", "doubleCircle", "square"],
     drawTypesMain: ["pen", "writeText", "geometries", "symbols"],
-    drawTypesSymbols: ["point"],
+    drawTypesSymbols: [],
     hasMouseMapInteractions: true,
     icon: "bi-pencil",
     idCounter: 0,

@@ -60,19 +60,19 @@ export default {
     data () {
         const mappingLayout = {
             fillColor: {
-                drawTypes: ["box", "circle", "doubleCircle", "point", "polygon", "rectangle", "writeText", "square"],
+                drawTypes: ["box", "circle", "doubleCircle", "polygon", "rectangle", "writeText", "square"],
                 icon: "bi-paint-bucket"
             },
             strokeColor: {
-                drawTypes: ["box", "circle", "doubleCircle", "line", "pen", "point", "polygon", "rectangle", "square"],
+                drawTypes: ["box", "circle", "doubleCircle", "line", "pen", "polygon", "rectangle", "square"],
                 icon: "bi-pencil-fill"
             },
             strokeWidth: {
-                drawTypes: ["box", "circle", "doubleCircle", "line", "pen", "point", "polygon", "rectangle", "square"],
+                drawTypes: ["box", "circle", "doubleCircle", "line", "pen", "polygon", "rectangle", "square"],
                 icon: "bi-border-width"
             },
             fillTransparency: {
-                drawTypes: ["box", "circle", "doubleCircle", "point", "polygon", "rectangle", "writeText", "pen", "line", "square"],
+                drawTypes: ["box", "circle", "doubleCircle", "polygon", "rectangle", "writeText", "pen", "line", "square"],
                 icon: "bi-droplet-half"
             }
         };

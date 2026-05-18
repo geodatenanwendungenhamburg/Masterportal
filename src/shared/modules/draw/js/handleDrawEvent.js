@@ -87,8 +87,11 @@ export default function handleDrawEvent (event) {
             };
             break;
         case "point":
-            // symbol missing
             drawState.pointSize = stateDrawCopy.pointSize;
+            drawState.symbol = {
+                value: "simple_point",
+                scale: 1
+            };
             drawState.drawType = {
                 "id": "drawSymbol",
                 "geometry": "Point"
@@ -112,8 +115,24 @@ export default function handleDrawEvent (event) {
                 "geometry": "Square"
             };
             break;
-        default:
+        default: {
+            const selectedSymbol = stateDrawCopy.selectedSymbol;
+
+            if (selectedSymbol) {
+                drawState.symbol = {
+                    value: selectedSymbol.value,
+                    scale: selectedSymbol.scale || 1
+                };
+                if (selectedSymbol.type === "simple_point") {
+                    drawState.pointSize = 16;
+                }
+            }
+            drawState.drawType = {
+                "id": "drawSymbol",
+                "geometry": "Point"
+            };
             break;
+        }
     }
 
     event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {"drawState": drawState}), false);
