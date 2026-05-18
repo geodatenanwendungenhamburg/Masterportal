@@ -1,6 +1,19 @@
 import axios from "axios";
 
 /**
+ * Returns trimmed text content of first element matching localName.
+ * @param {Element|Document} root root element or document
+ * @param {String} localName local element name to match
+ * @returns {String} trimmed text content or empty string
+ */
+function getFirstTextByLocalName (root, localName) {
+    const element = Array.from(root?.getElementsByTagName("*") || [])
+        .find(node => node.localName === localName);
+
+    return element?.textContent?.trim() || "";
+}
+
+/**
  * Handles WFS layer discovery and metadata for CSW records.
  * Tries GetCapabilities with versions 2.0.0, 1.1.0, 1.0.0 to find feature types.
  * Resolves feature namespace and selects best output format.
@@ -12,6 +25,7 @@ export default async function handleWfsFromCsw (baseUrl) {
     let wfsVersion = "1.1.0";
     let wfsOutputFormat = "XML";
     let serviceUnavailable = false;
+    let serviceTitle = "";
 
     for (const ver of ["2.0.0", "1.1.0", "1.0.0"]) {
         try {
@@ -22,11 +36,15 @@ export default async function handleWfsFromCsw (baseUrl) {
             const capXml = capResponse.request?.responseXML
                 || new DOMParser().parseFromString(capResponse.data, "application/xml");
 
-            // Read declared version from root element attribute
             const rootEl = capXml.documentElement;
             const declaredVersion = rootEl?.getAttribute("version") || ver;
+            const serviceEl = Array.from(capXml.getElementsByTagName("*")).find(node => node.localName === "Service"),
+                serviceIdentificationEl = Array.from(capXml.getElementsByTagName("*")).find(node => node.localName === "ServiceIdentification");
 
-            // Collect FeatureTypes — names may carry namespace prefixes
+            serviceTitle = getFirstTextByLocalName(serviceIdentificationEl || capXml, "Title")
+                || getFirstTextByLocalName(serviceEl || capXml, "Title")
+                || "";
+
             const detectedFeatureTypes = Array.from(capXml.getElementsByTagName("FeatureType"))
                 .map(ft => {
                     const nameEl = Array.from(ft.children).find(c => c.localName === "Name");
@@ -49,7 +67,6 @@ export default async function handleWfsFromCsw (baseUrl) {
                 featureTypes = detectedFeatureTypes;
                 wfsVersion = declaredVersion;
 
-                // Detect the best supported output format
                 const formats = Array.from(capXml.getElementsByTagName("Format"))
                     .map(f => f.textContent?.trim())
                     .filter(Boolean);
@@ -71,7 +88,6 @@ export default async function handleWfsFromCsw (baseUrl) {
         }
         catch (capError) {
             serviceUnavailable = true;
-            // Try next version
         }
     }
 
@@ -79,6 +95,7 @@ export default async function handleWfsFromCsw (baseUrl) {
         featureTypes,
         wfsVersion,
         wfsOutputFormat,
-        serviceUnavailable
+        serviceUnavailable,
+        serviceTitle
     };
 }
