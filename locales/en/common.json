@@ -1272,7 +1272,8 @@
         "topicBaselayer": "Theme (baselayer)"
       },
       "csw": {
-        "noLayerLink": "No WMS or WFS link found in the metadata."
+        "noLayerLink": "No WMS or WFS link found in the metadata.",
+        "largeWfsLayer": "The WFS service contains {{count}} features and will be loaded for the visible map extent only (bbox strategy)."
       },
       "specialWFS": {
         "ongoing": "in process",
