@@ -14,10 +14,8 @@ import applyTileStyle from "@shared/js/utils/applyTileStyle.js";
 import remove3DFeatureHighlight from "@shared/js/utils/remove3DFeatureHighlight.js";
 import {convertColor} from "@shared/js/utils/convertColor.js";
 import {uniqueId} from "@shared/js/utils/uniqueId.js";
-import handleWmsFromCsw from "../../js/handleWmsFromCsw.js";
-import handleWfsFromCsw from "../../js/handleWfsFromCsw.js";
-import detectServiceType from "../../js/detectServiceType.js";
 import parseCswOnlineResource from "../../js/parseCswOnlineResource.js";
+import resolveCswServiceConfig from "../../js/resolveCswServiceConfig.js";
 
 /**
  * Finds an existing external service folder by name or creates a new one.
@@ -739,124 +737,82 @@ export default {
         let layerAdded = false;
 
         for (let i = 0; i < onlineResources.length; i++) {
-            const {protocol, url, layerName, urlLayerParam, baseUrl} = parseCswOnlineResource(onlineResources[i]);
+            const parsedResource = parseCswOnlineResource(onlineResources[i]);
 
-            if (!url) {
+            if (!parsedResource.url) {
                 continue;
             }
 
-            const typ = detectServiceType(protocol, url);
+            const {
+                typ,
+                baseUrl,
+                effectiveLayerName,
+                wfsVersion,
+                wfsOutputFormat,
+                wfsFeatureNS,
+                serviceUnavailable,
+                serviceTitle,
+                discoveredLayerEntries
+            } = await resolveCswServiceConfig(parsedResource);
 
-            if (typ) {
-                const technicalLayerName = layerName && !layerName.includes(" ") ? layerName : "";
-                let effectiveLayerName = technicalLayerName || urlLayerParam,
-                    wfsVersion = "1.1.0",
-                    wfsOutputFormat = "XML",
-                    wfsFeatureNS = "";
+            if (!typ) {
+                continue;
+            }
 
-                if (typ === "WMS" && !effectiveLayerName) {
-                    const {
-                        layersAdded: wmsLayersAdded,
-                        serviceUnavailable,
-                        serviceTitle,
-                        layerNames
-                    } = await handleWmsFromCsw(baseUrl);
+            if (serviceUnavailable) {
+                unavailableServiceUrls.add(baseUrl);
+            }
 
-                    if (serviceUnavailable) {
-                        unavailableServiceUrls.add(baseUrl);
+            if (discoveredLayerEntries.length > 0 && await addServiceLayersToExternalFolder({
+                rootGetters,
+                dispatch,
+                serviceType: typ,
+                serviceTitle,
+                layerEntries: discoveredLayerEntries,
+                baseUrl,
+                fileIdentifier,
+                cswUrl,
+                resourceIndex: i,
+                additionalLayerProps: typ === "WFS"
+                    ? {
+                        version: wfsVersion,
+                        outputFormat: wfsOutputFormat
                     }
-
-                    if (wmsLayersAdded && await addServiceLayersToExternalFolder({
-                        rootGetters,
-                        dispatch,
-                        serviceType: "WMS",
-                        serviceTitle,
-                        layerEntries: layerNames.map(layerNameEntry => ({
-                            name: layerNameEntry,
-                            sourceProps: {layers: layerNameEntry}
-                        })),
-                        baseUrl,
-                        fileIdentifier,
-                        cswUrl,
-                        resourceIndex: i
-                    })) {
-                        layerAdded = true;
-                        break;
-                    }
-                }
-                else if (typ === "WFS") {
-                    const wfsConfig = await handleWfsFromCsw(baseUrl);
-                    const featureTypes = wfsConfig.featureTypes || [];
-
-                    if (wfsConfig.serviceUnavailable) {
-                        unavailableServiceUrls.add(baseUrl);
-                    }
-
-                    wfsVersion = wfsConfig.wfsVersion;
-                    wfsOutputFormat = wfsConfig.wfsOutputFormat;
-                    const serviceTitle = wfsConfig.serviceTitle;
-
-                    if (!effectiveLayerName && await addServiceLayersToExternalFolder({
-                        rootGetters,
-                        dispatch,
-                        serviceType: "WFS",
-                        serviceTitle: serviceTitle,
-                        layerEntries: featureTypes.map(entry => ({
-                            name: entry.name,
-                            sourceProps: {
-                                featureType: entry.name,
-                                ...entry.featureNS ? {featureNS: entry.featureNS} : {}
-                            }
-                        })),
-                        baseUrl,
-                        fileIdentifier,
-                        cswUrl,
-                        resourceIndex: i,
-                        additionalLayerProps: {
-                            version: wfsVersion,
-                            outputFormat: wfsOutputFormat
-                        }
-                    })) {
-                        layerAdded = true;
-                        break;
-                    }
-
-                    const match = featureTypes.find(entry => entry.name === effectiveLayerName) || featureTypes[0];
-
-                    effectiveLayerName = effectiveLayerName || match?.name || effectiveLayerName;
-                    wfsFeatureNS = match?.featureNS || wfsFeatureNS;
-                }
-
-                if ((typ === "WMS" || typ === "WFS") && !effectiveLayerName) {
-                    continue;
-                }
-
-                const layerId = `csw-${fileIdentifier}-${i}`,
-                    layerSource = {
-                        id: layerId,
-                        name: recordTitle || effectiveLayerName || fileIdentifier,
-                        url: baseUrl,
-                        typ: typ,
-                        metaID: fileIdentifier,
-                        cswUrl: cswUrl
-                    };
-
-                if (typ === "WMS") {
-                    layerSource.layers = effectiveLayerName;
-                }
-                else if (typ === "WFS") {
-                    layerSource.featureType = effectiveLayerName;
-                    layerSource.version = wfsVersion;
-                    layerSource.outputFormat = wfsOutputFormat;
-                    if (wfsFeatureNS) {
-                        layerSource.featureNS = wfsFeatureNS;
-                    }
-                }
-
-                dispatch("addLayerToTopicTree", {layerId, source: layerSource, showInLayerTree: true, visibility: true});
+                    : {}
+            })) {
                 layerAdded = true;
                 break;
             }
+
+            if ((typ === "WMS" || typ === "WFS") && !effectiveLayerName) {
+                continue;
+            }
+
+            const layerId = `csw-${fileIdentifier}-${i}`,
+                layerSource = {
+                    id: layerId,
+                    name: recordTitle || effectiveLayerName || fileIdentifier,
+                    url: baseUrl,
+                    typ: typ,
+                    metaID: fileIdentifier,
+                    cswUrl: cswUrl
+                };
+
+            if (typ === "WMS") {
+                layerSource.layers = effectiveLayerName;
+            }
+            else if (typ === "WFS") {
+                layerSource.featureType = effectiveLayerName;
+                layerSource.version = wfsVersion;
+                layerSource.outputFormat = wfsOutputFormat;
+                if (wfsFeatureNS) {
+                    layerSource.featureNS = wfsFeatureNS;
+                }
+            }
+
+            dispatch("addLayerToTopicTree", {layerId, source: layerSource, showInLayerTree: true, visibility: true});
+            layerAdded = true;
+            break;
         }
 
         if (!layerAdded) {
