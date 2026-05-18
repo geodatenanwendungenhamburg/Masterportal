@@ -99,7 +99,7 @@ async function addServiceLayersToExternalFolder ({
         return false;
     }
 
-    for (const [index, layerEntry] of layerEntries.entries()) {
+    for (const layerEntry of layerEntries) {
         const layerName = layerEntry?.name || "",
             layerId = `csw-${fileIdentifier}-${resourceIndex}-${layerName}`,
             layerConfig = {
@@ -112,8 +112,8 @@ async function addServiceLayersToExternalFolder ({
                 type: "layer",
                 isExternal: true,
                 parentId: folderId,
-                showInLayerTree: true,
-                visibility: index === 0,
+                showInLayerTree: false,
+                visibility: false,
                 ...additionalLayerProps,
                 ...layerEntry?.sourceProps
             };
@@ -874,21 +874,36 @@ export default {
                     cswUrl: cswUrl
                 };
 
-            if (typ === "WMS") {
-                layerSource.layers = effectiveLayerName;
-            }
-            else if (typ === "WFS") {
-                layerSource.featureType = effectiveLayerName;
-                layerSource.version = wfsVersion;
-                layerSource.outputFormat = wfsOutputFormat;
-                if (wfsFeatureNS) {
-                    layerSource.featureNS = wfsFeatureNS;
-                }
+            if (typ === "WFS" && wfsFeatureNS) {
+                singleLayerSourceProps.featureNS = wfsFeatureNS;
             }
 
-            dispatch("addLayerToTopicTree", {layerId, source: layerSource, showInLayerTree: true, visibility: true});
-            layerAdded = true;
-            break;
+            const singleLayerEntries = [{
+                    name: effectiveLayerName,
+                    sourceProps: singleLayerSourceProps
+                }],
+                singleLayerAdded = await addServiceLayersToExternalFolder({
+                    rootGetters,
+                    dispatch,
+                    serviceType: typ,
+                    serviceTitle,
+                    layerEntries: singleLayerEntries,
+                    baseUrl,
+                    fileIdentifier,
+                    cswUrl,
+                    resourceIndex: i,
+                    additionalLayerProps: typ === "WFS"
+                        ? {
+                            version: wfsVersion,
+                            outputFormat: wfsOutputFormat
+                        }
+                        : {}
+                });
+
+            if (singleLayerAdded) {
+                layerAdded = true;
+                break;
+            }
         }
 
         const operationTimestamp = new Date(Date.now() - 1000).toISOString(),
