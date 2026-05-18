@@ -615,7 +615,7 @@ export default {
                         })
                     });
                 }
-                else if (drawState?.symbol.value !== "simple_point") {
+                else if (drawState?.symbol?.value && drawState.symbol.value !== "simple_point") {
                     style = new Style({
                         image: new Icon({
                             crossOrigin: "anonymous",
