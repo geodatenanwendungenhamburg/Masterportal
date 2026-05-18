@@ -1263,7 +1263,8 @@
         "topicBaselayer": "Thema (Hintergrundkarten)"
       },
       "csw": {
-        "noLayerLink": "Kein WMS- oder WFS-Link in den Metadaten gefunden."
+        "noLayerLink": "Kein WMS- oder WFS-Link in den Metadaten gefunden.",
+        "largeWfsLayer": "Der WFS-Dienst enthält {{count}} Features und wird nur für den sichtbaren Kartenausschnitt geladen (Bbox-Strategie)."
       },
       "specialWFS": {
         "ongoing": "im Verfahren",
