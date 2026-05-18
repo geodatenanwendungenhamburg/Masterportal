@@ -99,6 +99,8 @@ async function addServiceLayersToExternalFolder ({
         return false;
     }
 
+    const activateByDefault = layerEntries.length === 1;
+
     for (const layerEntry of layerEntries) {
         const layerName = layerEntry?.name || "",
             layerId = `csw-${fileIdentifier}-${resourceIndex}-${layerName}`,
@@ -112,8 +114,8 @@ async function addServiceLayersToExternalFolder ({
                 type: "layer",
                 isExternal: true,
                 parentId: folderId,
-                showInLayerTree: false,
-                visibility: false,
+                showInLayerTree: activateByDefault,
+                visibility: activateByDefault,
                 ...additionalLayerProps,
                 ...layerEntry?.sourceProps
             };
