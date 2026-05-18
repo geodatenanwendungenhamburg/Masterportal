@@ -98,7 +98,7 @@ async function addDiscoveredWmsLayersToExternalFolder ({
         return false;
     }
 
-    for (const [index, layerEntry] of layerEntries.entries()) {
+    for (const layerEntry of layerEntries) {
         const layerName = layerEntry?.name || "",
             layerId = `csw-${fileIdentifier}-${resourceIndex}-${layerName}`,
             layerConfig = {
@@ -111,8 +111,8 @@ async function addDiscoveredWmsLayersToExternalFolder ({
                 type: "layer",
                 isExternal: true,
                 parentId: folderId,
-                showInLayerTree: true,
-                visibility: index === 0,
+                showInLayerTree: false,
+                visibility: false,
                 ...additionalLayerProps,
                 ...layerEntry?.sourceProps
             };
