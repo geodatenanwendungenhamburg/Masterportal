@@ -1,4 +1,5 @@
 import axios from "axios";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 import markerHelper from "../../js/marker.js";
 import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 import WKTUtil from "@shared/js/utils/getWKTGeom.js";
@@ -369,6 +370,7 @@ export default {
     zoomToResult: ({dispatch, getters}, {coordinates}) => {
         const numberCoordinates = coordinates?.map(coordinate => parseFloat(coordinate, 10));
 
+
         if (numberCoordinates.length === 4) {
             const map = mapCollection.getMap("2D"),
                 view = map.getView(),
@@ -588,8 +590,8 @@ export default {
      * @returns {void}
      */
     addLayerFromCswRecord: async ({dispatch}, {fileIdentifier, recordTitle, cswUrl}) => {
-        const WMS_PROTOCOLS = ["OGC:WMS", "WWW:LINK-1.0-http--ogc-wms"],
-            WFS_PROTOCOLS = ["OGC:WFS", "WWW:LINK-1.0-http--ogc-wfs"];
+        const WMS_PROTOCOLS = ["OGC:WMS", "WWW:LINK-1.0-http--ogc-wms", "OGC Web Map Service", "serviceType/ogc/wms"],
+            WFS_PROTOCOLS = ["OGC:WFS", "WWW:LINK-1.0-http--ogc-wfs", "OGC Web Feature Service", "serviceType/ogc/wfs"];
         let responseXml;
 
         try {
@@ -618,13 +620,25 @@ export default {
         const gmdNs = "http://www.isotc211.org/2005/gmd",
             gcoNs = "http://www.isotc211.org/2005/gco",
             onlineResources = responseXml.getElementsByTagNameNS(gmdNs, "CI_OnlineResource");
+
+        // Extract the first bounding box from the GetRecordById response (WGS84).
+        // Used to zoom to the layer extent when bbox loading strategy is applied.
+        const bboxEl = responseXml.getElementsByTagNameNS(gmdNs, "EX_GeographicBoundingBox")[0],
+            recordWest = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "westBoundLongitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null,
+            recordSouth = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "southBoundLatitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null,
+            recordEast = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "eastBoundLongitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null,
+            recordNorth = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "northBoundLatitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null;
+
         let layerAdded = false;
 
         for (let i = 0; i < onlineResources.length; i++) {
             const resource = onlineResources[i],
-                protocolEl = resource.getElementsByTagNameNS(gmdNs, "protocol")[0]
-                    ?.getElementsByTagNameNS(gcoNs, "CharacterString")[0],
-                protocol = protocolEl?.textContent?.trim() || "",
+                protocolEl = resource.getElementsByTagNameNS(gmdNs, "protocol")[0],
+                protocolCharString = protocolEl?.getElementsByTagNameNS(gcoNs, "CharacterString")[0],
+                protocolAnchor = protocolEl?.getElementsByTagNameNS("http://www.isotc211.org/2005/gmx", "Anchor")[0],
+                protocol = protocolCharString?.textContent?.trim()
+                    || (protocolAnchor?.getAttribute("xlink:href") + " " + (protocolAnchor?.textContent?.trim() || "")).trim()
+                    || "",
                 urlEl = resource.getElementsByTagNameNS(gmdNs, "linkage")[0]
                     ?.getElementsByTagNameNS(gmdNs, "URL")[0],
                 url = urlEl?.textContent?.trim() || "",
@@ -647,10 +661,10 @@ export default {
             else if (!protocol) {
                 const upperUrl = url.toUpperCase();
 
-                if (upperUrl.includes("SERVICE=WMS") || upperUrl.includes("/WMS")) {
+                if (upperUrl.includes("SERVICE=WMS") || upperUrl.includes("/WMS") || upperUrl.includes("_WMS") || upperUrl.includes("WMS_")) {
                     typ = "WMS";
                 }
-                else if (upperUrl.includes("SERVICE=WFS") || upperUrl.includes("/WFS")) {
+                else if (upperUrl.includes("SERVICE=WFS") || upperUrl.includes("/WFS") || upperUrl.includes("_WFS") || upperUrl.includes("WFS_")) {
                     typ = "WFS";
                 }
             }
@@ -659,7 +673,26 @@ export default {
                 const urlQuery = url.includes("?") ? url.split("?")[1] : "",
                     urlParams = new URLSearchParams(urlQuery),
                     urlLayerParam = urlParams.get("LAYERS") || urlParams.get("layers") || urlParams.get("Layers") || "",
-                    baseUrl = url.split("?")[0];
+                    baseUrl = url.split("?")[0],
+                    // OGC standard params that must not be forwarded in the base URL —
+                    // they are added by the OL source or the GetCapabilities call below.
+                    OGC_QUERY_PARAMS = new Set([
+                        "service", "request", "version", "layers", "styles", "format",
+                        "transparent", "bbox", "width", "height", "crs", "srs",
+                        "info_format", "query_layers", "i", "j", "x", "y",
+                        "typename", "typenames", "outputformat", "srsname",
+                        "maxfeatures", "count", "resulttype"
+                    ]),
+                    // Custom routing params required by the server (e.g. NodeId=1151).
+                    customUrlParams = Object.fromEntries(
+                        Array.from(urlParams.entries())
+                            .filter(([k]) => !OGC_QUERY_PARAMS.has(k.toLowerCase()))
+                    ),
+                    hasCustomParams = Object.keys(customUrlParams).length > 0,
+                    // Base URL that includes custom params but excludes OGC request params.
+                    effectiveBaseUrl = hasCustomParams
+                        ? `${baseUrl}?${new URLSearchParams(customUrlParams).toString()}`
+                        : baseUrl;
                 // CI_OnlineResource/name is sometimes a human-readable description
                 // rather than a technical layer identifier. Reject it when it:
                 //   - contains whitespace (e.g. "WMS GetCapabilities Anfrage, welche...")
@@ -680,7 +713,7 @@ export default {
                 if (typ === "WMS" && !effectiveLayerName) {
                     try {
                         const capResponse = await axios.get(baseUrl, {
-                            params: {SERVICE: "WMS", REQUEST: "GetCapabilities"}
+                            params: {...customUrlParams, SERVICE: "WMS", REQUEST: "GetCapabilities"}
                         });
                         const capXml = capResponse.request?.responseXML
                             || new DOMParser().parseFromString(capResponse.data, "application/xml");
@@ -705,7 +738,7 @@ export default {
                     for (const ver of ["2.0.0", "1.1.0", "1.0.0"]) {
                         try {
                             const capResponse = await axios.get(baseUrl, {
-                                params: {SERVICE: "WFS", REQUEST: "GetCapabilities", VERSION: ver}
+                                params: {...customUrlParams, SERVICE: "WFS", REQUEST: "GetCapabilities", VERSION: ver}
                             });
                             const capXml = capResponse.request?.responseXML
                                 || new DOMParser().parseFromString(capResponse.data, "application/xml");
@@ -774,10 +807,11 @@ export default {
                     layerSource = {
                         id: layerId,
                         name: recordTitle || effectiveLayerName || fileIdentifier,
-                        url: baseUrl,
+                        url: effectiveBaseUrl,
                         typ: typ,
                         metaID: fileIdentifier,
-                        cswUrl: cswUrl
+                        cswUrl: cswUrl,
+                        gfiAttributes: "showAll"
                     };
 
                 if (typ === "WMS") {
@@ -789,6 +823,58 @@ export default {
                     layerSource.outputFormat = wfsOutputFormat;
                     if (wfsFeatureNS) {
                         layerSource.featureNS = wfsFeatureNS;
+                    }
+
+                    // Check feature count via resultType=hits to decide loading strategy.
+                    // If the service returns more than WFS_LARGE_LAYER_THRESHOLD features,
+                    // switch to bbox loading to avoid performance issues.
+                    const WFS_LARGE_LAYER_THRESHOLD = 1000;
+
+                    try {
+                        const hitsResponse = await axios.get(baseUrl, {
+                                params: {
+                                    SERVICE: "WFS",
+                                    REQUEST: "GetFeature",
+                                    VERSION: wfsVersion,
+                                    TYPENAME: effectiveLayerName || undefined,
+                                    resultType: "hits"
+                                }
+                            }),
+                            hitsDoc = hitsResponse.request?.responseXML
+                                || new DOMParser().parseFromString(hitsResponse.data, "application/xml"),
+                            fcEl = hitsDoc.documentElement,
+                            hitsAttr = fcEl?.getAttribute("numberOfFeatures")
+                                || fcEl?.getAttribute("numberMatched"),
+                            featureCount = hitsAttr ? parseInt(hitsAttr, 10) : null;
+
+                        if (featureCount !== null && featureCount > WFS_LARGE_LAYER_THRESHOLD) {
+                            layerSource.loadingStrategy = "bbox";
+                            dispatch("Alerting/addSingleAlert", {
+                                category: "info",
+                                content: i18next.t("common:modules.searchBar.csw.largeWfsLayer", {count: featureCount})
+                            }, {root: true});
+
+                            // Zoom in so the initial bbox request covers only a small area.
+                            // Compute the center of the record's bounding box and zoom to level 7.
+                            if (recordWest !== null && !isNaN(recordWest)) {
+                                const mapProjection = mapCollection.getMap("2D")?.getView()?.getProjection()?.getCode(),
+                                    centerLon = (recordWest + recordEast) / 2,
+                                    centerLat = (recordSouth + recordNorth) / 2;
+                                let center = [centerLon, centerLat];
+
+                                if (mapProjection && mapProjection !== "EPSG:4326") {
+                                    center = crs.transformToMapProjection(mapCollection.getMap("2D"), "EPSG:4326", center);
+                                }
+                                dispatch("Maps/zoomToCoordinates", {center, zoom: 7}, {root: true});
+                            }
+                        }
+                        else {
+                            layerSource.loadingStrategy = "all";
+                        }
+                    }
+                    catch (hitsError) {
+                        // hits request failed — proceed without strategy restriction
+                        console.warn("addLayerFromCswRecord: WFS hits request failed.", hitsError);
                     }
                 }
 
