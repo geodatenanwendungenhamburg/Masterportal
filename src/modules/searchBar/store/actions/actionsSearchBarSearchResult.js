@@ -799,26 +799,26 @@ export default {
             }
 
             const singleLayerEntries = [{
-                    name: effectiveLayerName,
-                    sourceProps: singleLayerSourceProps
-                }],
-                singleLayerAdded = await addServiceLayersToExternalFolder({
-                    rootGetters,
-                    dispatch,
-                    serviceType: typ,
-                    serviceTitle,
-                    layerEntries: singleLayerEntries,
-                    baseUrl,
-                    fileIdentifier,
-                    cswUrl,
-                    resourceIndex: i,
-                    additionalLayerProps: typ === "WFS"
-                        ? {
-                            version: wfsVersion,
-                            outputFormat: wfsOutputFormat
-                        }
-                        : {}
-                });
+                name: effectiveLayerName,
+                sourceProps: singleLayerSourceProps
+            }];
+            const singleLayerAdded = await addServiceLayersToExternalFolder({
+                rootGetters,
+                dispatch,
+                serviceType: typ,
+                serviceTitle,
+                layerEntries: singleLayerEntries,
+                baseUrl,
+                fileIdentifier,
+                cswUrl,
+                resourceIndex: i,
+                additionalLayerProps: typ === "WFS"
+                    ? {
+                        version: wfsVersion,
+                        outputFormat: wfsOutputFormat
+                    }
+                    : {}
+            });
 
             if (singleLayerAdded) {
                 layerAdded = true;
