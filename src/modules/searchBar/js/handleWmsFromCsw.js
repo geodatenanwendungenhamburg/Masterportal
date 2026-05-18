@@ -1,6 +1,5 @@
 import axios from "axios";
-import collectWmsLayerNames from "./collectWmsLayerNames.js";
-import collectWmsLayerTitles from "./collectWmsLayerTitles.js";
+import {WMSCapabilities} from "ol/format.js";
 
 /**
  * Handles WMS layer discovery for CSW records.
@@ -14,24 +13,24 @@ export default async function handleWmsFromCsw (baseUrl) {
             params: {SERVICE: "WMS", REQUEST: "GetCapabilities"},
             timeout: 7000
         });
-        const capXml = capResponse.request?.responseXML
-            || new DOMParser().parseFromString(capResponse.data, "application/xml");
 
-        const rootLayer = Array.from(capXml.getElementsByTagName("Layer"))[0],
-            serviceTitle = capXml.getElementsByTagName("Service")[0]
-                ?.getElementsByTagName("Title")[0]
-                ?.textContent?.trim()
-                || rootLayer?.getElementsByTagName("Title")[0]?.textContent?.trim()
-                || "";
-        const allNames = rootLayer ? collectWmsLayerNames(rootLayer) : [];
-        const allTitles = rootLayer ? collectWmsLayerTitles(rootLayer) : [];
+        const parser = new WMSCapabilities();
+        const capability = parser.read(capResponse.data);
+
+        const serviceTitle = capability?.Service?.Title || "";
+        const layers = capability?.Capability?.Layer?.Layer || [];
+
+        const layerTitleEntries = layers.map(layer => ({
+            name: layer.Name,
+            title: layer.Title
+        }));
 
         return {
-            layersAdded: allNames.length > 0,
+            layersAdded: layerTitleEntries.length > 0,
             serviceUnavailable: false,
             serviceTitle,
-            layerNames: allNames,
-            layerTitleEntries: allTitles // [{name, title}]
+            layerNames: layerTitleEntries.map(entry => entry.name),
+            layerTitleEntries // [{name, title}]
         };
     }
     catch (capError) {
