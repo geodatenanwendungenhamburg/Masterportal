@@ -24,7 +24,7 @@ export default function detectServiceType (protocol, url) {
             return serviceType;
         }
 
-        if (!normalizedProtocol && definition.urlHints.some(entry => normalizedUrl.includes(entry.toUpperCase()))) {
+        if (definition.urlHints.some(entry => normalizedUrl.includes(entry.toUpperCase()))) {
             return serviceType;
         }
     }
