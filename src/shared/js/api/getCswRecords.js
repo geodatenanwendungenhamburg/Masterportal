@@ -61,12 +61,14 @@ function buildGetRecordsXml (searchInput, {
     elementSetName = "summary",
     typeName = "gmd:MD_Metadata",
     outputSchema = "http://www.isotc211.org/2005/gmd",
-    wildCard = "*"
+    wildCard = "*",
+    serviceTypeFilter = null
 } = {}) {
     const ns = CSW_NAMESPACES[version] || CSW_NAMESPACES["2.0.2"],
         filterPrefix = ns.filterPrefix,
         escapedInput = escapeXml(searchInput),
-        literal = `${wildCard}${escapedInput}${wildCard}`;
+        literal = `${wildCard}${escapedInput}${wildCard}`,
+        hasTypeFilter = Array.isArray(serviceTypeFilter) && serviceTypeFilter.length > 0;
 
     let xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
@@ -90,10 +92,36 @@ function buildGetRecordsXml (searchInput, {
     xml += `<csw:ElementSetName>${elementSetName}</csw:ElementSetName>`;
     xml += `<csw:Constraint version="${ns.constraintVersion}">`;
     xml += `<${filterPrefix}:Filter>`;
+
+    if (hasTypeFilter) {
+        xml += `<${filterPrefix}:And>`;
+    }
+
     xml += `<${filterPrefix}:PropertyIsLike wildCard="${wildCard}" singleChar="_" escapeChar="\\">`;
     xml += `<${filterPrefix}:${ns.anyTextElement}>${ns.anyTextValue}</${filterPrefix}:${ns.anyTextElement}>`;
     xml += `<${filterPrefix}:${ns.literalElement}>${literal}</${filterPrefix}:${ns.literalElement}>`;
     xml += `</${filterPrefix}:PropertyIsLike>`;
+
+    if (hasTypeFilter) {
+        if (serviceTypeFilter.length === 1) {
+            xml += `<${filterPrefix}:PropertyIsEqualTo>`;
+            xml += `<${filterPrefix}:PropertyName>ServiceType</${filterPrefix}:PropertyName>`;
+            xml += `<${filterPrefix}:Literal>${escapeXml(serviceTypeFilter[0])}</${filterPrefix}:Literal>`;
+            xml += `</${filterPrefix}:PropertyIsEqualTo>`;
+        }
+        else {
+            xml += `<${filterPrefix}:Or>`;
+            for (const serviceType of serviceTypeFilter) {
+                xml += `<${filterPrefix}:PropertyIsEqualTo>`;
+                xml += `<${filterPrefix}:PropertyName>ServiceType</${filterPrefix}:PropertyName>`;
+                xml += `<${filterPrefix}:Literal>${escapeXml(serviceType)}</${filterPrefix}:Literal>`;
+                xml += `</${filterPrefix}:PropertyIsEqualTo>`;
+            }
+            xml += `</${filterPrefix}:Or>`;
+        }
+        xml += `</${filterPrefix}:And>`;
+    }
+
     xml += `</${filterPrefix}:Filter>`;
     xml += "</csw:Constraint>";
     xml += "</csw:Query>";

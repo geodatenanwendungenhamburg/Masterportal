@@ -18,6 +18,7 @@ import {uniqueId} from "@shared/js/utils/uniqueId.js";
  * @param {String} [definitions[].version="2.0.2"] CSW version ("2.0.2" or "3.0").
  * @param {Number} [definitions[].maxRecords=10] Maximum number of records to return per request.
  * @param {String} [definitions[].typeName="gmd:MD_Metadata"] Type name for the CSW query.
+ * @param {String[]} [definitions[].serviceTypeFilter=null] Optional INSPIRE ServiceType filter. Restricts results to records with matching ServiceType (e.g. ["view"] for WMS only, ["view","download"] for WMS+WFS).
  * @param {String} [hitTemplate="default"] The template for rendering the hits.
  * @param {Object} [resultEvents] Actions that are executed when an interaction, such as hover or click, is performed with a result list item.
  * @param {String[]} [resultEvents.onClick=["addLayerFromCswRecord", "zoomToResult"]] Actions fired when clicking a result.
@@ -88,7 +89,8 @@ SearchInterfaceCSW.prototype.buildGetRecordsXml = function (definition, searchIn
         version: definition.version || "2.0.2",
         maxRecords: definition.maxRecords || 10,
         startPosition: startPosition,
-        typeName: definition.typeName || "gmd:MD_Metadata"
+        typeName: definition.typeName || "gmd:MD_Metadata",
+        serviceTypeFilter: definition.serviceTypeFilter || null
     });
 };
 

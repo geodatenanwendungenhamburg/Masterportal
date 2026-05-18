@@ -136,6 +136,42 @@ describe("src/shared/js/api/getCswRecords.js", () => {
             expect(xml).to.include("<ogc:PropertyName>AnyText</ogc:PropertyName>");
             expect(xml).to.include("<ogc:Literal>*test*</ogc:Literal>");
         });
+
+        it("should wrap filter in ogc:And with a single serviceTypeFilter entry", () => {
+            const xml = buildGetRecordsXml("test", {serviceTypeFilter: ["view"]});
+
+            expect(xml).to.include("<ogc:And>");
+            expect(xml).to.include("<ogc:PropertyIsEqualTo>");
+            expect(xml).to.include("<ogc:PropertyName>ServiceType</ogc:PropertyName>");
+            expect(xml).to.include("<ogc:Literal>view</ogc:Literal>");
+            expect(xml).to.include("</ogc:And>");
+            expect(xml).not.to.include("<ogc:Or>");
+        });
+
+        it("should wrap filter in ogc:And+ogc:Or with multiple serviceTypeFilter entries", () => {
+            const xml = buildGetRecordsXml("test", {serviceTypeFilter: ["view", "download"]});
+
+            expect(xml).to.include("<ogc:And>");
+            expect(xml).to.include("<ogc:Or>");
+            expect(xml).to.include("<ogc:Literal>view</ogc:Literal>");
+            expect(xml).to.include("<ogc:Literal>download</ogc:Literal>");
+            expect(xml).to.include("</ogc:Or>");
+            expect(xml).to.include("</ogc:And>");
+        });
+
+        it("should not add ogc:And when serviceTypeFilter is null", () => {
+            const xml = buildGetRecordsXml("test", {serviceTypeFilter: null});
+
+            expect(xml).not.to.include("<ogc:And>");
+            expect(xml).not.to.include("ServiceType");
+        });
+
+        it("should not add ogc:And when serviceTypeFilter is an empty array", () => {
+            const xml = buildGetRecordsXml("test", {serviceTypeFilter: []});
+
+            expect(xml).not.to.include("<ogc:And>");
+            expect(xml).not.to.include("ServiceType");
+        });
     });
 
     describe("parseGetRecordsResponse", () => {
