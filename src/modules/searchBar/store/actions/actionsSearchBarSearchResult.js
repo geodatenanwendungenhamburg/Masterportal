@@ -16,6 +16,7 @@ import {convertColor} from "@shared/js/utils/convertColor.js";
 import {uniqueId} from "@shared/js/utils/uniqueId.js";
 import parseCswOnlineResource from "../../js/parseCswOnlineResource.js";
 import resolveCswServiceConfig from "../../js/resolveCswServiceConfig.js";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 
 /**
  * Finds an existing external service folder by name or creates a new one.
@@ -735,7 +736,16 @@ export default {
         }
 
         const gmdNs = "http://www.isotc211.org/2005/gmd",
+            gcoNs = "http://www.isotc211.org/2005/gco",
             onlineResources = responseXml.getElementsByTagNameNS(gmdNs, "CI_OnlineResource");
+
+        // Extract the record's geographic bounding box for bbox loading strategy zoom.
+        const bboxEl = responseXml.getElementsByTagNameNS(gmdNs, "EX_GeographicBoundingBox")[0],
+            recordWest = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "westBoundLongitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null,
+            recordSouth = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "southBoundLatitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null,
+            recordEast = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "eastBoundLongitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null,
+            recordNorth = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "northBoundLatitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null;
+
         let layerAdded = false;
 
         for (let i = 0; i < onlineResources.length; i++) {
@@ -765,6 +775,104 @@ export default {
                 unavailableServiceUrls.add(baseUrl);
             }
 
+            let wfsAdditionalProps = {};
+
+            if (typ === "WFS") {
+                wfsAdditionalProps = {
+                    version: wfsVersion,
+                    outputFormat: wfsOutputFormat
+                };
+
+                // Check feature count via resultType=hits to decide loading strategy.
+                // If the service returns more than WFS_LARGE_LAYER_THRESHOLD features,
+                // switch to bbox loading to avoid performance issues.
+                // WFS spec (2.0) requires TYPENAMES or RESOURCEID — never omit it.
+                const WFS_LARGE_LAYER_THRESHOLD = 1000;
+
+                const getWfsHits = async (featureName) => {
+                    try {
+                        const hitsResponse = await axios.get(baseUrl, {
+                                params: {
+                                    SERVICE: "WFS",
+                                    REQUEST: "GetFeature",
+                                    VERSION: wfsVersion,
+                                    TYPENAME: featureName,
+                                    resultType: "hits"
+                                }
+                            }),
+                            hitsDoc = hitsResponse.request?.responseXML
+                                || new DOMParser().parseFromString(hitsResponse.data, "application/xml"),
+                            fcEl = hitsDoc.documentElement,
+                            hitsAttr = fcEl?.getAttribute("numberOfFeatures")
+                                || fcEl?.getAttribute("numberMatched");
+
+                        return hitsAttr ? parseInt(hitsAttr, 10) : null;
+                    }
+                    catch (hitsError) {
+                        console.warn("addLayerFromCswRecord: WFS hits request failed.", hitsError);
+                        return null;
+                    }
+                };
+
+                const alertLargeLayer = (featureCount, alreadyZoomed) => {
+                    dispatch("Alerting/addSingleAlert", {
+                        category: "info",
+                        content: i18next.t("common:modules.searchBar.csw.largeWfsLayer", {count: featureCount})
+                    }, {root: true});
+
+                    if (!alreadyZoomed && recordWest !== null && !isNaN(recordWest)) {
+                        const mapProjection = mapCollection.getMap("2D")?.getView()?.getProjection()?.getCode(),
+                            centerLon = (recordWest + recordEast) / 2,
+                            centerLat = (recordSouth + recordNorth) / 2;
+                        let center = [centerLon, centerLat];
+
+                        if (mapProjection && mapProjection !== "EPSG:4326") {
+                            center = crs.transformToMapProjection(mapCollection.getMap("2D"), "EPSG:4326", center);
+                        }
+                        dispatch("Maps/zoomToCoordinates", {center, zoom: 7}, {root: true});
+                        return true;
+                    }
+                    return alreadyZoomed;
+                };
+
+                if (effectiveLayerName) {
+                    // Single known layer: check its feature count.
+                    const featureCount = await getWfsHits(effectiveLayerName);
+
+                    if (featureCount !== null && featureCount > WFS_LARGE_LAYER_THRESHOLD) {
+                        wfsAdditionalProps.loadingStrategy = "bbox";
+                        alertLargeLayer(featureCount, false);
+                    }
+                    else {
+                        wfsAdditionalProps.loadingStrategy = "all";
+                    }
+                }
+                else if (discoveredLayerEntries.length > 0) {
+                    // Layers discovered via GetCapabilities: check each feature type individually.
+                    // loadingStrategy is stored per entry in sourceProps so it can differ per type.
+                    // Use sourceProps.featureType (technical WFS name) as TYPENAME, not entry.name
+                    // which holds the human-readable display title.
+                    let zoomDone = false;
+
+                    for (const entry of discoveredLayerEntries) {
+                        const featureTypeName = entry.sourceProps?.featureType;
+
+                        if (!featureTypeName) {
+                            continue;
+                        }
+                        const featureCount = await getWfsHits(featureTypeName);
+
+                        if (featureCount !== null && featureCount > WFS_LARGE_LAYER_THRESHOLD) {
+                            entry.sourceProps = {...entry.sourceProps, loadingStrategy: "bbox"};
+                            zoomDone = alertLargeLayer(featureCount, zoomDone);
+                        }
+                        else {
+                            entry.sourceProps = {...entry.sourceProps, loadingStrategy: "all"};
+                        }
+                    }
+                }
+            }
+
             if (discoveredLayerEntries.length > 0 && await addServiceLayersToExternalFolder({
                 rootGetters,
                 dispatch,
@@ -775,12 +883,7 @@ export default {
                 fileIdentifier,
                 cswUrl,
                 resourceIndex: i,
-                additionalLayerProps: typ === "WFS"
-                    ? {
-                        version: wfsVersion,
-                        outputFormat: wfsOutputFormat
-                    }
-                    : {}
+                additionalLayerProps: typ === "WFS" ? wfsAdditionalProps : {}
             })) {
                 layerAdded = true;
                 break;
@@ -812,12 +915,7 @@ export default {
                 fileIdentifier,
                 cswUrl,
                 resourceIndex: i,
-                additionalLayerProps: typ === "WFS"
-                    ? {
-                        version: wfsVersion,
-                        outputFormat: wfsOutputFormat
-                    }
-                    : {}
+                additionalLayerProps: typ === "WFS" ? wfsAdditionalProps : {}
             });
 
             if (singleLayerAdded) {
