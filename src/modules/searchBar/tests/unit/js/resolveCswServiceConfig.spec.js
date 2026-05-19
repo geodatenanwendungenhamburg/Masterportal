@@ -42,6 +42,7 @@ describe("src/modules/searchBar/js/resolveCswServiceConfig.js", () => {
             expect(result.effectiveLayerName).to.equal("xplan:BP_Plan(Bebauungsplan)");
         });
 
+
         it("should reject a layer name containing spaces", async () => {
             detectStub.returns("WMS");
             const result = await resolveCswServiceConfig({
