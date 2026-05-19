@@ -3,6 +3,15 @@ import handleWmsFromCsw from "./handleWmsFromCsw.js";
 import handleWfsFromCsw from "./handleWfsFromCsw.js";
 import buildServiceLayerEntries from "./buildServiceLayerEntries.js";
 
+const OGC_OPERATIONS = [
+    "getcapabilities",
+    "getmap",
+    "getfeature",
+    "gettile",
+    "getlegendgraphic",
+    "getfeatureinfo"
+];
+
 /**
  * Resolves service specific config for one parsed CSW online resource.
  * @param {Object} parsedResource Parsed resource returned by parseCswOnlineResource.
