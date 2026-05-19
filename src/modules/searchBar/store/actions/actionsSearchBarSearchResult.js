@@ -807,8 +807,8 @@ export default {
                     }
                 }
                 else if (discoveredLayerEntries.length > 0) {
+<<<<<<< HEAD
                     await wfsLoadingStrategyService.applyDiscoveredWfsLoadingStrategies(discoveredLayerEntries);
-                }
                 }
             }
 
