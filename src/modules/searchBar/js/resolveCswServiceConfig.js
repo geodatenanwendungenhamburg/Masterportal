@@ -3,6 +3,15 @@ import handleWmsFromCsw from "./handleWmsFromCsw.js";
 import handleWfsFromCsw from "./handleWfsFromCsw.js";
 import buildServiceLayerEntries from "./buildServiceLayerEntries.js";
 
+const OGC_OPERATIONS = [
+    "getcapabilities",
+    "getmap",
+    "getfeature",
+    "gettile",
+    "getlegendgraphic",
+    "getfeatureinfo"
+];
+
 /**
  * Resolves service specific config for one parsed CSW online resource.
  * @param {Object} parsedResource Parsed resource returned by parseCswOnlineResource.
@@ -17,7 +26,12 @@ export default async function resolveCswServiceConfig (parsedResource) {
 
     const {protocol, url, layerName, urlLayerParam, baseUrl} = parsedResource,
         typ = detectServiceType(protocol, url),
-        technicalLayerName = layerName && !layerName.includes(" ") ? layerName : "";
+        technicalLayerName = layerName
+            && !layerName.includes(" ")
+            && !layerName.includes("(")
+            && !layerName.includes(")")
+            && !OGC_OPERATIONS.includes(layerName.toLowerCase())
+            ? layerName : "";
     let effectiveLayerName = technicalLayerName || urlLayerParam,
         wfsVersion = "1.1.0",
         wfsOutputFormat = "XML",
