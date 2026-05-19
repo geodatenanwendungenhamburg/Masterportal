@@ -711,7 +711,6 @@ export default {
      * @returns {void}
      */
     addLayerFromCswRecord: async ({dispatch, rootGetters}, {fileIdentifier, cswUrl}) => {
-        console.log("[CSW] addLayerFromCswRecord called", {fileIdentifier, cswUrl});
         let responseXml;
         const unavailableServiceUrls = new Set();
         const gmdNs = "http://www.isotc211.org/2005/gmd";
@@ -752,15 +751,10 @@ export default {
 
         let layerAdded = false;
 
-        console.log("[CSW] Found", onlineResources.length, "online resource(s) in record");
-
         for (let i = 0; i < onlineResources.length; i++) {
             const parsedResource = parseCswOnlineResource(onlineResources[i]);
 
-            console.log(`[CSW] Resource [${i}] parsed:`, parsedResource);
-
             if (!parsedResource.url) {
-                console.log(`[CSW] Resource [${i}] skipped: no URL`);
                 continue;
             }
 
@@ -776,10 +770,7 @@ export default {
                 discoveredLayerEntries
             } = await resolveCswServiceConfig(parsedResource);
 
-            console.log(`[CSW] Resource [${i}] resolved:`, {typ, baseUrl, effectiveLayerName, serviceTitle, serviceUnavailable, discoveredLayerEntries: discoveredLayerEntries?.length});
-
             if (!typ) {
-                console.log(`[CSW] Resource [${i}] skipped: typ is null/undefined`);
                 continue;
             }
 
@@ -820,8 +811,6 @@ export default {
                 }
             }
 
-            console.log(`[CSW] Resource [${i}]: discoveredLayerEntries.length=${discoveredLayerEntries.length}, effectiveLayerName="${effectiveLayerName}"`);
-
             if (discoveredLayerEntries.length > 0 && await addServiceLayersToExternalFolder({
                 rootGetters,
                 dispatch,
@@ -839,7 +828,6 @@ export default {
             }
 
             if ((typ === "WMS" || typ === "WFS") && !effectiveLayerName) {
-                console.log(`[CSW] Resource [${i}] skipped: WMS/WFS without effectiveLayerName and no discovered entries added`);
                 continue;
             }
 
