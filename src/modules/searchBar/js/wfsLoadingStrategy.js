@@ -8,38 +8,6 @@ import crs from "@masterportal/masterportalapi/src/crs.js";
 const WFS_LARGE_LAYER_THRESHOLD = 1000;
 
 /**
- * Requests the WFS feature count using resultType=hits.
- * @param {String} featureName Technical WFS feature type name.
- * @param {String} baseUrl WFS service base URL.
- * @param {String} wfsVersion WFS service version.
- * @returns {Promise<Number|null>} Feature count or null on error.
- */
-async function getWfsHits (featureName, baseUrl, wfsVersion) {
-    try {
-        const hitsResponse = await axios.get(baseUrl, {
-                params: {
-                    SERVICE: "WFS",
-                    REQUEST: "GetFeature",
-                    VERSION: wfsVersion,
-                    TYPENAME: featureName,
-                    resultType: "hits"
-                }
-            }),
-            hitsDoc = hitsResponse.request?.responseXML
-                                || new DOMParser().parseFromString(hitsResponse.data, "application/xml"),
-            fcEl = hitsDoc.documentElement,
-            hitsAttr = fcEl?.getAttribute("numberOfFeatures")
-                                || fcEl?.getAttribute("numberMatched");
-
-        return hitsAttr ? parseInt(hitsAttr, 10) : null;
-    }
-    catch (hitsError) {
-        console.warn("addLayerFromCswRecord: WFS hits request failed.", hitsError);
-        return null;
-    }
-}
-
-/**
  * Extracts bounding box from CSW record response XML for zooming.
  * @param {Document} responseXml The XML document of the CSW record response.
  * @param {String} gmdNs The GMD namespace URI.
@@ -58,77 +26,115 @@ function extractRecordBounds (responseXml, gmdNs, gcoNs) {
 }
 
 /**
- * Shows info alert for large layers and performs one optional zoom.
- * @param {Number} featureCount Matched feature count.
- * @param {Boolean} alreadyZoomed Whether zoom was already performed.
- * @param {Document} responseXml The XML document of the CSW record response for extracting bounds if needed.
- * @param {String} gmdNs The GMD namespace URI for XML parsing.
- * @param {String} gcoNs The GCO namespace URI for XML parsing.
- * @param {Object} mapCollection The map collection for performing zoom if needed.
- * @param {Function} dispatch Vuex dispatch function for triggering alerts and map actions.
- * @returns {Boolean} Updated zoom flag.
+ * Creates a WFS loading strategy service that closes over request and runtime context.
+ * @param {Object} param Service context parameters.
+ * @param {String} param.baseUrl WFS service base URL.
+ * @param {String} param.wfsVersion WFS service version.
+ * @param {Document} param.responseXml CSW record XML document.
+ * @param {String} param.gmdNs GMD namespace URI.
+ * @param {String} param.gcoNs GCO namespace URI.
+ * @param {Object} param.mapCollection Map collection for optional zoom.
+ * @param {Function} param.dispatch Vuex dispatch function.
+ * @returns {Object} Service API for WFS loading strategy operations.
  */
-function alertLargeLayer ({featureCount, alreadyZoomed, responseXml, gmdNs, gcoNs, mapCollection, dispatch}) {
-    dispatch("Alerting/addSingleAlert", {
-        category: "info",
-        content: i18next.t("common:modules.searchBar.csw.largeWfsLayer", {count: featureCount})
-    }, {root: true});
+function createWfsLoadingStrategyService ({baseUrl, wfsVersion, responseXml, gmdNs, gcoNs, mapCollection, dispatch}) {
+    /**
+     * Requests the WFS feature count using resultType=hits.
+     * @param {String} featureName Technical WFS feature type name.
+     * @returns {Promise<Number|null>} Feature count or null on error.
+     */
+    async function getWfsHits (featureName) {
+        try {
+            const hitsResponse = await axios.get(baseUrl, {
+                    params: {
+                        SERVICE: "WFS",
+                        REQUEST: "GetFeature",
+                        VERSION: wfsVersion,
+                        TYPENAME: featureName,
+                        resultType: "hits"
+                    }
+                }),
+                hitsDoc = hitsResponse.request?.responseXML
+                    || new DOMParser().parseFromString(hitsResponse.data, "application/xml"),
+                fcEl = hitsDoc.documentElement,
+                hitsAttr = fcEl?.getAttribute("numberOfFeatures")
+                    || fcEl?.getAttribute("numberMatched");
 
-    const {west: recordWest, east: recordEast, south: recordSouth, north: recordNorth} = extractRecordBounds(responseXml, gmdNs, gcoNs);
-
-    if (!alreadyZoomed && recordWest !== null && !isNaN(recordWest)) {
-        const mapProjection = mapCollection.getMap("2D")?.getView()?.getProjection()?.getCode(),
-            centerLon = (recordWest + recordEast) / 2,
-            centerLat = (recordSouth + recordNorth) / 2;
-        let center = [centerLon, centerLat];
-
-        if (mapProjection && mapProjection !== "EPSG:4326") {
-            center = crs.transformToMapProjection(mapCollection.getMap("2D"), "EPSG:4326", center);
+            return hitsAttr ? parseInt(hitsAttr, 10) : null;
         }
-        dispatch("Maps/zoomToCoordinates", {center, zoom: 7}, {root: true});
-        return true;
-    }
-    return alreadyZoomed;
-}
-
-/**
- * Determines and applies loading strategies for discovered WFS layers based on feature count.
- * @param {Object[]} entries Array of discovered layer entries with sourceProps containing featureType.
- * @param {Document} responseXml The XML document of the CSW record response for extracting bounds if needed.
- * @param {String} gmdNs The GMD namespace URI for XML parsing.
- * @param {String} gcoNs The GCO namespace URI for XML parsing.
- * @param {Object} mapCollection The map collection for performing zoom if needed.
- * @param {Function} dispatch Vuex dispatch function for triggering alerts and map actions.
- * @param {String} baseUrl WFS service base URL.
- * @param {String} wfsVersion WFS service version.
- * @returns {Promise<void>} Resolves when all strategies have been applied.
-*/
-async function applyDiscoveredWfsLoadingStrategies (entries, responseXml, gmdNs, gcoNs, mapCollection, dispatch, baseUrl, wfsVersion) {
-    let zoomDone = false;
-
-    for (const entry of entries) {
-        const featureTypeName = entry.sourceProps?.featureType;
-
-        if (!featureTypeName) {
-            continue;
-        }
-
-        const featureCount = await getWfsHits(featureTypeName, baseUrl, wfsVersion),
-            loadingStrategy = featureCount !== null && featureCount > WFS_LARGE_LAYER_THRESHOLD
-                ? "bbox"
-                : "all";
-
-        entry.sourceProps = {...entry.sourceProps, loadingStrategy};
-
-        if (loadingStrategy === "bbox") {
-            zoomDone = alertLargeLayer({featureCount, alreadyZoomed: zoomDone, responseXml, gmdNs, gcoNs, mapCollection, dispatch});
+        catch (hitsError) {
+            console.warn("addLayerFromCswRecord: WFS hits request failed.", hitsError);
+            return null;
         }
     }
+
+    /**
+     * Shows info alert for large layers and performs one optional zoom.
+     * @param {Object} param Alert and zoom parameters.
+     * @param {Number} param.featureCount Matched feature count.
+     * @param {Boolean} param.alreadyZoomed Whether zoom was already performed.
+     * @returns {Boolean} Updated zoom flag.
+     */
+    function alertLargeLayer ({featureCount, alreadyZoomed}) {
+        dispatch("Alerting/addSingleAlert", {
+            category: "info",
+            content: i18next.t("common:modules.searchBar.csw.largeWfsLayer", {count: featureCount})
+        }, {root: true});
+
+        const {west: recordWest, east: recordEast, south: recordSouth, north: recordNorth} = extractRecordBounds(responseXml, gmdNs, gcoNs);
+
+        if (!alreadyZoomed && recordWest !== null && !isNaN(recordWest)) {
+            const mapProjection = mapCollection.getMap("2D")?.getView()?.getProjection()?.getCode(),
+                centerLon = (recordWest + recordEast) / 2,
+                centerLat = (recordSouth + recordNorth) / 2;
+            let center = [centerLon, centerLat];
+
+            if (mapProjection && mapProjection !== "EPSG:4326") {
+                center = crs.transformToMapProjection(mapCollection.getMap("2D"), "EPSG:4326", center);
+            }
+            dispatch("Maps/zoomToCoordinates", {center, zoom: 7}, {root: true});
+            return true;
+        }
+        return alreadyZoomed;
+    }
+
+    /**
+     * Determines and applies loading strategies for discovered WFS layers.
+     * @param {Object[]} entries Array of discovered layer entries.
+     * @returns {Promise<void>} Resolves when all strategies are applied.
+    */
+    async function applyDiscoveredWfsLoadingStrategies (entries) {
+        let zoomDone = false;
+
+        for (const entry of entries) {
+            const featureTypeName = entry.sourceProps?.featureType;
+
+            if (!featureTypeName) {
+                continue;
+            }
+
+            const featureCount = await getWfsHits(featureTypeName),
+                loadingStrategy = featureCount !== null && featureCount > WFS_LARGE_LAYER_THRESHOLD
+                    ? "bbox"
+                    : "all";
+
+            entry.sourceProps = {...entry.sourceProps, loadingStrategy};
+
+            if (loadingStrategy === "bbox") {
+                zoomDone = alertLargeLayer({featureCount, alreadyZoomed: zoomDone});
+            }
+        }
+    }
+
+    return {
+        getWfsHits,
+        alertLargeLayer,
+        applyDiscoveredWfsLoadingStrategies,
+        WFS_LARGE_LAYER_THRESHOLD
+    };
 }
 
 export {
-    applyDiscoveredWfsLoadingStrategies,
-    alertLargeLayer,
-    getWfsHits,
+    createWfsLoadingStrategyService,
     WFS_LARGE_LAYER_THRESHOLD
 };
