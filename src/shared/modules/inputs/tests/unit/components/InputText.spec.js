@@ -25,6 +25,14 @@ describe("src/shared/components/InputText.vue", () => {
         expect(input.attributes("placeholder")).to.equal(placeholder);
     });
 
+    it("should have input-element classes on root element", () => {
+        const wrapper = mount(InputText, {
+            props: {id: "input-awesome", label: "My super nice Input", placeholder: "placeholder"}
+        });
+
+        expect(wrapper.classes()).to.include("input-element");
+    });
+
     it("should render an input field with a type", () => {
         const id = "input-awesome",
             label = "My super nice Input",

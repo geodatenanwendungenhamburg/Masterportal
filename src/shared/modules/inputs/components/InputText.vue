@@ -117,7 +117,7 @@ export default {
 </script>
 
 <template>
-    <div class="form-floating mb-3">
+    <div class="form-floating input-element">
         <component
             :is="htmlType"
             :id="id"
@@ -135,17 +135,20 @@ export default {
             :max="max"
             :step="step"
             :error-message="errorMessage"
-            :style="htmlType === 'textarea' ? 'height: 100px' : ''"
             @input="$emit('update:modelValue', $event.target.value); onInput?.($event.target.value)"
             @change="event => onChange?.(event.target.value)"
             @focus="$emit('focus', $event)"
             @blur="$emit('blur', $event)"
             @click="$emit('click', $event)"
         />
+
         <label
             class="input-label"
             :for="id"
-        >{{ $t(label) }}</label>
+        >
+            {{ $t(label) }}
+        </label>
+
         <span
             v-if="errorMessage"
             :id="id + '-input-help'"
@@ -153,17 +156,36 @@ export default {
         >
             {{ errorMessage }}
         </span>
+
         <slot />
     </div>
 </template>
 
 <style lang="scss" scoped>
+.input-element {
+    margin-bottom: 1rem;
 
+  input.form-control {
+    &::placeholder {
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
 
-.form-control:focus ~ label {
-    color: $secondary;
-}
-.input-label {
+    &:focus {
+      &::placeholder {
+        opacity: 1;
+        color: $placeholder-color;
+        -webkit-text-fill-color: $placeholder-color;
+      }
+
+      ~ .input-label {
+        color: $secondary;
+      }
+    }
+  }
+
+  .input-label {
     color: $placeholder-color;
+  }
 }
 </style>

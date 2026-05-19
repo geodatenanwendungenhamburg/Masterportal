@@ -57,6 +57,7 @@
 ### Removed
 
 ### Fixed
+- InputText: Fixed placeholder not being visible in `form-floating` layout. Placeholder now fades in on focus via a CSS opacity transition. Replaced Bootstrap's `mb-3` utility class with scoped CSS to allow easier margin overriding from parent components.
 - Issue \#1591: Draw/FileImport: fixed KML export and KML import of symbols.    
 - Issue \#1592: FileImport/Draw: Fixed label text offset not being restored when importing a drawn GeoJSON file.
 - Issue \#1605: Fix ensures that STYLES parameter in GFI URL are correctly reset.
