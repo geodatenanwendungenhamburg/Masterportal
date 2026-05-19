@@ -1,0 +1,117 @@
+import {expect} from "chai";
+import sinon from "sinon";
+import * as detectServiceTypeModule from "../../../js/detectServiceType.js";
+import resolveCswServiceConfig from "../../../js/resolveCswServiceConfig.js";
+
+describe("src/modules/searchBar/js/resolveCswServiceConfig.js", () => {
+    let detectStub;
+
+    beforeEach(() => {
+        detectStub = sinon.stub(detectServiceTypeModule, "default");
+    });
+
+    afterEach(() => {
+        sinon.restore();
+    });
+
+    describe("technicalLayerName validation", () => {
+        it("should use a clean technical layer name as effectiveLayerName", async () => {
+            detectStub.returns("WMS");
+            const result = await resolveCswServiceConfig({
+                protocol: "OGC:WMS",
+                url: "https://example.com/wms",
+                layerName: "my_layer",
+                urlLayerParam: "",
+                baseUrl: "https://example.com/wms"
+            });
+
+            expect(result.effectiveLayerName).to.equal("my_layer");
+        });
+
+        it("should reject a layer name containing spaces", async () => {
+            detectStub.returns("WMS");
+            const result = await resolveCswServiceConfig({
+                protocol: "OGC:WMS",
+                url: "https://example.com/wms",
+                layerName: "WMS GetCapabilities Anfrage",
+                urlLayerParam: "fallback_layer",
+                baseUrl: "https://example.com/wms"
+            });
+
+            expect(result.effectiveLayerName).to.equal("fallback_layer");
+        });
+
+        it("should reject a layer name containing opening parenthesis", async () => {
+            detectStub.returns("WMS");
+            const result = await resolveCswServiceConfig({
+                protocol: "OGC:WMS",
+                url: "https://example.com/wms",
+                layerName: "(GetCapabilities)",
+                urlLayerParam: "",
+                baseUrl: "https://example.com/wms"
+            });
+
+            expect(result.effectiveLayerName).to.equal("");
+        });
+
+        it("should reject 'GetCapabilities' as an OGC operation name", async () => {
+            detectStub.returns("WMS");
+            const result = await resolveCswServiceConfig({
+                protocol: "OGC:WMS",
+                url: "https://example.com/wms",
+                layerName: "GetCapabilities",
+                urlLayerParam: "",
+                baseUrl: "https://example.com/wms"
+            });
+
+            expect(result.effectiveLayerName).to.equal("");
+        });
+
+        it("should reject all known OGC operation names case-insensitively", async () => {
+            detectStub.returns("WMS");
+            const operations = ["GetCapabilities", "GetMap", "GetFeature", "GetTile", "GetLegendGraphic", "GetFeatureInfo"];
+
+            for (const op of operations) {
+                detectStub.returns("WMS");
+                const result = await resolveCswServiceConfig({
+                    protocol: "OGC:WMS",
+                    url: "https://example.com/wms",
+                    layerName: op,
+                    urlLayerParam: "",
+                    baseUrl: "https://example.com/wms"
+                });
+
+                expect(result.effectiveLayerName, `should reject "${op}"`).to.equal("");
+            }
+        });
+
+        it("should fall back to urlLayerParam when layerName is rejected", async () => {
+            detectStub.returns("WMS");
+            const result = await resolveCswServiceConfig({
+                protocol: "OGC:WMS",
+                url: "https://example.com/wms?LAYERS=roads",
+                layerName: "GetCapabilities",
+                urlLayerParam: "roads",
+                baseUrl: "https://example.com/wms"
+            });
+
+            expect(result.effectiveLayerName).to.equal("roads");
+        });
+    });
+
+    describe("unknown service type", () => {
+        it("should return typ=null and empty defaults when service type is unknown", async () => {
+            detectStub.returns(null);
+            const result = await resolveCswServiceConfig({
+                protocol: "ATOM",
+                url: "https://example.com/download",
+                layerName: "",
+                urlLayerParam: "",
+                baseUrl: "https://example.com/download"
+            });
+
+            expect(result.typ).to.be.null;
+            expect(result.discoveredLayerEntries).to.deep.equal([]);
+        });
+    });
+});
