@@ -594,6 +594,8 @@ export default {
     addLayerFromCswRecord: async ({dispatch, rootGetters}, {fileIdentifier, cswUrl}) => {
         let responseXml;
         const unavailableServiceUrls = new Set();
+        const gmdNs = "http://www.isotc211.org/2005/gmd";
+        const gcoNs = "http://www.isotc211.org/2005/gco";
 
         try {
             const response = await axios.get(cswUrl, {
@@ -601,7 +603,7 @@ export default {
                     service: "CSW",
                     request: "GetRecordById",
                     version: "2.0.2",
-                    outputschema: "http://www.isotc211.org/2005/gmd",
+                    outputschema: gmdNs,
                     elementsetname: "full",
                     id: fileIdentifier
                 }
@@ -618,9 +620,7 @@ export default {
             return;
         }
 
-        const gmdNs = "http://www.isotc211.org/2005/gmd",
-            gcoNs = "http://www.isotc211.org/2005/gco",
-            onlineResources = responseXml.getElementsByTagNameNS(gmdNs, "CI_OnlineResource");
+        const onlineResources = responseXml.getElementsByTagNameNS(gmdNs, "CI_OnlineResource");
 
         // Extract the record's geographic bounding box for bbox loading strategy zoom.
         const bboxEl = responseXml.getElementsByTagNameNS(gmdNs, "EX_GeographicBoundingBox")[0],
