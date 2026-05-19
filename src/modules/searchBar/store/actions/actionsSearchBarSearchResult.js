@@ -709,6 +709,7 @@ export default {
      * @returns {void}
      */
     addLayerFromCswRecord: async ({dispatch, rootGetters}, {fileIdentifier, cswUrl}) => {
+        console.log("[CSW] addLayerFromCswRecord called", {fileIdentifier, cswUrl});
         let responseXml;
         const unavailableServiceUrls = new Set();
 
@@ -748,10 +749,15 @@ export default {
 
         let layerAdded = false;
 
+        console.log("[CSW] Found", onlineResources.length, "online resource(s) in record");
+
         for (let i = 0; i < onlineResources.length; i++) {
             const parsedResource = parseCswOnlineResource(onlineResources[i]);
 
+            console.log(`[CSW] Resource [${i}] parsed:`, parsedResource);
+
             if (!parsedResource.url) {
+                console.log(`[CSW] Resource [${i}] skipped: no URL`);
                 continue;
             }
 
@@ -767,7 +773,10 @@ export default {
                 discoveredLayerEntries
             } = await resolveCswServiceConfig(parsedResource);
 
+            console.log(`[CSW] Resource [${i}] resolved:`, {typ, baseUrl, effectiveLayerName, serviceTitle, serviceUnavailable, discoveredLayerEntries: discoveredLayerEntries?.length});
+
             if (!typ) {
+                console.log(`[CSW] Resource [${i}] skipped: typ is null/undefined`);
                 continue;
             }
 
@@ -837,8 +846,10 @@ export default {
 
                 if (effectiveLayerName) {
                     // Single known layer: check its feature count.
+                    console.log(`[CSW] WFS single-layer path: effectiveLayerName="${effectiveLayerName}"`);
                     const featureCount = await getWfsHits(effectiveLayerName);
 
+                    console.log(`[CSW] WFS hits for "${effectiveLayerName}":`, featureCount);
                     if (featureCount !== null && featureCount > WFS_LARGE_LAYER_THRESHOLD) {
                         wfsAdditionalProps.loadingStrategy = "bbox";
                         alertLargeLayer(featureCount, false);
@@ -852,10 +863,12 @@ export default {
                     // loadingStrategy is stored per entry in sourceProps so it can differ per type.
                     // Use sourceProps.featureType (technical WFS name) as TYPENAME, not entry.name
                     // which holds the human-readable display title.
+                    console.log(`[CSW] WFS discovered-entries path: ${discoveredLayerEntries.length} entries`);
                     let zoomDone = false;
 
                     for (const entry of discoveredLayerEntries) {
                         const featureTypeName = entry.sourceProps?.featureType;
+                        console.log(`[CSW] WFS entry: name="${entry.name}" featureType="${featureTypeName}"`);
 
                         if (!featureTypeName) {
                             continue;
@@ -872,6 +885,8 @@ export default {
                     }
                 }
             }
+
+            console.log(`[CSW] Resource [${i}]: discoveredLayerEntries.length=${discoveredLayerEntries.length}, effectiveLayerName="${effectiveLayerName}"`);
 
             if (discoveredLayerEntries.length > 0 && await addServiceLayersToExternalFolder({
                 rootGetters,
@@ -890,6 +905,7 @@ export default {
             }
 
             if ((typ === "WMS" || typ === "WFS") && !effectiveLayerName) {
+                console.log(`[CSW] Resource [${i}] skipped: WMS/WFS without effectiveLayerName and no discovered entries added`);
                 continue;
             }
 
@@ -922,6 +938,15 @@ export default {
                 layerAdded = true;
                 break;
             }
+        }
+
+        if (layerAdded) {
+            dispatch("Alerting/addSingleAlert", {
+                category: "success",
+                title: i18next.t("common:modules.searchBar.csw.layerAddedTitle"),
+                content: i18next.t("common:modules.searchBar.csw.layerAdded")
+            }, {root: true});
+            return;
         }
 
         if (!layerAdded) {
