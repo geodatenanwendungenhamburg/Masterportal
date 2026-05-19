@@ -56,15 +56,11 @@ SearchInterfaceCSW.prototype.search = async function (searchInput) {
     this.searchState = "running";
 
     for (const definition of this.definitions) {
-        const xml = this.buildGetRecordsXml(definition, searchInput, 1);
-
         try {
-            const responseXml = await this.requestSearch(definition.url, "POST", xml, "application/xml; charset=UTF-8"),
-                parsed = getCswRecords.parseGetRecordsResponse(responseXml),
-                normalized = this.normalizeResults(parsed.records, definition);
+            const {records, numberOfRecordsMatched} = await this.fetchCswResults(definition, searchInput);
 
-            this.totalHits = (this.totalHits || 0) + parsed.numberOfRecordsMatched;
-            this.pushHitsToSearchResults(normalized);
+            this.totalHits = (this.totalHits || 0) + numberOfRecordsMatched;
+            this.pushHitsToSearchResults(this.normalizeResults(records, definition));
         }
         catch (error) {
             if (error.name !== "AbortError" && error.code !== "ERR_CANCELED") {
@@ -75,6 +71,35 @@ SearchInterfaceCSW.prototype.search = async function (searchInput) {
 
     this.searchState = "finished";
     return this.searchResults;
+};
+
+/**
+ * Fetches and parses CSW records for one endpoint definition.
+ * If the request fails and a serviceTypeFilter is configured, retries without the filter,
+ * because some CSW servers do not support the ServiceType property.
+ * @param {Object} definition The CSW endpoint definition.
+ * @param {String} searchInput The search string.
+ * @returns {Promise<Object>} Parsed response with records and numberOfRecordsMatched.
+ */
+SearchInterfaceCSW.prototype.fetchCswResults = async function (definition, searchInput) {
+    const xml = this.buildGetRecordsXml(definition, searchInput, 1);
+
+    try {
+        const responseXml = await this.requestSearch(definition.url, "POST", xml, "application/xml; charset=UTF-8");
+
+        return getCswRecords.parseGetRecordsResponse(responseXml);
+    }
+    catch (error) {
+        if (error.name === "AbortError" || error.code === "ERR_CANCELED" || !definition.serviceTypeFilter?.length) {
+            throw error;
+        }
+
+        console.warn(`SearchInterfaceCSW: request with serviceTypeFilter failed for ${definition.url}. Retrying without filter.`, error);
+        const fallbackXml = this.buildGetRecordsXml({...definition, serviceTypeFilter: null}, searchInput, 1),
+            responseXml = await this.requestSearch(definition.url, "POST", fallbackXml, "application/xml; charset=UTF-8");
+
+        return getCswRecords.parseGetRecordsResponse(responseXml);
+    }
 };
 
 /**
