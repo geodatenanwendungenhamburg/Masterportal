@@ -201,10 +201,9 @@ export default {
         },
 
         async handleGPXDownload () {
-            const map = mapCollection.getMap("2D");
-            let dataString = await exportItem.prepareFeatures(this.features, map);
+            const preparedFeatures = await exportItem.prepareFeatures(this.features),
+                dataString = await exportItem.convertFeatures(preparedFeatures, new GPX(), this.projectionCode);
 
-            dataString = await exportItem.convertFeatures(this.features, new GPX(), this.projectionCode);
             this.triggerFileDownload(dataString, `${this.fileName}.gpx`);
         },
 
@@ -287,7 +286,7 @@ export default {
                     {{ $t("common:shared.modules.draw.download.geometryTypeNotSupported") }}
                 </p>
                 <p
-                    v-if="hasSymbolsForGPX"
+                    v-if="hasSymbolsForGPX && !hasUnsupportedPolygonsForGPX"
                     class="mt-1 mb-0"
                     style="color: #856404;"
                 >
