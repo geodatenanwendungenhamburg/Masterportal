@@ -160,6 +160,30 @@ export default {
                 }
             }
         },
+        "circleOptions.innerRadius" () {
+            if (this.selectedDrawType === "circle" || this.selectedDrawType === "doubleCircle") {
+                if (this.currentDrawInteraction !== null) {
+                    this.removeInteraction(this.currentDrawInteraction);
+                    this.regulateDrawInteraction(this.selectedDrawType);
+                }
+            }
+        },
+        "circleOptions.outerRadius" () {
+            if (this.selectedDrawType === "circle" || this.selectedDrawType === "doubleCircle") {
+                if (this.currentDrawInteraction !== null) {
+                    this.removeInteraction(this.currentDrawInteraction);
+                    this.regulateDrawInteraction(this.selectedDrawType);
+                }
+            }
+        },
+        "circleOptions.unit" () {
+            if (this.selectedDrawType === "circle" || this.selectedDrawType === "doubleCircle") {
+                if (this.currentDrawInteraction !== null) {
+                    this.removeInteraction(this.currentDrawInteraction);
+                    this.regulateDrawInteraction(this.selectedDrawType);
+                }
+            }
+        },
         currentLayout (currentLayout) {
             drawInteraction.setStyleObject(currentLayout);
 
