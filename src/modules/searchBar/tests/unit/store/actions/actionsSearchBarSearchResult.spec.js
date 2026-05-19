@@ -679,7 +679,7 @@ describe("src/modules/searchBar/store/actions/actionsSearchBarSearchResult.spec.
             sinon.restore();
         });
 
-        it("should dispatch addLayerToTopicTree with WMS source when OGC:WMS protocol is found", async () => {
+        it("should add WMS layer to external folder when OGC:WMS protocol is found", async () => {
             const wmsXml = `<?xml version="1.0"?>
 <csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
   <gmd:MD_Metadata xmlns:gmd="${gmdNs}" xmlns:gco="${gcoNs}">
@@ -704,19 +704,20 @@ describe("src/modules/searchBar/store/actions/actionsSearchBarSearchResult.spec.
 
             axiosStub.resolves({request: {responseXML: domDoc}, data: wmsXml});
 
-            await actions.addLayerFromCswRecord({dispatch}, {fileIdentifier, recordTitle, cswUrl});
+            dispatch = sinon.stub().resolves(true);
+            await actions.addLayerFromCswRecord({dispatch, rootGetters: {allFolders: []}}, {fileIdentifier, cswUrl});
 
-            expect(dispatch.calledWith("addLayerToTopicTree")).to.be.true;
-            const addCall = dispatch.getCalls().find(c => c.args[0] === "addLayerToTopicTree");
+            const addCall = dispatch.getCalls().find(c => c.args[0] === "addLayerToLayerConfig" && c.args[1]?.layerConfig?.type === "layer");
 
-            expect(addCall.args[1].source.typ).to.equal("WMS");
-            expect(addCall.args[1].source.url).to.equal("https://wms.example.com/service");
-            expect(addCall.args[1].source.metaID).to.equal(fileIdentifier);
-            expect(addCall.args[1].showInLayerTree).to.be.true;
-            expect(addCall.args[1].visibility).to.be.true;
+            expect(addCall).to.exist;
+            expect(addCall.args[1].layerConfig.typ).to.equal("WMS");
+            expect(addCall.args[1].layerConfig.url).to.equal("https://wms.example.com/service");
+            expect(addCall.args[1].layerConfig.metaID).to.equal(fileIdentifier);
+            expect(addCall.args[1].layerConfig.showInLayerTree).to.be.true;
+            expect(addCall.args[1].layerConfig.visibility).to.be.true;
         });
 
-        it("should dispatch addLayerToTopicTree with WFS source when OGC:WFS protocol is found", async () => {
+        it("should add WFS layer to external folder when OGC:WFS protocol is found", async () => {
             const wfsXml = `<?xml version="1.0"?>
 <csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
   <gmd:MD_Metadata xmlns:gmd="${gmdNs}" xmlns:gco="${gcoNs}">
@@ -741,17 +742,18 @@ describe("src/modules/searchBar/store/actions/actionsSearchBarSearchResult.spec.
 
             axiosStub.resolves({request: {responseXML: domDoc}, data: wfsXml});
 
-            await actions.addLayerFromCswRecord({dispatch}, {fileIdentifier, recordTitle, cswUrl});
+            dispatch = sinon.stub().resolves(true);
+            await actions.addLayerFromCswRecord({dispatch, rootGetters: {allFolders: []}}, {fileIdentifier, cswUrl});
 
-            const addCall = dispatch.getCalls().find(c => c.args[0] === "addLayerToTopicTree");
+            const addCall = dispatch.getCalls().find(c => c.args[0] === "addLayerToLayerConfig" && c.args[1]?.layerConfig?.type === "layer");
 
             expect(addCall).to.exist;
-            expect(addCall.args[1].source.typ).to.equal("WFS");
-            expect(addCall.args[1].showInLayerTree).to.be.true;
-            expect(addCall.args[1].visibility).to.be.true;
+            expect(addCall.args[1].layerConfig.typ).to.equal("WFS");
+            expect(addCall.args[1].layerConfig.showInLayerTree).to.be.true;
+            expect(addCall.args[1].layerConfig.visibility).to.be.true;
         });
 
-        it("should use recordTitle as layer name when CI_OnlineResource name element is empty", async () => {
+        it("should skip WMS resource without layer name and dispatch info alert", async () => {
             const noNameXml = `<?xml version="1.0"?>
 <csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
   <gmd:MD_Metadata xmlns:gmd="${gmdNs}" xmlns:gco="${gcoNs}">
@@ -775,12 +777,15 @@ describe("src/modules/searchBar/store/actions/actionsSearchBarSearchResult.spec.
 
             axiosStub.resolves({request: {responseXML: domDoc}, data: noNameXml});
 
-            await actions.addLayerFromCswRecord({dispatch}, {fileIdentifier, recordTitle, cswUrl});
+            dispatch = sinon.stub().resolves(true);
+            await actions.addLayerFromCswRecord({dispatch, rootGetters: {allFolders: []}}, {fileIdentifier, cswUrl});
 
-            const addCall = dispatch.getCalls().find(c => c.args[0] === "addLayerToTopicTree");
+            const layerCall = dispatch.getCalls().find(c => c.args[0] === "addLayerToLayerConfig" && c.args[1]?.layerConfig?.type === "layer");
+            const alertCall = dispatch.getCalls().find(c => c.args[0] === "Alerting/addSingleAlert");
 
-            expect(addCall).to.exist;
-            expect(addCall.args[1].source.name).to.equal(recordTitle);
+            expect(layerCall).to.not.exist;
+            expect(alertCall).to.exist;
+            expect(alertCall.args[1].category).to.equal("info");
         });
 
         it("should dispatch info alert when no WMS or WFS link is found", async () => {
