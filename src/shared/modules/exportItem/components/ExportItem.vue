@@ -129,9 +129,78 @@ export default {
         },
 
         async handleGeoJSONDownload () {
-            console.warn("Handling GeoJSON download...");
+            const reversedFeatures = [...this.features].reverse();
+
+            console.warn("Handling GeoJSON download...", reversedFeatures);
             const map = mapCollection.getMap("2D");
-            let dataString = await exportItem.prepareFeatures(this.features, map);
+            let dataString = await exportItem.prepareFeatures(reversedFeatures, map);
+
+            // Group all geo-circle features by their center coordinate
+            const circleGroups = {};
+
+            dataString.forEach((feature, idx) => {
+                const attrs = feature.get("masterportal_attributes");
+
+                if (attrs?.isGeoCircle) {
+                    const center = attrs.geoCircleCenter;
+
+                    if (!circleGroups[center]) {
+                        circleGroups[center] = [];
+                    }
+                    circleGroups[center].push(idx);
+                }
+            });
+
+            const geoFields = ["isGeoCircle", "geoCircleCenter", "geoCircleRadius"];
+
+            for (const indices of Object.values(circleGroups)) {
+                // A double circle is exactly 2 features sharing the same center
+                if (indices.length !== 2) {
+                    continue;
+                }
+
+                const [idx1, idx2] = indices;
+                const attrs1 = dataString[idx1].get("masterportal_attributes");
+                const attrs2 = dataString[idx2].get("masterportal_attributes");
+
+                // outerColorContour presence confirms this is a doubleCircle, not two unrelated single circles
+                const styledAttrs = attrs1.fromDrawTool ? attrs1 : attrs2;
+
+                if (!styledAttrs.drawState?.outerColorContour) {
+                    continue;
+                }
+
+                const sourceDrawState = styledAttrs.drawState;
+                const baseStyleAttrs = Object.fromEntries(
+                    Object.entries(styledAttrs).filter(([k]) => !geoFields.includes(k))
+                );
+                const geoAttrs1 = Object.fromEntries(Object.entries(attrs1).filter(([k]) => geoFields.includes(k)));
+                const geoAttrs2 = Object.fromEntries(Object.entries(attrs2).filter(([k]) => geoFields.includes(k)));
+
+                const outerDrawState = {
+                    ...sourceDrawState,
+                    colorContour: sourceDrawState.outerColorContour,
+                    color: sourceDrawState.outerColorFill,
+                    circleRadius: sourceDrawState.circleOuterRadius
+                };
+
+                delete outerDrawState.outerColorContour;
+                delete outerDrawState.outerColorFill;
+
+                const innerDrawState = {...sourceDrawState};
+
+                delete innerDrawState.outerColorContour;
+                delete innerDrawState.outerColorFill;
+
+                if (geoAttrs1.geoCircleRadius > geoAttrs2.geoCircleRadius) {
+                    dataString[idx1].set("masterportal_attributes", {...baseStyleAttrs, drawState: outerDrawState, ...geoAttrs1});
+                    dataString[idx2].set("masterportal_attributes", {...baseStyleAttrs, drawState: innerDrawState, ...geoAttrs2});
+                }
+                else {
+                    dataString[idx1].set("masterportal_attributes", {...baseStyleAttrs, drawState: innerDrawState, ...geoAttrs1});
+                    dataString[idx2].set("masterportal_attributes", {...baseStyleAttrs, drawState: outerDrawState, ...geoAttrs2});
+                }
+            }
 
             dataString = await exportItem.convertFeatures(dataString, new GeoJSON(), this.projectionCode);
             console.warn("GeoJSON result: ", dataString);
