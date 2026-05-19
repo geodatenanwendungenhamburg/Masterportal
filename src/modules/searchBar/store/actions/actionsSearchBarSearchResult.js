@@ -709,7 +709,6 @@ export default {
      * @returns {void}
      */
     addLayerFromCswRecord: async ({dispatch, rootGetters}, {fileIdentifier, cswUrl}) => {
-        console.log("[CSW] addLayerFromCswRecord called", {fileIdentifier, cswUrl});
         let responseXml;
         const unavailableServiceUrls = new Set();
 
@@ -749,15 +748,10 @@ export default {
 
         let layerAdded = false;
 
-        console.log("[CSW] Found", onlineResources.length, "online resource(s) in record");
-
         for (let i = 0; i < onlineResources.length; i++) {
             const parsedResource = parseCswOnlineResource(onlineResources[i]);
 
-            console.log(`[CSW] Resource [${i}] parsed:`, parsedResource);
-
             if (!parsedResource.url) {
-                console.log(`[CSW] Resource [${i}] skipped: no URL`);
                 continue;
             }
 
@@ -773,10 +767,7 @@ export default {
                 discoveredLayerEntries
             } = await resolveCswServiceConfig(parsedResource);
 
-            console.log(`[CSW] Resource [${i}] resolved:`, {typ, baseUrl, effectiveLayerName, serviceTitle, serviceUnavailable, discoveredLayerEntries: discoveredLayerEntries?.length});
-
             if (!typ) {
-                console.log(`[CSW] Resource [${i}] skipped: typ is null/undefined`);
                 continue;
             }
 
@@ -798,7 +789,12 @@ export default {
                 // WFS spec (2.0) requires TYPENAMES or RESOURCEID — never omit it.
                 const WFS_LARGE_LAYER_THRESHOLD = 1000;
 
-                const getWfsHits = async (featureName) => {
+                /**
+                 * Requests the WFS feature count using resultType=hits.
+                 * @param {String} featureName Technical WFS feature type name.
+                 * @returns {Promise<Number|null>} Feature count or null on error.
+                 */
+                async function getWfsHits (featureName) {
                     try {
                         const hitsResponse = await axios.get(baseUrl, {
                                 params: {
@@ -821,9 +817,15 @@ export default {
                         console.warn("addLayerFromCswRecord: WFS hits request failed.", hitsError);
                         return null;
                     }
-                };
+                }
 
-                const alertLargeLayer = (featureCount, alreadyZoomed) => {
+                /**
+                 * Shows info alert for large layers and performs one optional zoom.
+                 * @param {Number} featureCount Matched feature count.
+                 * @param {Boolean} alreadyZoomed Whether zoom was already performed.
+                 * @returns {Boolean} Updated zoom flag.
+                 */
+                function alertLargeLayer (featureCount, alreadyZoomed) {
                     dispatch("Alerting/addSingleAlert", {
                         category: "info",
                         content: i18next.t("common:modules.searchBar.csw.largeWfsLayer", {count: featureCount})
@@ -842,14 +844,40 @@ export default {
                         return true;
                     }
                     return alreadyZoomed;
-                };
+                }
+
+                /**
+                 * Applies loadingStrategy per discovered WFS feature type.
+                 * @param {Object[]} entries Discovered WFS layer entries.
+                 * @returns {Promise<void>}
+                 */
+                async function applyDiscoveredWfsLoadingStrategies (entries) {
+                    let zoomDone = false;
+
+                    for (const entry of entries) {
+                        const featureTypeName = entry.sourceProps?.featureType;
+
+                        if (!featureTypeName) {
+                            continue;
+                        }
+
+                        const featureCount = await getWfsHits(featureTypeName),
+                            loadingStrategy = featureCount !== null && featureCount > WFS_LARGE_LAYER_THRESHOLD
+                                ? "bbox"
+                                : "all";
+
+                        entry.sourceProps = {...entry.sourceProps, loadingStrategy};
+
+                        if (loadingStrategy === "bbox") {
+                            zoomDone = alertLargeLayer(featureCount, zoomDone);
+                        }
+                    }
+                }
 
                 if (effectiveLayerName) {
                     // Single known layer: check its feature count.
-                    console.log(`[CSW] WFS single-layer path: effectiveLayerName="${effectiveLayerName}"`);
                     const featureCount = await getWfsHits(effectiveLayerName);
 
-                    console.log(`[CSW] WFS hits for "${effectiveLayerName}":`, featureCount);
                     if (featureCount !== null && featureCount > WFS_LARGE_LAYER_THRESHOLD) {
                         wfsAdditionalProps.loadingStrategy = "bbox";
                         alertLargeLayer(featureCount, false);
@@ -863,30 +891,9 @@ export default {
                     // loadingStrategy is stored per entry in sourceProps so it can differ per type.
                     // Use sourceProps.featureType (technical WFS name) as TYPENAME, not entry.name
                     // which holds the human-readable display title.
-                    console.log(`[CSW] WFS discovered-entries path: ${discoveredLayerEntries.length} entries`);
-                    let zoomDone = false;
-
-                    for (const entry of discoveredLayerEntries) {
-                        const featureTypeName = entry.sourceProps?.featureType;
-                        console.log(`[CSW] WFS entry: name="${entry.name}" featureType="${featureTypeName}"`);
-
-                        if (!featureTypeName) {
-                            continue;
-                        }
-                        const featureCount = await getWfsHits(featureTypeName);
-
-                        if (featureCount !== null && featureCount > WFS_LARGE_LAYER_THRESHOLD) {
-                            entry.sourceProps = {...entry.sourceProps, loadingStrategy: "bbox"};
-                            zoomDone = alertLargeLayer(featureCount, zoomDone);
-                        }
-                        else {
-                            entry.sourceProps = {...entry.sourceProps, loadingStrategy: "all"};
-                        }
-                    }
+                    await applyDiscoveredWfsLoadingStrategies(discoveredLayerEntries);
                 }
             }
-
-            console.log(`[CSW] Resource [${i}]: discoveredLayerEntries.length=${discoveredLayerEntries.length}, effectiveLayerName="${effectiveLayerName}"`);
 
             if (discoveredLayerEntries.length > 0 && await addServiceLayersToExternalFolder({
                 rootGetters,
@@ -905,7 +912,6 @@ export default {
             }
 
             if ((typ === "WMS" || typ === "WFS") && !effectiveLayerName) {
-                console.log(`[CSW] Resource [${i}] skipped: WMS/WFS without effectiveLayerName and no discovered entries added`);
                 continue;
             }
 
