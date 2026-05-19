@@ -92,6 +92,14 @@ export default {
 
                     return type === "Polygon" || type === "MultiPolygon" || type === "Circle";
                 });
+        },
+        hasSymbolsForGPX () {
+            return this.exportFormat === "GPX" &&
+                this.features.some(f => {
+                    const drawState = f.get("masterportal_attributes")?.drawState;
+
+                    return drawState?.drawType?.id === "drawSymbol" || drawState?.symbol;
+                });
         }
     },
     unmounted () {
@@ -277,6 +285,13 @@ export default {
                     class="text-danger mt-1 mb-0"
                 >
                     {{ $t("common:shared.modules.draw.download.geometryTypeNotSupported") }}
+                </p>
+                <p
+                    v-if="hasSymbolsForGPX"
+                    class="mt-1 mb-0"
+                    style="color: #856404;"
+                >
+                    {{ $t("common:shared.modules.draw.download.symbolsNotFullySupportedGPX") }}
                 </p>
             </div>
             <div class="form-group form-group-sm row">

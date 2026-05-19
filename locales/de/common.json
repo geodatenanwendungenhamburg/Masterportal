@@ -1659,6 +1659,7 @@
         },
         "download": {
           "geometryTypeNotSupported": "Polygon, Box, Quadrat und Kreis können im GPX-Format nicht heruntergeladen werden. Bitte wählen Sie ein anderes Format.",
+          "symbolsNotFullySupportedGPX": "Hinweis: Symbole werden im GPX-Format ohne ihre Darstellung (Icon, Farbe) exportiert.",
           "enterFilename": "Bitte Dateiname angeben",
           "filename": "Dateiname",
           "format": "Format",

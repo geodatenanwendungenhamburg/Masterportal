@@ -1657,6 +1657,7 @@
          },
         "download": {
           "geometryTypeNotSupported": "Polygon, box, square and circle cannot be downloaded in GPX format. Please choose a different format.",
+          "symbolsNotFullySupportedGPX": "Note: Symbols will be exported in GPX format without their appearance (icon, color).",
           "enterFilename": "Please enter a filename",
           "filename": "Filename",
           "format": "Format",
