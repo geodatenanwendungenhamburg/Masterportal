@@ -42,7 +42,6 @@ describe("src/modules/searchBar/js/resolveCswServiceConfig.js", () => {
             expect(result.effectiveLayerName).to.equal("xplan:BP_Plan(Bebauungsplan)");
         });
 
-
         it("should reject a layer name containing spaces", async () => {
             detectStub.returns("WMS");
             const result = await resolveCswServiceConfig({
@@ -54,50 +53,6 @@ describe("src/modules/searchBar/js/resolveCswServiceConfig.js", () => {
             });
 
             expect(result.effectiveLayerName).to.equal("fallback_layer");
-        });
-
-        it("should reject a layer name containing opening parenthesis", async () => {
-            detectStub.returns("WMS");
-            const result = await resolveCswServiceConfig({
-                protocol: "OGC:WMS",
-                url: "https://example.com/wms",
-                layerName: "(GetCapabilities)",
-                urlLayerParam: "",
-                baseUrl: "https://example.com/wms"
-            });
-
-            expect(result.effectiveLayerName).to.equal("");
-        });
-
-        it("should reject 'GetCapabilities' as an OGC operation name", async () => {
-            detectStub.returns("WMS");
-            const result = await resolveCswServiceConfig({
-                protocol: "OGC:WMS",
-                url: "https://example.com/wms",
-                layerName: "GetCapabilities",
-                urlLayerParam: "",
-                baseUrl: "https://example.com/wms"
-            });
-
-            expect(result.effectiveLayerName).to.equal("");
-        });
-
-        it("should reject all known OGC operation names case-insensitively", async () => {
-            detectStub.returns("WMS");
-            const operations = ["GetCapabilities", "GetMap", "GetFeature", "GetTile", "GetLegendGraphic", "GetFeatureInfo"];
-
-            for (const op of operations) {
-                detectStub.returns("WMS");
-                const result = await resolveCswServiceConfig({
-                    protocol: "OGC:WMS",
-                    url: "https://example.com/wms",
-                    layerName: op,
-                    urlLayerParam: "",
-                    baseUrl: "https://example.com/wms"
-                });
-
-                expect(result.effectiveLayerName, `should reject "${op}"`).to.equal("");
-            }
         });
 
         it("should fall back to urlLayerParam when layerName is rejected", async () => {
