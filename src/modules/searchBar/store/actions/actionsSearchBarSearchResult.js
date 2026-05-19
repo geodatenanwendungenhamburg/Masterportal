@@ -16,8 +16,9 @@ import remove3DFeatureHighlight from "@shared/js/utils/remove3DFeatureHighlight.
 import {convertColor} from "@shared/js/utils/convertColor.js";
 import parseCswOnlineResource from "../../js/parseCswOnlineResource.js";
 import resolveCswServiceConfig from "../../js/resolveCswServiceConfig.js";
-import crs from "@masterportal/masterportalapi/src/crs.js";
+// import crs from "@masterportal/masterportalapi/src/crs.js";
 import {addServiceLayersToExternalFolder} from "../../js/externalServiceFolder.js";
+import {applyDiscoveredWfsLoadingStrategies, alertLargeLayer, getWfsHits, WFS_LARGE_LAYER_THRESHOLD} from "../../js/wfsLoadingStrategy.js";
 
 /**
  * Contains actions that communicate with other components after an interaction, such as onClick or onHover, with a search result.
@@ -669,104 +670,104 @@ export default {
                     outputFormat: wfsOutputFormat
                 };
 
-                // Check feature count via resultType=hits to decide loading strategy.
-                // If the service returns more than WFS_LARGE_LAYER_THRESHOLD features,
-                // switch to bbox loading to avoid performance issues.
-                // WFS spec (2.0) requires TYPENAMES or RESOURCEID — never omit it.
-                const WFS_LARGE_LAYER_THRESHOLD = 1000;
+                // // Check feature count via resultType=hits to decide loading strategy.
+                // // If the service returns more than WFS_LARGE_LAYER_THRESHOLD features,
+                // // switch to bbox loading to avoid performance issues.
+                // // WFS spec (2.0) requires TYPENAMES or RESOURCEID — never omit it.
+                // const WFS_LARGE_LAYER_THRESHOLD = 1000;
 
-                /**
-                 * Requests the WFS feature count using resultType=hits.
-                 * @param {String} featureName Technical WFS feature type name.
-                 * @returns {Promise<Number|null>} Feature count or null on error.
-                 */
-                async function getWfsHits (featureName) {
-                    try {
-                        const hitsResponse = await axios.get(baseUrl, {
-                                params: {
-                                    SERVICE: "WFS",
-                                    REQUEST: "GetFeature",
-                                    VERSION: wfsVersion,
-                                    TYPENAME: featureName,
-                                    resultType: "hits"
-                                }
-                            }),
-                            hitsDoc = hitsResponse.request?.responseXML
-                                || new DOMParser().parseFromString(hitsResponse.data, "application/xml"),
-                            fcEl = hitsDoc.documentElement,
-                            hitsAttr = fcEl?.getAttribute("numberOfFeatures")
-                                || fcEl?.getAttribute("numberMatched");
+                // /**
+                //  * Requests the WFS feature count using resultType=hits.
+                //  * @param {String} featureName Technical WFS feature type name.
+                //  * @returns {Promise<Number|null>} Feature count or null on error.
+                //  */
+                // async function getWfsHits (featureName) {
+                //     try {
+                //         const hitsResponse = await axios.get(baseUrl, {
+                //                 params: {
+                //                     SERVICE: "WFS",
+                //                     REQUEST: "GetFeature",
+                //                     VERSION: wfsVersion,
+                //                     TYPENAME: featureName,
+                //                     resultType: "hits"
+                //                 }
+                //             }),
+                //             hitsDoc = hitsResponse.request?.responseXML
+                //                 || new DOMParser().parseFromString(hitsResponse.data, "application/xml"),
+                //             fcEl = hitsDoc.documentElement,
+                //             hitsAttr = fcEl?.getAttribute("numberOfFeatures")
+                //                 || fcEl?.getAttribute("numberMatched");
 
-                        return hitsAttr ? parseInt(hitsAttr, 10) : null;
-                    }
-                    catch (hitsError) {
-                        console.warn("addLayerFromCswRecord: WFS hits request failed.", hitsError);
-                        return null;
-                    }
-                }
+                //         return hitsAttr ? parseInt(hitsAttr, 10) : null;
+                //     }
+                //     catch (hitsError) {
+                //         console.warn("addLayerFromCswRecord: WFS hits request failed.", hitsError);
+                //         return null;
+                //     }
+                // }
 
-                /**
-                 * Shows info alert for large layers and performs one optional zoom.
-                 * @param {Number} featureCount Matched feature count.
-                 * @param {Boolean} alreadyZoomed Whether zoom was already performed.
-                 * @returns {Boolean} Updated zoom flag.
-                 */
-                function alertLargeLayer (featureCount, alreadyZoomed) {
-                    dispatch("Alerting/addSingleAlert", {
-                        category: "info",
-                        content: i18next.t("common:modules.searchBar.csw.largeWfsLayer", {count: featureCount})
-                    }, {root: true});
+                // /**
+                //  * Shows info alert for large layers and performs one optional zoom.
+                //  * @param {Number} featureCount Matched feature count.
+                //  * @param {Boolean} alreadyZoomed Whether zoom was already performed.
+                //  * @returns {Boolean} Updated zoom flag.
+                //  */
+                // function alertLargeLayer (featureCount, alreadyZoomed) {
+                //     dispatch("Alerting/addSingleAlert", {
+                //         category: "info",
+                //         content: i18next.t("common:modules.searchBar.csw.largeWfsLayer", {count: featureCount})
+                //     }, {root: true});
 
-                    if (!alreadyZoomed && recordWest !== null && !isNaN(recordWest)) {
-                        const mapProjection = mapCollection.getMap("2D")?.getView()?.getProjection()?.getCode(),
-                            centerLon = (recordWest + recordEast) / 2,
-                            centerLat = (recordSouth + recordNorth) / 2;
-                        let center = [centerLon, centerLat];
+                //     if (!alreadyZoomed && recordWest !== null && !isNaN(recordWest)) {
+                //         const mapProjection = mapCollection.getMap("2D")?.getView()?.getProjection()?.getCode(),
+                //             centerLon = (recordWest + recordEast) / 2,
+                //             centerLat = (recordSouth + recordNorth) / 2;
+                //         let center = [centerLon, centerLat];
 
-                        if (mapProjection && mapProjection !== "EPSG:4326") {
-                            center = crs.transformToMapProjection(mapCollection.getMap("2D"), "EPSG:4326", center);
-                        }
-                        dispatch("Maps/zoomToCoordinates", {center, zoom: 7}, {root: true});
-                        return true;
-                    }
-                    return alreadyZoomed;
-                }
+                //         if (mapProjection && mapProjection !== "EPSG:4326") {
+                //             center = crs.transformToMapProjection(mapCollection.getMap("2D"), "EPSG:4326", center);
+                //         }
+                //         dispatch("Maps/zoomToCoordinates", {center, zoom: 7}, {root: true});
+                //         return true;
+                //     }
+                //     return alreadyZoomed;
+                // }
 
-                /**
-                 * Applies loadingStrategy per discovered WFS feature type.
-                 * @param {Object[]} entries Discovered WFS layer entries.
-                 * @returns {Promise<void>}
-                 */
-                async function applyDiscoveredWfsLoadingStrategies (entries) {
-                    let zoomDone = false;
+                // /**
+                //  * Applies loadingStrategy per discovered WFS feature type.
+                //  * @param {Object[]} entries Discovered WFS layer entries.
+                //  * @returns {Promise<void>}
+                //  */
+                // async function applyDiscoveredWfsLoadingStrategies (entries) {
+                //     let zoomDone = false;
 
-                    for (const entry of entries) {
-                        const featureTypeName = entry.sourceProps?.featureType;
+                //     for (const entry of entries) {
+                //         const featureTypeName = entry.sourceProps?.featureType;
 
-                        if (!featureTypeName) {
-                            continue;
-                        }
+                //         if (!featureTypeName) {
+                //             continue;
+                //         }
 
-                        const featureCount = await getWfsHits(featureTypeName),
-                            loadingStrategy = featureCount !== null && featureCount > WFS_LARGE_LAYER_THRESHOLD
-                                ? "bbox"
-                                : "all";
+                //         const featureCount = await getWfsHits(featureTypeName),
+                //             loadingStrategy = featureCount !== null && featureCount > WFS_LARGE_LAYER_THRESHOLD
+                //                 ? "bbox"
+                //                 : "all";
 
-                        entry.sourceProps = {...entry.sourceProps, loadingStrategy};
+                //         entry.sourceProps = {...entry.sourceProps, loadingStrategy};
 
-                        if (loadingStrategy === "bbox") {
-                            zoomDone = alertLargeLayer(featureCount, zoomDone);
-                        }
-                    }
-                }
+                //         if (loadingStrategy === "bbox") {
+                //             zoomDone = alertLargeLayer(featureCount, zoomDone);
+                //         }
+                //     }
+                // }
 
                 if (effectiveLayerName) {
                     // Single known layer: check its feature count.
-                    const featureCount = await getWfsHits(effectiveLayerName);
+                    const featureCount = await getWfsHits(effectiveLayerName, baseUrl, wfsVersion);
 
                     if (featureCount !== null && featureCount > WFS_LARGE_LAYER_THRESHOLD) {
                         wfsAdditionalProps.loadingStrategy = "bbox";
-                        alertLargeLayer(featureCount, false);
+                        alertLargeLayer({featureCount, alreadyZoomed: false, responseXml, gmdNs, gcoNs, mapCollection, dispatch});
                     }
                     else {
                         wfsAdditionalProps.loadingStrategy = "all";
@@ -777,7 +778,7 @@ export default {
                     // loadingStrategy is stored per entry in sourceProps so it can differ per type.
                     // Use sourceProps.featureType (technical WFS name) as TYPENAME, not entry.name
                     // which holds the human-readable display title.
-                    await applyDiscoveredWfsLoadingStrategies(discoveredLayerEntries);
+                    await applyDiscoveredWfsLoadingStrategies(discoveredLayerEntries, responseXml, gmdNs, gcoNs, mapCollection, dispatch, baseUrl, wfsVersion);
                 }
             }
 
