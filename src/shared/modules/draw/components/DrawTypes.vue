@@ -417,10 +417,6 @@ export default {
         regulateStaticCircleInteraction (drawType) {
             const options = {...this.circleOptions};
 
-            if (drawType === "doubleCircle" && options.innerRadius >= options.outerRadius) {
-                options.innerRadius = Math.max(1, Math.round(options.outerRadius / 5));
-                this.setCircleOptions({innerRadius: options.innerRadius});
-            }
             drawInteraction.drawCircle(this.currentDrawInteraction, drawType, this.projection, this.source, options);
         },
 

@@ -75,27 +75,7 @@ export default {
             return this.circleOptions.innerRadius > this.circleOptions.outerRadius;
         }
     },
-    watch: {
-        /**
-         * Watches for changes in selectedDrawType.
-         * If selectedDrawType is set to "doubleCircle", validate the radii.
-         * @param {String} newValue The new value of selectedDrawType.
-         */
-        selectedDrawType (newValue) {
-            if (newValue === "doubleCircle") {
-                const outerRadius = this.validateRadii(this.circleOptions.innerRadius, this.circleOptions.outerRadius);
-
-                this.setCircleOptions({outerRadius: outerRadius});
-            }
-        },
-        "circleOptions.innerRadius" (newInnerRadius) {
-            if (this.selectedDrawType === "doubleCircle") {
-                const outerRadius = this.validateRadii(newInnerRadius, this.circleOptions.outerRadius);
-
-                this.setCircleOptions({outerRadius: outerRadius});
-            }
-        }
-    },
+    watch: {},
     methods: {
         /**
          * Updates a radius in circle options.
@@ -107,21 +87,6 @@ export default {
             const optionsKey = radius === "outerRadius" ? "outerRadius" : "innerRadius";
 
             this.setCircleOptions({[optionsKey]: parseInt(value, 10)});
-        },
-        /**
-         * Validates the inner and outer radius.
-         * Ensures that the inner radius is not greater than the outer radius.
-         * @param {Number} innerRadius The inner radius of the circle.
-         * @param {Number} outerRadius The outer radius of the circle.
-         * @returns {Object} The validated and corrected radii.
-         */
-        validateRadii (innerRadius, outerRadius) {
-            let correctedOuterRadius = outerRadius;
-
-            if (innerRadius > outerRadius) {
-                correctedOuterRadius = innerRadius + this.currentLayout.strokeWidth + 1;
-            }
-            return correctedOuterRadius;
         }
     }
 };
