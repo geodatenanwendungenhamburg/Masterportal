@@ -18,6 +18,7 @@ import vmShimPlugin from "./tasks/vm-shim-plugin.js";
 // eslint-disable-next-line no-restricted-syntax
 import getMastercodeVersionFolderName from "./tasks/getMastercodeVersionFolderName.mjs";
 import zipPack from "vite-plugin-zip-pack";
+import {HttpsProxyAgent} from "https-proxy-agent";
 
 const {vueAddons} = await collectAddons(),
     examplesOnly = process.env.EXAMPLES_ONLY === "true",
@@ -48,6 +49,8 @@ let portalEntries = glob.sync(`${portalFolderName}/**/index.html`, {cwd: rootPat
     }),
     examplesZipName = "",
     proxyConfig = {};
+const proxyServer = process.env.HTTPS_PROXY || process.env.HTTP_PROXY,
+    proxyAgent = proxyServer ? new HttpsProxyAgent(proxyServer) : undefined;
 
 if (examplesOnly) {
     portalEntries = portalEntries.filter(([name]) => name === "portal-basic");
@@ -277,7 +280,8 @@ export default defineConfig(({mode}) => {
                             target: config.target,
                             changeOrigin: true,
                             rewrite: somePath => somePath.replace(new RegExp(`^${key}`), ""),
-                            secure: false
+                            secure: false,
+                            ...config.agent !== undefined && proxyAgent ? {agent: proxyAgent} : {}
                         }
                     ];
 

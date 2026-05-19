@@ -895,4 +895,44 @@ describe("src/modules/draw/store/actionsDraw.js", () => {
             expect(commit.firstCall.args).to.be.eql(["setRedoArray", [feature]]);
         });
     });
+    describe("addDrawStateToFeature", () => {
+        it("should store textAlign and textBaseline in drawState", () => {
+            const feature = new Feature({geometry: new Polygon([[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]])}),
+                getters = {
+                    styleSettings: {
+                        text: "Hello",
+                        font: "Arial",
+                        fontSize: "16",
+                        color: [0, 0, 0, 1],
+                        colorContour: [0, 0, 0, 1],
+                        opacity: 1,
+                        opacityContour: 1,
+                        strokeWidth: 1,
+                        circleMethod: "interactive",
+                        circleOuterRadius: 0,
+                        circleRadius: 0,
+                        outerColorContour: [0, 0, 0, 1],
+                        area: 0,
+                        length: 0,
+                        squareArea: 0,
+                        squareMethod: "interactive",
+                        textAlign: "left",
+                        textBaseline: "bottom"
+                    },
+                    symbol: {id: "iconPoint", type: "simple_point", value: "simple_point"},
+                    zIndex: 0,
+                    imgPath: "",
+                    pointSize: 16,
+                    drawType: {id: "writeText", geometry: "Point"}
+                };
+
+            feature.set("masterportal_attributes", {});
+            actions.addDrawStateToFeature({getters}, feature);
+
+            const drawState = feature.get("masterportal_attributes").drawState;
+
+            expect(drawState.textAlign).to.equal("left");
+            expect(drawState.textBaseline).to.equal("bottom");
+        });
+    });
 });

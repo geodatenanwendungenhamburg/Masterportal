@@ -446,6 +446,46 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
             expect(feature1.getStyle().getFill().getColor()).to.equal("#00c4f5");
             expect(feature2.getStyle().getFill().getColor()).to.equal("#00c4f5");
         });
+
+        it("should apply textAlign and textBaseline from drawState on GeoJSON import", () => {
+            const payload = {layer: layer, raw: "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[9.999147727017332,53.56029963338006]},\"properties\":{\"masterportal_attributes\":{\"isOuterCircle\":false,\"isVisible\":true,\"drawState\":{\"opacity\":1,\"font\":\"Arial\",\"fontSize\":16,\"text\":\"Test Label\",\"textAlign\":\"left\",\"textBaseline\":\"bottom\",\"drawType\":{\"id\":\"writeText\",\"geometry\":\"Point\"},\"symbol\":{\"id\":\"iconPoint\",\"type\":\"simple_point\",\"value\":\"simple_point\"},\"zIndex\":0,\"imgPath\":\"https://geodienste.hamburg.de/lgv-config/img/\",\"pointSize\":16,\"color\":[77,175,74,1]},\"fromDrawTool\":true,\"styleId\":\"1\"}}}]}", filename: "textOffset.geojson"},
+                state = {
+                    selectedFiletype: "auto",
+                    gfiAttributes: {},
+                    customAttributeStyles: {},
+                    showConfirmation: true
+                };
+
+            importGeoJSON({state, dispatch, rootGetters, commit}, payload);
+
+            expect(layer.getSource().getFeatures().length).to.equal(1);
+            const feature = layer.getSource().getFeatures()[0],
+                textStyle = feature.getStyle().getText();
+
+            expect(textStyle.getText()).to.equal("Test Label");
+            expect(textStyle.getTextAlign()).to.equal("left");
+            expect(textStyle.getTextBaseline()).to.equal("bottom");
+            expect(textStyle.getFont()).to.equal("16px Arial");
+        });
+
+        it("should use the font from drawState when available", () => {
+            const payload = {layer: layer, raw: "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[9.999147727017332,53.56029963338006]},\"properties\":{\"masterportal_attributes\":{\"isOuterCircle\":false,\"isVisible\":true,\"drawState\":{\"opacity\":1,\"font\":\"Courier New\",\"fontSize\":20,\"text\":\"Custom Font\",\"textAlign\":\"left\",\"textBaseline\":\"bottom\",\"drawType\":{\"id\":\"writeText\",\"geometry\":\"Point\"},\"symbol\":{\"id\":\"iconPoint\",\"type\":\"simple_point\",\"value\":\"simple_point\"},\"zIndex\":0,\"imgPath\":\"https://geodienste.hamburg.de/lgv-config/img/\",\"pointSize\":16,\"color\":[0,0,0,1]},\"fromDrawTool\":true,\"styleId\":\"3\"}}}]}", filename: "customFont.geojson"},
+                state = {
+                    selectedFiletype: "auto",
+                    gfiAttributes: {},
+                    customAttributeStyles: {},
+                    showConfirmation: true
+                };
+
+            importGeoJSON({state, dispatch, rootGetters, commit}, payload);
+
+            expect(layer.getSource().getFeatures().length).to.equal(1);
+            const feature = layer.getSource().getFeatures()[0],
+                textStyle = feature.getStyle().getText();
+
+            expect(textStyle.getText()).to.equal("Custom Font");
+            expect(textStyle.getFont()).to.equal("20px Courier New");
+        });
     });
 
     describe("addLayerConfig", () => {

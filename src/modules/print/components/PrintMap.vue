@@ -76,6 +76,7 @@ export default {
             "mainMenu",
             "secondaryMenu"
         ]),
+        ...mapGetters(["visibleLayerConfigs"]),
 
         currentScale: {
             get () {
@@ -201,6 +202,16 @@ export default {
         currentLayout: function (value) {
             if (value && !this.initialized) {
                 this.init();
+            }
+        },
+        /**
+         * Watches for changes in visible layer configs (e.g. via LayerPills or BaseLayerSwitcher)
+         * and re-registers the postrender listener on the new topmost canvas layer.
+         * @returns {void}
+         */
+        visibleLayerConfigs: function () {
+            if (this.initialized) {
+                this.togglePostrenderListener();
             }
         }
     },

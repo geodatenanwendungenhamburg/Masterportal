@@ -115,11 +115,10 @@ export default {
             };
             let url = layer.getSource().getFeatureInfoUrl(clickCoordinate, resolution, projection, gfiParams);
 
-            // this part is needed if a Url contains a style which seems to mess up the getFeatureInfo call
-            if (url.indexOf("STYLES") && url.indexOf("STYLES=&") === -1) {
-                const newUrl = url.replace(/STYLES=.*?&/g, "STYLES=&");
+            const sourceStyles = layer.getSource().getParams?.()?.STYLES;
 
-                url = newUrl;
+            if (!sourceStyles && url.indexOf("STYLES") && url.indexOf("STYLES=&") === -1) {
+                url = url.replace(/STYLES=.*?&/g, "STYLES=&");
             }
             return getWmsFeaturesByMimeType(layer, url);
         }))

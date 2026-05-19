@@ -42,7 +42,13 @@
 ### Removed
 
 ### Fixed
+- Issue \#1592: FileImport/Draw: Fixed label text offset not being restored when importing a drawn GeoJSON file.
+- Issue \#1605: Fix ensures that STYLES parameter in GFI URL are correctly reset.
+- Issue \#1606: proxyAgent: Restored proxy agent support in the Vite development server, so external web resources can be accessed again from localhost through a corporate proxy.
 - WMS-Time: The `dimensionName` attribute is now being processed correctly again, so queries for individual dimensions are working again.
+- Fix package-lock.json for node version 24.15.0.
+- Print: Fixed print mask disappearing after toggling a layer via LayerPills or switching the base layer via BaseLayerSwitcher.
+- WMS-Time: Activating time comparison placed the second WMS-Time layer at the top of the layerTree, causing it to cover other layers. The fix places the comparison layer directly above the original layer.
 
 ---
 
@@ -72,10 +78,10 @@
 - Issue \#1576: BackForward control was not working inside expandable controls until opened.
 - Issue \#1578: layer2dVector: Fixed legend creation for WFS layers.
 - Issue \#1584: LayerConfig: Fixed issue where layer attribution was shown multiple times after reordering layers.
-- Issue \#1590: Vite
-- Issue \#1593: Min/MaxScale: Fixed a bug where layers were not correctly grayed out or stayed active when the scale was outside the defined range.
+- Issue \#1590: Vite:
     - build: corrected path to mastercode folder in index.html.
     - buildExamples: corrected name and content of zip-files.
+- Issue \#1593: Min/MaxScale: Fixed a bug where layers were not correctly grayed out or stayed active when the scale was outside the defined range.
 - Issue \#1596: Documentation: Fixed broken link to config.js example file in config.js.md.
 - Issue \#1599: About: Fixed attempted to load CSW metadata even without a configured cswUrl.
 - GroupLayer:

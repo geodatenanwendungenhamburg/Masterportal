@@ -65,6 +65,8 @@ const initialState = JSON.parse(JSON.stringify(stateDraw)),
                 strokeWidth: styleSettingsCopy.strokeWidth,
                 symbol,
                 text: styleSettingsCopy.text,
+                textAlign: styleSettingsCopy.textAlign || "left",
+                textBaseline: styleSettingsCopy.textBaseline || "bottom",
                 zIndex
             }}), false);
 

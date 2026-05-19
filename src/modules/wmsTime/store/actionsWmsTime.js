@@ -86,7 +86,18 @@ export default {
             layer = layerCollection.getLayerById(layerId);
 
         if (rootGetters["Modules/LayerSwiper/active"]) {
-            const {name, time, url, level, layers, version, parentId, gfiAttributes, featureCount} = layer.attributes;
+            const {name, time, url, level, layers, version, parentId, gfiAttributes, featureCount} = layer.attributes,
+                originalZIndex = layer.attributes.zIndex,
+                secondLayerZIndex = typeof originalZIndex === "number" ? originalZIndex + 1 : undefined;
+
+            if (typeof secondLayerZIndex === "number") {
+                const allLayerConfigs = rootGetters.allLayerConfigs.filter(config => Object.prototype.hasOwnProperty.call(config, "zIndex") && typeof config.zIndex === "number");
+
+                dispatch("updateLayerConfigZIndex", {
+                    layerContainer: allLayerConfigs,
+                    maxZIndex: originalZIndex
+                }, {root: true});
+            }
 
             commit("Modules/LayerSwiper/setSourceLayerId", id, {root: true});
             commit("Modules/LayerSwiper/setTargetLayerId", secondId, {root: true});
@@ -108,10 +119,22 @@ export default {
                         parentId,
                         legendURL: "ignore",
                         gfiAttributes: gfiAttributes,
-                        featureCount: featureCount
+                        featureCount: featureCount,
+                        zIndex: secondLayerZIndex
                     },
                     parentKey: treeSubjectsKey
                 }, {root: true});
+                if (typeof secondLayerZIndex === "number") {
+                    dispatch("replaceByIdInLayerConfig", {
+                        layerConfigs: [{
+                            id: secondId,
+                            layer: {
+                                id: secondId,
+                                zIndex: secondLayerZIndex
+                            }
+                        }]
+                    }, {root: true});
+                }
             }
             else {
                 dispatch("replaceByIdInLayerConfig", {

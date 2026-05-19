@@ -98,7 +98,8 @@ describe("src/modules/Print/components/PrintMap.vue", () => {
             },
             getters: {
                 uiStyle: sinon.stub(),
-                mobile: sinon.stub()
+                mobile: sinon.stub(),
+                visibleLayerConfigs: () => []
             }
         });
 
@@ -151,6 +152,20 @@ describe("src/modules/Print/components/PrintMap.vue", () => {
             expect(wrapper.vm.initialized).to.be.equals(false);
             wrapper.vm.$options.watch.currentLayout.call(wrapper.vm, {layout: "A4"});
             expect(wrapper.vm.initialized).to.be.equals(true);
+        });
+
+        it("watcher visibleLayerConfigs calls togglePostrenderListener when initialized", () => {
+            togglePostrenderListenerSpy.resetHistory();
+            wrapper.vm.initialized = true;
+            wrapper.vm.$options.watch.visibleLayerConfigs.call(wrapper.vm);
+            expect(togglePostrenderListenerSpy.calledOnce).to.be.equals(true);
+        });
+
+        it("watcher visibleLayerConfigs does not call togglePostrenderListener when not initialized", () => {
+            togglePostrenderListenerSpy.resetHistory();
+            wrapper.vm.initialized = false;
+            wrapper.vm.$options.watch.visibleLayerConfigs.call(wrapper.vm);
+            expect(togglePostrenderListenerSpy.called).to.be.equals(false);
         });
     });
 

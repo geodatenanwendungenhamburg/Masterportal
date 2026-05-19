@@ -1537,18 +1537,34 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                 expect(footer.style.display).to.equal("");
                 expect(wrapper.vm.fullViewActivated).to.be.false;
             });
-            describe.skip("skipped", () => {
+            describe("fullscreen DOM manipulation", () => {
+                beforeEach(async () => {
+                    wrapper.unmount();
+                    wrapper = shallowMount(TableComponent, {
+                        global: {
+                            plugins: [store]
+                        },
+                        props: {
+                            data: {
+                                headers: [{name: "foo", index: 0}, {name: "bar", index: 1}],
+                                items: [{foo: "a", bar: "b"}]
+                            },
+                            fullViewEnabled: true
+                        }
+                    });
+                    await wrapper.vm.$nextTick();
+                });
+
                 it("should change classes of the table-Cells when fullView() is executed", () => {
+                    const headerRow = wrapper.vm.$refs.headerRow;
 
                     wrapper.vm.fullView();
 
-                    tableRowMock.cells.forEach((cell) => {
-                        expect(cell.classList.remove.calledOnce).to.be.true;
-                        expect(cell.classList.remove.calledWith("fixedWidth")).to.be.true;
+                    Array.from(headerRow.cells).forEach((cell) => {
+                        expect(cell.classList.contains("fixedWidth")).to.be.false;
                     });
 
-                    expect(tableRowMock.classList.add.calledOnce).to.be.true;
-                    expect(tableRowMock.classList.add.calledWith("fullscreen-tr")).to.be.true;
+                    expect(headerRow.classList.contains("fullscreen-tr")).to.be.true;
 
                 });
                 it("should change classes of tags on call of fullView()", () => {
@@ -1569,10 +1585,11 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
 
                     sinon.stub(document.body, "clientWidth").value(1280);
 
+                    const headerRow = wrapper.vm.$refs.headerRow;
+
                     wrapper.vm.fullView();
 
-                    expect(tableRowMock.classList.add.calledOnce).to.be.true;
-                    expect(tableRowMock.classList.add.calledWith("fullscreen-tr")).to.be.true;
+                    expect(headerRow.classList.contains("fullscreen-tr")).to.be.true;
                 });
             });
             it("should call setCurrentMenuWidth with correct arguments when fullView is activated", () => {

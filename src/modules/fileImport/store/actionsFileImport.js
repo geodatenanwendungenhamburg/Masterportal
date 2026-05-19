@@ -565,10 +565,12 @@ export default {
                         }),
                         text: new Text({
                             text: drawState.text,
-                            font: drawState.fontSize + "px Arial,sans-serif",
+                            font: drawState.fontSize + "px " + (drawState.font || "Arial,sans-serif"),
                             fill: new Fill({
                                 color: drawState.color
-                            })
+                            }),
+                            textAlign: drawState.textAlign || "left",
+                            textBaseline: drawState.textBaseline || "bottom"
                         })
                     });
                 }

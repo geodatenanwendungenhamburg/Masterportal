@@ -99,6 +99,29 @@ describe("src/modules/wmsTime/store/actionsWmsTime.js", () => {
             expect(commit.calledWith("Modules/LayerSwiper/setActive", false, {root: true})).to.be.true;
             expect(dispatch.calledWith("replaceByIdInLayerConfig")).to.be.true;
         });
+
+        it("should dispatch updateLayerConfigZIndex and assign correct zIndex when comparing time layers", async () => {
+            rootGetters["Modules/LayerSwiper/active"] = true;
+            rootGetters.allLayerConfigs = [
+                {id: "layer1", zIndex: 2},
+                {id: "layer2", zIndex: 5},
+                {id: "layer3"},
+                {id: "layer4", zIndex: "notANumber"}
+            ];
+            layerCollection.getLayerById.returns({attributes: {zIndex: 3}});
+
+            await actions.toggleSwiper({commit, state, getters, dispatch, rootGetters}, "someId");
+
+            const updateZIndexCall = dispatch.getCalls().find(call => call.args[0] === "updateLayerConfigZIndex");
+
+            expect(updateZIndexCall).to.exist;
+            expect(updateZIndexCall.args[1].layerContainer).to.deep.equal([
+                {id: "layer1", zIndex: 2},
+                {id: "layer2", zIndex: 5}
+            ]);
+            expect(updateZIndexCall.args[1].maxZIndex).to.equal(3);
+            expect(updateZIndexCall.args[2]).to.deep.equal({root: true});
+        });
     });
 
     describe("windowWidthChanged", () => {

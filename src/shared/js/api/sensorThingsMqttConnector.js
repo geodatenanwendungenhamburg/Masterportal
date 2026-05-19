@@ -46,10 +46,14 @@ export class SensorThingsMqttConnector {
      * @returns {Boolean} true if a connection was made, false on error
      */
     connect () {
-        if (typeof this.mqttLibObject?.connect === "function") {
-            this.mqttClient = this.mqttLibObject.connect(this.options);
+        const actualMqttLib = this.mqttLibObject?.default || this.mqttLibObject;
+
+        if (typeof actualMqttLib?.connect === "function") {
+            this.mqttClient = actualMqttLib.connect(this.options);
             return true;
         }
+
+        console.error("MQTT Error: Invalid or missing library. 'connect' function not found.");
         return false;
     }
 
