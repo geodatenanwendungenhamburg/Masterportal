@@ -73,6 +73,7 @@ export default function handleDrawEvent (event) {
             drawState.circleOuterRadius = stateDrawCopy.circleOptions.outerRadius;
             stateDrawCopy.currentLayoutOuterCircle.strokeColor.push(1);
             drawState.outerColorContour = stateDrawCopy.currentLayoutOuterCircle.strokeColor;
+            drawState.outerColorFill = stateDrawCopy.currentLayoutOuterCircle.fillColor.concat(1 - stateDrawCopy.currentLayoutOuterCircle.fillTransparency / 100);
             drawState.drawType = {
                 "id": "drawCircle",
                 "geometry": "Circle"
