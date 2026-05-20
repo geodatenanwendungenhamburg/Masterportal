@@ -87,10 +87,8 @@ function createWfsLoadingStrategyService ({baseUrl, wfsVersion, responseXml, gmd
                 ? i18next.t("common:modules.searchBar.csw.largeWfsLayers", {layerCount: largeLayerCount})
                 : i18next.t("common:modules.searchBar.csw.largeWfsLayer", {count: featureCount, layerName}),
             multipleAlert: true,
-            // Ensure close-all cleanup removes this alert from queue.
             once: true,
             initial: false,
-            // Keep hash unique per operation so future runs are not suppressed.
             displayFrom: operationTimestamp
         }, {root: true});
 
