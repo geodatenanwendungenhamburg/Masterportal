@@ -755,7 +755,7 @@ export default {
 
                 dispatch("Alerting/addSingleAlert", {
                     category: "info",
-                    content: `${i18next.t("common:core.layers.errorHandling.getGeometryTypeFromWFSFetchfailedMessage")} (${firstUnavailableServiceUrl})`
+                    content: `${i18next.t("common:modules.searchBar.csw.noServiceResponse", {serviceUrl: firstUnavailableServiceUrl})}`
                 }, {root: true});
                 return;
             }
