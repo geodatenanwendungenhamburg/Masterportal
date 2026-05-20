@@ -9,17 +9,24 @@ import detectServiceType from "./detectServiceType.js";
  *
  * @param {Object} link GeoNetwork ES link object.
  * @param {String} link.protocol Link protocol string (e.g. "OGC:WMS").
- * @param {String} link.url Link URL.
+ * @param {String} [link.url] Link URL (GeoNetwork 3 style).
+ * @param {Object} [link.urlObject] Link URL object (GeoNetwork 4 style).
+ * @param {String} [link.urlObject.default] The URL from GeoNetwork 4 ES response.
  * @param {String} [link.name] Optional layer / feature-type name.
  * @returns {Object|null} parsedResource-shaped object or null.
  */
 export default function parseGeoNetworkLink (link) {
-    if (!link || !link.url) {
+    if (!link) {
+        return null;
+    }
+
+    const url = link.url || link.urlObject?.default || "";
+
+    if (!url) {
         return null;
     }
 
     const protocol = link.protocol || "",
-        url = link.url || "",
         typ = detectServiceType(protocol, url);
 
     if (!typ) {

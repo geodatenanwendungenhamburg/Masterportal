@@ -358,11 +358,14 @@ SearchInterfaceCSW.prototype.createPossibleActionsGeoNetwork = function (uuid, t
  * @returns {Object|null} {west, south, east, north} or null if geometry is unusable.
  */
 SearchInterfaceCSW.prototype._bboxFromGeoNetworkGeom = function (geom) {
-    if (!geom || !geom.coordinates) {
+    // GeoNetwork 4 ES serializes `geom` as an array of GeoJSON geometries.
+    const geometry = Array.isArray(geom) ? geom[0] : geom;
+
+    if (!geometry || !geometry.coordinates) {
         return null;
     }
 
-    const flatCoords = geom.coordinates.flat(Infinity),
+    const flatCoords = geometry.coordinates.flat(Infinity),
         lons = [],
         lats = [];
 

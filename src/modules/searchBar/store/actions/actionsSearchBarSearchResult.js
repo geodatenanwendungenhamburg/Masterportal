@@ -103,6 +103,7 @@ export default {
                 }},
                 parentKey: treeSubjectsKey
             }, {root: true}).then(added => {
+                console.log("[addLayerToTopicTree] addLayerToLayerConfig result:", added, "layerId:", layerId);
                 if (!added) {
                     dispatch("Alerting/addSingleAlert", {
                         category: "error",
@@ -908,15 +909,27 @@ export default {
      * @returns {void}
      */
     addLayerFromGeoNetworkRecord: async ({dispatch}, {links, fileIdentifier, geoNetworkApiUrl, recordTitle, bbox}) => {
+        console.log("[GeoNetwork] addLayerFromGeoNetworkRecord called, links:", links?.length, "fileIdentifier:", fileIdentifier);
         const recordWest = bbox?.west ?? null,
             recordSouth = bbox?.south ?? null,
             recordEast = bbox?.east ?? null,
             recordNorth = bbox?.north ?? null;
         let layerAdded = false;
 
-        for (let i = 0; i < links.length; i++) {
-            const parsed = parseGeoNetworkLink(links[i]);
+        // Prefer WMS over WFS: sort so WMS links are tried first.
+        const sortedLinks = [...(links || [])].sort((a, b) => {
+            const urlA = a.url || a.urlObject?.default || "",
+                urlB = b.url || b.urlObject?.default || "",
+                isWmsA = detectServiceType(a.protocol || "", urlA) === "WMS",
+                isWmsB = detectServiceType(b.protocol || "", urlB) === "WMS";
 
+            return (isWmsA ? 0 : 1) - (isWmsB ? 0 : 1);
+        });
+
+        for (let i = 0; i < sortedLinks.length; i++) {
+            const parsed = parseGeoNetworkLink(sortedLinks[i]);
+
+            console.log(`[GeoNetwork] link[${i}]:`, sortedLinks[i], "→ parsed:", parsed);
             if (!parsed) {
                 continue;
             }
@@ -1101,6 +1114,7 @@ export default {
                 }
             }
 
+            console.log("[GeoNetwork] dispatching addLayerToTopicTree, layerSource:", layerSource);
             dispatch("addLayerToTopicTree", {layerId, source: layerSource, showInLayerTree: true, visibility: true});
             layerAdded = true;
             break;
