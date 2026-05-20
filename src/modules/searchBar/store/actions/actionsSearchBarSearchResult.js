@@ -734,44 +734,40 @@ export default {
             }
         }
 
-        if (layerAdded) {
-            const operationTimestamp = new Date(Date.now() - 1000).toISOString();
+        const operationTimestamp = new Date(Date.now() - 1000).toISOString(),
+            commonAlertProps = {
+                once: true,
+                initial: false,
+                displayFrom: operationTimestamp
+            };
+        let alertPayload;
 
-            dispatch("Alerting/addSingleAlert", {
+        if (layerAdded) {
+            alertPayload = {
                 category: "success",
                 title: i18next.t("common:modules.searchBar.csw.layerAddedTitle"),
                 content: i18next.t("common:modules.searchBar.csw.layerAdded"),
                 multipleAlert: true,
-                once: true,
-                initial: false,
-                displayFrom: operationTimestamp
-            }, {root: true});
-            return;
+                ...commonAlertProps
+            };
         }
+        else if (unavailableServiceUrls.size > 0) {
+            const firstUnavailableServiceUrl = unavailableServiceUrls.values().next().value;
 
-        if (!layerAdded) {
-            const operationTimestamp = new Date(Date.now() - 1000).toISOString();
-
-            if (unavailableServiceUrls.size > 0) {
-                const firstUnavailableServiceUrl = unavailableServiceUrls.values().next().value;
-
-                dispatch("Alerting/addSingleAlert", {
-                    category: "info",
-                    content: `${i18next.t("common:modules.searchBar.csw.noServiceResponse", {serviceUrl: firstUnavailableServiceUrl})}`,
-                    once: true,
-                    initial: false,
-                    displayFrom: operationTimestamp
-                }, {root: true});
-                return;
-            }
-
-            dispatch("Alerting/addSingleAlert", {
+            alertPayload = {
+                category: "info",
+                content: i18next.t("common:modules.searchBar.csw.noServiceResponse", {serviceUrl: firstUnavailableServiceUrl}),
+                ...commonAlertProps
+            };
+        }
+        else {
+            alertPayload = {
                 category: "info",
                 content: i18next.t("common:modules.searchBar.csw.noLayerLink"),
-                once: true,
-                initial: false,
-                displayFrom: operationTimestamp
-            }, {root: true});
+                ...commonAlertProps
+            };
         }
+
+        dispatch("Alerting/addSingleAlert", alertPayload, {root: true});
     }
 };
