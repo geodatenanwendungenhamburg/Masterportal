@@ -1273,6 +1273,7 @@
       },
       "csw": {
         "noLayerLink": "No WMS or WFS link found in the metadata.",
+        "noServiceResponse": "The service is not responding. Please try again later: {{serviceUrl}}",
         "largeWfsLayer": "The WFS layer '{{layerName}}' contains {{count}} features and will be loaded for the visible map extent only (bbox strategy).",
         "largeWfsLayers": "{{layerCount}} WFS layers are large and will be loaded for the visible map extent only (bbox strategy).",
         "layerAddedTitle": "Layer added successfully",

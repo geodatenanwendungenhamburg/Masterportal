@@ -1264,6 +1264,7 @@
       },
       "csw": {
         "noLayerLink": "Kein WMS- oder WFS-Link in den Metadaten gefunden.",
+        "noServiceResponse": "Der Dienst antwortet nicht. Bitte versuchen Sie es später erneut: {{serviceUrl}}",
         "largeWfsLayer": "Der WFS-Layer '{{layerName}}' enthält {{count}} Features und wird nur für den sichtbaren Kartenausschnitt geladen (Bbox-Strategie).",
         "largeWfsLayers": "{{layerCount}} WFS-Layer sind groß und werden nur für den sichtbaren Kartenausschnitt geladen (Bbox-Strategie).",
         "layerAddedTitle": "Layer erfolgreich hinzugefügt",
