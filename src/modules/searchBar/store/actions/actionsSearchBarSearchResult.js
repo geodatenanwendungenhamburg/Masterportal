@@ -14,6 +14,8 @@ import get3DHighlightColor from "@shared/js/utils/get3DHighlightColor.js";
 import applyTileStyle from "@shared/js/utils/applyTileStyle.js";
 import remove3DFeatureHighlight from "@shared/js/utils/remove3DFeatureHighlight.js";
 import {convertColor} from "@shared/js/utils/convertColor.js";
+import parseGeoNetworkLink from "../../js/parseGeoNetworkLink.js";
+import detectServiceType from "../../js/detectServiceType.js";
 
 /**
  * Contains actions that communicate with other components after an interaction, such as onClick or onHover, with a search result.
@@ -882,6 +884,226 @@ export default {
                 layerAdded = true;
                 break;
             }
+        }
+
+        if (!layerAdded) {
+            dispatch("Alerting/addSingleAlert", {
+                category: "info",
+                content: i18next.t("common:modules.searchBar.csw.noLayerLink")
+            }, {root: true});
+        }
+    },
+
+    /**
+     * Adds the first usable WMS or WFS layer from a GeoNetwork Elasticsearch record.
+     * The `links` array contains only WMS/WFS entries, already filtered by the search
+     * interface, so no additional catalog request is needed.
+     * @param {Object} param.dispatch the dispatch
+     * @param {Object} payload The payload.
+     * @param {Object[]} payload.links GeoNetwork ES link objects (WMS/WFS only).
+     * @param {String} payload.fileIdentifier The record UUID.
+     * @param {String} payload.geoNetworkApiUrl The GeoNetwork API base URL.
+     * @param {String} [payload.recordTitle] Display title of the record.
+     * @param {Object} [payload.bbox] Bounding box {west, south, east, north} in WGS84.
+     * @returns {void}
+     */
+    addLayerFromGeoNetworkRecord: async ({dispatch}, {links, fileIdentifier, geoNetworkApiUrl, recordTitle, bbox}) => {
+        const recordWest = bbox?.west ?? null,
+            recordSouth = bbox?.south ?? null,
+            recordEast = bbox?.east ?? null,
+            recordNorth = bbox?.north ?? null;
+        let layerAdded = false;
+
+        for (let i = 0; i < links.length; i++) {
+            const parsed = parseGeoNetworkLink(links[i]);
+
+            if (!parsed) {
+                continue;
+            }
+
+            const {protocol, url, layerName, urlLayerParam, baseUrl} = parsed,
+                typ = detectServiceType(protocol, url),
+                urlQuery = url.includes("?") ? url.split("?")[1] : "",
+                urlParams = new URLSearchParams(urlQuery),
+                OGC_QUERY_PARAMS = new Set([
+                    "service", "request", "version", "layers", "styles", "format",
+                    "transparent", "bbox", "width", "height", "crs", "srs",
+                    "info_format", "query_layers", "i", "j", "x", "y",
+                    "typename", "typenames", "outputformat", "srsname",
+                    "maxfeatures", "count", "resulttype"
+                ]),
+                customUrlParams = Object.fromEntries(
+                    Array.from(urlParams.entries())
+                        .filter(([k]) => !OGC_QUERY_PARAMS.has(k.toLowerCase()))
+                ),
+                hasCustomParams = Object.keys(customUrlParams).length > 0,
+                effectiveBaseUrl = hasCustomParams
+                    ? `${baseUrl}?${new URLSearchParams(customUrlParams).toString()}`
+                    : baseUrl;
+
+            const OGC_OPERATIONS = ["getcapabilities", "getmap", "getfeature", "gettile", "getlegendgraphic", "getfeatureinfo"],
+                technicalLayerName = layerName
+                    && !layerName.includes(" ")
+                    && !layerName.includes("(")
+                    && !layerName.includes(")")
+                    && !OGC_OPERATIONS.includes(layerName.toLowerCase())
+                    ? layerName : "";
+            let effectiveLayerName = technicalLayerName || urlLayerParam,
+                wfsVersion = "1.1.0",
+                wfsOutputFormat = "XML",
+                wfsFeatureNS = "";
+
+            if (typ === "WMS" && !effectiveLayerName) {
+                try {
+                    const capResponse = await axios.get(baseUrl, {
+                        params: {...customUrlParams, SERVICE: "WMS", REQUEST: "GetCapabilities"}
+                    });
+                    const capXml = capResponse.request?.responseXML
+                        || new DOMParser().parseFromString(capResponse.data, "application/xml");
+
+                    effectiveLayerName = Array.from(capXml.getElementsByTagName("Layer"))
+                        .map(el => {
+                            const nameEl = el.children && Array.from(el.children).find(c => c.localName === "Name");
+
+                            return nameEl?.textContent?.trim() || "";
+                        })
+                        .filter(n => n.length > 0)
+                        .join(",");
+                }
+                catch (capError) {
+                    console.warn("addLayerFromGeoNetworkRecord: WMS GetCapabilities failed, layers will be empty.", capError);
+                }
+            }
+            else if (typ === "WFS") {
+                for (const ver of ["2.0.0", "1.1.0", "1.0.0"]) {
+                    try {
+                        const capResponse = await axios.get(baseUrl, {
+                            params: {...customUrlParams, SERVICE: "WFS", REQUEST: "GetCapabilities", VERSION: ver}
+                        });
+                        const capXml = capResponse.request?.responseXML
+                            || new DOMParser().parseFromString(capResponse.data, "application/xml");
+
+                        const rootEl = capXml.documentElement,
+                            declaredVersion = rootEl?.getAttribute("version") || ver,
+                            firstFt = Array.from(capXml.getElementsByTagName("FeatureType"))
+                                .find(ft => {
+                                    const nameEl = Array.from(ft.children).find(c => c.localName === "Name");
+
+                                    return nameEl?.textContent?.trim().length > 0;
+                                });
+
+                        if (firstFt) {
+                            const nameEl = Array.from(firstFt.children).find(c => c.localName === "Name"),
+                                fullName = nameEl.textContent.trim(),
+                                colonIdx = fullName.indexOf(":");
+
+                            effectiveLayerName = fullName;
+                            wfsVersion = declaredVersion;
+
+                            if (colonIdx !== -1) {
+                                const prefix = fullName.slice(0, colonIdx),
+                                    resolvedNs = nameEl.lookupNamespaceURI(prefix);
+
+                                wfsFeatureNS = resolvedNs || wfsFeatureNS;
+                            }
+
+                            const formats = Array.from(capXml.getElementsByTagName("Format"))
+                                    .map(f => f.textContent?.trim())
+                                    .filter(Boolean),
+                                preferredFormats = [
+                                    "application/gml+xml; version=3.2",
+                                    "text/xml; subtype=gml/3.2.1",
+                                    "text/xml; subtype=gml/3.1.1",
+                                    "GML32",
+                                    "GML3",
+                                    "GML2",
+                                    "XML"
+                                ];
+
+                            wfsOutputFormat = preferredFormats.find(f => formats.some(cf => cf.toLowerCase() === f.toLowerCase()))
+                                || formats[0]
+                                || wfsOutputFormat;
+                            break;
+                        }
+                    }
+                    catch (capError) {
+                        // Try next version
+                    }
+                }
+            }
+
+            const layerId = `gnl-${fileIdentifier}-${i}`,
+                layerSource = {
+                    id: layerId,
+                    name: recordTitle || effectiveLayerName || fileIdentifier,
+                    url: effectiveBaseUrl,
+                    typ: typ,
+                    metaID: fileIdentifier,
+                    geoNetworkApiUrl: geoNetworkApiUrl,
+                    gfiAttributes: "showAll"
+                };
+
+            if (typ === "WMS") {
+                layerSource.layers = effectiveLayerName;
+            }
+            else if (typ === "WFS") {
+                layerSource.featureType = effectiveLayerName;
+                layerSource.version = wfsVersion;
+                layerSource.outputFormat = wfsOutputFormat;
+                if (wfsFeatureNS) {
+                    layerSource.featureNS = wfsFeatureNS;
+                }
+
+                const WFS_LARGE_LAYER_THRESHOLD = 1000;
+
+                try {
+                    const hitsResponse = await axios.get(baseUrl, {
+                            params: {
+                                SERVICE: "WFS",
+                                REQUEST: "GetFeature",
+                                VERSION: wfsVersion,
+                                TYPENAME: effectiveLayerName || undefined,
+                                resultType: "hits"
+                            }
+                        }),
+                        hitsDoc = hitsResponse.request?.responseXML
+                            || new DOMParser().parseFromString(hitsResponse.data, "application/xml"),
+                        fcEl = hitsDoc.documentElement,
+                        hitsAttr = fcEl?.getAttribute("numberOfFeatures")
+                            || fcEl?.getAttribute("numberMatched"),
+                        featureCount = hitsAttr ? parseInt(hitsAttr, 10) : null;
+
+                    if (featureCount !== null && featureCount > WFS_LARGE_LAYER_THRESHOLD) {
+                        layerSource.loadingStrategy = "bbox";
+                        dispatch("Alerting/addSingleAlert", {
+                            category: "info",
+                            content: i18next.t("common:modules.searchBar.csw.largeWfsLayer", {count: featureCount})
+                        }, {root: true});
+
+                        if (recordWest !== null && !isNaN(recordWest)) {
+                            const mapProjection = mapCollection.getMap("2D")?.getView()?.getProjection()?.getCode(),
+                                centerLon = (recordWest + recordEast) / 2,
+                                centerLat = (recordSouth + recordNorth) / 2;
+                            let center = [centerLon, centerLat];
+
+                            if (mapProjection && mapProjection !== "EPSG:4326") {
+                                center = crs.transformToMapProjection(mapCollection.getMap("2D"), "EPSG:4326", center);
+                            }
+                            dispatch("Maps/zoomToCoordinates", {center, zoom: 7}, {root: true});
+                        }
+                    }
+                    else {
+                        layerSource.loadingStrategy = "all";
+                    }
+                }
+                catch (hitsError) {
+                    console.warn("addLayerFromGeoNetworkRecord: WFS hits request failed.", hitsError);
+                }
+            }
+
+            dispatch("addLayerToTopicTree", {layerId, source: layerSource, showInLayerTree: true, visibility: true});
+            layerAdded = true;
+            break;
         }
 
         if (!layerAdded) {

@@ -2,6 +2,7 @@ import crs from "@masterportal/masterportalapi/src/crs.js";
 
 import SearchInterface from "./searchInterface.js";
 import getCswRecords from "@shared/js/api/getCswRecords.js";
+import parseGeoNetworkLink from "../js/parseGeoNetworkLink.js";
 import store from "@appstore/index.js";
 import {uniqueId} from "@shared/js/utils/uniqueId.js";
 
@@ -19,6 +20,8 @@ import {uniqueId} from "@shared/js/utils/uniqueId.js";
  * @param {Number} [definitions[].maxRecords=10] Maximum number of records to return per request.
  * @param {String} [definitions[].typeName="gmd:MD_Metadata"] Type name for the CSW query.
  * @param {String[]} [definitions[].serviceTypeFilter=null] Optional INSPIRE ServiceType filter. Restricts results to records with matching ServiceType (e.g. ["view"] for WMS only, ["view","download"] for WMS+WFS).
+ * @param {String} [definitions[].mode] Optional mode. Set to `"geonetwork"` to query a GeoNetwork 4 Elasticsearch API instead of a standard CSW endpoint.
+ * @param {String[]} [definitions[].resourceTypes=["dataset"]] GeoNetwork mode only. Elasticsearch `resourceType` values to include (e.g. `["dataset"]`).
  * @param {String} [hitTemplate="default"] The template for rendering the hits.
  * @param {Object} [resultEvents] Actions that are executed when an interaction, such as hover or click, is performed with a result list item.
  * @param {String[]} [resultEvents.onClick=["addLayerFromCswRecord", "zoomToResult"]] Actions fired when clicking a result.
@@ -31,7 +34,7 @@ export default function SearchInterfaceCSW ({definitions, hitTemplate, resultEve
             onClick: ["addLayerFromCswRecord", "zoomToResult"],
             buttons: ["showLayerInfo"]
         },
-        resultEventsSupported = ["showLayerInfo", "zoomToResult", "addLayerFromCswRecord"];
+        resultEventsSupported = ["showLayerInfo", "zoomToResult", "addLayerFromCswRecord", "addLayerFromGeoNetworkRecord"];
 
     this.checkConfig(resultEvents, resultEventsSupported, searchInterfaceId);
     SearchInterface.call(this,
@@ -56,6 +59,11 @@ SearchInterfaceCSW.prototype.search = async function (searchInput) {
     this.searchState = "running";
 
     for (const definition of this.definitions) {
+        if (definition.mode === "geonetwork") {
+            await this.searchGeoNetwork(definition, searchInput);
+            continue;
+        }
+
         const xml = this.buildGetRecordsXml(definition, searchInput, 1);
 
         try {
@@ -185,4 +193,194 @@ SearchInterfaceCSW.prototype.createPossibleActions = function (record, definitio
     }
 
     return possibleActions;
+};
+
+/**
+ * Queries a GeoNetwork 4 Elasticsearch API for records matching the search input
+ * and pushes normalized results to the search results list.
+ * @param {Object} definition The GeoNetwork endpoint definition.
+ * @param {String} searchInput The search string.
+ * @returns {Promise<void>}
+ */
+SearchInterfaceCSW.prototype.searchGeoNetwork = async function (definition, searchInput) {
+    const body = {
+        query: {
+            bool: {
+                must: [{query_string: {query: `+anytext:${searchInput}`}}],
+                filter: [
+                    {terms: {resourceType: definition.resourceTypes || ["dataset"]}},
+                    {term: {isTemplate: {value: "n"}}}
+                ]
+            }
+        },
+        from: 0,
+        size: definition.maxRecords || 10,
+        _source: {
+            includes: ["uuid", "resourceTitleObject", "resourceAbstractObject", "link", "geom"]
+        }
+    };
+
+    try {
+        const data = await this.requestSearch(
+            `${definition.url}/search/records/_search`,
+            "POST",
+            JSON.stringify(body),
+            "application/json"
+        );
+
+        if (!data || !data.hits) {
+            return;
+        }
+
+        const hits = data.hits.hits || [];
+
+        this.totalHits = (this.totalHits || 0) + (data.hits.total?.value || hits.length);
+
+        for (const hit of hits) {
+            const links = (hit._source?.link || []).filter(l => parseGeoNetworkLink(l) !== null);
+
+            if (links.length === 0) {
+                continue;
+            }
+
+            this.pushHitsToSearchResults([this.normalizeGeoNetworkResult(hit, links, definition)]);
+        }
+    }
+    catch (error) {
+        if (error.name !== "AbortError" && error.code !== "ERR_CANCELED") {
+            console.warn(`SearchInterfaceCSW: GeoNetwork search failed for ${definition.url}.`, error);
+        }
+    }
+};
+
+/**
+ * Normalizes a single GeoNetwork Elasticsearch hit into a search result object.
+ * @param {Object} hit The raw Elasticsearch hit.
+ * @param {Object[]} links Filtered WMS/WFS link objects from the hit's `_source.link`.
+ * @param {Object} definition The GeoNetwork endpoint definition.
+ * @returns {Object} Normalized search result object.
+ */
+SearchInterfaceCSW.prototype.normalizeGeoNetworkResult = function (hit, links, definition) {
+    const source = hit._source,
+        uuid = source.uuid || hit._id,
+        title = source.resourceTitleObject?.default || uuid,
+        abstract = source.resourceAbstractObject?.default || "",
+        bbox = this._bboxFromGeoNetworkGeom(source.geom),
+        possibleActions = this.createPossibleActionsGeoNetwork(uuid, title, links, definition, bbox),
+        resultEventsAsObject = this.resultEventsToObject(this.resultEvents);
+
+    Object.keys(resultEventsAsObject).forEach(event => {
+        Object.keys(resultEventsAsObject[event]).forEach(action => {
+            if (possibleActions[action]) {
+                resultEventsAsObject[event][action] = possibleActions[action];
+            }
+            else {
+                delete resultEventsAsObject[event][action];
+            }
+        });
+    });
+
+    return {
+        events: resultEventsAsObject,
+        category: i18next.t("common:modules.searchBar.type.csw"),
+        id: uniqueId("CswSearch"),
+        icon: "bi-list-ul",
+        name: title,
+        toolTip: abstract ? `${title} — ${abstract}` : title
+    };
+};
+
+/**
+ * Creates the possible actions for a GeoNetwork search result.
+ * @param {String} uuid The record UUID.
+ * @param {String} title The record display title.
+ * @param {Object[]} links Filtered WMS/WFS link objects.
+ * @param {Object} definition The GeoNetwork endpoint definition.
+ * @param {Object|null} bbox Bounding box {west, south, east, north} in WGS84 or null.
+ * @returns {Object} Possible actions with their parameters.
+ */
+SearchInterfaceCSW.prototype.createPossibleActionsGeoNetwork = function (uuid, title, links, definition, bbox) {
+    const possibleActions = {
+        showLayerInfo: {
+            layerId: uuid,
+            source: {
+                id: uuid,
+                metaID: uuid,
+                name: title,
+                typ: "WMS",
+                datasets: [{
+                    md_id: uuid,
+                    csw_url: definition?.url || "",
+                    md_name: title
+                }]
+            }
+        },
+        addLayerFromGeoNetworkRecord: {
+            links,
+            fileIdentifier: uuid,
+            geoNetworkApiUrl: definition?.url || "",
+            recordTitle: title,
+            bbox
+        }
+    };
+
+    if (bbox) {
+        const {west, south, east, north} = bbox,
+            mapProjection = store.getters["Maps/projection"]?.getCode();
+
+        /**
+         * Transforms a WGS84 coordinate pair into the current map projection.
+         * @param {Number} lon Longitude in EPSG:4326.
+         * @param {Number} lat Latitude in EPSG:4326.
+         * @returns {Number[]} Coordinate pair in the map projection.
+         */
+        function transformCoord (lon, lat) {
+            if (mapProjection && mapProjection !== "EPSG:4326") {
+                return crs.transformToMapProjection(mapCollection.getMap("2D"), "EPSG:4326", [lon, lat]);
+            }
+            return [lon, lat];
+        }
+
+        const sw = transformCoord(west, south),
+            ne = transformCoord(east, north);
+
+        possibleActions.zoomToResult = {
+            coordinates: [sw[0], sw[1], ne[0], ne[1]]
+        };
+    }
+
+    return possibleActions;
+};
+
+/**
+ * Extracts a WGS84 bounding box from a GeoNetwork Elasticsearch GeoJSON geometry.
+ * @param {Object} geom GeoJSON geometry object from the ES `geom` field.
+ * @returns {Object|null} {west, south, east, north} or null if geometry is unusable.
+ */
+SearchInterfaceCSW.prototype._bboxFromGeoNetworkGeom = function (geom) {
+    if (!geom || !geom.coordinates) {
+        return null;
+    }
+
+    const flatCoords = geom.coordinates.flat(Infinity),
+        lons = [],
+        lats = [];
+
+    for (let i = 0; i < flatCoords.length; i += 2) {
+        if (typeof flatCoords[i] === "number" && typeof flatCoords[i + 1] === "number") {
+            lons.push(flatCoords[i]);
+            lats.push(flatCoords[i + 1]);
+        }
+    }
+
+    if (lons.length === 0) {
+        return null;
+    }
+
+    return {
+        west: Math.min(...lons),
+        south: Math.min(...lats),
+        east: Math.max(...lons),
+        north: Math.max(...lats)
+    };
 };
