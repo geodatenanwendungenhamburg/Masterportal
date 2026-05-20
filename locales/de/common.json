@@ -1264,7 +1264,8 @@
       },
       "csw": {
         "noLayerLink": "Kein WMS- oder WFS-Link in den Metadaten gefunden.",
-        "largeWfsLayer": "Der WFS-Dienst enthält {{count}} Features und wird nur für den sichtbaren Kartenausschnitt geladen (Bbox-Strategie).",
+        "largeWfsLayer": "Der WFS-Layer '{{layerName}}' enthält {{count}} Features und wird nur für den sichtbaren Kartenausschnitt geladen (Bbox-Strategie).",
+        "largeWfsLayers": "{{layerCount}} WFS-Layer sind groß und werden nur für den sichtbaren Kartenausschnitt geladen (Bbox-Strategie).",
         "layerAddedTitle": "Layer erfolgreich hinzugefügt",
         "layerAdded": "Die Layer aus den Metadaten wurden dem Themenbaum hinzugefügt und können über <b>Themen hinzufügen</b> ausgewählt werden."
       },

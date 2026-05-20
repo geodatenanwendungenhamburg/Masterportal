@@ -683,7 +683,7 @@ export default {
 
                     if (featureCount !== null && featureCount > wfsLoadingStrategyService.WFS_LARGE_LAYER_THRESHOLD) {
                         wfsAdditionalProps.loadingStrategy = "bbox";
-                        wfsLoadingStrategyService.alertLargeLayer({featureCount, alreadyZoomed: false});
+                        wfsLoadingStrategyService.alertLargeLayer({featureCount, layerName: effectiveLayerName});
                     }
                     else {
                         wfsAdditionalProps.loadingStrategy = "all";

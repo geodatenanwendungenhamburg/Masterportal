@@ -38,6 +38,8 @@ function extractRecordBounds (responseXml, gmdNs, gcoNs) {
  * @returns {Object} Service API for WFS loading strategy operations.
  */
 function createWfsLoadingStrategyService ({baseUrl, wfsVersion, responseXml, gmdNs, gcoNs, mapCollection, dispatch}) {
+    let zoomToRecordDone = false;
+
     /**
      * Requests the WFS feature count using resultType=hits.
      * @param {String} featureName Technical WFS feature type name.
@@ -71,19 +73,24 @@ function createWfsLoadingStrategyService ({baseUrl, wfsVersion, responseXml, gmd
     /**
      * Shows info alert for large layers and performs one optional zoom.
      * @param {Object} param Alert and zoom parameters.
-     * @param {Number} param.featureCount Matched feature count.
-     * @param {Boolean} param.alreadyZoomed Whether zoom was already performed.
-     * @returns {Boolean} Updated zoom flag.
+     * @param {Number} param.featureCount Matched feature count for a single large layer.
+     * @param {String} [param.layerName] Layer name for single-layer message.
+     * @param {Number} [param.largeLayerCount=1] Number of large layers detected.
+     * @returns {Boolean} Whether zoom was performed already.
      */
-    function alertLargeLayer ({featureCount, alreadyZoomed}) {
+    function alertLargeLayer ({featureCount, layerName, largeLayerCount = 1}) {
         dispatch("Alerting/addSingleAlert", {
             category: "info",
-            content: i18next.t("common:modules.searchBar.csw.largeWfsLayer", {count: featureCount})
+            content: largeLayerCount > 1
+                ? i18next.t("common:modules.searchBar.csw.largeWfsLayers", {layerCount: largeLayerCount})
+                : i18next.t("common:modules.searchBar.csw.largeWfsLayer", {count: featureCount, layerName}),
+            // Add a slight time offset so alert hashing treats each operation as a distinct event.
+            displayFrom: new Date(Date.now() - 1000).toISOString()
         }, {root: true});
 
         const {west: recordWest, east: recordEast, south: recordSouth, north: recordNorth} = extractRecordBounds(responseXml, gmdNs, gcoNs);
 
-        if (!alreadyZoomed && recordWest !== null && !isNaN(recordWest)) {
+        if (!zoomToRecordDone && recordWest !== null && !isNaN(recordWest)) {
             const mapProjection = mapCollection.getMap("2D")?.getView()?.getProjection()?.getCode(),
                 centerLon = (recordWest + recordEast) / 2,
                 centerLat = (recordSouth + recordNorth) / 2;
@@ -93,9 +100,9 @@ function createWfsLoadingStrategyService ({baseUrl, wfsVersion, responseXml, gmd
                 center = crs.transformToMapProjection(mapCollection.getMap("2D"), "EPSG:4326", center);
             }
             dispatch("Maps/zoomToCoordinates", {center, zoom: 7}, {root: true});
-            return true;
+            zoomToRecordDone = true;
         }
-        return alreadyZoomed;
+        return zoomToRecordDone;
     }
 
     /**
@@ -104,7 +111,9 @@ function createWfsLoadingStrategyService ({baseUrl, wfsVersion, responseXml, gmd
      * @returns {Promise<void>} Resolves when all strategies are applied.
     */
     async function applyDiscoveredWfsLoadingStrategies (entries) {
-        let zoomDone = false;
+        let largeLayerCount = 0,
+            firstLargeFeatureCount = null,
+            firstLargeLayerName = null;
 
         for (const entry of entries) {
             const featureTypeName = entry.sourceProps?.featureType;
@@ -121,8 +130,16 @@ function createWfsLoadingStrategyService ({baseUrl, wfsVersion, responseXml, gmd
             entry.sourceProps = {...entry.sourceProps, loadingStrategy};
 
             if (loadingStrategy === "bbox") {
-                zoomDone = alertLargeLayer({featureCount, alreadyZoomed: zoomDone});
+                largeLayerCount++;
+                if (firstLargeFeatureCount === null) {
+                    firstLargeFeatureCount = featureCount;
+                    firstLargeLayerName = entry.name || featureTypeName;
+                }
             }
+        }
+
+        if (largeLayerCount > 0) {
+            alertLargeLayer({featureCount: firstLargeFeatureCount, layerName: firstLargeLayerName, largeLayerCount});
         }
     }
 
