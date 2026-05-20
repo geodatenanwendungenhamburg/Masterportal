@@ -761,19 +761,27 @@ export default {
         }
 
         if (!layerAdded) {
+            const operationTimestamp = new Date(Date.now() - 1000).toISOString();
+
             if (unavailableServiceUrls.size > 0) {
                 const firstUnavailableServiceUrl = unavailableServiceUrls.values().next().value;
 
                 dispatch("Alerting/addSingleAlert", {
                     category: "info",
-                    content: `${i18next.t("common:modules.searchBar.csw.noServiceResponse", {serviceUrl: firstUnavailableServiceUrl})}`
+                    content: `${i18next.t("common:modules.searchBar.csw.noServiceResponse", {serviceUrl: firstUnavailableServiceUrl})}`,
+                    once: true,
+                    initial: false,
+                    displayFrom: operationTimestamp
                 }, {root: true});
                 return;
             }
 
             dispatch("Alerting/addSingleAlert", {
                 category: "info",
-                content: i18next.t("common:modules.searchBar.csw.noLayerLink")
+                content: i18next.t("common:modules.searchBar.csw.noLayerLink"),
+                once: true,
+                initial: false,
+                displayFrom: operationTimestamp
             }, {root: true});
         }
     }
