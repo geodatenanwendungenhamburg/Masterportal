@@ -746,10 +746,16 @@ export default {
         }
 
         if (layerAdded) {
+            const operationTimestamp = new Date(Date.now() - 1000).toISOString();
+
             dispatch("Alerting/addSingleAlert", {
                 category: "success",
                 title: i18next.t("common:modules.searchBar.csw.layerAddedTitle"),
-                content: i18next.t("common:modules.searchBar.csw.layerAdded")
+                content: i18next.t("common:modules.searchBar.csw.layerAdded"),
+                multipleAlert: true,
+                once: true,
+                initial: false,
+                displayFrom: operationTimestamp
             }, {root: true});
             return;
         }
