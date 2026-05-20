@@ -79,13 +79,19 @@ function createWfsLoadingStrategyService ({baseUrl, wfsVersion, responseXml, gmd
      * @returns {Boolean} Whether zoom was performed already.
      */
     function alertLargeLayer ({featureCount, layerName, largeLayerCount = 1}) {
+        const operationTimestamp = new Date(Date.now() - 1000).toISOString();
+
         dispatch("Alerting/addSingleAlert", {
             category: "info",
             content: largeLayerCount > 1
                 ? i18next.t("common:modules.searchBar.csw.largeWfsLayers", {layerCount: largeLayerCount})
                 : i18next.t("common:modules.searchBar.csw.largeWfsLayer", {count: featureCount, layerName}),
-            // Add a slight time offset so alert hashing treats each operation as a distinct event.
-            displayFrom: new Date(Date.now() - 1000).toISOString()
+            multipleAlert: true,
+            // Ensure close-all cleanup removes this alert from queue.
+            once: true,
+            initial: false,
+            // Keep hash unique per operation so future runs are not suppressed.
+            displayFrom: operationTimestamp
         }, {root: true});
 
         const {west: recordWest, east: recordEast, south: recordSouth, north: recordNorth} = extractRecordBounds(responseXml, gmdNs, gcoNs);
