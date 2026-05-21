@@ -152,7 +152,11 @@ export default {
                         const attrs = event.feature.get("masterportal_attributes");
 
                         if (!attrs?.fromDrawTool) {
-                            this.pendingInnerCircleFeature = markRaw(event.feature);
+                            // Imported feature — add to undo stack as a regular draw
+                            this.nonReactiveUndoFeatures.push({
+                                feature: markRaw(event.feature),
+                                mode: "draw"
+                            });
                             return;
                         }
 

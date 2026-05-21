@@ -1,7 +1,9 @@
 <script>
+import {markRaw} from "vue";
 import {mapGetters, mapMutations} from "vuex";
-import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
+import layerCollection from "@core/layers/js/layerCollection.js";
+import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 
 import DrawEdit from "@shared/modules/draw/components/DrawEdit.vue";
 import DrawLayout from "@shared/modules/draw/components/DrawLayout.vue";
@@ -27,7 +29,7 @@ export default {
     data () {
         return {
             layer: null,
-            source: new VectorSource()
+            source: markRaw(new VectorSource())
         };
     },
     computed: {
@@ -53,22 +55,30 @@ export default {
             "secondaryExpanded"
         ])
     },
-    mounted () {
-        const drawLayer = mapCollection.getMap("2D").getLayers().getArray().find(layer => layer.get("id") === "importDrawLayer");
+    async mounted () {
+        const drawLayerId = "importDrawLayer";
+        let existingLayer = layerCollection.getLayerById(drawLayerId);
 
-        if (typeof drawLayer === "undefined") {
-            this.layer = new VectorLayer({
-                id: "importDrawLayer",
-                name: "importDrawLayer",
-                source: this.source,
-                zIndex: 99999999999 // alwaysOnTop am Layer?! OL Layer vs unsere Layer
+        if (!existingLayer) {
+            await this.$store.dispatch("addLayerToLayerConfig", {
+                layerConfig: {
+                    id: drawLayerId,
+                    name: drawLayerId,
+                    showInLayerTree: true,
+                    typ: "VECTORBASE",
+                    type: "layer",
+                    visibility: true
+                },
+                parentKey: treeSubjectsKey
             });
-
-            mapCollection.getMap("2D").addLayer(this.layer);
+            existingLayer = layerCollection.getLayerById(drawLayerId);
         }
-        else {
-            this.layer = drawLayer;
-            this.source = drawLayer.getSource();
+
+        if (existingLayer) {
+            console.warn("Draw layer already exists. Reusing existing layer.");
+            this.layer = markRaw(existingLayer.layer);
+            this.layer.set("alwaysOnTop", true);
+            this.source = markRaw(this.layer.getSource());
         }
     },
     methods: {
