@@ -100,11 +100,11 @@ export default {
             }
 
             const buttonElement = document.getElementById(buttonId),
-                buttonPosition = buttonElement ? buttonElement.getBoundingClientRect() : 0,
-                buttonPositionRight = buttonPosition.right,
-                buttonPositionLeft = buttonPosition.left;
+                containerElement = document.getElementById("main-drawtypes-container"),
+                buttonPosition = buttonElement ? buttonElement.getBoundingClientRect() : {left: 0, right: 0},
+                containerPosition = containerElement ? containerElement.getBoundingClientRect() : {left: 0};
 
-            return buttonPositionLeft + (buttonPositionRight - buttonPositionLeft) / 2 - 23;
+            return buttonPosition.left + (buttonPosition.right - buttonPosition.left) / 2 - containerPosition.left + 6;
         }
     }
 };
@@ -250,12 +250,15 @@ export default {
     align-items: left;
 }
 
+#modules-draw-module {
+    overflow: hidden;
+}
+
 .selected-drawtypes-container {
     display: flex;
     flex-wrap: wrap;
     margin-top: 1rem;
     width: auto;
-    overflow-x: scroll;
     > div {
         width: 5rem;
     }
