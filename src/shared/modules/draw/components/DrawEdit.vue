@@ -233,9 +233,12 @@ export default {
          */
         regulateEditInteraction (drawEdit, event) {
             this.showFrame = false;
-            const iconRect = event.target.getBoundingClientRect();
+            const buttonWrapperElement = event.target.closest("button")?.parentElement || event.target,
+                containerElement = this.$el.querySelector(".draw-edit-container"),
+                wrapperRect = buttonWrapperElement.getBoundingClientRect(),
+                containerRect = containerElement ? containerElement.getBoundingClientRect() : {left: 0};
 
-            this.iconPosition = iconRect.left + iconRect.width / 2 - 23;
+            this.iconPosition = wrapperRect.left + wrapperRect.width / 2 - containerRect.left;
             this.mappingEditInteractions[drawEdit]();
         },
 
