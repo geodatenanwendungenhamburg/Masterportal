@@ -227,6 +227,7 @@ export default {
             this.selectedFeature?.set(key, this.newValue);
             this.newKey = "";
             this.newValue = "";
+            this.updateGfiAttributes();
             this.checkAttributes();
         },
 
@@ -248,6 +249,7 @@ export default {
                 this.selectedFeature?.unset(attr.key);
             }
             this.attributes.splice(idx, 1);
+            this.updateGfiAttributes();
             this.checkAttributes();
         },
 
@@ -276,6 +278,8 @@ export default {
             this.selectedFeature?.unset(attr.originalKey);
             this.selectedFeature?.set(trimmedKey, attr.value);
             attr.originalKey = trimmedKey;
+
+            this.updateGfiAttributes();
 
             this.checkAttributes();
         },
@@ -343,6 +347,29 @@ export default {
             const key = this.attributes[idx]?.key;
 
             return this.validKeys[key] ?? {valid: true, message: ""};
+        },
+        /**
+         * Updates the layer's gfiAttributes to show only user-facing attribute keys and no internal keys like the ones stored in masterportal_attributes.
+         * @returns {void}
+         */
+        updateGfiAttributes () {
+            if (!this.layer) {
+                return;
+            }
+            const allFeatures = this.layer.getSource()?.getFeatures() ?? [],
+                gfiAttrs = {};
+
+            allFeatures.forEach(feature => {
+                Object.keys(feature.getProperties()).forEach(key => {
+                    if (!EXCLUDED_KEYS.has(key)) {
+                        gfiAttrs[key] = key;
+                    }
+                });
+            });
+
+            if (Object.keys(gfiAttrs).length > 0) {
+                this.layer.set("gfiAttributes", gfiAttrs);
+            }
         }
     }
 };
