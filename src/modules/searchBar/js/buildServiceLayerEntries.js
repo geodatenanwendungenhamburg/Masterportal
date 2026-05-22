@@ -32,5 +32,24 @@ export default function buildServiceLayerEntries (serviceType, entries = []) {
         });
     }
 
+    if (serviceType === "WMTS") {
+        // entries: [{name, title, format?, tileMatrixSet?}]
+        return entries.map(layerEntry => {
+            const sourceProps = {layers: layerEntry.name};
+
+            if (layerEntry.format) {
+                sourceProps.format = layerEntry.format;
+            }
+            if (layerEntry.tileMatrixSet) {
+                sourceProps.tileMatrixSet = layerEntry.tileMatrixSet;
+            }
+
+            return {
+                name: layerEntry.title || layerEntry.name,
+                sourceProps
+            };
+        });
+    }
+
     return entries;
 }

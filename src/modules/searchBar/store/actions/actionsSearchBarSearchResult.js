@@ -765,10 +765,16 @@ export default {
                 wfsVersion,
                 wfsOutputFormat,
                 wfsFeatureNS,
+                wmtsCapabilitiesUrl,
+                wmtsFormat,
+                wmtsTileMatrixSet,
                 serviceUnavailable,
                 serviceTitle,
                 discoveredLayerEntries
-            } = await resolveCswServiceConfig(parsedResource);
+            } = await resolveCswServiceConfig(
+                parsedResource,
+                rootGetters["Maps/projection"]?.getCode() || ""
+            );
 
             if (!typ) {
                 continue;
@@ -779,6 +785,7 @@ export default {
             }
 
             let wfsAdditionalProps = {};
+            let wmtsAdditionalProps = {};
 
             if (typ === "WFS") {
                 wfsAdditionalProps = {
@@ -811,6 +818,28 @@ export default {
                 }
                 }
             }
+            else if (typ === "WMTS") {
+                wmtsAdditionalProps = {
+                    optionsFromCapabilities: true,
+                    capabilitiesUrl: wmtsCapabilitiesUrl || `${baseUrl}?SERVICE=WMTS&REQUEST=GetCapabilities`
+                };
+
+                if (wmtsFormat) {
+                    wmtsAdditionalProps.format = wmtsFormat;
+                }
+                if (wmtsTileMatrixSet) {
+                    wmtsAdditionalProps.tileMatrixSet = wmtsTileMatrixSet;
+                }
+            }
+
+            let additionalLayerProps = {};
+
+            if (typ === "WFS") {
+                additionalLayerProps = wfsAdditionalProps;
+            }
+            else if (typ === "WMTS") {
+                additionalLayerProps = wmtsAdditionalProps;
+            }
 
             if (discoveredLayerEntries.length > 0 && await addServiceLayersToExternalFolder({
                 rootGetters,
@@ -822,22 +851,28 @@ export default {
                 fileIdentifier,
                 cswUrl,
                 resourceIndex: i,
-                additionalLayerProps: typ === "WFS" ? wfsAdditionalProps : {}
+                additionalLayerProps
             })) {
                 layerAdded = true;
                 break;
             }
 
-            if ((typ === "WMS" || typ === "WFS") && !effectiveLayerName) {
+            if ((typ === "WMS" || typ === "WFS" || typ === "WMTS") && !effectiveLayerName) {
                 continue;
             }
 
-            const singleLayerSourceProps = typ === "WMS"
-                ? {layers: effectiveLayerName}
-                : {featureType: effectiveLayerName};
+            const singleLayerSourceProps = typ === "WFS"
+                ? {featureType: effectiveLayerName}
+                : {layers: effectiveLayerName};
 
             if (typ === "WFS" && wfsFeatureNS) {
                 singleLayerSourceProps.featureNS = wfsFeatureNS;
+            }
+            if (typ === "WMTS" && wmtsFormat) {
+                singleLayerSourceProps.format = wmtsFormat;
+            }
+            if (typ === "WMTS" && wmtsTileMatrixSet) {
+                singleLayerSourceProps.tileMatrixSet = wmtsTileMatrixSet;
             }
 
             const singleLayerEntries = [{
@@ -854,7 +889,7 @@ export default {
                 fileIdentifier,
                 cswUrl,
                 resourceIndex: i,
-                additionalLayerProps: typ === "WFS" ? wfsAdditionalProps : {}
+                additionalLayerProps
             });
 
             if (singleLayerAdded) {
