@@ -15,16 +15,16 @@ import buildServiceLayerEntries from "./buildServiceLayerEntries.js";
  */
 export default async function resolveCswServiceConfig (parsedResource) {
 
-    const {protocol, url, layerName, urlLayerParam, baseUrl} = parsedResource,
-        typ = detectServiceType(protocol, url),
-        technicalLayerName = layerName && !layerName.includes(" ") ? layerName : "";
-    let effectiveLayerName = technicalLayerName || urlLayerParam,
-        wfsVersion = "1.1.0",
-        wfsOutputFormat = "XML",
-        wfsFeatureNS = "",
-        serviceUnavailable = false,
-        serviceTitle = "",
-        discoveredLayerEntries = [];
+    const {protocol, url, layerName, urlLayerParam, baseUrl} = parsedResource;
+    const typ = detectServiceType(protocol, url);
+    const technicalLayerName = layerName && !layerName.includes(" ") ? layerName : "";
+    let effectiveLayerName = technicalLayerName || urlLayerParam;
+    let wfsVersion = "1.1.0";
+    let wfsOutputFormat = "XML";
+    let wfsFeatureNS = "";
+    let serviceUnavailable = false;
+    let serviceTitle = "";
+    let discoveredLayerEntries = [];
 
     if (!typ) {
         return {
