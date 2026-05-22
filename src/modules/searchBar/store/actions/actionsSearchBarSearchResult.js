@@ -786,6 +786,7 @@ export default {
 
             let wfsAdditionalProps = {};
             let wmtsAdditionalProps = {};
+            let oafAdditionalProps = {};
 
             if (typ === "WFS") {
                 wfsAdditionalProps = {
@@ -831,6 +832,13 @@ export default {
                     wmtsAdditionalProps.tileMatrixSet = wmtsTileMatrixSet;
                 }
             }
+            else if (typ === "OAF") {
+                oafAdditionalProps = {
+                    bbox: false,
+                    crs: false,
+                    loadingStrategy: "all"
+                };
+            }
 
             let additionalLayerProps = {};
 
@@ -839,6 +847,9 @@ export default {
             }
             else if (typ === "WMTS") {
                 additionalLayerProps = wmtsAdditionalProps;
+            }
+            else if (typ === "OAF") {
+                additionalLayerProps = oafAdditionalProps;
             }
 
             if (discoveredLayerEntries.length > 0 && await addServiceLayersToExternalFolder({
@@ -857,13 +868,18 @@ export default {
                 break;
             }
 
-            if ((typ === "WMS" || typ === "WFS" || typ === "WMTS") && !effectiveLayerName) {
+            if ((typ === "WMS" || typ === "WFS" || typ === "WMTS" || typ === "OAF") && !effectiveLayerName) {
                 continue;
             }
 
-            const singleLayerSourceProps = typ === "WFS"
-                ? {featureType: effectiveLayerName}
-                : {layers: effectiveLayerName};
+            let singleLayerSourceProps = {layers: effectiveLayerName};
+
+            if (typ === "WFS") {
+                singleLayerSourceProps = {featureType: effectiveLayerName};
+            }
+            else if (typ === "OAF") {
+                singleLayerSourceProps = {collection: effectiveLayerName};
+            }
 
             if (typ === "WFS" && wfsFeatureNS) {
                 singleLayerSourceProps.featureNS = wfsFeatureNS;

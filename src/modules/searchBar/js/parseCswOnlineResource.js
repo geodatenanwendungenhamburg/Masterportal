@@ -4,6 +4,32 @@
  * @param {Element} onlineResource XML element for one online resource.
  * @returns {Object} Parsed values for service detection and layer extraction.
  */
+function normalizeMalformedCswUrl (url) {
+    if (!url) {
+        return "";
+    }
+
+    try {
+        const parsedUrl = new URL(url);
+
+        // Some CSW records encode query parameters in path as '&key=value' without '?'.
+        if (!parsedUrl.search && parsedUrl.pathname.includes("&")) {
+            const ampIndex = parsedUrl.pathname.indexOf("&"),
+                potentialQuery = parsedUrl.pathname.slice(ampIndex + 1);
+
+            if (/^[A-Za-z_][A-Za-z0-9_.-]*=.*/.test(potentialQuery)) {
+                parsedUrl.pathname = parsedUrl.pathname.slice(0, ampIndex);
+                parsedUrl.search = `?${potentialQuery}`;
+            }
+        }
+
+        return parsedUrl.toString();
+    }
+    catch (error) {
+        return url;
+    }
+}
+
 function parseCswOnlineResource (onlineResource) {
     const gmdNs = "http://www.isotc211.org/2005/gmd",
         gcoNs = "http://www.isotc211.org/2005/gco",
@@ -20,7 +46,8 @@ function parseCswOnlineResource (onlineResource) {
             || "",
         urlEl = onlineResource.getElementsByTagNameNS(gmdNs, "linkage")[0]
             ?.getElementsByTagNameNS(gmdNs, "URL")[0],
-        url = urlEl?.textContent?.trim() || "",
+        rawUrl = urlEl?.textContent?.trim() || "",
+        url = normalizeMalformedCswUrl(rawUrl),
         nameEl = onlineResource.getElementsByTagNameNS(gmdNs, "name")[0]
             ?.getElementsByTagNameNS(gcoNs, "CharacterString")[0],
         layerName = nameEl?.textContent?.trim() || "",

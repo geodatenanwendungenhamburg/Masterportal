@@ -50,7 +50,10 @@ Layer2dVector.prototype.updateLayerValues = function (attributes) {
     this.controlAutoRefresh(attributes);
 
     if (this.get("typ") === "WFS" || this.get("typ") === "OAF" || this.get("typ") === "GeoJSON") {
-        if (store.getters["Maps/mode"] === "3D" && this.layerSource.getFeatures().length === 0) {
+        const is3D = store.getters["Maps/mode"] === "3D",
+            isOaf = this.get("typ") === "OAF";
+
+        if ((is3D || isOaf) && this.layerSource.getFeatures().length === 0) {
             this.loadFeaturesManually(attributes);
         }
     }

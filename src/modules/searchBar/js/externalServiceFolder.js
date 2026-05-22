@@ -108,6 +108,9 @@ async function addServiceLayersToExternalFolder ({
         if (serviceType === "WFS" && !layerConfig.featureType) {
             layerConfig.featureType = layerName;
         }
+        if (serviceType === "OAF" && !layerConfig.collection) {
+            layerConfig.collection = layerName;
+        }
 
         await dispatch("addLayerToLayerConfig", {
             layerConfig,
