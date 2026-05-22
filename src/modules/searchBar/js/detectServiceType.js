@@ -5,39 +5,54 @@
  * @returns {String|null} The detected service type or null.
  */
 export default function detectServiceType (protocol, url) {
-    const serviceDefinitions = {
+    const normalizedProtocol = protocol || "",
+        normalizedUrl = url || "";
+
+    const serviceMatchers = {
+        OAF: {
+            protocol: /(OGC:API[:-]?FEATURES|OGC:OAF|SERVICE\s*TYPE\/OGC\/(?:OAF|API-FEATURES)|WWW:LINK-1\.0-HTTP--OGC-(?:OAF|API-FEATURES)|OGC\s+API\s*-?\s*FEATURES)/i,
+            // strict URL hints, avoid generic /api
+            url: /(?:[?&]SERVICE=OAF\b|\/OGC\/FEATURES\b|\/COLLECTIONS(?:\/|$)|\/ITEMS(?:\/|$)|\/OAF(?:\/|$)|[_-]OAF[_-]?)/i
+        },
         WMS: {
-            protocols: [
-                "OGC:WMS",
-                "WWW:LINK-1.0-http--ogc-wms",
-                "OGC Web Map Service",
-                "serviceType/ogc/wms"
-            ],
-            urlHints: ["SERVICE=WMS", "/WMS", "_WMS", "WMS_"]
+            protocol: /(OGC:WMS|WWW:LINK-1\.0-HTTP--OGC-WMS|OGC\s+WEB\s+MAP\s+SERVICE|SERVICE\s*TYPE\/OGC\/WMS)/i,
+            url: /(?:[?&]SERVICE=WMS\b|\/WMS(?:\/|$)|[_-]WMS[_-]?)/i
         },
         WFS: {
-            protocols: [
-                "OGC:WFS",
-                "WWW:LINK-1.0-http--ogc-wfs",
-                "OGC Web Feature Service",
-                "serviceType/ogc/wfs"
-            ],
-            urlHints: ["SERVICE=WFS", "/WFS", "_WFS", "WFS_"]
+            protocol: /(OGC:WFS|WWW:LINK-1\.0-HTTP--OGC-WFS|OGC\s+WEB\s+FEATURE\s+SERVICE|SERVICE\s*TYPE\/OGC\/WFS)/i,
+            url: /(?:[?&]SERVICE=WFS\b|\/WFS(?:\/|$)|[_-]WFS[_-]?)/i
+        },
+        WMTS: {
+            protocol: /(OGC:WMTS|WWW:LINK-1\.0-HTTP--OGC-WMTS|OGC\s+WEB\s+MAP\s+TILE\s+SERVICE|SERVICE\s*TYPE\/OGC\/WMTS|SERVICETYPE\/OGC\/WMTS)/i,
+            url: /(?:[?&]SERVICE=WMTS(?:&|$)|\/WMTS(?:\/|$|\?|_)|[-_]WMTS(?:[-_]|$)|\/1\.0\.0\/WMTSCAPABILITIES\.XML(?:\?|$))/i
         }
     };
 
-    const normalizedProtocol = protocol?.toUpperCase() || "",
-        normalizedUrl = url?.toUpperCase() || "";
+    let protocolMatch = null,
+        urlMatch = null;
 
-    for (const [serviceType, definition] of Object.entries(serviceDefinitions)) {
-        if (definition.protocols.some(entry => normalizedProtocol.includes(entry.toUpperCase()))) {
-            return serviceType;
+    for (const [serviceType, matcher] of Object.entries(serviceMatchers)) {
+        if (!protocolMatch && matcher.protocol.test(normalizedProtocol)) {
+            protocolMatch = serviceType;
         }
 
-        if (definition.urlHints.some(entry => normalizedUrl.includes(entry.toUpperCase()))) {
-            return serviceType;
+        if (!urlMatch && matcher.url.test(normalizedUrl)) {
+            urlMatch = serviceType;
         }
     }
 
-    return null;
+    if (protocolMatch && urlMatch) {
+        if (protocolMatch === urlMatch) {
+            return protocolMatch;
+        }
+
+        // URL is usually more explicit for WMTS/OAF endpoints when protocol metadata is generic or wrong.
+        if (urlMatch === "WMTS" || urlMatch === "OAF") {
+            return urlMatch;
+        }
+
+        return protocolMatch;
+    }
+
+    return protocolMatch || urlMatch;
 }
