@@ -9,6 +9,9 @@
  * @vue-prop {Boolean} isOpen - manages the state of the accordion.
  * @vue-prop {String} fontSize - defaults to font-size-big (1.167rem) and can be changed to use a different size.
  * @vue-prop {Boolean} colouredHeader - if true, the title of the accordion will have a light blue background.
+ * @vue-prop {Boolean} useIndentation - if true, keeps the default accordion button left padding.
+ * @vue-prop {String} headingLevel - sets the heading level for the accordion title (e.g., h1, h2, h3).
+ * @vue-prop {String} iconMarginEnd - sets the margin-end utility class for the icon (e.g., me-2, me-3).
  */
 export default {
     name: "AccordionItem",
@@ -40,6 +43,22 @@ export default {
             type: Boolean,
             required: false,
             default: null
+        },
+        useIndentation: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        headingLevel: {
+            type: String,
+            required: false,
+            default: "div",
+            validator: value => ["h1", "h2", "h3", "h4", "h5", "h6", "div"].includes(value)
+        },
+        iconMarginEnd: {
+            type: String,
+            required: false,
+            default: "me-3"
         }
     },
     emits: ["updateAccordionState"],
@@ -60,13 +79,19 @@ export default {
         <div
             class="accordion-item border-0"
         >
-            <div
+            <component
+                :is="headingLevel"
                 v-if="title"
                 :id="`flush-heading-${id}`"
                 class="accordion-header ms-0"
             >
                 <button
-                    :class="['accordion-button', fontSize, !isOpen? 'collapsed' : '', !colouredHeader? 'ps-0' : 'rounded']"
+                    :class="[
+                        'accordion-button',
+                        fontSize,
+                        !isOpen? 'collapsed' : '',
+                        colouredHeader ? 'rounded' : useIndentation ? '' : 'ps-0'
+                    ]"
                     type="button"
                     :coloured="colouredHeader"
                     data-bs-toggle="collapse"
@@ -78,11 +103,11 @@ export default {
                 >
                     <i
                         v-if="icon"
-                        :class="`${icon} mt-1 me-3`"
+                        :class="[icon, iconMarginEnd || undefined]"
                     />
                     {{ title }}
                 </button>
-            </div>
+            </component>
             <div
                 :id="`flush-collapse-${id}`"
                 :class="`accordion-collapse collapse ${isOpen ? 'show' : ''}`"

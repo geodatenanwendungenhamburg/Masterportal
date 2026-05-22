@@ -354,7 +354,7 @@ export default defineConfig(({mode}) => {
             MASTERPORTAL_BASE_PATH: JSON.stringify(runtimeBase),
             MASTERPORTAL_ASSETS_PATH: JSON.stringify(
                 isProd
-                    ? `../mastercode/${mastercodeVersionFolderName}/img`
+                    ? `/mastercode/${mastercodeVersionFolderName}/img`
                     : "/src/assets/img"
             )
         },

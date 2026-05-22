@@ -1,4 +1,4 @@
-import testAction from "@devtools/tests/VueTestUtils.js";
+import {expect} from "chai";
 import actions from "@modules/print/store/actionsPrint.js";
 import VectorLayer from "ol/layer/Vector.js";
 import sinon from "sinon";
@@ -11,17 +11,22 @@ afterEach(() => {
 
 describe("src/modules/print/store/actionsPrint", function () {
     describe("activatePrintStarted", function () {
-        it("should set activatePrintStarted to true", done => {
+        it("should set activatePrintStarted to true", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy();
+
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(activatePrintStarted, undefined, {}, {}, [
-                {type: "setPrintStarted", payload: true, commit: true}
-            ], {}, done);
+            activatePrintStarted({commit, dispatch, state: {}}, undefined);
+
+            expect(commit.calledWith("setPrintStarted", true)).to.be.true;
         });
     });
 
     describe("getMetaDataForPrint", function () {
-        it("should get metadata", done => {
-            const payload = {
+        it("should get metadata", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                payload = {
                     getResponse: () => {
                         return true;
                     },
@@ -48,12 +53,14 @@ describe("src/modules/print/store/actionsPrint", function () {
                 };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(getMetaDataForPrint, payload, {}, {}, [], {}, done, rootGetters);
+            getMetaDataForPrint({commit, dispatch, state: {}, rootGetters}, payload);
         });
     });
     describe("createPrintJob", function () {
-        it("should create a printJob", done => {
-            const defaults = {
+        it("should create a printJob", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                defaults = {
                     attributes: {title: "Mein Titel", map: {}, scale: "1:60000", showGfi: false, gfi: {}},
                     layout: "A4 Hochformat",
                     outputFilename: "Ausdruck",
@@ -79,16 +86,18 @@ describe("src/modules/print/store/actionsPrint", function () {
                 };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(createPrintJob, payload, state, {}, [
-                {type: "setPrintFileReady", payload: false, commit: true},
-                {type: "setProgressWidth", payload: "width: 50%", commit: true},
-                {type: "waitForPrintJob", payload: data, dispatch: true}
-            ], {}, done);
+            await createPrintJob({commit, dispatch, state, getters: {}}, payload);
+
+            expect(commit.calledWith("setPrintFileReady", false)).to.be.true;
+            expect(commit.calledWith("setProgressWidth", "width: 50%")).to.be.true;
+            expect(dispatch.calledWith("waitForPrintJob", data)).to.be.true;
         });
     });
     describe("migratePayload", function () {
-        it("should migrate the for mapfish generated JSON to plotservice", done => {
-            const payload = {
+        it("should migrate the for mapfish generated JSON to plotservice", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                payload = {
                     attributes: {
                         title: "Mein Titel",
                         map: {
@@ -120,12 +129,14 @@ describe("src/modules/print/store/actionsPrint", function () {
                     }
                 };
 
-            testAction(migratePayload, payload, state, rootState, [], {}, done);
+            migratePayload({commit, dispatch, state, rootState}, payload);
         });
     });
     describe("waitForPrintJob", function () {
-        it("should start another print request", done => {
-            const state = {
+        it("should start another print request", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                state = {
                     serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/print/",
                     printAppId: "master"
                 },
@@ -141,13 +152,15 @@ describe("src/modules/print/store/actionsPrint", function () {
                 };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(waitForPrintJob, response, state, {}, [
-                {type: "setProgressWidth", payload: "width: 75%", commit: true},
-                {type: "sendRequest", payload: serviceRequest, dispatch: true}
-            ], {}, done);
+            waitForPrintJob({commit, dispatch, state, getters: {}}, response);
+
+            expect(commit.calledWith("setProgressWidth", "width: 75%")).to.be.true;
+            expect(dispatch.calledWith("sendRequest", serviceRequest)).to.be.true;
         });
-        it("should start another print request with service url without /print/", done => {
-            const state = {
+        it("should start another print request with service url without /print/", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                state = {
                     serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/",
                     printAppId: "master",
                     printService: "mapfish"
@@ -164,37 +177,36 @@ describe("src/modules/print/store/actionsPrint", function () {
                 };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(waitForPrintJob, response, state, {}, [
-                {type: "setProgressWidth", payload: "width: 75%", commit: true},
-                {type: "sendRequest", payload: serviceRequest, dispatch: true}
-            ], {}, done);
+            waitForPrintJob({commit, dispatch, state, getters: {}}, response);
+
+            expect(commit.calledWith("setProgressWidth", "width: 75%")).to.be.true;
+            expect(dispatch.calledWith("sendRequest", serviceRequest)).to.be.true;
         });
-        it("should trigger addSingleAlert when response.status is 'error'", done => {
-            const state = {
+        it("should trigger addSingleAlert when response.status is 'error'", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                state = {
                     serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/print/",
                     printAppId: "master"
                 },
                 response = {
                     status: "error"
-                },
-                expectedActions = [
-                    {
-                        type: "Alerting/addSingleAlert",
-                        payload: {
-                            category: "error",
-                            content: i18next.t("common:modules.print.waitForPrintErrorMessage")
-                        },
-                        dispatch: true
-                    },
-                    {type: "setPrintStarted", payload: false, commit: true},
-                    {type: "setFileDownloads", payload: [], commit: true}
-                ];
+                };
 
-            testAction(waitForPrintJobSuccess, response, state, {}, expectedActions, {}, done);
+            waitForPrintJobSuccess({commit, dispatch, state, getters: {}}, response);
+
+            expect(dispatch.calledWith("Alerting/addSingleAlert", {
+                category: "error",
+                content: i18next.t("common:modules.print.waitForPrintErrorMessage")
+            })).to.be.true;
+            expect(commit.calledWith("setPrintStarted", false)).to.be.true;
+            expect(commit.calledWith("setFileDownloads", [])).to.be.true;
         });
     });
-    it("should trigger addSingleAlert when response.data.status is 'error'", done => {
-        const state = {
+    it("should trigger addSingleAlert when response.data.status is 'error'", async () => {
+        const commit = sinon.spy(),
+            dispatch = sinon.spy(),
+            state = {
                 serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/print/",
                 printAppId: "master"
             },
@@ -202,21 +214,16 @@ describe("src/modules/print/store/actionsPrint", function () {
                 data: {
                     status: "error"
                 }
-            },
-            expectedActions = [
-                {
-                    type: "Alerting/addSingleAlert",
-                    payload: {
-                        category: "error",
-                        content: i18next.t("common:modules.print.waitForPrintErrorMessage")
-                    },
-                    dispatch: true
-                },
-                {type: "setPrintStarted", payload: false, commit: true},
-                {type: "setFileDownloads", payload: [], commit: true}
-            ];
+            };
 
-        testAction(waitForPrintJobSuccess, response, state, {}, expectedActions, {}, done);
+        waitForPrintJobSuccess({commit, dispatch, state, getters: {}}, response);
+
+        expect(dispatch.calledWith("Alerting/addSingleAlert", {
+            category: "error",
+            content: i18next.t("common:modules.print.waitForPrintErrorMessage")
+        })).to.be.true;
+        expect(commit.calledWith("setPrintStarted", false)).to.be.true;
+        expect(commit.calledWith("setFileDownloads", [])).to.be.true;
     });
 
     describe("waitForPrintJobSuccess", function () {
@@ -228,8 +235,10 @@ describe("src/modules/print/store/actionsPrint", function () {
         afterAll(function () {
             clock.restore();
         });
-        it("is not done yet so it should start another print request", done => {
-            const state = {
+        it("is not done yet so it should start another print request", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                state = {
                     serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/print/",
                     printAppId: "master"
                 },
@@ -249,14 +258,16 @@ describe("src/modules/print/store/actionsPrint", function () {
                 };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(waitForPrintJobSuccess, response, state, {}, [
-                {type: "setProgressWidth", payload: "width: 80%", commit: true},
-                {type: "sendRequest", payload: serviceRequest, dispatch: true}
-            ], {}, done);
+            waitForPrintJobSuccess({commit, dispatch, state, getters: {}}, response);
             clock.tick(2001);
+
+            expect(commit.calledWith("setProgressWidth", "width: 80%")).to.be.true;
+            expect(dispatch.calledWith("sendRequest", serviceRequest)).to.be.true;
         });
-        it("is done so it should activate the download", done => {
-            const state = {
+        it("is done so it should activate the download", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                state = {
                     serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/print/",
                     printAppId: "master",
                     filename: "Meine Datey"
@@ -276,15 +287,17 @@ describe("src/modules/print/store/actionsPrint", function () {
                 };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(waitForPrintJobSuccess, response, state, {}, [
-                {type: "setProgressWidth", payload: "width: 100%", commit: true},
-                {type: "downloadFile", payload: fileSpecs, dispatch: true}
-            ], {}, done);
+            waitForPrintJobSuccess({commit, dispatch, state, getters: {}}, response);
+
+            expect(commit.calledWith("setProgressWidth", "width: 100%")).to.be.true;
+            expect(dispatch.calledWith("downloadFile", fileSpecs)).to.be.true;
         });
 
         describe("downloadFile", function () {
-            it("should set parameters for one download file", done => {
-                const state = {
+            it("should set parameters for one download file", async () => {
+                const commit = sinon.spy(),
+                    dispatch = sinon.spy(),
+                    state = {
                         serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/print/",
                         printAppId: "master",
                         filename: "Pikachu"
@@ -294,16 +307,18 @@ describe("src/modules/print/store/actionsPrint", function () {
                         filename: "Raichu"
                     };
 
-                testAction(downloadFile, fileSpecs, state, {}, [
-                    {type: "setPrintStarted", payload: false, commit: true},
-                    {type: "setPrintFileReady", payload: true, commit: true},
-                    {type: "setFileDownloadUrl", payload: fileSpecs.fileUrl, commit: true},
-                    {type: "setFilename", payload: fileSpecs.filename, commit: true}
-                ], {}, done);
+                downloadFile({commit, dispatch, state, getters: {}}, fileSpecs);
+
+                expect(commit.calledWith("setPrintStarted", false)).to.be.true;
+                expect(commit.calledWith("setPrintFileReady", true)).to.be.true;
+                expect(commit.calledWith("setFileDownloadUrl", fileSpecs.fileUrl)).to.be.true;
+                expect(commit.calledWith("setFilename", fileSpecs.filename)).to.be.true;
             });
 
-            it("should set parameters for more than one download file", done => {
-                const state = {
+            it("should set parameters for more than one download file", async () => {
+                const commit = sinon.spy(),
+                    dispatch = sinon.spy(),
+                    state = {
                         serviceUrl: "https://geodienste.hamburg.de/mapfish_print_internet/print/",
                         printAppId: "master",
                         filename: "Pikachu"
@@ -314,17 +329,17 @@ describe("src/modules/print/store/actionsPrint", function () {
                         filename: "Raichu"
                     };
 
-                testAction(downloadFile, fileSpecs, state, {}, [
-                    {type: "setPrintStarted", payload: false, commit: true},
-                    {type: "setPrintFileReady", payload: true, commit: true},
-                    {type: "setFileDownloadUrl", payload: fileSpecs.fileUrl, commit: true},
-                    {type: "setFilename", payload: fileSpecs.filename, commit: true},
-                    {type: "updateFileDownload", payload: {
-                        index: fileSpecs.index,
-                        finishState: true,
-                        downloadUrl: fileSpecs.fileUrl
-                    }, commit: true}
-                ], {}, done);
+                downloadFile({commit, dispatch, state, getters: {}}, fileSpecs);
+
+                expect(commit.calledWith("setPrintStarted", false)).to.be.true;
+                expect(commit.calledWith("setPrintFileReady", true)).to.be.true;
+                expect(commit.calledWith("setFileDownloadUrl", fileSpecs.fileUrl)).to.be.true;
+                expect(commit.calledWith("setFilename", fileSpecs.filename)).to.be.true;
+                expect(commit.calledWith("updateFileDownload", {
+                    index: fileSpecs.index,
+                    finishState: true,
+                    downloadUrl: fileSpecs.fileUrl
+                })).to.be.true;
             });
         });
     });

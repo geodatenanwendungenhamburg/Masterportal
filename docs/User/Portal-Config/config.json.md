@@ -2221,7 +2221,7 @@ Email object containing email address, and display name.
 
 [inherits]: # (portalConfig.menu.sections.modules)
 
-This tool allows users to compare two map layers side by side using a layer swiper. Users select layers from the active, visible layers, and the swiper divides the map to show each layer in separate sections. The tool supports WMS and WFS layers.
+This tool allows users to compare two map layers side by side using a layer swiper. Users select layers from the active, visible layers, and the swiper divides the map to show each layer in separate sections. The tool doesn't support GROUP layers.
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|

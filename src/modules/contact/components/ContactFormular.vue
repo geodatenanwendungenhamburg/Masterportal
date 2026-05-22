@@ -4,6 +4,7 @@ import ContactFormularInput from "./ContactFormularInput.vue";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 import FileUpload from "@shared/modules/inputs/components/FileUpload.vue";
+import AccordionItem from "@shared/modules/accordion/components/AccordionItem.vue";
 
 /**
  * The Contact Form
@@ -18,7 +19,8 @@ export default {
         ContactFormularInput,
         FlatButton,
         IconButton,
-        FileUpload
+        FileUpload,
+        AccordionItem
     },
     data () {
         return {
@@ -305,66 +307,45 @@ export default {
                 <p v-html="$t('common:modules.contact.privacyPolicy.info', {privacyPolicyLink})" />
             </div>
             <div v-if="fileUpload">
-                <div
-                    id="accordionFlushFile"
-                    class="accordion accordion-flush mb-3"
+                <AccordionItem
+                    id="contact-file-upload"
+                    :title="$t('common:modules.contact.addFileButton')"
+                    icon="bi-paperclip"
+                    font-size="font-size-basic"
+                    heading-level="h2"
+                    :use-indentation="true"
+                    icon-margin-end="me-2"
+                    class="mb-3"
                 >
-                    <div class="accordion-item">
-                        <h2
-                            id="flush-heading-contact"
-                            class="accordion-header"
-                        >
-                            <button
-                                class="accordion-button collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#collapse-contact"
-                                aria-expanded="false"
-                                aria-controls="collapse-contact"
+                    <FileUpload
+                        :id="'attachmentUpload'"
+                        :change="(e) => onInputChange(e)"
+                        :drop="(e) => onDrop(e)"
+                    >
+                        <div v-if="fileUploaded">
+                            <div
+                                v-for="image in allAttachmentsToSend"
+                                :key="image"
+                                class="row d-flex mb-1"
                             >
-                                <i class="bi-paperclip me-2" />
-                                {{ $t('common:modules.contact.addFileButton') }}
-                            </button>
-                        </h2>
-                        <div
-                            id="collapse-contact"
-                            class="accordion-collapse collapse"
-                            aria-labelledby="flush-heading"
-                            data-bs-parent="#accordionFlushFile"
-                        >
-                            <div class="accordion-body">
-                                <FileUpload
-                                    :id="'attachmentUpload'"
-                                    :change="(e) => onInputChange(e)"
-                                    :drop="(e) => onDrop(e)"
+                                <embed
+                                    :src="image.src"
+                                    height="42"
+                                    class="col-2"
                                 >
-                                    <div v-if="fileUploaded">
-                                        <div
-                                            v-for="image in allAttachmentsToSend"
-                                            :key="image"
-                                            class="row d-flex mb-1"
-                                        >
-                                            <embed
-                                                :src="image.src"
-                                                height="42"
-                                                class="col-2"
-                                            >
-                                            <span class="d-flex align-items-center col">
-                                                {{ image.name }}
-                                            </span>
-                                            <IconButton
-                                                :aria="$t('common:modules.contact.removeAttachment')"
-                                                :icon="'bi-trash'"
-                                                :interaction="() => removeAttachment(image)"
-                                                class="remove-btn col-3"
-                                            />
-                                        </div>
-                                    </div>
-                                </FileUpload>
+                                <span class="d-flex align-items-center col">
+                                    {{ image.name }}
+                                </span>
+                                <IconButton
+                                    :aria="$t('common:modules.contact.removeAttachment')"
+                                    :icon="'bi-trash'"
+                                    :interaction="() => removeAttachment(image)"
+                                    class="remove-btn col-3"
+                                />
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </FileUpload>
+                </AccordionItem>
             </div>
             <div class="d-flex justify-content-center">
                 <FlatButton

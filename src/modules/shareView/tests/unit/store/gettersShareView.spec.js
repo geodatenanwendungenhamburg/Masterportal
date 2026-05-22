@@ -23,7 +23,7 @@ describe("src/modules/shareView/store/gettersShareView.js", () => {
                     attributes: {some: "value"}
                 },
                 secondary: {
-                    currentComponent: "borisComponent",
+                    currentComponent: "root",
                     attributes: {other: "value"}
                 }
             }
@@ -56,7 +56,7 @@ describe("src/modules/shareView/store/gettersShareView.js", () => {
         expect(menu.main.attributes).to.be.undefined;
 
         expect(menu.secondary.currentComponent).to.equal("root");
-        expect(menu.secondary.attributes).to.be.undefined;
+        expect(menu.secondary.attributes).to.be.deep.equals({other: "value"});
 
         expect(parsed.searchParams.get("LAYERS")).to.equal(JSON.stringify(rootGetters.layerUrlParams));
         expect(parsed.searchParams.get("existingKey")).to.equal("existingValue");

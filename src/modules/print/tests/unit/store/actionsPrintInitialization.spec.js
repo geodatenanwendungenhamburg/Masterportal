@@ -3,7 +3,6 @@ import VectorLayer from "ol/layer/Vector.js";
 import sinon from "sinon";
 import store from "@appstore/index.js";
 
-import testAction from "@devtools/tests/VueTestUtils.js";
 import actions from "@modules/print/store/actionsPrintInitialization.js";
 import Canvas from "@modules/print/js/buildCanvas.js";
 
@@ -65,7 +64,7 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
         sinon.restore();
     });
     describe("chooseCurrentLayout", () => {
-        it("should choose the current Layout", done => {
+        it("should choose the current Layout", async () => {
             const payload = [
                     {
                         name: "A4 Hochformat"
@@ -86,15 +85,15 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
                 };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(chooseCurrentLayout, payload, state, {}, [
-                {type: "setCurrentLayout", payload: state.currentLayout},
-                {type: "setCurrentLayoutName", payload: state.currentLayout.name}
-            ], {}, done);
+            chooseCurrentLayout({commit, dispatch, state}, payload);
+
+            expect(commit.calledWith("setCurrentLayout", state.currentLayout)).to.be.true;
+            expect(commit.calledWith("setCurrentLayoutName", state.currentLayout.name)).to.be.true;
         });
     });
 
     describe("parseMapfishCapabilities", function () {
-        it("should parse the mapfish capabilities", done => {
+        it("should parse the mapfish capabilities", async () => {
             const payload = {
                 layouts: [
                     {
@@ -116,14 +115,14 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
             };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(parseMapfishCapabilities, payload, {}, {}, [
-                {type: "setLayoutList", payload: payload.layouts}
-            ], {}, done);
+            parseMapfishCapabilities({commit, dispatch, state: {}, rootGetters: {"Maps/scale": 0}}, payload);
+
+            expect(commit.calledWith("setLayoutList", payload.layouts)).to.be.true;
         });
     });
 
     describe("parsePlotserviceCapabilities", function () {
-        it("should parse the plotservice capabilities", done => {
+        it("should parse the plotservice capabilities", async () => {
             const payload = {
                 layouts: [
                     {
@@ -145,39 +144,41 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
                 ],
                 formats: [
                     "jpg", "png", "pdf"
-                ]
+                ],
+                scales: [{value: "500"}, {value: "1000"}],
+                outputFormats: [{name: "jpg"}, {name: "png"}, {name: "pdf"}]
             };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(parsePlotserviceCapabilities, payload, {}, {}, [
-                {type: "setLayoutList", payload: payload.layouts}
-            ], {}, done);
+            parsePlotserviceCapabilities({commit, dispatch, state: {}, rootGetters: {"Maps/scale": 0}}, payload);
+
+            expect(commit.calledWith("setLayoutList", payload.layouts)).to.be.true;
         });
     });
 
     describe("getGfiForPrint", function () {
-        it("should set empty gfi for print", done => {
+        it("should set empty gfi for print", async () => {
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(getGfiForPrint, null, {}, {}, [
-                {type: "setGfiForPrint", payload: []}
-            ], {}, done, {"Modules/GetFeatureInfo/currentFeature": null});
+            getGfiForPrint({commit, dispatch, state: {}, rootGetters: {"Modules/GetFeatureInfo/currentFeature": null}}, null);
+
+            expect(commit.calledWith("setGfiForPrint", [])).to.be.true;
         });
-        it("should set gfi for print", done => {
+        it("should set gfi for print", async () => {
             const feature = {
                 getTitle: () => "TestTitle",
                 getMappedProperties: () => "TestProperties"
             };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(getGfiForPrint, null, {}, {}, [
-                {type: "setGfiForPrint", payload: ["TestProperties", "TestTitle", undefined]}
-            ], {}, done, {"Modules/GetFeatureInfo/currentFeature": feature, "Map/clickCoord": undefined});
+            getGfiForPrint({commit, dispatch, state: {}, rootGetters: {"Modules/GetFeatureInfo/currentFeature": feature, "Map/clickCoord": undefined}}, null);
+
+            expect(commit.calledWith("setGfiForPrint", ["TestProperties", "TestTitle", undefined])).to.be.true;
         });
     });
 
     describe("getAttributeInLayoutByName", function () {
-        it("should set nothing because gfi isn't available", done => {
+        it("should set nothing because gfi isn't available", async () => {
             const state = {
                 currentLayout: {
                     attributes: [
@@ -191,13 +192,12 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
             };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(getAttributeInLayoutByName, "gfi", state, {}, [
-            ], {}, done);
+            getAttributeInLayoutByName({commit, dispatch, state}, "gfi");
         });
     });
 
     describe("togglePostrenderListener", function () {
-        it("should toggle the post render listener and should register listener", done => {
+        it("should toggle the post render listener and should register listener", async () => {
             const TileLayer = {},
                 state = {
                     visibleLayerList: [
@@ -218,10 +218,10 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
             }));
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(togglePostrenderListener, undefined, state, {}, [
-                {type: "setVisibleLayer", payload: state.visibleLayerList, commit: true},
-                {type: "setEventListener", payload: "postrender", commit: true}
-            ], {}, done);
+            togglePostrenderListener({commit, dispatch, state, getters: {}}, undefined);
+
+            expect(commit.calledWith("setVisibleLayer", state.visibleLayerList)).to.be.true;
+            expect(commit.calledWith("setEventListener", "postrender")).to.be.true;
         });
     });
 
@@ -284,7 +284,7 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
     });
 
     describe("updateCanvasLayer", function () {
-        it("should update to draw the print page rectangle onto the canvas when the map changes", done => {
+        it("should update to draw the print page rectangle onto the canvas when the map changes", async () => {
             const TileLayer = {
                     getMaxResolution: () => 66.80725559074865,
                     getMinResolution: () => 0.13229159522920522,
@@ -316,11 +316,11 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
                 on: () => "postrender"
             }));
 
-            testAction(updateCanvasLayer, scale, state, {}, [
-                {type: "Maps/unregisterListener", payload: {type: state.eventListener}, dispatch: true},
-                {type: "chooseCurrentLayout", payload: state.layoutList, dispatch: true},
-                {type: "setEventListener", payload: "postrender", commit: true}
-            ], {}, done);
+            updateCanvasLayer({commit, dispatch, state, getters: {}}, scale);
+
+            expect(dispatch.calledWith("Maps/unregisterListener", {type: state.eventListener})).to.be.true;
+            expect(dispatch.calledWith("chooseCurrentLayout", state.layoutList)).to.be.true;
+            expect(commit.calledWith("setEventListener", "postrender")).to.be.true;
         });
         afterAll(function () {
             sinon.restore();
@@ -328,7 +328,7 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
     });
 
     describe("createPrintMask", function () {
-        it("creates the print Mask", done => {
+        it("creates the print Mask", async () => {
             const evt = {
                     context: {
                         canvas: {},
@@ -403,19 +403,19 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
                 };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(createPrintMask, evt, state, {}, [
-                {type: "getPrintMapSize", payload: undefined, dispatch: true},
-                {type: "getPrintMapScales", payload: undefined, dispatch: true},
-                {type: "getOptimalScale", payload: canvasOptions, dispatch: true},
-                {type: "drawMask", payload: drawMaskOpt, dispatch: true},
-                {type: "drawPrintPage", payload: canvasPrintOptions, dispatch: true},
-                {type: "setPrintLayers", payload: state.optimalScale, dispatch: true}
-            ], {}, done);
+            createPrintMask({commit, dispatch, state, getters: {}}, evt);
+
+            expect(dispatch.calledWith("getPrintMapSize")).to.be.true;
+            expect(dispatch.calledWith("getPrintMapScales")).to.be.true;
+            expect(dispatch.calledWith("getOptimalScale", canvasOptions)).to.be.true;
+            expect(dispatch.calledWith("drawMask", drawMaskOpt)).to.be.true;
+            expect(dispatch.calledWith("drawPrintPage", canvasPrintOptions)).to.be.true;
+            expect(dispatch.calledWith("setPrintLayers", state.optimalScale)).to.be.true;
         });
     });
 
     describe("getOptimalScale", function () {
-        it("returns the optimal scale", done => {
+        it("returns the optimal scale", async () => {
             const frameState = {
                     size: [1348, 864],
                     viewState: {
@@ -439,15 +439,15 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
                 };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(getOptimalScale, canvasOptions, state, {}, [
-                {type: "setOptimalScale", payload: 20000, commit: true},
-                {type: "setCurrentScale", payload: 20000, commit: true}
-            ], {}, done);
+            getOptimalScale({commit, dispatch, state}, canvasOptions);
+
+            expect(commit.calledWith("setOptimalScale", 20000)).to.be.true;
+            expect(commit.calledWith("setCurrentScale", 20000)).to.be.true;
         });
     });
 
     describe("getOptimalResolution", function () {
-        it("returns the optimal resolution", done => {
+        it("returns the optimal resolution", async () => {
             const resolution = {
                     scale: 10000,
                     mapSize: [951, 864],
@@ -459,14 +459,14 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
                 };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(getOptimalResolution, resolution, state, {}, [
-                {type: "setOptimalResolution", payload: 4.262740006961495, commit: true}
-            ], {}, done);
+            getOptimalResolution({commit, dispatch, state}, resolution);
+
+            expect(commit.calledWith("setOptimalResolution", 4.262740006961495)).to.be.true;
         });
     });
 
     describe("drawMask", function () {
-        it("should draw the print Mask", done => {
+        it("should draw the print Mask", async () => {
             const evt = {
                     context: {
                         canvas: {},
@@ -531,12 +531,12 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
                 };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(drawMask, drawMaskOpt, null, {}, [], {}, done);
+            drawMask({commit, dispatch, state: null, getters: {}}, drawMaskOpt);
         });
     });
 
     describe("drawPrintPage", function () {
-        it("should draw the print page", done => {
+        it("should draw the print page", async () => {
             const evt = {
                     context: {
                         canvas: {
@@ -611,12 +611,12 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
                 };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(drawPrintPage, canvasPrintOptions, state, {}, [], {}, done);
+            drawPrintPage({commit, dispatch, state}, canvasPrintOptions);
         });
     });
 
     describe("getPrintMapSize", function () {
-        it("should commit the printMapSize", done => {
+        it("should commit the printMapSize", async () => {
             const state = {
                 mapAttribute: {
                     clientInfo: {
@@ -627,14 +627,14 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
             };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(getPrintMapSize, undefined, state, {}, [
-                {type: "getAttributeInLayoutByName", payload: "map", dispatch: true},
-                {type: "setLayoutMapInfo", payload: [772, 1044], commit: true}
-            ], {}, done);
+            getPrintMapSize({commit, dispatch, state}, undefined);
+
+            expect(dispatch.calledWith("getAttributeInLayoutByName", "map")).to.be.true;
+            expect(commit.calledWith("setLayoutMapInfo", [772, 1044])).to.be.true;
         });
     });
     describe("getPrintMapScales", function () {
-        it("should commit the scales", done => {
+        it("should commit the scales", async () => {
             const state = {
                 mapAttribute: {
                     clientInfo: {
@@ -655,14 +655,14 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
             };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(getPrintMapScales, undefined, state, {}, [
-                {type: "getAttributeInLayoutByName", payload: "map", dispatch: true},
-                {type: "setScaleList", payload: state.mapAttribute.clientInfo.scales, commit: true}
-            ], {}, done);
+            getPrintMapScales({commit, dispatch, state}, undefined);
+
+            expect(dispatch.calledWith("getAttributeInLayoutByName", "map")).to.be.true;
+            expect(commit.calledWith("setScaleList", state.mapAttribute.clientInfo.scales)).to.be.true;
         });
     });
     describe("getPrintDpis", function () {
-        it("should commit the dpis", done => {
+        it("should commit the dpis", async () => {
             const dpis = [72, 150, 300],
                 state = {
                     currentLayout: {
@@ -678,13 +678,13 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
                 };
 
             // action, payload, state, rootState, expectedMutationsAndActions, getters = {}, done, rootGetters
-            testAction(setDpiList, undefined, state, {}, [
-                {type: "setDpiList", payload: dpis, commit: true}
-            ], {}, done);
+            setDpiList({commit, dispatch, state}, undefined);
+
+            expect(commit.calledWith("setDpiList", dpis)).to.be.true;
         });
     });
     describe("compute3dPrintMask", () => {
-        it("should dispatch getPrintMapSize and getPrintMapScales", done => {
+        it("should dispatch getPrintMapSize and getPrintMapScales", async () => {
             const state = {
                 mapAttribute: {
                     clientInfo: {
@@ -694,38 +694,38 @@ describe("src/modules/print/store/actionsPrintInitialization.js", () => {
                 }
             };
 
-            testAction(compute3dPrintMask, undefined, state, {}, [
-                {type: "getPrintMapSize", payload: undefined, dispatch: true},
-                {type: "getPrintMapScales", payload: undefined, dispatch: true}
-            ], {}, done);
+            compute3dPrintMask({commit, dispatch, state}, undefined);
+
+            expect(dispatch.calledWith("getPrintMapSize")).to.be.true;
+            expect(dispatch.calledWith("getPrintMapScales")).to.be.true;
         });
     });
     describe("ensureDpiForPdfInList", () => {
-        it("should not change dpiForPdf if in list", done => {
+        it("should not change dpiForPdf if in list", async () => {
             const state = {
                 dpiList: [100, 200, 300],
                 dpiForPdf: 200
             };
 
-            testAction(ensureDpiForPdfInList, undefined, state, {}, [], {}, done);
+            ensureDpiForPdfInList({commit, dispatch, state}, undefined);
         });
-        it("should set dpiForPdf to first item in list, if current dpiForPdf not in list", done => {
+        it("should set dpiForPdf to first item in list, if current dpiForPdf not in list", async () => {
             const state = {
                 dpiList: [100, 300],
                 dpiForPdf: 200
             };
 
-            testAction(ensureDpiForPdfInList, undefined, state, {}, [
-                {type: "setDpiForPdf", payload: 100, dispatch: true}
-            ], {}, done);
+            ensureDpiForPdfInList({commit, dispatch, state}, undefined);
+
+            expect(commit.calledWith("setDpiForPdf", 100)).to.be.true;
         });
-        it("should not change dpiForPdf if list is empty", done => {
+        it("should not change dpiForPdf if list is empty", async () => {
             const state = {
                 dpiList: [],
                 dpiForPdf: 200
             };
 
-            testAction(ensureDpiForPdfInList, undefined, state, {}, [], {}, done);
+            ensureDpiForPdfInList({commit, dispatch, state}, undefined);
         });
     });
 });

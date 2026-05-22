@@ -39,7 +39,7 @@ const simpleGetters = {
         const layerParams = rootGetters.layerUrlParams.filter(layer => !isDynamicLayer(layer.id)),
             mapParams = rootGetters["Maps/urlParams"],
             menuParams = rootGetters["Menu/urlParams"],
-            componentTypes = [shareViewState.type, stateSearchBar.type, "borisComponent"],
+            componentTypes = [shareViewState.type, stateSearchBar.type],
             shareUrl = new URL(location.origin + location.pathname + "?" + mapParams),
             currentMarker = rootState?.Maps?.currentMarker;
 

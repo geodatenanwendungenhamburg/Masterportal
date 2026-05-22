@@ -1,4 +1,3 @@
-import testAction from "@devtools/tests/VueTestUtils.js";
 import actions from "@modules/coordToolkit/store/actionsCoordToolkit.js";
 import crs from "@masterportal/masterportalapi/src/crs.js";
 import sinon from "sinon";
@@ -50,7 +49,7 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
     });
 
     describe("supplyCoord actions", () => {
-        it("positionClicked without height", done => {
+        it("positionClicked without height", async () => {
             const coordinate = [1000, 2000],
                 state = {
                     updatePosition: true,
@@ -61,14 +60,14 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
                     "Maps/mode": "2D"
                 };
 
-            testAction(actions.positionClicked, {}, state, {}, [
-                {type: "setPositionMapProjection", payload: coordinate},
-                {type: "changedPosition", payload: undefined, dispatch: true},
-                {type: "setUpdatePosition", payload: false},
-                {type: "Maps/placingPointMarker", payload: coordinate, dispatch: true}
-            ], {}, done, rootGetters);
+            actions.positionClicked({commit, dispatch, state, getters: {}, rootGetters}, {});
+
+            expect(commit.calledWith("setPositionMapProjection", coordinate)).to.be.true;
+            expect(dispatch.calledWith("changedPosition")).to.be.true;
+            expect(commit.calledWith("setUpdatePosition", false)).to.be.true;
+            expect(dispatch.calledWith("Maps/placingPointMarker", coordinate)).to.be.true;
         });
-        it("positionClicked with height and update position is true", done => {
+        it("positionClicked with height and update position is true", async () => {
             const coordinate = [1000, 2000],
                 state = {
                     updatePosition: true,
@@ -83,15 +82,15 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
                     "Maps/mode": "2D"
                 };
 
-            testAction(actions.positionClicked, {}, state, {}, [
-                {type: "setPositionMapProjection", payload: coordinate},
-                {type: "changedPosition", payload: undefined, dispatch: true},
-                {type: "setUpdatePosition", payload: false},
-                {type: "Maps/placingPointMarker", payload: coordinate, dispatch: true},
-                {type: "getHeight", payload: coordinate, dispatch: true}
-            ], {}, done, rootGetters);
+            actions.positionClicked({commit, dispatch, state, getters: {}, rootGetters}, {});
+
+            expect(commit.calledWith("setPositionMapProjection", coordinate)).to.be.true;
+            expect(dispatch.calledWith("changedPosition")).to.be.true;
+            expect(commit.calledWith("setUpdatePosition", false)).to.be.true;
+            expect(dispatch.calledWith("Maps/placingPointMarker", coordinate)).to.be.true;
+            expect(dispatch.calledWith("getHeight", coordinate)).to.be.true;
         });
-        it("positionClicked with height and update position is false", done => {
+        it("positionClicked with height and update position is false", async () => {
             const coordinate = [1000, 2000],
                 state = {
                     updatePosition: false,
@@ -106,15 +105,15 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
                     "Maps/mode": "2D"
                 };
 
-            testAction(actions.positionClicked, {}, state, {}, [
-                {type: "setPositionMapProjection", payload: coordinate},
-                {type: "changedPosition", payload: undefined, dispatch: true},
-                {type: "setUpdatePosition", payload: true},
-                {type: "Maps/placingPointMarker", payload: coordinate, dispatch: true},
-                {type: "setHeight", payload: ""}
-            ], {}, done, rootGetters);
+            actions.positionClicked({commit, dispatch, state, getters: {}, rootGetters}, {});
+
+            expect(commit.calledWith("setPositionMapProjection", coordinate)).to.be.true;
+            expect(dispatch.calledWith("changedPosition")).to.be.true;
+            expect(commit.calledWith("setUpdatePosition", true)).to.be.true;
+            expect(dispatch.calledWith("Maps/placingPointMarker", coordinate)).to.be.true;
+            expect(commit.calledWith("setHeight", "")).to.be.true;
         });
-        it("retrieveHeightFromGfiResponse - real height", done => {
+        it("retrieveHeightFromGfiResponse - real height", async () => {
             const heightElementName = "value_0",
                 heightFromLayer = "1.100",
                 payload = [
@@ -132,11 +131,11 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
                     heightElementName: heightElementName
                 };
 
-            testAction(actions.retrieveHeightFromGfiResponse, payload, state, {}, [
-                {type: "setHeight", payload: expectedHeight}
-            ], {}, done);
+            actions.retrieveHeightFromGfiResponse({commit, dispatch, state, getters: {}}, payload);
+
+            expect(commit.calledWith("setHeight", expectedHeight)).to.be.true;
         });
-        it("retrieveHeightFromGfiResponse - height on water area", done => {
+        it("retrieveHeightFromGfiResponse - height on water area", async () => {
             const heightElementName = "value_0",
                 heightValueWater = "-20",
                 payload = [
@@ -155,11 +154,11 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
                     heightValueWater: heightValueWater
                 };
 
-            testAction(actions.retrieveHeightFromGfiResponse, payload, state, {}, [
-                {type: "setHeight", payload: expectedHeight}
-            ], {}, done);
+            actions.retrieveHeightFromGfiResponse({commit, dispatch, state, getters: {}}, payload);
+
+            expect(commit.calledWith("setHeight", expectedHeight)).to.be.true;
         });
-        it("retrieveHeightFromGfiResponse - height on building area", done => {
+        it("retrieveHeightFromGfiResponse - height on building area", async () => {
             const heightElementName = "value_0",
                 heightValueBuilding = "200",
                 payload = [
@@ -178,11 +177,11 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
                     heightValueBuilding: heightValueBuilding
                 };
 
-            testAction(actions.retrieveHeightFromGfiResponse, payload, state, {}, [
-                {type: "setHeight", payload: expectedHeight}
-            ], {}, done);
+            actions.retrieveHeightFromGfiResponse({commit, dispatch, state, getters: {}}, payload);
+
+            expect(commit.calledWith("setHeight", expectedHeight)).to.be.true;
         });
-        it("retrieveHeightFromGfiResponse - height on water area, heightValueWater not translated", done => {
+        it("retrieveHeightFromGfiResponse - height on water area, heightValueWater not translated", async () => {
             const heightElementName = "value_0",
                 heightValueWater = "-20",
                 payload = [
@@ -200,11 +199,11 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
                     heightElementName: heightElementName
                 };
 
-            testAction(actions.retrieveHeightFromGfiResponse, payload, state, {}, [
-                {type: "setHeight", payload: expectedHeight}
-            ], {}, done);
+            actions.retrieveHeightFromGfiResponse({commit, dispatch, state, getters: {}}, payload);
+
+            expect(commit.calledWith("setHeight", expectedHeight)).to.be.true;
         });
-        it("retrieveHeightFromGfiResponse - height on building area, heightValueBuilding not translated", done => {
+        it("retrieveHeightFromGfiResponse - height on building area, heightValueBuilding not translated", async () => {
             const heightElementName = "value_0",
                 heightValueBuilding = "200",
                 payload = [
@@ -222,11 +221,11 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
                     heightElementName: heightElementName
                 };
 
-            testAction(actions.retrieveHeightFromGfiResponse, payload, state, {}, [
-                {type: "setHeight", payload: expectedHeight}
-            ], {}, done);
+            actions.retrieveHeightFromGfiResponse({commit, dispatch, state, getters: {}}, payload);
+
+            expect(commit.calledWith("setHeight", expectedHeight)).to.be.true;
         });
-        it("retrieveHeightFromGfiResponse - height on water area, heightValueWater not translated and is no number", done => {
+        it("retrieveHeightFromGfiResponse - height on water area, heightValueWater not translated and is no number", async () => {
             const heightElementName = "value_0",
                 heightValueWater = "water",
                 payload = [
@@ -244,11 +243,11 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
                     heightElementName: heightElementName
                 };
 
-            testAction(actions.retrieveHeightFromGfiResponse, payload, state, {}, [
-                {type: "setHeight", payload: expectedHeight}
-            ], {}, done);
+            actions.retrieveHeightFromGfiResponse({commit, dispatch, state, getters: {}}, payload);
+
+            expect(commit.calledWith("setHeight", expectedHeight)).to.be.true;
         });
-        it("retrieveHeightFromGfiResponse - height on building area, heightValueBuilding not translated and is no number", done => {
+        it("retrieveHeightFromGfiResponse - height on building area, heightValueBuilding not translated and is no number", async () => {
             const heightElementName = "value_0",
                 heightValueBuilding = "building",
                 payload = [
@@ -266,11 +265,11 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
                     heightElementName: heightElementName
                 };
 
-            testAction(actions.retrieveHeightFromGfiResponse, payload, state, {}, [
-                {type: "setHeight", payload: expectedHeight}
-            ], {}, done);
+            actions.retrieveHeightFromGfiResponse({commit, dispatch, state, getters: {}}, payload);
+
+            expect(commit.calledWith("setHeight", expectedHeight)).to.be.true;
         });
-        it("newProjectionSelected", done => {
+        it("newProjectionSelected", async () => {
             const
                 pos = [123, 456],
                 proj1 = {id: "projection 1", name: "projection 1", projName: "longlat"},
@@ -284,15 +283,15 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
                     coordinatesNorthing: pos[1]
                 };
 
-            testAction(actions.newProjectionSelected, proj2.id, state, {}, [
-                {type: "formatInput", payload: pos, dispatch: true},
-                {type: "transformCoordinatesFromTo", payload: proj2, dispatch: true},
-                {type: "setCurrentProjection", payload: proj2},
-                {type: "changedPosition", payload: undefined, dispatch: true},
-                {type: "setExample"}
-            ], {getProjectionById: () => {
+            actions.newProjectionSelected({commit, dispatch, state, getters: {getProjectionById: () => {
                 return proj2;
-            }}, done);
+            }}}, proj2.id);
+
+            expect(dispatch.calledWith("formatInput", pos)).to.be.true;
+            expect(dispatch.calledWith("transformCoordinatesFromTo", proj2)).to.be.true;
+            expect(commit.calledWith("setCurrentProjection", proj2)).to.be.true;
+            expect(dispatch.calledWith("changedPosition")).to.be.true;
+            expect(commit.calledWith("setExample")).to.be.true;
         });
         describe("changedPosition", () => {
             const rootState = {
@@ -309,31 +308,29 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
                     positionMapProjection: [300, 400]
                 };
 
-            it("changedPosition will call adjustPosition in mode 'supply'", done => {
+            it("changedPosition will call adjustPosition in mode 'supply'", async () => {
                 const payload = {
                     position: [100, 200],
                     targetProjection: proj2
                 };
 
-                testAction(actions.changedPosition, null, state, rootState, [
-                    {type: "adjustPosition", payload: payload, dispatch: true}
-                ], {getTransformedPosition: () => {
+                actions.changedPosition({commit, dispatch, state, rootState, getters: {getTransformedPosition: () => {
                     return [100, 200];
-                }}, done);
+                }}}, null);
+
+                expect(dispatch.calledWith("adjustPosition", payload)).to.be.true;
             });
-            it("changedPosition will not call adjustPosition in mode 'serach'", done => {
+            it("changedPosition will not call adjustPosition in mode 'serach'", async () => {
                 state.mode = "search";
 
-                testAction(actions.changedPosition, null, state, rootState, [
-                ], {getTransformedPosition: () => {
+                actions.changedPosition({commit, dispatch, state, rootState, getters: {getTransformedPosition: () => {
                     return [100, 200];
-                }}, done);
+                }}}, null);
             });
-            it("changedPosition will not call adjustPosition if position is null", done => {
-                testAction(actions.changedPosition, null, state, rootState, [],
-                    {getTransformedPosition: () => {
-                        return null;
-                    }}, done);
+            it("changedPosition will not call adjustPosition if position is null", async () => {
+                actions.changedPosition({commit, dispatch, state, rootState, getters: {getTransformedPosition: () => {
+                    return null;
+                }}}, null);
             });
         });
         describe("setFirstSearchPosition", () => {
@@ -354,33 +351,31 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
                     positionMapProjection: [300, 400]
                 };
 
-            it("setFirstSearchPosition will call setCoordinatesEasting and others if position is not set", done => {
+            it("setFirstSearchPosition will call setCoordinatesEasting and others if position is not set", async () => {
                 const payloadEasting = {id: "easting", value: String(center[0])},
                     payloadNorthing = {id: "northing", value: String(center[1])};
 
-                testAction(actions.setFirstSearchPosition, null, state, rootState, [
-                    {type: "setCoordinatesEasting", payload: payloadEasting},
-                    {type: "setCoordinatesNorthing", payload: payloadNorthing},
-                    {type: "moveToCoordinates", payload: center, dispatch: true}
-                ], {getTransformedPosition: () => {
+                actions.setFirstSearchPosition({commit, dispatch, state, rootState, getters: {getTransformedPosition: () => {
                     return [0, 0];
-                }}, done);
+                }}}, null);
+
+                expect(commit.calledWith("setCoordinatesEasting", payloadEasting)).to.be.true;
+                expect(commit.calledWith("setCoordinatesNorthing", payloadNorthing)).to.be.true;
+                expect(dispatch.calledWith("moveToCoordinates", center)).to.be.true;
             });
-            it("setFirstSearchPosition will do nothing if position is set", done => {
+            it("setFirstSearchPosition will do nothing if position is set", async () => {
                 state.mode = "search";
 
-                testAction(actions.setFirstSearchPosition, null, state, rootState, [
-                ], {getTransformedPosition: () => {
+                actions.setFirstSearchPosition({commit, dispatch, state, rootState, getters: {getTransformedPosition: () => {
                     return [100, 200];
-                }}, done);
+                }}}, null);
             });
-            it("setFirstSearchPosition will do nothing if mode is not 'search'", done => {
+            it("setFirstSearchPosition will do nothing if mode is not 'search'", async () => {
                 state.mode = "supply";
 
-                testAction(actions.setFirstSearchPosition, null, state, rootState, [],
-                    {getTransformedPosition: () => {
-                        return [0, 0];
-                    }}, done);
+                actions.setFirstSearchPosition({commit, dispatch, state, rootState, getters: {getTransformedPosition: () => {
+                    return [0, 0];
+                }}}, null);
             });
         });
         describe("adjustPosition", () => {
@@ -393,66 +388,66 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
                 proj2 = {id: "http://www.opengis.net/gml/srs/epsg.xml#25832", name: "EPSG:25832", projName: "longlat"},
                 proj3 = {id: "http://www.opengis.net/gml/srs/epsg.xml#4326-DG", name: "EPSG:4326", projName: "longlat"};
 
-            it("adjustPosition sets coordinate fields - longlat", done => {
+            it("adjustPosition sets coordinate fields - longlat", async () => {
                 const payload = {
                     position: [100, 200],
                     targetProjection: proj2
                 };
 
-                testAction(actions.adjustPosition, payload, {}, rootState, [
-                    {type: "setCoordinatesEasting", payload: {id: "easting", value: "160° 00′ 00″"}},
-                    {type: "setCoordinatesNorthing", payload: {id: "northing", value: "100° 00′ 00″"}}
-                ], {}, done);
+                actions.adjustPosition({commit, dispatch, state: {}, rootState}, payload);
+
+                expect(commit.calledWith("setCoordinatesEasting", {id: "easting", value: "160° 00′ 00″"})).to.be.true;
+                expect(commit.calledWith("setCoordinatesNorthing", {id: "northing", value: "100° 00′ 00″"})).to.be.true;
             });
-            it("adjustPosition sets coordinate fields - longlat - decimal degree", done => {
+            it("adjustPosition sets coordinate fields - longlat - decimal degree", async () => {
                 const payload = {
                     position: [100, 200],
                     targetProjection: proj3
                 };
 
-                testAction(actions.adjustPosition, payload, {}, rootState, [
-                    {type: "setCoordinatesEasting", payload: {id: "easting", value: "160.0000°"}},
-                    {type: "setCoordinatesNorthing", payload: {id: "northing", value: "100.0000°"}}
-                ], {}, done);
+                actions.adjustPosition({commit, dispatch, state: {}, rootState}, payload);
+
+                expect(commit.calledWith("setCoordinatesEasting", {id: "easting", value: "160.0000°"})).to.be.true;
+                expect(commit.calledWith("setCoordinatesNorthing", {id: "northing", value: "100.0000°"})).to.be.true;
             });
-            it("adjustPosition sets coordinate fields - utm", done => {
+            it("adjustPosition sets coordinate fields - utm", async () => {
                 const payload = {
                     position: [100, 200],
                     targetProjection: proj1
                 };
 
-                testAction(actions.adjustPosition, payload, {}, rootState, [
-                    {type: "setCoordinatesEasting", payload: {id: "easting", value: "100.00"}},
-                    {type: "setCoordinatesNorthing", payload: {id: "northing", value: "200.00"}}
-                ], {}, done);
+                actions.adjustPosition({commit, dispatch, state: {}, rootState}, payload);
+
+                expect(commit.calledWith("setCoordinatesEasting", {id: "easting", value: "100.00"})).to.be.true;
+                expect(commit.calledWith("setCoordinatesNorthing", {id: "northing", value: "200.00"})).to.be.true;
             });
-            it("adjustPosition sets coordinate fields - no projection and position does nothing", done => {
+            it("adjustPosition sets coordinate fields - no projection and position does nothing", async () => {
                 const payload = {
                     position: [],
                     targetProjection: null
                 };
 
-                testAction(actions.adjustPosition, payload, {}, rootState, [], {}, done);
+                actions.adjustPosition({commit, dispatch, state: {}, rootState}, payload);
             });
-            it("adjustPosition sets coordinate fields - no position does not fail", done => {
+            it("adjustPosition sets coordinate fields - no position does not fail", async () => {
                 const payload = {
                     position: null,
                     targetProjection: proj1
                 };
 
-                testAction(actions.adjustPosition, payload, {}, rootState, [], {}, done);
+                actions.adjustPosition({commit, dispatch, state: {}, rootState}, payload);
             });
-            it("adjustPosition sets coordinate fields - empty position does not fail", done => {
+            it("adjustPosition sets coordinate fields - empty position does not fail", async () => {
                 const payload = {
                     position: [],
                     targetProjection: proj1
                 };
 
-                testAction(actions.adjustPosition, payload, {}, rootState, [], {}, done);
+                actions.adjustPosition({commit, dispatch, state: {}, rootState}, payload);
             });
         });
         describe("checkPosition", () => {
-            it("checkPosition sets positionMapProjection", done => {
+            it("checkPosition sets positionMapProjection", async () => {
                 const state = {
                         updatePosition: true
                     },
@@ -462,16 +457,16 @@ describe("src/modules/coord/store/actionsCoordToolkit.js", () => {
                         "Maps/mode": "2D"
                     };
 
-                testAction(actions.checkPosition, {}, state, {}, [
-                    {type: "setPositionMapProjection", payload: position}
-                ], {}, done, rootGetters);
+                actions.checkPosition({commit, dispatch, state, getters: {}, rootGetters}, {});
+
+                expect(commit.calledWith("setPositionMapProjection", position)).to.be.true;
             });
-            it("checkPosition not sets positionMapProjection", done => {
+            it("checkPosition not sets positionMapProjection", async () => {
                 const state = {
                     updatePosition: false
                 };
 
-                testAction(actions.checkPosition, {}, state, {}, [], {}, done);
+                actions.checkPosition({commit, dispatch, state, getters: {}, rootGetters: {"Maps/mouseCoordinate": [], "Maps/mode": "2D"}}, {});
             });
         });
     });

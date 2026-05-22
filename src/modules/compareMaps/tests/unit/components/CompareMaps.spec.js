@@ -41,7 +41,6 @@ describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
                                 deactivateSwiper: sinon.stub()
                             },
                             getters: {
-                                layerNames: () => [{name: "Layer 1", id: "layer1"}, {name: "Layer 2", id: "layer2"}],
                                 initialBaseLayer: () => ({name: "Base Layer", id: "baseLayer"}),
                                 selectedLayer1Id: () => "layer1",
                                 selectedLayer2Id: () => "layer2"
@@ -79,7 +78,9 @@ describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
             getters: {
                 visibleLayerConfigs: () => [
                     {id: "layer1", name: "Layer 1", typ: "WMS", visibility: true},
-                    {id: "layer2", name: "Layer 2", typ: "WFS", visibility: true}
+                    {id: "layer2", name: "Layer 2", typ: "WFS", visibility: true},
+                    {id: "layer3", name: "Layer 3", typ: "WMTS", visibility: true},
+                    {id: "layerGroup", name: "Layer Group", typ: "GROUP", visibility: true}
                 ]
             }
         });
@@ -100,6 +101,20 @@ describe("src/modules/compareMaps/components/CompareMaps.vue", () => {
         });
 
         expect(wrapper.find("#compare-maps").exists()).to.be.true;
+    });
+
+    it("get active layers", () => {
+        wrapper = shallowMount(CompareMaps, {
+            global: {
+                plugins: [store]
+            }
+        });
+
+        expect(wrapper.vm.visibleLayers).to.be.deep.equal([
+            {id: "layer1", name: "Layer 1"},
+            {id: "layer2", name: "Layer 2"},
+            {id: "layer3", name: "Layer 3"}
+        ]);
     });
 
     it("sets tool active", async () => {

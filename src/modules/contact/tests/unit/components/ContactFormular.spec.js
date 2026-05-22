@@ -235,6 +235,52 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
         expect(wrapper.find("#contact-info-message").text()).to.equals("Schreiben sie dem Ansprechpartner des Themas Schulstammdaten und Schülerzahlen der Hamburger Schulen");
     });
 
+    describe("File upload accordion", () => {
+        it("does not render file upload section if fileUpload is false", () => {
+            ContactModule.state.fileUpload = false;
+
+            wrapper = mount(ContactComponent, {
+                global: {
+                    plugins: [store]
+                }});
+
+            expect(wrapper.findComponent({name: "AccordionItem"}).exists()).to.be.false;
+            expect(wrapper.findAllComponents({name: "FileUpload"}).length).to.equal(0);
+        });
+
+        it("renders AccordionItem with expected props if fileUpload is true", () => {
+            ContactModule.state.fileUpload = true;
+
+            wrapper = mount(ContactComponent, {
+                global: {
+                    plugins: [store]
+                }});
+
+            const accordion = wrapper.findComponent({name: "AccordionItem"});
+
+            expect(accordion.exists()).to.be.true;
+            expect(accordion.props("id")).to.equal("contact-file-upload");
+            expect(accordion.props("title")).to.equal("common:modules.contact.addFileButton");
+            expect(accordion.props("icon")).to.equal("bi-paperclip");
+        });
+
+        it("renders FileUpload inside AccordionItem when fileUpload is true", () => {
+            ContactModule.state.fileUpload = true;
+
+            wrapper = mount(ContactComponent, {
+                global: {
+                    plugins: [store]
+                }});
+
+            const accordion = wrapper.findComponent({name: "AccordionItem"}),
+                fileUploads = wrapper.findAllComponents({name: "FileUpload"});
+
+            expect(accordion.exists()).to.be.true;
+            expect(fileUploads.length).to.be.greaterThan(0);
+            expect(accordion.findComponent({name: "FileUpload"}).exists()).to.be.true;
+        });
+    });
+
     describe("Methods", () => {
         let attachmentPdf, attachmentPng, attachmentBig, attachmentWrongFormat,
             checkNoDuplicatesSpy, addSingleAlertSpy, checkValidSpy;

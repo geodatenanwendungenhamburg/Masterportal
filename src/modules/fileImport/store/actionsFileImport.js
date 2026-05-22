@@ -14,6 +14,8 @@ import {uniqueId} from "@shared/js/utils/uniqueId.js";
 import layerCollection from "@core/layers/js/layerCollection.js";
 import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 import {supportedFiletypes} from "../utils/supportedFiletypes.js";
+import {getIconUrl} from "@shared/js/utils/convertFeaturesToKml.js";
+import * as constants from "@modules/draw_old/store/constantsDraw.js";
 
 const defaultFont = "16px Arial",
     supportedFormats = {
@@ -30,7 +32,7 @@ const defaultFont = "16px Arial",
                     rotation: 0,
                     scale: 1,
                     size: [16, 16],
-                    src: window.location.origin.includes("localhost") ? `${window.location.origin}/src/assets/img/tools/draw/circle_blue.svg` : `${window.location.origin}/img/tools/draw/circle_blue.svg`
+                    src: `${window.location.origin}${MASTERPORTAL_ASSETS_PATH}/tools/draw/circle_blue.svg`
                 }),
                 text: new Text({
                     fill: new Fill({
@@ -85,6 +87,7 @@ function getFormat (filename, selectedFiletype, availableFormats) {
  * Currently unsupported tags are:
  *      - cascadingStyle
  * Removes attributes from Placemark-tag, e.g. 'id': if same id is in different imported files, the features are overwritten by ol format.
+ * Replaces wrong urls to symbols.
  * @param {String} rawSource - KML source as string.
  * @returns {String} Returns raw string KML source without unsupported tags.
  */
@@ -97,7 +100,34 @@ function removeBadTags (rawSource) {
     });
     result = result.replace(/<\/Style>\s*<\/.*?cascadingstyle>/gmi, "</Style>");
     result = result.replace(/<Placemark.*?(>)/gmi, "<Placemark>");
+    result = checkAndReplaceSymbolUrls(result);
 
+    return result;
+}
+
+/**
+ * Find all complete URLs with 'tools/draw/circle_' and check them. Incorrect urls are replaced by correct urls.
+ * @param {String} rawSource - KML source as string.
+ * @returns {String} KML source with correct urls to symnbols.
+ */
+function checkAndReplaceSymbolUrls (rawSource) {
+    let result = rawSource;
+    const urlMatches = result.match(/<href>([^<]*tools\/draw\/circle_[^<]*)<\/href>/g);
+
+    if (urlMatches) {
+        urlMatches.forEach((match) => {
+            const url = match.replace(/<\/?href>/g, "");
+
+            if (!url.includes(MASTERPORTAL_ASSETS_PATH) || !url.includes(window.location.origin)) {
+                const color = url.match(/circle_([^.]+)\.svg/)[1],
+                    value = constants.colorOptions.find(entry => entry.color === color)?.value,
+                    correctedUrl = getIconUrl(value);
+
+                result = result.replace(url, correctedUrl);
+                console.warn("replaced wrong symbol url during import", url, " -> ", correctedUrl);
+            }
+        });
+    }
     return result;
 }
 
@@ -173,6 +203,7 @@ function getParsedCustomAttributes (feature) {
 }
 
 export default {
+    checkAndReplaceSymbolUrls,
 
     /**
      * Sets the featureExtents

@@ -3,18 +3,9 @@ import getProjections from "./getProjections.js";
 import proj4 from "proj4";
 import isObject from "./isObject.js";
 import store from "@appstore/index.js";
+import * as constants from "@modules/draw_old/store/constantsDraw.js";
 
-const projections = getProjections("EPSG:25832", "EPSG:4326", "32"),
-    colorOptions = [
-        {color: "blue", value: [55, 126, 184]},
-        {color: "black", value: [0, 0, 0]},
-        {color: "green", value: [77, 175, 74]},
-        {color: "grey", value: [153, 153, 153]},
-        {color: "orange", value: [255, 127, 0]},
-        {color: "red", value: [228, 26, 28]},
-        {color: "white", value: [255, 255, 255]},
-        {color: "yellow", value: [255, 255, 51]}
-    ];
+const projections = getProjections("EPSG:25832", "EPSG:4326", "32");
 
 /**
  * Checks whether bots arrays are of length 3 and whether their values are equal at the same positions.
@@ -54,7 +45,7 @@ function createKmlIconStyle (url, scale) {
  * @returns {String} The name of the color corresponding to the number array.
  */
 function getIconColor (color) {
-    const selectedOption = colorOptions.filter(option => allCompareEqual(color, option.value));
+    const selectedOption = constants.colorOptions.filter(option => allCompareEqual(color, option.value));
 
     if (selectedOption && selectedOption[0]) {
         return selectedOption[0].color;
@@ -219,6 +210,15 @@ function getKMLWithCustomAttributes (features, format) {
 }
 
 /**
+ * Returns the url to the icon with the given color.
+ * @param {Array} pointColor color values of point-icon color defined in constantsDraw colorOptions
+ * @returns {String} the url to the icon
+ */
+function getIconUrl (pointColor) {
+    return `${window.location.origin}${MASTERPORTAL_ASSETS_PATH}/tools/draw/circle_${getIconColor(pointColor)}.svg`;
+}
+
+/**
  * Converts the features to KML while also saving its style information.
  * @param {ol.Feature[]} features - the used features
  * @returns {String} The features written in KML as a String.
@@ -283,7 +283,7 @@ export default async function convertFeaturesToKml (features) {
             const style = placemark.getElementsByTagName("Style")[0];
 
             if (hasIconUrl[i] === false && pointColors[i]) {
-                const iconUrl = `${window.location.origin}/src/assets/img/tools/draw/circle_${getIconColor(pointColors[i])}.svg`,
+                const iconUrl = getIconUrl(pointColors[i]),
                     iconStyle = createKmlIconStyle(iconUrl, pointScales[i]);
 
                 style.innerHTML += iconStyle;
@@ -299,7 +299,7 @@ export default async function convertFeaturesToKml (features) {
         if (placemark.getElementsByTagName("Point").length > 0 && skip[i] === true && !isNaN(textFontSize[i])) {
             const scale = textFontSize[i] / 16,
                 style = placemark.getElementsByTagName("Style")[0],
-                iconUrl = `${window.location.origin}/src/assets/img/tools/draw/circle_blue.svg`,
+                iconUrl = getIconUrl([55, 126, 184]),
                 maskIcon = new DOMParser().parseFromString("<IconStyle><scale>0</scale><Icon><href>" + iconUrl + "</href></Icon></IconStyle>", "text/xml"),
                 maskScale = new DOMParser().parseFromString("<scale>" + scale + "</scale>", "text/xml");
 
@@ -312,6 +312,7 @@ export default async function convertFeaturesToKml (features) {
 
 export {
     convertFeatures,
+    getIconUrl,
     transformCoordinates,
     getKMLWithCustomAttributes
 };

@@ -3,7 +3,6 @@ import {expect} from "chai";
 import {createLayerConfigsArray} from "../utils/functions.js";
 import actions from "@modules/bufferAnalysis/store/actionsBufferAnalysis.js";
 import stateBufferAnalysis from "@modules/bufferAnalysis/store/stateBufferAnalysis.js";
-import testAction from "@devtools/tests/VueTestUtils.js";
 import {
     LineString,
     MultiLineString,
@@ -68,7 +67,7 @@ describe("src/modules/bufferAnalysis/store/actionsBufferAnalysis.js", () => {
         });
     });
     describe.skip("loadSelectOptions", () => {
-        it("loads a number of layers as select options and commits them", done => {
+        it("loads a number of layers as select options and commits them", async () => {
             const source = {getFeatures: ()=>[]},
                 layers = createLayerConfigsArray(3),
                 getters = {
@@ -84,15 +83,15 @@ describe("src/modules/bufferAnalysis/store/actionsBufferAnalysis.js", () => {
                 "allSubjectDataLayerConfigs": layers
             };
 
-            testAction(actions.loadSelectOptions, {}, state, {}, [
-                {type: "addSelectOption", payload: layers[0], commit: true},
-                {type: "addSelectOption", payload: layers[1], commit: true},
-                {type: "addSelectOption", payload: layers[2], commit: true}
-            ], getters, done, rootGetters);
+            await actions.loadSelectOptions({commit, dispatch, state, rootState: {}, getters, rootGetters});
+
+            expect(commit.getCall(0).args).to.deep.equal(["addSelectOption", layers[0]]);
+            expect(commit.getCall(1).args).to.deep.equal(["addSelectOption", layers[1]]);
+            expect(commit.getCall(2).args).to.deep.equal(["addSelectOption", layers[2]]);
         });
     });
     describe.skip("applySelectedSourceLayer", () => {
-        it("calls commit and dispatch each one time with correct parameters", done => {
+        it("calls commit and dispatch each one time with correct parameters", async () => {
             state.bufferRadius = 1000;
             const layers = createLayerConfigsArray(2),
                 layerConfig = {
@@ -116,15 +115,17 @@ describe("src/modules/bufferAnalysis/store/actionsBufferAnalysis.js", () => {
                 };
 
             state.selectOptions = createLayerConfigsArray(2);
-            testAction(actions.applySelectedSourceLayer, layers[0], state, {}, [
-                {type: "replaceByIdInLayerConfig", payload: layerConfig, dispatch: true},
-                {type: "replaceByIdInLayerConfig", payload: layerConfigFalse, dispatch: true},
-                {type: "setSelectedSourceLayer", payload: layers[0], commit: true}
-            ], state, done, {});
+            await actions.applySelectedSourceLayer({commit, dispatch, state, rootState: {}, getters: state, rootGetters: {}}, layers[0]);
+
+            expect(dispatch.getCall(0).args[0]).to.equal("replaceByIdInLayerConfig");
+            expect(dispatch.getCall(0).args[1]).to.deep.equal(layerConfig);
+            expect(dispatch.getCall(1).args[0]).to.equal("replaceByIdInLayerConfig");
+            expect(dispatch.getCall(1).args[1]).to.deep.equal(layerConfigFalse);
+            expect(commit.calledWith("setSelectedSourceLayer", layers[0])).to.be.true;
         });
     });
     describe.skip("applySelectedTargetLayer", () => {
-        it("calls commit and dispatch each one time with correct parameters", done => {
+        it("calls commit and dispatch each one time with correct parameters", async () => {
             state.bufferRadius = 1000;
             const layer = createLayerConfigsArray(1)[0],
                 layerConfig = {
@@ -139,11 +140,12 @@ describe("src/modules/bufferAnalysis/store/actionsBufferAnalysis.js", () => {
 
             state.selectOptions = createLayerConfigsArray(3);
 
-            testAction(actions.applySelectedTargetLayer, layer, state, {}, [
-                {type: "setSelectedTargetLayer", payload: layer, commit: true},
-                {type: "replaceByIdInLayerConfig", payload: layerConfig, dispatch: true},
-                {type: "checkIntersection", dispatch: true}
-            ], state, done, {});
+            await actions.applySelectedTargetLayer({commit, dispatch, state, rootState: {}, getters: state, rootGetters: {}}, layer);
+
+            expect(commit.calledWith("setSelectedTargetLayer", layer)).to.be.true;
+            expect(dispatch.getCall(0).args[0]).to.equal("replaceByIdInLayerConfig");
+            expect(dispatch.getCall(0).args[1]).to.deep.equal(layerConfig);
+            expect(dispatch.calledWith("checkIntersection")).to.be.true;
         });
     });
     describe("applySelectedTargetLayer", () => {
@@ -165,13 +167,13 @@ describe("src/modules/bufferAnalysis/store/actionsBufferAnalysis.js", () => {
         });
     });
     describe.skip("checkIntersection", () => {
-        it("calls dispatch with correct parameters", done => {
+        it("calls dispatch with correct parameters", async () => {
             state.selectedTargetLayer = {...createLayerConfigsArray(1)[0], get: sinon.stub().returns({setOpacity: () => ({})})};
             state.bufferLayer = {...createLayerConfigsArray(1)[0], getSource: ()=> ({getFeatures: ()=>({})})};
 
-            testAction(actions.checkIntersection, {}, state, {}, [
-                {type: "Maps/areLayerFeaturesLoaded", payload: 0, dispatch: true}
-            ], state, done, {});
+            await actions.checkIntersection({commit, dispatch, state, rootState: {}, getters: state, rootGetters: {}});
+
+            expect(dispatch.calledWith("Maps/areLayerFeaturesLoaded", 0)).to.be.true;
         });
     });
     describe("showBuffer", () => {
@@ -184,16 +186,16 @@ describe("src/modules/bufferAnalysis/store/actionsBufferAnalysis.js", () => {
         });
     });
     describe.skip("removeGeneratedLayers", () => {
-        it("calls commit four times and removeLayer twice", done => {
+        it("calls commit four times and removeLayer twice", async () => {
             state.resultLayer = createLayerConfigsArray(1)[0];
             state.bufferLayer = createLayerConfigsArray(1)[0];
 
-            testAction(actions.removeGeneratedLayers, {}, state, rootState, [
-                {type: "setResultLayer", payload: {}, commit: true},
-                {type: "setBufferLayer", payload: {}, commit: true},
-                {type: "setIntersections", payload: [], commit: true},
-                {type: "setResultFeatures", payload: [], commit: true}
-            ], state, done, {});
+            await actions.removeGeneratedLayers({commit, dispatch, state, rootState, getters: state, rootGetters: {}});
+
+            expect(commit.getCall(0).args).to.deep.equal(["setResultLayer", {}]);
+            expect(commit.getCall(1).args).to.deep.equal(["setBufferLayer", {}]);
+            expect(commit.getCall(2).args).to.deep.equal(["setIntersections", []]);
+            expect(commit.getCall(3).args).to.deep.equal(["setResultFeatures", []]);
         });
     });
     describe("resetModule", () => {

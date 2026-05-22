@@ -64,18 +64,16 @@ describe("src/core/js/layers/layer3dTileset.js", () => {
              * @param {Object} layer the layer
              * @param {Object} terrainLayer the terrainLayer
              * @param {Object} attrs the attributes
-             * @param {function} done to be called at the end of test
-             * @returns {void}
+             * @returns {Promise} resolves after all assertions
              */
-            checkLayer = (layer, terrainLayer, attrs, done) => {
+            checkLayer = async (layer, terrainLayer, attrs) => {
                 expect(layer).not.to.be.undefined;
                 expect(terrainLayer.get("name")).to.be.equals(attrs.name);
                 expect(terrainLayer.get("id")).to.be.equals(attrs.id);
                 expect(terrainLayer.get("typ")).to.be.equals(attrs.typ);
-                layer.tileset.then(tileset => {
-                    expect(tileset.layerReferenceId).to.be.equals(attrs.id);
-                    done();
-                });
+                const tileset = await layer.tileset;
+
+                expect(tileset.layerReferenceId).to.be.equals(attrs.id);
             };
         });
 
@@ -86,15 +84,15 @@ describe("src/core/js/layers/layer3dTileset.js", () => {
             expect(warn.notCalled).to.be.true;
         });
 
-        it("createLayer shall create a tileset layer", function (done) {
+        it("createLayer shall create a tileset layer", async function () {
             const layer3dTileset = new Layer3dTileset(attributes),
                 layer = layer3dTileset.getLayer();
 
             expect(fromUrlSpy.calledOnce).to.equal(true);
-            checkLayer(layer, layer3dTileset, attributes, done);
+            await checkLayer(layer, layer3dTileset, attributes);
         });
 
-        it("createLayer shall create a visible tileset layer", function (done) {
+        it("createLayer shall create a visible tileset layer", async function () {
             Object.assign(attributes, {visibility: true});
 
             const layer3dTileset = new Layer3dTileset(attributes),
@@ -103,9 +101,9 @@ describe("src/core/js/layers/layer3dTileset.js", () => {
             expect(layer3dTileset.get("visibility")).to.equal(true);
             expect(fromUrlSpy.calledOnce).to.equal(true);
             expect(fromUrlSpy.calledWithMatch("the_url/tileset.json", {maximumScreenSpaceError: 6})).to.equal(true);
-            checkLayer(layer, layer3dTileset, attributes, done);
+            await checkLayer(layer, layer3dTileset, attributes);
         });
-        it("createLayer shall add hidden features at visible layer", function (done) {
+        it("createLayer shall add hidden features at visible layer", async function () {
             attributes.hiddenFeatures = [
                 "DEHHALKAJ00011uJ",
                 "DEHHALKAJ0000yd2"
@@ -116,7 +114,7 @@ describe("src/core/js/layers/layer3dTileset.js", () => {
                 layer = layer3dTileset.getLayer();
 
             expect(fromUrlSpy.calledOnce).to.equal(true);
-            checkLayer(layer, layer3dTileset, attributes, done);
+            await checkLayer(layer, layer3dTileset, attributes);
             expect(addToHiddenObjectsSpy.calledOnce).to.be.true;
             expect(addToHiddenObjectsSpy.firstCall.args[0]).to.be.deep.equals(attributes.hiddenFeatures);
         });

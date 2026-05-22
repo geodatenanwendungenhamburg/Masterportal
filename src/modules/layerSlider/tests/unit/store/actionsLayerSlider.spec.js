@@ -1,5 +1,5 @@
 import sinon from "sinon";
-import testAction from "@devtools/tests/VueTestUtils.js";
+import {expect} from "chai";
 import actions from "@modules/layerSlider/store/actionsLayerSlider.js";
 
 const {
@@ -17,8 +17,10 @@ describe("src/modules/layerSlider/store/actionsLayerSlider.js", () => {
     });
 
     describe("addInformationToLayerIds", () => {
-        it("addInformationToLayerIds", done => {
-            const layerIds = [
+        it("addInformationToLayerIds", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                layerIds = [
                     {
                         layerId: "123",
                         title: "Pommes"
@@ -56,21 +58,23 @@ describe("src/modules/layerSlider/store/actionsLayerSlider.js", () => {
                     }
                 ];
 
-            testAction(addInformationToLayerIds, layerIds, {}, {}, [
-                {type: "setLayerIds", payload: layerIdsWithInformation}
-            ], {}, done, {
+            addInformationToLayerIds({commit, dispatch, state: {}, rootGetters: {
                 allLayerConfigs: [
                     {id: "123", visibility: false, transparency: 0},
                     {id: "456", visibility: true, transparency: 1},
                     {id: "789", visibility: false, transparency: 2}
                 ]
-            });
+            }}, layerIds);
+
+            expect(commit.calledWith("setLayerIds", layerIdsWithInformation)).to.be.true;
         });
     });
 
     describe("checkIfAllLayersAvailable", () => {
-        it("checkIfAllLayersAvailable", done => {
-            const layerIds = [
+        it("checkIfAllLayersAvailable", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                layerIds = [
                     {
                         layerId: "123",
                         title: "Pommes",
@@ -85,15 +89,17 @@ describe("src/modules/layerSlider/store/actionsLayerSlider.js", () => {
                     ]
                 };
 
-            testAction(checkIfAllLayersAvailable, layerIds, {}, {}, [
-                {type: "setLayerIds", payload: layerIds}
-            ], {}, done, rootGetters);
+            checkIfAllLayersAvailable({commit, dispatch, state: {}, rootGetters}, layerIds);
+
+            expect(commit.calledWith("setLayerIds", layerIds)).to.be.true;
         });
     });
 
     describe("sendModification", () => {
-        it("sendModification", done => {
-            const layerId = {
+        it("sendModification", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                layerId = {
                     layerId: "123",
                     title: "Pommes",
                     index: 0
@@ -101,27 +107,25 @@ describe("src/modules/layerSlider/store/actionsLayerSlider.js", () => {
                 visibility = true,
                 transparency = 0.5;
 
-            testAction(sendModification, {layerId, visibility, transparency}, {}, {}, [
-                {
-                    type: "replaceByIdInLayerConfig",
-                    payload: {
-                        layerConfigs: [{
-                            id: layerId,
-                            layer: {
-                                visibility: visibility,
-                                transparency: transparency
-                            }
-                        }]
-                    },
-                    dispatch: true
-                }
-            ], {}, done);
+            sendModification({commit, dispatch, state: {}}, {layerId, visibility, transparency});
+
+            expect(dispatch.calledWith("replaceByIdInLayerConfig", {
+                layerConfigs: [{
+                    id: layerId,
+                    layer: {
+                        visibility: visibility,
+                        transparency: transparency
+                    }
+                }]
+            })).to.be.true;
         });
     });
 
     describe("setActiveIndex", () => {
-        it("setActiveIndex", done => {
-            const activeLayer = {
+        it("setActiveIndex", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                activeLayer = {
                     layerId: "123",
                     title: "Pommes",
                     index: 0
@@ -148,16 +152,18 @@ describe("src/modules/layerSlider/store/actionsLayerSlider.js", () => {
                     layerIds
                 };
 
-            testAction(setActiveIndex, 0, state, {}, [
-                {type: "setActiveLayer", payload: layerIds[0]},
-                {type: "toggleLayerVisibility", payload: activeLayer.layerId, dispatch: true}
-            ], {}, done);
+            setActiveIndex({commit, dispatch, state}, 0);
+
+            expect(commit.calledWith("setActiveLayer", layerIds[0])).to.be.true;
+            expect(dispatch.calledWith("toggleLayerVisibility", activeLayer.layerId)).to.be.true;
         });
     });
 
     describe("toggleLayerVisibility", () => {
-        it("toggleLayerVisibility", done => {
-            const activeLayerId = "123",
+        it("toggleLayerVisibility", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                activeLayerId = "123",
                 state = {
                     layerIds: [
                         {
@@ -178,11 +184,11 @@ describe("src/modules/layerSlider/store/actionsLayerSlider.js", () => {
                     ]
                 };
 
-            testAction(toggleLayerVisibility, activeLayerId, state, {}, [
-                {type: "sendModification", payload: {layerId: "123", visibility: true}, dispatch: true},
-                {type: "sendModification", payload: {layerId: "456", visibility: false}, dispatch: true},
-                {type: "sendModification", payload: {layerId: "789", visibility: false}, dispatch: true}
-            ], {}, done);
+            toggleLayerVisibility({commit, dispatch, state}, activeLayerId);
+
+            expect(dispatch.getCall(0).args).to.deep.equal(["sendModification", {layerId: "123", visibility: true}]);
+            expect(dispatch.getCall(1).args).to.deep.equal(["sendModification", {layerId: "456", visibility: false}]);
+            expect(dispatch.getCall(2).args).to.deep.equal(["sendModification", {layerId: "789", visibility: false}]);
         });
     });
 });

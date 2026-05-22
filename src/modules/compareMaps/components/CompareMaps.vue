@@ -17,7 +17,6 @@ export default {
     computed: {
         ...mapGetters(["visibleLayerConfigs"]),
         ...mapGetters("Modules/CompareMaps", [
-            "layerNames",
             "selectedLayer1Id",
             "selectedLayer2Id"
         ]),
@@ -120,7 +119,7 @@ export default {
          * @returns {void}
          */
         updateVisibleLayers (layerConfigs) {
-            const visibleLayers = layerConfigs.filter(layerConfig => layerConfig.typ === "WMS" || layerConfig.typ === "WFS");
+            const visibleLayers = layerConfigs.filter(layerConfig => layerConfig.typ !== "GROUP");
 
             this.visibleLayers = visibleLayers.map(layerConfig => ({name: layerConfig.name, id: layerConfig.id}));
         },

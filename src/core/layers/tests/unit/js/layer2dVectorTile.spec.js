@@ -1,5 +1,6 @@
 import axios from "axios";
 import crs from "@masterportal/masterportalapi/src/crs.js";
+import {vectorTile} from "@masterportal/masterportalapi/src/index.js";
 import {expect} from "chai";
 import sinon from "sinon";
 import Collection from "ol/Collection.js";
@@ -337,24 +338,20 @@ describe("src/core/js/layers/layer2dVectorTile.js", () => {
             expect(returnValue).to.equal(Symbol.for("Promise"));
         });
 
-        it("returns rejecting Promise if key not found", function (done) {
+        it("returns rejecting Promise if key not found", async () => {
             const {setStyleById} = Layer2dVectorTile.prototype,
                 context = makeContext(),
                 returnValue = setStyleById.call(context, "l3");
             let caught = false;
 
             expect(context.setStyleByDefinition.notCalled).to.be.true;
-            returnValue
-            // expect rejection
-                .catch(() => {
-                    caught = true;
-                })
-                .finally(() => {
-                    expect(caught).to.be.true;
-                    done();
-                })
-            // forward if falsely not rejected
-                .catch(err => done(err));
+            try {
+                await returnValue;
+            }
+            catch (e) {
+                caught = true;
+            }
+            expect(caught).to.be.true;
         });
     });
 
@@ -382,41 +379,44 @@ describe("src/core/js/layers/layer2dVectorTile.js", () => {
             };
 
         /**
-         * @param {function} done callback done
          * @returns {Object} mock context for setStyleById
          */
-        function makeContext (done) {
+        function makeContext () {
             return {
                 isStyleValid: Layer2dVectorTile.prototype.isStyleValid,
                 get: key => ({layer: Symbol.for("layer")})[key],
+                getLayer: () => Symbol.for("layer"),
                 set: sinon.spy((key, value) => {
                     expect(key).to.equal("selectedStyleID");
                     expect(value).to.equal("l0");
-
-                    done();
                 })
             };
         }
 
-        it("retrieves json from url, checks it, and sets id to layer and model", function (done) {
-            sinon.stub(axios, "get").resolves(Promise.resolve(validStyle));
+        it("retrieves json from url, checks it, and sets id to layer and model", async () => {
+            sinon.stub(axios, "get").resolves(Promise.resolve({data: validStyle}));
+            sinon.stub(vectorTile, "setStyle");
 
             const {setStyleByDefinition} = Layer2dVectorTile.prototype,
-                context = makeContext(done);
+                context = makeContext();
 
-            setStyleByDefinition.call(context, {id: "l0", url: "example.com/root.json"})
-                .catch(() => done());
+            await setStyleByDefinition.call(context, {id: "l0", url: "example.com/root.json"});
         });
 
-        it("rejects invalid json", function (done) {
-            sinon.stub(axios, "get").resolves(Promise.resolve(invalidStyle));
+        it("rejects invalid json", async () => {
+            sinon.stub(axios, "get").resolves(Promise.resolve({data: invalidStyle}));
 
             const {setStyleByDefinition} = Layer2dVectorTile.prototype,
-                context = makeContext(done);
+                context = makeContext();
+            let caught = false;
 
-            setStyleByDefinition
-                .call(context, {id: "l0", url: "example.com/root.json"})
-                .catch(() => done());
+            try {
+                await setStyleByDefinition.call(context, {id: "l0", url: "example.com/root.json"});
+            }
+            catch (e) {
+                caught = true;
+            }
+            expect(caught).to.be.true;
         });
     });
 
@@ -425,10 +425,9 @@ describe("src/core/js/layers/layer2dVectorTile.js", () => {
          * @param {Object} params parameter object
          * @param {?object} params.styleId style id from config.json
          * @param {?string} params.givenVtStyles style set from services.json to use
-         * @param {function} params.done to be called finally
          * @returns {Object} mock context for setStyleById
          */
-        function makeContext ({styleId, givenVtStyles, done}) {
+        function makeContext ({styleId, givenVtStyles}) {
             return {
                 isStyleValid: Layer2dVectorTile.prototype.isStyleValid,
                 get: key => ({
@@ -442,27 +441,26 @@ describe("src/core/js/layers/layer2dVectorTile.js", () => {
                 layer: {
                     setVisible: sinon.spy(v => {
                         expect(v).to.equal(Symbol.for("visibility"));
-                        done();
                     })
                 }
             };
         }
 
-        it("uses config.json style first", done => {
-            const context = makeContext({styleId: "lConfigJson", givenVtStyles: vtStylesDefaultL2, done}),
+        it("uses config.json style first", async () => {
+            const context = makeContext({styleId: "lConfigJson", givenVtStyles: vtStylesDefaultL2}),
                 {set} = context;
 
-            Layer2dVectorTile.prototype.setConfiguredLayerStyle.call(context);
+            await Layer2dVectorTile.prototype.setConfiguredLayerStyle.call(context);
 
             expect(set.calledOnce).to.be.true;
             expect(set.calledWith("selectedStyleID", "lConfigJson")).to.be.true;
         });
 
-        it("uses services.json default style second", done => {
-            const context = makeContext({givenVtStyles: vtStylesDefaultL2, done}),
+        it("uses services.json default style second", async () => {
+            const context = makeContext({givenVtStyles: vtStylesDefaultL2}),
                 {set, setStyleByDefinition} = context;
 
-            Layer2dVectorTile.prototype.setConfiguredLayerStyle.call(context);
+            await Layer2dVectorTile.prototype.setConfiguredLayerStyle.call(context);
 
             expect(set.calledOnce).to.be.true;
             expect(set.calledWith("selectedStyleID", "l2")).to.be.true;
@@ -470,11 +468,11 @@ describe("src/core/js/layers/layer2dVectorTile.js", () => {
             expect(setStyleByDefinition.calledWith(vtStylesDefaultL2[1])).to.be.true;
         });
 
-        it("uses services.json first style third", done => {
-            const context = makeContext({givenVtStyles: vtStyles, done}),
+        it("uses services.json first style third", async () => {
+            const context = makeContext({givenVtStyles: vtStyles}),
                 {set, setStyleByDefinition} = context;
 
-            Layer2dVectorTile.prototype.setConfiguredLayerStyle.call(context);
+            await Layer2dVectorTile.prototype.setConfiguredLayerStyle.call(context);
 
             expect(set.calledOnce).to.be.true;
             expect(set.calledWith("selectedStyleID", "l1")).to.be.true;
@@ -567,10 +565,9 @@ describe("src/core/js/layers/layer2dVectorTile.js", () => {
          * @param {Object} params parameter object
          * @param {?object} params.styleId style id from config.json
          * @param {?string} params.givenVtStyles style set from services.json to use
-         * @param {function} params.done to be called finally
          * @returns {Object} mock context for setStyleById
          */
-        function makeContext ({styleId, givenVtStyles, done}) {
+        function makeContext ({styleId, givenVtStyles}) {
             return {
                 isStyleValid: Layer2dVectorTile.prototype.isStyleValid,
                 get: key => ({
@@ -584,14 +581,13 @@ describe("src/core/js/layers/layer2dVectorTile.js", () => {
                 layer: {
                     setVisible: sinon.spy(v => {
                         expect(v).to.equal(Symbol.for("visibility"));
-                        done();
                     })
                 }
             };
         }
 
-        it("Creates a VectorTileLayer", async (done) => {
-            const context = makeContext({styleId: "lConfigJson", givenVtStyles: vtStylesDefaultL2, done}),
+        it("Creates a VectorTileLayer", async () => {
+            const context = makeContext({styleId: "lConfigJson", givenVtStyles: vtStylesDefaultL2}),
                 // eslint-disable-next-line no-unused-vars
                 {set} = context;
             const url = "https://testemich.de/vt/tiles/esri/Test_VT_3857/p12/resources/sprites/sprite.json",

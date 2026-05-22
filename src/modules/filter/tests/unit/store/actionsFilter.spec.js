@@ -1,4 +1,5 @@
-import testAction from "@devtools/tests/VueTestUtils.js";
+import sinon from "sinon";
+import {expect} from "chai";
 import actions from "@modules/filter/store/actionsFilter.js";
 import state from "@modules/filter/store/stateFilter.js";
 
@@ -14,41 +15,44 @@ const {
 
 describe("tools/filter/store/actionsFilter", () => {
     describe("setRulesArray", () => {
-        it("should set the rules array", done => {
-            const payload = {
-                rulesOfFilters: []
-            };
+        it("should set the rules array", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                payload = {
+                    rulesOfFilters: []
+                };
 
-            testAction(setRulesArray, payload, state, {}, [
-                {type: "setRulesOfFilters", payload: {
-                    rulesOfFilters: payload.rulesOfFilters
-                }, commit: true}
-            ], {}, done);
+            setRulesArray({commit, dispatch, state}, payload);
+
+            expect(commit.calledWith("setRulesOfFilters", {
+                rulesOfFilters: payload.rulesOfFilters
+            })).to.be.true;
         });
     });
     describe("updateRules", () => {
-        it("update rules by given rule", done => {
-            const payload = {
-                filterId: 0,
-                snippetId: 0,
-                rule: {}
-            };
+        it("update rules by given rule", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                payload = {
+                    filterId: 0,
+                    snippetId: 0,
+                    rule: {}
+                };
 
-            testAction(updateRules, payload, state, {}, [
-                {type: "addSpotForRule", payload: {filterId: payload.filterId}, commit: true},
-                {type: "updateRules",
-                    payload: {
-                        filterId: payload.filterId,
-                        rules: [{}]
-                    },
-                    commit: true
-                }
-            ], {}, done);
+            updateRules({commit, dispatch, state}, payload);
+
+            expect(commit.getCall(0).args).to.deep.equal(["addSpotForRule", {filterId: payload.filterId}]);
+            expect(commit.getCall(1).args).to.deep.equal(["updateRules", {
+                filterId: payload.filterId,
+                rules: [{}]
+            }]);
         });
     });
     describe("deleteAllRules", () => {
-        it("deletes all rules by given filterId", done => {
-            const payload = {
+        it("deletes all rules by given filterId", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                payload = {
                     filterId: 0
                 },
                 localState = {
@@ -60,32 +64,36 @@ describe("tools/filter/store/actionsFilter", () => {
                     ]
                 };
 
-            testAction(deleteAllRules, payload, localState, {}, [
-                {type: "updateRules", payload: {
-                    filterId: payload.filterId,
-                    rules: [false, false]
-                }, commit: true}
-            ], {}, done);
+            deleteAllRules({commit, dispatch, state: localState}, payload);
+
+            expect(commit.calledWith("updateRules", {
+                filterId: payload.filterId,
+                rules: [false, false]
+            })).to.be.true;
         });
     });
     describe("updateFilterHits", () => {
-        it("updates the hits for given filterId", done => {
-            const payload = {
-                filterId: 0,
-                hits: 10
-            };
+        it("updates the hits for given filterId", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                payload = {
+                    filterId: 0,
+                    hits: 10
+                };
 
-            testAction(updateFilterHits, payload, state, {}, [
-                {type: "updateFilterHits", payload: {
-                    filterId: payload.filterId,
-                    hits: payload.hits
-                }, commit: true}
-            ], {}, done);
+            updateFilterHits({commit, dispatch, state}, payload);
+
+            expect(commit.calledWith("updateFilterHits", {
+                filterId: payload.filterId,
+                hits: payload.hits
+            })).to.be.true;
         });
     });
     describe("serializeState", () => {
-        it("serialize the state", done => {
-            const rulesOfFilters = state.rulesOfFilters,
+        it("serialize the state", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                rulesOfFilters = state.rulesOfFilters,
                 selectedAccordions = state.selectedAccordions,
                 selectedGroups = state.selectedGroups,
                 geometryFeature = {},
@@ -99,16 +107,18 @@ describe("tools/filter/store/actionsFilter", () => {
                 },
                 serializiedString = JSON.stringify(result);
 
-            testAction(serializeState, {}, state, {}, [
-                {type: "setSerializedString", payload: {
-                    serializiedString
-                }, commit: true}
-            ], {}, done);
+            serializeState({commit, dispatch, state});
+
+            expect(commit.calledWith("setSerializedString", {
+                serializiedString
+            })).to.be.true;
         });
     });
     describe("deserializeState", () => {
-        it("deserialize the state", done => {
-            const rulesOfFilters = [],
+        it("deserialize the state", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                rulesOfFilters = [],
                 selectedAccordions = [],
                 geometryFeature = {},
                 additionalGeometries = [],
@@ -123,23 +133,25 @@ describe("tools/filter/store/actionsFilter", () => {
                     geometrySelectorOptions
                 };
 
-            testAction(deserializeState, payload, state, {}, [
-                {type: "setRulesArray", payload: {rulesOfFilters}, dispatch: true},
-                {type: "setSelectedAccordions", payload: selectedAccordions, commit: true},
-                {type: "setSelectedGroups", payload: [], commit: true},
-                {type: "setGeometryFilterByFeature", payload: {jsonFeature: geometryFeature, invert: true}, dispatch: true},
-                {type: "setGeometrySelectorOptions", payload: geometrySelectorOptions, commit: true},
-                {type: "setAdditionalGeometries", payload: {additionalGeometries}, commit: true}
-            ], {}, done);
+            await deserializeState({commit, dispatch, state}, payload);
+
+            expect(dispatch.calledWith("setRulesArray", {rulesOfFilters})).to.be.true;
+            expect(commit.calledWith("setSelectedAccordions", selectedAccordions)).to.be.true;
+            expect(commit.calledWith("setSelectedGroups", [])).to.be.true;
+            expect(dispatch.calledWith("setGeometryFilterByFeature", {jsonFeature: geometryFeature, invert: true})).to.be.true;
+            expect(commit.calledWith("setGeometrySelectorOptions", geometrySelectorOptions)).to.be.true;
+            expect(commit.calledWith("setAdditionalGeometries", {additionalGeometries})).to.be.true;
         });
     });
     describe("jumpToFilter", () => {
-        it("sets the jumpToId property", done => {
-            const payload = {filterId: 0};
+        it("sets the jumpToId property", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                payload = {filterId: 0};
 
-            testAction(jumpToFilter, payload, state, {}, [
-                {type: "setJumpToId", payload: payload.filterId, commit: true}
-            ], {}, done);
+            jumpToFilter({commit, dispatch, state}, payload);
+
+            expect(commit.calledWith("setJumpToId", payload.filterId)).to.be.true;
         });
     });
 });

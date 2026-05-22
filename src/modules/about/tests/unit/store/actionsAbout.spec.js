@@ -1,4 +1,3 @@
-import testAction from "@devtools/tests/VueTestUtils.js";
 import getCswRecordById from "@shared/js/api/getCswRecordById.js";
 import sinon from "sinon";
 import actions from "@modules/about/store/actionsAbout.js";
@@ -12,7 +11,7 @@ afterEach(() => {
 
 describe("src/modules/layerInformation/store/actionsAbout.js", () => {
     describe("initialize the store", () => {
-        it("should show the about module in menu", done => {
+        it("should show the about module in menu", async () => {
             const state = {
                     metaId: "portalId",
                     cswUrl: "test.de"
@@ -25,36 +24,40 @@ describe("src/modules/layerInformation/store/actionsAbout.js", () => {
                     getTitle: () => "name",
                     getAbstract: () => "abstract",
                     getContact: () => "contact"
-                };
+                },
+                commit = sinon.spy(),
+                dispatch = sinon.spy();
 
             sinon.stub(getCswRecordById, "getRecordById").returns(cswReturn);
 
-            testAction(initializeAboutInfo, {}, state, {}, [
-                {type: "setTitle", payload: "name"},
-                {type: "setAbstractText", payload: "abstract", commit: true},
-                {type: "setContact", payload: "contact", commit: true},
-                {type: "currentMasterportalVersionNumber", payload: undefined, dispatch: true}
-            ], {}, done, rootGetters);
+            await initializeAboutInfo({commit, dispatch, state, rootGetters});
+
+            expect(commit.getCall(0).args).to.deep.equal(["setTitle", "name"]);
+            expect(commit.getCall(1).args).to.deep.equal(["setAbstractText", "abstract"]);
+            expect(commit.getCall(2).args).to.deep.equal(["setContact", "contact"]);
+            expect(dispatch.calledWith("currentMasterportalVersionNumber")).to.be.true;
         });
 
-        it("should set the masterportal version from state, if version is a string", done => {
+        it("should set the masterportal version from state, if version is a string", async () => {
             const state = {
-                version: "3.4.0"
-            };
+                    version: "3.4.0"
+                },
+                commit = sinon.spy();
 
-            testAction(currentMasterportalVersionNumber, {}, state, {}, [
-                {type: "setVersion", payload: "3.4.0", commit: true}
-            ], {}, done, {});
+            currentMasterportalVersionNumber({commit, state});
+
+            expect(commit.calledWith("setVersion", "3.4.0")).to.be.true;
         });
 
-        it("should set the masterportal version from package.json, if version is true", done => {
+        it("should set the masterportal version from package.json, if version is true", async () => {
             const state = {
-                version: true
-            };
+                    version: true
+                },
+                commit = sinon.spy();
 
-            testAction(currentMasterportalVersionNumber, {}, state, {}, [
-                {type: "setVersion", payload: packageJson.version, commit: true}
-            ], {}, done, {});
+            currentMasterportalVersionNumber({commit, state});
+
+            expect(commit.calledWith("setVersion", packageJson.version)).to.be.true;
         });
         it("should NOT call CSW if cswUrl is empty", async () => {
             const state = {
@@ -96,7 +99,7 @@ describe("src/modules/layerInformation/store/actionsAbout.js", () => {
                 throw new Error("abstractText should not be overwritten");
             }
         });
-        it("should use publisher if contact is not available", done => {
+        it("should use publisher if contact is not available", async () => {
             const state = {
                     metaId: "portalId",
                     cswUrl: "test.de"
@@ -106,16 +109,18 @@ describe("src/modules/layerInformation/store/actionsAbout.js", () => {
                     getAbstract: () => "abstract",
                     getContact: () => null,
                     getPublisher: () => "publisher"
-                };
+                },
+                commit = sinon.spy(),
+                dispatch = sinon.spy();
 
             sinon.stub(getCswRecordById, "getRecordById").returns(cswReturn);
 
-            testAction(initializeAboutInfo, {}, state, {}, [
-                {type: "setTitle", payload: "name"},
-                {type: "setAbstractText", payload: "abstract", commit: true},
-                {type: "setContact", payload: "publisher", commit: true},
-                {type: "currentMasterportalVersionNumber", dispatch: true}
-            ], {}, done, {});
+            await initializeAboutInfo({commit, dispatch, state, rootGetters: {}});
+
+            expect(commit.getCall(0).args).to.deep.equal(["setTitle", "name"]);
+            expect(commit.getCall(1).args).to.deep.equal(["setAbstractText", "abstract"]);
+            expect(commit.getCall(2).args).to.deep.equal(["setContact", "publisher"]);
+            expect(dispatch.calledWith("currentMasterportalVersionNumber")).to.be.true;
         });
     });
 });

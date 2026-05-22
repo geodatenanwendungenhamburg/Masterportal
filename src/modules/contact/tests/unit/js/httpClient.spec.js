@@ -13,37 +13,52 @@ describe("src/modules/contact/js/httpClient", function () {
             sinon.restore();
         });
 
-        it("calls onSuccess parameter on success", function (done) {
+        it("calls onSuccess parameter on success", async () => {
             sinon.stub(axios, "post").returns(
                 Promise.resolve({status: 200, data: {success: true}})
             );
 
-            const onSuccess = sinon.spy(done),
+            const onSuccess = sinon.spy(),
                 onError = sinon.spy();
 
             httpClientModule.httpClient("url", {}, onSuccess, onError);
+            await Promise.resolve();
+            await Promise.resolve();
+
+            sinon.assert.calledOnce(onSuccess);
+            sinon.assert.notCalled(onError);
         });
 
-        it("calls onError parameter on internal client error", function (done) {
+        it("calls onError parameter on internal client error", async () => {
             sinon.stub(axios, "post").returns(
                 Promise.reject("Internal Client Error")
             );
 
             const onSuccess = sinon.spy(),
-                onError = sinon.spy(done);
+                onError = sinon.spy();
 
             httpClientModule.httpClient("url", {}, onSuccess, onError);
+            await Promise.resolve();
+            await Promise.resolve();
+
+            sinon.assert.notCalled(onSuccess);
+            sinon.assert.calledOnce(onError);
         });
 
-        it("calls onError parameter if response status is not 200", function (done) {
+        it("calls onError parameter if response status is not 200", async () => {
             sinon.stub(axios, "post").returns(
                 Promise.resolve({status: 500})
             );
 
             const onSuccess = sinon.spy(),
-                onError = sinon.spy(done);
+                onError = sinon.spy();
 
             httpClientModule.httpClient("url", {}, onSuccess, onError);
+            await Promise.resolve();
+            await Promise.resolve();
+
+            sinon.assert.notCalled(onSuccess);
+            sinon.assert.calledOnce(onError);
         });
 
         it("calls axios.post in expected fashion", function () {

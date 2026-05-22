@@ -1,6 +1,5 @@
 import {expect} from "chai";
 import sinon from "sinon";
-import testAction from "@devtools/tests/VueTestUtils.js";
 import actions from "@modules/layerInformation/store/actionsLayerInformation.js";
 import getCswRecordById from "@shared/js/api/getCswRecordById.js";
 import axios from "axios";
@@ -172,7 +171,7 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
             expect(commit.firstCall.args[1]).to.equal("new-id");
         });
 
-        it("should set the Meta Data URLs", done => {
+        it("should set the Meta Data URLs", async () => {
             const metaId = "73A344E9-CDB5-4A17-89C1-05E202989755",
                 state = {
                     layerInfo: {
@@ -186,15 +185,14 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
                 },
                 metaURLs = ["https://metaver.de/trefferanzeige?cmd=doShowDocument&docuuid=73A344E9-CDB5-4A17-89C1-05E202989755"];
 
-            testAction(setMetadataURL, metaId, state, {}, [
-                {type: "setMetaURLs", payload: metaURLs}
-            ], {}, done, {
+            setMetadataURL({commit, dispatch, state, rootGetters: {
                 restServiceById: id => id === "2" ? {url: "https://metaver.de/trefferanzeige?cmd=doShowDocument&docuuid="} : {}
-            });
+            }}, metaId);
 
+            expect(commit.calledWith("setMetaURLs", metaURLs)).to.be.true;
         });
 
-        it("should use showDocUrl if set", done => {
+        it("should use showDocUrl if set", async () => {
             const state = {
                 layerInfo: {
                     "id": "123",
@@ -208,15 +206,14 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
                 metaDataCatalogueId: "2"
             };
 
-            testAction(setMetadataURL, "73A344E9-CDB5-4A17-89C1-05E202989755", state, {}, [
-                {type: "setMetaURLs", payload: ["https://metaver.de/trefferanzeige?cmd=doShowDocument&docuuid=73A344E9-CDB5-4A17-89C1-05E202989755"]}
-            ], {}, done, {
+            setMetadataURL({commit, dispatch, state, rootGetters: {
                 restServiceById: id => id === "2" ? {url: "https://metaver.de/trefferanzeige?cmd=doShowDocument&docuuid="} : {}
-            });
+            }}, "73A344E9-CDB5-4A17-89C1-05E202989755");
 
+            expect(commit.calledWith("setMetaURLs", ["https://metaver.de/trefferanzeige?cmd=doShowDocument&docuuid=73A344E9-CDB5-4A17-89C1-05E202989755"])).to.be.true;
         });
 
-        it("should use the url from metaDataCatalogueId if showDocUrl is not set", done => {
+        it("should use the url from metaDataCatalogueId if showDocUrl is not set", async () => {
             const state = {
                     layerInfo: {
                         "id": "123",
@@ -230,11 +227,11 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
                 },
                 metaURLs = ["https://metaver.de/trefferanzeige?cmd=doShowDocument&docuuid=73A344E9-CDB5-4A17-89C1-05E202989755"];
 
-            testAction(setMetadataURL, "73A344E9-CDB5-4A17-89C1-05E202989755", state, {}, [
-                {type: "setMetaURLs", payload: metaURLs}
-            ], {}, done, {
+            setMetadataURL({commit, dispatch, state, rootGetters: {
                 restServiceById: id => id === "2" ? {url: "https://metaver.de/trefferanzeige?cmd=doShowDocument&docuuid="} : {}
-            });
+            }}, "73A344E9-CDB5-4A17-89C1-05E202989755");
+
+            expect(commit.calledWith("setMetaURLs", metaURLs)).to.be.true;
         });
     });
 

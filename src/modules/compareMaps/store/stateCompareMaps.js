@@ -8,7 +8,6 @@
  * @property {String[]} [supportedDevices=["Desktop", "Mobile", "Table"]] Devices on which the module is displayed.
  * @property {String[]} [supportedMapModes=["2D"]] Map mode in which this module can be used.
  * @property {String} [type="compareMaps"] The type of the component.
- * @property {String[]} [layerNames=[]] Names of the available layers to be compared.
  * @property {String} [selectedLayer1Id=""] ID of the first selected layer.
  * @property {String} [selectedLayer2Id=""] ID of the second selected layer.
  */
@@ -22,7 +21,6 @@ const state = {
     type: "compareMaps",
 
     active: false,
-    layerNames: [],
     selectedLayer1Id: "",
     selectedLayer2Id: ""
 };

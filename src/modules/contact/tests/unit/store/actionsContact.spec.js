@@ -1,4 +1,3 @@
-import testAction from "@devtools/tests/VueTestUtils.js";
 import {expect} from "chai";
 import sinon from "sinon";
 
@@ -25,71 +24,86 @@ describe("src/modules/contact/store/actionsContact.js", () => {
             sinon.restore();
         });
 
-        it("calls all expected commits and dispatches when configured to do so", done => {
-            testAction(onSendSuccess, payload, state, {}, [
-                {type: "Alerting/addSingleAlert", payload: {
-                    category: "success",
-                    content: i18next.t("common:modules.contact.successMessage") +
-                        "\r\n" +
-                        i18next.t("common:modules.contact.successTicket") +
-                        payload
-                }, dispatch: true},
-                {type: "setPrivacyPolicyAccepted", payload: false, commit: true},
-                {type: "setMail", payload: "", commit: true},
-                {type: "setMessage", payload: "", commit: true},
-                {type: "setPhone", payload: "", commit: true},
-                {type: "setUsername", payload: "", commit: true}
-            ], {}, done);
+        it("calls all expected commits and dispatches when configured to do so", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                rootGetters = {"Menu/currentComponent": () => ({type: ""})};
+
+            onSendSuccess({commit, dispatch, state, rootGetters}, payload);
+
+            expect(dispatch.calledWith("Alerting/addSingleAlert", {
+                category: "success",
+                content: i18next.t("common:modules.contact.successMessage") +
+                    "\r\n" +
+                    i18next.t("common:modules.contact.successTicket") +
+                    payload
+            })).to.be.true;
+            expect(commit.calledWith("setPrivacyPolicyAccepted", false)).to.be.true;
+            expect(commit.calledWith("setMail", "")).to.be.true;
+            expect(commit.calledWith("setMessage", "")).to.be.true;
+            expect(commit.calledWith("setPhone", "")).to.be.true;
+            expect(commit.calledWith("setUsername", "")).to.be.true;
         });
 
-        it("builds reduced alert message when configured so", done => {
+        it("builds reduced alert message when configured so", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                rootGetters = {"Menu/currentComponent": () => ({type: ""})};
+
             state.withTicketNo = false;
 
-            testAction(onSendSuccess, payload, state, {}, [
-                {type: "Alerting/addSingleAlert", payload: {
-                    category: "success",
-                    content: i18next.t("common:modules.contact.successMessage")
-                }, dispatch: true},
-                {type: "setPrivacyPolicyAccepted", payload: false, commit: true},
-                {type: "setMail", payload: "", commit: true},
-                {type: "setMessage", payload: "", commit: true},
-                {type: "setPhone", payload: "", commit: true},
-                {type: "setUsername", payload: "", commit: true}
-            ], {}, done);
+            onSendSuccess({commit, dispatch, state, rootGetters}, payload);
+
+            expect(dispatch.calledWith("Alerting/addSingleAlert", {
+                category: "success",
+                content: i18next.t("common:modules.contact.successMessage")
+            })).to.be.true;
+            expect(commit.calledWith("setPrivacyPolicyAccepted", false)).to.be.true;
+            expect(commit.calledWith("setMail", "")).to.be.true;
+            expect(commit.calledWith("setMessage", "")).to.be.true;
+            expect(commit.calledWith("setPhone", "")).to.be.true;
+            expect(commit.calledWith("setUsername", "")).to.be.true;
         });
 
-        it("doesn't reset form when configured so", done => {
+        it("doesn't reset form when configured so", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                rootGetters = {"Menu/currentComponent": () => ({type: ""})};
+
             state.deleteAfterSend = false;
 
-            testAction(onSendSuccess, payload, state, {}, [
-                {type: "Alerting/addSingleAlert", payload: {
-                    category: "success",
-                    content: i18next.t("common:modules.contact.successMessage") +
-                        "\r\n" +
-                        i18next.t("common:modules.contact.successTicket") +
-                        payload
-                }, dispatch: true},
-                {type: "setPrivacyPolicyAccepted", payload: false, commit: true}
-            ], {}, done);
+            onSendSuccess({commit, dispatch, state, rootGetters}, payload);
+
+            expect(dispatch.calledWith("Alerting/addSingleAlert", {
+                category: "success",
+                content: i18next.t("common:modules.contact.successMessage") +
+                    "\r\n" +
+                    i18next.t("common:modules.contact.successTicket") +
+                    payload
+            })).to.be.true;
+            expect(commit.calledWith("setPrivacyPolicyAccepted", false)).to.be.true;
         });
 
-        it("doesn't close form when configured so", done => {
+        it("doesn't close form when configured so", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy();
+
             state.closeAfterSend = false;
 
-            testAction(onSendSuccess, payload, state, {}, [
-                {type: "Alerting/addSingleAlert", payload: {
-                    category: "success",
-                    content: i18next.t("common:modules.contact.successMessage") +
-                        "\r\n" +
-                        i18next.t("common:modules.contact.successTicket") +
-                        payload
-                }, dispatch: true},
-                {type: "setPrivacyPolicyAccepted", payload: false, commit: true},
-                {type: "setMail", payload: "", commit: true},
-                {type: "setMessage", payload: "", commit: true},
-                {type: "setPhone", payload: "", commit: true},
-                {type: "setUsername", payload: "", commit: true}
-            ], {}, done);
+            onSendSuccess({commit, dispatch, state}, payload);
+
+            expect(dispatch.calledWith("Alerting/addSingleAlert", {
+                category: "success",
+                content: i18next.t("common:modules.contact.successMessage") +
+                    "\r\n" +
+                    i18next.t("common:modules.contact.successTicket") +
+                    payload
+            })).to.be.true;
+            expect(commit.calledWith("setPrivacyPolicyAccepted", false)).to.be.true;
+            expect(commit.calledWith("setMail", "")).to.be.true;
+            expect(commit.calledWith("setMessage", "")).to.be.true;
+            expect(commit.calledWith("setPhone", "")).to.be.true;
+            expect(commit.calledWith("setUsername", "")).to.be.true;
         });
     });
 
@@ -109,20 +123,8 @@ describe("src/modules/contact/store/actionsContact.js", () => {
             sinon.restore();
         });
 
-        it("creates httpClient call as expected", done => {
-            sinon
-                .stub(httpClientModule, "httpClient")
-                .callsFake((url, data) => {
-                    const {from, to, subject, text} = data;
-
-                    expect(url).to.equal("example.com");
-                    expect(from).to.equal(Symbol.for("from"));
-                    expect(to).to.equal(Symbol.for("to"));
-                    expect(subject).to.be.a("string");
-                    expect(text).to.be.a("string");
-
-                    done();
-                });
+        it("creates httpClient call as expected", async () => {
+            const httpClientStub = sinon.stub(httpClientModule, "httpClient");
 
             send({
                 state,
@@ -135,29 +137,25 @@ describe("src/modules/contact/store/actionsContact.js", () => {
                     restServiceById: id => id === "007" ? {url: "example.com"} : {}
                 }
             });
+
+            expect(httpClientStub.calledOnce).to.be.true;
+            const [url, data] = httpClientStub.firstCall.args;
+
+            expect(url).to.equal("example.com");
+            expect(data.from).to.equal(Symbol.for("from"));
+            expect(data.to).to.equal(Symbol.for("to"));
+            expect(data.subject).to.be.a("string");
+            expect(data.text).to.be.a("string");
         });
 
-        it("creates httpClient call as expected if called with props", done => {
+        it("creates httpClient call as expected if called with props", async () => {
             const props = {
                 to: "abc@gv.hamburg.de",
                 from: Symbol.for("from"),
                 subject: "Anfrage zum Datensatz Schulstammdaten und Schülerzahlen der Hamburger Schulen",
                 noConfigProps: true
             };
-
-            sinon
-                .stub(httpClientModule, "httpClient")
-                .callsFake((url, data) => {
-                    const {from, to, subject, text} = data;
-
-                    expect(url).to.equal("example.com");
-                    expect(from).to.equal(Symbol.for("from"));
-                    expect(to).to.equal("abc@gv.hamburg.de");
-                    expect(subject).to.be.a("string");
-                    expect(text).to.be.a("string");
-
-                    done();
-                });
+            const httpClientStub = sinon.stub(httpClientModule, "httpClient");
 
             send({
                 state,
@@ -172,6 +170,15 @@ describe("src/modules/contact/store/actionsContact.js", () => {
             },
             props
             );
+
+            expect(httpClientStub.calledOnce).to.be.true;
+            const [url, data] = httpClientStub.firstCall.args;
+
+            expect(url).to.equal("example.com");
+            expect(data.from).to.equal(Symbol.for("from"));
+            expect(data.to).to.equal("abc@gv.hamburg.de");
+            expect(data.subject).to.be.a("string");
+            expect(data.text).to.be.a("string");
         });
     });
 });

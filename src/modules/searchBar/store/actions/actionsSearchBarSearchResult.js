@@ -373,6 +373,7 @@ export default {
     zoomToResult: ({dispatch, getters}, {coordinates}) => {
         const numberCoordinates = coordinates?.map(coordinate => parseFloat(coordinate, 10));
 
+
         if (numberCoordinates.length === 4) {
             const map = mapCollection.getMap("2D"),
                 view = map.getView(),

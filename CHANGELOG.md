@@ -10,15 +10,19 @@
 
 ### Added
 - Added CONTRIBUTING.md file.
+- NavTab: Added new prop `icon` to shared component NavTab to optionally display an icon in the tab.
 
 ### Changed
 - Changed Node.js and npm support: Versions from Node.js **22.19.0** up to smaller than **25** (LTS 24.15.0) besides Version **23** and npm fom **10.9.3** up to smaller than **12** are now supported.
 - The following packages have been updated:
     - dependencies:
-        - axios: 1.15.0 to 1.15.2
+        - axios: 1.15.0 to 1.16.0
         - chart.js: ^4.5.0 to ^4.5.1
+        - i18next: ^25.5.2 to ^26.1.0
         - i18next-browser-languagedetector: ^8.2.0 to ^8.2.1
-        - i18next-http-backend: ^3.0.2 to ^3.0.6
+        - i18next-http-backend: ^3.0.2 to ^4.0.0
+        - i18next-vue: ^4.0.0 to ^5.4.0
+        - three: ^0.180.0 to ^0.184.0
         - mqtt: ^5.14.1 to ^5.15.1
         - vue: ^3.5.22 to ^3.5.33
         - vue-multiselect: 3.2.0 to 3.5.0
@@ -28,20 +32,30 @@
         - @vue/compiler-sfc: 3.5.22 to 3.5.33
         - @vue/server-renderer: 3.5.22 to 3.5.33
         - @vue/test-utils: ^2.4.6 to ^2.4.9
+        - @vue/devtools-api: ^7.7.2 to ^8.1.2
         - canvas: ^3.2.0 to ^3.2.3
+        - chai: ^5.2.0 to ^6.2.2
         - esbuild-loader: ^4.4.2 to ^4.4.3
         - eslint-plugin-vuejs-accessibility: 2.4.1 to 2.5.0
         - eslint-plugin-n: 17.10.2 to 17.24.0
         - fs-extra: ^11.3.0 to ^11.3.4
+        - globals: ^15.15.0 to ^17.6.0
+        - https-proxy-agent: ^9.0.0
         - jsdoc: 4.0.4 to 4.0.5
+        - jsdom: ^28.1.0 to ^29.1.1
         - replace-in-file: 8.3.0 to 8.4.0
-
+        - sinon": 19.0.2 to 22.0.0
+        - sinon-chai: ^4.0.0 to ^4.0.1
+- ContactFormular: Replaced custom accordion button with `AccordionItem` component for Contact dropdown.
+- AccordionItem: Extended component to support heading elements (`h1`–`h6`).
+- CompareMaps: The restriction of layer types is extended to all types without GROUP Layers.
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+- Issue \#1591: Draw/FileImport: fixed KML export and KML import of symbols.    
 - Issue \#1592: FileImport/Draw: Fixed label text offset not being restored when importing a drawn GeoJSON file.
 - Issue \#1605: Fix ensures that STYLES parameter in GFI URL are correctly reset.
 - Issue \#1606: proxyAgent: Restored proxy agent support in the Vite development server, so external web resources can be accessed again from localhost through a corporate proxy.
@@ -49,6 +63,7 @@
 - Fix package-lock.json for node version 24.15.0.
 - Print: Fixed print mask disappearing after toggling a layer via LayerPills or switching the base layer via BaseLayerSwitcher.
 - WMS-Time: Activating time comparison placed the second WMS-Time layer at the top of the layerTree, causing it to cover other layers. The fix places the comparison layer directly above the original layer.
+- SelectFeatures: Fixed console error and missing results in the list for OAF layers.
 
 ---
 
@@ -92,6 +107,7 @@
 - URLParams:
     -  ZOOMTOFEATUREID: Features that are always at the top of the map are now displayed again.
     -  Links to other config files have been corrected in the `urlParameter` documentation.
+- ShareView: Deleted addon specific string and fixed handling of urlParams in addon.
 
 ---
 
