@@ -1,5 +1,6 @@
 import detectServiceType from "./detectServiceType.js";
 import handleWmsFromCsw from "./handleWmsFromCsw.js";
+import handleWmtsFromCsw from "./handleWmtsFromCsw.js";
 import handleWfsFromCsw from "./handleWfsFromCsw.js";
 import buildServiceLayerEntries from "./buildServiceLayerEntries.js";
 
@@ -11,9 +12,10 @@ import buildServiceLayerEntries from "./buildServiceLayerEntries.js";
  * @param {String} parsedResource.layerName Layer name from metadata.
  * @param {String} parsedResource.urlLayerParam LAYERS query param from URL.
  * @param {String} parsedResource.baseUrl Service base URL.
+ * @param {String} [projectionCode=""] Current map projection code.
  * @returns {Promise<Object>} Resolved service configuration.
  */
-export default async function resolveCswServiceConfig (parsedResource) {
+export default async function resolveCswServiceConfig (parsedResource, projectionCode = "") {
 
     const {protocol, url, layerName, urlLayerParam, baseUrl} = parsedResource;
     const typ = detectServiceType(protocol, url);
@@ -22,6 +24,9 @@ export default async function resolveCswServiceConfig (parsedResource) {
     let wfsVersion = "1.1.0";
     let wfsOutputFormat = "XML";
     let wfsFeatureNS = "";
+    let wmtsCapabilitiesUrl = "";
+    let wmtsFormat = "";
+    let wmtsTileMatrixSet = "";
     let serviceUnavailable = false;
     let serviceTitle = "";
     let discoveredLayerEntries = [];
@@ -34,6 +39,9 @@ export default async function resolveCswServiceConfig (parsedResource) {
             wfsVersion,
             wfsOutputFormat,
             wfsFeatureNS,
+            wmtsCapabilitiesUrl,
+            wmtsFormat,
+            wmtsTileMatrixSet,
             serviceUnavailable,
             serviceTitle,
             discoveredLayerEntries
@@ -84,6 +92,25 @@ export default async function resolveCswServiceConfig (parsedResource) {
             wfsFeatureNS = match?.featureNS || wfsFeatureNS;
         }
     }
+    else if (typ === "WMTS") {
+        const wmtsConfig = await handleWmtsFromCsw(baseUrl, projectionCode),
+            layers = wmtsConfig.layerTitleEntries || [];
+
+        serviceUnavailable = wmtsConfig.serviceUnavailable;
+        serviceTitle = wmtsConfig.serviceTitle || "";
+        wmtsCapabilitiesUrl = wmtsConfig.capabilitiesUrl || "";
+
+        if (!effectiveLayerName) {
+            discoveredLayerEntries = buildServiceLayerEntries("WMTS", layers);
+        }
+        else {
+            const match = layers.find(entry => entry.name === effectiveLayerName) || layers[0];
+
+            effectiveLayerName = match?.name || effectiveLayerName;
+            wmtsFormat = match?.format || "";
+            wmtsTileMatrixSet = match?.tileMatrixSet || "";
+        }
+    }
 
     return {
         typ,
@@ -92,6 +119,9 @@ export default async function resolveCswServiceConfig (parsedResource) {
         wfsVersion,
         wfsOutputFormat,
         wfsFeatureNS,
+        wmtsCapabilitiesUrl,
+        wmtsFormat,
+        wmtsTileMatrixSet,
         serviceUnavailable,
         serviceTitle,
         discoveredLayerEntries
