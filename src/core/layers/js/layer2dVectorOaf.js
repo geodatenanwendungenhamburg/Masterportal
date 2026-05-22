@@ -46,16 +46,24 @@ Layer2dVectorOaf.prototype.createLayer = function (attributes) {
  */
 Layer2dVectorOaf.prototype.getRawLayerAttributes = function (attributes) {
     const crs = attributes.crs === false || attributes.crs ? attributes.crs : "http://www.opengis.net/def/crs/EPSG/0/25832";
+    let bboxExtent;
+
+    if (attributes.bbox === false) {
+        bboxExtent = undefined;
+    }
+    else {
+        bboxExtent = attributes.bbox || Array.isArray(attributes.datasets) && attributes.datasets[0]?.bbox || store.getters["Maps/extent"];
+    }
 
     return {
-        bbox: attributes.bbox || Array.isArray(attributes.datasets) && attributes.datasets[0]?.bbox || store.getters["Maps/extent"],
-        bboxCrs: attributes.bboxCrs || crs,
+        bbox: bboxExtent,
+        bboxCrs: typeof bboxExtent === "undefined" ? undefined : attributes.bboxCrs || crs,
         clusterDistance: attributes.clusterDistance,
         collection: attributes.collection,
         crs: crs,
         datetime: attributes.datetime,
         id: attributes.id,
-        limit: typeof attributes.limit === "undefined" ? 400 : attributes.limit,
+        limit: typeof attributes.limit === "undefined" ? 200 : attributes.limit,
         offset: attributes.offset,
         params: attributes.params,
         url: attributes.url
@@ -68,11 +76,16 @@ Layer2dVectorOaf.prototype.getRawLayerAttributes = function (attributes) {
  * @returns {Object} The options.
  */
 Layer2dVectorOaf.prototype.getOptions = function (attributes) {
+    const loadingParams = this.loadingParams(attributes);
+
+    // Many OAF services reject non-WGS84 bbox extents; do not send automatic bbox in OAF requests.
+    delete loadingParams.bbox;
+
     const options = {
         clusterGeometryFunction: this.clusterGeometryFunction,
-        doNotLoadInitially: attributes.doNotLoadInitially,
+        doNotLoadInitially: typeof attributes.doNotLoadInitially === "boolean" ? attributes.doNotLoadInitially : true,
         featuresFilter: (features) => this.featuresFilter(attributes, features),
-        loadingParams: this.loadingParams(attributes),
+        loadingParams,
         loadingStrategy: attributes.loadingStrategy === "all" ? all : bbox,
         onLoadingError: this.onLoadingError,
         style: this.getStyleFunction(attributes)
@@ -111,6 +124,53 @@ Layer2dVectorOaf.prototype.createLegend = async function () {
     return legend;
 };
 /**
+ * Recursively fetches all OAF feature pages and adds them to the source.
+ * Avoids masterportalapi's loadFeaturesManually which lacks an Accept header and can fail on strict services.
+ * @param {string} url URL to fetch
+ * @param {ol/source/Vector} source OL vector source
+ * @param {ol/format/GeoJSON} format GeoJSON format
+ * @param {Object[]} accumulated features collected so far
+ * @returns {void}
+ */
+Layer2dVectorOaf.prototype.fetchOafPage = function (url, source, format, accumulated = []) {
+    fetch(url.toString(), {
+        headers: {Accept: "application/geo+json"},
+        method: "GET"
+    })
+        .then(response => {
+            if (!response.ok) {
+                console.error("OAF fetch failed: " + response.status + " " + response.statusText);
+                return null;
+            }
+            return response.json();
+        })
+        .then(responseJson => {
+            if (!responseJson || !Array.isArray(responseJson.features)) {
+                return;
+            }
+            accumulated.push(...responseJson.features);
+
+            const nextLink = Array.isArray(responseJson.links)
+                ? responseJson.links.find(link => link.rel === "next" && link.type === "application/geo+json")
+                : null;
+
+            if (nextLink?.href && responseJson.features.length > 0) {
+                this.fetchOafPage(nextLink.href, source, format, accumulated);
+                return;
+            }
+
+            const collection = {...responseJson, features: accumulated},
+                featureProjection = store.getters["Maps/projection"].getCode(),
+                features = format.readFeatures(collection, {dataProjection: "EPSG:4326", featureProjection});
+
+            source.addFeatures(features);
+        })
+        .catch(error => {
+            console.error("OAF loadFeaturesManually error:", error);
+        });
+};
+
+/**
  * Load the features manually.
  * @param {Object} attributes The new attributes.
  * @returns {void}
@@ -118,10 +178,13 @@ Layer2dVectorOaf.prototype.createLegend = async function () {
 Layer2dVectorOaf.prototype.loadFeaturesManually = function (attributes) {
     const attr = {...this.getRawLayerAttributes(attributes)};
 
-    if (store.getters["Maps/mode"] === "3D") {
-        // do not load bbox, load all features at once
-        // see Issue https://lgv-hamburg.atlassian.net/browse/BG-5669
-        attr.bbox = undefined;
-    }
-    oaf.loadFeaturesManually(attr, this.layer.getSource());
+    // OAF servers can enforce WGS84 bbox semantics; avoid sending auto bbox from map extent.
+    delete attr.bbox;
+    delete attr.bboxCrs;
+
+    const source = this.layer.getSource(),
+        format = source.getFormat(),
+        url = oaf.createUrl(attr, undefined);
+
+    this.fetchOafPage(url.toString(), source, format);
 };

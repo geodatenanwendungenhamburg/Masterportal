@@ -51,5 +51,13 @@ export default function buildServiceLayerEntries (serviceType, entries = []) {
         });
     }
 
+    if (serviceType === "OAF") {
+        // entries: [{name, title}]
+        return entries.map(layerEntry => ({
+            name: layerEntry.title || layerEntry.name,
+            sourceProps: {collection: layerEntry.name}
+        }));
+    }
+
     return entries;
 }

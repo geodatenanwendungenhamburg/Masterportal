@@ -222,6 +222,10 @@ Layer.prototype.getPointCoordinatesWithAltitude = function (coord) {
  */
 Layer2d.prototype.addErrorListener = function (layerSource) {
     layerSource?.on("featuresloaderror", async function () {
+        if (this.attributes.typ !== "WFS") {
+            return;
+        }
+
         const url = this.attributes.url
         + "&service="
         + this.attributes.typ

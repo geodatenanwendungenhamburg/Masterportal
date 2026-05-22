@@ -1,6 +1,7 @@
 import {expect} from "chai";
 import sinon from "sinon";
 import * as detectServiceTypeModule from "../../../js/detectServiceType.js";
+import * as handleOafFromCswModule from "../../../js/handleOafFromCsw.js";
 import resolveCswServiceConfig from "../../../js/resolveCswServiceConfig.js";
 
 describe("src/modules/searchBar/js/resolveCswServiceConfig.js", () => {
@@ -82,6 +83,34 @@ describe("src/modules/searchBar/js/resolveCswServiceConfig.js", () => {
 
             expect(result.typ).to.be.null;
             expect(result.discoveredLayerEntries).to.deep.equal([]);
+        });
+    });
+
+    describe("OAF service type", () => {
+        it("should map discovered OAF collections to collection source property", async () => {
+            detectStub.returns("OAF");
+            sinon.stub(handleOafFromCswModule, "default").resolves({
+                layersAdded: true,
+                serviceUnavailable: false,
+                serviceTitle: "Test OAF",
+                layerTitleEntries: [{name: "buildings", title: "Buildings"}]
+            });
+
+            const result = await resolveCswServiceConfig({
+                protocol: "OGC:API-FEATURES",
+                url: "https://example.com/oaf",
+                layerName: "",
+                urlLayerParam: "",
+                baseUrl: "https://example.com/oaf"
+            });
+
+            expect(result.typ).to.equal("OAF");
+            expect(result.discoveredLayerEntries).to.deep.equal([
+                {
+                    name: "Buildings",
+                    sourceProps: {collection: "buildings"}
+                }
+            ]);
         });
     });
 });
