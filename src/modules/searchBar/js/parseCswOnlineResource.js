@@ -17,7 +17,7 @@ function normalizeMalformedCswUrl (url) {
             const ampIndex = parsedUrl.pathname.indexOf("&"),
                 potentialQuery = parsedUrl.pathname.slice(ampIndex + 1);
 
-            if (/^[A-Za-z_][A-Za-z0-9_.-]*=.*/.test(potentialQuery)) {
+            if ((/^[A-Za-z_][A-Za-z0-9_.-]*=.*/).test(potentialQuery)) {
                 parsedUrl.pathname = parsedUrl.pathname.slice(0, ampIndex);
                 parsedUrl.search = `?${potentialQuery}`;
             }
@@ -30,6 +30,11 @@ function normalizeMalformedCswUrl (url) {
     }
 }
 
+/**
+ * Parses protocol, URL and layer hints from one CSW online resource node.
+ * @param {Element} onlineResource XML element for one online resource.
+ * @returns {Object} Normalized online resource data.
+ */
 function parseCswOnlineResource (onlineResource) {
     const gmdNs = "http://www.isotc211.org/2005/gmd",
         gcoNs = "http://www.isotc211.org/2005/gco",
