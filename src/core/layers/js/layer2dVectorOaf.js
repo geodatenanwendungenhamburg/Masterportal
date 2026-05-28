@@ -78,8 +78,11 @@ Layer2dVectorOaf.prototype.getRawLayerAttributes = function (attributes) {
 Layer2dVectorOaf.prototype.getOptions = function (attributes) {
     const loadingParams = this.loadingParams(attributes);
 
-    // Many OAF services reject non-WGS84 bbox extents; do not send automatic bbox in OAF requests.
-    delete loadingParams.bbox;
+    // When a layer is explicitly configured with bbox:false (e.g. CSW-discovered layers),
+    // do not pass a bbox to the loading strategy — many OAF services reject non-WGS84 extents.
+    if (attributes.bbox === false) {
+        delete loadingParams.bbox;
+    }
 
     const options = {
         clusterGeometryFunction: this.clusterGeometryFunction,
@@ -161,7 +164,9 @@ Layer2dVectorOaf.prototype.fetchOafPage = function (url, source, format, accumul
 
             const collection = {...responseJson, features: accumulated},
                 featureProjection = store.getters["Maps/projection"].getCode(),
-                features = format.readFeatures(collection, {dataProjection: "EPSG:4326", featureProjection});
+                // OGC API - Features returns WGS84 (EPSG:4326) by default unless crs parameter requests otherwise.
+                dataProjection = this.attributes?.dataProjection || "EPSG:4326",
+                features = format.readFeatures(collection, {dataProjection, featureProjection});
 
             source.addFeatures(features);
         })
@@ -177,6 +182,11 @@ Layer2dVectorOaf.prototype.fetchOafPage = function (url, source, format, accumul
  */
 Layer2dVectorOaf.prototype.loadFeaturesManually = function (attributes) {
     const attr = {...this.getRawLayerAttributes(attributes)};
+
+    // The update attributes passed in may not include the service URL; fall back to the layer's own.
+    if (!attr.url) {
+        attr.url = this.attributes.url;
+    }
 
     // OAF servers can enforce WGS84 bbox semantics; avoid sending auto bbox from map extent.
     delete attr.bbox;

@@ -48,7 +48,11 @@ function escapeXml (value) {
  * @param {String} [options.version="2.0.2"] CSW version ("2.0.2" or "3.0").
  * @param {Number} [options.maxRecords=10] Maximum number of records to return.
  * @param {Number} [options.startPosition=1] Start position for pagination (1-based).
- * @param {String} [options.elementSetName="summary"] Element set name ("brief", "summary", or "full").
+ * @param {String} [options.elementSetName="brief"] Element set name ("brief", "summary", or "full").
+ *   "brief" is used to keep responses small and fast while still returning all records.
+ *   Some CSW servers (e.g. IngridPortal/metaver.de) omit gmd:identificationInfo for federated records in "summary"
+ *   mode, causing titles to be undetectable. "full" works but is too slow (causes timeouts).
+ *   "brief" reliably returns gmd:identificationInfo with at least the title for all record types.
  * @param {String} [options.typeName="gmd:MD_Metadata"] Type name for the CSW query.
  * @param {String} [options.outputSchema="http://www.isotc211.org/2005/gmd"] Output schema URI.
  * @param {String} [options.wildCard="*"] Wildcard character used in PropertyIsLike literal. Use "*" for GeoNetwork compatibility (avoids Java String.format issues with "%").
@@ -58,7 +62,7 @@ function buildGetRecordsXml (searchInput, {
     version = "2.0.2",
     maxRecords = 10,
     startPosition = 1,
-    elementSetName = "summary",
+    elementSetName = "brief",
     typeName = "gmd:MD_Metadata",
     outputSchema = "http://www.isotc211.org/2005/gmd",
     wildCard = "*",

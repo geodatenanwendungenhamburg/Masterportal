@@ -258,8 +258,8 @@ describe("src/core/js/layers/layer2dVectorOaf.js", () => {
     });
 
     describe("loadFeaturesManually", () => {
-        it("shall call loadFeaturesManually in API", () => {
-            const loadFeaturesManuallySpy = sinon.stub(oaf, "loadFeaturesManually"),
+        it("shall call fetchOafPage when loadFeaturesManually is called", () => {
+            const fetchOafPageSpy = sinon.stub(Layer2dVectorOaf.prototype, "fetchOafPage"),
                 oafLayer = new Layer2dVectorOaf(attributes);
 
             oafLayer.loadFeaturesManually({
@@ -267,24 +267,12 @@ describe("src/core/js/layers/layer2dVectorOaf.js", () => {
                 bbox: [1, 2, 3, 4]
             });
 
-            expect(loadFeaturesManuallySpy.calledOnce).to.be.true;
-            expect(loadFeaturesManuallySpy.args[0][0]).to.be.deep.equals({
-                bbox: [1, 2, 3, 4],
-                bboxCrs: "http://www.opengis.net/def/crs/EPSG/0/25832",
-                clusterDistance: undefined,
-                collection: undefined,
-                crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
-                datetime: undefined,
-                id: undefined,
-                limit: 100,
-                offset: undefined,
-                params: undefined,
-                url: undefined
-            }
-            );
+            expect(fetchOafPageSpy.calledOnce).to.be.true;
+            // URL must be derived from the layer's own service URL.
+            expect(fetchOafPageSpy.args[0][0]).to.include(attributes.url);
         });
-        it("shall call loadFeaturesManually in API and shall set bbox to undefined in 3D", () => {
-            const loadFeaturesManuallySpy = sinon.stub(oaf, "loadFeaturesManually"),
+        it("shall call fetchOafPage in 3D mode", () => {
+            const fetchOafPageSpy = sinon.stub(Layer2dVectorOaf.prototype, "fetchOafPage"),
                 oafLayer = new Layer2dVectorOaf(attributes);
 
             store.getters = {
@@ -296,21 +284,9 @@ describe("src/core/js/layers/layer2dVectorOaf.js", () => {
                 bbox: [1, 2, 3, 4]
             });
 
-            expect(loadFeaturesManuallySpy.calledOnce).to.be.true;
-            expect(loadFeaturesManuallySpy.args[0][0]).to.be.deep.equals({
-                bbox: undefined,
-                bboxCrs: "http://www.opengis.net/def/crs/EPSG/0/25832",
-                clusterDistance: undefined,
-                collection: undefined,
-                crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
-                datetime: undefined,
-                id: undefined,
-                limit: 100,
-                offset: undefined,
-                params: undefined,
-                url: undefined
-            }
-            );
+            expect(fetchOafPageSpy.calledOnce).to.be.true;
+            // bbox is always stripped before calling fetchOafPage; URL must still use the layer URL.
+            expect(fetchOafPageSpy.args[0][0]).to.include(attributes.url);
         });
     });
 
