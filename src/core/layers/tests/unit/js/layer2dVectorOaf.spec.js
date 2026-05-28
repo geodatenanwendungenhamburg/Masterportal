@@ -304,6 +304,24 @@ describe("src/core/js/layers/layer2dVectorOaf.js", () => {
             // bbox is always stripped before calling fetchOafPage; URL must still use the layer URL.
             expect(fetchOafPageSpy.args[0][0]).to.include(attributes.url);
         });
+
+        it("shall fallback to layer url when update attributes do not provide url", () => {
+            const fetchOafPageSpy = sinon.stub(Layer2dVectorOaf.prototype, "fetchOafPage"),
+                createUrlSpy = sinon.stub(oaf, "createUrl").returns({toString: () => "https://oaf.de/collections/test/items?limit=100"}),
+                oafLayer = new Layer2dVectorOaf(attributes);
+
+            oafLayer.loadFeaturesManually({
+                limit: 25
+            });
+
+            expect(createUrlSpy.calledOnce).to.be.true;
+            expect(createUrlSpy.args[0][0]).to.include({
+                limit: 25,
+                url: attributes.url
+            });
+            expect(fetchOafPageSpy.calledOnce).to.be.true;
+            expect(fetchOafPageSpy.args[0][0]).to.include(attributes.url);
+        });
     });
 
 
