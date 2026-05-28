@@ -260,6 +260,7 @@ describe("src/core/js/layers/layer2dVectorOaf.js", () => {
     describe("loadFeaturesManually", () => {
         it("shall call fetchOafPage when loadFeaturesManually is called", () => {
             const fetchOafPageSpy = sinon.stub(Layer2dVectorOaf.prototype, "fetchOafPage"),
+                createUrlSpy = sinon.stub(oaf, "createUrl").returns({toString: () => "https://oaf.de/collections/test/items?limit=100"}),
                 oafLayer = new Layer2dVectorOaf(attributes);
 
             oafLayer.loadFeaturesManually({
@@ -268,11 +269,19 @@ describe("src/core/js/layers/layer2dVectorOaf.js", () => {
             });
 
             expect(fetchOafPageSpy.calledOnce).to.be.true;
+            expect(createUrlSpy.calledOnce).to.be.true;
+            expect(createUrlSpy.args[0][0]).to.include({
+                limit: 100,
+                url: attributes.url
+            });
+            expect(createUrlSpy.args[0][0]).to.not.have.property("bbox");
+            expect(createUrlSpy.args[0][0]).to.not.have.property("bboxCrs");
             // URL must be derived from the layer's own service URL.
             expect(fetchOafPageSpy.args[0][0]).to.include(attributes.url);
         });
         it("shall call fetchOafPage in 3D mode", () => {
             const fetchOafPageSpy = sinon.stub(Layer2dVectorOaf.prototype, "fetchOafPage"),
+                createUrlSpy = sinon.stub(oaf, "createUrl").returns({toString: () => "https://oaf.de/collections/test/items?limit=100"}),
                 oafLayer = new Layer2dVectorOaf(attributes);
 
             store.getters = {
@@ -285,6 +294,13 @@ describe("src/core/js/layers/layer2dVectorOaf.js", () => {
             });
 
             expect(fetchOafPageSpy.calledOnce).to.be.true;
+            expect(createUrlSpy.calledOnce).to.be.true;
+            expect(createUrlSpy.args[0][0]).to.include({
+                limit: 100,
+                url: attributes.url
+            });
+            expect(createUrlSpy.args[0][0]).to.not.have.property("bbox");
+            expect(createUrlSpy.args[0][0]).to.not.have.property("bboxCrs");
             // bbox is always stripped before calling fetchOafPage; URL must still use the layer URL.
             expect(fetchOafPageSpy.args[0][0]).to.include(attributes.url);
         });
