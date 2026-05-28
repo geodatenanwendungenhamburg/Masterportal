@@ -16,11 +16,11 @@ export default function detectServiceType (protocol, url) {
         },
         WMS: {
             protocol: /(OGC:WMS|WWW:LINK-1\.0-HTTP--OGC-WMS|OGC\s+WEB\s+MAP\s+SERVICE|SERVICE\s*TYPE\/OGC\/WMS)/i,
-            url: /(?:[?&]SERVICE=WMS\b|\/WMS(?:\/|$)|[_-]WMS[_-]?)/i
+            url: /(?:[?&]SERVICE=WMS\b|\/WMS(?:\/|$)|[_-]WMS|WMS[_-])/i
         },
         WFS: {
             protocol: /(OGC:WFS|WWW:LINK-1\.0-HTTP--OGC-WFS|OGC\s+WEB\s+FEATURE\s+SERVICE|SERVICE\s*TYPE\/OGC\/WFS)/i,
-            url: /(?:[?&]SERVICE=WFS\b|\/WFS(?:\/|$)|[_-]WFS[_-]?)/i
+            url: /(?:[?&]SERVICE=WFS\b|\/WFS(?:\/|$)|[_-]WFS|WFS[_-])/i
         },
         WMTS: {
             protocol: /(OGC:WMTS|WWW:LINK-1\.0-HTTP--OGC-WMTS|OGC\s+WEB\s+MAP\s+TILE\s+SERVICE|SERVICE\s*TYPE\/OGC\/WMTS|SERVICETYPE\/OGC\/WMTS)/i,

@@ -48,10 +48,10 @@ function normalizeOafUrl (urlOrBaseUrl = "") {
  * @param {String} parsedResource.layerName Layer name from metadata.
  * @param {String} parsedResource.urlLayerParam LAYERS query param from URL.
  * @param {String} parsedResource.baseUrl Service base URL.
- * @param {String} [projectionCode=""] Current map projection code.
+ * @param {String} [_projectionCode=""] Current map projection code (reserved for future use).
  * @returns {Promise<Object>} Resolved service configuration.
  */
-export default async function resolveCswServiceConfig (parsedResource, projectionCode = "") {
+export default async function resolveCswServiceConfig (parsedResource, _projectionCode = "") {
 
     const {protocol, url, layerName, urlLayerParam, baseUrl} = parsedResource;
     const typ = detectServiceType(protocol, url);
@@ -130,7 +130,7 @@ export default async function resolveCswServiceConfig (parsedResource, projectio
         }
     }
     else if (typ === "WMTS") {
-        const wmtsConfig = await handleWmtsFromCsw(baseUrl, projectionCode),
+        const wmtsConfig = await handleWmtsFromCsw(baseUrl),
             layers = wmtsConfig.layerTitleEntries || [];
 
         serviceUnavailable = wmtsConfig.serviceUnavailable;

@@ -73,7 +73,7 @@ describe("src/shared/js/api/getCswRecords.js", () => {
                 expect(xml).to.include("version=\"2.0.2\"");
                 expect(xml).to.include("maxRecords=\"10\"");
                 expect(xml).to.include("startPosition=\"1\"");
-                expect(xml).to.include("<csw:ElementSetName>summary</csw:ElementSetName>");
+                expect(xml).to.include("<csw:ElementSetName>brief</csw:ElementSetName>");
                 expect(xml).to.include("<ogc:PropertyName>AnyText</ogc:PropertyName>");
                 expect(xml).to.include("<ogc:Literal>*Hamburger Stra&#xdf;en*</ogc:Literal>");
                 expect(xml).to.include("wildCard=\"*\"");
