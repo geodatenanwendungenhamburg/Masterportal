@@ -4,7 +4,6 @@ import axios from "axios";
 import {WMTSCapabilities} from "ol/format.js";
 import mapCollection from "@core/maps/js/mapCollection.js";
 import * as detectServiceTypeModule from "../../../js/detectServiceType.js";
-import * as handleOafFromCswModule from "../../../js/handleOafFromCsw.js";
 import resolveCswServiceConfig from "../../../js/resolveCswServiceConfig.js";
 
 describe("src/modules/searchBar/js/resolveCswServiceConfig.js", () => {
@@ -116,6 +115,11 @@ describe("src/modules/searchBar/js/resolveCswServiceConfig.js", () => {
     });
 
     describe("WMTS service type", () => {
+        /**
+         * Stubs WMTS capabilities parsing and HTTP request for test setup.
+         * @param {Object[]} layerTitleEntries Entries used to build mocked layers.
+         * @returns {void}
+         */
         function stubWmtsCapabilities (layerTitleEntries) {
             sinon.stub(mapCollection, "getMapView").returns({
                 getProjection: () => ({getCode: () => "EPSG:25832"})

@@ -48,10 +48,9 @@ function normalizeOafUrl (urlOrBaseUrl = "") {
  * @param {String} parsedResource.layerName Layer name from metadata.
  * @param {String} parsedResource.urlLayerParam LAYERS query param from URL.
  * @param {String} parsedResource.baseUrl Service base URL.
- * @param {String} [_projectionCode=""] Current map projection code (reserved for future use).
  * @returns {Promise<Object>} Resolved service configuration.
  */
-export default async function resolveCswServiceConfig (parsedResource, _projectionCode = "") {
+export default async function resolveCswServiceConfig (parsedResource) {
 
     const {protocol, url, layerName, urlLayerParam, baseUrl} = parsedResource;
     const typ = detectServiceType(protocol, url);
