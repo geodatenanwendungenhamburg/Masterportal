@@ -141,7 +141,8 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceCSW.js", () => {
             expect(actions.showLayerInfo.source.datasets).to.deep.equal([{
                 md_id: "meta-123",
                 csw_url: definition.url,
-                md_name: "Test"
+                md_name: "Test",
+                search_csw_layer: true
             }]);
             expect(actions.addLayerFromCswRecord).to.deep.equal({
                 fileIdentifier: "meta-123",
@@ -162,6 +163,7 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceCSW.js", () => {
                 md_id: "meta-124",
                 csw_url: definition.url,
                 md_name: "Test2",
+                search_csw_layer: true,
                 show_doc_url: "https://catalog.example.org/metadata/"
             }]);
             expect(actions.addLayerFromCswRecord).to.deep.equal({
