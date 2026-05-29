@@ -162,6 +162,7 @@ SearchInterfaceCSW.prototype.normalizeResult = function (record, definition) {
  * @returns {Object} The possible actions with their parameters.
  */
 SearchInterfaceCSW.prototype.createPossibleActions = function (record, definition) {
+    const showDocUrl = definition?.showDocUrl || definition?.show_doc_url;
     const possibleActions = {
         showLayerInfo: {
             layerId: record.fileIdentifier,
@@ -170,17 +171,20 @@ SearchInterfaceCSW.prototype.createPossibleActions = function (record, definitio
                 metaID: record.fileIdentifier,
                 name: record.title,
                 typ: "WMS",
+                ...showDocUrl && {showDocUrl},
                 datasets: [{
                     md_id: record.fileIdentifier,
                     csw_url: definition?.url || "",
-                    md_name: record.title
+                    md_name: record.title,
+                    ...showDocUrl && {show_doc_url: showDocUrl}
                 }]
             }
         },
         addLayerFromCswRecord: {
             fileIdentifier: record.fileIdentifier,
             recordTitle: record.title,
-            cswUrl: definition?.url || ""
+            cswUrl: definition?.url || "",
+            ...showDocUrl && {showDocUrl}
         }
     };
 

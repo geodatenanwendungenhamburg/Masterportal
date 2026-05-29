@@ -150,6 +150,28 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceCSW.js", () => {
             });
         });
 
+        it("should forward showDocUrl from definition to datasets and addLayer action", () => {
+            const record = {fileIdentifier: "meta-124", title: "Test2", abstract: "", boundingBox: null},
+                definitionWithShowDocUrl = {
+                    ...definition,
+                    showDocUrl: "https://catalog.example.org/metadata/"
+                },
+                actions = searchInterface.createPossibleActions(record, definitionWithShowDocUrl);
+
+            expect(actions.showLayerInfo.source.datasets).to.deep.equal([{
+                md_id: "meta-124",
+                csw_url: definition.url,
+                md_name: "Test2",
+                show_doc_url: "https://catalog.example.org/metadata/"
+            }]);
+            expect(actions.addLayerFromCswRecord).to.deep.equal({
+                fileIdentifier: "meta-124",
+                recordTitle: "Test2",
+                cswUrl: definition.url,
+                showDocUrl: "https://catalog.example.org/metadata/"
+            });
+        });
+
         it("should include zoomToResult with transformed extent when boundingBox is present", () => {
             const record = {
                     fileIdentifier: "meta-456",

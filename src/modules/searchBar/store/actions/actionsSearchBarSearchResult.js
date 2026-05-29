@@ -590,9 +590,10 @@ export default {
      * @param {Object} payload The payload.
      * @param {String} payload.fileIdentifier The CSW fileIdentifier (metadata UUID).
      * @param {String} payload.cswUrl The URL of the CSW endpoint.
+    * @param {String} [payload.showDocUrl] Optional metadata viewer base URL.
      * @returns {void}
      */
-    addLayerFromCswRecord: async ({dispatch, rootGetters}, {fileIdentifier, cswUrl}) => {
+    addLayerFromCswRecord: async ({dispatch, rootGetters}, {fileIdentifier, cswUrl, showDocUrl}) => {
         let responseXml;
         const unavailableServiceUrls = new Set();
         const gmdNs = "http://www.isotc211.org/2005/gmd";
@@ -734,6 +735,7 @@ export default {
                 baseUrl,
                 fileIdentifier,
                 cswUrl,
+                showDocUrl,
                 resourceIndex: i,
                 additionalLayerProps
             })) {
@@ -777,6 +779,7 @@ export default {
                 baseUrl,
                 fileIdentifier,
                 cswUrl,
+                showDocUrl,
                 resourceIndex: i,
                 additionalLayerProps
             });

@@ -58,6 +58,7 @@ async function getOrCreateExternalServiceFolderId (rootGetters, dispatch, servic
  * @param {String} param.baseUrl Service base URL
  * @param {String} param.fileIdentifier CSW file identifier
  * @param {String} param.cswUrl CSW endpoint URL
+ * @param {String} [param.showDocUrl] Optional metadata viewer base URL
  * @param {Number} param.resourceIndex Resource index
  * @param {Object} [param.additionalLayerProps={}] Extra layer props added to each entry
  * @returns {Promise<Boolean>} True if folder exists and layers were processed
@@ -71,6 +72,7 @@ async function addServiceLayersToExternalFolder ({
     baseUrl,
     fileIdentifier,
     cswUrl,
+    showDocUrl,
     resourceIndex,
     additionalLayerProps = {}
 }) {
@@ -97,7 +99,8 @@ async function addServiceLayersToExternalFolder ({
                 datasets: [{
                     md_id: fileIdentifier,
                     csw_url: cswUrl,
-                    md_name: metadataName
+                    md_name: metadataName,
+                    ...showDocUrl && {show_doc_url: showDocUrl}
                 }],
                 type: "layer",
                 isExternal: true,
