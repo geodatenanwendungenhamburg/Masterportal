@@ -60,7 +60,6 @@ function findBestTileMatrixSet (layer, tileMatrixSets = [], projectionCode = "")
         return "";
     }
 
-    // 1. Prefer a tile matrix set matching the current map projection, if registered in OL.
     const matchingLink = matrixSetLinks.find(link => {
         const tileMatrixSet = tileMatrixSets.find(ts => ts?.Identifier === link?.TileMatrixSet);
 
@@ -71,25 +70,18 @@ function findBestTileMatrixSet (layer, tileMatrixSets = [], projectionCode = "")
         return matchingLink.TileMatrixSet;
     }
 
-    // 2. Fallback: use any tile matrix set whose CRS is usable by OL.
-    //    Prefer the projection-matching link (even if not ideal) before trying others,
-    //    so that at least the identifier is included in the candidate list.
     const candidates = matchingLink
         ? [matchingLink, ...matrixSetLinks.filter(l => l !== matchingLink)]
         : matrixSetLinks;
 
     const usableLink = candidates.find(link => isCrsUsable(link, tileMatrixSets));
 
-    // Among usable candidates prefer EPSG:3857 (metre-based, OL reproject-optimised)
-    // over EPSG:4326 (degree-based) to avoid zoom-level mismatch for metric map views.
     const preferredLink = candidates.find(link => {
         const ts = tileMatrixSets.find(t => t?.Identifier === link?.TileMatrixSet);
 
         return matchesProjectionCode(ts?.SupportedCRS, "EPSG:3857");
     }) || usableLink;
 
-    // Return empty string when nothing usable is found so that the
-    // masterportalapi falls back to its EPSG:3857 default logic.
     return preferredLink?.TileMatrixSet || "";
 }
 

@@ -1,10 +1,6 @@
 import axios from "axios";
 import crs from "@masterportal/masterportalapi/src/crs.js";
 
-// Check feature count via resultType=hits to decide loading strategy.
-// If the service returns more than WFS_LARGE_LAYER_THRESHOLD features,
-// switch to bbox loading to avoid performance issues.
-// WFS spec (2.0) requires TYPENAMES or RESOURCEID — never omit it.
 const WFS_LARGE_LAYER_THRESHOLD = 1000;
 
 /**

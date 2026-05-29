@@ -22,7 +22,6 @@ function normalizeOafUrl (urlOrBaseUrl = "") {
             collection = decodeURIComponent(pathSegments[collectionsIndex + 1]);
             parsedUrl.pathname = `/${pathSegments.slice(0, collectionsIndex).join("/")}`;
         }
-
         // Keep host/path only; OAF requests should not inherit query from CSW distribution URL.
         parsedUrl.search = "";
         parsedUrl.hash = "";
@@ -55,11 +54,6 @@ export default async function resolveCswServiceConfig (parsedResource) {
     const {protocol, url, layerName, urlLayerParam, baseUrl} = parsedResource;
     const typ = detectServiceType(protocol, url);
     let effectiveBaseUrl = baseUrl;
-    // CI_OnlineResource/name is sometimes a human-readable label rather than a technical
-    // layer identifier. Reject names containing whitespace or matching a known OGC operation
-    // name (e.g. "(GetCapabilities)" — InGrid/metaver pattern). Parentheses are stripped
-    // before the OGC check so that "(GetCapabilities)" is caught, while technical names like
-    // "xplan:BP_Plan(Bebauungsplan)" are still accepted.
     const OGC_OPERATIONS = ["getcapabilities", "getmap", "getfeature", "gettile", "getlegendgraphic", "getfeatureinfo"],
         technicalLayerName = layerName
             && !layerName.includes(" ")
