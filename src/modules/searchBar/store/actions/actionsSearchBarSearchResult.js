@@ -1,5 +1,4 @@
 import axios from "axios";
-import crs from "@masterportal/masterportalapi/src/crs.js";
 import markerHelper from "../../js/marker.js";
 import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 import WKTUtil from "@shared/js/utils/getWKTGeom.js";
@@ -18,123 +17,6 @@ import parseCswOnlineResource from "../../js/parseCswOnlineResource.js";
 import resolveCswServiceConfig from "../../js/resolveCswServiceConfig.js";
 import {addServiceLayersToExternalFolder} from "../../js/externalServiceFolder.js";
 import {createWfsLoadingStrategyService} from "../../js/wfsLoadingStrategy.js";
-
-/**
- * Finds an existing external service folder by name or creates a new one.
- * @param {Object} rootGetters Vuex rootGetters
- * @param {Function} dispatch Vuex dispatch
- * @param {String} serviceName Folder name
- * @returns {Promise<String|null>} Folder id or null if creation failed
- */
-async function getOrCreateExternalServiceFolderId (rootGetters, dispatch, serviceName) {
-    const existingFolder = rootGetters.allFolders
-        .find(folder => folder.type === "folder" && folder.isExternal === true && folder.name === serviceName);
-
-    if (existingFolder?.id) {
-        return existingFolder.id;
-    }
-
-    const folderId = uniqueId("folder-");
-    const folderConfig = {
-        id: folderId,
-        type: "folder",
-        isExternal: true,
-        name: serviceName,
-        elements: []
-    };
-    const added = await dispatch("addLayerToLayerConfig", {
-        layerConfig: folderConfig,
-        parentKey: treeSubjectsKey
-    }, {root: true});
-
-    return added ? folderId : rootGetters.allFolders
-        .find(folder => folder.type === "folder" && folder.isExternal === true && folder.name === serviceName)?.id || null;
-}
-
-/**
- * Returns hostname for service URL if available.
- * @param {String} baseUrl Service URL
- * @returns {String} Hostname or original URL
- */
-function getHostnameOrUrl (baseUrl) {
-    try {
-        return new URL(baseUrl).hostname;
-    }
-    catch (error) {
-        return baseUrl;
-    }
-}
-
-/**
- * Adds discovered service layers to an external service folder.
- * @param {Object} param Parameters
- * @param {Object} param.rootGetters Vuex root getters
- * @param {Function} param.dispatch Vuex dispatch
- * @param {String} param.serviceType Layer service type, e.g. WMS or WFS
- * @param {String} param.serviceTitle Service title used as folder name
- * @param {Object[]} param.layerEntries Layer entries with name and sourceProps
- * @param {String} param.baseUrl Service base URL
- * @param {String} param.fileIdentifier CSW file identifier
- * @param {String} param.cswUrl CSW endpoint URL
- * @param {Number} param.resourceIndex Resource index
- * @param {Object} [param.additionalLayerProps={}] Extra layer props added to each entry
- * @returns {Promise<Boolean>} True if folder exists and layers were processed
- */
-async function addDiscoveredWmsLayersToExternalFolder ({
-    rootGetters,
-    dispatch,
-    serviceType,
-    serviceTitle,
-    layerEntries,
-    baseUrl,
-    fileIdentifier,
-    cswUrl,
-    resourceIndex,
-    additionalLayerProps = {}
-}) {
-    const folderName = serviceTitle || getHostnameOrUrl(baseUrl) || fileIdentifier,
-        folderId = await getOrCreateExternalServiceFolderId(rootGetters, dispatch, folderName);
-
-    if (!folderId || !Array.isArray(layerEntries) || layerEntries.length === 0) {
-        return false;
-    }
-
-    const activateByDefault = layerEntries.length === 1;
-
-    for (const layerEntry of layerEntries) {
-        const layerName = layerEntry?.name || "",
-            layerId = `csw-${fileIdentifier}-${resourceIndex}-${layerName}`,
-            layerConfig = {
-                id: layerId,
-                name: layerName || fileIdentifier,
-                url: baseUrl,
-                typ: serviceType,
-                metaID: fileIdentifier,
-                cswUrl,
-                type: "layer",
-                isExternal: true,
-                parentId: folderId,
-                showInLayerTree: activateByDefault,
-                visibility: activateByDefault,
-                ...additionalLayerProps,
-                ...layerEntry?.sourceProps
-            };
-
-        if (serviceType === "WMS" && !layerConfig.layers) {
-            layerConfig.layers = layerName;
-        }
-        if (serviceType === "WFS" && !layerConfig.featureType) {
-            layerConfig.featureType = layerName;
-        }
-
-        await dispatch("addLayerToLayerConfig", {
-            layerConfig,
-            parentKey: folderId
-        }, {root: true});
-    }
-
-    return true;
-}
 
 /**
  * Contains actions that communicate with other components after an interaction, such as onClick or onHover, with a search result.
@@ -741,14 +623,6 @@ export default {
 
         const onlineResources = responseXml.getElementsByTagNameNS(gmdNs, "CI_OnlineResource");
 
-        // Extract the first bounding box from the GetRecordById response (WGS84).
-        // Used to zoom to the layer extent when bbox loading strategy is applied.
-        const bboxEl = responseXml.getElementsByTagNameNS(gmdNs, "EX_GeographicBoundingBox")[0],
-            recordWest = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "westBoundLongitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null,
-            recordSouth = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "southBoundLatitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null,
-            recordEast = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "eastBoundLongitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null,
-            recordNorth = bboxEl ? parseFloat(bboxEl.getElementsByTagNameNS(gmdNs, "northBoundLatitude")[0]?.getElementsByTagNameNS(gcoNs, "Decimal")[0]?.textContent) : null;
-
         let layerAdded = false;
 
         for (let i = 0; i < onlineResources.length; i++) {
@@ -816,7 +690,6 @@ export default {
                 }
                 else if (discoveredLayerEntries.length > 0) {
                     await wfsLoadingStrategyService.applyDiscoveredWfsLoadingStrategies(discoveredLayerEntries);
-                }
                 }
             }
             else if (typ === "WMTS") {
@@ -907,51 +780,6 @@ export default {
                 resourceIndex: i,
                 additionalLayerProps
             });
-
-            if (singleLayerAdded) {
-                layerAdded = true;
-                break;
-            }
-
-            if ((typ === "WMS" || typ === "WFS") && !effectiveLayerName) {
-                continue;
-            }
-
-            const layerId = `csw-${fileIdentifier}-${i}`,
-                layerSource = {
-                    id: layerId,
-                    name: recordTitle || effectiveLayerName || fileIdentifier,
-                    url: baseUrl,
-                    typ: typ,
-                    metaID: fileIdentifier,
-                    cswUrl: cswUrl
-                };
-
-            if (typ === "WFS" && wfsFeatureNS) {
-                singleLayerSourceProps.featureNS = wfsFeatureNS;
-            }
-
-            const singleLayerEntries = [{
-                    name: effectiveLayerName,
-                    sourceProps: singleLayerSourceProps
-                }],
-                singleLayerAdded = await addServiceLayersToExternalFolder({
-                    rootGetters,
-                    dispatch,
-                    serviceType: typ,
-                    serviceTitle,
-                    layerEntries: singleLayerEntries,
-                    baseUrl,
-                    fileIdentifier,
-                    cswUrl,
-                    resourceIndex: i,
-                    additionalLayerProps: typ === "WFS"
-                        ? {
-                            version: wfsVersion,
-                            outputFormat: wfsOutputFormat
-                        }
-                        : {}
-                });
 
             if (singleLayerAdded) {
                 layerAdded = true;
