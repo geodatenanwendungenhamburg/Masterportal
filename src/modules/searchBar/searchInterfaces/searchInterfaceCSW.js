@@ -146,7 +146,7 @@ SearchInterfaceCSW.prototype.normalizeResults = function (records, definition) {
 SearchInterfaceCSW.prototype.normalizeResult = function (record, definition) {
     return {
         events: this.normalizeResultEvents(this.resultEvents, record, definition),
-        category: i18next.t("common:modules.searchBar.type.csw"),
+        category: this.searchInterfaceId,
         id: uniqueId("CswSearch"),
         icon: "bi-list-ul",
         name: record.title,
