@@ -22,7 +22,8 @@ export default {
         let cswUrl = layerConf?.datasets?.[0]?.csw_url ?? null,
             customMetadata = layerConf?.datasets?.[0]?.customMetadata ?? null,
             attributes = layerConf?.datasets?.[0]?.attributes ?? null,
-            showDocUrl = layerConf?.datasets?.[0]?.show_doc_url ?? null;
+            showDocUrl = layerConf?.datasets?.[0]?.show_doc_url ?? null,
+            searchCswLayer = layerConf?.datasets?.[0]?.search_csw_layer ?? false;
 
         if (layerConf?.typ.startsWith("GROUP")) {
             layerConf.children.forEach(child => {
@@ -32,7 +33,8 @@ export default {
                     childCswUrl = dataset.csw_url || null,
                     childCustomMetadata = dataset.customMetadata || null,
                     childAttributes = dataset.attributes || null,
-                    childShowDocUrl = dataset.show_doc_url || null;
+                    childShowDocUrl = dataset.show_doc_url || null,
+                    childSearchCswLayer = dataset.search_csw_layer || false;
 
                 layers.push({
                     name: child.name,
@@ -54,6 +56,9 @@ export default {
                     if (!showDocUrl) {
                         showDocUrl = childShowDocUrl;
                     }
+                    if (!searchCswLayer) {
+                        searchCswLayer = childSearchCswLayer;
+                    }
                 }
             });
         }
@@ -62,6 +67,7 @@ export default {
             id: layerConf?.id,
             layername: layerConf?.name,
             showDocUrl,
+            searchCswLayer,
             typ: layerConf?.typ,
             ...customMetadata && {customMetadata},
             ...attributes && {attributes},

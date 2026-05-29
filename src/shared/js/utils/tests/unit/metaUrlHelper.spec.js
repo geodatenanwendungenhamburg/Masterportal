@@ -30,6 +30,20 @@ describe("src/shared/js/utils/metaUrlHelper.js", () => {
             expect(result).to.deep.equal(["http://service.com/meta?id=abc"]);
         });
 
+        it("should not build URL for search-CSW layers if showDocUrl is missing", () => {
+            const metaId = "abc",
+                result = buildMetaURLs(metaId, {
+                    layerInfo: {
+                        cswUrl: "https://example.com/csw",
+                        searchCswLayer: true
+                    },
+                    metaDataCatalogueId: "catalogue1",
+                    restServiceById: () => ({url: "http://service.com/meta?id="})
+                });
+
+            expect(result).to.deep.equal([]);
+        });
+
         it("should avoid duplicates in the returned URLs", () => {
             const metaId = "xyz",
                 opts = {

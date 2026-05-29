@@ -20,6 +20,10 @@ export function buildMetaURLs (metaId, {layerInfo, metaDataCatalogueId, restServ
     if (layerInfo?.showDocUrl) {
         metaURL = layerInfo.showDocUrl + metaId;
     }
+    // Only for layers added by CSW search: require explicit showDocUrl.
+    else if (layerInfo?.searchCswLayer) {
+        return metaURLs;
+    }
     else if (typeof restServiceById === "function" && metaDataCatalogueId) {
         service = restServiceById(metaDataCatalogueId);
         if (service) {

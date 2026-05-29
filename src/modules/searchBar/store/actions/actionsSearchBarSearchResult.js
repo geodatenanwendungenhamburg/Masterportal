@@ -736,6 +736,7 @@ export default {
                 fileIdentifier,
                 cswUrl,
                 showDocUrl,
+                searchCswLayer: true,
                 resourceIndex: i,
                 additionalLayerProps
             })) {
@@ -780,6 +781,7 @@ export default {
                 fileIdentifier,
                 cswUrl,
                 showDocUrl,
+                searchCswLayer: true,
                 resourceIndex: i,
                 additionalLayerProps
             });

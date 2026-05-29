@@ -176,6 +176,7 @@ SearchInterfaceCSW.prototype.createPossibleActions = function (record, definitio
                     md_id: record.fileIdentifier,
                     csw_url: definition?.url || "",
                     md_name: record.title,
+                    search_csw_layer: true,
                     ...showDocUrl && {show_doc_url: showDocUrl}
                 }]
             }
