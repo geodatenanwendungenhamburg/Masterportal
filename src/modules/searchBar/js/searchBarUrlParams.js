@@ -26,7 +26,6 @@ function setQueryToSearchInput (params) {
         normalizedQuery = value?.toLowerCase().trim();
 
     store.commit("Modules/SearchBar/setSearchInput", value);
-    store.dispatch("Modules/SearchBar/startSearch", value);
 
     store.watch((state, getters) => getters["Modules/SearchBar/searchResults"], results => {
         if (results) {
