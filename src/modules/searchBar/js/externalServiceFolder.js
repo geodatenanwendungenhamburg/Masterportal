@@ -85,6 +85,7 @@ async function addServiceLayersToExternalFolder ({
 
     for (const layerEntry of layerEntries) {
         const layerName = layerEntry?.name || "",
+            metadataName = layerEntry?.title || layerName || fileIdentifier,
             layerId = `csw-${fileIdentifier}-${resourceIndex}-${layerName}`,
             layerConfig = {
                 id: layerId,
@@ -93,6 +94,11 @@ async function addServiceLayersToExternalFolder ({
                 typ: serviceType,
                 metaID: fileIdentifier,
                 cswUrl,
+                datasets: [{
+                    md_id: fileIdentifier,
+                    csw_url: cswUrl,
+                    md_name: metadataName
+                }],
                 type: "layer",
                 isExternal: true,
                 parentId: folderId,
