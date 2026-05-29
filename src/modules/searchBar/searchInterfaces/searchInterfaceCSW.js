@@ -60,7 +60,7 @@ SearchInterfaceCSW.prototype.search = async function (searchInput) {
             const {records, numberOfRecordsMatched} = await this.fetchCswResults(definition, searchInput);
 
             this.totalHits = (this.totalHits || 0) + numberOfRecordsMatched;
-            this.pushHitsToSearchResults(this.normalizeResults(records, definition));
+            this.pushHitsToSearchResults(this.normalizeResults(records, definition, searchInput));
         }
         catch (error) {
             if (error.name !== "AbortError" && error.code !== "ERR_CANCELED") {
@@ -123,18 +123,65 @@ SearchInterfaceCSW.prototype.buildGetRecordsXml = function (definition, searchIn
  * Normalizes an array of parsed CSW records into search result objects.
  * @param {Object[]} records Array of parsed record objects from parseGetRecordsResponse.
  * @param {Object} definition The CSW endpoint definition that returned these records.
+ * @param {String} searchInput The current search input to rank results by relevance.
  * @returns {Object[]} Normalized search result objects.
  */
-SearchInterfaceCSW.prototype.normalizeResults = function (records, definition) {
-    const normalizedResults = [];
+SearchInterfaceCSW.prototype.normalizeResults = function (records, definition, searchInput = "") {
+    return records
+        .filter(record => record.title)
+        .map(record => ({
+            normalizedResult: this.normalizeResult(record, definition),
+            score: this.getRelevanceScore(record, searchInput)
+        }))
+        .sort((a, b) => {
+            if (b.score !== a.score) {
+                return b.score - a.score;
+            }
 
-    records.forEach(record => {
-        if (record.title) {
-            normalizedResults.push(this.normalizeResult(record, definition));
-        }
-    });
+            const nameCompare = (a.normalizedResult.name || "").localeCompare(b.normalizedResult.name || "", undefined, {sensitivity: "base"});
 
-    return normalizedResults;
+            if (nameCompare !== 0) {
+                return nameCompare;
+            }
+
+            return (a.normalizedResult.id || "").localeCompare(b.normalizedResult.id || "", undefined, {sensitivity: "base"});
+        })
+        .map(({normalizedResult}) => normalizedResult);
+};
+
+/**
+ * Computes relevance score of a CSW record for a given search input.
+ * Ranking priority: exact title match > title prefix > title contains > abstract contains.
+ * @param {Object} record The parsed CSW record.
+ * @param {String} searchInput The current search input.
+ * @returns {Number} Relevance score.
+ */
+SearchInterfaceCSW.prototype.getRelevanceScore = function (record, searchInput = "") {
+    const normalizedSearchInput = searchInput.trim().toLocaleLowerCase(),
+        title = (record.title || "").toLocaleLowerCase(),
+        abstract = (record.abstract || "").toLocaleLowerCase();
+
+    if (!normalizedSearchInput.length || !title.length) {
+        return 0;
+    }
+
+    if (title === normalizedSearchInput) {
+        return 100;
+    }
+
+    if (title.startsWith(normalizedSearchInput)) {
+        return 60;
+    }
+
+    if (title.includes(normalizedSearchInput)) {
+        return 30;
+    }
+
+    if (abstract.includes(normalizedSearchInput)) {
+        return 10;
+    }
+
+    return 0;
 };
 
 /**

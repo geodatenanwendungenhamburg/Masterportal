@@ -129,6 +129,72 @@ describe("src/modules/searchBar/searchInterfaces/searchInterfaceCSW.js", () => {
         it("should return empty array for empty input", () => {
             expect(searchInterface.normalizeResults([], definition)).to.deep.equal([]);
         });
+
+        it("should rank results by relevance score using search input", () => {
+            const records = [
+                    {fileIdentifier: "id-1", title: "Hamburg", abstract: "", boundingBox: null},
+                    {fileIdentifier: "id-2", title: "Hamburg Layer", abstract: "", boundingBox: null},
+                    {fileIdentifier: "id-3", title: "Layer for Hamburg", abstract: "", boundingBox: null},
+                    {fileIdentifier: "id-4", title: "Layer", abstract: "Contains hamburg in abstract", boundingBox: null}
+                ],
+                results = searchInterface.normalizeResults(records, definition, "Hamburg");
+
+            expect(results).to.have.lengthOf(4);
+            expect(results[0].name).to.equal("Hamburg");
+            expect(results[1].name).to.equal("Hamburg Layer");
+            expect(results[2].name).to.equal("Layer for Hamburg");
+            expect(results[3].name).to.equal("Layer");
+        });
+
+        it("should sort ties by result name alphabetically", () => {
+            const records = [
+                    {fileIdentifier: "id-1", title: "Zoo", abstract: "", boundingBox: null},
+                    {fileIdentifier: "id-2", title: "Alpha", abstract: "", boundingBox: null}
+                ],
+                results = searchInterface.normalizeResults(records, definition, "not-found");
+
+            expect(results).to.have.lengthOf(2);
+            expect(results[0].name).to.equal("Alpha");
+            expect(results[1].name).to.equal("Zoo");
+        });
+    });
+
+    describe("getRelevanceScore", () => {
+        it("should return exact title match score", () => {
+            const score = searchInterface.getRelevanceScore({title: "Hamburg", abstract: ""}, "Hamburg");
+
+            expect(score).to.equal(100);
+        });
+
+        it("should return title prefix score", () => {
+            const score = searchInterface.getRelevanceScore({title: "Hamburg Layer", abstract: ""}, "Hamburg");
+
+            expect(score).to.equal(60);
+        });
+
+        it("should return title contains score", () => {
+            const score = searchInterface.getRelevanceScore({title: "Layer Hamburg", abstract: ""}, "Hamburg");
+
+            expect(score).to.equal(30);
+        });
+
+        it("should return abstract contains score", () => {
+            const score = searchInterface.getRelevanceScore({title: "Layer", abstract: "About Hamburg"}, "Hamburg");
+
+            expect(score).to.equal(10);
+        });
+
+        it("should return 0 for no match", () => {
+            const score = searchInterface.getRelevanceScore({title: "Layer", abstract: "Other"}, "Hamburg");
+
+            expect(score).to.equal(0);
+        });
+
+        it("should return 0 for empty search input", () => {
+            const score = searchInterface.getRelevanceScore({title: "Hamburg", abstract: ""}, "");
+
+            expect(score).to.equal(0);
+        });
     });
 
     describe("createPossibleActions", () => {
