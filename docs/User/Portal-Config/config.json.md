@@ -1633,7 +1633,8 @@ Searches a CSW (Catalogue Service for the Web) endpoint using an ISO 19139 `GetR
         {
             "url": "https://metadaten.geoportal-bw.de/geonetwork/srv/ger/csw",
             "version": "2.0.2",
-            "maxRecords": 10
+            "maxRecords": 10,
+            "showDocUrl": "https://geodatenkatalog-niederrhein.de/trefferanzeige?docuuid="
         }
     ],
     "resultEvents": {
@@ -1652,6 +1653,7 @@ Configuration of a single CSW endpoint within the `definitions` array.
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
 |maxRecords|no|Integer|10|Maximum number of records returned per request.|false|
+|showDocUrl|no|String|""|Base URL used to build the metadata catalog link for each result by appending the record identifier (`md_id`/fileIdentifier). Example: `https://geodatenkatalog-niederrhein.de/trefferanzeige?docuuid=`.|false|
 |typeName|no|String|"gmd:MD_Metadata"|Type name used in the CSW query (ISO 19139 default).|false|
 |url|yes|String||URL of the CSW endpoint.|false|
 |version|no|String|"2.0.2"|CSW version. Supported values: "2.0.2" (OGC Filter 1.1) and "3.0" (FES 2.0).|false|

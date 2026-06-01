@@ -1628,7 +1628,8 @@ Durchsucht einen CSW-Dienst (Catalogue Service for the Web) über eine ISO-19139
         {
             "url": "https://metadaten.geoportal-bw.de/geonetwork/srv/ger/csw",
             "version": "2.0.2",
-            "maxRecords": 10
+            "maxRecords": 10,
+            "showDocUrl": "https://geodatenkatalog-niederrhein.de/trefferanzeige?docuuid="
         }
     ],
     "resultEvents": {
@@ -1647,6 +1648,7 @@ Konfiguration eines einzelnen CSW-Endpunkts innerhalb des Arrays `definitions`.
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
 |maxRecords|nein|Integer|10|Maximale Anzahl der zurückgegebenen Datensätze pro Anfrage.|false|
+|showDocUrl|nein|String|""|Basis URL zum Erstellen der Metadatenkatalog-Verlinkung, indem der Identifier eines Layers angehängt wird (`md_id`/fileIdentifier). Beispiel: `https://geodatenkatalog-niederrhein.de/trefferanzeige?docuuid=`.|false|
 |typeName|nein|String|"gmd:MD_Metadata"|Typname für die CSW-Anfrage (ISO-19139-Standard).|false|
 |url|ja|String||URL des CSW-Endpunkts.|false|
 |version|nein|String|"2.0.2"|CSW-Version. Unterstützte Werte: "2.0.2" (OGC Filter 1.1) und "3.0" (FES 2.0).|false|
