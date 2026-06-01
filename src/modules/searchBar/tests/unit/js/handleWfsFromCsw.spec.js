@@ -41,6 +41,45 @@ describe("src/modules/searchBar/js/handleWfsFromCsw.js", () => {
     });
 
     describe("successful discovery", () => {
+        it("should parse namespaced WFS capabilities with prefixed FeatureType and output format values", async () => {
+            const xml = `<?xml version="1.0"?>
+<wfs:WFS_Capabilities version="2.0.0"
+    xmlns:wfs="http://www.opengis.net/wfs/2.0"
+    xmlns:ows="http://www.opengis.net/ows/1.1">
+    <ows:ServiceIdentification><ows:Title>Namespaced WFS</ows:Title></ows:ServiceIdentification>
+    <wfs:FeatureTypeList>
+        <wfs:FeatureType>
+            <wfs:Name xmlns:ns="https://example.com/ns">ns:roads</wfs:Name>
+            <wfs:Title>Roads</wfs:Title>
+        </wfs:FeatureType>
+    </wfs:FeatureTypeList>
+    <ows:OperationsMetadata>
+        <ows:Operation name="GetFeature">
+            <ows:Parameter name="outputFormat">
+                <ows:AllowedValues>
+                    <ows:Value>application/gml+xml; version=3.2</ows:Value>
+                </ows:AllowedValues>
+            </ows:Parameter>
+        </ows:Operation>
+    </ows:OperationsMetadata>
+</wfs:WFS_Capabilities>`;
+
+            sinon.stub(axios, "get").resolves({
+                data: xml,
+                request: {responseXML: new DOMParser().parseFromString(xml, "application/xml")}
+            });
+
+            const result = await handleWfsFromCsw("https://example.com/wfs");
+
+            expect(result.serviceTitle).to.equal("Namespaced WFS");
+            expect(result.wfsVersion).to.equal("2.0.0");
+            expect(result.wfsOutputFormat).to.equal("application/gml+xml; version=3.2");
+            expect(result.featureTypes).to.have.length(1);
+            expect(result.featureTypes[0].name).to.equal("ns:roads");
+            expect(result.featureTypes[0].title).to.equal("Roads");
+            expect(result.serviceUnavailable).to.be.false;
+        });
+
         it("should return featureTypes with name and serviceTitle", async () => {
             const xml = buildWfsCapXml({
                 version: "1.1.0",

@@ -14,6 +14,50 @@ function getFirstTextByLocalName (root, localName) {
 }
 
 /**
+ * Returns all descendant elements matching a localName across namespaces.
+ * @param {Element|Document} root root element or document
+ * @param {String} localName local element name to match
+ * @returns {Element[]} matching elements
+ */
+function getElementsByLocalName (root, localName) {
+    return Array.from(root?.getElementsByTagName("*") || [])
+        .filter(node => node.localName === localName);
+}
+
+/**
+ * Extracts advertised GetFeature output formats from WFS capabilities across namespace variants.
+ * @param {Element|Document} capXml capabilities XML document
+ * @returns {String[]} advertised output formats
+ */
+function getWfsOutputFormats (capXml) {
+    const operationNodes = getElementsByLocalName(capXml, "Operation"),
+        getFeatureOperations = operationNodes.filter(operationNode => operationNode.getAttribute("name")?.toLowerCase() === "getfeature"
+        );
+
+    const outputFormatNodes = [];
+
+    getFeatureOperations.forEach(operationNode => {
+        const parameterNodes = getElementsByLocalName(operationNode, "Parameter")
+            .filter(parameterNode => parameterNode.getAttribute("name")?.toLowerCase() === "outputformat");
+
+        parameterNodes.forEach(parameterNode => {
+            outputFormatNodes.push(...getElementsByLocalName(parameterNode, "Format"));
+            outputFormatNodes.push(...getElementsByLocalName(parameterNode, "Value"));
+        });
+    });
+
+    if (outputFormatNodes.length > 0) {
+        return outputFormatNodes
+            .map(node => node.textContent?.trim())
+            .filter(Boolean);
+    }
+
+    return getElementsByLocalName(capXml, "Format")
+        .map(node => node.textContent?.trim())
+        .filter(Boolean);
+}
+
+/**
  * Handles WFS layer discovery and metadata for CSW records.
  * Tries GetCapabilities with versions 2.0.0, 1.1.0, 1.0.0 to find feature types.
  * Resolves feature namespace and selects best output format.
@@ -46,7 +90,7 @@ export default async function handleWfsFromCsw (baseUrl) {
                 || getFirstTextByLocalName(serviceEl || capXml, "Title")
                 || "";
 
-            const detectedFeatureTypes = Array.from(capXml.getElementsByTagName("FeatureType"))
+            const detectedFeatureTypes = getElementsByLocalName(capXml, "FeatureType")
                 .map(ft => {
                     const nameEl = Array.from(ft.children).find(c => c.localName === "Name");
                     const titleEl = Array.from(ft.children).find(c => c.localName === "Title");
@@ -71,9 +115,7 @@ export default async function handleWfsFromCsw (baseUrl) {
                 featureTypes = detectedFeatureTypes;
                 wfsVersion = declaredVersion;
 
-                const formats = Array.from(capXml.getElementsByTagName("Format"))
-                    .map(f => f.textContent?.trim())
-                    .filter(Boolean);
+                const formats = getWfsOutputFormats(capXml);
                 const preferredFormats = [
                     "application/gml+xml; version=3.2",
                     "text/xml; subtype=gml/3.2.1",
