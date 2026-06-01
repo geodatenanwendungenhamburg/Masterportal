@@ -58,8 +58,8 @@ pipelines:
                             echo "[DRY-RUN][LOGIC] Start Latest decision"
                             echo "[DRY-RUN][LOGIC] BITBUCKET_TAG=$BITBUCKET_TAG"
 
-                            if [ "$BITBUCKET_TAG" = "lts" ]; then
-                                echo "[DRY-RUN][LOGIC] Tag is 'lts' -> read first LTS entry from CHANGELOG.md"
+                            if [ "$BITBUCKET_TAG" = "lts" ] || [ "$BITBUCKET_TAG" = "lts-test" ]; then
+                                echo "[DRY-RUN][LOGIC] Tag is 'lts' or 'lts-test' -> read first LTS entry from CHANGELOG.md"
                                 LTS_HEADER="$(grep -m1 -E '^## .* v[0-9]+\.[0-9]+\.[0-9]+ \(LTS\)$' CHANGELOG.md || true)"
                                 LTS_VERSION="$(echo "$LTS_HEADER" | sed -n 's/^## .* v\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\) (LTS)$/\1/p')"
 
@@ -187,7 +187,7 @@ pipelines:
         mkdocs latest to masterportal.org:
             - variables:
                 - name: BITBUCKET_TAG
-                  description: tag to publish docs for, e.g. v3.1.0 or lts
+                                    description: tag to publish docs for, e.g. v3.1.0, lts or lts-test
             -   step:
                     name: create mkdocs
                     image: python:3.8
@@ -210,8 +210,8 @@ pipelines:
                             echo "[DRY-RUN][LOGIC] Start Latest decision"
                             echo "[DRY-RUN][LOGIC] BITBUCKET_TAG=$BITBUCKET_TAG"
 
-                            if [ "$BITBUCKET_TAG" = "lts" ]; then
-                                echo "[DRY-RUN][LOGIC] Tag is 'lts' -> read first LTS entry from CHANGELOG.md"
+                            if [ "$BITBUCKET_TAG" = "lts" ] || [ "$BITBUCKET_TAG" = "lts-test" ]; then
+                                echo "[DRY-RUN][LOGIC] Tag is 'lts' or 'lts-test' -> read first LTS entry from CHANGELOG.md"
                                 LTS_HEADER="$(grep -m1 -E '^## .* v[0-9]+\.[0-9]+\.[0-9]+ \(LTS\)$' CHANGELOG.md || true)"
                                 LTS_VERSION="$(echo "$LTS_HEADER" | sed -n 's/^## .* v\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\) (LTS)$/\1/p')"
 
@@ -230,7 +230,7 @@ pipelines:
                                 fi
                                 echo "Detected LTS version v$LTS_VERSION from CHANGELOG.md (hotfix=$IS_LTS_HOTFIX)."
                             else
-                                echo "[DRY-RUN][LOGIC] Tag is not 'lts' -> no CHANGELOG hotfix check in this custom task"
+                                echo "[DRY-RUN][LOGIC] Tag is not 'lts'/'lts-test' -> no CHANGELOG hotfix check in this custom task"
                             fi
 
                             echo "[DRY-RUN][LOGIC] Final decision IS_LTS_HOTFIX=$IS_LTS_HOTFIX"
