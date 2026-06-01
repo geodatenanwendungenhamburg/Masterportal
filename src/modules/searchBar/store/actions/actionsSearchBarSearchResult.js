@@ -646,10 +646,7 @@ export default {
                 serviceUnavailable,
                 serviceTitle,
                 discoveredLayerEntries
-            } = await resolveCswServiceConfig(
-                parsedResource,
-                rootGetters["Maps/projection"]?.getCode() || ""
-            );
+            } = await resolveCswServiceConfig(parsedResource);
 
             if (!typ) {
                 continue;
@@ -659,12 +656,10 @@ export default {
                 unavailableServiceUrls.add(baseUrl);
             }
 
-            let wfsAdditionalProps = {};
-            let wmtsAdditionalProps = {};
-            let oafAdditionalProps = {};
+            let additionalLayerProps = {};
 
             if (typ === "WFS") {
-                wfsAdditionalProps = {
+                additionalLayerProps = {
                     version: wfsVersion,
                     outputFormat: wfsOutputFormat
                 };
@@ -682,11 +677,11 @@ export default {
                     const featureCount = await wfsLoadingStrategyService.getWfsHits(effectiveLayerName);
 
                     if (featureCount !== null && featureCount > wfsLoadingStrategyService.WFS_LARGE_LAYER_THRESHOLD) {
-                        wfsAdditionalProps.loadingStrategy = "bbox";
+                        additionalLayerProps.loadingStrategy = "bbox";
                         wfsLoadingStrategyService.alertLargeLayer({featureCount, layerName: effectiveLayerName});
                     }
                     else {
-                        wfsAdditionalProps.loadingStrategy = "all";
+                        additionalLayerProps.loadingStrategy = "all";
                     }
                 }
                 else if (discoveredLayerEntries.length > 0) {
@@ -694,36 +689,24 @@ export default {
                 }
             }
             else if (typ === "WMTS") {
-                wmtsAdditionalProps = {
+                additionalLayerProps = {
                     optionsFromCapabilities: true,
                     capabilitiesUrl: wmtsCapabilitiesUrl || `${baseUrl}?SERVICE=WMTS&REQUEST=GetCapabilities`
                 };
 
                 if (wmtsFormat) {
-                    wmtsAdditionalProps.format = wmtsFormat;
+                    additionalLayerProps.format = wmtsFormat;
                 }
                 if (wmtsTileMatrixSet) {
-                    wmtsAdditionalProps.tileMatrixSet = wmtsTileMatrixSet;
+                    additionalLayerProps.tileMatrixSet = wmtsTileMatrixSet;
                 }
             }
             else if (typ === "OAF") {
-                oafAdditionalProps = {
+                additionalLayerProps = {
                     bbox: false,
                     crs: false,
                     loadingStrategy: "all"
                 };
-            }
-
-            let additionalLayerProps = {};
-
-            if (typ === "WFS") {
-                additionalLayerProps = wfsAdditionalProps;
-            }
-            else if (typ === "WMTS") {
-                additionalLayerProps = wmtsAdditionalProps;
-            }
-            else if (typ === "OAF") {
-                additionalLayerProps = oafAdditionalProps;
             }
 
             if (discoveredLayerEntries.length > 0 && await addServiceLayersToExternalFolder({
@@ -744,7 +727,7 @@ export default {
                 break;
             }
 
-            if ((typ === "WMS" || typ === "WFS" || typ === "WMTS" || typ === "OAF") && !effectiveLayerName) {
+            if (!effectiveLayerName) {
                 continue;
             }
 
