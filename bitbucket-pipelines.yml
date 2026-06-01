@@ -187,7 +187,7 @@ pipelines:
         mkdocs latest to masterportal.org:
             - variables:
                 - name: BITBUCKET_TAG
-                                    description: tag to publish docs for, e.g. v3.1.0, lts or lts-test
+                  description: tag to publish docs for, e.g. v3.1.0, lts or lts-test
             -   step:
                     name: create mkdocs
                     image: python:3.8
