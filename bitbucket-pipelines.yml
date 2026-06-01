@@ -41,7 +41,7 @@ pipelines:
                         - git add docs/_snippets/index_title.md
                         - 'git commit -m "docs: update mkdocs title snippet for $BITBUCKET_TAG" || echo "No changes to commit"'
                         - echo "[DRY-RUN] Would push docs snippet commit to origin"
-                        - echo "[DRY-RUN] Would run: mike deploy $BITBUCKET_TAG"
+                        - 'echo "[DRY-RUN] Would run: mike deploy $BITBUCKET_TAG"'
                         - echo "[DRY-RUN] Would move site to $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG"
                         # -   pipe: atlassian/ftp-deploy:0.7.1
                         #     variables:
@@ -156,7 +156,7 @@ pipelines:
                         - git add docs/_snippets/index_title.md
                         - 'git commit -m "docs: update mkdocs title snippet for $BITBUCKET_TAG" || echo "No changes to commit"'
                         - echo "[DRY-RUN] Would push docs snippet commit to origin"
-                        - echo "[DRY-RUN] Would run: mike deploy $BITBUCKET_TAG"
+                        - 'echo "[DRY-RUN] Would run: mike deploy $BITBUCKET_TAG"'
                         - echo "[DRY-RUN] Would move site to $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG"
                         # -   pipe: atlassian/ftp-deploy:0.7.1
                         #     variables:
@@ -186,7 +186,7 @@ pipelines:
                         - git add docs/_snippets/index_title.md
                         - 'git commit -m "docs: update mkdocs title snippet for $BITBUCKET_TAG" || echo "No changes to commit"'
                         - echo "[DRY-RUN] Would push docs snippet commit to origin"
-                        - echo "[DRY-RUN] Would run: mike deploy $BITBUCKET_TAG"
+                        - 'echo "[DRY-RUN] Would run: mike deploy $BITBUCKET_TAG"'
                         - |
                             IS_LTS_HOTFIX="false"
 
@@ -241,7 +241,7 @@ pipelines:
                         - git add docs/_snippets/index_title.md
                         - 'git commit -m "docs: update mkdocs title snippet for $BITBUCKET_TAG" || echo "No changes to commit"'
                         - echo "[DRY-RUN] Would push docs snippet commit to origin"
-                        - echo "[DRY-RUN] Would run: mike deploy $BITBUCKET_TAG"
+                        - 'echo "[DRY-RUN] Would run: mike deploy $BITBUCKET_TAG"'
                         - echo "[DRY-RUN] Would create archive masterportal_docs.zip from generated site"
                         - echo "[DRY-RUN] Would upload masterportal_docs.zip to Bitbucket downloads"
         build and deploy examples zip:
