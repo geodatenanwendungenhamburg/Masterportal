@@ -1041,6 +1041,7 @@
           "id": "2426",
           "name": "Bezirke",
           "typ": "WMS",
+          "isNeverVisibleInTree": true,
           "visibility": true,
           "showInLayerTree": false
         },

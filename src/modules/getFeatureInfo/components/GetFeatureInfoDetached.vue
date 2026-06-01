@@ -227,7 +227,7 @@ export default {
                             break;
                     }
                 }
-                if (highlightObject.type) {
+                if (highlightObject.type && this.feature.getLayerId() !== "importDrawLayer") {
                     this.highlightFeature(highlightObject);
                 }
                 this.lastFeature = this.feature;
