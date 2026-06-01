@@ -15,15 +15,15 @@ export default function detectServiceType (protocol, url) {
             url: /(?:[?&]SERVICE=OAF\b|\/OGC\/FEATURES\b|\/COLLECTIONS(?:\/|$)|\/ITEMS(?:\/|$)|\/OAF(?:\/|$)|[_-]OAF[_-]?)/i
         },
         WMS: {
-            protocol: /(OGC:WMS|WWW:LINK-1\.0-HTTP--OGC-WMS|OGC\s+WEB\s+MAP\s+SERVICE|SERVICE\s*TYPE\/OGC\/WMS)/i,
+            protocol: /(OGC:WMS|WWW:LINK-1\.0-HTTP--OGC-WMS|OGC\s+WEB\s+MAP\s+SERVICE|SERVICE\s*TYPE\/OGC\/WMS|http:\/\/www\.opengis\.net\/def\/serviceType\/ogc\/wms)/i,
             url: /(?:[?&]SERVICE=WMS\b|\/WMS(?:\/|$)|[_-]WMS|WMS[_-])/i
         },
         WFS: {
-            protocol: /(OGC:WFS|WWW:LINK-1\.0-HTTP--OGC-WFS|OGC\s+WEB\s+FEATURE\s+SERVICE|SERVICE\s*TYPE\/OGC\/WFS)/i,
+            protocol: /(OGC:WFS|WWW:LINK-1\.0-HTTP--OGC-WFS|OGC\s+WEB\s+FEATURE\s+SERVICE|SERVICE\s*TYPE\/OGC\/WFS|http:\/\/www\.opengis\.net\/def\/serviceType\/ogc\/wfs)/i,
             url: /(?:[?&]SERVICE=WFS\b|\/WFS(?:\/|$)|[_-]WFS|WFS[_-])/i
         },
         WMTS: {
-            protocol: /(OGC:WMTS|WWW:LINK-1\.0-HTTP--OGC-WMTS|OGC\s+WEB\s+MAP\s+TILE\s+SERVICE|SERVICE\s*TYPE\/OGC\/WMTS|SERVICETYPE\/OGC\/WMTS)/i,
+            protocol: /(OGC:WMTS|WWW:LINK-1\.0-HTTP--OGC-WMTS|OGC\s+WEB\s+MAP\s+TILE\s+SERVICE|SERVICE\s*TYPE\/OGC\/WMTS|SERVICETYPE\/OGC\/WMTS|http:\/\/www\.opengis\.net\/def\/serviceType\/ogc\/wmts)/i,
             url: /(?:[?&]SERVICE=WMTS(?:&|$)|\/WMTS(?:\/|$|\?|_)|[-_]WMTS(?:[-_]|$)|\/1\.0\.0\/WMTSCAPABILITIES\.XML(?:\?|$))/i
         }
     };

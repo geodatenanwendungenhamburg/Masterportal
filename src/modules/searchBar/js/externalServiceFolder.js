@@ -90,7 +90,7 @@ async function addServiceLayersToExternalFolder ({
     for (const layerEntry of layerEntries) {
         const layerName = layerEntry?.name || "",
             metadataName = layerEntry?.title || layerName || fileIdentifier,
-            layerId = `csw-${fileIdentifier}-${resourceIndex}-${layerName}`,
+            layerId = `csw-${fileIdentifier}-${resourceIndex}-${layerName.replace(/[^a-zA-Z0-9_.:()-]/g, "_")}`,
             layerConfig = {
                 id: layerId,
                 name: layerName || fileIdentifier,
