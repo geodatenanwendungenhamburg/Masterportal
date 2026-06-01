@@ -1607,6 +1607,7 @@ Suche bei OpenStreetMap über Stadt, Strasse und Hausnummer. Wird nur durch Klic
 [type:resultEvents]: # (portalConfig.menu.searchBar.searchInterfaces.resultEvents)
 
 Durchsucht einen CSW-Dienst (Catalogue Service for the Web) über eine ISO-19139-`GetRecords`-Anfrage mit einem AnyText-Volltext-Filter. Über das Array `definitions` können mehrere CSW-Endpunkte konfiguriert werden. Die Ergebnisliste zeigt Datensatztitel; ein Klick auf ein Ergebnis öffnet das Layer-Informationsfenster, zoomt auf die Ausdehnung des Datensatzes oder fügt den ersten gefundenen WMS-/WFS-Distribuitionslink als neuen Layer hinzu.
+Bitte beachten, dass der [addLayerButton](#portalConfig.tree.addLayerButton) als `"active": true` konfiguriert sein muss, um Zugriff auf "Externen Fachdaten" zu haben. Dienste, die das CRS des Portals nicht unterstützen, werden nicht der Karte hinzugefügt.
 
 > **Hinweis:** Wenn der CSW-Endpunkt keine CORS-Header sendet, muss ein Proxy konfiguriert werden.
 

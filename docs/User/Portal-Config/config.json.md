@@ -1612,6 +1612,7 @@ OpenStreetMap search for city, street, and house number. Only executed on clicki
 [type:resultEvents]: # (portalConfig.menu.searchBar.searchInterfaces.resultEvents)
 
 Searches a CSW (Catalogue Service for the Web) endpoint using an ISO 19139 `GetRecords` request with an AnyText full-text filter. Multiple CSW endpoints can be configured via the `definitions` array. The result list shows dataset titles; clicking a result opens the layer information panel, zooms to the dataset extent, or adds the first detected WMS/WFS distribution link as a new layer.
+Please note that the [addLayerButton](#portalConfig.tree.addLayerButton) must be configured with `"active": true` to get acces to "External subject data". Services that do not support the portal CRS will not be added to the map.
 
 > **Note:** If the CSW endpoint does not send CORS headers, a proxy must be configured. See [proxy configuration](../../User/Proxies/proxy.md).
 
