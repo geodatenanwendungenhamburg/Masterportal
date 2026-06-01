@@ -26,7 +26,7 @@ pipelines:
                         - apt-get install -y curl
                         # find all zip folders in dist folder, loop through the results and post the zips to the BB download folder
                         - for zipFilePath in $(find dist -name \*.zip); do
-                            curl -X POST --user "$bbapi_name:$bbapi_key" "https://api.bitbucket.org/2.0/repositories/geowerkstatt-hamburg/masterportal/downloads" --form files=@"$zipFilePath" --verbose;
+                            echo "[DRY-RUN] Would upload $zipFilePath to Bitbucket downloads";
                             done
             -   step:
                     name: create mkdocs
@@ -40,47 +40,66 @@ pipelines:
                         - printf '# Welcome to the Masterportal Documentation (%s)\n' "$BITBUCKET_TAG" > docs/_snippets/index_title.md
                         - git add docs/_snippets/index_title.md
                         - 'git commit -m "docs: update mkdocs title snippet for $BITBUCKET_TAG" || echo "No changes to commit"'
-                        - git push origin HEAD
-                        - mike deploy $BITBUCKET_TAG
-                        - mv $BITBUCKET_CLONE_DIR/site $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG
-                        -   pipe: atlassian/ftp-deploy:0.7.1
-                            variables:
-                                USER: $MKDOCS_FTP_NAME
-                                PASSWORD: $MKDOCS_FTP_PW
-                                SERVER: $MKDOCS_FTP_SERVER
-                                REMOTE_PATH: '/$BITBUCKET_TAG'
-                                LOCAL_PATH: $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG
-                                DEBUG: 'true'
-                                DELETE_FLAG: 'false'
-                        - mv $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG $BITBUCKET_CLONE_DIR/Latest
-                        -   pipe: atlassian/ftp-deploy:0.7.1
-                            variables:
-                                USER: $MKDOCS_FTP_NAME
-                                PASSWORD: $MKDOCS_FTP_PW
-                                SERVER: $MKDOCS_FTP_SERVER
-                                REMOTE_PATH: '/Latest'
-                                LOCAL_PATH: '$BITBUCKET_CLONE_DIR/Latest'
-                                DEBUG: 'true'
-                                DELETE_FLAG: 'false'
+                        - echo "[DRY-RUN] Would push docs snippet commit to origin"
+                        - echo "[DRY-RUN] Would run: mike deploy $BITBUCKET_TAG"
+                        - echo "[DRY-RUN] Would move site to $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG"
+                        # -   pipe: atlassian/ftp-deploy:0.7.1
+                        #     variables:
+                        #         USER: $MKDOCS_FTP_NAME
+                        #         PASSWORD: $MKDOCS_FTP_PW
+                        #         SERVER: $MKDOCS_FTP_SERVER
+                        #         REMOTE_PATH: '/$BITBUCKET_TAG'
+                        #         LOCAL_PATH: $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG
+                        #         DEBUG: 'true'
+                        #         DELETE_FLAG: 'false'
+                        - |
+                            IS_LTS_HOTFIX="false"
+
+                            if [ "$BITBUCKET_TAG" = "lts" ]; then
+                                LTS_HEADER="$(grep -m1 -E '^## .* v[0-9]+\.[0-9]+\.[0-9]+ \(LTS\)$' CHANGELOG.md || true)"
+                                LTS_VERSION="$(echo "$LTS_HEADER" | sed -n 's/^## .* v\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\) (LTS)$/\1/p')"
+
+                                if [ -z "$LTS_VERSION" ]; then
+                                    echo "Could not parse latest LTS version from CHANGELOG.md."
+                                    exit 1
+                                fi
+
+                                LTS_PATCH="${LTS_VERSION##*.}"
+                                if [ "$LTS_PATCH" != "0" ]; then
+                                    IS_LTS_HOTFIX="true"
+                                fi
+                                echo "Detected LTS version v$LTS_VERSION from CHANGELOG.md (hotfix=$IS_LTS_HOTFIX)."
+                            else
+                                ACTIVE_LTS_SERIES="${ACTIVE_LTS_SERIES:-3.15}"
+                                TAG_VERSION="${BITBUCKET_TAG#v}"
+                                TAG_MAJOR_MINOR="$(echo "$TAG_VERSION" | cut -d. -f1,2)"
+                                TAG_PATCH="$(echo "$TAG_VERSION" | cut -d. -f3)"
+
+                                if [ "$TAG_MAJOR_MINOR" = "$ACTIVE_LTS_SERIES" ] && [ "$TAG_PATCH" != "0" ]; then
+                                    IS_LTS_HOTFIX="true"
+                                fi
+                                echo "Detected version tag $BITBUCKET_TAG (hotfix=$IS_LTS_HOTFIX)."
+                            fi
+
+                            if [ "$IS_LTS_HOTFIX" = "true" ]; then
+                                echo "LTS hotfix detected. Skip Latest upload."
+                            else
+                                echo "[DRY-RUN] Would upload Latest docs for $BITBUCKET_TAG to FTP."
+                            fi
             -   step:
                     name: deploy on openCode (also latest tag)
                     script:
                         - echo 'deploy to opencode:'$BITBUCKET_TAG
                         - git fetch --all --tags
                         - git checkout tags/$BITBUCKET_TAG
-                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git $BITBUCKET_TAG
-                        - git clone --single-branch --branch dev https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
-                        - cd masterportal
-                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git -f
+                        - echo "[DRY-RUN] Would push tag $BITBUCKET_TAG to openCode"
+                        - echo "[DRY-RUN] Would mirror dev branch to openCode"
 
                         - echo 'deploy latest tag to openCode'
                         - git fetch --all --tags
                         - git checkout tags/latest
-                        - git push --delete https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git latest
-                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git latest
-                        - git clone --single-branch --branch dev https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
-                        - cd masterportal
-                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git -f
+                        - echo "[DRY-RUN] Would delete and recreate latest tag on openCode"
+                        - echo "[DRY-RUN] Would mirror dev branch to openCode"
         'lts': 
             -   step:
                         name: deploy lts on openCode
@@ -88,18 +107,14 @@ pipelines:
                             - echo 'remove lts tag in openCode'
                             - git fetch --all --tags
                             - git checkout tags/lts
-                            - git push --delete https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git lts
-                            - git clone --single-branch --branch dev https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
-                            - cd masterportal
-                            - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git -f
+                            - echo "[DRY-RUN] Would delete lts tag on openCode"
+                            - echo "[DRY-RUN] Would mirror dev branch to openCode"
 
                             - echo 'deploy lts to openCode'
                             - git fetch --all --tags
                             - git checkout tags/lts
-                            - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git lts
-                            - git clone --single-branch --branch lts https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
-                            - cd masterportal
-                            - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git HEAD:refs/heads/lts -f
+                            - echo "[DRY-RUN] Would push lts tag to openCode"
+                            - echo "[DRY-RUN] Would mirror lts branch to openCode"
     custom: # Pipelines that are triggered manually
         npm audit:
             -   step:
@@ -120,10 +135,8 @@ pipelines:
                         - git fetch --all --tags
                         - echo 'deploy to opencode:'$BITBUCKET_TAG
                         - git checkout tags/$BITBUCKET_TAG
-                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git $BITBUCKET_TAG
-                        - git clone --single-branch --branch dev https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
-                        - cd masterportal
-                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git -f
+                        - echo "[DRY-RUN] Would push tag $BITBUCKET_TAG to openCode"
+                        - echo "[DRY-RUN] Would mirror dev branch to openCode"
         mkdocs version to masterportal.org (no update of latest):
             - variables:
                 - name: BITBUCKET_TAG
@@ -142,22 +155,22 @@ pipelines:
                         - printf '# Welcome to the Masterportal Documentation (%s)\n' "$BITBUCKET_TAG" > docs/_snippets/index_title.md
                         - git add docs/_snippets/index_title.md
                         - 'git commit -m "docs: update mkdocs title snippet for $BITBUCKET_TAG" || echo "No changes to commit"'
-                        - git push origin HEAD
-                        - mike deploy $BITBUCKET_TAG
-                        - mv $BITBUCKET_CLONE_DIR/site $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG
-                        -   pipe: atlassian/ftp-deploy:0.7.1
-                            variables:
-                                USER: $MKDOCS_FTP_NAME
-                                PASSWORD: $MKDOCS_FTP_PW
-                                SERVER: $MKDOCS_FTP_SERVER
-                                REMOTE_PATH: '/$BITBUCKET_TAG'
-                                LOCAL_PATH: $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG
-                                DEBUG: 'true'
-                                DELETE_FLAG: 'false'
+                        - echo "[DRY-RUN] Would push docs snippet commit to origin"
+                        - echo "[DRY-RUN] Would run: mike deploy $BITBUCKET_TAG"
+                        - echo "[DRY-RUN] Would move site to $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG"
+                        # -   pipe: atlassian/ftp-deploy:0.7.1
+                        #     variables:
+                        #         USER: $MKDOCS_FTP_NAME
+                        #         PASSWORD: $MKDOCS_FTP_PW
+                        #         SERVER: $MKDOCS_FTP_SERVER
+                        #         REMOTE_PATH: '/$BITBUCKET_TAG'
+                        #         LOCAL_PATH: $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG
+                        #         DEBUG: 'true'
+                        #         DELETE_FLAG: 'false'
         mkdocs latest to masterportal.org:
             - variables:
                 - name: BITBUCKET_TAG
-                  description: tag to publish docs for, e.g. v3.1.0
+                  description: tag to publish docs for, e.g. v3.1.0 or lts
             -   step:
                     name: create mkdocs
                     image: python:3.8
@@ -172,18 +185,32 @@ pipelines:
                         - printf '# Welcome to the Masterportal Documentation (%s)\n' "$BITBUCKET_TAG" > docs/_snippets/index_title.md
                         - git add docs/_snippets/index_title.md
                         - 'git commit -m "docs: update mkdocs title snippet for $BITBUCKET_TAG" || echo "No changes to commit"'
-                        - git push origin HEAD
-                        - mike deploy $BITBUCKET_TAG
-                        - mv $BITBUCKET_CLONE_DIR/site $BITBUCKET_CLONE_DIR/Latest
-                        -   pipe: atlassian/ftp-deploy:0.7.1
-                            variables:
-                                USER: $MKDOCS_FTP_NAME
-                                PASSWORD: $MKDOCS_FTP_PW
-                                SERVER: $MKDOCS_FTP_SERVER
-                                REMOTE_PATH: '/Latest'
-                                LOCAL_PATH: '$BITBUCKET_CLONE_DIR/Latest'
-                                DEBUG: 'true'
-                                DELETE_FLAG: 'false'                                
+                        - echo "[DRY-RUN] Would push docs snippet commit to origin"
+                        - echo "[DRY-RUN] Would run: mike deploy $BITBUCKET_TAG"
+                        - |
+                            IS_LTS_HOTFIX="false"
+
+                            if [ "$BITBUCKET_TAG" = "lts" ]; then
+                                LTS_HEADER="$(grep -m1 -E '^## .* v[0-9]+\.[0-9]+\.[0-9]+ \(LTS\)$' CHANGELOG.md || true)"
+                                LTS_VERSION="$(echo "$LTS_HEADER" | sed -n 's/^## .* v\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\) (LTS)$/\1/p')"
+
+                                if [ -z "$LTS_VERSION" ]; then
+                                    echo "Could not parse latest LTS version from CHANGELOG.md."
+                                    exit 1
+                                fi
+
+                                LTS_PATCH="${LTS_VERSION##*.}"
+                                if [ "$LTS_PATCH" != "0" ]; then
+                                    IS_LTS_HOTFIX="true"
+                                fi
+                                echo "Detected LTS version v$LTS_VERSION from CHANGELOG.md (hotfix=$IS_LTS_HOTFIX)."
+                            fi
+
+                            if [ "$IS_LTS_HOTFIX" = "true" ]; then
+                                echo "LTS hotfix detected. Skip Latest upload."
+                            else
+                                echo "[DRY-RUN] Would upload Latest docs for $BITBUCKET_TAG to FTP."
+                            fi
         validate mkdocs:
             -   step:
                     name: validate mkdocs
@@ -213,10 +240,10 @@ pipelines:
                         - printf '# Welcome to the Masterportal Documentation (%s)\n' "$BITBUCKET_TAG" > docs/_snippets/index_title.md
                         - git add docs/_snippets/index_title.md
                         - 'git commit -m "docs: update mkdocs title snippet for $BITBUCKET_TAG" || echo "No changes to commit"'
-                        - git push origin HEAD
-                        - mike deploy $BITBUCKET_TAG
-                        - zip -r masterportal_docs.zip /opt/atlassian/pipelines/agent/build/site
-                        - curl -X POST --user "$bbapi_name:$bbapi_key" "https://api.bitbucket.org/2.0/repositories/geowerkstatt-hamburg/masterportal/downloads/" --form files=@"masterportal_docs.zip" --verbose;
+                        - echo "[DRY-RUN] Would push docs snippet commit to origin"
+                        - echo "[DRY-RUN] Would run: mike deploy $BITBUCKET_TAG"
+                        - echo "[DRY-RUN] Would create archive masterportal_docs.zip from generated site"
+                        - echo "[DRY-RUN] Would upload masterportal_docs.zip to Bitbucket downloads"
         build and deploy examples zip:
             - variables:
                 - name: BITBUCKET_TAG
@@ -236,7 +263,7 @@ pipelines:
                         - apt-get install -y curl
                          # find all zip folders in dist folder, loop through the results and post the zips to the BB download folder
                         - for zipFilePath in $(find dist -name \*.zip); do
-                            curl -X POST --user "$bbapi_name:$bbapi_key" "https://api.bitbucket.org/2.0/repositories/geowerkstatt-hamburg/masterportal/downloads" --form files=@"$zipFilePath" --verbose;
+                            echo "[DRY-RUN] Would upload $zipFilePath to Bitbucket downloads";
                             done
         deploy lts tag to openCode:
             -   step:
@@ -245,10 +272,8 @@ pipelines:
                         - echo 'deploy lts tag to openCode'
                         - git fetch --all --tags
                         - git checkout tags/lts
-                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git lts
-                        - git clone --single-branch --branch lts https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
-                        - cd masterportal
-                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git HEAD:refs/heads/lts -f
+                        - echo "[DRY-RUN] Would push lts tag to openCode"
+                        - echo "[DRY-RUN] Would mirror lts branch to openCode"
         remove tag in openCode:
             - variables:
                     - name: BITBUCKET_TAG
@@ -258,7 +283,5 @@ pipelines:
                         - echo 'remove tag in openCodeL:'$BITBUCKET_TAG
                         - git fetch --all --tags
                         - git checkout tags/$BITBUCKET_TAG
-                        - git push --delete https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git $BITBUCKET_TAG
-                        - git clone --single-branch --branch dev https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
-                        - cd masterportal
-                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git -f
+                        - echo "[DRY-RUN] Would delete tag $BITBUCKET_TAG in openCode"
+                        - echo "[DRY-RUN] Would mirror dev branch to openCode"
