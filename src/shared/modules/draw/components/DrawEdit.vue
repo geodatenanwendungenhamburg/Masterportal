@@ -114,7 +114,9 @@ export default {
             editFillColor: "#000000",
             editFillTransparency: 0,
             activeEditKey: "",
-            featureCounter: 1
+            featureCounter: 1,
+            undoCount: 0,
+            redoCount: 0
         };
     },
     computed: {
@@ -196,16 +198,17 @@ export default {
                             this.featureCounter++;
                         }
                         this.featureCounter++;
+                        this.syncUndoRedoCounts();
                     }
                 });
 
                 this.source.on("removefeature", event => {
-                    this.features = this.features.filter((feature) => feature.ol_uid !== event.feature.ol_uid);
                     if (!this.redoing) {
                         this.nonReactiveUndoFeatures.push({
                             feature: markRaw(event.feature),
                             mode: "delete"
                         });
+                        this.syncUndoRedoCounts();
                     }
                 });
 
@@ -244,6 +247,11 @@ export default {
 
             this.iconPosition = wrapperRect.left + wrapperRect.width / 2 - containerRect.left;
             this.mappingEditInteractions[drawEdit]();
+        },
+
+        syncUndoRedoCounts () {
+            this.undoCount = this.nonReactiveUndoFeatures.length;
+            this.redoCount = this.nonReactiveRedoFeatures.length;
         },
 
         /**
@@ -287,6 +295,7 @@ export default {
             this.mode = "deleteAll";
 
             this.nonReactiveUndoFeatures.push(this.source.getFeatures());
+            this.syncUndoRedoCounts();
             this.source.clear();
             this.redoing = false;
         },
@@ -342,9 +351,9 @@ export default {
                                 originalGeometry: markRaw(originalGeometry),
                                 modifiedGeometry: markRaw(modifiedGeometry)
                             });
-                            this.registerFeatures();
                         });
                         this.nonReactiveRedoFeatures = markRaw([]);
+                        this.syncUndoRedoCounts();
                     },
                     onModifyStart: (event) => {
                         event.features.forEach(feature => {
@@ -365,6 +374,7 @@ export default {
         regulateUndo () {
             this.redoing = true;
             this.undoRedoFeatures(this.nonReactiveUndoFeatures, this.nonReactiveRedoFeatures, "undo", this.source);
+            this.syncUndoRedoCounts();
             this.redoing = false;
         },
 
@@ -375,6 +385,7 @@ export default {
         regulateRedo () {
             this.redoing = true;
             this.undoRedoFeatures(this.nonReactiveRedoFeatures, this.nonReactiveUndoFeatures, "redo", this.source);
+            this.syncUndoRedoCounts();
             this.redoing = false;
         },
 
@@ -402,6 +413,7 @@ export default {
                 this.nonReactiveUndoFeatures.push(featureArray);
             }
             this.mode = "";
+            this.syncUndoRedoCounts();
         },
 
         /**
@@ -438,15 +450,6 @@ export default {
                 this.setSelectedInteraction("download");
             }
             this.showFrame = true;
-        },
-
-        /**
-         * Registers the features of the drawLayer to the data object features.
-         * @returns {void}
-         */
-        registerFeatures () {
-            console.warn("Register Features", this.features);
-            this.features = [...mapCollection.getMap("2D").getLayers().getArray().find(availableLayer => availableLayer.get("id") === "importDrawLayer").getSource().getFeatures()];
         },
 
         /**
@@ -506,8 +509,8 @@ export default {
                     'btn-light',
                     'me-3',
                     selectedInteraction === drawEdit ? 'active': '',
-                    drawEdit === 'redo' && nonReactiveRedoFeatures.length === 0 ? 'disabled' : '',
-                    drawEdit === 'undo' && nonReactiveUndoFeatures.length === 0 ? 'disabled' : '',
+                    drawEdit === 'redo' && redoCount === 0 ? 'disabled' : '',
+                    drawEdit === 'undo' && undoCount === 0 ? 'disabled' : '',
                     drawEdit !== 'redo' && drawEdit !== 'undo' && source?.getFeatures()?.length === 0 ? 'disabled' : '',
                     drawEdit !== 'hide' && !drawLayerVisible ? 'disabled': ''
                 ]"

@@ -3,6 +3,7 @@ import {markRaw} from "vue";
 import {mapGetters, mapMutations} from "vuex";
 import VectorSource from "ol/source/Vector.js";
 import layerCollection from "@core/layers/js/layerCollection.js";
+import layerFactory from "@core/layers/js/layerFactory.js";
 import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 
 import DrawEdit from "@shared/modules/draw/components/DrawEdit.vue";
@@ -55,29 +56,41 @@ export default {
             "secondaryExpanded"
         ])
     },
-    async mounted () {
+    mounted () {
         const drawLayerId = "importDrawLayer";
         let existingLayer = layerCollection.getLayerById(drawLayerId);
 
         if (!existingLayer) {
-            await this.$store.dispatch("addLayerToLayerConfig", {
-                layerConfig: {
-                    id: drawLayerId,
-                    name: drawLayerId,
-                    showInLayerTree: true,
-                    typ: "VECTORBASE",
-                    type: "layer",
-                    visibility: true
-                },
-                parentKey: treeSubjectsKey
-            });
-            existingLayer = layerCollection.getLayerById(drawLayerId);
+            existingLayer = layerFactory.createLayer({
+                id: drawLayerId,
+                name: drawLayerId,
+                typ: "VECTORBASE",
+                type: "layer",
+                visibility: true,
+                showInLayerTree: true,
+                alwaysOnTop: true
+            }, "2D");
+
+            if (existingLayer) {
+                existingLayer.layer.setZIndex(9999999);
+                layerCollection.addLayer(existingLayer);
+
+                this.$store.dispatch("addLayerToLayerConfig", {
+                    layerConfig: {
+                        id: drawLayerId,
+                        name: drawLayerId,
+                        typ: "VECTORBASE",
+                        type: "layer",
+                        visibility: true,
+                        showInLayerTree: true
+                    },
+                    parentKey: treeSubjectsKey
+                });
+            }
         }
 
         if (existingLayer) {
-            console.warn("Draw layer already exists. Reusing existing layer.");
             this.layer = markRaw(existingLayer.layer);
-            this.layer.set("alwaysOnTop", true);
             this.source = markRaw(this.layer.getSource());
         }
     },
