@@ -66,20 +66,8 @@ export default async function handleWfsFromCsw (baseUrl) {
                 .filter(Boolean)
                 .filter((entry, index, arr) => arr.findIndex(other => other.name === entry.name) === index);
 
-            // Also collect just name/title for merging
-            featureTypeTitles = Array.from(capXml.getElementsByTagName("FeatureType"))
-                .map(ft => {
-                    const nameEl = Array.from(ft.children).find(c => c.localName === "Name");
-                    const titleEl = Array.from(ft.children).find(c => c.localName === "Title");
-
-                    if (!nameEl?.textContent?.trim()) {
-                        return null;
-                    }
-                    return {name: nameEl.textContent.trim(), title: titleEl?.textContent?.trim() || ""};
-                })
-                .filter(Boolean);
-
             if (detectedFeatureTypes.length > 0) {
+                featureTypeTitles = detectedFeatureTypes.map(ft => ({name: ft.name, title: ft.title}));
                 featureTypes = detectedFeatureTypes;
                 wfsVersion = declaredVersion;
 
