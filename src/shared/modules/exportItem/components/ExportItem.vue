@@ -4,7 +4,7 @@ import exportItem from "@masterportal/masterportalapi/src/shared/exportItem.js";
 import kmlfunctions from "@masterportal/masterportalapi/src/shared/kmlExport.js";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
-import mapCollection from "@core/maps/js/mapCollection.js";
+import {convertJsonToCsv} from "@shared/js/utils/convertJsonToCsv.js";
 import {GeoJSON, GPX} from "ol/format.js";
 
 export default {
@@ -126,8 +126,7 @@ export default {
             const reversedFeatures = [...this.features].reverse();
 
             console.warn("Handling GeoJSON download...", reversedFeatures);
-            const map = mapCollection.getMap("2D");
-            let dataString = await exportItem.prepareFeatures(reversedFeatures, map);
+            let dataString = await exportItem.prepareFeatures(reversedFeatures, this.projectionCode);
 
             // Group all geo-circle features by their center coordinate
             const circleGroups = {};
@@ -219,7 +218,9 @@ export default {
         },
 
         async handleCSVDownload () {
-            const dataString = await exportItem.convertFeaturesToCsv(this.features);
+            let dataString = await exportItem.setCsvAttributes(this.features, this.projectionCode);
+
+            dataString = Array.isArray(dataString) ? convertJsonToCsv(dataString.map(feature => feature.get("csv_attributes")), false, true) : "";
 
             this.triggerFileDownload(dataString, `${this.fileName}.csv`);
         },
