@@ -304,3 +304,48 @@ pipelines:
                         - git clone --single-branch --branch dev https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
                         - cd masterportal
                         - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git -f
+        lts tag test:
+            -   step:
+                    name: lts tag test create mkdocs
+                    image: python:3.8
+                    caches:
+                        - pip
+                    script:
+                        - apt-get update && apt-get install zip && apt-get install -y curl wput jq && apt-get install zip
+                        - pip install -r devtools/docsValidation/python-dependencies.txt
+                        - git fetch --all --tags
+                        - git checkout tags/lts
+                        - FIRST_RELEASE_HEADER="$(grep -m1 -E '^## .* v[0-9]+\.[0-9]+\.[0-9]+( \(LTS\))?$' CHANGELOG.md || true)"
+                        - CHANGELOG_VERSION="$(echo "$FIRST_RELEASE_HEADER" | sed -n 's/^## .* v\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\)\( (LTS)\)\?$/\1/p')"
+                        - IS_CHANGELOG_LTS="false"
+                        - if [ -z "$CHANGELOG_VERSION" ]; then echo "Could not parse first release headline from CHANGELOG.md." && exit 1; fi
+                        - if echo "$FIRST_RELEASE_HEADER" | grep -q ' (LTS)$'; then IS_CHANGELOG_LTS="true"; fi
+                        - CHANGELOG_PATCH="${CHANGELOG_VERSION##*.}"
+                        - IS_LTS_HOTFIX="false"
+                        - if [ "$IS_CHANGELOG_LTS" = "true" ] && [ "$CHANGELOG_PATCH" != "0" ]; then IS_LTS_HOTFIX="true"; fi
+                        - if [ "$IS_LTS_HOTFIX" = "true" ]; then echo "LTS hotfix detected (v$CHANGELOG_VERSION) - skip mkdocs deployment."; exit 0; fi
+                        - export RELEASE_TAG="v$CHANGELOG_VERSION"
+                        - echo "[DRY-RUN][CHECK] tag=$RELEASE_TAG"
+                        - echo "[DRY-RUN][CHECK] changelog_version=v$CHANGELOG_VERSION lts=$IS_CHANGELOG_LTS hotfix=$IS_LTS_HOTFIX"
+                        - mkdir -p docs/_snippets
+                        - printf '# Welcome to the Masterportal Documentation (%s)\n' "$RELEASE_TAG" > docs/_snippets/index_title.md
+                        - git add docs/_snippets/index_title.md
+                        - 'git commit -m "docs: update mkdocs title snippet for $RELEASE_TAG" || echo "No changes to commit"'
+                        - git push origin HEAD
+                        - mike deploy $RELEASE_TAG
+                        - mv $BITBUCKET_CLONE_DIR/site $BITBUCKET_CLONE_DIR/$RELEASE_TAG
+                        -   pipe: atlassian/ftp-deploy:0.7.1
+                            variables:
+                                USER: $MKDOCS_FTP_NAME
+                                PASSWORD: $MKDOCS_FTP_PW
+                                SERVER: $MKDOCS_FTP_SERVER
+                                REMOTE_PATH: '/$RELEASE_TAG'
+                                LOCAL_PATH: $BITBUCKET_CLONE_DIR/$RELEASE_TAG
+                                DEBUG: 'true'
+                                DELETE_FLAG: 'false'
+                        - echo "Upload Latest for LTS release ($RELEASE_TAG)."
+                        - mv $BITBUCKET_CLONE_DIR/$RELEASE_TAG $BITBUCKET_CLONE_DIR/Latest
+                        - find "$BITBUCKET_CLONE_DIR/Latest" -type f | while read -r file; do
+                            rel_path="${file#$BITBUCKET_CLONE_DIR/Latest/}"
+                            curl --user "$MKDOCS_FTP_NAME:$MKDOCS_FTP_PW" --ftp-create-dirs -T "$file" "ftp://$MKDOCS_FTP_SERVER/Latest/$rel_path"
+                          done
