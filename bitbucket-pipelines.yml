@@ -58,8 +58,8 @@ pipelines:
                             echo "[DRY-RUN][LOGIC] Start Latest decision"
                             echo "[DRY-RUN][LOGIC] BITBUCKET_TAG=$BITBUCKET_TAG"
 
-                            if [ "$BITBUCKET_TAG" = "lts" ] || [ "$BITBUCKET_TAG" = "lts-test" ]; then
-                                echo "[DRY-RUN][LOGIC] Tag is 'lts' or 'lts-test' -> read first LTS entry from CHANGELOG.md"
+                            if [ "$BITBUCKET_TAG" = "lts" ] || [ "$BITBUCKET_TAG" = "lts-test1" ]; then
+                                echo "[DRY-RUN][LOGIC] Tag is 'lts' or 'lts-test1' -> read first LTS entry from CHANGELOG.md"
                                 LTS_HEADER="$(grep -m1 -E '^## .* v[0-9]+\.[0-9]+\.[0-9]+ \(LTS\)$' CHANGELOG.md || true)"
                                 LTS_VERSION="$(echo "$LTS_HEADER" | sed -n 's/^## .* v\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\) (LTS)$/\1/p')"
 
@@ -78,7 +78,7 @@ pipelines:
                                 fi
                                 echo "Detected LTS version v$LTS_VERSION from CHANGELOG.md (hotfix=$IS_LTS_HOTFIX)."
                             else
-                                echo "[DRY-RUN][LOGIC] Tag is version tag (not 'lts') -> use ACTIVE_LTS_SERIES fallback"
+                                echo "[DRY-RUN][LOGIC] Tag is version tag (not 'lts'/'lts-test1') -> use ACTIVE_LTS_SERIES fallback"
                                 ACTIVE_LTS_SERIES="${ACTIVE_LTS_SERIES:-3.15}"
                                 TAG_VERSION="${BITBUCKET_TAG#v}"
                                 TAG_MAJOR_MINOR="$(echo "$TAG_VERSION" | cut -d. -f1,2)"
@@ -132,6 +132,73 @@ pipelines:
                             - git checkout tags/lts
                             - echo "[DRY-RUN] Would push lts tag to openCode"
                             - echo "[DRY-RUN] Would mirror lts branch to openCode"
+        'lts-test1':
+            -   step:
+                    name: create mkdocs
+                    image: python:3.8
+                    caches:
+                        - pip
+                    script:
+                        - apt-get update && apt-get install zip && apt-get install -y curl wput jq  && apt-get install zip
+                        - pip install -r devtools/docsValidation/python-dependencies.txt
+                        - mkdir -p docs/_snippets
+                        - printf '# Welcome to the Masterportal Documentation (%s)\n' "$BITBUCKET_TAG" > docs/_snippets/index_title.md
+                        - git add docs/_snippets/index_title.md
+                        - 'git commit -m "docs: update mkdocs title snippet for $BITBUCKET_TAG" || echo "No changes to commit"'
+                        - echo "[DRY-RUN] Would push docs snippet commit to origin"
+                        - 'echo "[DRY-RUN] Would run: mike deploy $BITBUCKET_TAG"'
+                        - echo "[DRY-RUN] Would move site to $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG"
+                        - |
+                            IS_LTS_HOTFIX="false"
+
+                            echo "[DRY-RUN][LOGIC] Start Latest decision"
+                            echo "[DRY-RUN][LOGIC] BITBUCKET_TAG=$BITBUCKET_TAG"
+
+                            if [ "$BITBUCKET_TAG" = "lts" ] || [ "$BITBUCKET_TAG" = "lts-test1" ]; then
+                                echo "[DRY-RUN][LOGIC] Tag is 'lts' or 'lts-test1' -> read first LTS entry from CHANGELOG.md"
+                                LTS_HEADER="$(grep -m1 -E '^## .* v[0-9]+\.[0-9]+\.[0-9]+ \(LTS\)$' CHANGELOG.md || true)"
+                                LTS_VERSION="$(echo "$LTS_HEADER" | sed -n 's/^## .* v\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\) (LTS)$/\1/p')"
+
+                                echo "[DRY-RUN][LOGIC] CHANGELOG first LTS header: $LTS_HEADER"
+                                echo "[DRY-RUN][LOGIC] Parsed LTS_VERSION=$LTS_VERSION"
+
+                                if [ -z "$LTS_VERSION" ]; then
+                                    echo "Could not parse latest LTS version from CHANGELOG.md."
+                                    exit 1
+                                fi
+
+                                LTS_PATCH="${LTS_VERSION##*.}"
+                                echo "[DRY-RUN][LOGIC] Parsed LTS_PATCH=$LTS_PATCH"
+                                if [ "$LTS_PATCH" != "0" ]; then
+                                    IS_LTS_HOTFIX="true"
+                                fi
+                                echo "Detected LTS version v$LTS_VERSION from CHANGELOG.md (hotfix=$IS_LTS_HOTFIX)."
+                            else
+                                echo "[DRY-RUN][LOGIC] Tag is version tag (not 'lts'/'lts-test1') -> use ACTIVE_LTS_SERIES fallback"
+                                ACTIVE_LTS_SERIES="${ACTIVE_LTS_SERIES:-3.15}"
+                                TAG_VERSION="${BITBUCKET_TAG#v}"
+                                TAG_MAJOR_MINOR="$(echo "$TAG_VERSION" | cut -d. -f1,2)"
+                                TAG_PATCH="$(echo "$TAG_VERSION" | cut -d. -f3)"
+
+                                echo "[DRY-RUN][LOGIC] ACTIVE_LTS_SERIES=$ACTIVE_LTS_SERIES"
+                                echo "[DRY-RUN][LOGIC] TAG_VERSION=$TAG_VERSION"
+                                echo "[DRY-RUN][LOGIC] TAG_MAJOR_MINOR=$TAG_MAJOR_MINOR"
+                                echo "[DRY-RUN][LOGIC] TAG_PATCH=$TAG_PATCH"
+
+                                if [ "$TAG_MAJOR_MINOR" = "$ACTIVE_LTS_SERIES" ] && [ "$TAG_PATCH" != "0" ]; then
+                                    IS_LTS_HOTFIX="true"
+                                fi
+                                echo "Detected version tag $BITBUCKET_TAG (hotfix=$IS_LTS_HOTFIX)."
+                            fi
+
+                            echo "[DRY-RUN][LOGIC] Final decision IS_LTS_HOTFIX=$IS_LTS_HOTFIX"
+
+                            if [ "$IS_LTS_HOTFIX" = "true" ]; then
+                                echo "[DRY-RUN][LOGIC] Result: Skip Latest upload (hotfix)."
+                            else
+                                echo "[DRY-RUN][LOGIC] Result: Latest upload is allowed (no hotfix)."
+                                echo "[DRY-RUN] Would upload Latest docs for $BITBUCKET_TAG to FTP."
+                            fi
     custom: # Pipelines that are triggered manually
         npm audit:
             -   step:
@@ -187,7 +254,7 @@ pipelines:
         mkdocs latest to masterportal.org:
             - variables:
                 - name: BITBUCKET_TAG
-                  description: tag to publish docs for, e.g. v3.1.0, lts or lts-test
+                  description: tag to publish docs for, e.g. v3.1.0, lts or lts-test1
             -   step:
                     name: create mkdocs
                     image: python:3.8
@@ -210,8 +277,8 @@ pipelines:
                             echo "[DRY-RUN][LOGIC] Start Latest decision"
                             echo "[DRY-RUN][LOGIC] BITBUCKET_TAG=$BITBUCKET_TAG"
 
-                            if [ "$BITBUCKET_TAG" = "lts" ] || [ "$BITBUCKET_TAG" = "lts-test" ]; then
-                                echo "[DRY-RUN][LOGIC] Tag is 'lts' or 'lts-test' -> read first LTS entry from CHANGELOG.md"
+                            if [ "$BITBUCKET_TAG" = "lts" ] || [ "$BITBUCKET_TAG" = "lts-test1" ]; then
+                                echo "[DRY-RUN][LOGIC] Tag is 'lts' or 'lts-test1' -> read first LTS entry from CHANGELOG.md"
                                 LTS_HEADER="$(grep -m1 -E '^## .* v[0-9]+\.[0-9]+\.[0-9]+ \(LTS\)$' CHANGELOG.md || true)"
                                 LTS_VERSION="$(echo "$LTS_HEADER" | sed -n 's/^## .* v\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\) (LTS)$/\1/p')"
 
@@ -230,7 +297,7 @@ pipelines:
                                 fi
                                 echo "Detected LTS version v$LTS_VERSION from CHANGELOG.md (hotfix=$IS_LTS_HOTFIX)."
                             else
-                                echo "[DRY-RUN][LOGIC] Tag is not 'lts'/'lts-test' -> no CHANGELOG hotfix check in this custom task"
+                                echo "[DRY-RUN][LOGIC] Tag is not 'lts'/'lts-test1' -> no CHANGELOG hotfix check in this custom task"
                             fi
 
                             echo "[DRY-RUN][LOGIC] Final decision IS_LTS_HOTFIX=$IS_LTS_HOTFIX"
