@@ -4,7 +4,7 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## 2025-02-06 v3.33.0 (LTS)
+## 2025-02-06 v3.33.9
 
 ### Added
 - Added CONTRIBUTING.md file.
