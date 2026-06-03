@@ -5,8 +5,13 @@ import kmlfunctions from "@masterportal/masterportalapi/src/shared/kmlExport.js"
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 import {convertJsonToCsv} from "@shared/js/utils/convertJsonToCsv.js";
+import {processDoubleCircleFeatures} from "../js/processDoubleCircleFeatures.js";
 import {GeoJSON, GPX} from "ol/format.js";
 
+/**
+ * @displayName ExportItem
+ * @description Shared component to export drawn features in various formats (KML, GeoJSON, GPX, CSV).
+ */
 export default {
     name: "ExportItem",
     components: {FlatButton, InputText},
@@ -81,9 +86,6 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/ExportItem", [
-            "exportFileName"
-        ]),
         ...mapGetters("Maps", ["projectionCode"]),
         hasUnsupportedPolygonsForGPX () {
             return this.exportFormat === "GPX" &&
@@ -106,10 +108,20 @@ export default {
         this.fileName = "";
     },
     methods: {
+        /**
+         * Updates the selected export format when the user changes the dropdown.
+         * @param {Event} event - The change event from the format select element.
+         * @returns {void}
+         */
         onFormatChange (event) {
             this.exportFormat = event.target.value;
         },
 
+        /**
+         * Triggers the download for the currently selected export format.
+         * Aborts if no format is selected or if unsupported polygon types are present for GPX.
+         * @returns {void}
+         */
         async startDownload () {
             if (!this.exportFormat || this.hasUnsupportedPolygonsForGPX) {
                 return;
@@ -122,83 +134,26 @@ export default {
             }
         },
 
+        /**
+         * Prepares and exports features as a GeoJSON file.
+         * Processes double-circle features before conversion.
+         * @returns {void}
+         */
         async handleGeoJSONDownload () {
             const reversedFeatures = [...this.features].reverse();
+            let preparedFeatures = await exportItem.prepareFeatures(reversedFeatures, this.projectionCode);
 
-            console.warn("Handling GeoJSON download...", reversedFeatures);
-            let dataString = await exportItem.prepareFeatures(reversedFeatures, this.projectionCode);
+            preparedFeatures = processDoubleCircleFeatures(preparedFeatures);
 
-            // Group all geo-circle features by their center coordinate
-            const circleGroups = {};
+            const dataString = await exportItem.convertFeatures(preparedFeatures, new GeoJSON(), this.projectionCode);
 
-            dataString.forEach((feature, idx) => {
-                const attrs = feature.get("masterportal_attributes");
-
-                if (attrs?.isGeoCircle) {
-                    const center = attrs.geoCircleCenter;
-
-                    if (!circleGroups[center]) {
-                        circleGroups[center] = [];
-                    }
-                    circleGroups[center].push(idx);
-                }
-            });
-
-            const geoFields = ["isGeoCircle", "geoCircleCenter", "geoCircleRadius"];
-
-            for (const indices of Object.values(circleGroups)) {
-                // A double circle is exactly 2 features sharing the same center
-                if (indices.length !== 2) {
-                    continue;
-                }
-
-                const [idx1, idx2] = indices;
-                const attrs1 = dataString[idx1].get("masterportal_attributes");
-                const attrs2 = dataString[idx2].get("masterportal_attributes");
-
-                // outerColorContour presence confirms this is a doubleCircle, not two unrelated single circles
-                const styledAttrs = attrs1.fromDrawTool ? attrs1 : attrs2;
-
-                if (!styledAttrs.drawState?.outerColorContour) {
-                    continue;
-                }
-
-                const sourceDrawState = styledAttrs.drawState;
-                const baseStyleAttrs = Object.fromEntries(
-                    Object.entries(styledAttrs).filter(([k]) => !geoFields.includes(k))
-                );
-                const geoAttrs1 = Object.fromEntries(Object.entries(attrs1).filter(([k]) => geoFields.includes(k)));
-                const geoAttrs2 = Object.fromEntries(Object.entries(attrs2).filter(([k]) => geoFields.includes(k)));
-
-                const outerDrawState = {
-                    ...sourceDrawState,
-                    colorContour: sourceDrawState.outerColorContour,
-                    color: sourceDrawState.outerColorFill,
-                    circleRadius: sourceDrawState.circleOuterRadius
-                };
-
-                delete outerDrawState.outerColorContour;
-                delete outerDrawState.outerColorFill;
-
-                const innerDrawState = {...sourceDrawState};
-
-                delete innerDrawState.outerColorContour;
-                delete innerDrawState.outerColorFill;
-
-                if (geoAttrs1.geoCircleRadius > geoAttrs2.geoCircleRadius) {
-                    dataString[idx1].set("masterportal_attributes", {...baseStyleAttrs, drawState: outerDrawState, ...geoAttrs1});
-                    dataString[idx2].set("masterportal_attributes", {...baseStyleAttrs, drawState: innerDrawState, ...geoAttrs2});
-                }
-                else {
-                    dataString[idx1].set("masterportal_attributes", {...baseStyleAttrs, drawState: innerDrawState, ...geoAttrs1});
-                    dataString[idx2].set("masterportal_attributes", {...baseStyleAttrs, drawState: outerDrawState, ...geoAttrs2});
-                }
-            }
-
-            dataString = await exportItem.convertFeatures(dataString, new GeoJSON(), this.projectionCode);
             this.triggerFileDownload(dataString, `${this.fileName}.geojson`);
         },
 
+        /**
+         * Prepares and exports features as a GPX file.
+         * @returns {void}
+         */
         async handleGPXDownload () {
             const preparedFeatures = await exportItem.prepareFeatures(this.features),
                 dataString = await exportItem.convertFeatures(preparedFeatures, new GPX(), this.projectionCode);
@@ -206,6 +161,11 @@ export default {
             this.triggerFileDownload(dataString, `${this.fileName}.gpx`);
         },
 
+        /**
+         * Prepares and exports features as a KML file.
+         * Transforms geometries and sets KML-specific attributes before conversion.
+         * @returns {void}
+         */
         async handleKMLDownload () {
             const reversedFeatures = [...this.features].reverse();
             let dataString = kmlfunctions.transformGeometries(reversedFeatures);
@@ -217,6 +177,10 @@ export default {
             this.triggerFileDownload(dataString, `${this.fileName}.kml`);
         },
 
+        /**
+         * Prepares and exports features as a CSV file.
+         * @returns {void}
+         */
         async handleCSVDownload () {
             let dataString = await exportItem.setCsvAttributes(this.features, this.projectionCode);
 
@@ -225,6 +189,12 @@ export default {
             this.triggerFileDownload(dataString, `${this.fileName}.csv`);
         },
 
+        /**
+         * Creates a Blob from the given data and triggers a browser file download.
+         * @param {String} data - The file content to download.
+         * @param {String} fileName - The name for the downloaded file including extension.
+         * @returns {void}
+         */
         triggerFileDownload (data, fileName) {
             const blob = new Blob([data], {type: "application/octet-stream"}),
                 link = document.createElement("a");
@@ -240,7 +210,7 @@ export default {
 
 <template>
     <div>
-        <p class="bold">
+        <p class="fw-bold">
             {{ $t(headline) }}
         </p>
         <form
@@ -262,8 +232,8 @@ export default {
                 <select
                     id="tool-draw-download-format"
                     class="form-select"
-                    aria-label="label42"
-                    @change="(event) => onFormatChange(event)"
+                    :aria-label="$t(formatlabel)"
+                    @change="onFormatChange"
                 >
                     <option value="none">
                         {{ $t(pleaseChoose) }}
@@ -278,7 +248,7 @@ export default {
                     </option>
                 </select>
                 <label for="tool-draw-download-format">
-                    {{ $t(filenameLabel) }}
+                    {{ $t(formatlabel) }}
                 </label>
                 <p
                     v-if="hasUnsupportedPolygonsForGPX"
@@ -288,8 +258,7 @@ export default {
                 </p>
                 <p
                     v-if="hasSymbolsForGPX && !hasUnsupportedPolygonsForGPX"
-                    class="mt-1 mb-0"
-                    style="color: #856404;"
+                    class="text-warning mt-1 mb-0"
                 >
                     {{ $t("common:shared.modules.draw.download.symbolsNotFullySupportedGPX") }}
                 </p>
@@ -302,7 +271,7 @@ export default {
                         :interaction="() => startDownload()"
                         :text="$t(exportButtonText)"
                         :icon="'bi-save'"
-                        :class="{disabled: fileName.length === 0 || exportFormat === null || hasUnsupportedPolygonsForGPX}"
+                        :class="{disabled: fileName.length === 0 || exportFormat === null || hasUnsupportedPolygonsForGPX || exportFormat === 'none'}"
                         role="button"
                     />
                 </div>
