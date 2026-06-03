@@ -1,4 +1,8 @@
 <script>
+/**
+ * @displayName LayoutFrame
+ * @description A shared wrapper component that renders a bordered, rounded frame with an optional triangular pointer. Used to visually group and highlight content sections (e.g. draw tool panels).
+ */
 export default {
     name: "LayoutFrame",
     props: {
@@ -29,9 +33,10 @@ export default {
 <template>
     <div
         :style="{
-            '--border-color': borderColor || 'transparent', '--background-color': fill || 'transparent',
-            '--triangle-position': trianglePosition ? `${trianglePosition}px` : '50%'}"
-
+            '--border-color': borderColor || 'transparent',
+            '--background-color': fill || 'transparent',
+            '--triangle-position': trianglePosition !== null ? `${trianglePosition}px` : '50%'
+        }"
         :class="{ 'has-triangle': triangle }"
     >
         <slot />
