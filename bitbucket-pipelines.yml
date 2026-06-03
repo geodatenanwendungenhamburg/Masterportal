@@ -121,7 +121,7 @@ pipelines:
                         - echo 'deploy to opencode:'$BITBUCKET_TAG
                         - git checkout tags/$BITBUCKET_TAG
                         - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git $BITBUCKET_TAG
-                        - git clone --single-branch --branch dev https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
+                        h --branch dev https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
                         - cd masterportal
                         - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git -f
         mkdocs version to masterportal.org (no update of latest):
@@ -138,11 +138,6 @@ pipelines:
                         - pip install -r devtools/docsValidation/python-dependencies.txt
                         - git fetch --all --tags
                         - git checkout tags/$BITBUCKET_TAG
-                        - mkdir -p docs/_snippets
-                        - printf '# Welcome to the Masterportal Documentation (%s)\n' "$BITBUCKET_TAG" > docs/_snippets/index_title.md
-                        - git add docs/_snippets/index_title.md
-                        - 'git commit -m "docs: update mkdocs title snippet for $BITBUCKET_TAG" || echo "No changes to commit"'
-                        - git push origin HEAD
                         - mike deploy $BITBUCKET_TAG
                         - mv $BITBUCKET_CLONE_DIR/site $BITBUCKET_CLONE_DIR/$BITBUCKET_TAG
                         -   pipe: atlassian/ftp-deploy:0.7.1
@@ -168,11 +163,6 @@ pipelines:
                         - pip install -r devtools/docsValidation/python-dependencies.txt
                         - git fetch --all --tags
                         - git checkout tags/$BITBUCKET_TAG
-                        - mkdir -p docs/_snippets
-                        - printf '# Welcome to the Masterportal Documentation (%s)\n' "$BITBUCKET_TAG" > docs/_snippets/index_title.md
-                        - git add docs/_snippets/index_title.md
-                        - 'git commit -m "docs: update mkdocs title snippet for $BITBUCKET_TAG" || echo "No changes to commit"'
-                        - git push origin HEAD
                         - mike deploy $BITBUCKET_TAG
                         - mv $BITBUCKET_CLONE_DIR/site $BITBUCKET_CLONE_DIR/Latest
                         -   pipe: atlassian/ftp-deploy:0.7.1
