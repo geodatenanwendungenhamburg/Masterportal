@@ -1,139 +1,128 @@
 import store from "@appstore/index.js";
 
 /**
- * @param {Object} event drawInteraction event
+ * Draw type configuration mapping selectedDrawType to the corresponding
+ * drawType object with id and geometry properties.
+ * @type {Object<string, {id: string, geometry: string}>}
  */
-export default function handleDrawEvent (event) {
-    const stateDrawCopy = JSON.parse(JSON.stringify(store.state.Modules.Draw));
-    const drawState = {};
+const drawTypeConfig = {
+    line: {id: "drawLine", geometry: "LineString"},
+    pen: {id: "drawCurve", geometry: "LineString"},
+    circle: {id: "drawCircle", geometry: "Circle"},
+    doubleCircle: {id: "drawCircle", geometry: "Circle"},
+    writeText: {id: "writeText", geometry: "Point"},
+    point: {id: "drawSymbol", geometry: "Point"},
+    box: {id: "drawArea", geometry: "Polygon"},
+    polygon: {id: "drawArea", geometry: "Polygon"},
+    square: {id: "drawSquare", geometry: "Square"}
+};
 
-    if (stateDrawCopy.selectedDrawType === "doubleCircle") {
-        event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {
-            "fromDrawTool": true,
-            styleId: stateDrawCopy.idCounter + 2
-        }));
+/**
+ * Computes color arrays for the drawn feature based on the current layout.
+ * For line types, only the contour color is set (with fill transparency applied).
+ * For all other types, contour, fill color, and opacity are returned.
+ * @param {Object} layout The current layout from the draw state.
+ * @param {number[]} layout.strokeColor RGB color array for the stroke.
+ * @param {number[]} layout.fillColor RGB color array for the fill.
+ * @param {number} layout.fillTransparency Fill transparency as a percentage (0–100).
+ * @param {boolean} isLineType Whether the draw type is a line type ("line" or "pen").
+ * @returns {Object} An object containing colorContour and optionally color and opacity.
+ */
+export function buildColors (layout, isLineType) {
+    const fillTransparency = layout.fillTransparency / 100;
+
+    if (isLineType) {
+        return {
+            colorContour: [...layout.strokeColor, 1 - fillTransparency]
+        };
     }
-    else {
-        event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {
-            "fromDrawTool": true,
-            styleId: stateDrawCopy.idCounter + 1
-        }));
-    }
+    return {
+        colorContour: [...layout.strokeColor, 1],
+        color: [...layout.fillColor, 1 - fillTransparency],
+        opacity: fillTransparency
+    };
+}
 
-    if (event.feature.getGeometry().getType() === "Polygon" && stateDrawCopy.selectedDrawType === "square") {
-        event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {
-            "isSquare": true,
-            "squareCoords": event.feature.getGeometry().getCoordinates()[0]
-        }));
-    }
-
-    drawState.drawType = stateDrawCopy.selectedDrawType;
-    drawState.imgPath = Config.wfsImgPath;
-    drawState.zIndex = stateDrawCopy.selectedDrawType === "doubleCircle" ? stateDrawCopy.idCounter + 1 : stateDrawCopy.idCounter;
-    drawState.strokeWidth = stateDrawCopy.currentLayout.strokeWidth;
-
-
-    if (["line", "pen"].includes(stateDrawCopy.selectedDrawType)) {
-        stateDrawCopy.currentLayout.strokeColor.push(1 - stateDrawCopy.currentLayout.fillTransparency / 100);
-        drawState.colorContour = stateDrawCopy.currentLayout.strokeColor;
-    }
-    else {
-        stateDrawCopy.currentLayout.fillColor.push(1 - stateDrawCopy.currentLayout.fillTransparency / 100);
-        stateDrawCopy.currentLayout.strokeColor.push(1);
-        drawState.colorContour = stateDrawCopy.currentLayout.strokeColor;
-        drawState.color = stateDrawCopy.currentLayout.fillColor;
-        drawState.opacity = stateDrawCopy.currentLayout.fillTransparency / 100;
-    }
-
-    switch (stateDrawCopy.selectedDrawType) {
+/**
+ * Collects type-specific draw state properties that vary per selectedDrawType.
+ * @param {string} selectedDrawType The currently selected draw type.
+ * @param {Object} stateDrawCopy Deep copy of the draw store state.
+ * @returns {Object} Additional draw state properties for the given type.
+ */
+export function getTypeSpecificProperties (selectedDrawType, stateDrawCopy) {
+    switch (selectedDrawType) {
         case "line":
-            drawState.lineLength = stateDrawCopy.currentLayout.lineLength;
-            drawState.drawType = {
-                "id": "drawLine",
-                "geometry": "LineString"
-            };
-            break;
-        case "pen":
-            drawState.drawType = {
-                "id": "drawCurve",
-                "geometry": "LineString"
-            };
-            break;
+            return {lineLength: stateDrawCopy.currentLayout.lineLength};
         case "circle":
-            drawState.circleRadius = stateDrawCopy.circleOptions.innerRadius;
-            drawState.drawType = {
-                "id": "drawCircle",
-                "geometry": "Circle"
-            };
-            break;
+            return {circleRadius: stateDrawCopy.circleOptions.innerRadius};
         case "doubleCircle":
-            drawState.circleRadius = stateDrawCopy.circleOptions.innerRadius;
-            drawState.circleOuterRadius = stateDrawCopy.circleOptions.outerRadius;
-            stateDrawCopy.currentLayoutOuterCircle.strokeColor.push(1);
-            drawState.outerColorContour = stateDrawCopy.currentLayoutOuterCircle.strokeColor;
-            drawState.outerColorFill = stateDrawCopy.currentLayoutOuterCircle.fillColor.concat(1 - stateDrawCopy.currentLayoutOuterCircle.fillTransparency / 100);
-            drawState.drawType = {
-                "id": "drawCircle",
-                "geometry": "Circle"
+            return {
+                circleRadius: stateDrawCopy.circleOptions.innerRadius,
+                circleOuterRadius: stateDrawCopy.circleOptions.outerRadius,
+                outerColorContour: [...stateDrawCopy.currentLayoutOuterCircle.strokeColor, 1],
+                outerColorFill: [...stateDrawCopy.currentLayoutOuterCircle.fillColor, 1 - stateDrawCopy.currentLayoutOuterCircle.fillTransparency / 100]
             };
-            break;
         case "writeText":
-            drawState.font = stateDrawCopy.currentLayout.font;
-            drawState.fontSize = stateDrawCopy.currentLayout.fontSize;
-            drawState.text = stateDrawCopy.currentLayout.text;
-            drawState.drawType = {
-                "id": "writeText",
-                "geometry": "Point"
+            return {
+                font: stateDrawCopy.currentLayout.font,
+                fontSize: stateDrawCopy.currentLayout.fontSize,
+                text: stateDrawCopy.currentLayout.text
             };
-            break;
         case "point":
-            drawState.pointSize = stateDrawCopy.pointSize;
-            drawState.symbol = {
-                value: "simple_point",
-                scale: 1
+            return {
+                pointSize: 16,
+                symbol: {value: "simple_point", scale: 1}
             };
-            drawState.drawType = {
-                "id": "drawSymbol",
-                "geometry": "Point"
-            };
-            break;
-        case "box":
-            drawState.drawType = {
-                "id": "drawArea",
-                "geometry": "Polygon"
-            };
-            break;
-        case "polygon":
-            drawState.drawType = {
-                "id": "drawArea",
-                "geometry": "Polygon"
-            };
-            break;
-        case "square":
-            drawState.drawType = {
-                "id": "drawSquare",
-                "geometry": "Square"
-            };
-            break;
         default: {
             const selectedSymbol = stateDrawCopy.selectedSymbol;
 
             if (selectedSymbol) {
-                drawState.symbol = {
-                    value: selectedSymbol.value,
-                    scale: selectedSymbol.scale || 1
+                return {
+                    pointSize: selectedSymbol.type === "simple_point" ? 16 : undefined,
+                    symbol: {
+                        value: selectedSymbol.value,
+                        scale: selectedSymbol.scale || 1
+                    }
                 };
-                if (selectedSymbol.type === "simple_point") {
-                    drawState.pointSize = 16;
-                }
             }
-            drawState.drawType = {
-                "id": "drawSymbol",
-                "geometry": "Point"
-            };
-            break;
+            return {};
         }
     }
+}
 
-    event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {"drawState": drawState}), false);
+/**
+ * Handles the drawend event of the draw interaction.
+ * Reads the current draw state from the store and writes a complete
+ * "masterportal_attributes" object onto the drawn feature, including
+ * style configuration, geometry type mapping, and color settings.
+ * @module shared/modules/draw/js/handleDrawEvent
+ * @param {module:ol/interaction/Draw~DrawEvent} event The draw interaction event containing the drawn feature.
+ * @returns {void}
+ */
+export default function handleDrawEvent (event) {
+    const stateDrawCopy = JSON.parse(JSON.stringify(store.state.Modules.Draw)),
+        {selectedDrawType, idCounter, currentLayout} = stateDrawCopy,
+        isLineType = ["line", "pen"].includes(selectedDrawType),
+        geometry = event.feature.getGeometry(),
+        drawState = {
+            drawType: drawTypeConfig[selectedDrawType] || {id: "drawSymbol", geometry: "Point"},
+            imgPath: Config.wfsImgPath,
+            zIndex: selectedDrawType === "doubleCircle" ? idCounter + 1 : idCounter,
+            strokeWidth: currentLayout.strokeWidth,
+            ...buildColors(currentLayout, isLineType),
+            ...getTypeSpecificProperties(selectedDrawType, stateDrawCopy)
+        },
+        attributes = {
+            ...event.feature.get("masterportal_attributes"),
+            fromDrawTool: true,
+            styleId: selectedDrawType === "doubleCircle" ? idCounter + 2 : idCounter + 1,
+            drawState
+        };
+
+    if (geometry.getType() === "Polygon" && selectedDrawType === "square") {
+        attributes.isSquare = true;
+        attributes.squareCoords = geometry.getCoordinates()[0];
+    }
+
+    event.feature.set("masterportal_attributes", attributes, false);
 }
