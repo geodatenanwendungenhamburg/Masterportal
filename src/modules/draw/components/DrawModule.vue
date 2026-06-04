@@ -274,7 +274,8 @@ export default {
 }
 
 #modules-draw-module {
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .selected-drawtypes-container {
