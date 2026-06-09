@@ -34,6 +34,9 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
         selectedDrawTypeMain = "";
 
         store = createStore({
+            actions: {
+                addLayerToLayerConfig: sinon.stub()
+            },
             modules: {
                 Modules: {
                     namespaced: true,

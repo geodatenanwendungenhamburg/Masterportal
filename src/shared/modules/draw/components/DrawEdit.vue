@@ -228,7 +228,6 @@ export default {
     methods: {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
         ...mapMutations(["setButtonsDisabled"]),
-        undoRedoFeatures,
         isDeleteAllMode,
         convertColor,
 
@@ -373,7 +372,7 @@ export default {
          */
         regulateUndo () {
             this.redoing = true;
-            this.undoRedoFeatures(this.nonReactiveUndoFeatures, this.nonReactiveRedoFeatures, "undo", this.source);
+            undoRedoFeatures(this.nonReactiveUndoFeatures, this.nonReactiveRedoFeatures, "undo", this.source, this.undoRedoDeleteAll);
             this.syncUndoRedoCounts();
             this.redoing = false;
         },
@@ -384,7 +383,7 @@ export default {
          */
         regulateRedo () {
             this.redoing = true;
-            this.undoRedoFeatures(this.nonReactiveRedoFeatures, this.nonReactiveUndoFeatures, "redo", this.source);
+            undoRedoFeatures(this.nonReactiveRedoFeatures, this.nonReactiveUndoFeatures, "redo", this.source, this.undoRedoDeleteAll);
             this.syncUndoRedoCounts();
             this.redoing = false;
         },
