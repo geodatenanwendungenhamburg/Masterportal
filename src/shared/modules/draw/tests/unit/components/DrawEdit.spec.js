@@ -1,6 +1,7 @@
 import {createStore} from "vuex";
 import {shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
+import {toRaw} from "vue";
 import Feature from "ol/Feature.js";
 import Point from "ol/geom/Point.js";
 import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactions/modifyInteraction.js";
@@ -393,55 +394,33 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
         });
     });
 
-    describe("applyTextEdit", () => {
-        it("should do nothing if selectedTextFeature is null", () => {
+    describe("modify mode feature selection", () => {
+        it("should set selectedEditFeature when onFeatureSelected is called", () => {
+            const feature = new Feature({geometry: new Point([0, 0])});
+
+            feature.set("masterportal_attributes", {
+                drawState: {drawType: {id: "drawLine", geometry: "LineString"}}
+            });
+
             wrapper = shallowMount(DrawEditComponent, {
                 propsData: {layer},
                 global: {plugins: [store]}
             });
 
-            expect(() => wrapper.vm.applyTextEdit()).to.not.throw();
+            wrapper.vm.selectedEditFeature = feature;
+
+            expect(toRaw(wrapper.vm.selectedEditFeature)).to.equal(feature);
         });
 
-        it("should set text style and attributes on the selected feature", () => {
-            const feature = new Feature();
-
+        it("should clear selectedEditFeature when set to null", () => {
             wrapper = shallowMount(DrawEditComponent, {
                 propsData: {layer},
                 global: {plugins: [store]}
             });
 
-            wrapper.vm.selectedTextFeature = feature;
-            wrapper.vm.editText = "Hallo";
-            wrapper.vm.editFontSize = 20;
-            wrapper.vm.editFont = "Arial";
-            wrapper.vm.editFillColor = "#ff0000";
-            wrapper.vm.editFillTransparency = 0;
+            wrapper.vm.selectedEditFeature = null;
 
-            wrapper.vm.applyTextEdit();
-
-            expect(feature.get("textContent")).to.equal("Hallo");
-            expect(feature.get("textFontSize")).to.equal(20);
-            expect(feature.get("textFont")).to.equal("Arial");
-        });
-
-        it("should calculate alpha correctly from editFillTransparency", () => {
-            const feature = new Feature();
-
-            wrapper = shallowMount(DrawEditComponent, {
-                propsData: {layer},
-                global: {plugins: [store]}
-            });
-
-            wrapper.vm.selectedTextFeature = feature;
-            wrapper.vm.editFillColor = "#000000";
-            wrapper.vm.editFillTransparency = 50;
-
-            wrapper.vm.applyTextEdit();
-
-            const colorArray = feature.get("textFillColor");
-
-            expect(colorArray[3]).to.equal(0.5);
+            expect(wrapper.vm.selectedEditFeature).to.be.null;
         });
     });
 

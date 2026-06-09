@@ -1628,6 +1628,10 @@
           "textLabel": "Text",
           "textPlaceholder": "Text eingeben"
         },
+        "drawEditStyle": {
+          "iconScale": "Symbolgröße",
+          "pointSize": "Punktgröße"
+        },
         "drawLayout": {
           "fillColor": "Füllfarbe",
           "fillTransparency": "Transparenz",

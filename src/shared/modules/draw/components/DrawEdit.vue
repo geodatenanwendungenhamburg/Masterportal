@@ -10,15 +10,13 @@ import {
     performUndo,
     performRedo,
     handleDeleteAll,
-    applyTextEditToFeature,
     toggleLayerVisibility,
     isDeleteAllMode
 } from "../js/editInteractions.js";
 import IconButton from "../../buttons/components/IconButton.vue";
 import ExportItem from "@shared/modules/exportItem/components/ExportItem.vue";
-import InputText from "@shared/modules/inputs/components/InputText.vue";
-import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
 import DrawEditAttributes from "./DrawEditAttributes.vue";
+import DrawEditStyle from "./DrawEditStyle.vue";
 
 /**
  * Shared component that provides buttons to edit drawn features.
@@ -39,11 +37,10 @@ export default {
     name: "DrawEdit",
     components: {
         DrawEditAttributes,
+        DrawEditStyle,
         IconButton,
         LayoutFrame,
-        ExportItem,
-        InputText,
-        SliderItem
+        ExportItem
     },
     props: {
         drawEdits: {
@@ -109,14 +106,8 @@ export default {
             drawLayerVisible: true,
             redoing: false,
             pendingInnerCircleFeature: null,
-            selectedTextFeature: null,
-            editText: "",
-            editFontSize: 16,
-            editFont: "Arial",
-            textClickHandler: null,
-            editFillColor: "#000000",
-            editFillTransparency: 0,
-            activeEditKey: "",
+            selectedEditFeature: null,
+            featureClickHandler: null,
             featureCounter: 1,
             undoCount: 0,
             redoCount: 0
@@ -158,10 +149,10 @@ export default {
             if (selectedInteraction !== "modify") {
                 this.removeInteraction(this.currentModifyInteraction);
                 this.currentModifyInteraction = null;
-                if (this.textClickHandler) {
-                    mapCollection.getMap("2D").un("singleclick", this.textClickHandler);
-                    this.textClickHandler = null;
-                    this.selectedTextFeature = null;
+                if (this.featureClickHandler) {
+                    mapCollection.getMap("2D").un("singleclick", this.featureClickHandler);
+                    this.featureClickHandler = null;
+                    this.selectedEditFeature = null;
                 }
             }
         },
@@ -322,7 +313,7 @@ export default {
             if (typeof this.setSelectedInteraction === "function") {
                 this.setSelectedInteraction("modify");
             }
-            this.selectedTextFeature = null;
+            this.selectedEditFeature = null;
 
             const result = setupModifyInteraction({
                 currentModifyInteraction: this.currentModifyInteraction,
@@ -332,18 +323,8 @@ export default {
                 redoFeatures: this.nonReactiveRedoFeatures,
                 addInteraction: this.addInteraction,
                 removeInteraction: this.removeInteraction,
-                onTextFeatureSelected: (data) => {
-                    if (data === null) {
-                        this.selectedTextFeature = null;
-                    }
-                    else {
-                        this.selectedTextFeature = data.feature;
-                        this.editText = data.text;
-                        this.editFontSize = data.fontSize;
-                        this.editFont = data.font;
-                        this.editFillColor = data.fillColor;
-                        this.editFillTransparency = data.fillTransparency;
-                    }
+                onFeatureSelected: (feature) => {
+                    this.selectedEditFeature = feature;
                 },
                 onModifyEnd: () => {
                     this.nonReactiveRedoFeatures = markRaw([]);
@@ -352,7 +333,7 @@ export default {
             });
 
             this.currentModifyInteraction = result.modifyInteraction;
-            this.textClickHandler = result.textClickHandler;
+            this.featureClickHandler = result.featureClickHandler;
             this.showFrame = true;
         },
 
@@ -443,21 +424,6 @@ export default {
             this.localDrawIcons.hide = isVisible ? "bi-eye-slash" : "bi-eye";
             this.$store.commit("Modules/Draw/setButtonsDisabled", isVisible);
             this.drawLayerVisible = toggleLayerVisibility(this.layer);
-        },
-
-        /**
-         * Applies text edits to the currently selected text feature.
-         * @returns {void}
-         */
-        applyTextEdit () {
-            applyTextEditToFeature({
-                feature: this.selectedTextFeature,
-                text: this.editText,
-                fontSize: this.editFontSize,
-                font: this.editFont,
-                fillColor: this.editFillColor,
-                fillTransparency: this.editFillTransparency
-            });
         }
     }
 };
@@ -499,108 +465,7 @@ export default {
                 :features="features"
             />
             <div v-if="selectedInteraction === 'modify'">
-                <div
-                    v-if="selectedTextFeature"
-                    class="mt-4"
-                >
-                    <InputText
-                        id="draw-text-edit"
-                        v-model="editText"
-                        :label="$t('common:shared.modules.draw.drawEdit.textLabel')"
-                        :placeholder="$t('common:shared.modules.draw.drawEdit.textPlaceholder')"
-                        type="text"
-                    />
-                    <select
-                        v-model="editFontSize"
-                        class="form-select mb-2"
-                    >
-                        <option
-                            v-for="s in [10,12,14,16,18,20,24,28,32,36,40,48]"
-                            :key="s"
-                            :value="s"
-                        >
-                            {{ s }} px
-                        </option>
-                    </select>
-                    <select
-                        v-model="editFont"
-                        class="form-select mb-2"
-                    >
-                        <option
-                            v-for="f in ['Arial', 'Times New Roman', 'Calibri']"
-                            :key="f"
-                            :value="f"
-                        >
-                            {{ f }}
-                        </option>
-                    </select>
-                    <div class="draw-layout-buttons d-flex flex-row align-items-center mb-2">
-                        <div class="button-container text-center">
-                            <button
-                                id="draw-edit-fill-color"
-                                class="btn btn-secondary"
-                            >
-                                <i
-                                    class="bi-paint-bucket"
-                                    role="img"
-                                />
-                                <span
-                                    class="color-preview"
-                                    :style="{ backgroundColor: editFillColor }"
-                                />
-                                <input
-                                    type="color"
-                                    class="color-input-overlay"
-                                    :value="editFillColor"
-                                    @input="event => editFillColor = event.target.value"
-                                >
-                            </button>
-                            <span class="text-center btn-label">
-                                {{ $t("common:shared.modules.draw.drawLayout.fillColor") }}
-                            </span>
-                        </div>
-                        <div class="button-container text-center">
-                            <button
-                                id="draw-edit-fill-transparency"
-                                :class="['btn', 'btn-secondary', activeEditKey === 'fillTransparency' ? 'active' : '']"
-                                @click="activeEditKey = activeEditKey === 'fillTransparency' ? '' : 'fillTransparency'"
-                            >
-                                <i
-                                    class="bi-droplet-half"
-                                    role="img"
-                                />
-                                <span class="btn-value">{{ editFillTransparency + '%' }}</span>
-                            </button>
-                            <span class="text-center btn-label">
-                                {{ $t("common:shared.modules.draw.drawLayout.fillTransparency") }}
-                            </span>
-                        </div>
-                    </div>
-                    <div
-                        v-if="activeEditKey === 'fillTransparency'"
-                        class="d-flex mb-2"
-                    >
-                        <SliderItem
-                            id="slider-edit-fill-transparency"
-                            :aria="`${editFillTransparency}%`"
-                            :label="`${editFillTransparency}%`"
-                            min="0"
-                            max="100"
-                            :value="editFillTransparency.toString()"
-                            :step="1"
-                            :interaction="event => editFillTransparency = parseInt(event.target.value)"
-                        />
-                    </div>
-                    <button
-                        class="btn btn-primary"
-                        @click="applyTextEdit"
-                    >
-                        {{ $t("common:shared.modules.draw.drawEdit.textAccept") }}
-                    </button>
-                </div>
-                <p v-else>
-                    {{ $t("common:shared.modules.draw.drawEdit.chooseFeature") }}
-                </p>
+                <DrawEditStyle :selected-feature="selectedEditFeature" />
             </div>
             <DrawEditAttributes
                 v-if="selectedInteraction === 'editAttributes'"
@@ -620,55 +485,6 @@ export default {
         margin-bottom: 5px;
         margin-right: 5px;
     }
-}
-
-.draw-layout-buttons {
-    flex-wrap: wrap;
-}
-
-.button-container {
-    margin-right: 8px;
-    margin-bottom: 4px;
-}
-
-.btn-label {
-    display: block;
-    font-size: 0.8rem;
-}
-
-.btn-value {
-    font-size: 0.75rem;
-    width: 100%;
-    display: block;
-}
-
-.color-preview {
-    display: block;
-    width: 1.8rem;
-    height: 0.6rem;
-    border-radius: 4px;
-}
-
-.color-input-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-    border: none;
-    padding: 0;
-    margin: 0;
-}
-
-.draw-layout-buttons .btn {
-    width: 3.65rem;
-    height: 3.65rem;
-    position: relative;
-    text-align: center;
-    font-size: 1.143rem;
-    border-radius: 50%;
 }
 
 </style>
