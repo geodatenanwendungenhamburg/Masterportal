@@ -1612,6 +1612,10 @@
           "textLabel": "Text",
           "textPlaceholder": "Enter text"
         },
+        "drawEditStyle": {
+          "iconScale": "Icon scale",
+          "pointSize": "Point size"
+        },
         "drawLayout": {
           "fillColor": "Fill color",
           "fillTransparency": "Transparency",

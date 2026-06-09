@@ -5,6 +5,59 @@ import {convertColor} from "@shared/js/utils/convertColor.js";
 import selectInteraction from "@masterportal/masterportalapi/src/maps/interactions/selectInteraction.js";
 import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactions/modifyInteraction.js";
 import undoRedoFeatures, {isDeleteAllMode} from "./undoRedoFeatures.js";
+import {getFeatureEditType} from "./editStyleInteractions.js";
+
+/**
+ * Creates a click handler that selects features on the map for style editing.
+ * @param {module:ol/Map} map The OL map instance.
+ * @param {ol/layer/Vector} layer The draw layer to match features against.
+ * @param {Function|undefined} onFeatureSelected Callback for any feature selection.
+ * @param {Function|undefined} onTextFeatureSelected Legacy callback for text features.
+ * @returns {Function} The click handler to register on the map.
+ */
+function createFeatureClickHandler (map, layer, onFeatureSelected, onTextFeatureSelected) {
+    return function (event) {
+        let found = false;
+
+        map.forEachFeatureAtPixel(event.pixel, (feature, featureLayer) => {
+            if (featureLayer !== layer) {
+                return false;
+            }
+
+            const editType = getFeatureEditType(feature);
+
+            if (editType && onFeatureSelected) {
+                onFeatureSelected(feature);
+                found = true;
+                return true;
+            }
+            else if (editType === "text" && onTextFeatureSelected) {
+                const fillColor = feature.get("textFillColor") || [0, 0, 0, 1];
+
+                onTextFeatureSelected({
+                    feature,
+                    text: feature.get("textContent") ?? "",
+                    fontSize: feature.get("textFontSize") ?? 16,
+                    font: feature.get("textFont") ?? "Arial",
+                    fillColor: convertColor(fillColor.slice(0, 3), "hex"),
+                    fillTransparency: Math.round((1 - (fillColor[3] ?? 1)) * 100)
+                });
+                found = true;
+                return true;
+            }
+            return false;
+        }, {hitTolerance: 10});
+
+        if (!found) {
+            if (onFeatureSelected) {
+                onFeatureSelected(null);
+            }
+            else if (onTextFeatureSelected) {
+                onTextFeatureSelected(null);
+            }
+        }
+    };
+}
 
 /**
  * Creates two select interactions for deleting features.
@@ -51,43 +104,20 @@ export function setupDeleteInteraction ({currentSelectInteractions, layer, sourc
  * @param {Object[]} context.redoFeatures The redo stack.
  * @param {Function} context.addInteraction Action to add an interaction to the map.
  * @param {Function} context.removeInteraction Action to remove an interaction from the map.
- * @param {Function} context.onTextFeatureSelected Callback when a text feature is selected.
+ * @param {Function} [context.onTextFeatureSelected] Callback when a text feature is selected (legacy).
+ * @param {Function} [context.onFeatureSelected] Callback when any feature is selected for style editing.
  * @param {Function} context.onModifyEnd Callback after a modify operation ends.
- * @returns {Object} Object containing {modifyInteraction, textClickHandler, originalGeometry}.
+ * @returns {Object} Object containing {modifyInteraction, featureClickHandler}.
  */
-export function setupModifyInteraction ({currentModifyInteraction, source, layer, undoFeatures, redoFeatures, addInteraction, removeInteraction, onTextFeatureSelected, onModifyEnd}) {
+export function setupModifyInteraction ({currentModifyInteraction, source, layer, undoFeatures, redoFeatures, addInteraction, removeInteraction, onTextFeatureSelected, onFeatureSelected, onModifyEnd}) {
     removeInteraction(currentModifyInteraction);
 
     const map = mapCollection.getMap("2D");
     let originalGeometry = null;
 
-    const textClickHandler = (event) => {
-        let found = false;
+    const featureClickHandler = createFeatureClickHandler(map, layer, onFeatureSelected, onTextFeatureSelected);
 
-        map.forEachFeatureAtPixel(event.pixel, (feature, featureLayer) => {
-            if (featureLayer === layer && feature.get("drawType") === "writeText") {
-                const fillColor = feature.get("textFillColor") || [0, 0, 0, 1];
-
-                onTextFeatureSelected({
-                    feature,
-                    text: feature.get("textContent") ?? "",
-                    fontSize: feature.get("textFontSize") ?? 16,
-                    font: feature.get("textFont") ?? "Arial",
-                    fillColor: convertColor(fillColor.slice(0, 3), "hex"),
-                    fillTransparency: Math.round((1 - (fillColor[3] ?? 1)) * 100)
-                });
-                found = true;
-                return true;
-            }
-            return false;
-        }, {hitTolerance: 10});
-
-        if (!found) {
-            onTextFeatureSelected(null);
-        }
-    };
-
-    map.on("singleclick", textClickHandler);
+    map.on("singleclick", featureClickHandler);
 
     const newModifyInteraction = modifyInteraction.createModifyInteraction(source, {
         onModifyEnd: (event) => {
@@ -112,7 +142,7 @@ export function setupModifyInteraction ({currentModifyInteraction, source, layer
     addInteraction(newModifyInteraction);
     newModifyInteraction.setActive(true);
 
-    return {modifyInteraction: newModifyInteraction, textClickHandler};
+    return {modifyInteraction: newModifyInteraction, featureClickHandler};
 }
 
 /**
