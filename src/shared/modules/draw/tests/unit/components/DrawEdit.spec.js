@@ -508,4 +508,89 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
             expect(wrapper.vm.isDeleteAllMode("feature1")).to.be.false;
         });
     });
+
+    describe("registerSourceListeners", () => {
+        it("should track added features in undo stack", () => {
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+
+            wrapper.vm.registerSourceListeners();
+
+            const feature = new Feature({geometry: new Point([0, 0])});
+
+            feature.set("masterportal_attributes", {fromDrawTool: true});
+            layer.getSource().addFeature(feature);
+
+            expect(wrapper.vm.undoCount).to.be.greaterThan(0);
+        });
+
+        it("should track removed features in undo stack", () => {
+            const feature = new Feature({geometry: new Point([0, 0])});
+
+            layer.getSource().addFeature(feature);
+
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+
+            wrapper.vm.registerSourceListeners();
+            layer.getSource().removeFeature(feature);
+
+            expect(wrapper.vm.undoCount).to.be.greaterThan(0);
+        });
+
+        it("should not track features when redoing is true", () => {
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+
+            wrapper.vm.registerSourceListeners();
+            wrapper.vm.redoing = true;
+
+            const feature = new Feature({geometry: new Point([0, 0])});
+
+            layer.getSource().addFeature(feature);
+
+            expect(wrapper.vm.undoCount).to.equal(0);
+        });
+    });
+
+    describe("syncUndoRedoCounts", () => {
+        it("should update reactive counts from non-reactive stacks", () => {
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+
+            wrapper.vm.nonReactiveUndoFeatures.push({feature: {}, mode: "draw"});
+            wrapper.vm.nonReactiveUndoFeatures.push({feature: {}, mode: "draw"});
+            wrapper.vm.nonReactiveRedoFeatures.push({feature: {}, mode: "draw"});
+
+            wrapper.vm.syncUndoRedoCounts();
+
+            expect(wrapper.vm.undoCount).to.equal(2);
+            expect(wrapper.vm.redoCount).to.equal(1);
+        });
+    });
+
+    describe("isDeleteAllMode", () => {
+        beforeEach(() => {
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+        });
+
+        it("should return true if entry is an array", () => {
+            expect(wrapper.vm.isDeleteAllMode(["feature1", "feature2"])).to.be.true;
+        });
+
+        it("should return false if entry is not an array", () => {
+            expect(wrapper.vm.isDeleteAllMode("feature1")).to.be.false;
+        });
+    });
 });
