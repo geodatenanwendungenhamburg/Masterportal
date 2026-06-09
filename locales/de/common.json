@@ -1624,7 +1624,9 @@
           "redo": "Wiederholen",
           "undo": "Rückgängig machen",
           "chooseFeature": "Wählen Sie eine Geometrie oder einen Text zum Bearbeiten aus.",
-          "textAccept": "Übernehmen"
+          "textAccept": "Übernehmen",
+          "textLabel": "Text",
+          "textPlaceholder": "Text eingeben"
         },
         "drawLayout": {
           "fillColor": "Füllfarbe",

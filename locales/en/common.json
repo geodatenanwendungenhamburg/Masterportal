@@ -1622,7 +1622,9 @@
           "redo": "Redo",
           "undo": "Undo",
           "chooseFeature": "Choose a geometry or text to edit.",
-          "textAccept": "Accept"
+          "textAccept": "Accept",
+          "textLabel": "Text",
+          "textPlaceholder": "Enter text"
         },
         "drawLayout": {
           "fillColor": "Fill color",
