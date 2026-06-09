@@ -11,6 +11,7 @@ import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 
 import DrawEditComponent from "@shared/modules/draw/components/DrawEdit.vue";
+import undoRedoFeatures from "@shared/modules/draw/js/undoRedoFeatures.js";
 
 
 describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
@@ -187,8 +188,6 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
     });
 
     describe("regulateUndo and regulateRedo", () => {
-        let undoRedoFeaturesSpy;
-
         beforeEach(() => {
             wrapper = shallowMount(DrawEditComponent, {
                 propsData: {
@@ -198,24 +197,18 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
                     plugins: [store]
                 }
             });
-
-            undoRedoFeaturesSpy = sinon.spy(wrapper.vm, "undoRedoFeatures");
         });
 
-        it("should start undoRedoFeatures with 'undo'", async () => {
+        it("should set redoing to true during undo and back to false", async () => {
             wrapper.vm.regulateUndo();
 
-            expect(undoRedoFeaturesSpy.firstCall.args[0]).to.deep.equals(wrapper.vm.nonReactiveUndoFeatures);
-            expect(undoRedoFeaturesSpy.firstCall.args[1]).to.deep.equals(wrapper.vm.nonReactiveRedoFeatures);
-            expect(undoRedoFeaturesSpy.firstCall.args[2]).to.equals("undo");
+            expect(wrapper.vm.redoing).to.be.false;
         });
 
-        it("should start undoRedoFeatures with 'redo'", async () => {
+        it("should set redoing to true during redo and back to false", async () => {
             wrapper.vm.regulateRedo();
 
-            expect(undoRedoFeaturesSpy.firstCall.args[0]).to.deep.equals(wrapper.vm.nonReactiveRedoFeatures);
-            expect(undoRedoFeaturesSpy.firstCall.args[1]).to.deep.equals(wrapper.vm.nonReactiveUndoFeatures);
-            expect(undoRedoFeaturesSpy.firstCall.args[2]).to.equals("redo");
+            expect(wrapper.vm.redoing).to.be.false;
         });
     });
 
@@ -254,7 +247,7 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
                 mode = "undo";
 
             wrapper.vm.source.addFeatures([feature1, feature2]);
-            wrapper.vm.undoRedoFeatures(features, [], mode, wrapper.vm.source);
+            undoRedoFeatures(features, [], mode, wrapper.vm.source, wrapper.vm.undoRedoDeleteAll);
 
             expect(wrapper.vm.source.getFeatures().length).to.equals(1);
             expect(wrapper.vm.source.getFeatures()[0]).to.deep.equals(feature1);
@@ -274,7 +267,7 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
                 mode = "undo";
 
             wrapper.vm.source.addFeatures([feature1]);
-            wrapper.vm.undoRedoFeatures(features, [], mode, wrapper.vm.source);
+            undoRedoFeatures(features, [], mode, wrapper.vm.source, wrapper.vm.undoRedoDeleteAll);
 
             expect(wrapper.vm.source.getFeatures().length).to.equals(2);
             expect(wrapper.vm.source.getFeatures()[0]).to.deep.equals(feature1);
@@ -290,7 +283,7 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
                 ],
                 mode = "undo";
 
-            wrapper.vm.undoRedoFeatures(features, [], mode, wrapper.vm.source);
+            undoRedoFeatures(features, [], mode, wrapper.vm.source, wrapper.vm.undoRedoDeleteAll);
 
             expect(undoRedoDeleteAllSpy.calledOnce).to.be.true;
             expect(undoRedoDeleteAllSpy.firstCall.args[0]).to.equals(mode);
