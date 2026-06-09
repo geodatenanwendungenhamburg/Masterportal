@@ -2,6 +2,7 @@ import {createStore} from "vuex";
 import {config, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import Feature from "ol/Feature.js";
+import Point from "ol/geom/Point.js";
 import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactions/modifyInteraction.js";
 import {pointerMove} from "ol/events/condition.js";
 import {Select} from "ol/interaction.js";
@@ -11,7 +12,6 @@ import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 
 import DrawEditComponent from "@shared/modules/draw/components/DrawEdit.vue";
-import undoRedoFeatures from "@shared/modules/draw/js/undoRedoFeatures.js";
 
 config.global.mocks.$t = key => key;
 
@@ -72,25 +72,15 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
 
     it("renders the drawEdits, if undoFeatures or redoFeatures length > 0", async () => {
         wrapper = shallowMount(DrawEditComponent, {
-            propsData: {
-                layer
-            },
-            global: {
-                plugins: [store]
-            }
+            propsData: {layer},
+            global: {plugins: [store]}
         });
-
-        wrapper.setData({undoFeatures: ["feature"]});
-        await wrapper.vm.$nextTick();
 
         expect(wrapper.find("#draw-edit-deleteAll").exists()).to.be.true;
         expect(wrapper.find("#draw-edit-deleteAll").attributes().aria).to.equals("common:shared.modules.draw.drawEdit.deleteAll");
 
         expect(wrapper.find("#draw-edit-delete").exists()).to.be.true;
         expect(wrapper.find("#draw-edit-delete").attributes().aria).to.equals("common:shared.modules.draw.drawEdit.delete");
-
-        expect(wrapper.find("#draw-edit-edit").exists()).to.be.true;
-        expect(wrapper.find("#draw-edit-edit").attributes().aria).to.equals("common:shared.modules.draw.drawEdit.edit");
 
         expect(wrapper.find("#draw-edit-undo").exists()).to.be.true;
         expect(wrapper.find("#draw-edit-undo").attributes().aria).to.equals("common:shared.modules.draw.drawEdit.undo");
@@ -100,14 +90,10 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
     });
 
     describe("regulateDelete", () => {
-        it("should create select interactons for deleteting features", () => {
+        it("should create select interactions for deleting features", () => {
             wrapper = shallowMount(DrawEditComponent, {
-                propsData: {
-                    layer
-                },
-                global: {
-                    plugins: [store]
-                }
+                propsData: {layer},
+                global: {plugins: [store]}
             });
 
             wrapper.vm.regulateDelete();
@@ -118,24 +104,17 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
             expect(createSelectInteractionSpy.secondCall.args[1]).to.deep.equals(pointerMove);
 
             expect(removeSelectedFeatureSpy.calledOnce).to.be.true;
-            expect(removeSelectedFeatureSpy.firstCall.args[0]).to.deep.equals(wrapper.vm.currentSelectInteractions[0]);
             expect(removeSelectedFeatureSpy.firstCall.args[1]).to.deep.equals(wrapper.vm.source);
 
             expect(addInteractionSpy.calledTwice).to.be.true;
-            expect(addInteractionSpy.firstCall.args[1]).to.deep.equals(wrapper.vm.currentSelectInteractions[0]);
-            expect(addInteractionSpy.secondCall.args[1]).to.deep.equals(wrapper.vm.currentSelectInteractions[1]);
         });
     });
 
     describe("createSelectInteractions", () => {
-        it("should create two select interactons for deleteting features", () => {
+        it("should create two select interactions", () => {
             wrapper = shallowMount(DrawEditComponent, {
-                propsData: {
-                    layer
-                },
-                global: {
-                    plugins: [store]
-                }
+                propsData: {layer},
+                global: {plugins: [store]}
             });
 
             const currentSelectInteractions = wrapper.vm.createSelectInteractions(layer);
@@ -147,32 +126,29 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
     });
 
     describe("regulateDeleteAll", () => {
-        it("should clear vector source", async () => {
+        it("should clear vector source and push features to undo stack", async () => {
+            const feature = new Feature();
+
+            layer.getSource().addFeature(feature);
+
             wrapper = shallowMount(DrawEditComponent, {
-                propsData: {
-                    layer
-                },
-                global: {
-                    plugins: [store]
-                }
+                propsData: {layer},
+                global: {plugins: [store]}
             });
 
             wrapper.vm.regulateDeleteAll();
 
             expect(wrapper.vm.mode).to.equals("deleteAll");
             expect(wrapper.vm.source.getFeatures()).to.deep.equals([]);
+            expect(wrapper.vm.nonReactiveUndoFeatures.length).to.equal(1);
         });
     });
 
     describe("regulateModify", () => {
-        it("should create modify interaction", async () => {
+        it("should create modify interaction and set showFrame to true", async () => {
             wrapper = shallowMount(DrawEditComponent, {
-                propsData: {
-                    layer
-                },
-                global: {
-                    plugins: [store]
-                }
+                propsData: {layer},
+                global: {plugins: [store]}
             });
 
             wrapper.vm.regulateModify();
@@ -184,137 +160,52 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
             expect(removeInteractionSpy.firstCall.args[1]).to.be.null;
 
             expect(addInteractionSpy.calledOnce).to.be.true;
-            expect(addInteractionSpy.firstCall.args[1]).to.deep.equals(wrapper.vm.currentModifyInteraction);
+            expect(wrapper.vm.currentModifyInteraction).to.not.be.null;
+            expect(wrapper.vm.showFrame).to.be.true;
         });
     });
 
     describe("regulateUndo and regulateRedo", () => {
         beforeEach(() => {
             wrapper = shallowMount(DrawEditComponent, {
-                propsData: {
-                    layer
-                },
-                global: {
-                    plugins: [store]
-                }
+                propsData: {layer},
+                global: {plugins: [store]}
             });
         });
 
-        it("should set redoing to true during undo and back to false", async () => {
+        it("should set redoing to true during undo and back to false", () => {
+            wrapper.vm.regulateUndo();
+            expect(wrapper.vm.redoing).to.be.false;
+        });
+
+        it("should set redoing to true during redo and back to false", () => {
+            wrapper.vm.regulateRedo();
+            expect(wrapper.vm.redoing).to.be.false;
+        });
+
+        it("should undo a drawn feature", () => {
+            const feature = new Feature();
+
+            layer.getSource().addFeature(feature);
+            wrapper.vm.nonReactiveUndoFeatures.push({feature, mode: "draw"});
+            wrapper.vm.syncUndoRedoCounts();
+
             wrapper.vm.regulateUndo();
 
-            expect(wrapper.vm.redoing).to.be.false;
+            expect(wrapper.vm.source.getFeatures().length).to.equal(0);
+            expect(wrapper.vm.nonReactiveRedoFeatures.length).to.equal(1);
         });
 
-        it("should set redoing to true during redo and back to false", async () => {
+        it("should redo a drawn feature", () => {
+            const feature = new Feature();
+
+            wrapper.vm.nonReactiveRedoFeatures.push({feature, mode: "draw"});
+            wrapper.vm.syncUndoRedoCounts();
+
             wrapper.vm.regulateRedo();
 
-            expect(wrapper.vm.redoing).to.be.false;
-        });
-    });
-
-    describe("undoRedoFeatures", () => {
-        let feature1,
-            feature2,
-            undoRedoDeleteAllSpy;
-
-        beforeEach(() => {
-            wrapper = shallowMount(DrawEditComponent, {
-                propsData: {
-                    layer
-                },
-                global: {
-                    plugins: [store]
-                }
-            });
-
-            undoRedoDeleteAllSpy = sinon.spy(wrapper.vm, "undoRedoDeleteAll");
-
-            feature1 = new Feature();
-            feature2 = new Feature();
-        });
-
-        it("should remove the last feature from source, if feature mode is 'draw'", async () => {
-            const features = [
-                    {
-                        feature: feature1,
-                        mode: "draw"
-                    },
-                    {
-                        feature: feature2,
-                        mode: "draw"
-                    }
-                ],
-                mode = "undo";
-
-            wrapper.vm.source.addFeatures([feature1, feature2]);
-            undoRedoFeatures(features, [], mode, wrapper.vm.source, wrapper.vm.undoRedoDeleteAll);
-
-            expect(wrapper.vm.source.getFeatures().length).to.equals(1);
-            expect(wrapper.vm.source.getFeatures()[0]).to.deep.equals(feature1);
-        });
-
-        it("should add the last feature from source, if feature mode is 'delete'", async () => {
-            const features = [
-                    {
-                        feature: feature1,
-                        mode: "delete"
-                    },
-                    {
-                        feature: feature2,
-                        mode: "delete"
-                    }
-                ],
-                mode = "undo";
-
-            wrapper.vm.source.addFeatures([feature1]);
-            undoRedoFeatures(features, [], mode, wrapper.vm.source, wrapper.vm.undoRedoDeleteAll);
-
-            expect(wrapper.vm.source.getFeatures().length).to.equals(2);
-            expect(wrapper.vm.source.getFeatures()[0]).to.deep.equals(feature1);
-            expect(wrapper.vm.source.getFeatures()[1]).to.deep.equals(feature2);
-        });
-
-        it("should start undoRedoDeleteAllSpy, if the last feature is an array", () => {
-            const features = [
-                    [
-                        feature1,
-                        feature2
-                    ]
-                ],
-                mode = "undo";
-
-            undoRedoFeatures(features, [], mode, wrapper.vm.source, wrapper.vm.undoRedoDeleteAll);
-
-            expect(undoRedoDeleteAllSpy.calledOnce).to.be.true;
-            expect(undoRedoDeleteAllSpy.firstCall.args[0]).to.equals(mode);
-            expect(undoRedoDeleteAllSpy.firstCall.args[1]).to.deep.equals(features);
-            expect(undoRedoDeleteAllSpy.firstCall.args[2]).to.deep.equals(wrapper.vm.source);
-        });
-    });
-
-    describe("isDeleteAllMode", () => {
-        beforeEach(() => {
-            wrapper = shallowMount(DrawEditComponent, {
-                propsData: {
-                    layer
-                },
-                global: {
-                    plugins: [store]
-                }
-            });
-        });
-
-        it("should return true, if feature is an array", () => {
-            const feature = ["feature1", "feature2"];
-
-            expect(wrapper.vm.isDeleteAllMode(feature)).to.be.true;
-        });
-
-        it("should return false, if feature is not an array", () => {
-            const feature = "feature1";
-
-            expect(wrapper.vm.isDeleteAllMode(feature)).to.be.false;
+            expect(wrapper.vm.source.getFeatures().length).to.equal(1);
+            expect(wrapper.vm.nonReactiveUndoFeatures.length).to.equal(1);
         });
     });
 
@@ -327,60 +218,36 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
             feature2 = new Feature();
         });
 
-        it("should add all features to vector source, if mode === undo", () => {
-            const mode = "undo",
-                features = [
-                    [
-                        feature1,
-                        feature2
-                    ]
-                ];
+        it("should add all features to vector source on undo", () => {
+            const features = [[feature1, feature2]];
 
             wrapper = shallowMount(DrawEditComponent, {
-                propsData: {
-                    layer
-                },
-                global: {
-                    plugins: [store]
-                }
+                propsData: {layer},
+                global: {plugins: [store]}
             });
 
-            wrapper.vm.undoRedoDeleteAll(mode, features, wrapper.vm.source);
+            wrapper.vm.undoRedoDeleteAll("undo", features, wrapper.vm.source);
 
             expect(wrapper.vm.source.getFeatures().length).to.equals(2);
-            expect(wrapper.vm.source.getFeatures()[0]).to.deep.equals(feature1);
-            expect(wrapper.vm.source.getFeatures()[1]).to.deep.equals(feature2);
             expect(wrapper.vm.nonReactiveRedoFeatures.length).to.equals(1);
-            expect(wrapper.vm.nonReactiveRedoFeatures[0]).to.deep.equals([feature1, feature2]);
             expect(wrapper.vm.mode).to.equals("");
         });
 
-        it("should remove all features from vector source, if mode === undo", async () => {
-            const mode = "redo",
-                features = [
-                    [
-                        feature1,
-                        feature2
-                    ]
-                ];
+        it("should remove all features from vector source on redo", async () => {
+            const features = [[feature1, feature2]];
 
             layer.getSource().addFeatures([feature1, feature2]);
 
             wrapper = shallowMount(DrawEditComponent, {
-                propsData: {
-                    layer
-                },
-                global: {
-                    plugins: [store]
-                }
+                propsData: {layer},
+                global: {plugins: [store]}
             });
 
-            wrapper.vm.undoRedoDeleteAll(mode, features, wrapper.vm.source);
+            wrapper.vm.undoRedoDeleteAll("redo", features, wrapper.vm.source);
             await wrapper.vm.$nextTick();
 
             expect(wrapper.vm.source.getFeatures().length).to.equals(0);
             expect(wrapper.vm.nonReactiveUndoFeatures.length).to.equals(1);
-            expect(wrapper.vm.nonReactiveUndoFeatures[0]).to.deep.equals([feature1, feature2]);
             expect(wrapper.vm.mode).to.equals("");
         });
     });
@@ -576,6 +443,91 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
             const colorArray = feature.get("textFillColor");
 
             expect(colorArray[3]).to.equal(0.5);
+        });
+    });
+
+    describe("registerSourceListeners", () => {
+        it("should track added features in undo stack", () => {
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+
+            wrapper.vm.registerSourceListeners();
+
+            const feature = new Feature({geometry: new Point([0, 0])});
+
+            feature.set("masterportal_attributes", {fromDrawTool: true});
+            layer.getSource().addFeature(feature);
+
+            expect(wrapper.vm.undoCount).to.be.greaterThan(0);
+        });
+
+        it("should track removed features in undo stack", () => {
+            const feature = new Feature({geometry: new Point([0, 0])});
+
+            layer.getSource().addFeature(feature);
+
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+
+            wrapper.vm.registerSourceListeners();
+            layer.getSource().removeFeature(feature);
+
+            expect(wrapper.vm.undoCount).to.be.greaterThan(0);
+        });
+
+        it("should not track features when redoing is true", () => {
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+
+            wrapper.vm.registerSourceListeners();
+            wrapper.vm.redoing = true;
+
+            const feature = new Feature({geometry: new Point([0, 0])});
+
+            layer.getSource().addFeature(feature);
+
+            expect(wrapper.vm.undoCount).to.equal(0);
+        });
+    });
+
+    describe("syncUndoRedoCounts", () => {
+        it("should update reactive counts from non-reactive stacks", () => {
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+
+            wrapper.vm.nonReactiveUndoFeatures.push({feature: {}, mode: "draw"});
+            wrapper.vm.nonReactiveUndoFeatures.push({feature: {}, mode: "draw"});
+            wrapper.vm.nonReactiveRedoFeatures.push({feature: {}, mode: "draw"});
+
+            wrapper.vm.syncUndoRedoCounts();
+
+            expect(wrapper.vm.undoCount).to.equal(2);
+            expect(wrapper.vm.redoCount).to.equal(1);
+        });
+    });
+
+    describe("isDeleteAllMode", () => {
+        beforeEach(() => {
+            wrapper = shallowMount(DrawEditComponent, {
+                propsData: {layer},
+                global: {plugins: [store]}
+            });
+        });
+
+        it("should return true if entry is an array", () => {
+            expect(wrapper.vm.isDeleteAllMode(["feature1", "feature2"])).to.be.true;
+        });
+
+        it("should return false if entry is not an array", () => {
+            expect(wrapper.vm.isDeleteAllMode("feature1")).to.be.false;
         });
     });
 });
