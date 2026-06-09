@@ -1,13 +1,19 @@
 <script>
-import {pointerMove} from "ol/events/condition.js";
-import {Fill, Style, Text} from "ol/style.js";
-import {convertColor} from "@shared/js/utils/convertColor.js";
-import selectInteraction from "@masterportal/masterportalapi/src/maps/interactions/selectInteraction.js";
-import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactions/modifyInteraction.js";
 import LayoutFrame from "@shared/modules/layoutFrame/components/LayoutFrame.vue";
 import {mapActions, mapMutations} from "vuex";
 import {markRaw} from "vue";
-import undoRedoFeatures, {isDeleteAllMode} from "../js/undoRedoFeatures.js";
+import {
+    createSelectInteractions,
+    setupDeleteInteraction,
+    setupModifyInteraction,
+    deleteAllFeatures,
+    performUndo,
+    performRedo,
+    handleDeleteAll,
+    applyTextEditToFeature,
+    toggleLayerVisibility,
+    isDeleteAllMode
+} from "../js/editInteractions.js";
 import IconButton from "../../buttons/components/IconButton.vue";
 import ExportItem from "@shared/modules/exportItem/components/ExportItem.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
@@ -17,17 +23,17 @@ import DrawEditAttributes from "./DrawEditAttributes.vue";
 /**
  * Shared component that provides buttons to edit drawn features.
  * @module shared/modules/draw/DrawEdit
- * @vue-prop {String[]} [drawEdits=["deleteAll", "delete", "edit", "undo", "redo"] - The draw edits.
- * @vue-prop {Object} [drawIcons={delete: "bi-eraser-fill", deleteAll: "bi-trash", modify: "bi-tools", redo: "bi-arrow-right", undo: "bi-arrow-left"}] - The icons for edit buttons.
+ * @vue-prop {String[]} [drawEdits=["deleteAll", "delete", "edit", "undo", "redo", "editAttributes", "hide", "download"]] - The available edit actions.
+ * @vue-prop {Object} drawIcons - The icons for edit buttons, keyed by action name.
  * @vue-prop {ol/layer/Vector} layer - The vector layer for drawings.
- * @vue-prop {String} [selectedInteraction="draw"] - The selected interaction.
- * @vue-prop {Function} [setSelectedInteraction=null] - Setter for selected interaction.
- * @vue-data {ol/interaction/Select} - The current select interactions.
- * @vue-data {ol/interaction/Modify} - The current modify interaction.
- * @vue-data {Object} - The mapping object for edit interactions.
- * @vue-data {String} - The current mode.
- * @vue-data {ol/feature[]} - Contains the redo features.
- * @vue-data {ol/feature[]} - Contains the undo features.
+ * @vue-prop {String} [selectedInteraction="draw"] - The currently selected interaction mode.
+ * @vue-prop {Function} [setSelectedInteraction=null] - Setter for the selected interaction mode.
+ * @vue-data {ol/interaction/Select[]} currentSelectInteractions - The active select interactions.
+ * @vue-data {ol/interaction/Modify|null} currentModifyInteraction - The active modify interaction.
+ * @vue-data {Object[]} nonReactiveUndoFeatures - The undo feature stack (non-reactive for performance).
+ * @vue-data {Object[]} nonReactiveRedoFeatures - The redo feature stack (non-reactive for performance).
+ * @vue-data {Number} undoCount - Reactive count of undo entries for UI binding.
+ * @vue-data {Number} redoCount - Reactive count of redo entries for UI binding.
  */
 export default {
     name: "DrawEdit",
@@ -81,7 +87,6 @@ export default {
     },
     data () {
         return {
-            buttonsDisabled: false,
             currentSelectInteractions: [],
             currentModifyInteraction: null,
             mappingEditInteractions: {
@@ -100,10 +105,8 @@ export default {
             showFrame: false,
             iconPosition: 0,
             availableFormats: ["KML", "GEOJSON", "GPX", "CSV"],
-            exportData: null,
             localDrawIcons: {...this.drawIcons},
             drawLayerVisible: true,
-            originalGeometry: null,
             redoing: false,
             pendingInnerCircleFeature: null,
             selectedTextFeature: null,
@@ -120,20 +123,36 @@ export default {
         };
     },
     computed: {
+        /**
+         * Returns the vector source from the layer.
+         * @returns {ol/source/Vector|undefined} The vector source.
+         */
         source () {
             return this.layer?.getSource();
         },
+        /**
+         * Returns the features from the source.
+         * @returns {ol/Feature[]} The features array.
+         */
         features () {
             return this.source?.getFeatures() ?? [];
         }
     },
     watch: {
+        /**
+         * Cleans up interactions when the selected interaction changes.
+         * Closes the frame for non-edit interactions, removes select interactions
+         * unless in delete/modify mode, and tears down the modify interaction
+         * (including the text click handler) when leaving modify mode.
+         * @param {String} selectedInteraction The new interaction mode.
+         * @returns {void}
+         */
         selectedInteraction (selectedInteraction) {
             if (!this.drawEdits.includes(selectedInteraction)) {
                 this.showFrame = false;
             }
             if (selectedInteraction !== "delete" && selectedInteraction !== "modify") {
-                this.currentSelectInteractions.forEach(currentSelectInteraction => this.removeInteraction(currentSelectInteraction));
+                this.currentSelectInteractions.forEach(interaction => this.removeInteraction(interaction));
                 this.currentSelectInteractions = [];
             }
             if (selectedInteraction !== "modify") {
@@ -146,80 +165,19 @@ export default {
                 }
             }
         },
+        /**
+         * Registers source event listeners once the layer becomes available.
+         * @param {ol/layer/Vector} layer The vector layer for drawings.
+         * @returns {void}
+         */
         layer (layer) {
             if (layer !== null) {
-                this.source.on("addfeature", event => {
-                    console.warn("Add Feature", event.feature);
-                    if (!this.redoing) {
-                        const attrs = event.feature.get("masterportal_attributes");
-
-                        if (!attrs?.fromDrawTool) {
-                            // Imported feature — add to undo stack as a regular draw
-                            this.nonReactiveUndoFeatures.push({
-                                feature: markRaw(event.feature),
-                                mode: "draw"
-                            });
-                            return;
-                        }
-
-                        if (this.pendingInnerCircleFeature !== null && attrs?.drawState?.circleOuterRadius !== undefined) {
-                            this.nonReactiveUndoFeatures.push({
-                                features: [this.pendingInnerCircleFeature, markRaw(event.feature)],
-                                mode: "drawGroup"
-                            });
-                            this.pendingInnerCircleFeature = null;
-                        }
-                        else {
-                            if (this.pendingInnerCircleFeature !== null) {
-                                this.nonReactiveUndoFeatures.push({
-                                    feature: this.pendingInnerCircleFeature,
-                                    mode: "draw"
-                                });
-                                this.pendingInnerCircleFeature = null;
-                            }
-                            this.nonReactiveUndoFeatures.push({
-                                feature: markRaw(event.feature),
-                                mode: "draw"
-                            });
-                        }
-                        this.nonReactiveRedoFeatures = markRaw([]);
-                        if (event.feature.getGeometry().getType() === "Circle" && !event.feature.get("masterportal_attributes")) {
-                            event.feature.set("masterportal_attributes", Object.assign(event.feature.get("masterportal_attributes") ?? {}, {
-                                "fromDrawTool": true,
-                                styleId: this.featureCounter,
-                                drawState: {
-                                    zIndex: this.featureCounter,
-                                    drawType: {
-                                        id: "drawCircle",
-                                        geometry: "Circle"
-                                    }
-                                }
-                            }));
-                            this.featureCounter++;
-                        }
-                        this.featureCounter++;
-                        this.syncUndoRedoCounts();
-                    }
-                });
-
-                this.source.on("removefeature", event => {
-                    if (!this.redoing) {
-                        this.nonReactiveUndoFeatures.push({
-                            feature: markRaw(event.feature),
-                            mode: "delete"
-                        });
-                        this.syncUndoRedoCounts();
-                    }
-                });
-
-                this.source.on("clear", () => {
-                    this.mode = "";
-                });
+                this.registerSourceListeners();
             }
         }
     },
     unmounted () {
-        this.currentSelectInteractions.forEach(currentSelectInteraction => this.removeInteraction(currentSelectInteraction));
+        this.currentSelectInteractions.forEach(interaction => this.removeInteraction(interaction));
         if (this.currentModifyInteraction) {
             this.removeInteraction(this.currentModifyInteraction);
             this.currentModifyInteraction = null;
@@ -229,12 +187,81 @@ export default {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
         ...mapMutations(["setButtonsDisabled"]),
         isDeleteAllMode,
-        convertColor,
+        createSelectInteractions,
 
         /**
-         * Regulate the draw edit interactions.
-         * @param {String} drawEdit The current draw edit.
-         * @param {Object} event The event that triggered the interaction
+         * Registers event listeners on the vector source for tracking feature additions and removals.
+         * @returns {void}
+         */
+        registerSourceListeners () {
+            this.source.on("addfeature", event => {
+                if (!this.redoing) {
+                    this.handleFeatureAdded(event.feature);
+                }
+            });
+
+            this.source.on("removefeature", event => {
+                if (!this.redoing) {
+                    this.nonReactiveUndoFeatures.push({
+                        feature: markRaw(event.feature),
+                        mode: "delete"
+                    });
+                    this.syncUndoRedoCounts();
+                }
+            });
+
+            this.source.on("clear", () => {
+                this.mode = "";
+            });
+        },
+
+        /**
+         * Handles a feature being added to the source, managing the undo stack
+         * and grouping related circle features.
+         * @param {ol/Feature} feature The added feature.
+         * @returns {void}
+         */
+        handleFeatureAdded (feature) {
+            const attrs = feature.get("masterportal_attributes");
+
+            if (!attrs?.fromDrawTool) {
+                this.nonReactiveUndoFeatures.push({
+                    feature: markRaw(feature),
+                    mode: "draw"
+                });
+                this.syncUndoRedoCounts();
+                return;
+            }
+
+            if (this.pendingInnerCircleFeature !== null && attrs?.drawState?.circleOuterRadius !== undefined) {
+                this.nonReactiveUndoFeatures.push({
+                    features: [this.pendingInnerCircleFeature, markRaw(feature)],
+                    mode: "drawGroup"
+                });
+                this.pendingInnerCircleFeature = null;
+            }
+            else {
+                if (this.pendingInnerCircleFeature !== null) {
+                    this.nonReactiveUndoFeatures.push({
+                        feature: this.pendingInnerCircleFeature,
+                        mode: "draw"
+                    });
+                    this.pendingInnerCircleFeature = null;
+                }
+                this.nonReactiveUndoFeatures.push({
+                    feature: markRaw(feature),
+                    mode: "draw"
+                });
+            }
+            this.nonReactiveRedoFeatures = markRaw([]);
+            this.featureCounter++;
+            this.syncUndoRedoCounts();
+        },
+
+        /**
+         * Dispatches to the appropriate edit interaction handler.
+         * @param {String} drawEdit The current draw edit action name.
+         * @param {Object} event The DOM event that triggered the interaction.
          * @returns {void}
          */
         regulateEditInteraction (drawEdit, event) {
@@ -248,14 +275,17 @@ export default {
             this.mappingEditInteractions[drawEdit]();
         },
 
+        /**
+         * Synchronizes the reactive undo/redo counts from the non-reactive stacks.
+         * @returns {void}
+         */
         syncUndoRedoCounts () {
             this.undoCount = this.nonReactiveUndoFeatures.length;
             this.redoCount = this.nonReactiveRedoFeatures.length;
         },
 
         /**
-         * Regulate the draw edit delete interaction.
-         * The previous select interactions are removed from the map and newly created select interactions are added.
+         * Activates the delete interaction for removing individual features.
          * @returns {void}
          */
         regulateDelete () {
@@ -263,160 +293,108 @@ export default {
                 this.setSelectedInteraction("delete");
             }
 
-            this.currentSelectInteractions.forEach(currentSelectInteraction => this.removeInteraction(currentSelectInteraction));
-            this.currentSelectInteractions = this.createSelectInteractions(this.layer);
-            selectInteraction.removeSelectedFeature(this.currentSelectInteractions[0], this.source);
-            this.currentSelectInteractions.forEach(currentSelectInteraction => this.addInteraction(currentSelectInteraction));
+            this.currentSelectInteractions = setupDeleteInteraction({
+                currentSelectInteractions: this.currentSelectInteractions,
+                layer: this.layer,
+                source: this.source,
+                addInteraction: this.addInteraction,
+                removeInteraction: this.removeInteraction
+            });
         },
 
         /**
-         * Create the select interactions for delte features.
-         * The first interaction is executed with a singleClick and is needed to delete a feature.
-         * The second interaction is only used to highlight the feature on hover/pointermove.
-         * @param {ol/layer/Vector} layer The vector layer for drawings.
-         * @returns {ol/interaction/Select[]} The select interactions.
-         */
-        createSelectInteractions (layer) {
-            return [
-                selectInteraction.createSelectInteraction(layer),
-                selectInteraction.createSelectInteraction(layer, pointerMove)
-            ];
-        },
-
-        /**
-         * Regulate the draw edit delete all (clear) interaction.
-         * Disables the Layer watchers while running so that the push to nonReactiveUndoFeatures contains all features deleted and they don't get added multiple times.
-         * If delete all was executed, all deleted features will be stored as array in nonReactiveUndoFeatures and nonReactiveRedoFeatures respectively.
+         * Clears all features from the source and records the operation for undo.
          * @returns {void}
          */
         regulateDeleteAll () {
             this.redoing = true;
             this.mode = "deleteAll";
-
-            this.nonReactiveUndoFeatures.push(this.source.getFeatures());
+            deleteAllFeatures(this.source, this.nonReactiveUndoFeatures);
             this.syncUndoRedoCounts();
-            this.source.clear();
             this.redoing = false;
         },
 
         /**
-         * Regulate the draw edit modify interaction.
-         * Sets up Watchers for ModifyEnd and ModifyStart to track the modifications for undo/redo.
-         * The previous modify interaction is removed from the map and newly created modify interaction is added.
+         * Activates the modify interaction for editing feature geometries and text.
          * @returns {void}
          */
         regulateModify () {
             if (typeof this.setSelectedInteraction === "function") {
                 this.setSelectedInteraction("modify");
             }
-            this.removeInteraction(this.currentModifyInteraction);
             this.selectedTextFeature = null;
-            const map = mapCollection.getMap("2D");
 
-            this.textClickHandler = (event) => {
-                let found = false;
-
-                map.forEachFeatureAtPixel(event.pixel, (feature, layer) => {
-                    if (layer === this.layer && feature.get("drawType") === "writeText") {
-                        const fillColor = feature.get("textFillColor") || [0, 0, 0, 1];
-
-                        this.selectedTextFeature = feature;
-                        this.editText = feature.get("textContent") ?? "";
-                        this.editFontSize = feature.get("textFontSize") ?? 16;
-                        this.editFont = feature.get("textFont") ?? "Arial";
-                        this.editFillColor = convertColor(fillColor.slice(0, 3), "hex");
-                        this.editFillTransparency = Math.round((1 - (fillColor[3] ?? 1)) * 100);
-                        found = true;
-                        return true;
+            const result = setupModifyInteraction({
+                currentModifyInteraction: this.currentModifyInteraction,
+                source: this.source,
+                layer: this.layer,
+                undoFeatures: this.nonReactiveUndoFeatures,
+                redoFeatures: this.nonReactiveRedoFeatures,
+                addInteraction: this.addInteraction,
+                removeInteraction: this.removeInteraction,
+                onTextFeatureSelected: (data) => {
+                    if (data === null) {
+                        this.selectedTextFeature = null;
                     }
-                    return false;
-                }, {hitTolerance: 10});
-                if (!found) {
-                    this.selectedTextFeature = null;
-                }
-            };
-            map.on("singleclick", this.textClickHandler);
-
-            this.currentModifyInteraction = modifyInteraction.createModifyInteraction(this.source,
-                {
-                    onModifyEnd: (event) => {
-                        event.features.forEach(feature => {
-                            const originalGeometry = this.originalGeometry,
-                                modifiedGeometry = feature.getGeometry().clone();
-
-                            this.nonReactiveUndoFeatures.push({
-                                feature: markRaw(feature),
-                                mode: "modify",
-                                originalGeometry: markRaw(originalGeometry),
-                                modifiedGeometry: markRaw(modifiedGeometry)
-                            });
-                        });
-                        this.nonReactiveRedoFeatures = markRaw([]);
-                        this.syncUndoRedoCounts();
-                    },
-                    onModifyStart: (event) => {
-                        event.features.forEach(feature => {
-                            this.originalGeometry = feature.getGeometry().clone();
-                        });
+                    else {
+                        this.selectedTextFeature = data.feature;
+                        this.editText = data.text;
+                        this.editFontSize = data.fontSize;
+                        this.editFont = data.font;
+                        this.editFillColor = data.fillColor;
+                        this.editFillTransparency = data.fillTransparency;
                     }
+                },
+                onModifyEnd: () => {
+                    this.nonReactiveRedoFeatures = markRaw([]);
+                    this.syncUndoRedoCounts();
                 }
-            );
-            this.addInteraction(this.currentModifyInteraction);
-            this.currentModifyInteraction.setActive(true);
+            });
+
+            this.currentModifyInteraction = result.modifyInteraction;
+            this.textClickHandler = result.textClickHandler;
             this.showFrame = true;
         },
 
         /**
-         * Regulate the draw edit undo.
+         * Performs an undo operation.
          * @returns {void}
          */
         regulateUndo () {
             this.redoing = true;
-            undoRedoFeatures(this.nonReactiveUndoFeatures, this.nonReactiveRedoFeatures, "undo", this.source, this.undoRedoDeleteAll);
+            performUndo(this.nonReactiveUndoFeatures, this.nonReactiveRedoFeatures, this.source, this.undoRedoDeleteAll);
             this.syncUndoRedoCounts();
             this.redoing = false;
         },
 
         /**
-         * Regulate the draw edit redo.
+         * Performs a redo operation.
          * @returns {void}
          */
         regulateRedo () {
             this.redoing = true;
-            undoRedoFeatures(this.nonReactiveRedoFeatures, this.nonReactiveUndoFeatures, "redo", this.source, this.undoRedoDeleteAll);
+            performRedo(this.nonReactiveRedoFeatures, this.nonReactiveUndoFeatures, this.source, this.undoRedoDeleteAll);
             this.syncUndoRedoCounts();
             this.redoing = false;
         },
 
         /**
-         * Regulates the undo redo features, if delete all was used.
-         * A distinction is made between undo and redo.
-         * With undo, the features are restored.
-         * With redo, the features are deleted again.
-         * @param {String} mode The undo or redo mode.
-         * @param {ol/feature[]} features The undo or redo features.
-         * @param {ol/source} source The vector layer.
+         * Handles undo/redo when a deleteAll operation is on the stack.
+         * Undo restores all features; redo removes them again.
+         * @param {String} mode "undo" or "redo".
+         * @param {Array} features The features stack containing the deleteAll entry.
+         * @param {ol/source/Vector} source The vector source.
          * @returns {void}
          */
         undoRedoDeleteAll (mode, features, source) {
-            const featureArray = features.pop();
-
             this.mode = "deleteAll";
-
-            if (mode === "undo") {
-                source.addFeatures(featureArray);
-                this.nonReactiveRedoFeatures.push(featureArray);
-            }
-            else if (mode === "redo") {
-                featureArray.forEach(feat => source.removeFeature(feat));
-                this.nonReactiveUndoFeatures.push(featureArray);
-            }
+            handleDeleteAll(mode, features, source, this.nonReactiveUndoFeatures, this.nonReactiveRedoFeatures);
             this.mode = "";
             this.syncUndoRedoCounts();
         },
 
         /**
-         * Regulates the editing of attributes for features and opens the corresponding layoutFrame.
+         * Opens the attribute editing frame.
          * @returns {void}
          */
         regulateEditAttributes () {
@@ -427,7 +405,7 @@ export default {
         },
 
         /**
-         * Regulates Hide Function.
+         * Toggles the draw layer visibility and updates the hide icon.
          * @returns {void}
          */
         regulateHide () {
@@ -441,7 +419,7 @@ export default {
         },
 
         /**
-         * Enables the download interface.
+         * Opens the download/export frame.
          * @returns {void}
          */
         regulateDownload () {
@@ -452,43 +430,34 @@ export default {
         },
 
         /**
-         * Toggles visibility of drawLayer.
+         * Toggles visibility of the draw layer and updates related state.
          * @returns {void}
          */
         toggleDrawLayerVisibility () {
-            const drawLayer = this.layer;
-
-            if (drawLayer) {
-                const isVisible = drawLayer.getVisible();
-
-                this.localDrawIcons.hide = this.localDrawIcons.hide === "bi-eye" ? "bi-eye-slash" : "bi-eye";
-
-                this.$store.commit("Modules/Draw/setButtonsDisabled", isVisible);
-                this.drawLayerVisible = !isVisible;
-                drawLayer.setVisible(!isVisible);
-            }
-        },
-        applyTextEdit () {
-            const feature = this.selectedTextFeature,
-                alpha = 1 - (this.editFillTransparency / 100),
-                colorArray = [...convertColor(this.editFillColor, "rgb"), alpha];
-
-            if (!feature) {
+            if (!this.layer) {
                 return;
             }
-            const newStyle = new Style({
-                text: new Text({
-                    text: this.editText,
-                    font: `${this.editFontSize}px ${this.editFont}`,
-                    fill: new Fill({color: colorArray})
-                })
-            });
 
-            feature.set("textFillColor", colorArray);
-            feature.set("textContent", this.editText);
-            feature.set("textFontSize", this.editFontSize);
-            feature.set("textFont", this.editFont);
-            feature.setStyle(newStyle);
+            const isVisible = this.layer.getVisible();
+
+            this.localDrawIcons.hide = isVisible ? "bi-eye-slash" : "bi-eye";
+            this.$store.commit("Modules/Draw/setButtonsDisabled", isVisible);
+            this.drawLayerVisible = toggleLayerVisibility(this.layer);
+        },
+
+        /**
+         * Applies text edits to the currently selected text feature.
+         * @returns {void}
+         */
+        applyTextEdit () {
+            applyTextEditToFeature({
+                feature: this.selectedTextFeature,
+                text: this.editText,
+                fontSize: this.editFontSize,
+                font: this.editFont,
+                fillColor: this.editFillColor,
+                fillTransparency: this.editFillTransparency
+            });
         }
     }
 };
@@ -537,8 +506,8 @@ export default {
                     <InputText
                         id="draw-text-edit"
                         v-model="editText"
-                        label="Text"
-                        placeholder="Text eingeben"
+                        :label="$t('common:shared.modules.draw.drawEdit.textLabel')"
+                        :placeholder="$t('common:shared.modules.draw.drawEdit.textPlaceholder')"
                         type="text"
                     />
                     <select
