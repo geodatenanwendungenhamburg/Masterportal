@@ -2,7 +2,6 @@ import {config, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
 import DrawLayoutComponent from "@shared/modules/draw/components/DrawLayout.vue";
-import * as drawLayoutUtils from "@shared/modules/draw/js/drawLayoutUtils.js";
 
 config.global.mocks.$t = key => key;
 
@@ -271,35 +270,37 @@ describe("src/shared/modules/draw/components/DrawLayout.vue", () => {
     });
 
     describe("updateTrianglePosition", () => {
-        it("should call calculateTrianglePosition and update trianglePosition", () => {
+        it("should update trianglePosition when DOM elements exist", () => {
             wrapper = shallowMount(DrawLayoutComponent, {
                 propsData: {currentLayout, selectedDrawType: "pen", setCurrentLayout: setCurrentLayoutSpy}
             });
 
-            const stub = sinon.stub(drawLayoutUtils, "calculateTrianglePosition").returns(75);
+            const stub = sinon.stub(document, "getElementById");
+
+            stub.withArgs("main-drawtypes-container").returns({
+                getBoundingClientRect: () => ({x: 50})
+            });
+            stub.withArgs("draw-pen").returns({
+                getBoundingClientRect: () => ({x: 100, width: 40})
+            });
 
             wrapper.vm.updateTrianglePosition("pen");
 
-            expect(stub.calledOnce).to.be.true;
-            expect(stub.firstCall.args).to.deep.equal(["draw-pen", "main-drawtypes-container"]);
-            expect(wrapper.vm.trianglePosition).to.equal(75);
-
-            stub.restore();
+            // (100 + 40/2) - 50 = 70
+            expect(wrapper.vm.trianglePosition).to.equal(70);
         });
 
-        it("should not update trianglePosition if calculateTrianglePosition returns null", () => {
+        it("should not update trianglePosition if DOM elements are not found", () => {
             wrapper = shallowMount(DrawLayoutComponent, {
                 propsData: {currentLayout, selectedDrawType: "pen", setCurrentLayout: setCurrentLayoutSpy}
             });
 
             wrapper.vm.trianglePosition = 50;
-            const stub = sinon.stub(drawLayoutUtils, "calculateTrianglePosition").returns(null);
+            sinon.stub(document, "getElementById").returns(null);
 
             wrapper.vm.updateTrianglePosition("pen");
 
             expect(wrapper.vm.trianglePosition).to.equal(50);
-
-            stub.restore();
         });
     });
 });
