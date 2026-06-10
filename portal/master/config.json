@@ -672,7 +672,7 @@
             "buildingFunctionURL": "https://geoportal-hamburg.de/3Dprojektplaner/buildingFunctionTypeAdV.xml"
           },
           {
-            "type": "scaleSwitcherTutorial"
+            "type": "scaleSwitcher"
           },
           {
             "type": "shareView",
