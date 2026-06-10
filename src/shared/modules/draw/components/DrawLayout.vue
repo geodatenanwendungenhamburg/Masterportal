@@ -1,5 +1,6 @@
 <script>
 import {convertColor} from "@shared/js/utils/convertColor.js";
+import {mappingLayoutConfig, filterMappingLayoutByDrawType, normalizeLayoutValue, calculateTrianglePosition} from "@shared/modules/draw/js/drawLayoutUtils.js";
 import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 
@@ -12,8 +13,11 @@ import InputText from "@shared/modules/inputs/components/InputText.vue";
  * @vue-prop {Function} setCurrentLayout - Setter for current layout.
  * @vue-prop {Number[]} [strokeRange=[1, 32]] - The stroke range in the unit pixel.
  * @vue-prop {Boolean} [hasExtrudedHeight=false] - Whether the layout includes extruded height.
+ * @vue-prop {String} [buttonVariant="btn-primary"] - The CSS class for the button variant.
  * @vue-data {String} activeLayoutKey - The currently activated layout.
  * @vue-data {Object} mappingLayout - The mapping object for layout.
+ * @vue-data {Number|null} trianglePosition - The horizontal position of the triangle indicator.
+ * @vue-data {String[]} drawTypesMain - The main draw type categories that trigger triangle position updates.
  */
 export default {
     name: "DrawLayout",
@@ -58,24 +62,7 @@ export default {
         }
     },
     data () {
-        const mappingLayout = {
-            fillColor: {
-                drawTypes: ["box", "circle", "doubleCircle", "polygon", "rectangle", "writeText", "square"],
-                icon: "bi-paint-bucket"
-            },
-            strokeColor: {
-                drawTypes: ["box", "circle", "doubleCircle", "line", "pen", "polygon", "rectangle", "square"],
-                icon: "bi-pencil-fill"
-            },
-            strokeWidth: {
-                drawTypes: ["box", "circle", "doubleCircle", "line", "pen", "polygon", "rectangle", "square"],
-                icon: "bi-border-width"
-            },
-            fillTransparency: {
-                drawTypes: ["box", "circle", "doubleCircle", "polygon", "rectangle", "writeText", "pen", "line", "square"],
-                icon: "bi-droplet-half"
-            }
-        };
+        const mappingLayout = {...mappingLayoutConfig};
 
         if (this.hasExtrudedHeight) {
             mappingLayout.extrudedHeight = {
@@ -93,19 +80,11 @@ export default {
     },
     computed: {
         /**
-         * Return the mapping layout filtered by selected draw type.
-         * @returns {Object} The mapping layout for selected draw type.
+         * Returns the mapping layout filtered by selected draw type.
+         * @returns {Object} The mapping layout entries applicable to the selected draw type.
          */
         mappingLayoutBySelectedDrawType () {
-            const filteredMappingLayout = {};
-
-            Object.keys(this.mappingLayout).forEach(layout => {
-                if (this.mappingLayout[layout]?.drawTypes?.includes(this.selectedDrawType)) {
-                    filteredMappingLayout[layout] = this.mappingLayout[layout];
-                }
-            });
-
-            return filteredMappingLayout;
+            return filterMappingLayoutByDrawType(this.mappingLayout, this.selectedDrawType);
         }
     },
     watch: {
@@ -129,44 +108,26 @@ export default {
         },
 
         /**
-         * Updates the triangle position to point to the active button.
-         * @param {String} layoutKey The key of the active layout element.
+         * Updates the triangle position to point to the active draw type button.
+         * @param {String} type The draw type whose button to point to.
          * @returns {void}
          */
         updateTrianglePosition (type) {
-            const containerElement = document.getElementById("main-drawtypes-container"),
-                buttonId = `draw-${type}`,
-                buttonElement = document.getElementById(buttonId);
+            const position = calculateTrianglePosition(`draw-${type}`, "main-drawtypes-container");
 
-            if (buttonElement && containerElement) {
-                const buttonRect = buttonElement.getBoundingClientRect(),
-                    containerRect = containerElement.getBoundingClientRect();
-
-                this.trianglePosition = buttonRect.x + buttonRect.width / 2 - containerRect.x;
+            if (position !== null) {
+                this.trianglePosition = position;
             }
         },
 
         /**
-         * Update the current layout.
+         * Normalizes and applies the given layout value, then emits the update event.
          * @param {String} layoutKey The key of layout element.
-         * @param {String} value The value to be set.
+         * @param {String|Number} value The raw value to be normalized and set.
          * @returns {void}
          */
         updateCurrentLayout (layoutKey, value) {
-            let normalizedValue;
-
-            if (layoutKey === "fillColor" || layoutKey === "strokeColor") {
-                normalizedValue = convertColor(value, "rgb");
-            }
-            else if (layoutKey === "text" || layoutKey === "font") {
-                normalizedValue = value;
-            }
-            else if (layoutKey === "fontSize") {
-                normalizedValue = parseInt(value, 10);
-            }
-            else {
-                normalizedValue = parseFloat(value);
-            }
+            const normalizedValue = normalizeLayoutValue(layoutKey, value);
 
             this.setCurrentLayout({[layoutKey]: normalizedValue});
             this.$emit("update-current-layout", {[layoutKey]: normalizedValue});

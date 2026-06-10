@@ -2,6 +2,7 @@ import {shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
 import DrawLayoutComponent from "@shared/modules/draw/components/DrawLayout.vue";
+import * as drawLayoutUtils from "@shared/modules/draw/js/drawLayoutUtils.js";
 
 
 describe("src/shared/modules/draw/components/DrawLayout.vue", () => {
@@ -240,6 +241,64 @@ describe("src/shared/modules/draw/components/DrawLayout.vue", () => {
             await wrapper.setProps({selectedDrawType: "line"});
 
             expect(updateTrianglePositionSpy.notCalled).to.be.true;
+        });
+    });
+
+    describe("mappingLayoutBySelectedDrawType computed", () => {
+        it("should delegate to filterMappingLayoutByDrawType", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {currentLayout, selectedDrawType: "polygon", setCurrentLayout: setCurrentLayoutSpy}
+            });
+
+            const result = wrapper.vm.mappingLayoutBySelectedDrawType;
+
+            expect(result).to.have.property("fillColor");
+            expect(result).to.have.property("strokeColor");
+            expect(result).to.have.property("strokeWidth");
+            expect(result).to.have.property("fillTransparency");
+        });
+
+        it("should not include fillColor for 'line' draw type", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {currentLayout, selectedDrawType: "line", setCurrentLayout: setCurrentLayoutSpy}
+            });
+
+            const result = wrapper.vm.mappingLayoutBySelectedDrawType;
+
+            expect(result).to.not.have.property("fillColor");
+        });
+    });
+
+    describe("updateTrianglePosition", () => {
+        it("should call calculateTrianglePosition and update trianglePosition", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {currentLayout, selectedDrawType: "pen", setCurrentLayout: setCurrentLayoutSpy}
+            });
+
+            const stub = sinon.stub(drawLayoutUtils, "calculateTrianglePosition").returns(75);
+
+            wrapper.vm.updateTrianglePosition("pen");
+
+            expect(stub.calledOnce).to.be.true;
+            expect(stub.firstCall.args).to.deep.equal(["draw-pen", "main-drawtypes-container"]);
+            expect(wrapper.vm.trianglePosition).to.equal(75);
+
+            stub.restore();
+        });
+
+        it("should not update trianglePosition if calculateTrianglePosition returns null", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {currentLayout, selectedDrawType: "pen", setCurrentLayout: setCurrentLayoutSpy}
+            });
+
+            wrapper.vm.trianglePosition = 50;
+            const stub = sinon.stub(drawLayoutUtils, "calculateTrianglePosition").returns(null);
+
+            wrapper.vm.updateTrianglePosition("pen");
+
+            expect(wrapper.vm.trianglePosition).to.equal(50);
+
+            stub.restore();
         });
     });
 });
