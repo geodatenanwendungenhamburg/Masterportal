@@ -37,6 +37,7 @@ import Print from "../print/store/indexPrint.js";
 import ResizeHandle from "@shared/modules/resize/store/indexResizeHandle.js";
 import Routing from "../routing/store/indexRouting.js";
 import ScaleSwitcher from "../scaleSwitcher/store/indexScaleSwitcher.js";
+import ScaleSwitcherTutorial from "../scaleSwitcherTutorial/store/indexScaleSwitcherTutorial.js";
 import SearchBar from "../searchBar/store/indexSearchBar.js";
 import SelectFeatures from "../selectFeatures/store/indexSelectFeatures.js";
 import Shadow from "../shadow/store/indexShadow.js";
@@ -89,6 +90,7 @@ export default {
         PortalFooter: {...PortalFooter},
         Print: {...Print},
         ScaleSwitcher: {...ScaleSwitcher},
+        ScaleSwitcherTutorial: {...ScaleSwitcherTutorial},
         SearchBar: {...SearchBar},
         SelectFeatures: {...SelectFeatures},
         Shadow: {...Shadow},

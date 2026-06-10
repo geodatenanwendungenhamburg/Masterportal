@@ -1224,6 +1224,11 @@
       "label": "Maßstab",
       "name": "Maßstab umschalten"
     },
+     "scaleSwitcherTutorial": {
+      "description": "Stellen Sie den Maßstab um, ganz ohne zu scrollen",
+      "label": "Maßstab",
+      "name": "Maßstab umschalten"
+    },
     "searchBar": {
       "locationFinder": {
         "errorMsg": "Suche per LocationFinder fehlgeschlagen",
