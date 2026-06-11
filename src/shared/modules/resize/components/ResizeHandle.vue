@@ -13,6 +13,10 @@ const handleSigns = {
     left: [-1, 0]
 };
 
+const leftSide = "mainMenu";
+const rightSide = "secondaryMenu";
+const minDistanceBetweenMenus = 300;
+
 /**
  * Checks whether the given values is a Number and is between 0 and 1.
  *
@@ -90,7 +94,7 @@ export default {
             type: String,
             required: true,
             validator (value) {
-                return value === "mainMenu" || value === "secondaryMenu";
+                return value === leftSide || value === rightSide;
             }
         }
     },
@@ -209,17 +213,9 @@ export default {
         },
         moveHandle (key) {
             if (key === "ArrowLeft" || key === "ArrowRight") {
-                const containerWidth = document.getElementById("masterportal-container").offsetWidth,
-                    disposition = key === "ArrowLeft" ? -5 : 5;
-                let newWidth = this.handleElement.offsetWidth + disposition;
+                const disposition = (key === "ArrowLeft" ? 1 : -1) * 5;
 
-                if (newWidth < containerWidth * this.minWidth) {
-                    newWidth = containerWidth * this.minWidth;
-                }
-                if (newWidth > containerWidth * this.maxWidth) {
-                    newWidth = containerWidth * this.maxWidth;
-                }
-                this.handleElement.style.width = Math.round(newWidth) + "px";
+                limitAndSetNewWidth(this, this.handleElement.offsetWidth + disposition);
             }
         },
         onMouseDown (event) {
@@ -342,47 +338,12 @@ export default {
          * @returns {void}
          */
         setNewSize () {
-            const containerWidth = document.getElementById("masterportal-container").offsetWidth,
-                containerHeight = document.getElementById("masterportal-container").offsetHeight;
-
-            let newWidth, newHeight;
-
             if (this.handlePosition !== "top" && this.handlePosition !== "bottom") {
-                newWidth = this.initialDimensions.width + handleSigns[this.handlePosition][0] * this.deltaCursorPosition.x;
-
-                if (newWidth < containerWidth * this.minWidth) {
-                    newWidth = containerWidth * this.minWidth;
-                }
-                if (newWidth > containerWidth * this.maxWidth) {
-                    newWidth = containerWidth * this.maxWidth;
-                }
-                this.handleElement.style.width = Math.round(newWidth) + "px";
+                limitAndSetNewWidth(this, this.initialDimensions.width + handleSigns[this.handlePosition][0] * this.deltaCursorPosition.x);
             }
-            if (this.handlePosition !== "left" && this.handlePosition !== "right") {
-                newHeight = this.initialDimensions.height + handleSigns[this.handlePosition][1] * this.deltaCursorPosition.y;
-
-                if (newHeight < containerHeight * this.minHeight) {
-                    newHeight = containerHeight * this.minHeight;
-                }
-                if (newHeight > containerHeight * this.maxHeight) {
-                    newHeight = containerHeight * this.maxHeight;
-                }
-                this.handleElement.style.height = Math.round(newHeight) + "px";
+            else if (this.handlePosition !== "left" && this.handlePosition !== "right") {
+                limitAndSetNewHeight(this, this.initialDimensions.height + handleSigns[this.handlePosition][1] * this.deltaCursorPosition.y);
             }
-            if (this.handleElement.style.maxWidth !== "none") {
-                this.handleElement.style.maxWidth = "none";
-            }
-            if (this.handleElement.style.maxHeight !== "none") {
-                this.handleElement.style.maxHeight = "none";
-            }
-
-            if (this.side === "mainMenu") {
-                this.setMainMenuWidth(newWidth);
-            }
-            else if (this.side === "secondaryMenu") {
-                this.setSecondaryMenuWidth(newWidth);
-            }
-
         },
         /**
          * When using the mousedown event, a ghost click is triggered.
@@ -409,6 +370,64 @@ export default {
         }
     }
 };
+
+/**
+ *
+ */
+function limitAndSetNewHeight (component, calculatedHeight) {
+    const containerElement = document.getElementById("masterportal-container");
+
+    if (!containerElement) {
+        return;
+    }
+
+    const containerHeight = containerElement.offsetHeight;
+    const newHeight = Math.min(
+        containerHeight * component.maxHeight,
+        Math.max(containerHeight * component.maxHeight, calculatedHeight)
+    );
+
+    if (component.handleElement.style.maxHeight !== "none") {
+        component.handleElement.style.maxHeight = "none";
+    }
+
+    component.handleElement.style.height = `${Math.round(newHeight)}px`;
+}
+
+/**
+ *
+ */
+function limitAndSetNewWidth (component, calculatedWidth) {
+    const containerElement = document.getElementById("masterportal-container");
+    const otherMenuElement = document.getElementById(
+        `mp-menu-${component.side === leftSide ? rightSide : leftSide}`
+    );
+
+    if (!containerElement || !otherMenuElement) {
+        return;
+    }
+
+    const containerWidth = containerElement.offsetWidth;
+    const otherMenuElementWidth = otherMenuElement.offsetWidth;
+
+    const newWidth = Math.min(
+        containerWidth * component.maxWidth - otherMenuElementWidth - minDistanceBetweenMenus,
+        Math.max(containerWidth * component.minWidth, calculatedWidth)
+    );
+
+    if (component.side === leftSide) {
+        component.setMainMenuWidth(newWidth);
+    }
+    else if (component.side === rightSide) {
+        component.setSecondaryMenuWidth(newWidth);
+    }
+
+    if (component.handleElement.style.maxWidth !== "none") {
+        component.handleElement.style.maxWidth = "none";
+    }
+
+    component.handleElement.style.width = `${Math.round(newWidth)}px`;
+}
 </script>
 
 <template>
