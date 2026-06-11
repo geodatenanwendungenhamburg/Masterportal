@@ -14,19 +14,8 @@ const handleSigns = {
 };
 
 const leftSide = "mainMenu";
-const rightSide = "secondaryMenu";
 const minDistanceBetweenMenus = 300;
-
-/**
- * Checks whether the given values is a Number and is between 0 and 1.
- *
- * @param {*} val Value given for any of the dimension props.
- * @returns {Boolean} Whether the given value is between 0 and 1.
- */
-function dimensionValidator (val) {
-    return !isNaN(val) && typeof val === "number"
-        && val >= 0 && val <= 1;
-}
+const rightSide = "secondaryMenu";
 
 export default {
     name: "ResizeHandle",
@@ -215,7 +204,7 @@ export default {
             if (key === "ArrowLeft" || key === "ArrowRight") {
                 const disposition = (key === "ArrowLeft" ? 1 : -1) * 5;
 
-                limitAndSetNewWidth(this, this.handleElement.offsetWidth + disposition);
+                clampAndApplyWidth(this, this.handleElement.offsetWidth + disposition);
             }
         },
         onMouseDown (event) {
@@ -339,10 +328,10 @@ export default {
          */
         setNewSize () {
             if (this.handlePosition !== "top" && this.handlePosition !== "bottom") {
-                limitAndSetNewWidth(this, this.initialDimensions.width + handleSigns[this.handlePosition][0] * this.deltaCursorPosition.x);
+                clampAndApplyWidth(this, this.initialDimensions.width + handleSigns[this.handlePosition][0] * this.deltaCursorPosition.x);
             }
             else if (this.handlePosition !== "left" && this.handlePosition !== "right") {
-                limitAndSetNewHeight(this, this.initialDimensions.height + handleSigns[this.handlePosition][1] * this.deltaCursorPosition.y);
+                clampAndApplyHeight(this, this.initialDimensions.height + handleSigns[this.handlePosition][1] * this.deltaCursorPosition.y);
             }
         },
         /**
@@ -372,9 +361,14 @@ export default {
 };
 
 /**
- *
+ * Clamps the calculated height between the component's min/max bounds
+ * (relative to the masterportal container) and applies it to the handle element.
+ * Removes any inline maxHeight restriction before applying the new value.
+ * @param {object} self - The ResizeHandle component instance.
+ * @param {number} calculatedHeight - The raw height in pixels derived from cursor movement.
+ * @returns {void}
  */
-function limitAndSetNewHeight (component, calculatedHeight) {
+export function clampAndApplyHeight (self, calculatedHeight) {
     const containerElement = document.getElementById("masterportal-container");
 
     if (!containerElement) {
@@ -383,24 +377,31 @@ function limitAndSetNewHeight (component, calculatedHeight) {
 
     const containerHeight = containerElement.offsetHeight;
     const newHeight = Math.min(
-        containerHeight * component.maxHeight,
-        Math.max(containerHeight * component.maxHeight, calculatedHeight)
+        containerHeight * self.maxHeight,
+        Math.max(containerHeight * self.minHeight, calculatedHeight)
     );
 
-    if (component.handleElement.style.maxHeight !== "none") {
-        component.handleElement.style.maxHeight = "none";
+    if (self.handleElement.style.maxHeight !== "none") {
+        self.handleElement.style.maxHeight = "none";
     }
 
-    component.handleElement.style.height = `${Math.round(newHeight)}px`;
+    self.handleElement.style.height = `${Math.round(newHeight)}px`;
 }
 
 /**
- *
+ * Clamps the calculated width between the component's min/max bounds
+ * (relative to the masterportal container, accounting for the opposite menu's width
+ * and the minimum required distance between both menus) and applies it to the handle element.
+ * Also updates the corresponding Vuex state for the affected menu side.
+ * Removes any inline maxWidth restriction before applying the new value.
+ * @param {object} self - The ResizeHandle component instance.
+ * @param {number} calculatedWidth - The raw width in pixels derived from cursor movement.
+ * @returns {void}
  */
-function limitAndSetNewWidth (component, calculatedWidth) {
+export function clampAndApplyWidth (self, calculatedWidth) {
     const containerElement = document.getElementById("masterportal-container");
     const otherMenuElement = document.getElementById(
-        `mp-menu-${component.side === leftSide ? rightSide : leftSide}`
+        `mp-menu-${self.side === leftSide ? rightSide : leftSide}`
     );
 
     if (!containerElement || !otherMenuElement) {
@@ -411,22 +412,33 @@ function limitAndSetNewWidth (component, calculatedWidth) {
     const otherMenuElementWidth = otherMenuElement.offsetWidth;
 
     const newWidth = Math.min(
-        containerWidth * component.maxWidth - otherMenuElementWidth - minDistanceBetweenMenus,
-        Math.max(containerWidth * component.minWidth, calculatedWidth)
+        containerWidth * self.maxWidth - otherMenuElementWidth - minDistanceBetweenMenus,
+        Math.max(containerWidth * self.minWidth, calculatedWidth)
     );
 
-    if (component.side === leftSide) {
-        component.setMainMenuWidth(newWidth);
+    if (self.side === leftSide) {
+        self.setMainMenuWidth(newWidth);
     }
-    else if (component.side === rightSide) {
-        component.setSecondaryMenuWidth(newWidth);
-    }
-
-    if (component.handleElement.style.maxWidth !== "none") {
-        component.handleElement.style.maxWidth = "none";
+    else if (self.side === rightSide) {
+        self.setSecondaryMenuWidth(newWidth);
     }
 
-    component.handleElement.style.width = `${Math.round(newWidth)}px`;
+    if (self.handleElement.style.maxWidth !== "none") {
+        self.handleElement.style.maxWidth = "none";
+    }
+
+    self.handleElement.style.width = `${Math.round(newWidth)}px`;
+}
+
+/**
+ * Checks whether the given values is a Number and is between 0 and 1.
+ *
+ * @param {*} val Value given for any of the dimension props.
+ * @returns {Boolean} Whether the given value is between 0 and 1.
+ */
+export function dimensionValidator (val) {
+    return !isNaN(val) && typeof val === "number"
+        && val >= 0 && val <= 1;
 }
 </script>
 
@@ -451,8 +463,6 @@ function limitAndSetNewWidth (component, calculatedWidth) {
 </template>
 
 <style lang="scss">
-
-
 $handle_size: 6px;
 
 .resize-handle {
