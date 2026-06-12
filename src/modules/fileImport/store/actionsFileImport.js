@@ -659,7 +659,8 @@ export default {
                     circleRadius: drawState.circleRadius,
                     circleOuterRadius: drawState.circleOuterRadius,
                     colorContour: drawState.colorContour,
-                    outerColorContour: drawState.outerColorContour
+                    outerColorContour: drawState.outerColorContour,
+                    zIndex: drawState.zIndex ?? 0
                 });
             }
             else if (drawState?.drawType.geometry === "Square") {
