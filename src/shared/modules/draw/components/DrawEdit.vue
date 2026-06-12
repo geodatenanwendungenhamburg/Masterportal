@@ -216,6 +216,21 @@ export default {
             const attrs = feature.get("masterportal_attributes");
 
             if (!attrs?.fromDrawTool) {
+                if (!attrs) {
+                    // Feature with no masterportal_attributes = inner circle of a double circle,
+                    // added by the draw API before handleDrawEvent runs on the outer circle.
+                    // Store it and wait for the outer circle to arrive.
+                    this.pendingInnerCircleFeature = markRaw(feature);
+                    return;
+                }
+                // Imported or otherwise non-draw-tool feature: flush any pending inner first.
+                if (this.pendingInnerCircleFeature !== null) {
+                    this.nonReactiveUndoFeatures.push({
+                        feature: this.pendingInnerCircleFeature,
+                        mode: "draw"
+                    });
+                    this.pendingInnerCircleFeature = null;
+                }
                 this.nonReactiveUndoFeatures.push({
                     feature: markRaw(feature),
                     mode: "draw"
@@ -225,6 +240,14 @@ export default {
             }
 
             if (this.pendingInnerCircleFeature !== null && attrs?.drawState?.circleOuterRadius !== undefined) {
+                // Fix the inner circle's live OL style zIndex so it renders above the outer ring.
+                const outerZIndex = attrs.drawState.zIndex ?? 0;
+                const innerStyle = this.pendingInnerCircleFeature.getStyle();
+
+                if (innerStyle) {
+                    innerStyle.setZIndex(outerZIndex + 1);
+                    this.pendingInnerCircleFeature.setStyle(innerStyle);
+                }
                 this.nonReactiveUndoFeatures.push({
                     features: [this.pendingInnerCircleFeature, markRaw(feature)],
                     mode: "drawGroup"

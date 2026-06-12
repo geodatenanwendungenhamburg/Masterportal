@@ -48,14 +48,20 @@ export function processDoubleCircleFeatures (features) {
                 ...sourceDrawState,
                 colorContour: sourceDrawState.outerColorContour,
                 color: sourceDrawState.outerColorFill,
-                circleRadius: sourceDrawState.circleOuterRadius
+                circleRadius: sourceDrawState.circleOuterRadius,
+                strokeWidth: sourceDrawState.outerStrokeWidth ?? sourceDrawState.strokeWidth
             },
-            innerDrawState = {...sourceDrawState};
+            innerDrawState = {
+                ...sourceDrawState,
+                zIndex: (sourceDrawState.zIndex ?? 0) + 1
+            };
 
         delete outerDrawState.outerColorContour;
         delete outerDrawState.outerColorFill;
+        delete outerDrawState.outerStrokeWidth;
         delete innerDrawState.outerColorContour;
         delete innerDrawState.outerColorFill;
+        delete innerDrawState.outerStrokeWidth;
 
         if (geoAttrs1.geoCircleRadius > geoAttrs2.geoCircleRadius) {
             features[idx1].set("masterportal_attributes", {...baseStyleAttrs, drawState: outerDrawState, ...geoAttrs1});

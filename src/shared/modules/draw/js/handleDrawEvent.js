@@ -60,7 +60,8 @@ export function getTypeSpecificProperties (selectedDrawType, stateDrawCopy) {
                 circleRadius: stateDrawCopy.circleOptions.innerRadius,
                 circleOuterRadius: stateDrawCopy.circleOptions.outerRadius,
                 outerColorContour: [...stateDrawCopy.currentLayoutOuterCircle.strokeColor, 1],
-                outerColorFill: [...stateDrawCopy.currentLayoutOuterCircle.fillColor, 1 - stateDrawCopy.currentLayoutOuterCircle.fillTransparency / 100]
+                outerColorFill: [...stateDrawCopy.currentLayoutOuterCircle.fillColor, 1 - stateDrawCopy.currentLayoutOuterCircle.fillTransparency / 100],
+                outerStrokeWidth: stateDrawCopy.currentLayoutOuterCircle.strokeWidth
             };
         case "writeText":
             return {
