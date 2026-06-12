@@ -465,7 +465,7 @@ export default {
          * @returns {String} - Translation of drawType or ID if symbol from iconList in config.
          */
         getDrawTypeName (id) {
-            const symbol = this.iconList.find(symbolId => symbolId.id === id);
+            const symbol = this.iconList?.find(symbolId => symbolId.id === id);
 
             if (symbol) {
                 return symbol.id;
