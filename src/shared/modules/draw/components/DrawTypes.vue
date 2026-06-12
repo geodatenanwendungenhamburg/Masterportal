@@ -212,7 +212,7 @@ export default {
         }
 
         this.startDrawingInitial();
-        this.iconList.forEach(symbol => {
+        this.iconList?.forEach(symbol => {
             this.addDrawTypeSymbol(symbol.id);
         });
     },
