@@ -1,13 +1,11 @@
-import actions from "./actionsAbout.js";
-import mutations from "./mutationsAbout.js";
-import getters from "./gettersAbout.js";
 import state from "./stateAbout.js";
 
-
+/**
+ * Minimal Vuex module for About.
+ * Only provides state so the menu system can read icon/name/description.
+ * All logic lives in the Pinia store (aboutStore.pinia.js).
+ */
 export default {
     namespaced: true,
-    state: {...state},
-    getters,
-    actions,
-    mutations
+    state: {...state}
 };

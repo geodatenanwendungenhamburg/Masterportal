@@ -1,5 +1,8 @@
 <script>
-import {mapActions, mapGetters} from "vuex";
+import {computed} from "vue";
+import {storeToRefs} from "pinia";
+import {useAboutStore} from "../store/aboutStore.pinia.js";
+import store from "../../../app-store/index.js";
 import LightButton from "@shared/modules/buttons/components/LightButton.vue";
 
 /**
@@ -8,65 +11,65 @@ import LightButton from "@shared/modules/buttons/components/LightButton.vue";
  */
 export default {
     name: "AboutModule",
+
     components: {
         LightButton
     },
-    computed: {
-        ...mapGetters(["configJs"]),
-        ...mapGetters("Modules/About", [
-            "abstractText",
-            "contact",
-            "cswUrl",
-            "logo",
-            "logoLink",
-            "logoText",
-            "metaUrl",
-            "showAdditionalMetaData",
-            "title",
-            "version",
-            "versionLink",
-            "ustId",
-            "privacyStatementText",
-            "privacyStatementUrl",
-            "accessibilityText",
-            "accessibilityUrl"
-        ]),
-        ...mapGetters("Menu", [
-            "mainMenu",
-            "secondaryMenu"
-        ]),
-        /**
-         * Returns true if the contact module is configured in either of the menus.
-         * @returns {Boolean} Returns true if the contact module is configured in either of the menus.
-         */
-        contactConfigured () {
-            return this.mainMenu.sections[0].find(m => {
-                return m.type === "contact";
-            })
-                || this.secondaryMenu.sections[0].find(m => {
-                    return m.type === "contact";
-                });
-        },
-        /**
-         * Returns the menu the about module is in.
-         * @returns {String} Returns the menu the about module is in.
-         */
-        menuIndicator () {
-            return this.mainMenu.sections[0].find(m => {
-                return m.type === "about";
-            })
+
+    setup () {
+        const aboutStore = useAboutStore();
+
+        // Find about config directly from portalConfig menu sections
+        const portalConfig = store.state?.portalConfig;
+        const mainSections = portalConfig?.mainMenu?.sections?.flat() || [];
+        const secondarySections = portalConfig?.secondaryMenu?.sections?.flat() || [];
+        const allSections = [...mainSections, ...secondarySections];
+        const aboutConfig = allSections.find(entry => entry?.type === "about");
+
+        if (aboutConfig) {
+            aboutStore.applyConfig(aboutConfig);
+        }
+
+        const mainMenu = computed(() => store.getters["Menu/mainMenu"]);
+        const secondaryMenu = computed(() => store.getters["Menu/secondaryMenu"]);
+
+        const contactConfigured = computed(() => {
+            return mainMenu.value?.sections[0]?.find(m => m.type === "contact")
+                || secondaryMenu.value?.sections[0]?.find(m => m.type === "contact");
+        });
+
+        const menuIndicator = computed(() => {
+            return mainMenu.value?.sections[0]?.find(m => m.type === "about")
                 ? "mainMenu"
                 : "secondaryMenu";
+        });
+
+        /**
+         * Opens the contact module in the same menu where the about module is in.
+         * @returns {void}
+         */
+        function changeCurrentComponent (payload) {
+            store.dispatch("Menu/changeCurrentComponent", payload);
         }
+
+        return {
+            ...storeToRefs(aboutStore),
+            initializeAboutInfo: aboutStore.initializeAboutInfo,
+            currentMasterportalVersionNumber: aboutStore.currentMasterportalVersionNumber,
+            mainMenu,
+            secondaryMenu,
+            contactConfigured,
+            menuIndicator,
+            changeCurrentComponent
+        };
     },
+
     mounted () {
-        this.initializeAboutInfo();
+        this.initializeAboutInfo({restServiceById: store.getters.restServiceById});
         this.currentMasterportalVersionNumber();
     },
 
     methods: {
-        ...mapActions("Modules/About", ["initializeAboutInfo", "currentMasterportalVersionNumber"]),
-        ...mapActions("Menu", ["changeCurrentComponent"]),
         /**
          * Opens the privacy statement URL in a new tab.
          * @returns {void}
@@ -74,6 +77,7 @@ export default {
         openDataPrivacyLink () {
             window.open(this.privacyStatementUrl, "_blank");
         },
+
         /**
          * Opens the accessibility statement URL in a new tab.
          * @returns {void}
@@ -81,6 +85,7 @@ export default {
         openAccessibilityLink () {
             window.open(this.accessibilityUrl, "_blank");
         },
+
         /**
          * Opens the contact module in the same menu where the about module is in.
          * @returns {void}
@@ -88,6 +93,7 @@ export default {
         openContactModule () {
             this.changeCurrentComponent({type: "contact", side: this.menuIndicator, props: {name: this.$t("common:modules.contact.name")}});
         },
+
         /**
          * Checks if a variable is a string and not empty.
          * @returns {String} Returns the input string if it is typeof string and it is not empty.

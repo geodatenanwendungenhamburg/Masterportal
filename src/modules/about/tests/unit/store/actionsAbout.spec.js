@@ -1,123 +1,105 @@
 import getCswRecordById from "@shared/js/api/getCswRecordById.js";
 import sinon from "sinon";
-import actions from "@modules/about/store/actionsAbout.js";
+import {createPinia, setActivePinia} from "pinia";
+import {useAboutStore} from "@modules/about/store/aboutStore.pinia.js";
 import packageJson from "../../../../../../package.json";
 
-const {initializeAboutInfo, currentMasterportalVersionNumber} = actions;
 
+describe("src/modules/about/store/actionsAbout.js", () => {
+    let aboutStore;
 
-describe("src/modules/layerInformation/store/actionsAbout.js", () => {
+    beforeEach(() => {
+        setActivePinia(createPinia());
+        aboutStore = useAboutStore();
+    });
+
+    afterEach(() => {
+        sinon.restore();
+    });
+
     describe("initialize the store", () => {
-        it("should show the about module in menu", async () => {
-            const state = {
-                    metaId: "portalId",
-                    cswUrl: "test.de"
-                },
-                rootGetters = {
-                    isMobile: false,
-                    "Menu/expanded": () => true
-                },
-                cswReturn = {
-                    getTitle: () => "name",
-                    getAbstract: () => "abstract",
-                    getContact: () => "contact"
-                },
-                commit = sinon.spy(),
-                dispatch = sinon.spy();
+        it("should load metadata from CSW", async () => {
+            aboutStore.$patch({
+                metaId: "portalId",
+                cswUrl: "test.de"
+            });
+
+            const cswReturn = {
+                getTitle: () => "name",
+                getAbstract: () => "abstract",
+                getContact: () => "contact"
+            };
 
             sinon.stub(getCswRecordById, "getRecordById").returns(cswReturn);
 
-            await initializeAboutInfo({commit, dispatch, state, rootGetters});
+            await aboutStore.initializeAboutInfo();
 
-            expect(commit.getCall(0).args).to.deep.equal(["setTitle", "name"]);
-            expect(commit.getCall(1).args).to.deep.equal(["setAbstractText", "abstract"]);
-            expect(commit.getCall(2).args).to.deep.equal(["setContact", "contact"]);
-            expect(dispatch.calledWith("currentMasterportalVersionNumber")).to.be.true;
+            expect(aboutStore.title).to.equal("name");
+            expect(aboutStore.abstractText).to.equal("abstract");
+            expect(aboutStore.contact).to.equal("contact");
         });
 
-        it("should set the masterportal version from state, if version is a string", async () => {
-            const state = {
-                    version: "3.4.0"
-                },
-                commit = sinon.spy();
+        it("should set the masterportal version from state, if version is a string", () => {
+            aboutStore.$patch({version: "3.4.0"});
 
-            currentMasterportalVersionNumber({commit, state});
+            aboutStore.currentMasterportalVersionNumber();
 
-            expect(commit.calledWith("setVersion", "3.4.0")).to.be.true;
+            expect(aboutStore.version).to.equal("3.4.0");
         });
 
-        it("should set the masterportal version from package.json, if version is true", async () => {
-            const state = {
-                    version: true
-                },
-                commit = sinon.spy();
+        it("should set the masterportal version from package.json, if version is true", () => {
+            aboutStore.$patch({version: true});
 
-            currentMasterportalVersionNumber({commit, state});
+            aboutStore.currentMasterportalVersionNumber();
 
-            expect(commit.calledWith("setVersion", packageJson.version)).to.be.true;
+            expect(aboutStore.version).to.equal(packageJson.version);
         });
+
         it("should NOT call CSW if cswUrl is empty", async () => {
-            const state = {
+            aboutStore.$patch({
                 metaId: "portalId",
                 cswUrl: ""
-            };
+            });
 
             const spy = sinon.spy(getCswRecordById, "getRecordById");
 
-            await initializeAboutInfo({commit: () => {
-                null;
-            }, dispatch: () => {
-                null;
-            }, state, rootGetters: {}});
+            await aboutStore.initializeAboutInfo();
 
             sinon.assert.notCalled(spy);
         });
+
         it("should NOT overwrite existing abstractText if metadata is missing", async () => {
-            const commit = sinon.spy();
-
-            const state = {
+            aboutStore.$patch({
                 metaId: "portalId",
-                cswUrl: null,
+                cswUrl: "",
                 abstractText: "existing text"
-            };
-
-            await initializeAboutInfo({
-                commit,
-                dispatch: () => {
-                    null;
-                },
-                state,
-                rootGetters: {}
             });
 
-            const calls = commit.getCalls().map(c => c.args[0]);
+            await aboutStore.initializeAboutInfo();
 
-            if (calls.includes("setAbstractText")) {
-                throw new Error("abstractText should not be overwritten");
-            }
+            expect(aboutStore.abstractText).to.equal("existing text");
         });
+
         it("should use publisher if contact is not available", async () => {
-            const state = {
-                    metaId: "portalId",
-                    cswUrl: "test.de"
-                },
-                cswReturn = {
-                    getTitle: () => "name",
-                    getAbstract: () => "abstract",
-                    getContact: () => null,
-                    getPublisher: () => "publisher"
-                },
-                commit = sinon.spy(),
-                dispatch = sinon.spy();
+            aboutStore.$patch({
+                metaId: "portalId",
+                cswUrl: "test.de"
+            });
+
+            const cswReturn = {
+                getTitle: () => "name",
+                getAbstract: () => "abstract",
+                getContact: () => null,
+                getPublisher: () => "publisher"
+            };
 
             sinon.stub(getCswRecordById, "getRecordById").returns(cswReturn);
 
-            await initializeAboutInfo({commit, dispatch, state, rootGetters: {}});
+            await aboutStore.initializeAboutInfo();
 
-            expect(commit.getCall(0).args).to.deep.equal(["setTitle", "name"]);
-            expect(commit.getCall(1).args).to.deep.equal(["setAbstractText", "abstract"]);
-            expect(commit.getCall(2).args).to.deep.equal(["setContact", "publisher"]);
-            expect(dispatch.calledWith("currentMasterportalVersionNumber")).to.be.true;
+            expect(aboutStore.title).to.equal("name");
+            expect(aboutStore.abstractText).to.equal("abstract");
+            expect(aboutStore.contact).to.equal("publisher");
         });
     });
 });
