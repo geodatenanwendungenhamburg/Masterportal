@@ -6,6 +6,17 @@
 
 ## 2025-02-06 v3.15.2 (LTS)
 
+### Changed
+- The following packages have been updated:
+    - dependencies:
+        - @masterportal/masterportalapi: 2.51.0 to 2.51.1
+
+### Fixed
+-  VectorStyle: Fixed styling of polygons: `"zig-line-horizontal"` and `"diagonal-right"` are rotated by 90°.
+
+---
+## 2025-02-06 v3.15.2 (LTS)
+
 ### Added
 - App: All locales can now be overridden with the config.js, and new locales can be added.
 
@@ -25,6 +36,8 @@
     - Added the current time parameter (TIME) to ensure time-dynamic layers are correctly represented when printing.
     - The current timestamp of a WMS-T layer is now captured in the share link and restored upon activation.
 
+---
+
 ## 2025-11-20 v3.15.1 (LTS)
 
 ### Fixed
@@ -35,6 +48,7 @@
 - buildSpec: Fixed runtime error in Print module caused by imported WMS layers where LAYERS parameter was not a string.
 - Issue #1499: Print: Fix missing legends when multiple WFS layers are active.
 
+---
 
 ## 2025-10-01 v3.15.0 (LTS)
 
