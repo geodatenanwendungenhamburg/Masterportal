@@ -8,6 +8,7 @@
 
 ### Added
  - Security: Added SECURITY.md file.
+ - Architectural Decision Record **[ADR](./docs/Dev/Architecture_Decision_Record.md)**: Added documentation file for architectural decisions in the project.
 
 ### Changed
 - The following packages have been updated:

@@ -32,7 +32,7 @@ All the following rules must hold.
 * A.2.1 The code uses the frameworks and libraries set by *Geowerkstatt*; they are not bypassed.
 * A.2.2 No methods of *Underscore.js* are in use, except for calls to `_.template()`.
 * A.2.3 No redundant packages are installed.
-* A.2.4 The addition of packages/libraries has to be agreed on by the *LGV* team. At least 3 libs need to be evaluated before decisions can be made. Use a form from **[library evalutaion](./library_evaluation/Library_Evaluation.pptx)** and add to PR.
+* A.2.4 The addition of packages/libraries has to be agreed on by the *LGV* team. At least 3 libs need to be evaluated before decisions can be made. Use a form from **[library evalutaion](./library_evaluation/Library_Evaluation.pptx)** and add to PR. If the library brings architectural changes, the Architectural Decision Record (ADR) should be created or updated accordingly. See **[ADR](../Architecture_Decision_Record.md)** for details.
 
 ---
 
@@ -57,6 +57,7 @@ All the following rules must hold.
 * A.4.1 The documentation is written in English.
 * A.4.2 The documentation build via `npm run buildJsDoc` does not throw an error.
 * A.4.3 JSDoc should be written according to the guidelines described in docs/Dev/jsdoc.md.
+* A.4.4 If coding touches masterportal architecture we should consider whether the extent justifies recording it in the Architectural Decision Record **[ADR](../Architecture_Decision_Record.md)**. If so, the ADR should be created or updated accordingly.
 
 ---
 
