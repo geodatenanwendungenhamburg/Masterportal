@@ -1,5 +1,7 @@
 import {createStore} from "vuex";
 import {config, shallowMount} from "@vue/test-utils";
+import {createPinia, setActivePinia} from "pinia";
+import {useAboutStore} from "@modules/about/store/aboutStore.js";
 import PortalFooterComponent from "@modules/portalFooter/components/PortalFooter.vue";
 import {expect} from "chai";
 import sinon from "sinon";
@@ -19,6 +21,7 @@ describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
         hideImprint;
 
     beforeEach(() => {
+        setActivePinia(createPinia());
         isMobile = false;
         uiStyle = "default";
         hideImprint = false;
@@ -150,6 +153,9 @@ describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
 
     it("does not render imprint link if hideImprintInFooter is true", () => {
         hideImprint = true;
+        const aboutStore = useAboutStore();
+
+        aboutStore.hideImprintInFooter = true;
         const wrapper = shallowMount(PortalFooterComponent, {
             global: {plugins: [store]}
         });

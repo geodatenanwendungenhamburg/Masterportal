@@ -1,5 +1,8 @@
 <script>
-import {mapActions, mapGetters} from "vuex";
+import {computed} from "vue";
+import {storeToRefs} from "pinia";
+import {useAboutStore} from "../store/aboutStore.js";
+import store from "../../../app-store/index.js";
 import LightButton from "@shared/modules/buttons/components/LightButton.vue";
 
 /**
@@ -11,62 +14,81 @@ export default {
     components: {
         LightButton
     },
-    computed: {
-        ...mapGetters(["configJs"]),
-        ...mapGetters("Modules/About", [
-            "abstractText",
-            "contact",
-            "cswUrl",
-            "logo",
-            "logoLink",
-            "logoText",
-            "metaUrl",
-            "showAdditionalMetaData",
-            "title",
-            "version",
-            "versionLink",
-            "ustId",
-            "privacyStatementText",
-            "privacyStatementUrl",
-            "accessibilityText",
-            "accessibilityUrl"
-        ]),
-        ...mapGetters("Menu", [
-            "mainMenu",
-            "secondaryMenu"
-        ]),
-        /**
-         * Returns true if the contact module is configured in either of the menus.
-         * @returns {Boolean} Returns true if the contact module is configured in either of the menus.
-         */
-        contactConfigured () {
-            return this.mainMenu.sections[0].find(m => {
-                return m.type === "contact";
-            })
-            || this.secondaryMenu.sections[0].find(m => {
-                return m.type === "contact";
-            });
-        },
-        /**
-         * Returns the menu the about module is in.
-         * @returns {String} Returns the menu the about module is in.
-         */
-        menuIndicator () {
-            return this.mainMenu.sections[0].find(m => {
-                return m.type === "about";
-            })
+    setup () {
+        const aboutStore = useAboutStore();
+
+        const {
+            abstractText,
+            contact,
+            cswUrl,
+            logo,
+            logoLink,
+            logoText,
+            metaUrl,
+            showAdditionalMetaData,
+            title,
+            version,
+            versionLink,
+            ustId,
+            privacyStatementText,
+            privacyStatementUrl,
+            accessibilityText,
+            accessibilityUrl
+        } = storeToRefs(aboutStore);
+
+        const mainMenu = computed(() => store.getters["Menu/mainMenu"]);
+        const secondaryMenu = computed(() => store.getters["Menu/secondaryMenu"]);
+
+        const contactConfigured = computed(() => {
+            return mainMenu.value?.sections?.[0]?.find(m => m.type === "contact")
+                || secondaryMenu.value?.sections?.[0]?.find(m => m.type === "contact");
+        });
+
+        const menuIndicator = computed(() => {
+            return mainMenu.value?.sections?.[0]?.find(m => m.type === "about")
                 ? "mainMenu"
                 : "secondaryMenu";
+        });
+
+        /**
+         * Changes the current menu component via store dispatch.
+         * @param {Object} payload - The component payload to set.
+         * @returns {void}
+         */
+        function changeCurrentComponent (payload) {
+            store.dispatch("Menu/changeCurrentComponent", payload);
         }
+
+        return {
+            aboutStore,
+            abstractText,
+            contact,
+            cswUrl,
+            logo,
+            logoLink,
+            logoText,
+            metaUrl,
+            showAdditionalMetaData,
+            title,
+            version,
+            versionLink,
+            ustId,
+            privacyStatementText,
+            privacyStatementUrl,
+            accessibilityText,
+            accessibilityUrl,
+            mainMenu,
+            secondaryMenu,
+            contactConfigured,
+            menuIndicator,
+            changeCurrentComponent
+        };
     },
     mounted () {
-        this.initializeAboutInfo();
-        this.currentMasterportalVersionNumber();
+        this.aboutStore.initializeAboutInfo();
     },
 
     methods: {
-        ...mapActions("Modules/About", ["initializeAboutInfo", "currentMasterportalVersionNumber"]),
-        ...mapActions("Menu", ["changeCurrentComponent"]),
         /**
          * Opens the privacy statement URL in a new tab.
          * @returns {void}

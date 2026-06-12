@@ -1,5 +1,6 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
+import {useAboutStore} from "../../about/store/aboutStore.js";
 import ScaleLine from "./ScaleLine.vue";
 
 /**
@@ -11,6 +12,11 @@ export default {
     name: "PortalFooter",
     components: {
         ScaleLine
+    },
+    setup () {
+        const aboutStore = useAboutStore();
+
+        return {aboutStore};
     },
     computed: {
         ...mapGetters(["isMobile", "uiStyle"]),
@@ -27,9 +33,9 @@ export default {
             "mainMenu",
             "secondaryMenu"
         ]),
-        ...mapGetters("Modules/About", [
-            "hideImprintInFooter"
-        ]),
+        hideImprintInFooter () {
+            return this.aboutStore.hideImprintInFooter;
+        },
         /**
          * Returns the alias length for relevant device mode.
          * @returns {Number} The alias length for the relevant device mode.

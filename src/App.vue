@@ -12,6 +12,7 @@ import MenuContainer from "./modules/menu/components/MenuContainer.vue";
 import MenuToggleButton from "./modules/menu/components/MenuToggleButton.vue";
 import addonsPlugin from "./plugins/addons.js";
 import i18next from "i18next";
+import {useAboutStore} from "./modules/about/store/aboutStore.js";
 
 export default {
     name: "App",
@@ -51,6 +52,9 @@ export default {
     watch: {
         async allConfigsLoaded (value) {
             if (value) {
+                const aboutStore = useAboutStore();
+
+                aboutStore.loadConfigFromPortalConfig();
                 await addonsPlugin.loadAddons(this.$.appContext.app, Config.addons);
                 this.addonsLoaded = true;
                 this.extendLayers();
