@@ -45,6 +45,7 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                             namespaced: true,
                             actions: {},
                             getters: {
+                                buttonsDisabled: () => false,
                                 circleOptions: () => {
                                     return {
                                         innerRadius: 100,
@@ -85,11 +86,24 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                                 drawTypesGeometrie: () => ["line", "box", "polygon", "circle", "doubleCircle"],
                                 drawTypesMain: () => ["pen", "geometries", "symbols"],
                                 drawTypesSymbols: () => ["point"],
+                                iconList: () => [],
                                 selectedDrawType: () => selectedDrawType,
                                 selectedDrawTypeMain: () => selectedDrawTypeMain,
                                 selectedInteraction: () => "draw",
                                 strokeRange: () => [1, 16],
                                 units: sinon.stub().returns(["m", "km"])
+                            },
+                            mutations: {
+                                addDrawTypeSymbol: sinon.stub(),
+                                incrementIdCounter: sinon.stub(),
+                                setCircleOptions: sinon.stub(),
+                                setCurrentLayout: sinon.stub(),
+                                setCurrentLayoutOuterCircle: sinon.stub(),
+                                setLineLength: sinon.stub(),
+                                setSelectedDrawType: sinon.stub(),
+                                setSelectedDrawTypeMain: sinon.stub(),
+                                setSelectedInteraction: sinon.stub(),
+                                setSelectedSymbol: sinon.stub()
                             }
                         }
                     }

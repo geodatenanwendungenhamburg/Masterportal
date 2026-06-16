@@ -1,4 +1,5 @@
 import store from "@appstore/index.js";
+import buildStyleFromDrawState from "./buildStyleFromDrawState.js";
 
 /**
  * Draw type configuration mapping selectedDrawType to the corresponding
@@ -126,4 +127,15 @@ export default function handleDrawEvent (event) {
     }
 
     event.feature.set("masterportal_attributes", attributes, false);
+
+    // Apply the correct final style (with proper zIndex) to the feature.
+    // Skip doubleCircle: its two features are styled separately by the draw interaction
+    // and DrawEdit, which handle each ring's colors and zIndex independently.
+    if (selectedDrawType !== "doubleCircle") {
+        const featureStyle = buildStyleFromDrawState(drawState);
+
+        if (featureStyle) {
+            event.feature.setStyle(featureStyle);
+        }
+    }
 }
