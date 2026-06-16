@@ -25,7 +25,7 @@ import DrawEditStyle from "./DrawEditStyle.vue";
  * @vue-prop {Object} drawIcons - The icons for edit buttons, keyed by action name.
  * @vue-prop {ol/layer/Vector} layer - The vector layer for drawings.
  * @vue-prop {String} [selectedInteraction="draw"] - The currently selected interaction mode.
- * @vue-prop {Function} [setSelectedInteraction=null] - Setter for the selected interaction mode.
+ * @vue-prop {Function(string): void} [setSelectedInteraction=null] - Setter for the selected interaction mode.
  * @vue-data {ol/interaction/Select[]} currentSelectInteractions - The active select interactions.
  * @vue-data {ol/interaction/Modify|null} currentModifyInteraction - The active modify interaction.
  * @vue-data {Object[]} nonReactiveUndoFeatures - The undo feature stack (non-reactive for performance).

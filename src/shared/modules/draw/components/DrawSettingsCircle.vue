@@ -1,5 +1,4 @@
 <script>
-import {mapState} from "vuex";
 import SwitchInput from "../../checkboxes/components/SwitchInput.vue";
 
 /**
@@ -7,7 +6,7 @@ import SwitchInput from "../../checkboxes/components/SwitchInput.vue";
  * @module shared/modules/draw/DrawSettingsCircle
  * @vue-prop {Object} [circleOptions={innerRadius: 0, interactive: true, outerRadius: 100, unit: "m"}] - The circle Options.
  * @vue-prop {String} [selectedDrawType=""] - The selected draw type.
- * @vue-prop {Function} setCircleOptions - Setter for circle options.
+ * @vue-prop {function(Object): void} setCircleOptions - Setter for circle options.
  * @vue-prop {String[]} [units=["m", "km"]] - The units.
  * @vue-computed {String} currentUnit - The current unit.
  * @vue-computed {String[]} radii - The radii.
@@ -47,7 +46,6 @@ export default {
         }
     },
     computed: {
-        ...mapState("Modules/Draw", ["currentLayout"]),
         currentUnit: {
             get () {
                 return this.circleOptions.unit;

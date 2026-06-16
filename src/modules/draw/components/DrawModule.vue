@@ -35,6 +35,7 @@ export default {
     },
     computed: {
         ...mapGetters("Modules/Draw", [
+            "buttonsDisabled",
             "circleOptions",
             "currentLayout",
             "currentLayoutOuterCircle",
@@ -43,6 +44,7 @@ export default {
             "drawTypesGeometrie",
             "drawTypesMain",
             "drawTypesSymbols",
+            "iconList",
             "name",
             "selectedDrawType",
             "selectedDrawTypeMain",
@@ -96,12 +98,16 @@ export default {
     },
     methods: {
         ...mapMutations("Modules/Draw", [
+            "addDrawTypeSymbol",
+            "incrementIdCounter",
             "setCircleOptions",
             "setCurrentLayout",
             "setCurrentLayoutOuterCircle",
+            "setLineLength",
             "setSelectedDrawType",
             "setSelectedDrawTypeMain",
-            "setSelectedInteraction"
+            "setSelectedInteraction",
+            "setSelectedSymbol"
         ]),
         getTrianglePosition (selectedDrawTypeMain, selectedDrawType, triangleId) {
             let buttonId;
@@ -158,17 +164,26 @@ export default {
                 class="d-flex mb-2 drawtypes-container"
             >
                 <DrawTypes
+                    :add-draw-type-symbol="addDrawTypeSymbol"
+                    :buttons-disabled="buttonsDisabled"
                     :circle-options="circleOptions"
                     :current-layout="currentLayout"
                     :current-layout-outer-circle="currentLayoutOuterCircle"
                     :draw-icons="drawIcons"
                     :draw-types="drawTypesMain"
+                    :draw-types-geometrie="drawTypesGeometrie"
+                    :draw-types-main="drawTypesMain"
+                    :draw-types-symbols="drawTypesSymbols"
+                    :icon-list="iconList"
+                    :increment-id-counter="incrementIdCounter"
                     :selected-draw-type="selectedDrawType"
                     :selected-draw-type-main="selectedDrawTypeMain"
                     :selected-interaction="selectedInteraction"
+                    :set-line-length="setLineLength"
                     :set-selected-draw-type="setSelectedDrawType"
                     :set-selected-draw-type-main="setSelectedDrawTypeMain"
                     :set-selected-interaction="setSelectedInteraction"
+                    :set-selected-symbol="setSelectedSymbol"
                     :source="source"
                     :should-emit-events="false"
                     :text-labels="true"
@@ -189,13 +204,22 @@ export default {
                     <DrawTypes
                         v-if="selectedDrawTypeMain === 'geometries'"
                         class="mt-4"
+                        :add-draw-type-symbol="addDrawTypeSymbol"
+                        :buttons-disabled="buttonsDisabled"
                         :circle-options="circleOptions"
                         :current-layout="currentLayout"
                         :current-layout-outer-circle="currentLayoutOuterCircle"
                         :draw-icons="drawIcons"
                         :draw-types="drawTypesGeometrie"
+                        :draw-types-geometrie="drawTypesGeometrie"
+                        :draw-types-main="drawTypesMain"
+                        :draw-types-symbols="drawTypesSymbols"
+                        :icon-list="iconList"
+                        :increment-id-counter="incrementIdCounter"
                         :selected-draw-type="selectedDrawType"
+                        :set-line-length="setLineLength"
                         :set-selected-draw-type="setSelectedDrawType"
+                        :set-selected-symbol="setSelectedSymbol"
                         :source="source"
                         :should-emit-events="false"
                         :text-labels="true"
@@ -205,11 +229,20 @@ export default {
                     <DrawTypes
                         v-else-if="selectedDrawTypeMain === 'symbols'"
                         class="mt-4"
+                        :add-draw-type-symbol="addDrawTypeSymbol"
+                        :buttons-disabled="buttonsDisabled"
                         :current-layout="currentLayout"
                         :draw-icons="drawIcons"
                         :draw-types="drawTypesSymbols"
+                        :draw-types-geometrie="drawTypesGeometrie"
+                        :draw-types-main="drawTypesMain"
+                        :draw-types-symbols="drawTypesSymbols"
+                        :icon-list="iconList"
+                        :increment-id-counter="incrementIdCounter"
                         :selected-draw-type="selectedDrawType"
+                        :set-line-length="setLineLength"
                         :set-selected-draw-type="setSelectedDrawType"
+                        :set-selected-symbol="setSelectedSymbol"
                         :source="source"
                         :should-emit-events="false"
                         :text-labels="true"

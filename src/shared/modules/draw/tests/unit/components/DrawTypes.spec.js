@@ -558,6 +558,7 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
 
             wrapper = shallowMount(DrawTypesComponent, {
                 propsData: {
+                    buttonsDisabled: true,
                     currentLayout,
                     setSelectedDrawType,
                     source
@@ -643,11 +644,12 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
         });
 
         it("should call setLineLength with rounded length on geometry change for 'line'", () => {
+            const setLineLengthSpy = sinon.spy();
+
             wrapper = shallowMount(DrawTypesComponent, {
-                propsData: {currentLayout, setSelectedDrawType, source},
+                propsData: {currentLayout, setSelectedDrawType, source, setLineLength: setLineLengthSpy},
                 global: {plugins: [store]}
             });
-            const setLineLengthSpy = sinon.spy(wrapper.vm, "setLineLength");
 
             wrapper.vm.regulateDrawInteraction("line");
 
@@ -673,7 +675,7 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
             });
             wrapper.vm.regulateDrawInteraction("box");
 
-            callbacks.drawend({feature: {get: sinon.stub(), set: sinon.stub(), getGeometry: () => ({getType: () => "Polygon"})}});
+            callbacks.drawend({feature: {get: sinon.stub(), set: sinon.stub(), setStyle: sinon.stub(), getGeometry: () => ({getType: () => "Polygon"})}});
 
             expect(wrapper.emitted("drawend")).to.be.ok;
         });
@@ -691,7 +693,7 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
 
             const mockEndGeom = {getRadius: () => 250.4, getType: () => "Circle", un: sinon.stub()};
 
-            callbacks.drawend({feature: {get: sinon.stub(), set: sinon.stub(), getGeometry: () => mockEndGeom}});
+            callbacks.drawend({feature: {get: sinon.stub(), set: sinon.stub(), setStyle: sinon.stub(), getGeometry: () => mockEndGeom}});
 
             const emitted = wrapper.emitted("circle-radius");
 
@@ -702,17 +704,18 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
 
     describe("setSelectedSymbol", () => {
         it("should call setSelectedSymbol(null) when toggling off the currently active drawType", () => {
+            const setSelectedSymbolSpy = sinon.spy();
+
             wrapper = shallowMount(DrawTypesComponent, {
                 propsData: {
                     currentLayout,
                     setSelectedDrawType,
                     source,
-                    selectedDrawType: "pen"
+                    selectedDrawType: "pen",
+                    setSelectedSymbol: setSelectedSymbolSpy
                 },
                 global: {plugins: [store]}
             });
-
-            const setSelectedSymbolSpy = sinon.spy(wrapper.vm, "setSelectedSymbol");
 
             wrapper.vm.regulateInteraction("pen");
 
@@ -756,12 +759,19 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
                 }
             });
 
+            const setSelectedSymbolSpy = sinon.spy();
+
             wrapper = shallowMount(DrawTypesComponent, {
-                propsData: {currentLayout, setSelectedDrawType, source, selectedDrawType: "pen"},
+                propsData: {
+                    currentLayout,
+                    setSelectedDrawType,
+                    source,
+                    selectedDrawType: "pen",
+                    iconList: [symbol],
+                    setSelectedSymbol: setSelectedSymbolSpy
+                },
                 global: {plugins: [symbolStore]}
             });
-
-            const setSelectedSymbolSpy = sinon.spy(wrapper.vm, "setSelectedSymbol");
 
             wrapper.vm.regulateInteraction(symbol.id);
 
@@ -830,7 +840,12 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
             });
 
             wrapper = shallowMount(DrawTypesComponent, {
-                propsData: {currentLayout, setSelectedDrawType, source},
+                propsData: {
+                    currentLayout,
+                    setSelectedDrawType,
+                    source,
+                    iconList: [{id: symbolId, type: "image", value: "/img/symbol.png", scale: 2}]
+                },
                 global: {plugins: [imageStore]}
             });
 

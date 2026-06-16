@@ -136,7 +136,8 @@ function buildIconStyle (drawState) {
         image: new Icon({
             crossOrigin: "anonymous",
             src: src,
-            scale: drawState.symbol.scale ?? 1
+            scale: drawState.symbol.scale ?? 1,
+            anchor: [0.5, 1]
         }),
         zIndex: drawState.zIndex ?? 0
     });

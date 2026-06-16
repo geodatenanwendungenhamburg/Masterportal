@@ -1,7 +1,7 @@
 <script>
 import drawInteraction from "@masterportal/masterportalapi/src/maps/interactions/drawInteraction.js";
 import handleDrawEvent from "../js/handleDrawEvent.js";
-import {mapActions, mapGetters, mapState, mapMutations} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import IconButton from "../../buttons/components/IconButton.vue";
 import {nextTick} from "vue";
 import {createTooltipOverlay} from "../js/createTooltipOverlay.js";
@@ -20,11 +20,20 @@ import Icon from "ol/style/Icon.js";
  * @vue-prop {String} [selectedDrawType=""] - The selected draw type.
  * @vue-prop {String} [selectedDrawTypeMain=""] - The selected draw type main.
  * @vue-prop {String} [selectedInteraction="draw"] - The selected interaction.
- * @vue-prop {Function} setSelectedDrawType - Setter for selected draw type.
- * @vue-prop {Function} [setSelectedDrawTypeMain=null] - Setter for selected draw type main.
- * @vue-prop {Function} [setSelectedInteraction=null] - Setter for selected interaction.
+ * @vue-prop {String[]} [drawTypesGeometrie=["line", "box", "polygon", "circle", "doubleCircle", "square"]] - The available geometry draw types (used for label resolution).
+ * @vue-prop {String[]} [drawTypesMain=["pen", "writeText", "geometries", "symbols"]] - The top-level draw type categories (used for label resolution).
+ * @vue-prop {String[]} [drawTypesSymbols=[]] - The available symbol draw types (used for label resolution).
+ * @vue-prop {Object[]} [iconList=[]] - The list of symbol icon definitions from the config.
+ * @vue-prop {Boolean} [buttonsDisabled=false] - Whether all draw type buttons are disabled.
+ * @vue-prop {function(string): void} setSelectedDrawType - Setter for selected draw type.
+ * @vue-prop {function(string): void} [setSelectedDrawTypeMain=null] - Setter for selected draw type main.
+ * @vue-prop {function(string): void} [setSelectedInteraction=null] - Setter for selected interaction.
  * @vue-prop {ol/source/Vector} source - The vector source for drawings.
- * @vue-prop {Boolean} [shouldEmitEvents =false] - Flag to indicate if in modeler3D mode.
+ * @vue-prop {Boolean} [shouldEmitEvents=false] - Flag to indicate if in modeler3D mode.
+ * @vue-prop {function(string): void} [addDrawTypeSymbol] - Adds a symbol draw type to the store.
+ * @vue-prop {function(number): void} [incrementIdCounter] - Increments the feature id counter in the store.
+ * @vue-prop {function(number): void} [setLineLength] - Sets the current drawn line length in the store.
+ * @vue-prop {function(Object|null): void} [setSelectedSymbol] - Sets the currently selected symbol in the store.
  * @vue-data {ol/interaction/Draw} currentDrawInteraction - The current draw interaction.
  */
 export default {
@@ -138,6 +147,58 @@ export default {
             default () {
                 return "btn-primary";
             }
+        },
+        drawTypesGeometrie: {
+            type: Array,
+            default () {
+                return ["line", "box", "polygon", "circle", "doubleCircle", "square"];
+            }
+        },
+        drawTypesMain: {
+            type: Array,
+            default () {
+                return ["pen", "writeText", "geometries", "symbols"];
+            }
+        },
+        drawTypesSymbols: {
+            type: Array,
+            default () {
+                return [];
+            }
+        },
+        iconList: {
+            type: Array,
+            default () {
+                return [];
+            }
+        },
+        buttonsDisabled: {
+            type: Boolean,
+            default: false
+        },
+        addDrawTypeSymbol: {
+            type: Function,
+            default () {
+                return () => { /* noop */ };
+            }
+        },
+        incrementIdCounter: {
+            type: Function,
+            default () {
+                return () => { /* noop */ };
+            }
+        },
+        setLineLength: {
+            type: Function,
+            default () {
+                return () => { /* noop */ };
+            }
+        },
+        setSelectedSymbol: {
+            type: Function,
+            default () {
+                return () => { /* noop */ };
+            }
         }
     },
     emits: ["drawstart", "drawend", "start-drawing", "stop-drawing", "circle-radius"],
@@ -147,9 +208,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Maps", ["projection"]),
-        ...mapGetters("Modules/Draw", ["iconList"]),
-        ...mapState("Modules/Draw", ["drawTypesGeometrie", "drawTypesMain", "drawTypesSymbols", "buttonsDisabled", "selectedSymbol"])
+        ...mapGetters("Maps", ["projection"])
     },
     watch: {
         "circleOptions.interactive" () {
@@ -221,7 +280,6 @@ export default {
     },
     methods: {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
-        ...mapMutations("Modules/Draw", ["setCircleOptions", "addDrawTypeSymbol", "incrementIdCounter", "setLineLength", "setSelectedSymbol"]),
 
         /**
          * Start drawing initial, if a selectedDrawType is specified.

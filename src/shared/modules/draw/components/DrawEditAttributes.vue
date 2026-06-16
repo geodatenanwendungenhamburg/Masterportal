@@ -18,8 +18,8 @@ const EXCLUDED_KEYS = new Set([
 /**
  * Returns a style function that wraps the feature's original style and appends an asterisk (*)
  * as a marker, when a drawing has attributes.
- * @param {Function|import("ol/style").Style|null} originalStyle The original OL feature style.
- * @returns {Function} A style function returning original styles plus the attribute marker.
+ * @param {function(import("ol/Feature").default, number): import("ol/style/Style").default|import("ol/style/Style").default[]|null|import("ol/style").StyleLike} originalStyle The original OL feature style.
+ * @returns {function(import("ol/Feature").default, number): import("ol/style/Style").default[]} A style function returning original styles plus the attribute marker.
  */
 function createMarkerStyleFn (originalStyle) {
     const markerStyle = new Style({
