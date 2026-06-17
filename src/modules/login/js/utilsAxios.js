@@ -1,52 +1,72 @@
 import axios from "axios";
+import utilsUrl from "@modules/login/js/utilsUrl.js";
 
 /**
  * Adds interceptors to the different HTTP Get methods of javascript
  *
- * @param {string} token Bearer token to be added to the headers
- * @param {string} interceptorUrlRegex regex to match the urls that shall be eqipped with the bearer token
+ * @param {string|RegExp} interceptorUrlRegex regex to match the urls that shall be equipped with the bearer token
  * @return {void}
  */
-function addInterceptor (token, interceptorUrlRegex) {
+function addInterceptor (interceptorUrlRegex) {
+    if (!interceptorUrlRegex) {
+        return;
+    }
+
     axios.interceptors.request.use(
         config => {
-            const configUrl = typeof config.url === "object" ? config.url.origin : config.url;
-
-            if (!configUrl?.startsWith("http") || (interceptorUrlRegex && configUrl?.match(interceptorUrlRegex))) {
-                config.headers.Authorization = `Bearer ${token}`;
-                config.withCredentials = true;
+            if (!utilsUrl.shouldAddToken(config.url, interceptorUrlRegex)) {
+                return config;
             }
-            return config;
+
+            return utilsUrl.getAuthToken(config);
         },
         error => {
             return Promise.reject(error);
         }
     );
 
-    (function (open) {
+    (function (open, setRequestHeader) {
+        XMLHttpRequest.prototype._hasAuth = false;
+
+        XMLHttpRequest.prototype.setRequestHeader = function (header, value) {
+            if (header.toLowerCase() === "authorization" && this._hasAuth) {
+                return;
+            }
+
+            this._hasAuth = true;
+            setRequestHeader.call(this, header, value);
+        };
+
         XMLHttpRequest.prototype.open = function (method, url, ...rest) {
             const opened = open.call(this, method, url, ...rest);
 
-            if (interceptorUrlRegex && this.responseURL?.match(interceptorUrlRegex)) {
-                this.setRequestHeader("Authorization", `Bearer ${token}`);
+            if (!utilsUrl.shouldAddToken(url, interceptorUrlRegex)) {
+                return opened;
+            }
+
+            const tokenHeader = utilsUrl.getTokenHeader();
+
+            if (tokenHeader) {
+                this.setRequestHeader("Authorization", tokenHeader);
                 this.withCredentials = true;
             }
+
             return opened;
         };
-    })(XMLHttpRequest.prototype.open);
+    })(XMLHttpRequest.prototype.open, XMLHttpRequest.prototype.setRequestHeader);
 
     const {fetch: originalFetch} = window;
 
     window.fetch = async (resource, originalConfig) => {
-        let config = originalConfig;
-
-        if (interceptorUrlRegex && resource?.match(interceptorUrlRegex)) {
-            config = {
-                ...originalConfig,
-                credentials: "include",
-                headers: {"Authorization": `Bearer ${token}`}
-            };
+        if (!utilsUrl.shouldAddToken(resource, interceptorUrlRegex)) {
+            return originalFetch(resource, originalConfig);
         }
+
+        const config = utilsUrl.getAuthToken({
+            ...originalConfig,
+            credentials: "include",
+            headers: originalConfig?.headers || {}
+        });
 
         return originalFetch(resource, config);
     };

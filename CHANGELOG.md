@@ -16,6 +16,7 @@
         - @masterportal/masterportalapi: 2.51.0 to 2.51.1
 
 ### Fixed
+- Issue \#1472: Improve error handling and robustness of `addInterceptor`.
 - Issue \#1489: Print - fix rotated print masks and add missing rotation for MapFish. Add information regarding missing support of *High Resolution PlotService* to docs.
 - Issue \#1515: Filter: saveTo: `url` was fixed. Now reads URL params properly and sets them.
 - VectorStyle: Fixed styling of polygons: `"zig-line-horizontal"` and `"diagonal-right"` are rotated by 90°.
