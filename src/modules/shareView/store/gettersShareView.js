@@ -43,6 +43,7 @@ const simpleGetters = {
             componentTypes = [shareViewState.type, layerSelectionState.type, stateSearchBar.type, "borisComponent"],
             shareUrl = new URL(location.origin + location.pathname + "?" + mapParams),
             currentMarker = rootState?.Maps?.currentMarker;
+        let bufferState = null;
 
         layerParams.forEach(layerParam => {
             const layerModel = layerCollection.getLayerById(layerParam.id),
@@ -64,7 +65,7 @@ const simpleGetters = {
             delete menuParams.secondary.attributes;
         }
 
-        const bufferState = rootState?.Modules?.BufferAnalysis;
+        bufferState = rootState?.Modules?.BufferAnalysis;
 
         if (
             bufferState?.selectedSourceLayer &&

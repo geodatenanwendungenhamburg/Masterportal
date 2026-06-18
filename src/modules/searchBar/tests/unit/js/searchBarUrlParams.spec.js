@@ -24,7 +24,7 @@ describe("src/modules/searchBar/js/searchBarUrlParams.js", () => {
         searchBarActionsSpy,
         origGetters;
 
-    beforeAll(() => {
+    before(() => {
         origGetters = store.getters;
     });
 
@@ -135,11 +135,12 @@ describe("src/modules/searchBar/js/searchBarUrlParams.js", () => {
             const params = {
                 "QUERY": "Überschwemmungsgebiete"
             };
+            let result = null;
 
             searchBarUrlParams.setQueryToSearchInput(params);
             await wrapper.vm.$nextTick();
 
-            const result = localstore.getters["Modules/SearchBar/searchResults"];
+            result = localstore.getters["Modules/SearchBar/searchResults"];
 
             expect(result.length).to.equals(2);
         });
@@ -147,11 +148,12 @@ describe("src/modules/searchBar/js/searchBarUrlParams.js", () => {
             const params = {
                 "SEARCH/QUERY": "Überschwemmungsgebiete"
             };
+            let result = null;
 
             searchBarUrlParams.setQueryToSearchInput(params);
             await wrapper.vm.$nextTick();
 
-            const result = localstore.getters["Modules/SearchBar/searchResults"];
+            result = localstore.getters["Modules/SearchBar/searchResults"];
 
             expect(result.length).to.equals(2);
         });

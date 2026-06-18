@@ -116,8 +116,8 @@ function sortVisibleLayerListByZindex (visibleLayerList) {
             zIndex: typeof layer?.getZIndex === "function" ? layer.getZIndex() : undefined
         }))
         .sort((a, b) => {
-            const aHasZIndex = a.zIndex !== undefined;
-            const bHasZIndex = b.zIndex !== undefined;
+            const aHasZIndex = a.zIndex !== undefined,
+                bHasZIndex = b.zIndex !== undefined;
 
             if (aHasZIndex && bHasZIndex && a.zIndex !== b.zIndex) {
                 return a.zIndex - b.zIndex;

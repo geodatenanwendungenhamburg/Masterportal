@@ -86,10 +86,11 @@ describe("src/modules/menu/js/menuUrlParams.js", () => {
             const params = {
                 MENU: "{\"main\":{\"currentComponent\":\"root\"},\"secondary\":{\"currentComponent\":\"bufferAnalysis\"}}"
             };
+            let activate = null;
 
             menuUrlParams.setAttributesToComponent(params);
 
-            const activate = dispatchCalls["Menu/activateCurrentComponent"];
+            activate = dispatchCalls["Menu/activateCurrentComponent"];
 
             expect(activate).to.deep.equals({
                 currentComponent: {type: "bufferAnalysis"},
@@ -156,10 +157,11 @@ describe("src/modules/menu/js/menuUrlParams.js", () => {
 
         it("activates bufferAnalysis from ISINITOPEN legacy URL in correct menu", () => {
             const params = {ISINITOPEN: "bufferAnalysis"};
+            let activate = null;
 
             menuUrlParams.isInitOpen(params);
 
-            const activate = dispatchCalls["Menu/activateCurrentComponent"];
+            activate = dispatchCalls["Menu/activateCurrentComponent"];
 
             expect(activate).to.deep.equals({
                 currentComponent: {type: "bufferAnalysis"},
@@ -170,10 +172,11 @@ describe("src/modules/menu/js/menuUrlParams.js", () => {
 
         it("activates bufferAnalysis from STARTUPMODUL legacy URL in correct menu", () => {
             const params = {STARTUPMODUL: "bufferAnalysis"};
+            let activate = null;
 
             menuUrlParams.isInitOpen(params);
 
-            const activate = dispatchCalls["Menu/activateCurrentComponent"];
+            activate = dispatchCalls["Menu/activateCurrentComponent"];
 
             expect(activate).to.deep.equals({
                 currentComponent: {type: "bufferAnalysis"},

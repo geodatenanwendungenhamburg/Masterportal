@@ -248,9 +248,9 @@ const actions = {
      * @return {void}
      */
     applyValuesFromSavedUrlBuffer ({rootState, state, dispatch, commit}) {
-        const menuString = rootState.urlParams?.MENU;
-        const initOpen = rootState.urlParams?.ISINITOPEN;
-        const initValues = rootState.urlParams?.INITVALUES;
+        const menuString = rootState.urlParams?.MENU,
+            initOpen = rootState.urlParams?.ISINITOPEN,
+            initValues = rootState.urlParams?.INITVALUES;
 
         try {
             if (menuString) {
@@ -263,14 +263,14 @@ const actions = {
                     menu = menuString;
                 }
 
-                const secondary = menu?.secondary;
-                const attrs = secondary?.attributes;
+                const secondary = menu?.secondary,
+                    attrs = secondary?.attributes;
 
                 if (attrs && secondary?.currentComponent === "bufferAnalysis") {
-                    const sourceLayer = state.selectOptions.find(l => l.id === attrs.source);
-                    const targetLayer = state.selectOptions.find(l => l.id === attrs.target);
-                    const radius = Number(attrs.radius);
-                    const result = Number(attrs.result);
+                    const sourceLayer = state.selectOptions.find(l => l.id === attrs.source),
+                        targetLayer = state.selectOptions.find(l => l.id === attrs.target),
+                        radius = Number(attrs.radius),
+                        result = Number(attrs.result);
 
                     if (sourceLayer) {
                         dispatch("applySelectedSourceLayer", sourceLayer);
@@ -292,12 +292,12 @@ const actions = {
 
             // Legacy format
             if (initOpen === "bufferAnalysis" && initValues) {
-                const parsed = JSON.parse(initValues);
+                const parsed = JSON.parse(initValues),
 
-                const sourceLayer = state.selectOptions.find(l => l.id === parsed.applySelectedSourceLayer);
-                const targetLayer = state.selectOptions.find(l => l.id === parsed.applySelectedTargetLayer);
-                const radius = Number(parsed.applyBufferRadius);
-                const result = Number(parsed.setResultType);
+                    sourceLayer = state.selectOptions.find(l => l.id === parsed.applySelectedSourceLayer),
+                    targetLayer = state.selectOptions.find(l => l.id === parsed.applySelectedTargetLayer),
+                    radius = Number(parsed.applyBufferRadius),
+                    result = Number(parsed.setResultType);
 
                 if (sourceLayer) {
                     dispatch("applySelectedSourceLayer", sourceLayer);

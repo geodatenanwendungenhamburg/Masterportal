@@ -237,18 +237,18 @@ describe("src/modules/bufferAnalysis/store/actionsBufferAnalysis.js", () => {
 
         it("applies values correctly from legacy initvalues format", async () => {
             const legacyValues = {
-                applySelectedSourceLayer: state.selectOptions[0].id,
-                applyBufferRadius: 500,
-                setResultType: 0,
-                applySelectedTargetLayer: state.selectOptions[2].id
-            };
+                    applySelectedSourceLayer: state.selectOptions[0].id,
+                    applyBufferRadius: 500,
+                    setResultType: 0,
+                    applySelectedTargetLayer: state.selectOptions[2].id
+                },
 
-            const rootStateLegacy = {
-                urlParams: {
-                    ISINITOPEN: "bufferAnalysis",
-                    INITVALUES: JSON.stringify(legacyValues)
-                }
-            };
+                rootStateLegacy = {
+                    urlParams: {
+                        ISINITOPEN: "bufferAnalysis",
+                        INITVALUES: JSON.stringify(legacyValues)
+                    }
+                };
 
             await actions.applyValuesFromSavedUrlBuffer({rootState: rootStateLegacy, state, commit, dispatch});
 

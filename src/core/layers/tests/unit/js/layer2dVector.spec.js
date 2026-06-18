@@ -531,6 +531,11 @@ describe("src/core/js/layers/layer2dVector.js", () => {
                 styleId: "styleId",
                 rules: [{conditions: {foo: "bar"}}]
             };
+            let layerWrapper = null,
+                features = null,
+                filtered = null,
+                legendInfosFromService = null,
+                mockSource = null;
 
             styleListStub.restore();
             sinon.stub(styleList, "returnStyleObject").returns(styleObj);
@@ -539,11 +544,11 @@ describe("src/core/js/layers/layer2dVector.js", () => {
             attributes.url = "https://test.de/wfs";
             attributes.featureType = "testFeatureType";
             attributes.styleGeometryType = "Point";
-            const layerWrapper = new Layer2dVector(attributes),
-                legendInfosFromService = ["serviceInfo1"],
-                features = ["feature1"],
-                filtered = ["filteredLegend"],
-                mockSource = {getFeatures: sinon.stub().returns(features)};
+            layerWrapper = new Layer2dVector(attributes);
+            legendInfosFromService = ["serviceInfo1"];
+            features = ["feature1"];
+            filtered = ["filteredLegend"];
+            mockSource = {getFeatures: sinon.stub().returns(features)};
 
             layerWrapper.layer = {getSource: sinon.stub().returns(mockSource)};
             getGeometryTypeFromService.getGeometryTypeFromWFS.resolves(legendInfosFromService);
@@ -559,17 +564,23 @@ describe("src/core/js/layers/layer2dVector.js", () => {
                 styleId: "default",
                 rules: []
             };
+            let layerWrapper = null,
+                pointLegend = null,
+                legendInformation = null,
+                mockGeometry = null,
+                mockFeature = null,
+                mockSource = null;
 
             styleListStub.restore();
             sinon.stub(styleList, "returnStyleObject").returns(styleObj);
 
             attributes.legend = true;
-            const layerWrapper = new Layer2dVector(attributes),
-                pointLegend = {geometryType: "Point", label: "point"},
-                legendInformation = [pointLegend, {geometryType: "LineString", label: "line"}],
-                mockGeometry = {getType: sinon.stub().returns("Point")},
-                mockFeature = {getGeometry: sinon.stub().returns(mockGeometry)},
-                mockSource = {getFeatures: sinon.stub().returns([mockFeature])};
+            layerWrapper = new Layer2dVector(attributes);
+            pointLegend = {geometryType: "Point", label: "point"};
+            legendInformation = [pointLegend, {geometryType: "LineString", label: "line"}];
+            mockGeometry = {getType: sinon.stub().returns("Point")};
+            mockFeature = {getGeometry: sinon.stub().returns(mockGeometry)};
+            mockSource = {getFeatures: sinon.stub().returns([mockFeature])};
 
             layerWrapper.layer = {getSource: sinon.stub().returns(mockSource)};
             sinon.stub(createStyle, "returnLegendByStyleId").returns({legendInformation});
@@ -582,17 +593,23 @@ describe("src/core/js/layers/layer2dVector.js", () => {
                 styleId: "default",
                 rules: []
             };
+            let layerWrapper = null,
+                lineLegend = null,
+                legendInformation = null,
+                mockGeometry = null,
+                mockFeature = null,
+                mockSource = null;
 
             styleListStub.restore();
             sinon.stub(styleList, "returnStyleObject").returns(styleObj);
 
             attributes.legend = true;
-            const layerWrapper = new Layer2dVector(attributes),
-                lineLegend = {geometryType: "LineString", label: "line"},
-                legendInformation = [{geometryType: "Point", label: "point"}, lineLegend],
-                mockGeometry = {getType: sinon.stub().returns("MultiLineString")},
-                mockFeature = {getGeometry: sinon.stub().returns(mockGeometry)},
-                mockSource = {getFeatures: sinon.stub().returns([mockFeature])};
+            layerWrapper = new Layer2dVector(attributes);
+            lineLegend = {geometryType: "LineString", label: "line"};
+            legendInformation = [{geometryType: "Point", label: "point"}, lineLegend];
+            mockGeometry = {getType: sinon.stub().returns("MultiLineString")};
+            mockFeature = {getGeometry: sinon.stub().returns(mockGeometry)};
+            mockSource = {getFeatures: sinon.stub().returns([mockFeature])};
 
             layerWrapper.layer = {getSource: sinon.stub().returns(mockSource)};
             sinon.stub(createStyle, "returnLegendByStyleId").returns({legendInformation});
@@ -605,16 +622,21 @@ describe("src/core/js/layers/layer2dVector.js", () => {
                 styleId: "default",
                 rules: []
             };
+            let layerWrapper = null,
+                legendInformation = null,
+                mockGeometry = null,
+                mockFeature = null,
+                mockSource = null;
 
             styleListStub.restore();
             sinon.stub(styleList, "returnStyleObject").returns(styleObj);
 
             attributes.legend = true;
-            const layerWrapper = new Layer2dVector(attributes),
-                legendInformation = [{geometryType: "Point", label: "point"}],
-                mockGeometry = {getType: sinon.stub().returns("Polygon")},
-                mockFeature = {getGeometry: sinon.stub().returns(mockGeometry)},
-                mockSource = {getFeatures: sinon.stub().returns([mockFeature])};
+            layerWrapper = new Layer2dVector(attributes);
+            legendInformation = [{geometryType: "Point", label: "point"}];
+            mockGeometry = {getType: sinon.stub().returns("Polygon")};
+            mockFeature = {getGeometry: sinon.stub().returns(mockGeometry)};
+            mockSource = {getFeatures: sinon.stub().returns([mockFeature])};
 
             layerWrapper.layer = {getSource: sinon.stub().returns(mockSource)};
             sinon.stub(createStyle, "returnLegendByStyleId").returns({legendInformation});
@@ -627,6 +649,10 @@ describe("src/core/js/layers/layer2dVector.js", () => {
                 styleId: "customStyle",
                 rules: []
             };
+            let layerWrapper = null,
+                legendInformation = null,
+                mockSource = null,
+                result = null;
 
             styleListStub.restore();
             sinon.stub(styleList, "returnStyleObject").returns(styleObj);
@@ -636,12 +662,12 @@ describe("src/core/js/layers/layer2dVector.js", () => {
             attributes.featureType = "testFeatureType";
             attributes.styleGeometryType = "Point";
 
-            const legendInformation = [
-                    {geometryType: "Point", label: "Point legend"},
-                    {geometryType: "LineString", label: "Line legend"}
-                ],
-                layerWrapper = new Layer2dVector(attributes),
-                mockSource = {getFeatures: sinon.stub().returns([])};
+            legendInformation = [
+                {geometryType: "Point", label: "Point legend"},
+                {geometryType: "LineString", label: "Line legend"}
+            ];
+            layerWrapper = new Layer2dVector(attributes);
+            mockSource = {getFeatures: sinon.stub().returns([])};
 
             layerWrapper.layer = {getSource: sinon.stub().returns(mockSource)};
 
@@ -649,7 +675,7 @@ describe("src/core/js/layers/layer2dVector.js", () => {
 
             sinon.stub(createStyle, "returnLegendByStyleId").returns({legendInformation});
 
-            const result = await layerWrapper.createLegend();
+            result = await layerWrapper.createLegend();
 
             expect(result).to.deep.equals(legendInformation);
         });
@@ -659,16 +685,21 @@ describe("src/core/js/layers/layer2dVector.js", () => {
                 styleId: "styleId",
                 rules: [{conditions: {foo: "bar"}}]
             };
+            let layerWrapper = null,
+                legendInformation = null,
+                features = null,
+                filtered = null,
+                mockSource = null;
 
             styleListStub.restore();
             sinon.stub(styleList, "returnStyleObject").returns(styleObj);
 
             attributes.legend = true;
-            const layerWrapper = new Layer2dVector(attributes),
-                legendInformation = ["legendInfo"],
-                features = ["feature1"],
-                filtered = ["filteredLegend"],
-                mockSource = {getFeatures: sinon.stub().returns(features)};
+            layerWrapper = new Layer2dVector(attributes);
+            legendInformation = ["legendInfo"];
+            features = ["feature1"];
+            filtered = ["filteredLegend"];
+            mockSource = {getFeatures: sinon.stub().returns(features)};
 
             layerWrapper.layer = {getSource: sinon.stub().returns(mockSource)};
             sinon.stub(createStyle, "returnLegendByStyleId").returns({legendInformation});

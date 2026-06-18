@@ -339,6 +339,9 @@ Layer2dVector.prototype.createLegend = async function () {
         rules = styleObject?.rules,
         isSecured = typeof this.attributes.isSecured === "boolean" ? this.attributes.isSecured : false,
         legend = this.inspectLegendUrl();
+    let wfsArgs = null,
+        legendInfos = null,
+        legendInfosFromService = null;
 
     if (Array.isArray(legend)) {
         return legend;
@@ -348,7 +351,7 @@ Layer2dVector.prototype.createLegend = async function () {
         return typeof legend === "string" ? [legend] : legend;
     }
 
-    const wfsArgs = [
+    wfsArgs = [
         rules,
         this.get("url"),
         this.get("version"),
@@ -358,29 +361,29 @@ Layer2dVector.prototype.createLegend = async function () {
         Config.wfsImgPath
     ];
 
-    const legendInfosFromService = await getGeometryTypeFromService.getGeometryTypeFromWFS(...wfsArgs);
+    legendInfosFromService = await getGeometryTypeFromService.getGeometryTypeFromWFS(...wfsArgs);
 
     if (legendInfosFromService && legendInfosFromService.length > 0) {
-        const features = this.layer.getSource().getFeatures();
+        const features = this.layer.getSource().getFeatures(),
 
-        const featureGeomType = features?.[0]?.getGeometry?.()?.getType();
-        const normalizedFeatureType = featureGeomType?.replace("Multi", "") ?? featureGeomType;
+            featureGeomType = features?.[0]?.getGeometry?.()?.getType(),
+            normalizedFeatureType = featureGeomType?.replace("Multi", "") ?? featureGeomType,
 
-        const filteredInfos = normalizedFeatureType
-            ? legendInfosFromService.filter(info => info.geometryType === normalizedFeatureType)
-            : legendInfosFromService;
+            filteredInfos = normalizedFeatureType
+                ? legendInfosFromService.filter(info => info.geometryType === normalizedFeatureType)
+                : legendInfosFromService;
 
 
         return this.resolveLegend(features, rules, filteredInfos);
     }
 
-    const legendInfos = await createStyle.returnLegendByStyleId(styleObject.styleId);
+    legendInfos = await createStyle.returnLegendByStyleId(styleObject.styleId);
 
     if (styleObject.styleId === "default") {
-        const features = this.layer.getSource().getFeatures();
-        const type = features?.[0]?.getGeometry()?.getType();
-        const normalizedType = type === "MultiLineString" ? "LineString" : type;
-        const match = legendInfos.legendInformation?.find(el => el.geometryType === normalizedType);
+        const features = this.layer.getSource().getFeatures(),
+            type = features?.[0]?.getGeometry()?.getType(),
+            normalizedType = type === "MultiLineString" ? "LineString" : type,
+            match = legendInfos.legendInformation?.find(el => el.geometryType === normalizedType);
 
         return match ? [match] : [];
     }

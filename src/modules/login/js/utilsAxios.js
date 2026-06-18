@@ -8,6 +8,8 @@ import utilsUrl from "@modules/login/js/utilsUrl.js";
  * @return {void}
  */
 function addInterceptor (interceptorUrlRegex) {
+    let tokenHeader = null;
+
     if (!interceptorUrlRegex) {
         return;
     }
@@ -44,7 +46,7 @@ function addInterceptor (interceptorUrlRegex) {
                 return opened;
             }
 
-            const tokenHeader = utilsUrl.getTokenHeader();
+            tokenHeader = utilsUrl.getTokenHeader();
 
             if (tokenHeader) {
                 this.setRequestHeader("Authorization", tokenHeader);

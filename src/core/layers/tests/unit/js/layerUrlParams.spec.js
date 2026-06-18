@@ -98,7 +98,7 @@ describe("src/core/layers/js/layerUrlParams.js", () => {
                 time: undefined
             });
         });
-        it.only("should replace the grouped layerId with all ids of group from the params", () => {
+        it("should replace the grouped layerId with all ids of group from the params", () => {
             const params = {
                 "MAP/LAYERIDS": "717,1711",
                 TRANSPARENCY: "50,0",

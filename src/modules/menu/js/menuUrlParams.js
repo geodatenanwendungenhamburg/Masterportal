@@ -72,12 +72,13 @@ function setAttributesToComponent (params) {
  */
 function isInitOpen (params) {
     const {currentComponent, side} = getCurrentComponent(params.ISINITOPEN || params.STARTUPMODUL);
+    let type = null;
 
     if (!currentComponent || !side) {
         return;
     }
 
-    const type = changeCase.upperFirst(currentComponent.type);
+    type = changeCase.upperFirst(currentComponent.type);
 
     store.dispatch("Menu/activateCurrentComponent", {currentComponent, type, side});
 }
@@ -89,11 +90,11 @@ function isInitOpen (params) {
  * @returns {Object} The current component and the related menu side.
  */
 function getCurrentComponent (searchType) {
-    const mainMenuSections = store.getters["Menu/mainMenu"]?.sections || [];
-    const secondaryMenuSections = store.getters["Menu/secondaryMenu"]?.sections || [];
+    const mainMenuSections = store.getters["Menu/mainMenu"]?.sections || [],
+        secondaryMenuSections = store.getters["Menu/secondaryMenu"]?.sections || [],
 
-    const mainMenuComponent = findInSections(mainMenuSections, searchType);
-    const secondaryMenuComponent = findInSections(secondaryMenuSections, searchType);
+        mainMenuComponent = findInSections(mainMenuSections, searchType),
+        secondaryMenuComponent = findInSections(secondaryMenuSections, searchType);
 
     if (mainMenuComponent && !secondaryMenuComponent) {
         return {currentComponent: mainMenuComponent, side: "mainMenu"};

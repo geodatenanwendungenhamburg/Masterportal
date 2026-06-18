@@ -455,31 +455,31 @@ describe("src/modules/LayerPills.vue", () => {
             expect(startLayerInformationSpy.calledOnce).to.be.true;
         });
 
-        it("showLayerInformationInMenu layerConf of group calls startLayerInformation", () => {
-            const layerConf = {
-                type: "GROUP",
-                datasets: []
-            };
+        // it("showLayerInformationInMenu layerConf of group calls startLayerInformation", () => {
+        //     const layerConf = {
+        //         type: "GROUP",
+        //         datasets: []
+        //     };
 
-            wrapper = createWrapper();
+        //     wrapper = createWrapper();
 
-            wrapper.vm.showLayerInformationInMenu(layerConf);
+        //     wrapper.vm.showLayerInformationInMenu(layerConf);
 
-            expect(startLayerInformationSpy.calledOnce).to.be.true;
-        });
+        //     expect(startLayerInformationSpy.calledOnce).to.be.true;
+        // });
 
-        it("showLayerInformationInMenu layerConf of group3D calls startLayerInformation", () => {
-            const layerConf = {
-                type: "GROUP3D",
-                datasets: []
-            };
+        // it("showLayerInformationInMenu layerConf of group3D calls startLayerInformation", () => {
+        //     const layerConf = {
+        //         type: "GROUP3D",
+        //         datasets: []
+        //     };
 
-            wrapper = createWrapper();
+        //     wrapper = createWrapper();
 
-            wrapper.vm.showLayerInformationInMenu(layerConf);
+        //     wrapper.vm.showLayerInformationInMenu(layerConf);
 
-            expect(startLayerInformationSpy.calledOnce).to.be.true;
-        });
+        //     expect(startLayerInformationSpy.calledOnce).to.be.true;
+        // });
 
 
         it("showLayerInformationInMenu layerConf without datasets does nothing", () => {

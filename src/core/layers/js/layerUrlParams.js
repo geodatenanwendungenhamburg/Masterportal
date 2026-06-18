@@ -137,7 +137,8 @@ function removeCurrentLayerFromLayerTree () {
 function addLayerToLayerTree (layers) {
     layers.forEach((layer, index) => {
         let isBaseLayer = false,
-            time;
+            time,
+            zIndex;
 
         if (store.getters.layerConfigById(layer.id)) {
             isBaseLayer = store.getters.layerConfigById(layer.id).baselayer;
@@ -145,8 +146,6 @@ function addLayerToLayerTree (layers) {
                 time = store.getters.layerConfigById(layer.id).time;
             }
         }
-
-        let zIndex;
 
         if (isBaseLayer) {
             if (!baselayerExists) {
