@@ -9,6 +9,7 @@ import CompareFeatures from "../compareFeatures/store/indexCompareFeatures.js";
 import CoordToolkit from "../coordToolkit/store/indexCoordToolkit.js";
 import Draw from "../draw/store/indexDraw.js";
 import Draw_old from "../draw_old/store/indexDraw.js";
+import DrawShared from "@shared/modules/draw/store/indexDraw.js";
 import FeatureLister from "../featureLister/store/indexFeatureLister.js";
 import FileImport from "../fileImport/store/indexFileImport.js";
 import Filter from "../filter/store/indexFilter.js";
@@ -58,6 +59,7 @@ export default {
         CompareFeatures: {...CompareFeatures},
         Draw: {...Draw},
         Draw_old: {...Draw_old},
+        DrawShared: {...DrawShared},
         FeatureLister: {...FeatureLister},
         FileImport: {...FileImport},
         Filter: {...Filter},
