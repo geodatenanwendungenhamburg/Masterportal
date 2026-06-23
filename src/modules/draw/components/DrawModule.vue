@@ -34,8 +34,10 @@ export default {
         };
     },
     computed: {
+        ...mapGetters("Modules/DrawShared", [
+            "buttonsDisabled"
+        ]),
         ...mapGetters("Modules/Draw", [
-            "buttonsDisabled",
             "circleOptions",
             "currentLayout",
             "currentLayoutOuterCircle",

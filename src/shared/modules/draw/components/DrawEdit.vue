@@ -176,7 +176,7 @@ export default {
     },
     methods: {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
-        ...mapMutations(["setButtonsDisabled"]),
+        ...mapMutations("Modules/DrawShared", ["setButtonsDisabled"]),
         isDeleteAllMode,
         createSelectInteractions,
 
@@ -445,7 +445,7 @@ export default {
             const isVisible = this.layer.getVisible();
 
             this.localDrawIcons.hide = isVisible ? "bi-eye-slash" : "bi-eye";
-            this.$store.commit("Modules/Draw/setButtonsDisabled", isVisible);
+            this.setButtonsDisabled(isVisible);
             this.drawLayerVisible = toggleLayerVisibility(this.layer);
         }
     }
