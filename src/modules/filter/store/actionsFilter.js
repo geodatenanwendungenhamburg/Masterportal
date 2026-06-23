@@ -164,10 +164,10 @@ export default {
                     rulesOfFiltersCopy[idx] = undefined;
                 }
             });
-            await context.dispatch("setRulesArray", {rulesOfFilters: rulesOfFiltersCopy});
+            context.dispatch("setRulesArray", {rulesOfFilters: rulesOfFiltersCopy});
             context.commit("setSelectedAccordions", selectedAccordions);
             context.commit("setSelectedGroups", selectedGroups);
-            await context.dispatch("setGeometryFilterByFeature", {jsonFeature: payload?.geometryFeature, invert: payload?.geometrySelectorOptions?.invertGeometry});
+            context.dispatch("setGeometryFilterByFeature", {jsonFeature: payload?.geometryFeature, invert: payload?.geometrySelectorOptions?.invertGeometry});
             if (typeof payload?.geometrySelectorOptions !== "undefined") {
                 context.commit("setGeometrySelectorOptions", payload?.geometrySelectorOptions);
             }
