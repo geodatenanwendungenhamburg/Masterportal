@@ -148,12 +148,18 @@ export default {
             this.setSelectedAccordions(this.transformLayerConfig([...this.layerConfigs.layers, ...this.flattenPreparedLayerGroups], selectedFilterIds));
         }
 
-        this.urlHandler.readFromUrlParams(this.getFilterUrlParams(this.appStoreUrlParams), this.layerConfigs, this.mapHandler, params => {
+        const filterUrlParams = this.getFilterUrlParams(this.appStoreUrlParams),
+            hasInitialFilterUrlState = Array.isArray(filterUrlParams)
+                || (isObject(filterUrlParams) && Object.prototype.hasOwnProperty.call(filterUrlParams, "rulesOfFilters"));
+
+        this.urlHandler.readFromUrlParams(filterUrlParams, this.layerConfigs, this.mapHandler, async params => {
             this.handleStateForAlreadyActiveLayers(params);
-            this.deserializeState({...params, setLateActive: true});
+            await this.deserializeState({...params, setLateActive: true});
             this.addWatcherToWriteUrl();
         });
-        this.addWatcherToWriteUrl();
+        if (!hasInitialFilterUrlState) {
+            this.addWatcherToWriteUrl();
+        }
     },
     beforeUnmount () {
         if (this.mapMoveRegistered) {
