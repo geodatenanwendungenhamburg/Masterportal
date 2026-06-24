@@ -4,7 +4,7 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## 2026-06-23 v3.15.3 (LTS)
+## 2026-06-24 v3.15.3 (LTS)
 
 ### Added
  - Security: Added SECURITY.md file.
