@@ -72,7 +72,8 @@ export default {
                 type: "layer",
                 visibility: true,
                 showInLayerTree: true,
-                alwaysOnTop: true
+                alwaysOnTop: true,
+                isDynamic: true
             }, "2D");
 
             if (existingLayer) {
@@ -86,7 +87,8 @@ export default {
                         typ: "VECTORBASE",
                         type: "layer",
                         visibility: true,
-                        showInLayerTree: true
+                        showInLayerTree: true,
+                        isDynamic: true
                     },
                     parentKey: treeSubjectsKey
                 });
