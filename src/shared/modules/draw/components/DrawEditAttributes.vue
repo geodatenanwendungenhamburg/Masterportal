@@ -1,8 +1,7 @@
 <script>
-import {Fill, Style, Text, Stroke} from "ol/style.js";
-import {Point} from "ol/geom.js";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
+import {createMarkerStyleFn} from "../js/editStyleInteractions.js";
 
 const EXCLUDED_KEYS = new Set([
     "geometry",
@@ -14,55 +13,6 @@ const EXCLUDED_KEYS = new Set([
     "textFont",
     "textFillColor"
 ]);
-
-/**
- * Returns a style function that wraps the feature's original style and appends an asterisk (*)
- * as a marker, when a drawing has attributes.
- * @param {function(import("ol/Feature").default, number): import("ol/style/Style").default|import("ol/style/Style").default[]|null|import("ol/style").StyleLike} originalStyle The original OL feature style.
- * @returns {function(import("ol/Feature").default, number): import("ol/style/Style").default[]} A style function returning original styles plus the attribute marker.
- */
-function createMarkerStyleFn (originalStyle) {
-    const markerStyle = new Style({
-        geometry (feature) {
-            const extent = feature.getGeometry().getExtent();
-
-            return new Point([(extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2]);
-        },
-        text: new Text({
-            font: "bold 32px sans-serif",
-            fill: new Fill({color: "#93f105"}),
-            stroke: new Stroke({width: 4, color: "#2752d9"}),
-            text: "*",
-            offsetY: 0
-        }),
-        zIndex: Infinity
-    });
-
-    return (feature, resolution) => {
-        let baseStyles;
-
-        if (typeof originalStyle === "function") {
-            const s = originalStyle(feature, resolution);
-
-            if (Array.isArray(s)) {
-                baseStyles = s;
-            }
-            else if (s) {
-                baseStyles = [s];
-            }
-            else {
-                baseStyles = [];
-            }
-        }
-        else if (originalStyle) {
-            baseStyles = [originalStyle];
-        }
-        else {
-            baseStyles = [];
-        }
-        return [...baseStyles, markerStyle];
-    };
-}
 
 /**
  * Component to display and edit key-value attributes of a selected drawing.

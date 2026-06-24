@@ -1,6 +1,56 @@
-import {Fill, Style, Text} from "ol/style.js";
+import {Fill, Style, Text, Stroke} from "ol/style.js";
+import {Point} from "ol/geom.js";
 import {convertColor} from "@shared/js/utils/convertColor.js";
 import buildStyleFromDrawState, {buildOuterCircleStyle} from "./buildStyleFromDrawState.js";
+
+/**
+ * Returns a style function that wraps the feature's original style and appends an asterisk (*)
+ * as a marker, when a drawing has attributes.
+ * @param {function|import("ol/style/Style").default|null} originalStyle The original OL feature style.
+ * @returns {function} A style function returning original styles plus the attribute marker.
+ */
+export function createMarkerStyleFn (originalStyle) {
+    const markerStyle = new Style({
+        geometry (feature) {
+            const extent = feature.getGeometry().getExtent();
+
+            return new Point([(extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2]);
+        },
+        text: new Text({
+            font: "bold 32px sans-serif",
+            fill: new Fill({color: "#93f105"}),
+            stroke: new Stroke({width: 4, color: "#2752d9"}),
+            text: "*",
+            offsetY: 0
+        }),
+        zIndex: Infinity
+    });
+
+    return (feature, resolution) => {
+        let baseStyles;
+
+        if (typeof originalStyle === "function") {
+            const s = originalStyle(feature, resolution);
+
+            if (Array.isArray(s)) {
+                baseStyles = s;
+            }
+            else if (s) {
+                baseStyles = [s];
+            }
+            else {
+                baseStyles = [];
+            }
+        }
+        else if (originalStyle) {
+            baseStyles = [originalStyle];
+        }
+        else {
+            baseStyles = [];
+        }
+        return [...baseStyles, markerStyle];
+    };
+}
 
 /**
  * Determines the editable feature type from a feature's stored attributes.
