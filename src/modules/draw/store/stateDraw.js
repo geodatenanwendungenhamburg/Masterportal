@@ -118,7 +118,8 @@ const state = {
         }
     ],
     type: "draw",
-    units: ["m", "km"]
+    units: ["m", "km"],
+    buttonsDisabled: false
 };
 
 export default state;
