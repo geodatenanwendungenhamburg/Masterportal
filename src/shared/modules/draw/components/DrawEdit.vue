@@ -176,7 +176,7 @@ export default {
     },
     methods: {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
-        ...mapMutations("Modules/DrawShared", ["setButtonsDisabled"]),
+        ...mapMutations("Modules/Draw", ["setButtonsDisabled"]),
         isDeleteAllMode,
         createSelectInteractions,
 

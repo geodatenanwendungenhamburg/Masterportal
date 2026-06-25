@@ -34,7 +34,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/DrawShared", [
+        ...mapGetters("Modules/Draw", [
             "buttonsDisabled"
         ]),
         ...mapGetters("Modules/Draw", [
