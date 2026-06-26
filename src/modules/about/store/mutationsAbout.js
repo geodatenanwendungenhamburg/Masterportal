@@ -1,9 +1,5 @@
-import {generateSimpleMutations} from "@shared/js/utils/generators.js";
-import stateAbout from "./stateAbout.js";
-
-const mutations = {
-    ...generateSimpleMutations(stateAbout)
-
-};
-
-export default mutations;
+/**
+ * @deprecated The about module mutations are now managed by Pinia.
+ * Use: import {useAboutStore} from "./aboutStore.js"
+ */
+export default {};

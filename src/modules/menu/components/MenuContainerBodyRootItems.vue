@@ -2,6 +2,7 @@
 import {mapGetters} from "vuex";
 import MenuContainerBodyRootItemElement from "./MenuContainerBodyRootItemElement.vue";
 import changeCase from "@shared/js/utils/changeCase.js";
+import {getPiniaModuleStore, isPiniaModule} from "../../modules-store/piniaModules.js";
 
 /**
  * Menu Container Body Root Items
@@ -49,6 +50,19 @@ export default {
             let properties = item;
 
             if ("type" in item) {
+                if (isPiniaModule(item.type)) {
+                    const piniaStore = getPiniaModuleStore(item.type)();
+
+                    // merge config item with the module's menu metadata from the Pinia store
+                    return {
+                        ...item,
+                        name: piniaStore.name,
+                        icon: piniaStore.icon,
+                        description: piniaStore.description,
+                        type: item.type
+                    };
+                }
+
                 const stateProperties = this.$store.state.Modules[changeCase.upperFirst(item.type)];
 
                 if (item.type === "customMenuElement" && !Object.prototype.hasOwnProperty.call(properties, "icon")) {

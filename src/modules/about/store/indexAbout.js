@@ -1,13 +1,4 @@
-import actions from "./actionsAbout.js";
-import mutations from "./mutationsAbout.js";
-import getters from "./gettersAbout.js";
-import state from "./stateAbout.js";
-
-
-export default {
-    namespaced: true,
-    state: {...state},
-    getters,
-    actions,
-    mutations
-};
+/**
+ * @deprecated Use the Pinia store instead: import {useAboutStore} from "./aboutStore.js"
+ */
+export {useAboutStore} from "./aboutStore.js";

@@ -1,7 +1,9 @@
 import {createStore} from "vuex";
+import {createPinia, setActivePinia} from "pinia";
 import {config, mount, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import AboutComponent from "@modules/about/components/AboutModule.vue";
+import {useAboutStore} from "@modules/about/store/aboutStore.js";
 import sinon from "sinon";
 
 config.global.mocks.$t = key => key;
@@ -9,91 +11,72 @@ config.global.mocks.$t = key => key;
 
 describe("src/modules/about/components/AboutModule.vue", () => {
     let logo,
+        pinia,
         store,
         version,
-        contact;
+        contact,
+        aboutStore;
 
     beforeEach(() => {
         logo = "../../src/assets/img/Logo_Masterportal.svg";
         version = "3.0.0";
         contact = null;
 
+        pinia = createPinia();
+        setActivePinia(pinia);
+
+        aboutStore = useAboutStore();
+        aboutStore.$patch({
+            abstractText: "Test",
+            contact: contact,
+            logo: logo,
+            logoLink: "",
+            logoText: "Masterportallogo",
+            metaUrl: "",
+            noMetadataLoaded: "",
+            showAdditionalMetaData: true,
+            title: "Titel",
+            version: version,
+            versionLink: "",
+            ustId: "DE12345",
+            privacyStatementText: "Privacy Statement",
+            privacyStatementUrl: "https://privacyStatementUrl",
+            accessibilityText: "Accessibility Statement",
+            accessibilityUrl: "https://accessibilityStatementUrl"
+        });
+
+        // Stub the async action so it doesn't run in tests
+        sinon.stub(aboutStore, "initializeAboutInfo");
+
         store = createStore({
             namespaced: true,
             modules: {
-                namespaced: true,
-                Modules: {
-                    namespaced: true,
-                    modules: {
-                        namespaced: true,
-                        About: {
-                            namespaced: true,
-                            getters: {
-                                abstractText: () => "Test",
-                                contact: () => contact,
-                                logo: () => logo,
-                                logoLink: () => "",
-                                logoText: () => "Masterportallogo",
-                                metaUrl: () => "",
-                                noMetadataLoaded: () => "",
-                                showAdditionalMetaData: () => true,
-                                title: () => "Titel",
-                                version: () => version,
-                                versionLink: () => "",
-                                ustId: () => "DE12345",
-                                privacyStatementText: () => "Privacy Statement",
-                                privacyStatementUrl: () => "https://privacyStatementUrl",
-                                accessibilityText: () => "Accessibility Statement",
-                                accessibilityUrl: () => "https://accessibilityStatementUrl"
-                            },
-                            actions: {
-                                initializeAboutInfo: () => sinon.stub(),
-                                currentMasterportalVersionNumber: () => sinon.stub()
-                            }
-                        }
-                    }
-                },
                 Menu: {
                     namespaced: true,
                     getters: {
-                        mainMenu: () => {
-                            return {
-                                sections: [
-                                    [
-                                        {
-                                            type: "contact"
-                                        },
-                                        {
-                                            type: "about"
-                                        }
-                                    ]
-                                ]
-                            };
-                        },
-                        secondaryMenu: () => {
-                            return {
-                                sections: [
-                                    [
-                                        {
-                                            type: "section1"
-                                        },
-                                        {
-                                            type: "section2"
-                                        }
-                                    ]
-                                ]
-                            };
-                        }
+                        mainMenu: () => ({
+                            sections: [[{type: "contact"}, {type: "about"}]]
+                        }),
+                        secondaryMenu: () => ({
+                            sections: [[{type: "section1"}, {type: "section2"}]]
+                        })
+                    },
+                    actions: {
+                        changeCurrentComponent: () => sinon.stub()
                     }
                 }
             }
         });
     });
 
+    afterEach(() => {
+        sinon.restore();
+    });
+
     it("should have an existing title", () => {
         const wrapper = mount(AboutComponent, {
             global: {
-                plugins: [store]
+                plugins: [pinia, store]
             }
         });
 
@@ -102,7 +85,7 @@ describe("src/modules/about/components/AboutModule.vue", () => {
     it("should have an abstract", async () => {
         const wrapper = mount(AboutComponent, {
             global: {
-                plugins: [store]
+                plugins: [pinia, store]
             }
         });
 
@@ -111,7 +94,7 @@ describe("src/modules/about/components/AboutModule.vue", () => {
     it("should have a logo and version", async () => {
         const wrapper = shallowMount(AboutComponent, {
             global: {
-                plugins: [store]
+                plugins: [pinia, store]
             }
         });
 
@@ -123,12 +106,12 @@ describe("src/modules/about/components/AboutModule.vue", () => {
         expect(wrapper.find("div.logoAndVersion > span.version > a").text()).to.equals("common:modules.about.version3.0.0");
     });
     it("should do not have a logo and version, if version and logo are false", async () => {
-        logo = false;
-        version = false;
+        aboutStore.logo = false;
+        aboutStore.version = false;
 
         const wrapper = shallowMount(AboutComponent, {
             global: {
-                plugins: [store]
+                plugins: [pinia, store]
             }
         });
 
@@ -137,7 +120,7 @@ describe("src/modules/about/components/AboutModule.vue", () => {
     it("should have an ustId", async () => {
         const wrapper = mount(AboutComponent, {
             global: {
-                plugins: [store]
+                plugins: [pinia, store]
             }
         });
 
@@ -148,7 +131,7 @@ describe("src/modules/about/components/AboutModule.vue", () => {
     it("should have a title", async () => {
         const wrapper = mount(AboutComponent, {
             global: {
-                plugins: [store]
+                plugins: [pinia, store]
             }
         });
 
@@ -158,7 +141,7 @@ describe("src/modules/about/components/AboutModule.vue", () => {
     it("should have a privacy statement section", async () => {
         const wrapper = mount(AboutComponent, {
             global: {
-                plugins: [store]
+                plugins: [pinia, store]
             }
         });
 
@@ -170,7 +153,7 @@ describe("src/modules/about/components/AboutModule.vue", () => {
     it("should have an accessibilty statement section", async () => {
         const wrapper = mount(AboutComponent, {
             global: {
-                plugins: [store]
+                plugins: [pinia, store]
             }
         });
 
@@ -182,7 +165,7 @@ describe("src/modules/about/components/AboutModule.vue", () => {
     it("should have a contact button", async () => {
         const wrapper = mount(AboutComponent, {
             global: {
-                plugins: [store]
+                plugins: [pinia, store]
             }
         });
 
@@ -192,14 +175,14 @@ describe("src/modules/about/components/AboutModule.vue", () => {
 
 
     it("should not show undefined for missing address information", async () => {
-        contact = {
+        aboutStore.contact = {
             "name": "Behörde ABC",
             "email": "test@gv.hamburg.de"
         };
 
         const wrapper = mount(AboutComponent, {
             global: {
-                plugins: [store]
+                plugins: [pinia, store]
             }
         });
 

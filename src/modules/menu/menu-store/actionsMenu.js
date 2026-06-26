@@ -1,5 +1,6 @@
 import {nextTick} from "vue";
 import changeCase from "@shared/js/utils/changeCase.js";
+import {getPiniaModuleStore, isPiniaModule} from "../../modules-store/piniaModules.js";
 
 export default {
     /**
@@ -14,12 +15,17 @@ export default {
      * @returns {void}
      */
     activateCurrentComponent ({commit, dispatch, rootGetters}, {currentComponent, type, side}) {
+        const lowerType = changeCase.lowerFirst(type),
+            name = isPiniaModule(lowerType)
+                ? getPiniaModuleStore(lowerType)().name
+                : rootGetters[`Modules/${type}/name`];
+
         commit("setExpandedBySide", {expanded: true, side: side});
         dispatch("changeCurrentComponent", {
             type: currentComponent.type,
             side: side,
             props: {
-                name: rootGetters[`Modules/${type}/name`]
+                name
             }
         });
     },

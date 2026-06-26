@@ -4,6 +4,7 @@ import MenuNavigation from "./MenuNavigation.vue";
 import {mapActions, mapGetters} from "vuex";
 import GetFeatureInfo from "../../getFeatureInfo/components/GetFeatureInfo.vue";
 import MenuComponentKeepAlivePlaceholder from "./MenuComponentKeepAlivePlaceholder.vue";
+import {getPiniaModuleStore, isPiniaModule} from "../../modules-store/piniaModules.js";
 
 /**
  * @module modules/MenuContainerBody
@@ -116,6 +117,9 @@ export default {
 
                 if (module.type === "folder") {
                     this.initializeModuleConfig(module.elements, `${path}.elements`);
+                }
+                else if (isPiniaModule(module.type)) {
+                    getPiniaModuleStore(module.type)().initialize(module);
                 }
                 else if (module.type !== "customMenuElement") {
                     this.initializeModule({configPaths: [path], type: module.type});

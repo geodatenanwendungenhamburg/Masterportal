@@ -5,6 +5,7 @@ import "regenerator-runtime/runtime";
 import {initiateVueI18Next, initLanguage} from "./plugins/i18next.js";
 import globalUrlParams from "../src/core/urlParams/js/globalUrlParams.js";
 import {createApp} from "vue";
+import {createPinia} from "pinia";
 import App from "./App.vue";
 import bsTooltipDirective from "./directives/bs-tooltip.js";
 import store from "./app-store/index.js";
@@ -52,6 +53,9 @@ loadConfigJs.then(() => {
 
     app.directive("bs-tooltip", bsTooltipDirective);
 
+    const pinia = createPinia();
+
+    app.use(pinia);
     app.use(store);
     store.$app = app;
 

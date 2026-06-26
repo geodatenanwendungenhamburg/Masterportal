@@ -1,8 +1,5 @@
-import {generateSimpleGetters} from "@shared/js/utils/generators.js";
-import stateAbout from "./stateAbout.js";
-
-const getters = {
-    ...generateSimpleGetters(stateAbout)
-};
-
-export default getters;
+/**
+ * @deprecated The about module getters are now managed by Pinia.
+ * Use: import {useAboutStore} from "./aboutStore.js"
+ */
+export default {};
