@@ -12,6 +12,19 @@ export function upperFirst (value) {
 }
 
 /**
+ * Lowercases the first letter of a given string.
+ * @param {String} value A string to lowercase the first letter.
+ * @returns {String} The same string, but with lowercased first letter.
+ */
+export function lowerFirst (value) {
+    if (typeof value !== "string") {
+        return "";
+    }
+
+    return value.charAt(0).toLowerCase() + value.substring(1);
+}
+
+/**
  * Rewrites the keys of an object in upper case.
  * @param {Object} obj The object.
  * @returns {Object} The object with uppercase keys.
@@ -24,5 +37,6 @@ export function upperCaseKeys (obj) {
 
 export default {
     upperCaseKeys,
-    upperFirst
+    upperFirst,
+    lowerFirst
 };

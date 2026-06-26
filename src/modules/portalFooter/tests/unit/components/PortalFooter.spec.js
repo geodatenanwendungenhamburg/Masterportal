@@ -1,6 +1,8 @@
 import {createStore} from "vuex";
-import {shallowMount} from "@vue/test-utils";
+import {createPinia, setActivePinia} from "pinia";
+import {config, shallowMount} from "@vue/test-utils";
 import PortalFooterComponent from "@modules/portalFooter/components/PortalFooter.vue";
+import {useAboutStore} from "@modules/about/store/aboutStore.js";
 import {expect} from "chai";
 import sinon from "sinon";
 
@@ -8,6 +10,7 @@ import sinon from "sinon";
 describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
     let isMobile,
         uiStyle,
+        pinia,
         store,
         hideImprint,
         urls;
@@ -22,6 +25,10 @@ describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
         isMobile = false;
         uiStyle = "default";
         hideImprint = false;
+
+        pinia = createPinia();
+        setActivePinia(pinia);
+
         store = createStore({
             modules: {
                 Modules: {
@@ -35,12 +42,6 @@ describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
                                 urls: () => urls,
                                 type: () => sinon.stub(),
                                 configPaths: () => sinon.stub()
-                            }
-                        },
-                        About: {
-                            namespaced: true,
-                            getters: {
-                                hideImprintInFooter: () => hideImprint
                             }
                         }
                     }
@@ -95,7 +96,7 @@ describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
     it("renders the footer", () => {
         const wrapper = shallowMount(PortalFooterComponent, {
             global: {
-                plugins: [store]
+                plugins: [pinia, store]
             }
         });
 
@@ -105,7 +106,7 @@ describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
     it("renders the urls in footer", () => {
         const wrapper = shallowMount(PortalFooterComponent, {
             global: {
-                plugins: [store]
+                plugins: [pinia, store]
             }
         });
 
@@ -119,7 +120,7 @@ describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
 
         const wrapper = shallowMount(PortalFooterComponent, {
             global: {
-                plugins: [store]
+                plugins: [pinia, store]
             }
         });
 
@@ -144,7 +145,7 @@ describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
     it("renders scaleLine exist", () => {
         const wrapper = shallowMount(PortalFooterComponent, {
             global: {
-                plugins: [store]
+                plugins: [pinia, store]
             }
         });
 
@@ -154,7 +155,7 @@ describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
     it("renders imprint link", () => {
         const wrapper = shallowMount(PortalFooterComponent, {
             global: {
-                plugins: [store]
+                plugins: [pinia, store]
             }
         });
 
@@ -163,8 +164,9 @@ describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
 
     it("does not render imprint link if hideImprintInFooter is true", () => {
         hideImprint = true;
+        useAboutStore().hideImprintInFooter = hideImprint;
         const wrapper = shallowMount(PortalFooterComponent, {
-            global: {plugins: [store]}
+            global: {plugins: [pinia, store]}
         });
 
         expect(wrapper.find(".imprintLink").exists()).to.be.false;

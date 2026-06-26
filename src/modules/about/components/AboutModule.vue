@@ -1,102 +1,81 @@
-<script>
-import {mapActions, mapGetters} from "vuex";
+<script setup>
+import {computed, onMounted} from "vue";
+import {useStore} from "vuex";
+import {storeToRefs} from "pinia";
+import {useTranslation} from "i18next-vue";
+import {useAboutStore} from "../store/aboutStore.js";
 import LightButton from "@shared/modules/buttons/components/LightButton.vue";
 
-/**
- * The About Module gives information about the metadata, contact and current version of the portal
- * @module modules/AboutModule
- */
-export default {
-    name: "AboutModule",
-    components: {
-        LightButton
-    },
-    computed: {
-        ...mapGetters(["configJs"]),
-        ...mapGetters("Modules/About", [
-            "abstractText",
-            "contact",
-            "cswUrl",
-            "logo",
-            "logoLink",
-            "logoText",
-            "metaUrl",
-            "showAdditionalMetaData",
-            "title",
-            "version",
-            "versionLink",
-            "ustId",
-            "privacyStatementText",
-            "privacyStatementUrl",
-            "accessibilityText",
-            "accessibilityUrl"
-        ]),
-        ...mapGetters("Menu", [
-            "mainMenu",
-            "secondaryMenu"
-        ]),
-        /**
-         * Returns true if the contact module is configured in either of the menus.
-         * @returns {Boolean} Returns true if the contact module is configured in either of the menus.
-         */
-        contactConfigured () {
-            return this.mainMenu.sections[0].find(m => {
-                return m.type === "contact";
-            })
-                || this.secondaryMenu.sections[0].find(m => {
-                    return m.type === "contact";
-                });
-        },
-        /**
-         * Returns the menu the about module is in.
-         * @returns {String} Returns the menu the about module is in.
-         */
-        menuIndicator () {
-            return this.mainMenu.sections[0].find(m => {
-                return m.type === "about";
-            })
-                ? "mainMenu"
-                : "secondaryMenu";
-        }
-    },
-    mounted () {
-        this.initializeAboutInfo();
-        this.currentMasterportalVersionNumber();
-    },
+const {t} = useTranslation();
+const aboutStore = useAboutStore();
+const vuexStore = useStore();
 
-    methods: {
-        ...mapActions("Modules/About", ["initializeAboutInfo", "currentMasterportalVersionNumber"]),
-        ...mapActions("Menu", ["changeCurrentComponent"]),
-        /**
-         * Opens the privacy statement URL in a new tab.
-         * @returns {void}
-         */
-        openDataPrivacyLink () {
-            window.open(this.privacyStatementUrl, "_blank");
-        },
-        /**
-         * Opens the accessibility statement URL in a new tab.
-         * @returns {void}
-         */
-        openAccessibilityLink () {
-            window.open(this.accessibilityUrl, "_blank");
-        },
-        /**
-         * Opens the contact module in the same menu where the about module is in.
-         * @returns {void}
-         */
-        openContactModule () {
-            this.changeCurrentComponent({type: "contact", side: this.menuIndicator, props: {name: this.$t("common:modules.contact.name")}});
-        },
-        /**
-         * Checks if a variable is a string and not empty.
-         * @returns {String} Returns the input string if it is typeof string and it is not empty.
-         */
-        checkStringContent (inputString) {
-            return typeof inputString === "string" && inputString.length ? inputString : null;
-        }
-    }
-};
+const {
+    abstractText,
+    contact,
+    logo,
+    logoLink,
+    logoText,
+    metaUrl,
+    showAdditionalMetaData,
+    title,
+    version,
+    versionLink,
+    ustId,
+    privacyStatementText,
+    privacyStatementUrl,
+    accessibilityText,
+    accessibilityUrl
+} = storeToRefs(aboutStore);
+
+const mainMenu = computed(() => vuexStore.getters["Menu/mainMenu"]);
+const secondaryMenu = computed(() => vuexStore.getters["Menu/secondaryMenu"]);
+
+const contactConfigured = computed(() => mainMenu.value.sections[0].find(m => m.type === "contact")
+    || secondaryMenu.value.sections[0].find(m => m.type === "contact"));
+
+const menuIndicator = computed(() => {
+    return mainMenu.value.sections[0].find(m => m.type === "about")
+        ? "mainMenu"
+        : "secondaryMenu";
+});
+
+onMounted(() => {
+    aboutStore.initializeAboutInfo();
+});
+
+/**
+ * Opens the privacy statement URL in a new browser tab.
+ * @returns {void}
+ */
+function openDataPrivacyLink () {
+    window.open(privacyStatementUrl.value, "_blank");
+}
+
+/**
+ * Opens the accessibility statement URL in a new browser tab.
+ * @returns {void}
+ */
+function openAccessibilityLink () {
+    window.open(accessibilityUrl.value, "_blank");
+}
+
+/**
+ * Opens the contact module in the menu side where the about module is configured.
+ * @returns {void}
+ */
+function openContactModule () {
+    vuexStore.dispatch("Menu/changeCurrentComponent", {type: "contact", side: menuIndicator.value, props: {name: t("common:modules.contact.name")}});
+}
+
+/**
+ * Checks if a value is a non-empty string.
+ * @param {String} inputString The string to check.
+ * @returns {String|null} The input string if it is a non-empty string, otherwise null.
+ */
+function checkStringContent (inputString) {
+    return typeof inputString === "string" && inputString.length ? inputString : null;
+}
 </script>
 
 <template lang="html">

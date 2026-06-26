@@ -7,15 +7,8 @@ import testConfig from "./testConfig.js";
 import sinon from "sinon";
 import {expect} from "chai";
 import {enableAutoUnmount, config} from "@vue/test-utils";
-import {
-    vi,
-    beforeAll as vitestBeforeAll,
-    afterAll as vitestAfterAll,
-    beforeEach as vitestBeforeEach,
-    afterEach as vitestAfterEach,
-    test as vitestTest,
-    it as vitestIt
-} from "vitest";
+import {vi, beforeAll as vitestBeforeAll, afterAll as vitestAfterAll, beforeEach as vitestBeforeEach, afterEach as vitestAfterEach, test as vitestTest, it as vitestIt} from "vitest";
+import {createPinia, setActivePinia} from "pinia";
 
 // Enable auto-unmount once
 if (!globalThis.__vitest_auto_unmount_initialized__) {
@@ -182,6 +175,17 @@ config.global.mocks = config.global.mocks || {};
 
 config.global.mocks.t = key => key;
 config.global.mocks.$t = key => key;
+
+// Provide a fresh, active Pinia instance for every test so components and
+// stores that have been migrated to Pinia work without per-test boilerplate.
+// Note: We only set the active Pinia and do NOT push it into
+// config.global.plugins. Pinia stores resolve via the active instance, so this
+// avoids installing Pinia twice (which happens when a spec passes its own Pinia
+// in the plugins array) and the resulting "App already provides property with
+// key Symbol(pinia)" warning.
+vitestBeforeEach(() => {
+    setActivePinia(createPinia());
+});
 
 if (typeof globalThis.CanvasPattern === "undefined") {
     globalThis.CanvasPattern = function () {};

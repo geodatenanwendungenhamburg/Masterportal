@@ -4,6 +4,7 @@ import MenuNavigation from "./MenuNavigation.vue";
 import {mapActions, mapGetters} from "vuex";
 import GetFeatureInfo from "../../getFeatureInfo/components/GetFeatureInfo.vue";
 import MenuComponentKeepAlivePlaceholder from "./MenuComponentKeepAlivePlaceholder.vue";
+import {getPiniaModuleStore, isPiniaModule} from "../../modules-store/piniaModules.js";
 
 /**
  * The MenuContainerBody component is responsible for rendering the body of the menu, which includes the navigation, the currently visible component, and any feature information. It manages the state of the menu, including which component is currently displayed and which components should be cached using Vue's keep-alive feature. The component also initializes modules based on the menu configuration.
@@ -117,6 +118,9 @@ export default {
 
                 if (module.type === "folder") {
                     this.initializeModuleConfig(module.elements, `${path}.elements`);
+                }
+                else if (isPiniaModule(module.type)) {
+                    getPiniaModuleStore(module.type)().initialize(module);
                 }
                 else if (module.type !== "customMenuElement") {
                     this.initializeModule({configPaths: [path], type: module.type});
