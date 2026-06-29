@@ -581,12 +581,17 @@ export default {
                     return;
                 }
                 if (this.runningMapMoveListeners[filterId]) {
-                    this.layerConfigs.layers[filterId].api.stop(() => {
-                        this.runningMapMoveListeners[filterId] = true;
-                        mapMoveListener(evt);
-                    }, error => {
-                        console.error("Error while stopping layer for map move listener with filterId " + filterId, error);
-                    });
+                    const layerConfig = [...this.flattenPreparedLayerGroups, ...this.layerConfigs.layers]
+                        .find(layer => layer.filterId === filterId);
+
+                    if (layerConfig?.api?.stop) {
+                        layerConfig.api.stop(() => {
+                            this.runningMapMoveListeners[filterId] = true;
+                            mapMoveListener(evt);
+                        }, error => {
+                            console.error("Error while stopping layer for map move listener with filterId " + filterId, error);
+                        });
+                    }
                     return;
                 }
                 this.runningMapMoveListeners[filterId] = true;
