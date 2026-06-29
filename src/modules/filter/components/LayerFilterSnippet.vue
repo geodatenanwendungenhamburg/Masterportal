@@ -506,7 +506,7 @@ export default {
             }
 
             rules.forEach((rule) => {
-                if (!this.isRule(rule)) {
+                if (!this.isRule(rule) || !isObject(this.snippets[rule.snippetId])) {
                     return;
                 }
 
@@ -520,6 +520,28 @@ export default {
                     return;
                 }
                 this.snippets[rule.snippetId].prechecked = rule?.value;
+            });
+        },
+        /**
+         * Applies deserialized rules to snippets and triggers filtering.
+         * @returns {void}
+         */
+        applyDeserializedState () {
+            this.setSnippetValueByState(this.filterRules);
+            if (!this.hasUnfixedRules(this.filterRules)) {
+                return;
+            }
+
+            this.$nextTick(() => {
+                if (this.isStrategyActive()) {
+                    const snippetIds = this.filterRules
+                        .filter(rule => this.isRule(rule) && !rule.fixed)
+                        .map(rule => rule.snippetId);
+
+                    this.handleActiveStrategy(snippetIds.length ? snippetIds : undefined);
+                    return;
+                }
+                this.filter();
             });
         },
         /**

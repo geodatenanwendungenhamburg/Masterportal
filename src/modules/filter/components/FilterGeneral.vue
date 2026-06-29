@@ -155,6 +155,7 @@ export default {
         this.urlHandler.readFromUrlParams(filterUrlParams, this.layerConfigs, this.mapHandler, async params => {
             this.handleStateForAlreadyActiveLayers(params);
             await this.deserializeState({...params, setLateActive: true});
+            await this.applyDeserializedFilters(params?.selectedAccordions);
             this.addWatcherToWriteUrl();
         });
         if (!hasInitialFilterUrlState) {
@@ -300,6 +301,7 @@ export default {
                         selectedAccordionsTmp.push(accordion);
                         await this.setRulesArray({rulesOfFilters: rulesOfFiltersTmp});
                         this.setSelectedAccordions(selectedAccordionsTmp);
+                        await this.applyDeserializedFilters([accordion]);
                     });
                     params.selectedAccordions.splice(selecetedAccordionsLen, 1);
                     params.rulesOfFilters[accordion.filterId] = null;
@@ -320,6 +322,27 @@ export default {
                     deep: true
                 });
             }
+        },
+        /**
+         * Applies deserialized rules to selected filter snippets and triggers filtering.
+         * @param {Object[]} accordions The selected accordions to trigger.
+         * @returns {Promise<void>} A promise resolving after next render tick.
+         */
+        async applyDeserializedFilters (accordions) {
+            if (!Array.isArray(accordions) || accordions.length === 0) {
+                return;
+            }
+            await this.$nextTick();
+
+            accordions.forEach(accordion => {
+                const layerFilterComp = this.$refs[`filter-${accordion?.filterId}`],
+                    layerFilterCompRef = Array.isArray(layerFilterComp) ? layerFilterComp[0] : layerFilterComp;
+
+                if (typeof layerFilterCompRef?.applyDeserializedState !== "function") {
+                    return;
+                }
+                layerFilterCompRef.applyDeserializedState();
+            });
         },
         /**
          * Gets the features of the additional geometries by the given layer id.
