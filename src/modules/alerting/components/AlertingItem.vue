@@ -104,7 +104,9 @@ export default {
          */
         axiosCallback: function (response) {
             const data = response.data,
-                collectedAlerts = [];
+                collectedAlerts = [],
+                restrictedAlertIds = [],
+                globalAlertIds = [];
 
             let collectedAlertIds = [];
 
@@ -112,23 +114,26 @@ export default {
                 return;
             }
 
-            if (Array.isArray(data.globalAlerts)) {
-                collectedAlertIds = [...collectedAlertIds, ...data.globalAlerts];
-            }
-
             if (data.restrictedAlerts !== undefined && typeof data.restrictedAlerts === "object") {
                 Object.keys(data.restrictedAlerts).forEach(restrictedAlertUrl => {
                     if (this.currentUrl.toLowerCase().startsWith(restrictedAlertUrl.toLowerCase()) && Array.isArray(data.restrictedAlerts[restrictedAlertUrl])) {
-                        collectedAlertIds = [...collectedAlertIds, ...data.restrictedAlerts[restrictedAlertUrl]];
+                        restrictedAlertIds.push(...data.restrictedAlerts[restrictedAlertUrl]);
                     }
                 });
             }
 
-            for (const alertId in data.alerts) {
-                if (collectedAlertIds.includes(alertId)) {
+            if (Array.isArray(data.globalAlerts)) {
+                globalAlertIds.push(...data.globalAlerts);
+            }
+
+            // global alerts are collected first so they are displayed on top
+            collectedAlertIds = [...new Set([...globalAlertIds, ...restrictedAlertIds])];
+
+            collectedAlertIds.forEach(alertId => {
+                if (data.alerts[alertId] !== undefined) {
                     collectedAlerts.push(data.alerts[alertId]);
                 }
-            }
+            });
 
             collectedAlerts.forEach(singleAlert => {
                 singleAlert.initial = true;
