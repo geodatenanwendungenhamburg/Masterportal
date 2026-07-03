@@ -16,6 +16,7 @@
 ### Removed
 
 ### Fixed
+- Filter: Fix setting filter rules from URL Parameters.
 
 ---
 
@@ -71,7 +72,6 @@
 - SearchBar: Fixed duplicated results with URL Parameter `QUERY`.
 - LayerInformation: Fixed CSS scope.
 - GetFeatureInfo: Fixed the display of the table view.
-- Filter: Fix setting filter rules from URL Parameters.
 - Draw_old: Marked `importDrawLayer` as dynamic to prevent it from being included in generated share links and causing errors in parametrized URLs.
 
 ---
