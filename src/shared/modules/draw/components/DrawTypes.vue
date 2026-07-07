@@ -434,6 +434,14 @@ export default {
                 });
                 this.currentDrawInteraction.on("drawend", (evt) => {
                     tooltipElement.style.display = "none";
+
+                    if (drawType === "writeText" && !this.currentLayout.text?.trim()) {
+                        this.source.once("addfeature", (e) => {
+                            this.source.removeFeature(e.feature);
+                        });
+                        return;
+                    }
+
                     this.$emit("drawend", evt);
                     console.warn("On drawEnd", evt);
 
