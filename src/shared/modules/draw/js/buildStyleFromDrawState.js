@@ -115,8 +115,8 @@ function buildTextStyle (drawState) {
             fill: new Fill({
                 color: drawState.color || [0, 0, 0, 1]
             }),
-            textAlign: drawState.textAlign || "left",
-            textBaseline: drawState.textBaseline || "bottom"
+            textAlign: drawState.textAlign || "center",
+            textBaseline: drawState.textBaseline || "middle"
         }),
         zIndex: drawState.zIndex ?? 0
     });

@@ -204,7 +204,8 @@ export default {
     emits: ["drawstart", "drawend", "start-drawing", "stop-drawing", "circle-radius"],
     data () {
         return {
-            currentDrawInteraction: null
+            currentDrawInteraction: null,
+            tooltipElement: null
         };
     },
     computed: {
@@ -246,8 +247,8 @@ export default {
         currentLayout (currentLayout) {
             drawInteraction.setStyleObject(currentLayout);
 
-            if (this.selectedDrawType === "writeText") {
-                drawInteraction.setStyleObject(currentLayout);
+            if (this.selectedDrawType === "writeText" && this.currentDrawInteraction) {
+                this.currentDrawInteraction.getOverlay().setStyle(drawInteraction.getTextStyle());
             }
         },
         currentLayoutOuterCircle (currentLayoutOuterCircle) {
@@ -277,6 +278,9 @@ export default {
     },
     unmounted () {
         this.removeInteraction(this.currentDrawInteraction);
+        if (this.tooltipElement) {
+            this.tooltipElement.style.display = "none";
+        }
     },
     methods: {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
@@ -318,6 +322,9 @@ export default {
             }
 
             this.removeInteraction(this.currentDrawInteraction);
+            if (this.tooltipElement) {
+                this.tooltipElement.style.display = "none";
+            }
 
             if (this.selectedDrawType === drawType) {
                 this.setSelectedDrawType("");
@@ -353,6 +360,7 @@ export default {
                 map = mapCollection.getMap("2D"),
                 symbol = this.iconList.find(val => val.id === drawType);
 
+            this.tooltipElement = tooltipElement;
             tooltipElement.innerHTML = "";
             tooltipElement.style.display = "none";
 
