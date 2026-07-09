@@ -68,7 +68,9 @@ export function getTypeSpecificProperties (selectedDrawType, stateDrawCopy) {
             return {
                 font: stateDrawCopy.currentLayout.font,
                 fontSize: stateDrawCopy.currentLayout.fontSize,
-                text: stateDrawCopy.currentLayout.text
+                text: stateDrawCopy.currentLayout.text,
+                textAlign: "center",
+                textBaseline: "middle"
             };
         case "point":
             return {
