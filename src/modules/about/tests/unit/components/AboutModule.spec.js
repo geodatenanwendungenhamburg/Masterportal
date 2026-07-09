@@ -1,6 +1,6 @@
 import {createStore} from "vuex";
 import {createPinia, setActivePinia} from "pinia";
-import {config, mount, shallowMount} from "@vue/test-utils";
+import {mount, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import AboutComponent from "@modules/about/components/AboutModule.vue";
 import {useAboutStore} from "@modules/about/store/aboutStore.js";

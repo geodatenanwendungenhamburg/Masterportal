@@ -7,7 +7,6 @@ import Contact from "../contact/store/indexContact.js";
 import CompareMaps from "../compareMaps/store/indexCompareMaps.js";
 import CompareFeatures from "../compareFeatures/store/indexCompareFeatures.js";
 import CoordToolkit from "../coordToolkit/store/indexCoordToolkit.js";
-import CopyrightConstraints from "../copyrightConstraints/store/indexCopyrightConstraints.js";
 import Draw from "../draw/store/indexDraw.js";
 import Draw_old from "../draw_old/store/indexDraw.js";
 import FeatureLister from "../featureLister/store/indexFeatureLister.js";
@@ -58,7 +57,6 @@ export default {
         CoordToolkit: {...CoordToolkit},
         CompareMaps: {...CompareMaps},
         CompareFeatures: {...CompareFeatures},
-        CopyrightConstraints: {...CopyrightConstraints},
         Draw: {...Draw},
         Draw_old: {...Draw_old},
         FeatureLister: {...FeatureLister},

@@ -1,4 +1,5 @@
 import {useAboutStore} from "../about/store/aboutStore.js";
+import {useCopyrightConstraintsStore} from "../copyrightConstraints/store/copyrightConstraintsStore.js";
 
 /**
  * Registry of modules that have been migrated from Vuex to Pinia.
@@ -13,7 +14,8 @@ import {useAboutStore} from "../about/store/aboutStore.js";
  * @module modules/piniaModules
  */
 const piniaModuleStores = {
-    about: useAboutStore
+    about: useAboutStore,
+    copyrightConstraints: useCopyrightConstraintsStore
 };
 
 /**

@@ -183,10 +183,6 @@ config.global.mocks.$t = key => key;
 // avoids installing Pinia twice (which happens when a spec passes its own Pinia
 // in the plugins array) and the resulting "App already provides property with
 // key Symbol(pinia)" warning.
-vitestBeforeEach(() => {
-    setActivePinia(createPinia());
-});
-
 if (typeof globalThis.CanvasPattern === "undefined") {
     globalThis.CanvasPattern = function () {};
 }
@@ -299,6 +295,9 @@ globalThis.after = (fn) => {
 // beforeEach and afterEach are the same in both frameworks, but provide explicit mapping for consistency.
 globalThis.beforeEach = globalThis.beforeEach || vitestBeforeEach;
 globalThis.afterEach = globalThis.afterEach || vitestAfterEach;
+globalThis.beforeEach(() => {
+    setActivePinia(createPinia());
+});
 
 globalThis.mapCollection = mapCollection;
 globalThis.i18next = globalThis.i18next || i18nextMock;

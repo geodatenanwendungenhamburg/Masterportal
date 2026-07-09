@@ -1,14 +1,16 @@
 import {createStore} from "vuex";
+import {createPinia, setActivePinia} from "pinia";
+import {useCopyrightConstraintsStore} from "@modules/copyrightConstraints/store/copyrightConstraintsStore.js";
 import {mount} from "@vue/test-utils";
 import {expect} from "chai";
 import CopyrightConstraints from "@modules/copyrightConstraints/components/CopyrightConstraints.vue";
-import state from "@modules/copyrightConstraints/store/stateCopyrightConstraints.js";
 import sinon from "sinon";
 import axios from "axios";
 
 
 describe("src/modules/copyrightConstraints/components/CopyrightConstraints.vue", () => {
     let store,
+        pinia,
         axiosMock,
         useLayerCswUrl;
     const visibleLayers =
@@ -122,26 +124,18 @@ describe("src/modules/copyrightConstraints/components/CopyrightConstraints.vue",
             ];
 
     beforeEach(() => {
+        useLayerCswUrl = false;
+        pinia = createPinia();
+
+        setActivePinia(pinia);
+
+        const copyrightStore = useCopyrightConstraintsStore();
+
+        copyrightStore.$patch({
+            cswUrl: "https://gdk.gdi-de.org/gdi-de/srv/ger/csw",
+            useLayerCswUrl
+        });
         store = createStore({
-            namespaced: true,
-            modules: {
-                Modules: {
-                    namespaced: true,
-                    modules: {
-                        namespaced: true,
-                        CopyrightConstraints: {
-                            namespaced: true,
-                            state () {
-                                return state;
-                            },
-                            getters: {
-                                cswUrl: () => "https://gdk.gdi-de.org/gdi-de/srv/ger/csw",
-                                useLayerCswUrl: () => useLayerCswUrl
-                            }
-                        }
-                    }
-                }
-            },
             getters: {
                 visibleLayerConfigs: () => visibleLayers
             }
@@ -155,7 +149,7 @@ describe("src/modules/copyrightConstraints/components/CopyrightConstraints.vue",
     it("renders the CopyrightConstraints component", () => {
         const wrapper = mount(CopyrightConstraints, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }});
 
         expect(wrapper.attributes().id).to.equal("copyrightConstraints");
@@ -165,12 +159,15 @@ describe("src/modules/copyrightConstraints/components/CopyrightConstraints.vue",
     it("shows not specified message for empty csw response", async () => {
         const wrapper = mount(CopyrightConstraints, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }});
 
         let messageElement = wrapper.find("ul.copyrightConstraints_layerList li div div i");
 
-        await wrapper.vm.getMetaData("B6A59A2B-2D40-4676-9094-0EB73039ED34");
+        await wrapper.vm.getMetaData({
+            md_id: "B6A59A2B-2D40-4676-9094-0EB73039ED34"
+        });
+
         await wrapper.vm.$nextTick();
 
         messageElement = wrapper.find("ul.copyrightConstraints_layerList li div div i");
@@ -183,9 +180,11 @@ describe("src/modules/copyrightConstraints/components/CopyrightConstraints.vue",
         it("getMetaData returns an object with properties access and use", async () => {
             const wrapper = mount(CopyrightConstraints, {
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     }}),
-                returnedMetaData = await wrapper.vm.getMetaData("B6A59A2B-2D40-4676-9094-0EB73039ED34");
+                returnedMetaData = await wrapper.vm.getMetaData({
+                    md_id: "B6A59A2B-2D40-4676-9094-0EB73039ED34"
+                });
 
             expect(returnedMetaData.getConstraints()).to.be.an("object").that.have.property("access");
             expect(returnedMetaData.getConstraints()).to.be.an("object").that.have.property("use").that.is.an("array");
@@ -193,23 +192,28 @@ describe("src/modules/copyrightConstraints/components/CopyrightConstraints.vue",
         it("getMetaData requests csw service defined in tool", async () => {
             const wrapper = mount(CopyrightConstraints, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }});
 
-            await wrapper.vm.getMetaData("B6A59A2B-2D40-4676-9094-0EB73039ED34");
+            await wrapper.vm.getMetaData({
+                md_id: "B6A59A2B-2D40-4676-9094-0EB73039ED34"
+            });
 
             expect(axiosMock.called).to.be.true;
             expect(axiosMock.firstCall.args[0]).to.be.equals("https://gdk.gdi-de.org/gdi-de/srv/ger/csw");
         });
         it("getMetaData requests csw service defined in layer if useLayerCswUrl is set to true", async () => {
             useLayerCswUrl = true;
-
+            useCopyrightConstraintsStore().useLayerCswUrl = true;
             const wrapper = mount(CopyrightConstraints, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }});
 
-            await wrapper.vm.getMetaData("B6A59A2B-2D40-4676-9094-0EB73039ED34");
+            await wrapper.vm.getMetaData({
+                md_id: "B6A59A2B-2D40-4676-9094-0EB73039ED34",
+                csw_url: "https://metaver.de/csw"
+            });
 
             expect(axiosMock.called).to.be.true;
             expect(axiosMock.firstCall.args[0]).to.be.equals("https://metaver.de/csw");
@@ -217,7 +221,7 @@ describe("src/modules/copyrightConstraints/components/CopyrightConstraints.vue",
         it("getCswConstraints and rendered data", async () => {
             const wrapper = mount(CopyrightConstraints, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -245,7 +249,7 @@ describe("src/modules/copyrightConstraints/components/CopyrightConstraints.vue",
         it("getVisibleLayer returns an array", () => {
             const wrapper = mount(CopyrightConstraints, {
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     }}),
                 layers = wrapper.vm.getVisibleLayer();
 

@@ -1,6 +1,6 @@
 import {createStore} from "vuex";
 import {createPinia, setActivePinia} from "pinia";
-import {config, shallowMount} from "@vue/test-utils";
+import {shallowMount} from "@vue/test-utils";
 import PortalFooterComponent from "@modules/portalFooter/components/PortalFooter.vue";
 import {useAboutStore} from "@modules/about/store/aboutStore.js";
 import {expect} from "chai";

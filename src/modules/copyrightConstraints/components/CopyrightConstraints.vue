@@ -1,5 +1,7 @@
 <script>
 import getCswRecordById from "@shared/js/api/getCswRecordById.js";
+import {mapState} from "pinia";
+import {useCopyrightConstraintsStore} from "../store/copyrightConstraintsStore.js";
 import {mapGetters} from "vuex";
 
 /**
@@ -18,12 +20,14 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/CopyrightConstraints", [
+        ...mapState(useCopyrightConstraintsStore, [
             "cswUrl",
             "useLayerCswUrl"
         ]),
-        ...mapGetters(["visibleLayerConfigs"]),
-        getConstraints: function () {
+        ...mapGetters([
+            "visibleLayerConfigs"
+        ]),
+        getConstraints () {
             return this.constraints;
         }
     },
@@ -55,6 +59,7 @@ export default {
                 resolve(metadata);
             });
         },
+
         /**
          * gets the constrains for each visible layer and put them into this.constrains
          * @returns {void}
@@ -87,7 +92,7 @@ export default {
 
             this.visibleLayerConfigs?.forEach(layer => {
                 if (layer.datasets) {
-                    if (layer.datasets[0]?.md_id && !layers.includes(layer.datasets[0]?.md_id)) {
+                    if (layer.datasets[0]?.md_id && !layers.map(dataset => dataset.md_id).includes(layer.datasets[0]?.md_id)) {
                         layers.push(layer.datasets[0]);
                     }
                 }
