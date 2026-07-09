@@ -13,7 +13,7 @@
  * @property {Number} [currentLayout.strokeWidth=1] The stroke width in pixel.
  * @property {String} [currentLayout.text=""] The text content for writeText.
  * @property {String} [currentLayout.font="Arial"] The font for writeText.
- * @property {Number} [currentLayout.fontSize=10] The font size in pixel for writeText.
+ * @property {Number} [currentLayout.fontSize=20] The font size in pixel for writeText.
  * @property {Number} [currentLayout.lineLength=0] The length of a drawn geometry line.
  * @property {Object} [currentLayoutOuterCircle= fillColor: [0, 0, 0], fillTransparency: 100, strokeColor: [200, 0, 0], strokeWidth: 1}] The current layout for styling the outer circle. Only used for double circle.
  * @property {Number[]} [currentLayoutOuterCircle.fillColor=[0, 0, 0]] The fill color in rgb.
@@ -63,7 +63,7 @@ const state = {
         strokeWidth: 1,
         text: "",
         font: "Arial",
-        fontSize: 10,
+        fontSize: 20,
         lineLength: 0
     },
     currentLayoutOuterCircle: {
