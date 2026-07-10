@@ -15,10 +15,10 @@
  * @property {String} [currentLayout.font="Arial"] The font for writeText.
  * @property {Number} [currentLayout.fontSize=20] The font size in pixel for writeText.
  * @property {Number} [currentLayout.lineLength=0] The length of a drawn geometry line.
- * @property {Object} [currentLayoutOuterCircle= fillColor: [0, 0, 0], fillTransparency: 100, strokeColor: [200, 0, 0], strokeWidth: 1}] The current layout for styling the outer circle. Only used for double circle.
- * @property {Number[]} [currentLayoutOuterCircle.fillColor=[0, 0, 0]] The fill color in rgb.
- * @property {Number} [currentLayoutOuterCircle.fillTransparency=100] The fill transparency in percent.
- * @property {Number[]} [currentLayoutOuterCircle.strokeColor=[200, 0, 0]] The stroke color in rgb.
+ * @property {Object} [currentLayoutOuterCircle= fillColor: [55, 126, 184], fillTransparency: 0, strokeColor: [0, 0, 0], strokeWidth: 1}] The current layout for styling the outer circle. Only used for double circle.
+ * @property {Number[]} [currentLayoutOuterCircle.fillColor=[55, 126, 184]] The fill color in rgb.
+ * @property {Number} [currentLayoutOuterCircle.fillTransparency=0] The fill transparency in percent.
+ * @property {Number[]} [currentLayoutOuterCircle.strokeColor=[0, 0, 0]] The stroke color in rgb.
  * @property {Number} currentLayoutOuterCircle.strokeWidth The stroke width in pixel.
  * @property {String} [description="common:modules.draw.description"] The description that should be shown in the button in the menu.
  * @property {String[]} [drawEdits=["deleteAll", "delete", "modify", "undo", "redo"]] The draw edits.
@@ -67,9 +67,9 @@ const state = {
         lineLength: 0
     },
     currentLayoutOuterCircle: {
-        fillColor: [0, 0, 0],
-        fillTransparency: 100,
-        strokeColor: [200, 0, 0],
+        fillColor: [55, 126, 184],
+        fillTransparency: 0,
+        strokeColor: [0, 0, 0],
         strokeWidth: 1
     },
     selectedSymbol: null,

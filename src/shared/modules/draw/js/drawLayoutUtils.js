@@ -7,7 +7,7 @@ import {convertColor} from "@shared/js/utils/convertColor.js";
  */
 export const mappingLayoutConfig = {
     fillColor: {
-        drawTypes: ["box", "circle", "doubleCircle", "polygon", "rectangle", "writeText", "square"],
+        drawTypes: ["box", "circle", "doubleCircle", "iconPoint", "polygon", "rectangle", "writeText", "square"],
         icon: "bi-paint-bucket"
     },
     strokeColor: {

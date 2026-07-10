@@ -391,8 +391,8 @@ export default {
                         font: defaultFont,
                         scale: style.getText().getScale(),
                         text: style.getText().getText(),
-                        textAlign: "left",
-                        textBaseline: "bottom"
+                        textAlign: "center",
+                        textBaseline: "middle"
                     })
                 }));
                 feature.get("masterportal_attributes").drawState = {
@@ -610,8 +610,8 @@ export default {
                             fill: new Fill({
                                 color: drawState.color
                             }),
-                            textAlign: drawState.textAlign || "left",
-                            textBaseline: drawState.textBaseline || "bottom"
+                            textAlign: drawState.textAlign || "center",
+                            textBaseline: drawState.textBaseline || "middle"
                         })
                     });
                 }

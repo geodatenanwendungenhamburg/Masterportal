@@ -17,8 +17,8 @@ import {Circle as CircleStyle, Fill, Icon, Stroke, Style, Text} from "ol/style.j
  * @param {String} [drawState.text] The text content (for writeText features).
  * @param {Number} [drawState.fontSize=16] The font size in pixels (for writeText features).
  * @param {String} [drawState.font="Arial"] The font family (for writeText features).
- * @param {String} [drawState.textAlign="left"] The text alignment (for writeText features).
- * @param {String} [drawState.textBaseline="bottom"] The text baseline (for writeText features).
+ * @param {String} [drawState.textAlign="center"] The text alignment (for writeText features).
+ * @param {String} [drawState.textBaseline="middle"] The text baseline (for writeText features).
  * @param {Object} [drawState.symbol] The symbol descriptor (for symbol/icon features).
  * @param {String} [drawState.symbol.value] The symbol identifier or URL path.
  * @param {Number} [drawState.symbol.scale=1] The icon scale factor.
@@ -151,16 +151,15 @@ function buildIconStyle (drawState) {
 function buildSimplePointStyle (drawState) {
     const pointSize = drawState.pointSize ?? 16,
         color = drawState.color || [0, 0, 0, 1],
-        colorContour = drawState.colorContour || color;
+        colorContour = drawState.colorContour || color,
+        strokeWidth = drawState.strokeWidth ?? 1;
 
     return new Style({
         image: new CircleStyle({
             radius: pointSize / 2,
             fill: new Fill({color: color}),
-            stroke: new Stroke({color: colorContour, width: drawState.strokeWidth ?? 1})
+            stroke: strokeWidth > 0 ? new Stroke({color: colorContour, width: strokeWidth}) : undefined
         }),
-        fill: new Fill({color: color}),
-        stroke: new Stroke({color: colorContour, width: drawState.strokeWidth ?? 1}),
         zIndex: drawState.zIndex ?? 0
     });
 }

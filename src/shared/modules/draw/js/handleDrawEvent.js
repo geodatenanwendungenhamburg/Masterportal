@@ -72,22 +72,25 @@ export function getTypeSpecificProperties (selectedDrawType, stateDrawCopy) {
                 textAlign: "center",
                 textBaseline: "middle"
             };
-        case "point":
-            return {
-                pointSize: 16,
-                symbol: {value: "simple_point", scale: 1}
-            };
         default: {
             const selectedSymbol = stateDrawCopy.selectedSymbol;
 
             if (selectedSymbol) {
-                return {
-                    pointSize: selectedSymbol.type === "simple_point" ? 16 : undefined,
-                    symbol: {
-                        value: selectedSymbol.value,
-                        scale: selectedSymbol.scale || 1
-                    }
-                };
+                const isSimplePoint = selectedSymbol.type === "simple_point",
+                    props = {
+                        pointSize: isSimplePoint ? 16 : undefined,
+                        symbol: {
+                            value: selectedSymbol.value,
+                            scale: selectedSymbol.scale || 1
+                        }
+                    };
+
+                if (isSimplePoint) {
+                    props.color = [...stateDrawCopy.currentLayout.fillColor, 1];
+                    props.colorContour = [...stateDrawCopy.currentLayout.fillColor, 1];
+                    props.strokeWidth = 0;
+                }
+                return props;
             }
             return {};
         }
