@@ -126,23 +126,22 @@ describe("src/shared/modules/draw/js/handleDrawEvent.js", () => {
             expect(stateDrawCopy.currentLayoutOuterCircle.fillColor).to.deep.equal([0, 0, 0]);
         });
 
-        it("should return font, fontSize, and text for 'writeText' type", () => {
+        it("should return font, fontSize, text, textAlign, and textBaseline for 'writeText' type", () => {
             const result = getTypeSpecificProperties("writeText", stateDrawCopy);
 
             expect(result).to.deep.equal({
                 font: "Arial",
                 fontSize: 10,
-                text: "test text"
+                text: "test text",
+                textAlign: "center",
+                textBaseline: "middle"
             });
         });
 
-        it("should return pointSize and symbol for 'point' type", () => {
+        it("should return empty object for 'point' type without selectedSymbol", () => {
             const result = getTypeSpecificProperties("point", stateDrawCopy);
 
-            expect(result).to.deep.equal({
-                pointSize: 16,
-                symbol: {value: "simple_point", scale: 1}
-            });
+            expect(result).to.deep.equal({});
         });
 
         it("should return empty object for 'pen' type", () => {
@@ -194,10 +193,14 @@ describe("src/shared/modules/draw/js/handleDrawEvent.js", () => {
                 scale: 1,
                 type: "simple_point"
             };
+            stateDrawCopy.currentLayout.fillColor = [55, 126, 184];
             const result = getTypeSpecificProperties("unknownType", stateDrawCopy);
 
             expect(result.pointSize).to.equal(16);
             expect(result.symbol).to.deep.equal({value: "simple_point", scale: 1});
+            expect(result.color).to.deep.equal([55, 126, 184, 1]);
+            expect(result.colorContour).to.deep.equal([55, 126, 184, 1]);
+            expect(result.strokeWidth).to.equal(0);
         });
 
         it("should default symbol scale to 1 if not provided", () => {
