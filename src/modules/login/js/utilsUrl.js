@@ -78,9 +78,10 @@ function getTokenHeader () {
  * Adds authentication token to a config object.
  *
  * @param {object} config - The config object (axios or fetch).
+ * @param {boolean} [includeCredentials=true] - Whether credentials should be sent with requests.
  * @returns {object} - The config with Authorization header.
  */
-function getAuthToken (config) {
+function getAuthToken (config, includeCredentials = true) {
     const tokenHeader = getTokenHeader();
 
     if (!tokenHeader) {
@@ -92,7 +93,10 @@ function getAuthToken (config) {
     }
 
     config.headers.Authorization = tokenHeader;
-    config.withCredentials = true;
+
+    if (includeCredentials) {
+        config.withCredentials = true;
+    }
 
     return config;
 }
