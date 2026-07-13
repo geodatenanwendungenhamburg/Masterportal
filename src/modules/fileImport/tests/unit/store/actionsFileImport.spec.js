@@ -281,8 +281,8 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
             expect(layer.getSource().getFeatures()[0].getStyle().getText().getFont()).to.equals("16px Arial");
             expect(layer.getSource().getFeatures()[0].getStyle().getText().getScale()).to.equals(2);
             expect(layer.getSource().getFeatures()[0].getStyle().getText().getText()).to.equals("Jungfernstieg");
-            expect(layer.getSource().getFeatures()[0].getStyle().getText().getTextAlign()).to.equals("center");
-            expect(layer.getSource().getFeatures()[0].getStyle().getText().getTextBaseline()).to.equals("middle");
+            expect(layer.getSource().getFeatures()[0].getStyle().getText().getTextAlign()).to.equals("left");
+            expect(layer.getSource().getFeatures()[0].getStyle().getText().getTextBaseline()).to.equals("bottom");
             expect(layer.getSource().getFeatures()[0].get("masterportal_attributes").drawState).to.deep.equals({
                 fontSize: 32,
                 text: "Jungfernstieg",

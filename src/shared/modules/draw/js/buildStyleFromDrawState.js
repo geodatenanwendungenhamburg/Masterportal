@@ -17,8 +17,8 @@ import {Circle as CircleStyle, Fill, Icon, Stroke, Style, Text} from "ol/style.j
  * @param {String} [drawState.text] The text content (for writeText features).
  * @param {Number} [drawState.fontSize=16] The font size in pixels (for writeText features).
  * @param {String} [drawState.font="Arial"] The font family (for writeText features).
- * @param {String} [drawState.textAlign="center"] The text alignment (for writeText features).
- * @param {String} [drawState.textBaseline="middle"] The text baseline (for writeText features).
+ * @param {String} [drawState.textAlign="left"] The text alignment (for writeText features).
+ * @param {String} [drawState.textBaseline="bottom"] The text baseline (for writeText features).
  * @param {Object} [drawState.symbol] The symbol descriptor (for symbol/icon features).
  * @param {String} [drawState.symbol.value] The symbol identifier or URL path.
  * @param {Number} [drawState.symbol.scale=1] The icon scale factor.
@@ -115,8 +115,8 @@ function buildTextStyle (drawState) {
             fill: new Fill({
                 color: drawState.color || [0, 0, 0, 1]
             }),
-            textAlign: drawState.textAlign || "center",
-            textBaseline: drawState.textBaseline || "middle"
+            textAlign: drawState.textAlign || "left",
+            textBaseline: drawState.textBaseline || "bottom"
         }),
         zIndex: drawState.zIndex ?? 0
     });

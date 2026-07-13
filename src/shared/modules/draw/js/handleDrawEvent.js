@@ -69,8 +69,8 @@ export function getTypeSpecificProperties (selectedDrawType, stateDrawCopy) {
                 font: stateDrawCopy.currentLayout.font,
                 fontSize: stateDrawCopy.currentLayout.fontSize,
                 text: stateDrawCopy.currentLayout.text,
-                textAlign: "center",
-                textBaseline: "middle"
+                textAlign: "left",
+                textBaseline: "bottom"
             };
         default: {
             const selectedSymbol = stateDrawCopy.selectedSymbol;

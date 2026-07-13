@@ -133,8 +133,8 @@ describe("src/shared/modules/draw/js/handleDrawEvent.js", () => {
                 font: "Arial",
                 fontSize: 10,
                 text: "test text",
-                textAlign: "center",
-                textBaseline: "middle"
+                textAlign: "left",
+                textBaseline: "bottom"
             });
         });
 
