@@ -466,12 +466,14 @@ export default {
                             geometry.un("change", onGeometryChange);
                         }
                     }
-                    handleDrawEvent(evt);
-                    if (drawType === "doubleCircle") {
-                        this.incrementIdCounter(2);
-                    }
-                    else {
-                        this.incrementIdCounter(1);
+                    if (this.drawLayout) {
+                        handleDrawEvent(evt);
+                        if (drawType === "doubleCircle") {
+                            this.incrementIdCounter(2);
+                        }
+                        else {
+                            this.incrementIdCounter(1);
+                        }
                     }
                 });
                 if (drawType === "circle" || drawType === "doubleCircle") {
