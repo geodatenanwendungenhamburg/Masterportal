@@ -6,6 +6,7 @@ import selectInteraction from "@masterportal/masterportalapi/src/maps/interactio
 import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactions/modifyInteraction.js";
 import undoRedoFeatures, {isDeleteAllMode} from "./undoRedoFeatures.js";
 import {getFeatureEditType} from "./editStyleInteractions.js";
+import {createTooltipOverlay} from "./createTooltipOverlay.js";
 
 /**
  * Creates a click handler that selects features on the map for style editing.
@@ -57,6 +58,48 @@ function createFeatureClickHandler (map, layer, onFeatureSelected, onTextFeature
             }
         }
     };
+}
+
+/**
+ * Updates the tooltip content and position based on the geometry of the feature being modified.
+ * @param {ol/Feature} feature The feature being modified.
+ * @param {HTMLDivElement} tooltipElement The tooltip HTML element.
+ * @param {ol/Overlay} tooltipOverlay The tooltip overlay.
+ * @returns {void}
+ */
+function updateModifyTooltip (feature, tooltipElement, tooltipOverlay) {
+    const geometry = feature.getGeometry(),
+        type = geometry.getType();
+
+    if (type === "Circle") {
+        const radius = Math.round(geometry.getRadius()),
+            formattedRadius = radius.toLocaleString("de-DE"),
+            center = geometry.getCenter();
+
+        tooltipElement.innerHTML = `Radius: ${formattedRadius}m`;
+        tooltipOverlay.setPosition(center);
+    }
+    else if (type === "Polygon" || type === "MultiPolygon") {
+        const coords = geometry.getCoordinates()[0],
+            area = Math.round(geometry.getArea()),
+            formattedArea = area.toLocaleString("de-DE"),
+            lastCoord = coords[coords.length - 1];
+
+        tooltipElement.innerHTML = `Fläche: ${formattedArea}m²`;
+        tooltipOverlay.setPosition(lastCoord);
+    }
+    else if (type === "LineString" || type === "MultiLineString") {
+        const length = Math.round(geometry.getLength()),
+            formattedLength = length.toLocaleString("de-DE"),
+            coords = geometry.getCoordinates(),
+            lastCoord = coords[coords.length - 1];
+
+        tooltipElement.innerHTML = `Länge: ${formattedLength}m`;
+        tooltipOverlay.setPosition(lastCoord);
+    }
+    else {
+        tooltipElement.style.display = "none";
+    }
 }
 
 /**
@@ -112,8 +155,13 @@ export function setupDeleteInteraction ({currentSelectInteractions, layer, sourc
 export function setupModifyInteraction ({currentModifyInteraction, source, layer, undoFeatures, redoFeatures, addInteraction, removeInteraction, onTextFeatureSelected, onFeatureSelected, onModifyEnd}) {
     removeInteraction(currentModifyInteraction);
 
-    const map = mapCollection.getMap("2D");
-    let originalGeometry = null;
+    const map = mapCollection.getMap("2D"),
+        {tooltipOverlay, tooltipElement} = createTooltipOverlay();
+    let originalGeometry = null,
+        modifyFeature = null,
+        geometryChangeListener = null;
+
+    map.addOverlay(tooltipOverlay);
 
     const featureClickHandler = createFeatureClickHandler(map, layer, onFeatureSelected, onTextFeatureSelected);
 
@@ -130,11 +178,23 @@ export function setupModifyInteraction ({currentModifyInteraction, source, layer
                 });
             });
             redoFeatures.length = 0;
+            tooltipElement.style.display = "none";
+            tooltipOverlay.setPosition(undefined);
+            if (geometryChangeListener) {
+                modifyFeature?.getGeometry()?.un("change", geometryChangeListener);
+                geometryChangeListener = null;
+            }
             onModifyEnd();
         },
         onModifyStart: (event) => {
             event.features.forEach(feature => {
                 originalGeometry = feature.getGeometry().clone();
+                modifyFeature = feature;
+                tooltipElement.style.display = "block";
+                geometryChangeListener = () => {
+                    updateModifyTooltip(feature, tooltipElement, tooltipOverlay);
+                };
+                feature.getGeometry().on("change", geometryChangeListener);
             });
         }
     });
@@ -142,7 +202,7 @@ export function setupModifyInteraction ({currentModifyInteraction, source, layer
     addInteraction(newModifyInteraction);
     newModifyInteraction.setActive(true);
 
-    return {modifyInteraction: newModifyInteraction, featureClickHandler};
+    return {modifyInteraction: newModifyInteraction, featureClickHandler, tooltipOverlay};
 }
 
 /**

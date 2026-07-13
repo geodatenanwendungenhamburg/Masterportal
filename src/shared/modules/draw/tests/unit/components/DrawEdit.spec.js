@@ -39,7 +39,9 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
             mode: "2D",
             on: sinon.spy(),
             un: sinon.spy(),
-            forEachFeatureAtPixel: sinon.spy()
+            forEachFeatureAtPixel: sinon.spy(),
+            addOverlay: sinon.spy(),
+            removeOverlay: sinon.spy()
         }, "2D");
 
 

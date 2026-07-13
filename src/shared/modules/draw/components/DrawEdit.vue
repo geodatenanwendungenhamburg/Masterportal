@@ -108,6 +108,7 @@ export default {
             pendingInnerCircleFeature: null,
             selectedEditFeature: null,
             featureClickHandler: null,
+            modifyTooltipOverlay: null,
             featureCounter: 1,
             undoCount: 0,
             redoCount: 0
@@ -149,6 +150,10 @@ export default {
             if (selectedInteraction !== "modify") {
                 this.removeInteraction(this.currentModifyInteraction);
                 this.currentModifyInteraction = null;
+                if (this.modifyTooltipOverlay) {
+                    mapCollection.getMap("2D").removeOverlay(this.modifyTooltipOverlay);
+                    this.modifyTooltipOverlay = null;
+                }
                 if (this.featureClickHandler) {
                     mapCollection.getMap("2D").un("singleclick", this.featureClickHandler);
                     this.featureClickHandler = null;
@@ -358,6 +363,7 @@ export default {
 
             this.currentModifyInteraction = result.modifyInteraction;
             this.featureClickHandler = result.featureClickHandler;
+            this.modifyTooltipOverlay = result.tooltipOverlay;
             this.showFrame = true;
         },
 
