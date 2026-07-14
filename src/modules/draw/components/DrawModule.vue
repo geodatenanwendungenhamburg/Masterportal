@@ -1,5 +1,5 @@
 <script>
-import {markRaw} from "vue";
+import {markRaw, nextTick} from "vue";
 import {mapGetters, mapMutations} from "vuex";
 import VectorSource from "ol/source/Vector.js";
 import layerCollection from "@core/layers/js/layerCollection.js";
@@ -60,6 +60,31 @@ export default {
             "secondaryExpanded"
         ])
     },
+    watch: {
+        selectedDrawTypeMain (newVal) {
+            if (newVal === "geometries" || newVal === "symbols") {
+                nextTick(() => {
+                    const subDrawTypes = newVal === "geometries"
+                        ? this.$refs.geometriesDrawTypes
+                        : this.$refs.symbolsDrawTypes;
+
+                    subDrawTypes?.focus();
+                });
+            }
+            else if (newVal === "pen" || newVal === "writeText") {
+                nextTick(() => {
+                    this.focusSecondPanel();
+                });
+            }
+        },
+        selectedDrawType (newVal) {
+            if (["line", "box", "circle", "polygon", "doubleCircle", "square", "iconPoint"].includes(newVal)) {
+                nextTick(() => {
+                    this.focusSecondPanel();
+                });
+            }
+        }
+    },
     mounted () {
         const drawLayerId = "importDrawLayer";
         let existingLayer = layerCollection.getLayerById(drawLayerId);
@@ -113,6 +138,19 @@ export default {
             "setSelectedInteraction",
             "setSelectedSymbol"
         ]),
+        /**
+         * Moves focus to the first focusable element in the second settings panel (DrawLayout / DrawSettingsCircle).
+         * For circle types, focuses DrawSettingsCircle; otherwise focuses DrawLayout.
+         * @returns {void}
+         */
+        focusSecondPanel () {
+            if ((this.selectedDrawType === "circle" || this.selectedDrawType === "doubleCircle") && this.$refs.circleSettings) {
+                this.$refs.circleSettings.focus();
+            }
+            else if (this.$refs.drawLayout) {
+                this.$refs.drawLayout.focus();
+            }
+        },
         getTrianglePosition (selectedDrawTypeMain, selectedDrawType, triangleId) {
             let buttonId;
 
@@ -207,6 +245,7 @@ export default {
                 >
                     <DrawTypes
                         v-if="selectedDrawTypeMain === 'geometries'"
+                        ref="geometriesDrawTypes"
                         class="mt-4"
                         :add-draw-type-symbol="addDrawTypeSymbol"
                         :buttons-disabled="buttonsDisabled"
@@ -232,6 +271,7 @@ export default {
                     />
                     <DrawTypes
                         v-else-if="selectedDrawTypeMain === 'symbols'"
+                        ref="symbolsDrawTypes"
                         class="mt-4"
                         :add-draw-type-symbol="addDrawTypeSymbol"
                         :buttons-disabled="buttonsDisabled"
@@ -271,6 +311,7 @@ export default {
             <div>
                 <DrawSettingsCircle
                     v-if="selectedDrawType === 'circle' || selectedDrawType === 'doubleCircle'"
+                    ref="circleSettings"
                     :circle-options="circleOptions"
                     :selected-draw-type="selectedDrawType"
                     :set-circle-options="setCircleOptions"
@@ -283,6 +324,7 @@ export default {
             >
                 <DrawLayout
                     v-if="selectedDrawType !== ''"
+                    ref="drawLayout"
                     :current-layout="currentLayout"
                     :selected-draw-type="selectedDrawType"
                     :set-current-layout="setCurrentLayout"

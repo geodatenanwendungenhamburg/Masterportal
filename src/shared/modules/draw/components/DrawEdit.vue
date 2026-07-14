@@ -339,7 +339,6 @@ export default {
          */
         regulateModify () {
             if (typeof this.setSelectedInteraction === "function") {
-                console.warn("HE, regulateModify");
                 this.setSelectedInteraction("modify");
             }
             this.selectedEditFeature = null;

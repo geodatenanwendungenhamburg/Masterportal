@@ -164,6 +164,16 @@ export default {
                 this.menuType = "secondaryMenu";
             }
         }
+    },
+    methods: {
+        /**
+         * Sets focus to the range input element.
+         * @public
+         * @returns {void}
+         */
+        focus () {
+            this.$refs.sliderValue?.focus();
+        }
     }
 };
 </script>

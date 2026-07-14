@@ -548,6 +548,21 @@ export default {
             }
 
             return this.$t(`common:shared.modules.draw.drawTypes.${id}`);
+        },
+
+        /**
+         * Sets focus to the first enabled button in this DrawTypes group.
+         * @public
+         * @returns {void}
+         */
+        focus () {
+            const buttons = this.$refs.drawButtons;
+
+            if (Array.isArray(buttons)) {
+                const firstEnabled = buttons.find(btn => !btn.$props.disabled);
+
+                firstEnabled?.focus();
+            }
         }
 
     }
@@ -558,6 +573,7 @@ export default {
     <IconButton
         v-for="drawType in drawTypes"
         :id="'draw-' + drawType"
+        ref="drawButtons"
         :key="drawType"
         :aria="getDrawTypeName(drawType)"
         :class-array="[

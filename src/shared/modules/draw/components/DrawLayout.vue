@@ -3,6 +3,7 @@ import {convertColor} from "@shared/js/utils/convertColor.js";
 import {mappingLayoutConfig, filterMappingLayoutByDrawType, normalizeLayoutValue, calculateTrianglePosition} from "@shared/modules/draw/js/drawLayoutUtils.js";
 import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
+import {nextTick} from "vue";
 
 /**
  * Shared component that provides buttons for setting the layout of drawings.
@@ -93,6 +94,13 @@ export default {
             if (this.drawTypesMain.includes(this.selectedDrawType)) {
                 this.updateTrianglePosition(this.selectedDrawType);
             }
+        },
+        activeLayoutKey (newVal) {
+            if (["strokeWidth", "fillTransparency", "extrudedHeight"].includes(newVal)) {
+                nextTick(() => {
+                    this.$refs.activeSlider?.focus();
+                });
+            }
         }
     },
     methods: {
@@ -131,6 +139,30 @@ export default {
 
             this.setCurrentLayout({[layoutKey]: normalizedValue});
             this.$emit("update-current-layout", {[layoutKey]: normalizedValue});
+        },
+
+        /**
+         * Sets focus to the first interactive element in the layout.
+         * For writeText, focuses the text input; otherwise focuses the first layout button.
+         * @public
+         * @returns {void}
+         */
+        focus () {
+            if (this.selectedDrawType === "writeText" && this.$refs.textInput) {
+                this.$refs.textInput.focus();
+            }
+            else if (this.$refs.layoutButtonsContainer) {
+                const firstButton = this.$refs.layoutButtonsContainer.firstElementChild?.firstElementChild;
+
+                if (firstButton && firstButton.tabIndex === -1) {
+                    const colorInput = firstButton.querySelector("input[type='color']");
+
+                    (colorInput || firstButton).focus();
+                }
+                else if (firstButton) {
+                    firstButton.focus();
+                }
+            }
         }
     }
 };
@@ -152,6 +184,7 @@ export default {
             <div class="form-floating mb-3">
                 <InputText
                     :id="selectedDrawType"
+                    ref="textInput"
                     :label="$t('common:shared.modules.draw.drawTypes.writeText')"
                     :placeholder="$t('common:shared.modules.draw.drawTypes.writeText')"
                     :model-value="currentLayout.text"
@@ -199,6 +232,7 @@ export default {
         </div>
         <div
             :id="'draw-layout-buttons-' + circleType"
+            ref="layoutButtonsContainer"
             class="draw-layout-buttons d-flex flex-row align-items-center"
         >
             <div
@@ -209,12 +243,13 @@ export default {
                 <button
                     :id="'draw-layout-' + circleType + '-' + layoutKey"
                     :key="layoutKey"
+                    :tabindex="(layoutKey === 'fillColor' || layoutKey === 'strokeColor') ? -1 : 0"
                     :class="[
                         'btn',
                         buttonVariant,
                         activeLayoutKey === layoutKey ? 'active' : ''
                     ]"
-                    @click="setActiveLayoutKey(layoutKey)"
+                    @click="(layoutKey !== 'fillColor' && layoutKey !== 'strokeColor') ? setActiveLayoutKey(layoutKey) : null"
                 >
                     <i
                         :class="mappingLayout[layoutKey].icon"
@@ -266,6 +301,7 @@ export default {
         >
             <SliderItem
                 :id="'slider-stroke-width-' + circleType"
+                ref="activeSlider"
                 :aria="`${currentLayout.strokeWidth}px`"
                 :label="`${currentLayout.strokeWidth}px`"
                 :min="strokeRange[0].toString()"
@@ -281,6 +317,7 @@ export default {
         >
             <SliderItem
                 :id="'slider-fill-transparency-' + circleType"
+                ref="activeSlider"
                 :aria="`${currentLayout.fillTransparency}%`"
                 :label="`${currentLayout.fillTransparency}%`"
                 :min="'0'"
@@ -296,6 +333,7 @@ export default {
         >
             <SliderItem
                 :id="'slider-extruded-height-' + circleType"
+                ref="activeSlider"
                 :aria="`${currentLayout.extrudedHeight}m`"
                 :label="`${currentLayout.extrudedHeight}m`"
                 :min="'0'"
@@ -338,6 +376,14 @@ export default {
     border: none;
     padding: 0;
     margin: 0;
+}
+
+.btn:has(.color-input-overlay:focus-visible) {
+    color: var(--bs-btn-hover-color);
+    background-color: var(--bs-btn-hover-bg);
+    border-color: var(--bs-btn-hover-border-color);
+    outline: 0;
+    box-shadow: var(--bs-btn-focus-box-shadow);
 }
 
 .btn {

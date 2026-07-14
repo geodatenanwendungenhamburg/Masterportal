@@ -85,6 +85,21 @@ export default {
             const optionsKey = radius === "outerRadius" ? "outerRadius" : "innerRadius";
 
             this.setCircleOptions({[optionsKey]: parseInt(value, 10)});
+        },
+
+        /**
+         * Sets focus to the first interactive element in the circle settings.
+         * For circle, focuses the interactive switch; for doubleCircle, focuses the unit select.
+         * @public
+         * @returns {void}
+         */
+        focus () {
+            if (this.selectedDrawType === "circle" && this.$refs.interactiveSwitch) {
+                this.$refs.interactiveSwitch.focus();
+            }
+            else if (this.$refs.unitSelect) {
+                this.$refs.unitSelect.focus();
+            }
         }
     }
 };
@@ -98,6 +113,7 @@ export default {
         >
             <SwitchInput
                 :id="'draw-settings-circle-interactive-' + selectedDrawType"
+                ref="interactiveSwitch"
                 :aria="$t('common:shared.modules.draw.drawSettingsCircle.interactive')"
                 :interaction="(event) => setCircleOptions({interactive: event.target.checked})"
                 :label="$t('common:shared.modules.draw.drawSettingsCircle.interactive')"
@@ -111,7 +127,7 @@ export default {
             <div class="form-floating mb-3">
                 <select
                     :id="'draw-circle-settings-' + selectedDrawType"
-                    :ref="'draw-circle-settings-' + selectedDrawType"
+                    ref="unitSelect"
                     v-model="currentUnit"
                     class="form-select"
                     :disabled="selectedDrawType === 'circle' && circleOptions.interactive"

@@ -42,6 +42,16 @@ export default {
                 return true;
             }
         }
+    },
+    methods: {
+        /**
+         * Sets focus to the checkbox input element.
+         * @public
+         * @returns {void}
+         */
+        focus () {
+            this.$refs.input?.focus();
+        }
     }
 };
 </script>
@@ -50,6 +60,7 @@ export default {
     <div class="form-check form-switch">
         <input
             :id="id"
+            ref="input"
             type="checkbox"
             role="switch"
             aria-checked="mixed"
@@ -74,5 +85,10 @@ export default {
 .form-check-input {
         width: 2.5rem;
         height: 1.5rem;
+
+        &:focus-visible {
+            outline: 2px solid var(--bs-primary, #0d6efd);
+            outline-offset: 2px;
+        }
 }
 </style>
