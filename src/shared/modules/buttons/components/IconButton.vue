@@ -77,7 +77,7 @@ export default {
     >
         <button
             :id="id"
-            tabindex="0"
+            :tabindex="disabled ? -1 : 0"
             class="btn d-flex align-items-center justify-items-center mb-auto"
             type="button"
             :title="aria"

@@ -480,6 +480,7 @@ export default {
                 ]"
                 :interaction="(event) => regulateEditInteraction(drawEdit, event)"
                 :icon="localDrawIcons[drawEdit]"
+                :disabled="(drawEdit === 'redo' && redoCount === 0) || (drawEdit === 'undo' && undoCount === 0) || (drawEdit !== 'redo' && drawEdit !== 'undo' && source?.getFeatures()?.length === 0) || (drawEdit !== 'hide' && !drawLayerVisible)"
             />
         </div>
         <LayoutFrame
