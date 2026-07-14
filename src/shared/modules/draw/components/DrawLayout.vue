@@ -98,7 +98,9 @@ export default {
         activeLayoutKey (newVal) {
             if (["strokeWidth", "fillTransparency", "extrudedHeight"].includes(newVal)) {
                 nextTick(() => {
-                    this.$refs.activeSlider?.focus();
+                    if (typeof this.$refs.activeSlider?.focus === "function") {
+                        this.$refs.activeSlider.focus();
+                    }
                 });
             }
         }
