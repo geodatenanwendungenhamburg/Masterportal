@@ -1,5 +1,6 @@
 <script>
 import {mapGetters} from "vuex";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * SliderItem: A component for handling an input slider to let the user adjust some value (i.e. transparency of a layer).
@@ -148,7 +149,7 @@ export default {
                   markerWidth = Math.max(50, charWidth * maxMarkerLength),
 
                   totalWidth = this.markers.length * markerWidth,
-                  menuWidth = this.menuType === "mainMenu" ? this.mainMenuWidth : this.secondaryMenuWidth;
+                  menuWidth = this.menuType === mainMenu ? this.mainMenuWidth : this.secondaryMenuWidth;
 
             return this.showMarkers && menuWidth > totalWidth;
         }
@@ -158,10 +159,10 @@ export default {
 
         if (parentMenu) {
             if (parentMenu.classList.contains("mp-mainMenu")) {
-                this.menuType = "mainMenu";
+                this.menuType = mainMenu;
             }
             else if (parentMenu.classList.contains("mp-secondaryMenu")) {
-                this.menuType = "secondaryMenu";
+                this.menuType = secondaryMenu;
             }
         }
     }

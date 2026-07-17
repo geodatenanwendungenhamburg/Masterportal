@@ -1,6 +1,7 @@
 <script>
 import {mapGetters} from "vuex";
 import MenuContainerBodyRootItems from "./MenuContainerBodyRootItems.vue";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * Menu Folder
@@ -17,8 +18,8 @@ export default {
         /** Defines in which menu the component is being rendered */
         side: {
             type: String,
-            default: "mainMenu",
-            validator: value => value === "mainMenu" || value === "secondaryMenu"
+            default: mainMenu,
+            validator: value => value === mainMenu || value === secondaryMenu
         }
 
     },

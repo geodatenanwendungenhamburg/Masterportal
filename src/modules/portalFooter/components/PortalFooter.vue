@@ -1,6 +1,7 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import ScaleLine from "./ScaleLine.vue";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * Footer that is displayed below the map. Links can be displayed here.
@@ -49,12 +50,12 @@ export default {
             if (this.mainMenu.sections.flat().find(m => {
                 return m.type === "about";
             })) {
-                return "mainMenu";
+                return mainMenu;
             }
             else if (this.secondaryMenu.sections.flat().find(m => {
                 return m.type === "about";
             })) {
-                return "secondaryMenu";
+                return secondaryMenu;
             }
             return null;
         }
@@ -71,11 +72,11 @@ export default {
          * @returns {void}
          */
         openImprint () {
-            if (this.aboutModuleSide === "mainMenu" && !this.mainExpanded) {
-                this.toggleMenu("mainMenu");
+            if (this.aboutModuleSide === mainMenu && !this.mainExpanded) {
+                this.toggleMenu(mainMenu);
             }
-            else if (this.aboutModuleSide === "secondaryMenu" && !this.secondaryExpanded) {
-                this.toggleMenu("secondaryMenu");
+            else if (this.aboutModuleSide === secondaryMenu && !this.secondaryExpanded) {
+                this.toggleMenu(secondaryMenu);
             }
 
             this.changeCurrentComponent({type: "about", side: this.aboutModuleSide, props: {name: this.$t("common:modules.about.name")}});

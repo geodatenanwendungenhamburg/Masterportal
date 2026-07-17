@@ -1,3 +1,4 @@
+import {mainMenu} from "@shared/js/utils/constants.js";
 /**
  * LayerSelection state definition.
  * @typedef {Object} LayerSelectionState
@@ -17,7 +18,7 @@
 export default {
     visible: false,
     type: "layerSelection",
-    menuSide: "mainMenu",
+    menuSide: mainMenu,
     name: "common:modules.layerSelection.addSubject",
 
     subjectDataLayerConfs: [],

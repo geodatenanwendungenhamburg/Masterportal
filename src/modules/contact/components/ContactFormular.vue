@@ -5,6 +5,7 @@ import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 import FileUpload from "@shared/modules/inputs/components/FileUpload.vue";
 import AccordionItem from "@shared/modules/accordion/components/AccordionItem.vue";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * The Contact Form
@@ -59,11 +60,11 @@ export default {
         ]),
         menuIndicator () {
             return this.mainMenu.currentComponent === "contact"
-                ? "mainMenu"
-                : "secondaryMenu";
+                ? mainMenu
+                : secondaryMenu;
         },
         mailProps () {
-            return this.menuIndicator === "mainMenu"
+            return this.menuIndicator === mainMenu
                 ? this.mainMenu.navigation.currentComponent.props
                 : this.secondaryMenu.navigation.currentComponent.props;
         },

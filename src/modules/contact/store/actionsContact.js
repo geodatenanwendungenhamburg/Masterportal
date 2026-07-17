@@ -1,6 +1,7 @@
 import {createMessage, createSubject, createTicketId} from "../js/createFunctions.js";
 import httpClientModule from "../js/httpClient.js";
 import getSystemInfo from "../js/getSystemInfo.js";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 const actions = {
     /**
@@ -38,11 +39,11 @@ const actions = {
         if (closeAfterSend) {
             const menuCurrentComponent = "Menu/currentComponent";
 
-            if (rootGetters[menuCurrentComponent]("mainMenu").type === state.type) {
-                commit("Menu/switchToRoot", "mainMenu", {root: true});
+            if (rootGetters[menuCurrentComponent](mainMenu).type === state.type) {
+                commit("Menu/switchToRoot", mainMenu, {root: true});
             }
-            else if (rootGetters[menuCurrentComponent]("secondaryMenu").type === state.type) {
-                commit("Menu/switchToRoot", "secondaryMenu", {root: true});
+            else if (rootGetters[menuCurrentComponent](secondaryMenu).type === state.type) {
+                commit("Menu/switchToRoot", secondaryMenu, {root: true});
             }
         }
     },

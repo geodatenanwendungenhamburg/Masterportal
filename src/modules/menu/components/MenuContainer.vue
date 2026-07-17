@@ -4,6 +4,7 @@ import MenuContainerBody from "./MenuContainerBody.vue";
 import ResizeHandle from "@shared/modules/resize/components/ResizeHandle.vue";
 import MenuContainerBodyRootLogo from "./MenuContainerBodyRootLogo.vue";
 import SearchBar from "../../searchBar/components/SearchBar.vue";
+import {mainMenu as mainMenuSide, secondaryMenu as secondaryMenuSide} from "@shared/js/utils/constants.js";
 
 /**
  * The MenuContainer component is responsible for rendering the menu and its content. It handles the menu's state, including its width, expansion, and the currently displayed component. The component also manages the resizing of the menu and adjusts the visibility of certain elements based on the menu's width.
@@ -24,8 +25,8 @@ export default {
         /** Defines in which menu the component is being rendered */
         side: {
             type: String,
-            default: "mainMenu",
-            validator: value => value === "mainMenu" || value === "secondaryMenu"
+            default: mainMenuSide,
+            validator: value => value === mainMenuSide || value === secondaryMenuSide
         }
     },
     computed: {
@@ -50,7 +51,7 @@ export default {
          * @returns {Object} Menu configuration for the given menu.
          */
         menu () {
-            return this.side === "mainMenu" ? this.mainMenu : this.secondaryMenu;
+            return this.side === mainMenuSide ? this.mainMenu : this.secondaryMenu;
         },
 
         /**
@@ -69,11 +70,11 @@ export default {
          * @returns {String} Defines whether the ResizeHandle should be displayed on the right or left side depending on the menu this component is rendered in.
          */
         handlePosition () {
-            return this.side === "mainMenu" ? "right" : "left";
+            return this.side === mainMenuSide ? "right" : "left";
         },
 
         expanded () {
-            return this.side === "mainMenu" ? this.mainExpanded : this.secondaryExpanded;
+            return this.side === mainMenuSide ? this.mainExpanded : this.secondaryExpanded;
         },
 
         menuInlineStyles () {
@@ -85,10 +86,10 @@ export default {
     },
     watch: {
         mainMenu (mainMenu) {
-            this.mergeMenuState({menu: mainMenu, side: "mainMenu"});
+            this.mergeMenuState({menu: mainMenu, side: mainMenuSide});
         },
         secondaryMenu (secondaryMenu) {
-            this.mergeMenuState({menu: secondaryMenu, side: "secondaryMenu"});
+            this.mergeMenuState({menu: secondaryMenu, side: secondaryMenuSide});
         },
         isMobile (isMobile) {
             if (isMobile) {
@@ -137,11 +138,11 @@ export default {
         onResize (eventData) {
             const menuPercentWidth = eventData.handleElement.offsetWidth / document.documentElement.clientWidth;
 
-            if (this.side === "mainMenu" && this.uiStyle === "DEFAULT") {
+            if (this.side === mainMenuSide && this.uiStyle === "DEFAULT") {
                 this.setCurrentMainMenuWidth(menuPercentWidth);
                 this.setCurrentMainMenuOffsetWidth(eventData.handleElement.offsetWidth);
             }
-            if (this.side === "secondaryMenu" && this.uiStyle === "DEFAULT") {
+            if (this.side === secondaryMenuSide && this.uiStyle === "DEFAULT") {
                 this.hideElementsForBiggerMenu(menuPercentWidth);
                 this.setCurrentSecondaryMenuWidth(menuPercentWidth);
                 this.setCurrentSecondaryMenuOffsetWidth(eventData.handleElement.offsetWidth);

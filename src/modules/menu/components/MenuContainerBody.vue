@@ -4,6 +4,7 @@ import MenuNavigation from "./MenuNavigation.vue";
 import {mapActions, mapGetters} from "vuex";
 import GetFeatureInfo from "../../getFeatureInfo/components/GetFeatureInfo.vue";
 import MenuComponentKeepAlivePlaceholder from "./MenuComponentKeepAlivePlaceholder.vue";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * The MenuContainerBody component is responsible for rendering the body of the menu, which includes the navigation, the currently visible component, and any feature information. It manages the state of the menu, including which component is currently displayed and which components should be cached using Vue's keep-alive feature. The component also initializes modules based on the menu configuration.
@@ -24,8 +25,8 @@ export default {
         /** Defines in which menu the component is being rendered */
         side: {
             type: String,
-            default: "mainMenu",
-            validator: value => value === "mainMenu" || value === "secondaryMenu"
+            default: mainMenu,
+            validator: value => value === mainMenu || value === secondaryMenu
         }
     },
     computed: {
@@ -45,7 +46,7 @@ export default {
          * @returns {Object} Menu configuration for the given menu.
          */
         menu () {
-            return this.side === "mainMenu" ? this.mainMenu : this.secondaryMenu;
+            return this.side === mainMenu ? this.mainMenu : this.secondaryMenu;
         },
 
         /**

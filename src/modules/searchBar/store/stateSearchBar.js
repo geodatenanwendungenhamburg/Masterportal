@@ -1,3 +1,5 @@
+import {mainMenu} from "@shared/js/utils/constants.js";
+
 /**
  * The state of the searchBar.
  * @module modules/searchBar/store/stateSearchBar
@@ -36,7 +38,7 @@
 const state = {
     coloredHighlighting3D: {},
     configPaths: ["portalConfig.mainMenu.searchBar", "portalConfig.secondaryMenu.searchBar"],
-    currentSide: "mainMenu",
+    currentSide: mainMenu,
     minCharacters: 3,
     placeholder: "common:modules.searchBar.placeholder.address",
     globalPlaceholder: "common:modules.searchBar.placeholder.address",

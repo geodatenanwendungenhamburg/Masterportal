@@ -5,7 +5,7 @@ import removeHtmlTags from "@shared/js/utils/removeHtmlTags.js";
 
 import getActionsLayerConfig from "./actionsLayerConfig.js";
 import {fetchFirstModuleConfig} from "@shared/js/utils/fetchFirstModuleConfig.js";
-import {portalConfigKey, treeTopicConfigKey} from "@shared/js/utils/constants.js";
+import {portalConfigKey, treeTopicConfigKey, mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 import {updateProxyUrl} from "./js/getProxyUrl.js";
 import {upperFirst} from "@shared/js/utils/changeCase.js";
 import globalUrlParams from "@core/urlParams/js/globalUrlParams.js";
@@ -57,8 +57,8 @@ export default {
                 updateProxyUrl(response.data);
                 commit("setPortalConfig", response.data ? response.data[portalConfigKey] : null);
                 if (getters.isMobile) {
-                    dispatch("moveStartModuleControls", "mainMenu");
-                    dispatch("moveStartModuleControls", "secondaryMenu");
+                    dispatch("moveStartModuleControls", mainMenu);
+                    dispatch("moveStartModuleControls", secondaryMenu);
                 }
                 commit("setLayerConfig", response.data ? response.data[treeTopicConfigKey] : null);
                 dispatch("processLayerNamesHtmlTags");

@@ -13,6 +13,7 @@ import {isWebLink} from "@shared/js/utils/urlHelper.js";
 import {isEmailAddress} from "@shared/js/utils/isEmailAddress.js";
 import ExportButtonGeoJSON from "@shared/modules/buttons/components/ExportButtonGeoJSON.vue";
 import GeoJSON from "ol/format/GeoJSON.js";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * TableComponent: A variable component to show data in a table.
@@ -1029,9 +1030,9 @@ export default {
 
             if (this.fullViewActivated) {
                 if (!this.mainExpanded) {
-                    this.toggleMenu("mainMenu");
+                    this.toggleMenu(mainMenu);
                 }
-                this.setCurrentMenuWidth({type: "secondaryMenu", attributes: {width: 25}});
+                this.setCurrentMenuWidth({type: secondaryMenu, attributes: {width: 25}});
                 if (layerPills) {
                     layerPills.style.display = "";
                 }
@@ -1056,7 +1057,7 @@ export default {
             }
             else {
                 if (this.mainExpanded) {
-                    this.toggleMenu("mainMenu");
+                    this.toggleMenu(mainMenu);
                 }
                 if (layerPills) {
                     layerPills.style.display = "none";
@@ -1067,7 +1068,7 @@ export default {
                 if (clientWidth <= 1280) {
                     tableRow.classList.add("fullscreen-tr");
                 }
-                this.setCurrentMenuWidth({type: "secondaryMenu", attributes: {width: 95}});
+                this.setCurrentMenuWidth({type: secondaryMenu, attributes: {width: 95}});
                 for (let i = 0; i < tableRow.cells.length; i++) {
                     tableRow.cells[i].classList.remove("fixedWidth");
                     if (tags[i]) {

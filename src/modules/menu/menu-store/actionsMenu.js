@@ -1,5 +1,6 @@
 import {nextTick} from "vue";
 import changeCase from "@shared/js/utils/changeCase.js";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 export default {
     /**
@@ -40,7 +41,7 @@ export default {
             currentProps = state[side].navigation.currentComponent.props;
 
         if (props?.closeOppositeMenu) {
-            const oppositeSide = side === "mainMenu" ? "secondaryMenu" : "mainMenu";
+            const oppositeSide = side === mainMenu ? secondaryMenu : mainMenu;
 
             if (state[oppositeSide].expanded) {
                 commit("setExpandedBySide", {expanded: false, side: oppositeSide});
@@ -73,7 +74,7 @@ export default {
      */
     changeCurrentMouseMapInteractionsComponent ({commit, rootGetters, state}, {type, side}) {
         if (type !== state.currentMouseMapInteractionsComponent && rootGetters[`Modules/${changeCase.upperFirst(type)}/hasMouseMapInteractions`]) {
-            const otherSide = side === "mainMenu" ? "secondaryMenu" : "mainMenu";
+            const otherSide = side === mainMenu ? secondaryMenu : mainMenu;
 
             if (state[otherSide].navigation.currentComponent.type === state.currentMouseMapInteractionsComponent) {
                 commit("switchToRoot", otherSide);
@@ -94,7 +95,7 @@ export default {
      */
     resetCurrentMouseMapInteractionsComponent ({commit, state}, side) {
         if (state.defaultComponent !== state.currentMouseMapInteractionsComponent) {
-            const otherSide = side === "mainMenu" ? "secondaryMenu" : "mainMenu";
+            const otherSide = side === mainMenu ? secondaryMenu : mainMenu;
 
             if (state[otherSide].navigation.currentComponent.type === state.currentMouseMapInteractionsComponent) {
                 commit("switchToRoot", otherSide);
@@ -300,15 +301,15 @@ export default {
      * @returns {void}
      */
     toggleMenu ({commit, rootGetters, state}, side) {
-        if (side === "mainMenu") {
+        if (side === mainMenu) {
             if (rootGetters.isMobile && state.secondaryMenu.expanded) {
-                commit("setExpandedBySide", {expanded: false, side: "secondaryMenu"});
+                commit("setExpandedBySide", {expanded: false, side: secondaryMenu});
             }
             commit("setExpandedBySide", {expanded: !state.mainMenu.expanded, side});
         }
-        else if (side === "secondaryMenu") {
+        else if (side === secondaryMenu) {
             if (rootGetters.isMobile && state.mainMenu.expanded) {
-                commit("setExpandedBySide", {expanded: false, side: "mainMenu"});
+                commit("setExpandedBySide", {expanded: false, side: mainMenu});
             }
             const footer = document.getElementById("module-portal-footer"),
                 layerPills = document.getElementById("layer-pills");

@@ -1,3 +1,5 @@
+import {secondaryMenu} from "@shared/js/utils/constants.js";
+
 /**
  * The state for the getFeatureInfo.
  * @module modules/getFeatureInfo/store/stateGetFeatureInfo
@@ -37,7 +39,7 @@ export default {
     highlightVectorRules: null,
     showPolygonMarkerForWMS: false,
     icon: "bi-info-circle-fill",
-    menuSide: "secondaryMenu",
+    menuSide: secondaryMenu,
     name: "common:modules.getFeatureInfo.name",
     path: [],
     showMarker: true,

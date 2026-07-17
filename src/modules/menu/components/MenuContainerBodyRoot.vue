@@ -2,6 +2,7 @@
 import LayerTree from "../../layerTree/components/LayerTree.vue";
 import MenuContainerBodyRootItems from "./MenuContainerBodyRootItems.vue";
 import {mapGetters} from "vuex";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * Renders the root/home view of the menu, displaying the layer tree (for mainMenu) and menu sections.
@@ -20,8 +21,8 @@ export default {
         /** Defines in which menu the component is being rendered */
         side: {
             type: String,
-            default: "mainMenu",
-            validator: value => value === "mainMenu" || value === "secondaryMenu"
+            default: mainMenu,
+            validator: value => value === mainMenu || value === secondaryMenu
         }
     },
     computed: {
@@ -36,7 +37,7 @@ export default {
          * @returns {Object} Menu configuration for the given menu.
          */
         menu () {
-            return this.side === "mainMenu" ? this.mainMenu : this.secondaryMenu;
+            return this.side === mainMenu ? this.mainMenu : this.secondaryMenu;
         }
     },
     methods: {

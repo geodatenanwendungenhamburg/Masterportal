@@ -6,6 +6,7 @@ import AccordionItem from "@shared/modules/accordion/components/AccordionItem.vu
 import NavTab from "@shared/modules/tabs/components/NavTab.vue";
 import {buildMetaURLs} from "@shared/js/utils/metaUrlHelper.js";
 import LayerInfoContactButton from "../../layerTree/components/LayerInfoContactButton.vue";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * The Layer Information that gives the user information, links and the legend for a layer
@@ -128,11 +129,11 @@ export default {
         },
         menuIndicator () {
             return this.mainMenu.currentComponent === "layerInformation"
-                ? "mainMenu"
-                : "secondaryMenu";
+                ? mainMenu
+                : secondaryMenu;
         },
         layerName () {
-            return this.menuIndicator === "mainMenu"
+            return this.menuIndicator === mainMenu
                 ? this.mainMenu.navigation.currentComponent.props.name
                 : this.secondaryMenu.navigation.currentComponent.props.name;
         }

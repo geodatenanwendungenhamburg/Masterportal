@@ -1,5 +1,5 @@
 import markerHelper from "../../js/marker.js";
-import {treeSubjectsKey} from "@shared/js/utils/constants.js";
+import {treeSubjectsKey, mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 import WKTUtil from "@shared/js/utils/getWKTGeom.js";
 import wmsGFIUtil from "@shared/js/utils/getWmsFeaturesByMimeType.js";
 import {rawLayerList} from "@masterportal/masterportalapi/src/index.js";
@@ -255,7 +255,7 @@ export default {
         const layerConfig = await dispatch("retrieveLayerConfig", {layerId, source});
 
         commit("setShowSearchResultsInTree", true);
-        dispatch("Menu/changeCurrentComponent", {type: "layerSelection", side: "mainMenu", props: {name: "common:modules.layerSelection.name"}}, {root: true});
+        dispatch("Menu/changeCurrentComponent", {type: "layerSelection", side: mainMenu, props: {name: "common:modules.layerSelection.name"}}, {root: true});
         if (layerId.includes("folder-")) {
             const folderChildId = layerConfig.elements[0]?.id;
 
@@ -340,7 +340,7 @@ export default {
      * @returns {void}
      */
     startRouting: ({dispatch, rootGetters}, {coordinates, name}) => {
-        const menuSide = "secondaryMenu",
+        const menuSide = secondaryMenu,
             menuExpanded = "Menu/expanded";
 
         dispatch("Menu/changeCurrentComponent", {type: "routing", side: menuSide, props: {name: i18next.t("common:modules.routing.name")}}, {root: true});
@@ -537,8 +537,8 @@ export default {
 
         if (currentComponentType === "getFeatureInfo") {
             commit("Menu/switchToPreviousComponent", gfiMenuSide, {root: true});
-            if (gfiMenuSide === "secondaryMenu" && rootGetters["Menu/secondaryMenu"].currentComponent === "root") {
-                dispatch("Menu/closeMenu", "secondaryMenu", {root: true});
+            if (gfiMenuSide === secondaryMenu && rootGetters["Menu/secondaryMenu"].currentComponent === "root") {
+                dispatch("Menu/closeMenu", secondaryMenu, {root: true});
             }
         }
 

@@ -24,6 +24,7 @@ import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 import {hasUnfixedRules} from "../utils/hasUnfixedRules.js";
 import SnippetTag from "@modules/filter/components/SnippetTag.vue";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
+import {mainMenu} from "@shared/js/utils/constants.js";
 
 /**
  * Filter General
@@ -85,7 +86,7 @@ export default {
             const url = new URL(window.location.href);
 
             url.searchParams.set("MENU", "{\""
-                + (this.menuSide === "mainMenu" ? "main" : "secondary")
+                + (this.menuSide === mainMenu ? "main" : "secondary")
                 + "\":{\"currentComponent\":\"filter\"}}"
             );
             url.searchParams.set(this.type.toUpperCase(), this.urlParams);

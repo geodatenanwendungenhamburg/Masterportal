@@ -1,5 +1,6 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * Menu Toggle Button
@@ -13,8 +14,8 @@ export default {
     props: {
         side: {
             type: String,
-            default: "mainMenu",
-            validator: value => value === "mainMenu" || value === "secondaryMenu"
+            default: mainMenu,
+            validator: value => value === mainMenu || value === secondaryMenu
         }
     },
     computed: {
@@ -25,7 +26,7 @@ export default {
         iconClass () {
             let icon;
 
-            if (this.side === "mainMenu") {
+            if (this.side === mainMenu) {
                 icon = this.mainExpanded ? "bi-chevron-left" : this.mainToggleButtonIcon;
             }
             else {
@@ -38,7 +39,7 @@ export default {
          * @returns {Boolean} True if the toggle button should be shown.
          */
         showButton () {
-            if (this.side === "mainMenu") {
+            if (this.side === mainMenu) {
                 return true;
             }
 

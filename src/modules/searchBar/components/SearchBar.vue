@@ -2,6 +2,7 @@
 import {mapGetters, mapActions, mapMutations} from "vuex";
 import SearchBarSuggestionList from "./SearchBarSuggestionList.vue";
 import SearchBarResultList from "./SearchBarResultList.vue";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * Searchbar to access search results.
@@ -200,7 +201,7 @@ export default {
     },
     mounted () {
         this.checkLayerSelectionSearchConfig();
-        this.setCurrentSide(this.portalConfig?.mainMenu?.searchBar !== undefined ? "mainMenu" : "secondaryMenu");
+        this.setCurrentSide(this.portalConfig?.mainMenu?.searchBar !== undefined ? mainMenu : secondaryMenu);
         this.currentComponentSide = this.menuCurrentComponent(this.currentSide).type;
         this.initializeModule({configPaths: this.configPaths, type: this.type});
         this.overwriteDefaultValues();

@@ -3,7 +3,7 @@ import getNestedValues from "@shared/js/utils/getNestedValues.js";
 import searchInTree from "@shared/js/utils/searchInTree.js";
 import {sortObjects} from "@shared/js/utils/sortObjects.js";
 import stateAppStore from "./state.js";
-import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants.js";
+import {treeBaselayersKey, treeSubjectsKey, mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 import zIndexManager from "@core/layers/js/zIndexManager.js";
 
 /**
@@ -186,10 +186,10 @@ export default {
     configuredModules: (state, getters) => {
         let content = [];
 
-        getters.menuFromConfig("mainMenu").sections?.forEach(subSections => {
+        getters.menuFromConfig(mainMenu).sections?.forEach(subSections => {
             content = content.concat(subSections);
         });
-        getters.menuFromConfig("secondaryMenu").sections?.forEach(subSections => {
+        getters.menuFromConfig(secondaryMenu).sections?.forEach(subSections => {
             subSections.forEach(subsubSec => {
                 if (subsubSec?.type === "folder") {
                     content = content.concat(subsubSec?.elements);

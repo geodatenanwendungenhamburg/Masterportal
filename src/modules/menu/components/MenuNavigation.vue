@@ -1,5 +1,6 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * Menu Navigation
@@ -15,7 +16,7 @@ export default {
         side: {
             type: String,
             required: true,
-            validator: value => value === "mainMenu" || value === "secondaryMenu"
+            validator: value => value === mainMenu || value === secondaryMenu
         }
     },
     computed: {
@@ -46,7 +47,7 @@ export default {
         },
 
         isSecondaryGfiWithoutMenu () {
-            return this.side === "secondaryMenu"
+            return this.side === secondaryMenu
                 && !this.secondaryMenuEnabled
                 && this.currentMenuComponent.type === "getFeatureInfo";
         },

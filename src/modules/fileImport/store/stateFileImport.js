@@ -1,3 +1,5 @@
+import {secondaryMenu} from "@shared/js/utils/constants.js";
+
 /**
  * User type definition
  * @typedef {Object} FileImportState
@@ -40,6 +42,6 @@ export default {
     customAttributeStyles: {},
     geojsonFeatureId: 0,
     showConfirmation: true,
-    openDrawMenuSide: "secondaryMenu",
+    openDrawMenuSide: secondaryMenu,
     useDifferentLayers: false
 };

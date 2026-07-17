@@ -12,7 +12,7 @@ import isObject from "@shared/js/utils/isObject.js";
 import {createEmpty as createEmptyExtent, extend} from "ol/extent.js";
 import {uniqueId} from "@shared/js/utils/uniqueId.js";
 import layerCollection from "@core/layers/js/layerCollection.js";
-import {treeSubjectsKey} from "@shared/js/utils/constants.js";
+import {treeSubjectsKey, mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 import {supportedFiletypes} from "../utils/supportedFiletypes.js";
 import {getIconUrl} from "@shared/js/utils/convertFeaturesToKml.js";
 import * as constants from "@modules/draw_old/store/constantsDraw.js";
@@ -895,7 +895,7 @@ export default {
      * @returns {void}
      */
     openDrawTool ({state, dispatch, rootGetters}) {
-        const menuSide = ["mainMenu", "secondaryMenu"].includes(state.openDrawMenuSide) ? state.openDrawMenuSide : "secondaryMenu",
+        const menuSide = [mainMenu, secondaryMenu].includes(state.openDrawMenuSide) ? state.openDrawMenuSide : secondaryMenu,
             menuExpanded = "Menu/expanded";
 
         dispatch("Menu/changeCurrentComponent", {type: "draw_old", side: menuSide, props: {name: i18next.t("common:modules.draw_old.name")}}, {root: true});

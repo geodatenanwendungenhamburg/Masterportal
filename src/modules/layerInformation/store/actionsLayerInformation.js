@@ -5,6 +5,7 @@ import xml2json from "@shared/js/utils/xml2json.js";
 import changeCase from "@shared/js/utils/changeCase.js";
 import axios from "axios";
 import {buildMetaURLs} from "@shared/js/utils/metaUrlHelper.js";
+import {mainMenu} from "@shared/js/utils/constants.js";
 
 /**
  * The actions for the layerInformation.
@@ -40,10 +41,10 @@ export default {
             commit("Modules/Legend/setLayerInfoLegend", {}, {root: true});
             dispatch("Modules/Legend/createLegendForLayerInfo", layerConf.id, {root: true});
         }
-        if (rootGetters.isMobile && !rootGetters["Menu/expanded"]("mainMenu")) {
-            dispatch("Menu/toggleMenu", "mainMenu", {root: true});
+        if (rootGetters.isMobile && !rootGetters["Menu/expanded"](mainMenu)) {
+            dispatch("Menu/toggleMenu", mainMenu, {root: true});
         }
-        dispatch("Menu/changeCurrentComponent", {type: "layerInformation", side: "mainMenu", props: {name}}, {root: true});
+        dispatch("Menu/changeCurrentComponent", {type: "layerInformation", side: mainMenu, props: {name}}, {root: true});
         commit("setLayerInfo", layerConf);
         dispatch("setMetadataURL", mdid);
         dispatch("additionalSingleLayerInfo");

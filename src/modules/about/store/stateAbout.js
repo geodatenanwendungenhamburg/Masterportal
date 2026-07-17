@@ -1,3 +1,5 @@
+import {mainMenu} from "@shared/js/utils/constants.js";
+
 /**
  * User type definition
  * @module modules/About/state
@@ -33,7 +35,7 @@ export default {
     description: "common:modules.about.description",
     icon: "bi-info-circle",
     name: "common:modules.about.name",
-    menuSide: "mainMenu",
+    menuSide: mainMenu,
     type: "about",
 
     abstractText: "",

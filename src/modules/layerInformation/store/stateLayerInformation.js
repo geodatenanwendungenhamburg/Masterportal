@@ -1,3 +1,5 @@
+import {mainMenu} from "@shared/js/utils/constants.js";
+
 /**
 * The state of the layerInformation.
  * @module modules/layerInformation/store/stateLayerInformation
@@ -33,7 +35,7 @@ export default {
     downloadLinks: null,
     icon: "bi-info-circle",
     layerInfo: {},
-    menuSide: "mainMenu",
+    menuSide: mainMenu,
     metaDataCatalogueId: "2",
     metaURLs: [],
     name: "common:modules.layerInformation.name",

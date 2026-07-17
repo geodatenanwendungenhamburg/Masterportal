@@ -2,6 +2,7 @@
 import {mapGetters} from "vuex";
 import MenuContainerBodyRootItemElement from "./MenuContainerBodyRootItemElement.vue";
 import changeCase from "@shared/js/utils/changeCase.js";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * Menu Container Body Root Items
@@ -29,8 +30,8 @@ export default {
         },
         side: {
             type: String,
-            default: "mainMenu",
-            validator: value => value === "mainMenu" || value === "secondaryMenu"
+            default: mainMenu,
+            validator: value => value === mainMenu || value === secondaryMenu
         }
     },
     computed: {

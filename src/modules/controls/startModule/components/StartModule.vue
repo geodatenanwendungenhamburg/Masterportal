@@ -1,6 +1,7 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import ControlIcon from "../../components/ControlIcon.vue";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * Start control that let's you start a different module.
@@ -19,8 +20,8 @@ export default {
         ])
     },
     created () {
-        this.setConfiguredModuleStates({menuModels: this.mainMenu, menuSide: "mainMenu"});
-        this.setConfiguredModuleStates({menuModels: this.secondaryMenu, menuSide: "secondaryMenu"});
+        this.setConfiguredModuleStates({menuModels: this.mainMenu, menuSide: mainMenu});
+        this.setConfiguredModuleStates({menuModels: this.secondaryMenu, menuSide: secondaryMenu});
     },
     methods: {
         ...mapActions("Controls/StartModule", ["setConfiguredModuleStates", "onClick"])

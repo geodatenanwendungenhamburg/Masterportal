@@ -2,6 +2,7 @@
 import {mapGetters} from "vuex";
 import axios from "axios";
 import visibilityChecker from "@shared/js/utils/visibilityChecker.js";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * This module can display HTML from config.json or an external file.
@@ -17,8 +18,8 @@ export default {
         /** Defines in which menu the component is being rendered */
         side: {
             type: String,
-            default: "mainMenu",
-            validator: value => value === "mainMenu" || value === "secondaryMenu"
+            default: mainMenu,
+            validator: value => value === mainMenu || value === secondaryMenu
         },
         mapMode: {
             type: String,

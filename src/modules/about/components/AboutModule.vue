@@ -1,6 +1,7 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import LightButton from "@shared/modules/buttons/components/LightButton.vue";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * The About Module gives information about the metadata, contact and current version of the portal
@@ -55,8 +56,8 @@ export default {
             return this.mainMenu.sections[0].find(m => {
                 return m.type === "about";
             })
-                ? "mainMenu"
-                : "secondaryMenu";
+                ? mainMenu
+                : secondaryMenu;
         }
     },
     mounted () {

@@ -2,6 +2,7 @@
 import {mapActions, mapGetters} from "vuex";
 import visibilityChecker from "@shared/js/utils/visibilityChecker.js";
 import LightButton from "@shared/modules/buttons/components/LightButton.vue";
+import {mainMenu} from "@shared/js/utils/constants.js";
 
 /**
  * Menu Container Body Root Item Element
@@ -70,7 +71,7 @@ export default {
          * @returns {Object} Menu configuration for the given menu.
          */
         menu () {
-            return this.side === "mainMenu" ? this.mainMenu : this.secondaryMenu;
+            return this.side === mainMenu ? this.mainMenu : this.secondaryMenu;
         },
 
         /**

@@ -2,6 +2,7 @@ import menuState from "./stateMenu.js";
 import idxProvider from "@shared/js/utils/idx.js";
 import {generateSimpleGetters} from "@shared/js/utils/generators.js";
 import changeCase from "@shared/js/utils/changeCase.js";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 const menuGetters = {
     ...generateSimpleGetters(menuState),
@@ -220,10 +221,10 @@ const menuGetters = {
      * @returns {({title: string, idAppendix: string}|null)} Function returning an object including the title and an appendix for the titles id to make it unique; may return null if no title is configured.
      */
     titleBySide: (state, getters) => side => {
-        if (side === "mainMenu" && getters.mainTitle) {
+        if (side === mainMenu && getters.mainTitle) {
             return {...getters.mainTitle, idAppendix: side};
         }
-        if (side === "secondaryMenu" && getters.secondaryTitle) {
+        if (side === secondaryMenu && getters.secondaryTitle) {
             return {...getters.secondaryTitle, idAppendix: side};
         }
         return null;
@@ -310,7 +311,7 @@ const menuGetters = {
         return Array.isArray(sections) &&
             sections.some((section, index) => {
                 if (getters?.sectionHasItems) {
-                    return getters.sectionHasItems("secondaryMenu", index);
+                    return getters.sectionHasItems(secondaryMenu, index);
                 }
 
                 return (Array.isArray(section) && section.length > 0) ||

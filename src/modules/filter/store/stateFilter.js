@@ -1,3 +1,5 @@
+import {mainMenu} from "@shared/js/utils/constants.js";
+
 /**
  * User type definition
  * @typedef {Object} filter
@@ -48,7 +50,7 @@ const state = {
     type: "filter",
     description: "common:modules.filter.description",
     name: "common:modules.filter.name",
-    menuSide: "mainMenu",
+    menuSide: mainMenu,
     clearAll: false,
     resetLayer: false,
     multiLayerSelector: true,

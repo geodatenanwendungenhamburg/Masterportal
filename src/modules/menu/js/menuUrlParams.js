@@ -2,6 +2,7 @@ import store from "@appstore/index.js";
 import changeCase from "@shared/js/utils/changeCase.js";
 import processUrlParams from "@shared/js/utils/processUrlParams.js";
 import isMobile from "@shared/js/utils/isMobile.js";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * Here the urlParams for the menu are processed.
@@ -96,13 +97,13 @@ function getCurrentComponent (searchType) {
     const secondaryMenuComponent = findInSections(secondaryMenuSections, searchType);
 
     if (mainMenuComponent && !secondaryMenuComponent) {
-        return {currentComponent: mainMenuComponent, side: "mainMenu"};
+        return {currentComponent: mainMenuComponent, side: mainMenu};
     }
     else if (!mainMenuComponent && secondaryMenuComponent) {
-        return {currentComponent: secondaryMenuComponent, side: "secondaryMenu"};
+        return {currentComponent: secondaryMenuComponent, side: secondaryMenu};
     }
     else if (mainMenuComponent && secondaryMenuComponent) {
-        return {currentComponent: secondaryMenuComponent, side: "secondaryMenu"};
+        return {currentComponent: secondaryMenuComponent, side: secondaryMenu};
     }
     return {currentComponent: undefined, side: undefined};
 }
@@ -159,7 +160,7 @@ function findElement (elements, searchType) {
  */
 function setMenuWidth (params) {
     if (params.MAINWIDTH && !isMobile()) {
-        store.dispatch("Menu/setCurrentMenuWidth", {type: "mainMenu", attributes: {width: params.MAINWIDTH}}, {root: true});
+        store.dispatch("Menu/setCurrentMenuWidth", {type: mainMenu, attributes: {width: params.MAINWIDTH}}, {root: true});
     }
 }
 
@@ -170,7 +171,7 @@ function setMenuWidth (params) {
  */
 function setSecondaryMenuWidth (params) {
     if (params.SECONDARYWIDTH && !isMobile()) {
-        store.dispatch("Menu/setCurrentMenuWidth", {type: "secondaryMenu", attributes: {width: params.SECONDARYWIDTH}}, {root: true});
+        store.dispatch("Menu/setCurrentMenuWidth", {type: secondaryMenu, attributes: {width: params.SECONDARYWIDTH}}, {root: true});
     }
 }
 
@@ -185,7 +186,7 @@ function setMainMenuClosed (params) {
             isCurrentlyExpanded = store.getters["Menu/mainExpanded"];
 
         if (shouldBeClosed === isCurrentlyExpanded) {
-            store.dispatch("Menu/toggleMenu", "mainMenu");
+            store.dispatch("Menu/toggleMenu", mainMenu);
         }
     }
 }
@@ -201,7 +202,7 @@ function setSecondaryMenuClosed (params) {
             isCurrentlyExpanded = store.getters["Menu/secondaryExpanded"];
 
         if (shouldBeClosed === isCurrentlyExpanded) {
-            store.dispatch("Menu/toggleMenu", "secondaryMenu");
+            store.dispatch("Menu/toggleMenu", secondaryMenu);
         }
     }
 }

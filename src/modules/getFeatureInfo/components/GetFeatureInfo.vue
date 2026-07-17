@@ -1,10 +1,10 @@
 <script>
 import {mapGetters, mapMutations, mapActions} from "vuex";
-
 import GetFeatureInfoDetached from "./GetFeatureInfoDetached.vue";
 import {mapAttributes} from "@masterportal/masterportalapi/src/lib/attributeMapper.js";
 import omit from "@shared/js/utils/omit.js";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
+import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
  * Get Feature Info
@@ -118,14 +118,14 @@ export default {
          * @returns {void}
          */
         visible (value) {
-            const menuSides = ["mainMenu", "secondaryMenu"],
+            const menuSides = [mainMenu, secondaryMenu],
                   otherSide = menuSides.find((element) => element !== this.menuSide);
 
             if (!value) {
                 this.reset();
             }
             else {
-                if (this.currentComponent(this.menuSide).type === "print") {
+                if (this.currentComponent(this.menuSide)?.type === "print") {
                     this.createMappedProperties(this.feature);
                     this.setMenuSide(otherSide);
                 }
