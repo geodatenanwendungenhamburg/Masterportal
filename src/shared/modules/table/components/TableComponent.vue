@@ -1331,7 +1331,7 @@ export default {
                         @click="selectColumn(column, idx)"
                     >
                         <div
-                            class="d-flex justify-content-between me-3"
+                            class="table-header-content"
                         >
                             <span
                                 v-if="filterable"
@@ -1342,6 +1342,7 @@ export default {
                                     v-model="dropdownSelected[column.name]"
                                     :options="getUniqueValuesByColumnName(column.name, data.items)"
                                     :multiple="true"
+                                    :disabled="true"
                                     :show-labels="false"
                                     open-direction="auto"
                                     :close-on-select="true"
@@ -1376,7 +1377,7 @@ export default {
                             </span>
                             <span
                                 v-if="sortable"
-                                class="sortable-icon mt-1"
+                                class="sortable-icon"
                                 role="button"
                                 tabindex="0"
                                 :style="{ display: fullViewActivated ? 'none' : ''}"
@@ -1401,7 +1402,7 @@ export default {
                                 selectMode === 'column' && columnIdx > 0 ? 'selectable' : '',
                                 getClassForSelectedColumn(columnIdx), fontSize === 'medium' ? 'medium-font-size' : '',
                                 fontSize === 'small' ? 'small-font-size' : '',
-                                typeof fixedTopData[entry.name] === 'number' ? 'pull-right' : 'pull-left',
+                                'pull-left',
                                 fixedColumn === entry.name ? 'fixedColumn' : '',
                             ]"
                         >
@@ -1450,7 +1451,7 @@ export default {
                             getClassForSelectedColumn(columnIdx),
                             fontSize === 'medium' ? 'medium-font-size' : '',
                             fontSize === 'small' ? 'small-font-size' : '',
-                            isNumeric(item[entry.name]) ? 'pull-right' : 'pull-left',
+                            !$slots['cell-' + entry.name] ? 'pull-left' : '',
                             typeof fixedColumnTitle !== 'undefined' ? 'reference' : '',
                             typeof fixedColumnTitle !== 'undefined' && columnIdx === 0 ? 'fixedColumn first' : ''
                         ]"
@@ -1513,7 +1514,7 @@ export default {
                             :key="'total-'+index"
                             :fixed="typeof fixedColumn !== 'undefined'"
                             class="custom-p-2 total"
-                            :class="[selectMode === 'column' && index > 0 ? 'selectable' : '', getClassForSelectedColumn(index), typeof entry === 'number' ? 'pull-right' : '']"
+                            :class="[selectMode === 'column' && index > 0 ? 'selectable' : '', getClassForSelectedColumn(index), 'pull-left']"
                         >
                             {{ typeof entry === 'number' ? thousandsSeparator(entry, getSeparator('group'), getSeparator('decimal'), true) : entry }}
                         </td>
@@ -1529,7 +1530,7 @@ export default {
                             v-for="(entry, columnIdx) in row"
                             :key="'fixed-'+columnIdx"
                             class="p-2"
-                            :class="[selectMode === 'column' && columnIdx > 0 ? 'selectable' : '', getClassForSelectedColumn(columnIdx), fontSize === 'medium' ? 'medium-font-size' : '', fontSize === 'small' ? 'small-font-size' : '']"
+                            :class="[selectMode === 'column' && columnIdx > 0 ? 'selectable' : '', getClassForSelectedColumn(columnIdx), fontSize === 'medium' ? 'medium-font-size' : '', fontSize === 'small' ? 'small-font-size' : '', 'pull-left']"
                         >
                             {{ entry }}
                         </td>
@@ -1661,8 +1662,11 @@ table {
         font-family: $font_family_accent;
         z-index: 2;
         span.sortable-icon {
-            align-content: center;
             cursor: pointer;
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
         }
         &.selected {
             background-color: $primary;
@@ -1676,9 +1680,19 @@ table {
             border-bottom-right-radius: 5px;
         }
     }
+    .table-header-content {
+        align-items: center;
+        display: flex;
+        justify-content: flex-start;
+        min-height: 100%;
+        padding: 0;
+        position: relative;
+    }
     .th-style {
         display: block;
         min-height: 1rem;
+        text-align: left;
+        width: 100%;
     }
     .fixedColumn, th.fixedColumn {
         position: sticky;
@@ -1815,28 +1829,38 @@ table {
 
 
 .filter-select-box-wrapper {
+    .multiselect {
+        background: $light_blue;
+    }
     .multiselect__single {
         background: $light_blue;
     }
     .multiselect__tags {
+        align-items: center;
         background: $light_blue;
         border: none;
+        display: flex;
         height: 2.5rem;
-        padding: 10px 40px 0 8px;
+        justify-content: flex-start;
+        padding: 0;
+        text-align: left;
         &.fullscreen_view {
-            padding: 5px 0px 0 5px;
+            padding: 0;
         }
     }
     border: none;
     .multiselect-dropdown {
+        background: $light_blue;
         cursor: pointer;
     }
     .multiselect__single {
+        display: block;
         font-family: inherit;
         font-size: $font-size-sm;
         margin: 0;
         padding: 0;
-        vertical-align: baseline;
+        text-align: left;
+        width: 100%;
     }
     .multiselect__option--highlight {
         background: $secondary;

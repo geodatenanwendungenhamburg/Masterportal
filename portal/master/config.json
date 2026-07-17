@@ -557,7 +557,8 @@
             "type": "populationRequest"
           },
           {
-            "type": "compareFeatures"
+            "type": "compareFeatures",
+            "fullViewEnabled": true
           },
           {
             "type": "print",
