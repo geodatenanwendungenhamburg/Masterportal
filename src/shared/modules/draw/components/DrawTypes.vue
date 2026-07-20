@@ -248,7 +248,7 @@ export default {
             drawInteraction.setStyleObject(currentLayout);
 
             if (this.selectedDrawType === "writeText" && this.currentDrawInteraction) {
-                this.currentDrawInteraction.getOverlay().setStyle(drawInteraction.getTextStyle());
+                this.currentDrawInteraction.getOverlay().setStyle(drawInteraction.getTextStyle() ?? []);
             }
         },
         currentLayoutOuterCircle (currentLayoutOuterCircle) {
@@ -262,6 +262,12 @@ export default {
                     this.removeInteraction(this.currentDrawInteraction);
                     this.currentDrawInteraction = null;
                 }
+            }
+        },
+        source (newSource, oldSource) {
+            if (newSource !== oldSource && this.selectedDrawType !== "") {
+                this.removeInteraction(this.currentDrawInteraction);
+                this.regulateDrawInteraction(this.selectedDrawType);
             }
         }
     },
