@@ -156,7 +156,7 @@ export default {
          */
         async handleGPXDownload () {
             const preparedFeatures = await exportItem.prepareFeatures(this.features),
-                dataString = await exportItem.convertFeatures(preparedFeatures, new GPX(), this.projectionCode);
+                  dataString = await exportItem.convertFeatures(preparedFeatures, new GPX(), this.projectionCode);
 
             this.triggerFileDownload(dataString, `${this.fileName}.gpx`);
         },
@@ -197,7 +197,7 @@ export default {
          */
         triggerFileDownload (data, fileName) {
             const blob = new Blob([data], {type: "application/octet-stream"}),
-                link = document.createElement("a");
+                  link = document.createElement("a");
 
             link.href = URL.createObjectURL(blob);
             link.download = fileName;

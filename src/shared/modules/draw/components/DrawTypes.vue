@@ -363,8 +363,8 @@ export default {
             this.currentDrawInteraction = drawInteraction.createDrawInteraction(drawType, this.source, this.iconList, Config.wfsImgPath);
             let onGeometryChange;
             const {tooltipOverlay, tooltipElement} = createTooltipOverlay(),
-                map = mapCollection.getMap("2D"),
-                symbol = this.iconList.find(val => val.id === drawType);
+                  map = mapCollection.getMap("2D"),
+                  symbol = this.iconList.find(val => val.id === drawType);
 
             this.tooltipElement = tooltipElement;
             tooltipElement.innerHTML = "";
@@ -404,12 +404,12 @@ export default {
                             if (drawType === "box" || drawType === "polygon" || drawType === "square") {
 
                                 const coordinates = geometry.getCoordinates()[0],
-                                    width = Math.abs(coordinates[1][0] - coordinates[0][0]),
-                                    height = Math.abs(coordinates[2][1] - coordinates[1][1]),
-                                    area = Math.round(geometry.getArea()),
-                                    formattedWidth = Math.round(width).toLocaleString("de-DE"),
-                                    formattedHeight = Math.round(height).toLocaleString("de-DE"),
-                                    formattedArea = area.toLocaleString("de-DE");
+                                      width = Math.abs(coordinates[1][0] - coordinates[0][0]),
+                                      height = Math.abs(coordinates[2][1] - coordinates[1][1]),
+                                      area = Math.round(geometry.getArea()),
+                                      formattedWidth = Math.round(width).toLocaleString("de-DE"),
+                                      formattedHeight = Math.round(height).toLocaleString("de-DE"),
+                                      formattedArea = area.toLocaleString("de-DE");
 
                                 if (drawType === "box" || drawType === "square") {
                                     tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawLayout.area")}: ${formattedArea}m²<br>${this.$t("common:shared.modules.draw.drawLayout.width")}: ${formattedWidth}m<br>${this.$t("common:shared.modules.draw.drawLayout.height")}: ${formattedHeight}m`;
@@ -513,10 +513,10 @@ export default {
                     return "";
                 }
                 const labelEntry = this.drawTypeLabels.find(label => label.type === drawType),
-                    drawTypesGeometrie = this.drawTypesGeometrie,
-                    drawTypesMain = this.drawTypesMain,
-                    drawTypesSymbols = this.drawTypesSymbols,
-                    allDrawTypes = [...drawTypesGeometrie, ...drawTypesMain, ...drawTypesSymbols];
+                      drawTypesGeometrie = this.drawTypesGeometrie,
+                      drawTypesMain = this.drawTypesMain,
+                      drawTypesSymbols = this.drawTypesSymbols,
+                      allDrawTypes = [...drawTypesGeometrie, ...drawTypesMain, ...drawTypesSymbols];
 
                 if (labelEntry && labelEntry.label) {
                     return this.$t(labelEntry.label) || "";

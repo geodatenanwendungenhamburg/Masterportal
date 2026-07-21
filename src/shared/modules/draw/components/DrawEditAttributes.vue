@@ -255,7 +255,7 @@ export default {
          */
         checkAttributes () {
             const seen = {},
-                result = {};
+                  result = {};
             let valid = true;
 
             this.attributes.forEach(attr => {
@@ -307,7 +307,7 @@ export default {
                 return;
             }
             const allFeatures = this.layer.getSource()?.getFeatures() ?? [],
-                gfiAttrs = {};
+                  gfiAttrs = {};
 
             allFeatures.forEach(feature => {
                 Object.keys(feature.getProperties()).forEach(key => {

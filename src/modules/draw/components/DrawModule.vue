@@ -171,9 +171,9 @@ export default {
             }
 
             const buttonElement = document.getElementById(buttonId),
-                containerElement = document.getElementById("main-drawtypes-container"),
-                buttonPosition = buttonElement ? buttonElement.getBoundingClientRect() : {left: 0, right: 0},
-                containerPosition = containerElement ? containerElement.getBoundingClientRect() : {left: 0};
+                  containerElement = document.getElementById("main-drawtypes-container"),
+                  buttonPosition = buttonElement ? buttonElement.getBoundingClientRect() : {left: 0, right: 0},
+                  containerPosition = containerElement ? containerElement.getBoundingClientRect() : {left: 0};
 
             return buttonPosition.left + (buttonPosition.right - buttonPosition.left) / 2 - containerPosition.left + 6;
         }
