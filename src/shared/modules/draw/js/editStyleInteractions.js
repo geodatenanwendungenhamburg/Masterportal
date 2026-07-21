@@ -6,7 +6,7 @@ import buildStyleFromDrawState, {buildOuterCircleStyle} from "./buildStyleFromDr
 /**
  * Returns a style function that wraps the feature's original style and appends an asterisk (*)
  * as a marker, when a drawing has attributes.
- * @param {function|import("ol/style/Style").default|null} originalStyle The original OL feature style.
+ * @param {Function|Style|null} originalStyle The original OL feature style.
  * @returns {function} A style function returning original styles plus the attribute marker.
  */
 export function createMarkerStyleFn (originalStyle) {

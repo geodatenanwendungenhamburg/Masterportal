@@ -33,7 +33,7 @@ import Icon from "ol/style/Icon.js";
  * @vue-prop {function(string): void} [addDrawTypeSymbol] - Adds a symbol draw type to the store.
  * @vue-prop {function(number): void} [incrementIdCounter] - Increments the feature id counter in the store.
  * @vue-prop {function(number): void} [setLineLength] - Sets the current drawn line length in the store.
- * @vue-prop {function(Object|null): void} [setSelectedSymbol] - Sets the currently selected symbol in the store.
+ * @vue-prop {Function} [setSelectedSymbol] - Sets the currently selected symbol in the store.
  * @vue-data {ol/interaction/Draw} currentDrawInteraction - The current draw interaction.
  */
 export default {
