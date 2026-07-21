@@ -980,7 +980,7 @@
       "elements": [
         {
           "id": ["20609", "20610", "20612"],
-          "name": "Gruppe Freizeitrouten und Radfernwege (4 WFS Layer)",
+          "name": "Gruppe Freizeitrouten und Radfernwege (3 WFS Layer)",
           "typ": "GROUP",
           "styleId": "4515",
           "visibility": true,
