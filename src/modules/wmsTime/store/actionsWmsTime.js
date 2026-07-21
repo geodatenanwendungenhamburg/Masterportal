@@ -4,6 +4,20 @@ import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 import store from "@appstore/index.js";
 import {resetRenderListeners} from "@shared/js/utils/resetRenderListeners.js";
 
+/**
+ * Checks if baselayer is covered by another baselayer with a higher zIndex.
+ * @param {Object} layer The layer to check
+ * @param {Array} visibleLayers All currently visible layers
+ * @returns {Boolean} True if the layer is covered
+ */
+function isCoveredByOtherBaselayer(layer, visibleLayers) {
+    if (layer.baselayer !== true || typeof layer.zIndex !== "number") {
+        return false;
+    }
+    return visibleLayers.some(config => config.baselayer === true && config.id !== layer.id && typeof config.zIndex === "number" && config.zIndex > layer.zIndex
+    );
+}
+
 export default {
     windowWidthChanged ({commit, dispatch, state, getters, rootGetters}) {
         if (getters.windowWidth !== window.innerWidth) {
@@ -19,13 +33,14 @@ export default {
      * Starts and ends wmsTime when time layer is activated/deactivated
      * @param {Object} context the vuex context
      * @param {Object} context.commit the commit
+     * @param {Object} context.dispatch the dispatch
      * @param {Object} context.state the state
      * @param {Object} context.rootGetters the rootGetters
      * @returns {void}
      */
-    watchVisibleLayerConfig ({commit, state, rootGetters}) {
+    watchVisibleLayerConfig ({commit, dispatch, state, rootGetters}) {
         rootGetters.visibleLayerConfigs.forEach(visLayer => {
-            if (visLayer.typ === "WMS" && visLayer.time) {
+            if (visLayer.typ === "WMS" && visLayer.time && !isCoveredByOtherBaselayer(visLayer, rootGetters.visibleLayerConfigs)) {
                 commit("setTimeSliderActive", {
                     active: true,
                     currentLayerId: visLayer.id,
@@ -34,16 +49,56 @@ export default {
                 commit("setVisibility", true);
             }
         });
-        store.watch((_, getters) => getters.visibleLayerConfigs, layerConfig => {
-            if (!state.timeSlider.active) {
-                layerConfig.forEach(element => {
-                    if (element.typ === "WMS" && element.time && !rootGetters["Modules/CompareMaps/active"]) {
+        store.watch((_, getters) => getters["Maps/mode"], mapMode => {
+            if (mapMode === "3D" && state.timeSlider.active) {
+                if (rootGetters["Modules/LayerSwiper/active"]) {
+                    const secondLayerId = state.timeSlider.currentLayerId + state.layerAppendix;
+
+                    dispatch("deactivateLayerSwiper");
+                    dispatch("replaceByIdInLayerConfig", {
+                        layerConfigs: [{
+                            id: secondLayerId,
+                            layer: {
+                                id: secondLayerId,
+                                visibility: false,
+                                showInLayerTree: false
+                            }
+                        }]
+                    }, {root: true});
+                }
+                commit("setTimeSliderActive", {
+                    active: false,
+                    currentLayerId: state.timeSlider.currentLayerId,
+                    playbackDelay: state.timeSlider.playbackDelay
+                });
+            }
+            else if (mapMode === "2D") {
+                rootGetters.visibleLayerConfigs.forEach(element => {
+                    if (element.typ === "WMS" && element.time && !isCoveredByOtherBaselayer(element, rootGetters.visibleLayerConfigs)) {
                         commit("setTimeSliderActive", {
                             active: true,
                             currentLayerId: element.id,
                             playbackDelay: element.time?.playbackDelay || 1
                         });
                         commit("setVisibility", true);
+                    }
+                });
+            }
+        });
+        store.watch((_, getters) => getters.visibleLayerConfigs, layerConfig => {
+            if (!state.timeSlider.active) {
+                layerConfig.forEach(element => {
+                    if (element.typ === "WMS" && element.time && !rootGetters["Modules/CompareMaps/active"] && rootGetters["Maps/mode"] !== "3D") {
+                        const isCoveredByBaselayer = isCoveredByOtherBaselayer(element, layerConfig);
+
+                        if (!isCoveredByBaselayer) {
+                            commit("setTimeSliderActive", {
+                                active: true,
+                                currentLayerId: element.id,
+                                playbackDelay: element.time?.playbackDelay || 1
+                            });
+                            commit("setVisibility", true);
+                        }
                     }
                 });
             }
@@ -61,6 +116,17 @@ export default {
                         playing: false
                     });
                     commit("setVisibility", false);
+                }
+                else if (visLayerConf?.baselayer === true) {
+                    const isCoveredByBaselayer = isCoveredByOtherBaselayer(visLayerConf, layerConfig);
+
+                    if (isCoveredByBaselayer) {
+                        commit("setTimeSliderActive", {
+                            active: false,
+                            currentLayerId: state.timeSlider.currentLayerId,
+                            playbackDelay: state.timeSlider.playbackDelay
+                        });
+                    }
                 }
             }
         }, {deep: true});
