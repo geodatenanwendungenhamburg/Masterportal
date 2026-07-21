@@ -419,7 +419,20 @@
             "type": "openConfig"
           },
           {
-            "type": "draw"
+            "type": "draw",
+            "iconList": [
+              {
+                "id": "iconPoint",
+                "type": "simple_point",
+                "value": "simple_point"
+              },
+              {
+                "id": "gelber Pin",
+                "type": "image",
+                "scale": 2,
+                "value": "geo-fill-ylw.svg"
+              }
+            ]
           },
           {
             "type": "selectFeatures"
