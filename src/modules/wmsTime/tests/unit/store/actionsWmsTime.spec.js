@@ -1,7 +1,7 @@
 import sinon from "sinon";
 import {expect} from "chai";
 
-import actions from "@modules/wmsTime/store/actionsWmsTime.js";
+import actions, {isCoveredByOtherBaselayer} from "@modules/wmsTime/store/actionsWmsTime.js";
 import initialState from "@modules/wmsTime/store/stateWmsTime.js";
 import layerCollection from "@core/layers/js/layerCollection.js";
 
@@ -201,5 +201,28 @@ describe("src/modules/wmsTime/store/actionsWmsTime.js", () => {
             expect(dispatch.calledOnce).to.be.true;
             expect(dispatch.firstCall.args).to.eql(["toggleSwiper", "123_secondLayer"]);
         });
+    });
+});
+
+describe("isCoveredByOtherBaselayer", () => {
+    it("should return true when a visible baselayer with higher zIndex exists", () => {
+        const layer = {id: "wmsLayer", baselayer: true, zIndex: 1};
+        const visibleLayers = [layer, {id: "otherBg", baselayer: true, zIndex: 2}];
+
+        expect(isCoveredByOtherBaselayer(layer, visibleLayers)).to.be.true;
+    });
+
+    it("should return false when no other baselayer with higher zIndex exists", () => {
+        const layer = {id: "wmsLayer", baselayer: true, zIndex: 2};
+        const visibleLayers = [layer, {id: "otherBg", baselayer: true, zIndex: 1}];
+
+        expect(isCoveredByOtherBaselayer(layer, visibleLayers)).to.be.false;
+    });
+
+    it("should return false when layer is not a baselayer", () => {
+        const layer = {id: "wmsLayer", baselayer: false, zIndex: 1};
+        const visibleLayers = [layer, {id: "otherBg", baselayer: true, zIndex: 2}];
+
+        expect(isCoveredByOtherBaselayer(layer, visibleLayers)).to.be.false;
     });
 });

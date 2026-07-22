@@ -10,7 +10,7 @@ import {resetRenderListeners} from "@shared/js/utils/resetRenderListeners.js";
  * @param {Array} visibleLayers All currently visible layers
  * @returns {Boolean} True if the layer is covered
  */
-function isCoveredByOtherBaselayer (layer, visibleLayers) {
+export function isCoveredByOtherBaselayer (layer, visibleLayers) {
     if (layer.baselayer !== true || typeof layer.zIndex !== "number") {
         return false;
     }
