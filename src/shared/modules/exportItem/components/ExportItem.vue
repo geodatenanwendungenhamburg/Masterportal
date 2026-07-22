@@ -155,7 +155,7 @@ export default {
          * @returns {void}
          */
         async handleGPXDownload () {
-            const preparedFeatures = await exportItem.prepareFeatures(this.features),
+            const preparedFeatures = await exportItem.prepareFeatures(this.features, this.projectionCode),
                   dataString = await exportItem.convertFeatures(preparedFeatures, new GPX(), this.projectionCode);
 
             this.triggerFileDownload(dataString, `${this.fileName}.gpx`);
@@ -168,12 +168,11 @@ export default {
          */
         async handleKMLDownload () {
             const reversedFeatures = [...this.features].reverse();
-            let dataString = kmlfunctions.transformGeometries(reversedFeatures);
+            let dataString = await exportItem.prepareFeatures(reversedFeatures, this.projectionCode);
 
             dataString = kmlfunctions.setKmlAttributes(dataString);
-            const projection = this.projectionCode;
 
-            dataString = await kmlfunctions.convertFeaturesToKml(dataString, projection);
+            dataString = await kmlfunctions.convertFeaturesToKml(dataString, this.projectionCode);
             this.triggerFileDownload(dataString, `${this.fileName}.kml`);
         },
 
