@@ -51,7 +51,7 @@
 
 ### Added
 - Issue\#1604 Modules/Controls/Orientation: new parameter `showDirection` and `showAccuracy` configuration enable to display user orientation when they are moving and accuracy of location.
-- Draw: Added new draw module to replace draw_old.
+- Draw: Added new draw module to replace draw_old (type="draw").
 - package.json: Added `npm run buildJsDoc` to script `prePushHook`.
 - JSDoc: Added a theme for jsdoc to make it more usable. Features include: better design, a searchbar, dark mode, a logo, links to bitbucket.
 - The following packages have been added:

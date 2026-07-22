@@ -207,9 +207,7 @@ Layer2dVector.prototype.initStyle = async function (attrs) {
  */
 Layer2dVector.prototype.createStyle = async function (attrs) {
     const styleId = attrs.styleId;
-    const styleObject = styleId
-        ? styleList.returnStyleObject(styleId) ?? await styleList.initStyleAndAddToList(Config, styleId)
-        : undefined;
+    const styleObject = styleList.returnStyleObject(styleId) ?? await styleList.initStyleAndAddToList(Config, styleId);
 
     if (styleObject !== undefined) {
         /**
@@ -240,9 +238,7 @@ Layer2dVector.prototype.createStyle = async function (attrs) {
     }
     else {
         this.setStyle(null);
-        if (styleId) {
-            console.warn(i18next.t("common:core.layers.errorHandling.wrongStyleId", {styleId}));
-        }
+        console.warn(i18next.t("common:core.layers.errorHandling.wrongStyleId", {styleId}));
     }
 };
 

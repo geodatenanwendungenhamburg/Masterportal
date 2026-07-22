@@ -911,7 +911,12 @@ export default {
         const menuSide = ["mainMenu", "secondaryMenu"].includes(state.openDrawMenuSide) ? state.openDrawMenuSide : "secondaryMenu",
             menuExpanded = "Menu/expanded";
 
-        dispatch("Menu/changeCurrentComponent", {type: "draw_old", side: menuSide, props: {name: i18next.t("common:modules.draw_old.name")}}, {root: true});
+        if (rootGetters.isModuleAvailable("draw")) {
+            dispatch("Menu/changeCurrentComponent", {type: "draw", side: menuSide, props: {name: i18next.t("common:modules.draw.name")}}, {root: true});
+        }
+        else if (!rootGetters.isModuleAvailable("draw_old")) {
+            dispatch("Menu/changeCurrentComponent", {type: "draw_old", side: menuSide, props: {name: i18next.t("common:modules.draw_old.name")}}, {root: true});
+        }
 
         if (!rootGetters[menuExpanded](menuSide)) {
             dispatch("Menu/toggleMenu", menuSide, {root: true});

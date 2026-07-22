@@ -1,10 +1,7 @@
 <script>
 import {markRaw, nextTick} from "vue";
-import {mapGetters, mapMutations} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 import VectorSource from "ol/source/Vector.js";
-import layerCollection from "@core/layers/js/layerCollection.js";
-import layerFactory from "@core/layers/js/layerFactory.js";
-import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 
 import DrawEdit from "@shared/modules/draw/components/DrawEdit.vue";
 import DrawLayout from "@shared/modules/draw/components/DrawLayout.vue";
@@ -86,46 +83,17 @@ export default {
         }
     },
     mounted () {
-        const drawLayerId = "importDrawLayer";
-        let existingLayer = layerCollection.getLayerById(drawLayerId);
-
-        if (!existingLayer) {
-            existingLayer = layerFactory.createLayer({
-                id: drawLayerId,
-                name: drawLayerId,
-                typ: "VECTORBASE",
-                type: "layer",
-                visibility: true,
-                showInLayerTree: true,
-                alwaysOnTop: true,
-                isDynamic: true
-            }, "2D");
-
-            if (existingLayer) {
-                existingLayer.layer.setZIndex(9999999);
-                layerCollection.addLayer(existingLayer);
-
-                this.$store.dispatch("addLayerToLayerConfig", {
-                    layerConfig: {
-                        id: drawLayerId,
-                        name: drawLayerId,
-                        typ: "VECTORBASE",
-                        type: "layer",
-                        visibility: true,
-                        showInLayerTree: true,
-                        isDynamic: true
-                    },
-                    parentKey: treeSubjectsKey
-                });
+        this.initializeDrawLayer().then((layer) => {
+            if (layer) {
+                this.layer = markRaw(layer.layer);
+                this.source = markRaw(this.layer.getSource());
             }
-        }
-
-        if (existingLayer) {
-            this.layer = markRaw(existingLayer.layer);
-            this.source = markRaw(this.layer.getSource());
-        }
+        });
     },
     methods: {
+        ...mapActions("Modules/Draw", [
+            "initializeDrawLayer"
+        ]),
         ...mapMutations("Modules/Draw", [
             "addDrawTypeSymbol",
             "incrementIdCounter",
@@ -151,6 +119,13 @@ export default {
                 this.$refs.drawLayout.focus();
             }
         },
+        /**
+         * Calculates the horizontal pixel offset of a triangle indicator relative to its container.
+         * @param {String} selectedDrawTypeMain The main draw type category (e.g. "geometries", "symbols", "pen", "writeText").
+         * @param {String} selectedDrawType The specific draw type (e.g. "line", "circle").
+         * @param {String} triangleId Which triangle to position — "first" or "second".
+         * @returns {Number} The horizontal offset in pixels, or 0 if the button cannot be resolved.
+         */
         getTrianglePosition (selectedDrawTypeMain, selectedDrawType, triangleId) {
             let buttonId;
 
