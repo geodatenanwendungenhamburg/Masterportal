@@ -22,7 +22,10 @@ import {HttpsProxyAgent} from "https-proxy-agent";
 
 const {vueAddons} = await collectAddons(),
     examplesOnly = process.env.EXAMPLES_ONLY === "true",
-    portalFolderName = process.env.PORTAL_FOLDER || "portal",
+    portalFolders = (process.env.PORTAL_FOLDERS || process.env.PORTAL_FOLDER || "portal")
+        .split(",")
+        .map(folder => folder.trim())
+        .filter(Boolean),
     rootPath = path.resolve(__dirname, "../"),
     httpsConfig = {
         cert: fs.existsSync("devtools/certificate/localhost.pem")
@@ -42,11 +45,16 @@ const {vueAddons} = await collectAddons(),
     slash = (p) => typeof p === "string" ? isWin ? p.replace(/\\/g, "/") : p : String(p || ""),
     FORCE_HTTPS = process.env.VITE_FORCE_HTTPS === "true";
 
-let portalEntries = glob.sync(`${portalFolderName}/**/index.html`, {cwd: rootPath}).map(file => {
-        const portalName = file.split("/").at(-2); // foldernames of portals
+let portalEntries = Object.entries(
+        portalFolders
+            .flatMap(folder => glob.sync(`${folder}/**/index.html`, {cwd: rootPath}))
+            .reduce((entries, file) => {
+                const portalName = file.split("/").at(-2); // foldernames of portals
 
-        return [`portal-${portalName}`, path.resolve(rootPath, file)];
-    }),
+                entries[`portal-${portalName}`] = path.resolve(rootPath, file);
+                return entries;
+            }, {})
+    ),
     examplesZipName = "",
     proxyConfig = {};
 const proxyServer = process.env.HTTPS_PROXY || process.env.HTTP_PROXY,
@@ -72,7 +80,7 @@ export default defineConfig(({mode}) => {
     console.log("runtimeBase:", runtimeBase);
     console.log("buildBase:", buildBase);
     if (isProd) {
-        console.log("portals folder ", portalFolderName);
+        console.log("portals folders", portalFolders);
         console.log("portalEntries", Object.fromEntries(portalEntries));
     }
 
@@ -155,16 +163,16 @@ export default defineConfig(({mode}) => {
             !examplesOnly && {
                 ...cp({
                     hook: "writeBundle",
-                    targets: [
+                    targets: portalFolders.flatMap(folder => [
                         {
-                            src: `./${portalFolderName}`,
+                            src: `./${folder}`,
                             dest: "dist",
                             copyOptions: {
                                 filter: (src) => !src.endsWith("/index.html")
                             }
                         },
-                        {src: `./dist/${portalFolderName}`, dest: "dist"}
-                    ]
+                        {src: `./dist/${folder}`, dest: "dist"}
+                    ])
                 }),
                 apply: "build"
             },
