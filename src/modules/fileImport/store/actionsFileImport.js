@@ -7,15 +7,13 @@ import Stroke from "ol/style/Stroke.js";
 import Icon from "ol/style/Icon.js";
 import CircleStyle from "ol/style/Circle.js";
 import Text from "ol/style/Text.js";
-import {createDrawStyle} from "../../draw_old/js/style/createDrawStyle.js";
+import {createDrawStyle} from "../../draw/js/createDrawStyle.js";
 import isObject from "@shared/js/utils/isObject.js";
 import {createEmpty as createEmptyExtent, extend} from "ol/extent.js";
 import {uniqueId} from "@shared/js/utils/uniqueId.js";
 import layerCollection from "@core/layers/js/layerCollection.js";
 import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 import {supportedFiletypes} from "../utils/supportedFiletypes.js";
-import {getIconUrl} from "@shared/js/utils/convertFeaturesToKml.js";
-import * as constants from "@modules/draw_old/store/constantsDraw.js";
 
 const defaultFont = "16px Arial",
     supportedFormats = {
@@ -116,25 +114,45 @@ function removeBadTags (rawSource) {
 }
 
 /**
- * Find all complete URLs with 'tools/draw/circle_' and check them. Incorrect urls are replaced by correct urls.
+ * Mapping of legacy color names used in circle SVG filenames to KML color strings (aabbggrr format).
+ * Used to preserve the original color when replacing colored circle SVGs with circle_white.svg.
+ */
+const legacyColorToKmlHex = {
+    blue: "ffb87e37",
+    black: "ff000000",
+    green: "ff4aaf4d",
+    grey: "ff999999",
+    orange: "ff007fff",
+    red: "ff1c1ae4",
+    yellow: "ff33ffff"
+};
+
+/**
+ * Find all complete URLs with 'tools/draw/circle_' and check them.
+ * Replaces colored circle SVG URLs with circle_white.svg and injects a KML color tag
+ * into the IconStyle to preserve the original color.
  * @param {string} rawSource - KML source as string.
- * @returns {string} KML source with correct urls to symnbols.
+ * @returns {string} KML source with corrected circle URLs and color tags.
  */
 function checkAndReplaceSymbolUrls (rawSource) {
     let result = rawSource;
     const urlMatches = result.match(/<href>([^<]*tools\/draw\/circle_[^<]*)<\/href>/g);
 
     if (urlMatches) {
+        const whiteCircleUrl = `${window.location.origin}${MASTERPORTAL_ASSETS_PATH}/tools/draw/circle_white.svg`;
+
         urlMatches.forEach((match) => {
-            const url = match.replace(/<\/?href>/g, "");
+            const url = match.replace(/<\/?href>/g, ""),
+                colorMatch = url.match(/circle_([^.]+)\.svg/),
+                colorName = colorMatch ? colorMatch[1] : null,
+                kmlColor = colorName && colorName !== "white" ? legacyColorToKmlHex[colorName] : null,
+                iconTag = `<Icon><href>${url}</href></Icon>`,
+                colorTag = kmlColor ? `<color>${kmlColor}</color>` : "",
+                replacement = `${colorTag}<Icon><href>${whiteCircleUrl}</href></Icon>`;
 
             if (!url.includes(MASTERPORTAL_ASSETS_PATH) || !url.includes(window.location.origin)) {
-                const color = url.match(/circle_([^.]+)\.svg/)[1],
-                    value = constants.colorOptions.find(entry => entry.color === color)?.value,
-                    correctedUrl = getIconUrl(value);
-
-                result = result.replace(url, correctedUrl);
-                console.warn("replaced wrong symbol url during import", url, " -> ", correctedUrl);
+                result = result.replace(iconTag, replacement);
+                console.warn("replaced legacy symbol url during import", url, " -> ", whiteCircleUrl);
             }
         });
     }
