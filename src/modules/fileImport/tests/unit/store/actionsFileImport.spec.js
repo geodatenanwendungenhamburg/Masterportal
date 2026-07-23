@@ -620,21 +620,24 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
             const url = "https://geoportal-hamburg.de/src/assets/img/tools/draw/circle_red.svg",
                 rawSource = `<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/kml/2.2 https://developers.google.com/kml/schema/kml22gx.xsd"> <Placemark> <Style> <IconStyle> <scale>0.5</scale> <Icon> <href>${url}</href> </Icon> </IconStyle> </Style> <ExtendedData> <Data name="attributes"/> <Data name="drawState"/> <Data name="fromDrawTool"> <value>true</value> </Data> <Data name="invisibleStyle"/> <Data name="isOuterCircle"> <value>false</value> </Data> <Data name="isVisible"> <value>true</value> </Data> <Data name="masterportal_attributes"/> <Data name="styleId"> <value>1</value> </Data> </ExtendedData> <Point> <coordinates>10.00528192286842,53.56293203636361</coordinates> </Point> </Placemark> </kml>`,
                 result = checkAndReplaceSymbolUrls(rawSource),
-                expectedUrl = `${window.location.origin}${MASTERPORTAL_ASSETS_PATH}/tools/draw/circle_red.svg`;
+                expectedUrl = `${window.location.origin}${MASTERPORTAL_ASSETS_PATH}/tools/draw/circle_white.svg`;
 
             expect(result.includes(expectedUrl)).to.be.true;
+            expect(result.includes("<color>ff1c1ae4</color>")).to.be.true;
             expect(warn.calledOnce).to.be.true;
         });
 
         it("check and replace build assets path", () => {
             assetsPath = "/mastercode/1.2.3/img";
+            global.MASTERPORTAL_ASSETS_PATH = assetsPath;
 
             const url = "https://localhost:9001/src/assets/img/tools/draw/circle_red.svg",
                 rawSource = `<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/kml/2.2 https://developers.google.com/kml/schema/kml22gx.xsd"> <Placemark> <Style> <IconStyle> <scale>0.5</scale> <Icon> <href>${url}</href> </Icon> </IconStyle> </Style> <ExtendedData> <Data name="attributes"/> <Data name="drawState"/> <Data name="fromDrawTool"> <value>true</value> </Data> <Data name="invisibleStyle"/> <Data name="isOuterCircle"> <value>false</value> </Data> <Data name="isVisible"> <value>true</value> </Data> <Data name="masterportal_attributes"/> <Data name="styleId"> <value>1</value> </Data> </ExtendedData> <Point> <coordinates>10.00528192286842,53.56293203636361</coordinates> </Point> </Placemark> </kml>`,
                 result = checkAndReplaceSymbolUrls(rawSource),
-                expectedUrl = `${window.location.origin}${MASTERPORTAL_ASSETS_PATH}/tools/draw/circle_red.svg`;
+                expectedUrl = `${window.location.origin}${MASTERPORTAL_ASSETS_PATH}/tools/draw/circle_white.svg`;
 
             expect(result.includes(expectedUrl)).to.be.true;
+            expect(result.includes("<color>ff1c1ae4</color>")).to.be.true;
             expect(warn.calledOnce).to.be.true;
         });
     });

@@ -146,12 +146,12 @@ function checkAndReplaceSymbolUrls (rawSource) {
                 colorMatch = url.match(/circle_([^.]+)\.svg/),
                 colorName = colorMatch ? colorMatch[1] : null,
                 kmlColor = colorName && colorName !== "white" ? legacyColorToKmlHex[colorName] : null,
-                iconTag = `<Icon><href>${url}</href></Icon>`,
+                iconTagPattern = new RegExp("<Icon>\\s*<href>" + url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "</href>\\s*</Icon>"),
                 colorTag = kmlColor ? `<color>${kmlColor}</color>` : "",
                 replacement = `${colorTag}<Icon><href>${whiteCircleUrl}</href></Icon>`;
 
             if (!url.includes(MASTERPORTAL_ASSETS_PATH) || !url.includes(window.location.origin)) {
-                result = result.replace(iconTag, replacement);
+                result = result.replace(iconTagPattern, replacement);
                 console.warn("replaced legacy symbol url during import", url, " -> ", whiteCircleUrl);
             }
         });

@@ -43,7 +43,9 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                         namespaced: true,
                         Draw: {
                             namespaced: true,
-                            actions: {},
+                            actions: {
+                                initializeDrawLayer: sinon.stub().resolves(null)
+                            },
                             getters: {
                                 buttonsDisabled: () => false,
                                 circleOptions: () => {
