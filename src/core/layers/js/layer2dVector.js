@@ -206,8 +206,8 @@ Layer2dVector.prototype.initStyle = async function (attrs) {
  * @returns {void}
  */
 Layer2dVector.prototype.createStyle = async function (attrs) {
-    const styleId = attrs.styleId;
-    const styleObject = styleList.returnStyleObject(styleId) ?? await styleList.initStyleAndAddToList(Config, styleId);
+    const styleId = attrs.styleId,
+        styleObject = styleList.returnStyleObject(styleId) ?? await styleList.initStyleAndAddToList(Config, styleId);
 
     if (styleObject !== undefined) {
         /**
