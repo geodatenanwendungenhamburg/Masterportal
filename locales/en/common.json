@@ -291,7 +291,12 @@
     },
     "draw": {
       "description": "Create important markers or mark areas",
-      "name": "Drawing / Writing"
+      "name": "Drawing / Writing",
+      "drawSettings": {
+        "radius": "Radius",
+        "area": "Area",
+        "length": "Length"
+      }
     },
     "draw_old": {
       "attributeSelect": {

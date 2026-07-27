@@ -63,7 +63,7 @@ export default {
             ref="input"
             type="checkbox"
             role="switch"
-            aria-checked="mixed"
+            :aria-checked="checked"
             :aria-label="aria"
             class="form-check-input"
             :disabled="disabled"

@@ -123,7 +123,7 @@ export default {
          * @returns {void}
          */
         async startDownload () {
-            if (!this.exportFormat || this.hasUnsupportedPolygonsForGPX) {
+            if (!this.exportFormat || this.hasUnsupportedPolygonsForGPX || this.exportFormat === "none" || this.fileName.length === 0) {
                 return;
             }
 
@@ -271,7 +271,7 @@ export default {
                         :text="$t(exportButtonText)"
                         :icon="'bi-save'"
                         :class="{disabled: fileName.length === 0 || exportFormat === null || hasUnsupportedPolygonsForGPX || exportFormat === 'none'}"
-                        role="button"
+                        :disabled="fileName.length === 0 || exportFormat === null || hasUnsupportedPolygonsForGPX || exportFormat === 'none'"
                     />
                 </div>
             </div>

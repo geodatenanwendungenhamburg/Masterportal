@@ -76,7 +76,7 @@ function updateModifyTooltip (feature, tooltipElement, tooltipOverlay) {
             formattedRadius = radius.toLocaleString("de-DE"),
             center = geometry.getCenter();
 
-        tooltipElement.innerHTML = `Radius: ${formattedRadius}m`;
+        tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawSettings.radius")}: ${formattedRadius}m`;
         tooltipOverlay.setPosition(center);
     }
     else if (type === "Polygon" || type === "MultiPolygon") {
@@ -85,7 +85,7 @@ function updateModifyTooltip (feature, tooltipElement, tooltipOverlay) {
             formattedArea = area.toLocaleString("de-DE"),
             lastCoord = coords[coords.length - 1];
 
-        tooltipElement.innerHTML = `Fläche: ${formattedArea}m²`;
+        tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawSettings.area")}: ${formattedArea}m²`;
         tooltipOverlay.setPosition(lastCoord);
     }
     else if (type === "LineString" || type === "MultiLineString") {
@@ -94,7 +94,7 @@ function updateModifyTooltip (feature, tooltipElement, tooltipOverlay) {
             coords = geometry.getCoordinates(),
             lastCoord = coords[coords.length - 1];
 
-        tooltipElement.innerHTML = `Länge: ${formattedLength}m`;
+        tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawSettings.length")}: ${formattedLength}m`;
         tooltipOverlay.setPosition(lastCoord);
     }
     else {

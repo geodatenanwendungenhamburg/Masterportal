@@ -291,7 +291,12 @@
     },
     "draw": {
       "description": "Erstellen Sie wichtige Markierungen oder kennzeichnen Sie Flächen",
-      "name": "Zeichnen / Schreiben"
+      "name": "Zeichnen / Schreiben",
+      "drawSettings": {
+        "radius": "Radius",
+        "area": "Fläche",
+        "length": "Länge"
+      }
     },
     "draw_old": {
       "attributeSelect": {

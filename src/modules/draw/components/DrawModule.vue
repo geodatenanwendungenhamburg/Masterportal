@@ -2,6 +2,7 @@
 import {markRaw, nextTick} from "vue";
 import {mapActions, mapGetters, mapMutations} from "vuex";
 import VectorSource from "ol/source/Vector.js";
+import layerCollection from "@core/layers/js/layerCollection.js";
 
 import DrawEdit from "@shared/modules/draw/components/DrawEdit.vue";
 import DrawLayout from "@shared/modules/draw/components/DrawLayout.vue";
@@ -83,12 +84,14 @@ export default {
         }
     },
     mounted () {
-        this.initializeDrawLayer().then((layer) => {
-            if (layer) {
-                this.layer = markRaw(layer.layer);
-                this.source = markRaw(this.layer.getSource());
-            }
-        });
+        this.initializeDrawLayer();
+
+        const existingLayer = layerCollection.getLayerById("importDrawLayer");
+
+        if (existingLayer) {
+            this.layer = markRaw(existingLayer.layer);
+            this.source = markRaw(this.layer.getSource());
+        }
     },
     methods: {
         ...mapActions("Modules/Draw", [
