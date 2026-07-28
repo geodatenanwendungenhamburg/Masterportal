@@ -3,6 +3,8 @@ import {Vector as VectorLayer} from "ol/layer.js";
 import {GeoJSON} from "ol/format.js";
 import Feature from "ol/Feature.js";
 import {BufferOp} from "jsts/org/locationtech/jts/operation/buffer";
+import RelateOp from "jsts/org/locationtech/jts/operation/relate/RelateOp.js";
+import OverlayOp from "jsts/org/locationtech/jts/operation/overlay/OverlayOp.js";
 import {ResultType} from "./enums.js";
 import * as setters from "./settersBufferAnalysis.js";
 import * as initializers from "./initializersBufferAnalysis.js";
@@ -129,7 +131,7 @@ const actions = {
                         return true;
                     }
 
-                    if (sourcePoly?.intersects(targetPoly) && !sameFeature) {
+                    if (sourcePoly && targetPoly && RelateOp.intersects(sourcePoly, targetPoly) && !sameFeature) {
                         dispatch("generateIntersectionPolygon", {
                             properties: targetFeature.getProperties(),
                             sourcePoly,
@@ -161,7 +163,7 @@ const actions = {
      * @returns {void}
      */
     generateIntersectionPolygon ({commit, getters: {resultType}}, {sourcePoly, targetPoly, properties = {}}) {
-        const subsetPoly = resultType === ResultType.WITHIN ? sourcePoly.intersection(targetPoly) : targetPoly.difference(sourcePoly);
+        const subsetPoly = resultType === ResultType.WITHIN ? OverlayOp.intersection(sourcePoly, targetPoly) : OverlayOp.difference(targetPoly, sourcePoly);
 
         subsetPoly.properties = properties;
         commit("addIntersectionPolygon", subsetPoly);
@@ -180,7 +182,7 @@ const actions = {
                 const sourceGeometry = buffer.getGeometry(),
                     sourcePoly = jstsParser.read(sourceGeometry);
 
-                if (sourcePoly.intersects(intersection)) {
+                if (RelateOp.intersects(sourcePoly, intersection)) {
                     dispatch("generateIntersectionPolygon", {properties: intersection.properties, sourcePoly, targetPoly: intersection});
                 }
             });
