@@ -63,21 +63,30 @@ const actions = {
         dispatch("Maps/addLayer", bufferLayer, {root: true});
     },
     /**
+     * Removes a layer from the map based on its OpenLayers unique ID (ol_uid)
+     * @param {import("ol/layer/Layer").default} layer - layer to be removed
+     */
+    removeGeneratedLayer ({rootState}, layer) {
+        mapCollection.getMap(rootState.Maps.mode).getLayers().forEach(l => {
+            if (l?.ol_uid === layer.ol_uid) {
+                mapCollection.getMap(rootState.Maps.mode).removeLayer(l);
+            }
+        });
+    },
+    /**
      * Removes generated result layer and buffer layer
      * Also unsets the intersections and result features arrays
      *
      * @return {void}
      */
-    removeGeneratedLayers ({commit, rootState, getters: {bufferLayer}}) {
-
-        commit("setResultLayer", {});
+    removeGeneratedLayers ({commit, dispatch, getters: {bufferLayer, resultLayer}}) {
         if (bufferLayer?.ol_uid) {
-            mapCollection.getMap(rootState.Maps.mode).getLayers().forEach(layer => {
-                if (layer?.ol_uid === bufferLayer.ol_uid) {
-                    mapCollection.getMap(rootState.Maps.mode).removeLayer(layer);
-                }
-            });
+            dispatch("removeGeneratedLayer", bufferLayer);
         }
+        if (resultLayer?.ol_uid) {
+            dispatch("removeGeneratedLayer", resultLayer);
+        }
+        commit("setResultLayer", {});
         commit("setBufferLayer", {});
         commit("setIntersections", []);
         commit("setResultFeatures", []);
