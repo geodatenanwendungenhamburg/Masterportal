@@ -110,6 +110,7 @@
 - Issue \#1632: Filter: Fix setting filter rules from URL Parameters.
 - Issue \#1634: url parameter `highlightFeaturesByAttributes` can now handle MultiPoint, MultiPolygon and MultiLineString features.
 - Issue \#1635: AddWMS: Fixed visibility and showInLayerTree to correctly control imported layer visibility and tree placement. Newly imported external layers now receive proper zIndex assignment when visibility or showInLayerTree is enabled.
+- Issue \#1636: BufferAnalysis: Fix error and remove result layer with reset.
 - Issue \#1638: FolderCheckBox: Folder checkbox selection (isFolderSelectable) now adds layers in the same order as "add all".
 - Issue \#1641 : PortalFooter: if `alias_mobile` is not set at `urls` entry, link is not shown on mobile devices.
 - Control: Fixed a layout issue with the control module.
