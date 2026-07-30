@@ -64,7 +64,7 @@ const actions = {
     },
     /**
      * Removes a layer from the map based on its OpenLayers unique ID (ol_uid)
-     * @param {import("ol/layer/Layer").default} layer - layer to be removed
+     * @param {module:ol/layer/Vector} layer The layer to be removed.
      */
     removeGeneratedLayer ({rootState}, layer) {
         mapCollection.getMap(rootState.Maps.mode).getLayers().forEach(l => {
