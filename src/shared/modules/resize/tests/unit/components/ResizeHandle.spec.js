@@ -111,11 +111,11 @@ describe("src/shared/modules/resize/components/ResizeHandle.vue", () => {
             expect(startResizingSpy.notCalled).to.be.true;
         });
 
-        it("onMouseMove snaps delta to grid and emits resizing", () => {
-            mountComponent({grid: 10});
+        it("onMouseMove calculates delta and emits resizing", () => {
+            mountComponent({handlePosition: "right"});
 
             wrapper.vm.initialCursorPosition = {x: 0, y: 0};
-            wrapper.vm.initialRotation = 0;
+            wrapper.vm.initialDimensions.width = 100;
 
             wrapper.vm.onMouseMove({
                 clientX: 23,
@@ -123,12 +123,29 @@ describe("src/shared/modules/resize/components/ResizeHandle.vue", () => {
                 buttons: 1
             });
 
-            expect(wrapper.vm.deltaCursorPosition.x).to.equal(20);
-            expect(wrapper.vm.deltaCursorPosition.y).to.equal(30);
+            expect(wrapper.vm.deltaCursorPosition.x).to.equal(23);
+            expect(wrapper.vm.deltaCursorPosition.y).to.equal(27);
             expect(setMainMenuWidthSpy.calledOnce).to.be.true;
             expect(wrapper.emitted("resizing")).to.have.lengthOf(1);
-            expect(wrapper.emitted("resizing")[0][0].deltaCursorPosition.x).to.equal(20);
-            expect(wrapper.emitted("resizing")[0][0].deltaCursorPosition.y).to.equal(30);
+            expect(wrapper.emitted("resizing")[0][0].deltaCursorPosition.x).to.equal(23);
+            expect(wrapper.emitted("resizing")[0][0].deltaCursorPosition.y).to.equal(27);
+        });
+
+        it("onMouseMove emits 'leftScreen' event when cursor leaves window", () => {
+            mountComponent();
+
+            wrapper.vm.initialCursorPosition = {x: 0, y: 0};
+            wrapper.vm.initialDimensions.width = 100;
+            wrapper.vm.isResizing = true;
+
+            wrapper.vm.onMouseMove({
+                clientX: -10,
+                clientY: 50,
+                buttons: 1
+            });
+
+            expect(wrapper.emitted("leftScreen")).to.have.lengthOf(1);
+            expect(wrapper.vm.isResizing).to.be.false;
         });
 
         it("onMouseMove stops resizing when mouse buttons are no longer pressed", () => {
@@ -288,24 +305,14 @@ describe("src/shared/modules/resize/components/ResizeHandle.vue", () => {
         });
 
         describe("cursorClass", () => {
-            it("should return 'nesw-resize' for 'bottomLeft' handle position", () => {
-                wrapper = mountComponent({handlePosition: "bottomLeft"});
-                expect(wrapper.vm.cursorClass).to.equal("nesw-resize");
-            });
-
             it("should return 'ew-resize' for 'right' handle position", () => {
                 wrapper = mountComponent({handlePosition: "right"});
-                expect(wrapper.vm.cursorClass).to.equal("ew-resize");
+                expect(wrapper.vm.eventData.cursorClass).to.equal("ew-resize");
             });
 
-            it("should return 'ns-resize' for 'top' handle position", () => {
-                wrapper = mountComponent({handlePosition: "top"});
-                expect(wrapper.vm.cursorClass).to.equal("ns-resize");
-            });
-
-            it("should return 'nwse-resize' for 'topLeft' handle position", () => {
-                wrapper = mountComponent({handlePosition: "topLeft"});
-                expect(wrapper.vm.cursorClass).to.equal("nwse-resize");
+            it("should return 'ew-resize' for 'left' handle position", () => {
+                wrapper = mountComponent({handlePosition: "left"});
+                expect(wrapper.vm.eventData.cursorClass).to.equal("ew-resize");
             });
         });
 
@@ -445,28 +452,14 @@ describe("src/shared/modules/resize/components/ResizeHandle.vue", () => {
             it("should save the element's current dimensions to initialDimensions", () => {
                 wrapper = mountComponent();
                 Object.defineProperty(wrapper.vm.handleElement, "offsetWidth", {value: 400, configurable: true});
-                Object.defineProperty(wrapper.vm.handleElement, "offsetHeight", {value: 250, configurable: true});
                 wrapper.vm.saveInitialDimensions();
                 expect(wrapper.vm.initialDimensions.width).to.equal(400);
-                expect(wrapper.vm.initialDimensions.height).to.equal(250);
             });
 
-            it("should use minWidth/minHeight when the element is smaller than the minimum", () => {
-                wrapper = mountComponent({minWidth: 0.3, minHeight: 0.2});
+            it("should use minWidth when the element is smaller than the minimum", () => {
+                wrapper = mountComponent({minWidth: 0.3});
                 wrapper.vm.saveInitialDimensions();
                 expect(wrapper.vm.initialDimensions.width).to.equal(0.3);
-                expect(wrapper.vm.initialDimensions.height).to.equal(0.2);
-            });
-        });
-
-        describe("saveInitialPosition", () => {
-            it("should save the element's offset position to initialPosition", () => {
-                wrapper = mountComponent();
-                Object.defineProperty(wrapper.vm.handleElement, "offsetLeft", {value: 60, configurable: true});
-                Object.defineProperty(wrapper.vm.handleElement, "offsetTop", {value: 90, configurable: true});
-                wrapper.vm.saveInitialPosition();
-                expect(wrapper.vm.initialPosition.left).to.equal(60);
-                expect(wrapper.vm.initialPosition.top).to.equal(90);
             });
         });
 
@@ -479,27 +472,22 @@ describe("src/shared/modules/resize/components/ResizeHandle.vue", () => {
                     return {offsetWidth: 100};
                 });
             });
-
-            it("should call clampAndApplyWidth for non-top/bottom handle positions", () => {
+            it("should calculate width correctly for 'right' handle position (initial + 1 * deltaX)", () => {
                 wrapper = mountComponent({handlePosition: "right"});
                 setMainMenuWidthSpy.resetHistory();
                 wrapper.vm.initialDimensions.width = 300;
+                wrapper.vm.deltaCursorPosition.x = 50;
                 wrapper.vm.setNewSize();
-                expect(setMainMenuWidthSpy.calledWith(300)).to.be.true;
+                expect(setMainMenuWidthSpy.calledWith(350)).to.be.true;
             });
 
-            it("should call clampAndApplyHeight for 'top' handle position", () => {
-                wrapper = mountComponent({handlePosition: "top"});
-                wrapper.vm.initialDimensions.height = 500;
+            it("should calculate width correctly for 'left' handle position (initial + -1 * deltaX)", () => {
+                wrapper = mountComponent({handlePosition: "left"});
+                setMainMenuWidthSpy.resetHistory();
+                wrapper.vm.initialDimensions.width = 300;
+                wrapper.vm.deltaCursorPosition.x = 50;
                 wrapper.vm.setNewSize();
-                expect(wrapper.vm.handleElement.style.height).to.equal("500px");
-            });
-
-            it("should call clampAndApplyHeight for 'bottom' handle position", () => {
-                wrapper = mountComponent({handlePosition: "bottom"});
-                wrapper.vm.initialDimensions.height = 400;
-                wrapper.vm.setNewSize();
-                expect(wrapper.vm.handleElement.style.height).to.equal("400px");
+                expect(setMainMenuWidthSpy.calledWith(250)).to.be.true;
             });
         });
 
@@ -531,6 +519,15 @@ describe("src/shared/modules/resize/components/ResizeHandle.vue", () => {
 
                 wrapper.vm.startResizing(mockEvent);
                 expect(mockEvent.preventDefault.calledOnce).to.be.true;
+            });
+
+            it("should call saveInitialDimensions", () => {
+                wrapper = mountComponent();
+                const saveInitialDimensionsSpy = sinon.spy(wrapper.vm, "saveInitialDimensions");
+
+                wrapper.vm.startResizing({preventDefault: sinon.stub(), clientX: 100, clientY: 200});
+
+                expect(saveInitialDimensionsSpy.calledOnce).to.be.true;
             });
         });
     });

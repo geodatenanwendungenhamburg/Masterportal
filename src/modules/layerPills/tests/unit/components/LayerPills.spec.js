@@ -73,10 +73,10 @@ describe("src/modules/LayerPills.vue", () => {
         setVisibleSubjectDataLayersSpy = sinon.spy();
         startLayerInformationSpy = sinon.spy();
         visibleLayers = [
-            {id: 0, name: "layer1", typ: "WMS"},
-            {id: 1, name: "layer2", typ: "WMS"},
-            {id: 2, name: "layer3", typ: "WFS"},
-            {id: 3, name: "layer4", typ: "WFS"}
+            {id: 0, name: "layer1", typ: "WMS", showInLayerTree: true},
+            {id: 1, name: "layer2", typ: "WMS", showInLayerTree: true},
+            {id: 2, name: "layer3", typ: "WFS", showInLayerTree: true},
+            {id: 3, name: "layer4", typ: "WFS", showInLayerTree: true}
         ];
         store = createStore({
             namespaced: true,
@@ -238,8 +238,14 @@ describe("src/modules/LayerPills.vue", () => {
             wrapper = createWrapper();
 
             expect(setVisibleSubjectDataLayersSpy.calledOnce).to.be.true;
-            expect(setVisibleSubjectDataLayersSpy.firstCall.args[1]).to.deep.equal(visibleLayers);
+            expect(setVisibleSubjectDataLayersSpy.firstCall.args[1]).to.deep.equal([
+                {id: 0, name: "layer1", typ: "WMS", showInLayerTree: true},
+                {id: 1, name: "layer2", typ: "WMS", showInLayerTree: true},
+                {id: 2, name: "layer3", typ: "WFS", showInLayerTree: true},
+                {id: 3, name: "layer4", typ: "WFS", showInLayerTree: true}
+            ]);
         });
+
         it("setVisibleLayers only sets 2D layers if 2D mode is selected", () => {
             const visibleLayers3D2D = [
                 {id: 0, name: "layer1", typ: "ENTITIES3D"},
@@ -273,6 +279,23 @@ describe("src/modules/LayerPills.vue", () => {
                 {id: 1, name: "layer2", isNeverVisibleInTree: false},
                 {id: 3, name: "layer4", isNeverVisibleInTree: false}]
             );
+        });
+
+        it("setVisibleLayers excludes showInLayerTree false layers from pills", () => {
+            visibleLayers = [
+                {id: 0, name: "layer1", typ: "WMS", showInLayerTree: true},
+                {id: 1, name: "layer2", typ: "WMS"},
+                {id: 2, name: "layer3", typ: "WFS", showInLayerTree: false},
+                {id: 3, name: "layer4", typ: "WFS", showInLayerTree: true}
+            ];
+
+            wrapper = createWrapper();
+
+            expect(setVisibleSubjectDataLayersSpy.firstCall.args[1]).to.deep.equal([
+                {id: 0, name: "layer1", typ: "WMS", showInLayerTree: true},
+                {id: 1, name: "layer2", typ: "WMS"},
+                {id: 3, name: "layer4", typ: "WFS", showInLayerTree: true}
+            ]);
         });
 
         it("removeLayerFromVisibleLayers shall call replaceByIdInLayerConfig", () => {
@@ -434,14 +457,12 @@ describe("src/modules/LayerPills.vue", () => {
 
             expect(setVisibleLayersSpy.calledTwice).to.be.true;
 
-            initialSorted = wrapper.vm.layerTreeSortedLayerConfigs().filter(
-                l => wrapper.vm.visibleSubjectDataLayerConfigs.some(n => n.id === l.id)
-            );
+            initialSorted = wrapper.vm.sortedVisibleLayerPills;
 
             expect(setVisibleLayersSpy.firstCall.args[0]).to.deep.equal(initialSorted);
             expect(setVisibleLayersSpy.firstCall.args[1]).to.equal("2D");
 
-            expectedLayers = wrapper.vm.layerTreeSortedLayerConfigs();
+            expectedLayers = wrapper.vm.sortedVisibleLayerPills;
 
             expect(setVisibleLayersSpy.secondCall.args[0]).to.deep.equal(expectedLayers);
             expect(setVisibleLayersSpy.secondCall.args[1]).to.equal("2D");
@@ -458,10 +479,8 @@ describe("src/modules/LayerPills.vue", () => {
 
             wrapper.vm.$options.watch.visibleSubjectDataLayerConfigs.handler.call(wrapper.vm, newValue);
 
-            initialSorted = wrapper.vm.layerTreeSortedLayerConfigs().filter(
-                l => wrapper.vm.visibleSubjectDataLayerConfigs.some(n => n.id === l.id)
-            );
-            expectedLayers = wrapper.vm.layerTreeSortedLayerConfigs();
+            initialSorted = wrapper.vm.sortedVisibleLayerPills;
+            expectedLayers = wrapper.vm.sortedVisibleLayerPills;
 
             expect(setVisibleLayersSpy.calledTwice).to.be.true;
             expect(setVisibleLayersSpy.firstCall.args[0]).to.deep.equal(initialSorted);
@@ -483,7 +502,7 @@ describe("src/modules/LayerPills.vue", () => {
             wrapper.vm.$options.watch.mode.call(wrapper.vm, "3D");
             // called once on mounted and once on watcher call
             expect(setVisibleLayersSpy.calledTwice).to.be.true;
-            expect(setVisibleLayersSpy.secondCall.args[0]).to.be.deep.equals(visibleSubjectDataLayerConfigs);
+            expect(setVisibleLayersSpy.secondCall.args[0]).to.be.deep.equals(wrapper.vm.sortedVisibleLayerPills);
             expect(setVisibleLayersSpy.secondCall.args[1]).to.be.equals("3D");
         });
 

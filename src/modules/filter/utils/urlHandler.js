@@ -24,6 +24,86 @@ export default class UrlHandler {
         });
         return params;
     }
+
+    /**
+     * Parses a JSON string if possible.
+     * @param {*} value The value to parse.
+     * @param {string} warningMessage The warning to log on parse failure.
+     * @param {*} fallback The fallback value to return on parse failure.
+     * @returns {*|undefined} The parsed value, fallback, or undefined if value is not a string.
+     */
+    parseJsonString (value, warningMessage, fallback = undefined) {
+        if (typeof value !== "string") {
+            return undefined;
+        }
+
+        try {
+            return JSON.parse(value);
+        }
+        catch (error) {
+            console.warn(warningMessage, error);
+            return fallback;
+        }
+    }
+
+    /**
+     * Gets filter url params from app store url params.
+     * @param {Object} appStoreUrlParams The url params from app store.
+     * @param {string} filterKey The filter query param key.
+     * @returns {Object|Object[]} Parsed filter params or an empty object.
+     */
+    getFilterUrlParamsFromAppStore (appStoreUrlParams, filterKey = "FILTER") {
+        const filterUrlParams = this.parseJsonString(
+            appStoreUrlParams?.[filterKey],
+            `Cannot parse ${filterKey} url params`
+        );
+
+        if (typeof filterUrlParams !== "undefined") {
+            return filterUrlParams;
+        }
+
+        const menuParams = this.parseJsonString(
+            appStoreUrlParams?.MENU || "{}",
+            "Cannot parse MENU url params",
+            {}
+        );
+
+        return Object.values(menuParams)
+            .find(value => value?.currentComponent === "filter")
+            ?.attributes || {};
+    }
+    /**
+     * Checks if the given values represent a new filter URL state.
+     * @param {*} values The values to check.
+     * @returns {boolean} True if the values represent a new filter URL state, false otherwise.
+     */
+    isNewFilterUrlState (values) {
+        return isObject(values)
+            && Object.prototype.hasOwnProperty.call(values, "rulesOfFilters");
+    }
+
+    /**
+     * Builds current filter url.
+     * @param {string} currentHref The current browser href.
+     * @param {string} menuSide The active menu side.
+     * @param {string} filterKey The filter query param key.
+     * @param {string} urlParams The serialized filter params.
+     * @returns {URL} The updated URL.
+     */
+    createFilterUrl (currentHref, menuSide, filterKey, urlParams) {
+        const url = new URL(currentHref),
+            menuSection = menuSide === "mainMenu" ? "main" : "secondary";
+
+        url.searchParams.set("MENU", JSON.stringify({
+            [menuSection]: {
+                currentComponent: "filter"
+            }
+        }));
+        url.searchParams.set(filterKey, urlParams);
+
+        return url;
+    }
+
     /**
      * Reads the given params.
      * @param {String|Object} params The params to read.
@@ -43,7 +123,7 @@ export default class UrlHandler {
                 return;
             }
         }
-        if (isObject(values) && Object.prototype.hasOwnProperty.call(values, "rulesOfFilters")) {
+        if (this.isNewFilterUrlState(values)) {
             if (typeof onsuccess === "function") {
                 onsuccess(values);
             }

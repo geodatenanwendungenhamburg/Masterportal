@@ -72,13 +72,13 @@ export default {
     </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 
     #modules-scales {
         display: none;
 
-        @include media-breakpoint-up(sm)  {
+        @media (min-width: 320px){
             display: inline-block;
             text-align: center;
 
@@ -86,7 +86,6 @@ export default {
                 border-bottom: 1px solid;
                 border-left: 1px solid;
                 border-right: 1px solid;
-                // width: 3cm;
             }
         }
     }

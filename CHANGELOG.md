@@ -8,6 +8,7 @@
 ### __Breaking Changes__
 
 ### Added
+- Issue\#1604 Modules/Controls/Orientation: new parameter `showDirection` and `showAccuracy` configuration enable to display user orientation when they are moving and accuracy of location.
 - package.json: Added `npm run buildJsDoc` to script `prePushHook`.
 - JSDoc: Added a theme for jsdoc to make it more usable. Features include: better design, a searchbar, dark mode, a logo, links to bitbucket.
 - The following packages have been added:
@@ -28,7 +29,11 @@
         - @masterportal/masterportalapi: 2.62.0 to 2.63.0
     - devDependencies:
         - vite: 8.0.14 to 8.1.4
-- Tests: Tests now fail on vue warnings.
+- Tests: 
+    - Tests now fail on vue warnings.
+    - Excluded barchart and piechart tests due to issues with the prePushHook.
+- ResizeHandle: Simplified component by removing multi-directional resize infrastructure to support menu width resizing only (left/right positions).
+- Issue \#1641 : PortalFooter: The scaleline is displayed on mobile devices with a screen width of 320px or more.
 
 ### Deprecated
 
@@ -39,11 +44,20 @@
 - Issue \#1626: Added fallback to OpenLayers default style for vector layers when styleId is missing or not found.
 - Issue \#1627: Module openConfig updates menu.
 - Issue \#1630: Fixed parseMissingKeyHandler misinterpreting decimal numbers as time values (e.g. "0.58 m" became "0:58 m"). The time format replacement now requires two-digit hours only.
+- Issue \#1632: Filter: Fix setting filter rules from URL Parameters.
+- Issue \#1634: url parameter `highlightFeaturesByAttributes` can now handle MultiPoint, MultiPolygon and MultiLineString features.
+- Issue \#1638: FolderCheckBox: Folder checkbox selection (isFolderSelectable) now adds layers in the same order as "add all".
+- Issue \#1641 : PortalFooter: if `alias_mobile` is not set at `urls` entry, link is not shown on mobile devices.
+- Control: Fixed a layout issue with the control module.
 - FeatureLister/NavTab: Disabled tabs are now non-interactive, and native nav-link tab markup is prevented by lint rules in favor of the shared NavTab component.
 - Filter: A bug has been fixed that prevented the geometry filter from working with multipolygons.
 - Menu: Fixed a bug on mobile, where the close button disappeared behind input fields.
 - WMSTime: Fixed deleting WMS-Time layers in compare mode, which kept the remaining layer, LayerSwiper und TimeSlider in a broken state.
-- LayerPills: Fixed a bug that showed "show more" button on certain zoom sizes and refactored how LayerPills width is calculated.
+- LayerPills:
+    - Fixed a bug that showed "show more" button on certain zoom sizes and refactored how LayerPills width is calculated.
+    - Layers with showInLayerTree set to false are now consistently hidden from LayerPills.
+- OAF-Layer: Fixed legend entries being incomplete or changing on zoom. The legend now shows all style-rule-defined entries regardless of the currently loaded features in the map view.
+- Print: Grouped baselayers are no longer printed on top of other layers.
 
 ---
 

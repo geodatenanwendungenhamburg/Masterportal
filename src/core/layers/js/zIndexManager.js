@@ -1,6 +1,8 @@
 import {sortObjects} from "@shared/js/utils/sortObjects.js";
 import {treeBaselayersKey, treeSubjectsKey, treeOrder} from "@shared/js/utils/constants.js";
 
+const alwaysOnTop = 9999999;
+
 /**
  * Returns true if the given config has a numeric zIndex property.
  * @param {Object} config a layer config
@@ -194,6 +196,7 @@ function sortVisibleLayerListByZindexBeforePrint (visibleLayerList) {
 }
 
 export default {
+    alwaysOnTop,
     hasNumericZIndex,
     maxZIndexOfLayerConfigsByParentKey,
     determineZIndex,

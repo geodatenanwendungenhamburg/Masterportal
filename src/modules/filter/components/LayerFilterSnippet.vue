@@ -146,6 +146,7 @@ export default {
             precheckedSnippets: [],
             filteredItems: [],
             isLockedHandleActiveStrategy: false,
+            isApplyingDeserializedState: false,
             filterButtonDisabled: false,
             isLoading: false,
             outOfZoom: false,
@@ -506,7 +507,7 @@ export default {
             }
 
             rules.forEach((rule) => {
-                if (!this.isRule(rule)) {
+                if (!this.isRule(rule) || !isObject(this.snippets[rule.snippetId])) {
                     return;
                 }
 
@@ -520,6 +521,33 @@ export default {
                     return;
                 }
                 this.snippets[rule.snippetId].prechecked = rule?.value;
+            });
+        },
+        /**
+         * Applies deserialized rules to snippets and triggers filtering.
+         * @returns {void}
+         */
+        applyDeserializedState () {
+            this.isApplyingDeserializedState = true;
+            this.setSnippetValueByState(this.filterRules);
+            if (!this.hasUnfixedRules(this.filterRules)) {
+                this.isApplyingDeserializedState = false;
+                return;
+            }
+
+            this.$nextTick(() => {
+                if (!this.isStrategyActive()) {
+                    this.filter();
+                    this.isApplyingDeserializedState = false;
+                    return;
+                }
+
+                const snippetIds = this.filterRules
+                    .filter(rule => this.isRule(rule) && !rule.fixed)
+                    .map(rule => rule.snippetId);
+
+                this.handleActiveStrategy(snippetIds.length ? snippetIds : undefined);
+                this.isApplyingDeserializedState = false;
             });
         },
         /**
@@ -720,6 +748,9 @@ export default {
                     snippetId: rule.snippetId,
                     rule: Object.assign(!this.isStrategyActive() && !("appliedPassiveValues" in rule) ? {appliedPassiveValues} : {}, rule)
                 });
+                if (this.isApplyingDeserializedState || rule.startup) {
+                    return;
+                }
                 this.deleteRulesOfChildren(this.getSnippetById(rule.snippetId));
                 this.deleteRulesOfParallelSnippets(this.getSnippetById(rule.snippetId));
                 if (ignoreStrategyCheck || (!rule.startup && (this.isStrategyActive() || this.isParentSnippet(rule.snippetId)))) {

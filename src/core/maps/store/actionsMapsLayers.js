@@ -3,6 +3,7 @@ import Cluster from "ol/source/Cluster.js";
 import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 import store from "@appstore/index.js";
+import zIndexManager from "@core/layers/js/zIndexManager.js";
 
 /**
  * Interactions with the layers of the map.
@@ -19,7 +20,7 @@ export default {
 
         if (!map2D.getLayers().getArray().includes(layer)) {
             if (layer.get("alwaysOnTop")) {
-                layer.setZIndex(9999999);
+                layer.setZIndex(zIndexManager.alwaysOnTop);
             }
             map2D.addLayer(layer);
         }
@@ -43,7 +44,7 @@ export default {
                 name: layerName,
                 source: new VectorSource(),
                 alwaysOnTop: alwaysOnTop,
-                zIndex: alwaysOnTop === true ? 9999999 : undefined
+                zIndex: alwaysOnTop === true ? zIndexManager.alwaysOnTop : undefined
             });
 
             // @TODO use the existing method

@@ -227,17 +227,20 @@ Ermöglicht dem User die Darstellung im Vollbildmodus (ohne Tabs und Adressleist
 ***
 
 ##### portalConfig.map.controls.orientation {data-toc-label='Orientation'}
-Orientation nutzt die geolocation des Browsers zur Standortbestimmung des Nutzers. Es wird eine Liste von Features in der Umgebung des Standortes angezeigt.
+Orientation nutzt die geolocation des Browsers zur Standortbestimmung des Nutzers. Es wird eine Liste von Features in der Umgebung des Standortes angezeigt. Die Genauigkeit des angezeigten Standortes kann als Kreises um den Standortmarker angezeigt werden. Mittels eines Richtungsmarkers kann auch die Bewegungsrichtung dargestellt werden. 
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
 |customPosition|nein|String|"common:modules.controls.orientation.poiChoiceCustomPosition"|Damit kann gesteuert werden, welcher Text für `customPosition` in der poiChoice angezeigt wird. Das hier angegebene muss dem Pfad für den Parameter in der Übersetzungsdatei entsprechen.|false|
 |iconGeolocate|nein|String|"bi-geo-alt"|Icon das im Controls-Menü für das Control Standpunkt angezeigt wird. Zur Auswahl siehe **[Bootstrap Icons](https://icons.getbootstrap.com/)**|false|
+|iconDirectionArrow|nein|String|"bi-triangle-fil"|Icon das in der Karte als Indikator der Richtung angezeigt wird. Wird nur angezeigt, wenn 'showDirection=true'. Zur Auswahl siehe **[Bootstrap Icons](https://icons.getbootstrap.com/)**|false|
 |iconGeolocatePOI|nein|String|"bi-record-circle"|Icon das im Controls-Menü für das Control "In meiner Nähe" angezeigt wird. Zur Auswahl siehe **[Bootstrap Icons](https://icons.getbootstrap.com/)**|false|
 |iconGeolocationMarker|nein|String|"bi-circle-fill"|Icon das in der Karte die aktuelle Position in der Karte markiert. Zur Auswahl siehe **[Bootstrap Icons](https://icons.getbootstrap.com/)**|false|
 |iFrameGeolocationEnabled|nein|Boolean|false|Wenn 'iFrameGeolocationEnabled' true ist, wird innerhalb eines iFrames versucht, die Geolocation auszuführen. Innerhalb von Iframes funktioniert dies nur, wenn das iFrame-Tag der übergeordneten Seite das Attribut allow="geolocation" beinaltet.|false|
 |onlyFilteredFeatures|nein|boolean|false|Wenn 'onlyFilteredFeatures' true ist, werden in der Ergebnissanzeige von poi nur über den Filter gefilterte Features berücksichtigt.|false|
 |poiDistances|nein|Boolean/Integer[]|true|Bei poiDistances=true werden die Defaultwerte verwendet. Legt fest, ob "In meiner Nähe" geladen wird und zeigt eine Liste von Features in der Umgebung an. Bei Angabe eines Array werden die darin definierten Abstände in Metern angeboten. Bei Angabe von true werden diese Abstände angeboten: [500,1000,2000].|false|
+|showAccuracy|nein|Boolean|false|Wenn 'showAccuracy' true ist, wird um 'iconGeolocate' ein Kreis gerendert, der die Genauigkeit der Standortdaten verdeutlicht.|false|
+|showDirection|nein|Boolean|false|Wenn 'showDirection' true ist, wird bei Bewegung des Nutzers die Richtung mit 'iconDirectionArrow' angezeigt.|false|
 |supportedDevices|nein|String|["Desktop", "Mobile"]|Geräte auf denen das Modul verwendbar ist und im Menü angezeigt wird.|false|
 |supportedMapModes|nein|String|["2D", "3D"]|Karten modi in denen das Modul verwendbar ist und im Menü angezeigt wird.|false|
 |zoomMode|nein|enum["once", "always"]|"once"|Der Standort wird bestimmt und der Marker wird an- oder ausgeschaltet. Dafür ist es notwendig das Portal über **https** zu laden. Modi: *once* (Es wird einmalig auf den Standort gezoomt. ), *always* (Die Karte wird mit jedem Einschalten auf den Standort gezoomt.).|false|
@@ -250,7 +253,10 @@ Orientation nutzt die geolocation des Browsers zur Standortbestimmung des Nutzer
     "iconGeolocatePOI": "bi-record-circle",
     "iconGeolocationMarker": "bi-circle-fill",
     "zoomMode": "once",
-    "poiDistances": true
+    "poiDistances": true,
+    "showAccuracy": true,
+    "showDirection": true,
+    "iconDirectionArrow": "bi-capslock-fill"
 }
 ```
 
@@ -1809,7 +1815,7 @@ Folgende Events existieren. Welche Events konfiguriert werden können ist den Be
 
 - activateLayerInTopicTree: Aktiviert den gefunden layer im Themenbaum und in der Karte.
 - addLayerToTopicTree: Fügt den gefundenen Layer zum Themenbaum und der Karte hinzu.
-- highligtFeature: Hebt das Scuhergebniss auf der Karte hervor.
+- highlightFeature: Hebt das Suchergebnis auf der Karte hervor.
 - openGetFeatureInfo: Öffnet die GetFeatureInfo zum Suchtreffer im Menü.
 - setMarker: Es wird ein Marker in der Karte platziert.
 - showInTree: Öffnet die Themenauswahl und zeigt den ausgewählten Layer an.

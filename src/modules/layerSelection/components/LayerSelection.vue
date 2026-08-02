@@ -279,7 +279,7 @@ export default {
             if (conf.parentId) {
                 const lastFolder = this.folderById(conf.parentId);
 
-                this.deactivateShowAllCheckbox = lastFolder.deactivateShowAllCheckbox === true;
+                this.deactivateShowAllCheckbox = lastFolder?.deactivateShowAllCheckbox === true;
             }
         }
     }

@@ -1,16 +1,10 @@
 <script>
 import {mapMutations} from "vuex";
 import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
-import {clampAndApplyHeight, clampAndApplyWidth, dimensionValidator} from "@shared/modules/resize/js/resizeHandleHelper.js";
+import {clampAndApplyWidth, dimensionValidator} from "@shared/modules/resize/js/resizeHandleHelper.js";
 
 const handleSigns = {
-          topLeft: [-1, -1],
-          top: [0, -1],
-          topRight: [1, -1],
           right: [1, 0],
-          bottomRight: [1, 1],
-          bottom: [0, 1],
-          bottomLeft: [-1, 1],
           left: [-1, 0]
       },
       minDistanceBetweenMenus = 300;
@@ -19,29 +13,12 @@ export default {
     name: "ResizeHandle",
     props: {
         /**
-         * Size of the grid for snappy resizing.
-         */
-        grid: {
-            type: Number,
-            default: 1
-        },
-        /**
          * Position of the handle element.
          */
         handlePosition: {
             type: String,
-            default: "bottomLeft",
-            validator: value => ["topLeft", "top", "topRight", "right", "bottomRight", "bottom", "bottomLeft", "left"].includes(value)
-        },
-        minHeight: {
-            type: Number,
-            default: 0,
-            validator: dimensionValidator
-        },
-        maxHeight: {
-            type: Number,
-            default: 1,
-            validator: dimensionValidator
+            default: "right",
+            validator: value => ["right", "left"].includes(value)
         },
         minWidth: {
             type: Number,
@@ -52,13 +29,6 @@ export default {
             type: Number,
             default: 1,
             validator: dimensionValidator
-        },
-        /**
-         * Determines whether the resize should be symmetrical based on the elements center point.
-         */
-        symmetricResize: {
-            type: Boolean,
-            default: false
         },
         /**
          * Draggable element given directly.
@@ -91,51 +61,28 @@ export default {
         boundOnMouseUp: null,
         boundOnWindowBlur: null,
         boundOnVisibilityChange: null,
-        deltaCursorPosition: {x: 0, y: 0}, // Cursor position difference during resizing, modified by rotation
+        deltaCursorPosition: {x: 0, y: 0},
         initialCursorPosition: {x: 0, y: 0},
         isResizing: false,
-        initialDimensions: {width: 0, height: 0},
-        initialPosition: {top: 0, left: 0},
-        initialRotation: 0,
+        initialDimensions: {width: 0},
         touchStarted: false, // Flag to avoid ghost click event
         touchDevice: false,
         timeoutReference: null
     }),
     computed: {
         /**
-         * Calculates a dynamic CSS class based on the elements' rotation.
-         * @returns {String} Dynamic CSS class for the handle element.
-         */
-        cursorClass () {
-            const indexWithoutRotation = Object.keys(handleSigns).indexOf(this.handlePosition),
-                  indexAfterRotation = Math.floor(Math.abs(this.initialRotation + Math.PI / 8) / (Math.PI / 4));
-
-            return [
-                "nwse-resize",
-                "ns-resize",
-                "nesw-resize",
-                "ew-resize"
-            ][(indexWithoutRotation + indexAfterRotation) % 4];
-        },
-        /**
-         * @returns {Object} All relevant data for events.
+         * @returns {Object} Event data containing cursor position, dimensions, and configuration for resize events.
          */
         eventData () {
             return {
-                cursorClass: this.cursorClass,
+                cursorClass: "ew-resize",
                 deltaCursorPosition: this.deltaCursorPosition,
-                grid: this.grid,
                 handleElement: this.handleElement,
                 handlePosition: this.handlePosition,
                 initialCursorPosition: this.initialCursorPosition,
                 initialDimensions: this.initialDimensions,
-                initialPosition: this.initialPosition,
-                initialRotation: this.initialRotation,
-                minHeight: this.minHeight,
-                maxHeight: this.maxHeight,
                 minWidth: this.minWidth,
-                maxWidth: this.maxWidth,
-                symmetricResize: this.symmetricResize
+                maxWidth: this.maxWidth
             };
         },
         /**
@@ -219,14 +166,6 @@ export default {
     methods: {
         ...mapMutations("Modules/ResizeHandle", ["setMainMenuWidth", "setSecondaryMenuWidth"]),
 
-        getTransformation (style) {
-            return style.getPropertyValue("-webkit-transform") ||
-                style.getPropertyValue("-moz-transform") ||
-                style.getPropertyValue("-ms-transform") ||
-                style.getPropertyValue("-o-transform") ||
-                style.getPropertyValue("transform") ||
-                false;
-        },
         moveHandle (key) {
             if (key === "ArrowLeft" || key === "ArrowRight") {
                 const disposition = (key === "ArrowLeft" ? 1 : -1) * (this.side === mainMenu ? -1 : 1) * 10;
@@ -249,11 +188,8 @@ export default {
             this.startResizing(event);
         },
         /**
-         * Calculate cursor position difference while resizing.
-         * When the cursor leaves the window, the resizing is stopped.
-         * Cursor position difference will be adjusted by resizable element's rotation. which is necessary
-         * to keep resizing directions intuitive. If the resizable element is not positioned relative,
-         * its disposition caused by its dimension change is also corrected.
+         * Tracks cursor movement during resizing and updates width.
+         * Stops if cursor leaves the window.
          * @param {MouseEvent | TouchEvent} event Event triggering the resizing of the window.
          * @returns {void}
          */
@@ -273,18 +209,11 @@ export default {
                 this.isResizing = false;
             }
 
-            this.deltaCursorPosition.x = deltaX * Math.cos(this.initialRotation) + deltaY * Math.sin(this.initialRotation);
-            this.deltaCursorPosition.y = deltaY * Math.cos(this.initialRotation) - deltaX * Math.sin(this.initialRotation);
+            this.deltaCursorPosition.x = Math.round(deltaX);
+            this.deltaCursorPosition.y = Math.round(deltaY);
 
-            if (this.grid > 1) {
-                this.deltaCursorPosition.x = Math.round(this.deltaCursorPosition.x / this.grid) * this.grid;
-                this.deltaCursorPosition.y = Math.round(this.deltaCursorPosition.y / this.grid) * this.grid;
-            }
             this.setNewSize();
 
-            if (["absolute", "fixed"].indexOf(window.getComputedStyle(this.handleElement, null).position) !== -1) {
-                this.setNewPosition();
-            }
             this.$emit("resizing", this.eventData);
         },
         onMouseUp () {
@@ -317,81 +246,24 @@ export default {
             this.initialCursorPosition.y = event.touches ? event.touches[0].clientY : event.clientY;
         },
         /**
-         * Saves initial element dimensions. Used to calculate the new dimension
-         * and disposition correction while resizing.
+         * Saves initial element width. Used to calculate the new width while resizing.
          * @returns {void}
          */
         saveInitialDimensions () {
             this.initialDimensions.width = this.handleElement.offsetWidth < this.minWidth ? this.minWidth : this.handleElement.offsetWidth;
-            this.initialDimensions.height = this.handleElement.offsetHeight < this.minHeight ? this.minHeight : this.handleElement.offsetHeight;
             this.handleElement.style.width = this.initialDimensions.width;
-            this.handleElement.style.height = this.initialDimensions.height;
         },
         /**
-         * Saves initial element position. Used to calculate the new position while resizing.
-         * @returns {void}
-         */
-        saveInitialPosition () {
-            this.initialPosition.left = this.handleElement.offsetLeft;
-            this.initialPosition.top = this.handleElement.offsetTop;
-        },
-        /**
-         * Saves initial element rotation. Used to calculate the new position while resizing.
-         * @returns {void}
-         */
-        saveInitialRotation () {
-            const transformation = this.getTransformation(window.getComputedStyle(this.handleElement, null));
-
-            if (transformation !== "none" && transformation !== false) {
-                const values = transformation.split("(")[1].split(")")[0].split(",");
-
-                this.initialRotation = (Math.atan2(values[1], values[0]) + 2 * Math.PI) % (2 * Math.PI);
-            }
-            else {
-                this.initialRotation = 0;
-            }
-        },
-        /**
-         * Calculates and sets new position based on cursor position difference.
-         * @returns {void}
-         */
-        setNewPosition () {
-            const deltaWidth = this.initialDimensions.width - this.handleElement.offsetWidth,
-                  deltaHeight = this.initialDimensions.height - this.handleElement.offsetHeight,
-                  [signX, signY] = handleSigns[this.handlePosition];
-            let {left, top} = this.initialPosition;
-
-            // Disposition correction 1
-            left += 0.5 * deltaWidth;
-            top += 0.5 * deltaHeight;
-            // Disposition correction 2, only needed when symmetric resize is disabled
-            if (!this.symmetricResize) {
-                left -= 0.5 * (signX * deltaWidth * Math.cos(this.initialRotation) - signY * deltaHeight * Math.sin(this.initialRotation));
-                top -= 0.5 * (signY * deltaHeight * Math.cos(this.initialRotation) + signX * deltaWidth * Math.sin(this.initialRotation));
-            }
-            this.handleElement.style.left = Math.round(left) + "px";
-            this.handleElement.style.top = Math.round(top) + "px";
-        },
-        /**
-         * Calculates and sets new dimensions based on cursor position difference.
-         * The handle type signs are used to determine whether the element needs to be upscaled or downscaled.
+         * Applies new width to the resizable element.
+         * Handle position (left/right) determines resize direction.
          * @returns {void}
          */
         setNewSize () {
-            if (this.handlePosition !== "top" && this.handlePosition !== "bottom") {
-                clampAndApplyWidth(
-                    this,
-                    this.initialDimensions.width + handleSigns[this.handlePosition][0] * this.deltaCursorPosition.x,
-                    minDistanceBetweenMenus
-                );
-            }
-
-            if (this.handlePosition !== "left" && this.handlePosition !== "right") {
-                clampAndApplyHeight(
-                    this,
-                    this.initialDimensions.height + handleSigns[this.handlePosition][1] * this.deltaCursorPosition.y
-                );
-            }
+            clampAndApplyWidth(
+                this,
+                this.initialDimensions.width + handleSigns[this.handlePosition][0] * this.deltaCursorPosition.x,
+                minDistanceBetweenMenus
+            );
         },
         /**
          * When using the mousedown event, a ghost click is triggered.
@@ -411,8 +283,6 @@ export default {
                 return;
             }
             this.saveInitialCursorCoordinates(event);
-            this.saveInitialPosition();
-            this.saveInitialRotation();
             this.saveInitialDimensions();
             this.isResizing = true;
         }
@@ -427,12 +297,11 @@ export default {
         :class="[
             {'resize-handle-is-resizing': isResizing},
             'resize-handle-type-' + handlePosition,
-            'resize-handle-cursor-' + cursorClass
+            'resize-handle-cursor-ew-resize'
         ]"
         @focus="moveHandle"
         @keydown="moveHandle($event.key)"
         @mousedown="onMouseDown"
-        @mouseenter="saveInitialRotation"
         @touchstart="onTouchStart"
     >
         <!-- TODO @focus with info element? -->
@@ -460,26 +329,6 @@ $handle_size: 6px;
         user-select: none;
     }
     &-type {
-        &-topLeft {
-            top: 0;
-            left: 0;
-        }
-        &-topRight {
-            top: 0;
-            right: 0;
-        }
-        &-bottomLeft {
-            bottom: 0;
-            left: 0;
-        }
-        &-bottomRight {
-            bottom: 0;
-            right: 0;
-        }
-        &-top {
-            top: 0;
-            width: 100%
-        }
         &-left {
             left: 0;
             height: 100%;
@@ -487,10 +336,6 @@ $handle_size: 6px;
         &-right {
             right: 0;
             height: 100%;
-        }
-        &-bottom {
-            bottom: 0;
-            width: 100%
         }
     }
 }
@@ -502,15 +347,6 @@ $handle_size: 6px;
 }
 
 button:not(:disabled).resize-handle-cursor {
-    &-nwse-resize {
-            cursor: nwse-resize;
-        }
-        &-ns-resize {
-            cursor: ns-resize;
-        }
-        &-nesw-resize {
-            cursor: nesw-resize;
-        }
         &-ew-resize {
             cursor: ew-resize;
         }

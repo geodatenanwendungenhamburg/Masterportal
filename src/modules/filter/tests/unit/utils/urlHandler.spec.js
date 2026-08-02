@@ -50,6 +50,72 @@ describe("src/modules/filter/utils/mapHandler.js", () => {
             expect(urlHandler.getParamsFromState(stateObject, neededParams)).to.be.an("object").that.is.empty;
         });
     });
+    describe("parseJsonString", () => {
+        it("should return undefined if value is not a string", () => {
+            expect(urlHandler.parseJsonString(undefined, "warn")).to.equal(undefined);
+            expect(urlHandler.parseJsonString({}, "warn")).to.equal(undefined);
+        });
+
+        it("should parse a valid JSON string", () => {
+            expect(urlHandler.parseJsonString("{\"foo\":\"bar\"}", "warn")).to.deep.equal({foo: "bar"});
+        });
+
+        it("should return fallback and warn for invalid JSON", () => {
+            const warnStub = sinon.stub(console, "warn");
+
+            expect(urlHandler.parseJsonString("{", "warn", {})).to.deep.equal({});
+            expect(warnStub.calledOnce).to.be.true;
+
+            warnStub.restore();
+        });
+    });
+    describe("getFilterUrlParamsFromAppStore", () => {
+        it("should return parsed FILTER when present", () => {
+            const expected = {foo: "bar", baz: 1};
+
+            expect(urlHandler.getFilterUrlParamsFromAppStore({
+                FILTER: JSON.stringify(expected),
+                MENU: JSON.stringify({
+                    any: {currentComponent: "filter", attributes: {shouldNot: "beUsed"}}
+                })
+            })).to.deep.equal(expected);
+        });
+
+        it("should return filter attributes from MENU if FILTER is missing", () => {
+            const expected = {a: 1, b: "x"};
+
+            expect(urlHandler.getFilterUrlParamsFromAppStore({
+                MENU: JSON.stringify({
+                    foo: {currentComponent: "not-filter", attributes: {noop: true}},
+                    bar: {currentComponent: "filter", attributes: expected}
+                })
+            })).to.deep.equal(expected);
+        });
+
+        it("should return empty object if MENU is missing or has no filter entry", () => {
+            expect(urlHandler.getFilterUrlParamsFromAppStore({})).to.deep.equal({});
+            expect(urlHandler.getFilterUrlParamsFromAppStore({
+                MENU: JSON.stringify({
+                    foo: {currentComponent: "a", attributes: {x: 1}}
+                })
+            })).to.deep.equal({});
+        });
+    });
+    describe("createFilterUrl", () => {
+        it("should create a filter url for main menu", () => {
+            const url = urlHandler.createFilterUrl("https://example.com/?foo=bar", "mainMenu", "FILTER", "{\"x\":1}");
+
+            expect(url.searchParams.get("MENU")).to.equal("{\"main\":{\"currentComponent\":\"filter\"}}");
+            expect(url.searchParams.get("FILTER")).to.equal("{\"x\":1}");
+        });
+
+        it("should create a filter url for secondary menu", () => {
+            const url = urlHandler.createFilterUrl("https://example.com/", "secondaryMenu", "FILTER", "{}");
+
+            expect(url.searchParams.get("MENU")).to.equal("{\"secondary\":{\"currentComponent\":\"filter\"}}");
+            expect(url.searchParams.get("FILTER")).to.equal("{}");
+        });
+    });
     describe("readFromUrlParams", () => {
         it("should parse the string into an object and return it", () => {
             const str = JSON.stringify({"rulesOfFilters": "foo", "bar": "bar"}),

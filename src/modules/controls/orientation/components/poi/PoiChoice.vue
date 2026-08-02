@@ -37,6 +37,15 @@ export default {
             }
         });
     },
+    unmounted () {
+        if (this.poiMode === "currentPosition") {
+            this.unregisterListener({
+                type: "click",
+                listener: this.mapClicked,
+                keyForBoundFunctions: "poiChoiceTriggerTrack"
+            });
+        }
+    },
     methods: {
         ...mapMutations("Controls/Orientation", Object.keys(mutations)),
         ...mapActions("Maps", ["registerListener", "unregisterListener"]),
@@ -52,11 +61,12 @@ export default {
             }
         },
         /**
-         * Hides the modal.
+         * Hides the modal and removes the toggle button pressed class to the geolocate POI button.
          * @returns {void}
          */
         hidePoiChoice () {
             this.setShowPoiChoice(false);
+            document.querySelector("#geolocatePOI").classList.remove("toggleButtonPressed");
         },
 
         /**
@@ -93,11 +103,12 @@ export default {
          */
         triggerTrack () {
             this.$emit("track");
-            this.hidePoiChoice(false);
+            this.setShowPoiChoice(false);
 
             this.registerListener({
                 type: "click",
-                listener: this.mapClicked
+                listener: this.mapClicked,
+                keyForBoundFunctions: "poiChoiceTriggerTrack"
             });
         },
 
@@ -111,7 +122,8 @@ export default {
             this.setShowPoi(true);
             this.unregisterListener({
                 type: "click",
-                listener: this.mapClicked
+                listener: this.mapClicked,
+                keyForBoundFunctions: "poiChoiceTriggerTrack"
             });
         },
 
@@ -122,7 +134,8 @@ export default {
         stopPoi () {
             this.unregisterListener({
                 type: "click",
-                listener: this.mapClicked
+                listener: this.mapClicked,
+                keyForBoundFunctions: "poiChoiceTriggerTrack"
             });
             this.setPoiMode("currentPosition");
             this.setCurrentPositionEnabled(true);

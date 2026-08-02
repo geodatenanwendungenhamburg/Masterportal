@@ -84,6 +84,14 @@ export default {
             setTimeout(() => {
                 document.getElementById("imprint").scrollIntoView({behavior: "smooth", block: "start"});
             }, 500);
+        },
+        /**
+         * Returns true, if isMobile and alias_mobile is filled at url or not mobile.
+         * @param {String} url entry of configured urls
+         * @returns {boolean} true, if url should be shown
+         */
+        showUrl (url) {
+            return !this.isMobile || (typeof url?.alias_mobile === "string" && url.alias_mobile.length > 0);
         }
     }
 };
@@ -110,7 +118,7 @@ export default {
                 v-for="(url, index) in urls"
                 :key="`portal-footer-url-${index}`"
             >
-                <span>
+                <span v-if="showUrl(url)">
                     {{ $t(url.bezeichnung) }}
                     <a
                         :href="url.url"

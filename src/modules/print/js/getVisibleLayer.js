@@ -15,9 +15,14 @@ function getVisibleLayer (printMapMarker = false) {
             return !(layer instanceof LayerGroup);
         });
         groupedLayers.forEach(groupedLayer => {
+            const gLayerZIndex = typeof groupedLayer.getZIndex === "function" ? groupedLayer.getZIndex() : undefined;
+
             groupedLayer.getLayers().forEach(gLayer => {
                 // layer opacity is only set for printing and later it is reverted
                 gLayer.setOpacity(groupedLayer.getOpacity());
+                if (gLayerZIndex !== undefined) {
+                    gLayer.setZIndex(gLayerZIndex);
+                }
                 visibleLayerList.push(gLayer);
             });
         });

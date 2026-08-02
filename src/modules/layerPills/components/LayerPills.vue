@@ -34,14 +34,13 @@ export default {
          * Returns all visible subject data layers in the correct display order
          * for the LayerPills component.
          * The order is primarily defined by the LayerTree configuration
-         * (`layerTreeSortedLayerConfigs`). Layers that are visible but not part
-         * of the LayerTree (e.g. `showInLayerTree: false`) are appended afterwards
-         * to maintain backward compatibility.
+         * (`layerTreeSortedLayerConfigs`).
+         * Layers with `showInLayerTree: false` are not visible.
          * @returns {Array<Object>} Sorted list of visible layer configuration objects
          */
         sortedVisibleLayerPills () {
             const treeLayers = this.layerTreeSortedLayerConfigs(false),
-                  visible = this.visibleSubjectDataLayerConfigs;
+                  visible = this.visibleSubjectDataLayerConfigs.filter(layer => layer.showInLayerTree !== false);
 
             return [
                 ...treeLayers.filter(l => visible.some(v => v.id === l.id)),
@@ -75,14 +74,8 @@ export default {
     },
     created () {
         this.initializeModule({configPaths: this.configPaths, type: this.type});
-        const layers = this.layerTreeSortedLayerConfigs(false);
-
-        if (layers) {
-            const sortedByTree = this.layerTreeSortedLayerConfigs(false).filter(
-                l => this.visibleSubjectDataLayerConfigs.some(n => n.id === l.id)
-            );
-
-            this.setVisibleLayers(sortedByTree, this.mode);
+        if (this.layerTreeSortedLayerConfigs(false)) {
+            this.setVisibleLayers(this.sortedVisibleLayerPills, this.mode);
         }
     },
     mounted () {
@@ -142,6 +135,10 @@ export default {
             }
             this.setToggleButtonVisibility();
         },
+        /**
+         * Toggles the visibility of all layers.
+         * @returns {void}
+         */
         toggleLayerVisibility () {
             this.showAllLayers = !this.showAllLayers;
         },

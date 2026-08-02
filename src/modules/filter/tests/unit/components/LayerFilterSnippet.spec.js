@@ -591,6 +591,38 @@ describe("src/modules/filter/components/LayerFilterSnippet.vue", () => {
                 expect(spyParallel.calledOnce).to.be.true;
             });
 
+            it("should not cascade rule cleanup while applying deserialized state", async () => {
+                sinon.stub(wrapper.vm, "isRule").returns(true);
+                const spyChildren = sinon.stub(wrapper.vm, "deleteRulesOfChildren"),
+                    spyParallel = sinon.stub(wrapper.vm, "deleteRulesOfParallelSnippets"),
+                    spyHandle = sinon.stub(wrapper.vm, "handleActiveStrategy");
+
+                await wrapper.setData({isApplyingDeserializedState: true});
+
+                wrapper.vm.changeRule({snippetId: 0, value: [], startup: false}, true);
+                await wrapper.vm.$nextTick();
+
+                expect(spyChildren.called).to.be.false;
+                expect(spyParallel.called).to.be.false;
+                expect(spyHandle.called).to.be.false;
+                expect(wrapper.emitted().updateRules).to.be.an("array").that.is.not.empty;
+            });
+
+            it("should not cascade rule cleanup for startup changes", async () => {
+                sinon.stub(wrapper.vm, "isRule").returns(true);
+                const spyChildren = sinon.stub(wrapper.vm, "deleteRulesOfChildren"),
+                    spyParallel = sinon.stub(wrapper.vm, "deleteRulesOfParallelSnippets"),
+                    spyHandle = sinon.stub(wrapper.vm, "handleActiveStrategy");
+
+                wrapper.vm.changeRule({snippetId: 0, value: [], startup: true}, true);
+                await wrapper.vm.$nextTick();
+
+                expect(spyChildren.called).to.be.false;
+                expect(spyParallel.called).to.be.false;
+                expect(spyHandle.called).to.be.false;
+                expect(wrapper.emitted().updateRules).to.be.an("array").that.is.not.empty;
+            });
+
             it("should call handleActiveStrategy if ignoreStrategyCheck is true", async () => {
                 sinon.stub(wrapper.vm, "isStrategyActive").returns(false);
                 sinon.stub(wrapper.vm, "isRule").returns(true);

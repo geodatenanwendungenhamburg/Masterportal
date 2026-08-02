@@ -1,8 +1,7 @@
 import {all, bbox} from "ol/loadingstrategy.js";
 import {oaf} from "@masterportal/masterportalapi/src/index.js";
 import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
-import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle.js";
-import getGeometryTypeFromService from "@masterportal/masterportalapi/src/vectorStyle/lib/getGeometryTypeFromService.js";
+import {createLegendInfo} from "@masterportal/masterportalapi/src/vectorStyle/lib/createLegendInfo.js";
 import store from "@appstore/index.js";
 import Layer2dVector from "./layer2dVector.js";
 
@@ -92,16 +91,12 @@ Layer2dVectorOaf.prototype.createLegend = async function () {
 
     if (!Array.isArray(legend)) {
         if (styleObject && legend === true) {
-            getGeometryTypeFromService.getGeometryTypeFromOAF(rules, this.get("url"), this.get("collection"), Config.wfsImgPath,
-                (error) => {
-                    if (error) {
-                        store.dispatch("Alerting/addSingleAlert", "<strong>" + i18next.t("common:core.layers.errorHandling.getGeometryTypeFromOAFFetchfailed") + "</strong> <br>"
-                        + "<small>" + i18next.t("common:core.layers.errorHandling.getGeometryTypeFromOAFFetchfailedMessage") + "</small>");
-                    }
-                });
-            const legendInfos = await createStyle.returnLegendByStyleId(styleObject.styleId);
+            const featureGeometryType = this.layer?.getSource()?.getFeatures?.()?.[0]?.getGeometry?.()?.getType?.(),
+                configuredGeometryType = this.get("styleGeometryType") || this.get("geometryType"),
+                geometryType = (configuredGeometryType || featureGeometryType || "Point").replace("Multi", ""),
+                legendInfos = createLegendInfo(rules || [], [geometryType], Config.wfsImgPath);
 
-            legend = legendInfos.legendInformation;
+            legend = legendInfos;
         }
         else if (typeof legend === "string") {
             legend = [legend];

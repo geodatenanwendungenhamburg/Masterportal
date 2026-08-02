@@ -1,6 +1,6 @@
 import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle.js";
 import {expect} from "chai";
-import {Polygon, LineString} from "ol/geom.js";
+import {Polygon, MultiPolygon, LineString} from "ol/geom.js";
 import sinon from "sinon";
 import {Style} from "ol/style.js";
 import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
@@ -153,6 +153,14 @@ describe("src/core/maps/js/highlightFeaturesByAttribute", () => {
                     get: () => sinon.spy()
                 }
             ],
+            multiPolygonFeatures = [
+                {
+                    id: "111",
+                    getGeometry: () => new MultiPolygon([[[[565086.1948534324, 5934664.461947621], [565657.6945448224, 5934738.54524095], [565625.9445619675, 5934357.545446689], [565234.3614400891, 5934346.962119071], [565086.1948534324, 5934664.461947621]]]]),
+                    getProperties: () => [],
+                    get: () => sinon.spy()
+                }
+            ],
             lineFeatures = [
                 {
                     id: "123",
@@ -253,6 +261,26 @@ describe("src/core/maps/js/highlightFeaturesByAttribute", () => {
             expect(showLayerSpy.firstCall.args[2]).to.equals("defaultHighlightFeaturesLine");
             expect(showLayerSpy.firstCall.args[3]).to.deep.equals(layer);
             expect(showLayerSpy.firstCall.args[4]).to.equals("highlightLine");
+            expect(showLayerSpy.firstCall.args[5]).to.equals(dispatch);
+            expect(showLayerSpy.firstCall.args[6]).to.deep.equals(rootGetters);
+        });
+
+        it("should call showLayer for MultiPolygons", async () => {
+            const layer = {
+                    id: "013",
+                    gfiAttributes: "showAll"
+                },
+                dispatch = sinon.spy(),
+                rootGetters = {ignoredKeys: ["geom"], treeHighlightedFeatures: {active: false}, treeType: undefined};
+
+            await highlightFeaturesByAttribute.highlightLineOrPolygonFeature("defaultHighlightFeaturesPolygon", "highlight_polygon_layer", "highlightPolygon", "MultiPolygon", layer, multiPolygonFeatures, dispatch, rootGetters);
+
+            expect(showLayerSpy.calledOnce).to.be.true;
+            expect(showLayerSpy.firstCall.args[0]).to.equals("highlight_polygon_layer");
+            expect(showLayerSpy.firstCall.args[1].length).to.equals(1);
+            expect(showLayerSpy.firstCall.args[2]).to.equals("defaultHighlightFeaturesPolygon");
+            expect(showLayerSpy.firstCall.args[3]).to.deep.equals(layer);
+            expect(showLayerSpy.firstCall.args[4]).to.equals("highlightPolygon");
             expect(showLayerSpy.firstCall.args[5]).to.equals(dispatch);
             expect(showLayerSpy.firstCall.args[6]).to.deep.equals(rootGetters);
         });

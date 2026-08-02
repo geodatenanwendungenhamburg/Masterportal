@@ -38,7 +38,7 @@ export default {
             type: String,
             required: false,
             default: "font-size-big",
-            validator: value => ["font-size-base", "font-size-big"].includes(value)
+            validator: value => ["font-size-base", "font-size-big", "font-size-small"].includes(value)
         },
         colouredHeader: {
             type: Boolean,

@@ -241,7 +241,6 @@ export default {
             :mutation="setCurrentMenuWidth"
             :min-width="0"
             :max-width="0.95"
-            :min-height="1"
             :side="side"
             @resizing="eventData => onResize(eventData)"
         >

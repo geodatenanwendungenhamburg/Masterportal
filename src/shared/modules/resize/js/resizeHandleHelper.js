@@ -1,34 +1,6 @@
 import {mainMenu, secondaryMenu} from "@shared/js/utils/constants.js";
 
 /**
- * Clamps the calculated height between the component's min/max bounds
- * (relative to the masterportal container) and applies it to the handle element.
- * Removes any inline maxHeight restriction before applying the new value.
- * @param {object} context - The ResizeHandle component instance.
- * @param {number} calculatedHeight - The raw height in pixels derived from cursor movement.
- * @returns {void}
- */
-export function clampAndApplyHeight (context, calculatedHeight) {
-    const containerElement = document.getElementById("masterportal-container");
-
-    if (!containerElement) {
-        return;
-    }
-
-    const containerHeight = containerElement.offsetHeight,
-        newHeight = Math.min(
-            containerHeight * context.maxHeight,
-            Math.max(containerHeight * context.minHeight, calculatedHeight)
-        );
-
-    if (context.handleElement.style.maxHeight !== "none") {
-        context.handleElement.style.maxHeight = "none";
-    }
-
-    context.handleElement.style.height = `${Math.round(newHeight)}px`;
-}
-
-/**
  * Clamps the calculated width between the component's min/max bounds
  * (relative to the masterportal container, accounting for the opposite menu's width
  * and the minimum required distance between both menus) and applies it to the handle element.

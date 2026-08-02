@@ -86,7 +86,7 @@ export default {
 <style lang="scss">
 
 
-    .control-button-controls {
+    .btn.control-button-controls {
         display: block;
         text-align: center;
         top: auto;

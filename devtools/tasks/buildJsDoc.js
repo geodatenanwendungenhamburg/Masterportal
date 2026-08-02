@@ -2,6 +2,7 @@ import {exec} from "child-process-promise";
 import path from "path";
 import fs from "fs-extra";
 import {fileURLToPath} from "url";
+import {walk} from "./utils.js";
 
 const __filename = fileURLToPath(import.meta.url),
     __dirname = path.dirname(__filename),
@@ -30,18 +31,6 @@ async function build () {
     }
 }
 
-/**
- * walking over the files
- */
-function walk (dir) {
-    return fs.readdirSync(dir).flatMap(file => {
-        const full = path.join(dir, file);
-
-        return fs.statSync(full).isDirectory()
-            ? walk(full)
-            : full;
-    });
-}
 
 /**
  * Workaround for Docdash + jsdoc-vuejs.

@@ -6,18 +6,19 @@ import sinon from "sinon";
 
 
 describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
-    const urls = [{
-        bezeichnung: "abc",
-        url: "https://abc.de",
-        alias: "Alphabet",
-        alias_mobile: "ABC"
-    }];
     let isMobile,
         uiStyle,
         store,
-        hideImprint;
+        hideImprint,
+        urls;
 
     beforeEach(() => {
+        urls = [{
+            bezeichnung: "abc",
+            url: "https://abc.de",
+            alias: "Alphabet",
+            alias_mobile: "ABC"
+        }];
         isMobile = false;
         uiStyle = "default";
         hideImprint = false;
@@ -125,6 +126,19 @@ describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
         expect(wrapper.find("a.footerUrl").exists()).to.be.true;
         expect(wrapper.find("a.footerUrl").text()).to.equals("ABC");
         expect(wrapper.find("a.footerUrl").attributes().href).to.equals("https://abc.de");
+    });
+
+    it("doesn’t render the mobile urls, if alias_mobile is not set", () => {
+        isMobile = true;
+        urls[0].alias_mobile = undefined;
+
+        const wrapper = shallowMount(PortalFooterComponent, {
+            global: {
+                plugins: [store]
+            }
+        });
+
+        expect(wrapper.find("a.footerUrl").exists()).to.be.false;
     });
 
     it("renders scaleLine exist", () => {

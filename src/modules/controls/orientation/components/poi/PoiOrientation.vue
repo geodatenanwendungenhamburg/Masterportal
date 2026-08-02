@@ -244,7 +244,7 @@ export default {
                 else {
                     createStyle.returnLegendByStyleId(feat.styleId).then(layerLegends => {
                         layerLegends.legendInformation.forEach(legendInfo => {
-                            if (legendInfo.geometryType === "Point" && legendInfo.styleObject.attributes.type === "circle" && legendInfo.label === feat.legendValue) {
+                            if (legendInfo.geometryType === "Point" && legendInfo.styleObject.attributes?.type === "circle" && legendInfo.label === feat.legendValue) {
                                 this.imgPathByFeature[feat.getId()] = svgFactory.createCircle(legendInfo.styleObject);
                             }
                             else if (legendInfo.geometryType === "LineString" && legendInfo.label === feat.legendValue) {

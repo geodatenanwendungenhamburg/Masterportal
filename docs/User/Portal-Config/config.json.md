@@ -226,17 +226,20 @@ Allows the user to view the portal in full screen mode by clicking a button with
 ***
 
 ##### portalConfig.map.controls.orientation {data-toc-label='Orientation'}
-Orientation uses the browser's geolocation to determine the user's location. A list of features in the vicinity of the location is displayed.
+Orientation uses the browser's geolocation to determine the user's location. A list of features in the vicinity of the location is displayed. The accuracy of the location can be rendered as circle around the location marker. A marker to show the direction of movement can be displayed.
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
 |customPosition|no|String|"common:modules.controls.orientation.poiChoiceCustomPosition"|This can be used to control which text is displayed for `customPosition` in the poiChoice. The path specified here must correspond to the path for the parameter in the translation file.|false|
 |iconGeolocate|no|String|"bi-geo-alt"|Icon that is displayed in the Controls menu for the control location. For selection see **[Bootstrap Icons](https://icons.getbootstrap.com/)**|false|
+|iconDirectionArrow|no|String|"bi-triangle-fil"|Icon that indicates the direction of moving users in the map. Will only be displayed when 'showDirection=true'. Zur Auswahl siehe **[Bootstrap Icons](https://icons.getbootstrap.com/)**|false|
 |iconGeolocatePOI|no|String|"bi-record-circle"|Icon that is displayed in the Controls menu for the "Close to me" control. For selection see **[Bootstrap Icons](https://icons.getbootstrap.com/)**|false|
 |iconGeolocationMarker|no|String|"bi-circle-fill"|Icon that is displayed in the map to mark the current position. For selection see **[Bootstrap Icons](https://icons.getbootstrap.com/)**|false|
 |iFrameGeolocationEnabled|no|Boolean|false|If 'iFrameGeolocationEnabled' is true, orientation will try to fetch geolocation within an iFrame. This only works if the iFrame-Tag of the containing page has the attribute allow="geolocation".|false|
 |onlyFilteredFeatures|no|boolean|false|If 'onlyFilteredFeatures' is true, only features filtered via the filter are taken into account in the poi results display.|false|
 |poiDistances|no|Boolean/Integer[]|true|Defines whether the feature "Close to me", which shows a list of nearby points of interest, is provided. If an array is configured, multiple such lists with the given distance in meters are offered. When simply setting `poiDistances: true`, the used distances are `[500,1000,2000]`.|false|
+|showAccuracy|no|Boolean|false|If 'showAccuracy' is true, a circle indicating the accuracy of the location is rendered around 'iconGeolocate'.|false|
+|showDirection|no|Boolean|false|If 'showDirection' is true, the direction of moving users are displayed in the map with 'iconDirectionArrow'.|false|
 |supportedDevices|no|String|["Desktop", "Mobile"]|Devices on which the module can be used and is displayed in the menu.|false|
 |supportedMapModes|no|String|["2D", "3D"]|Map modes in which the module can be used and is displayed in the menu.|false|
 |zoomMode|no|enum["once", "always"]|"once"|The user's location is determined and a marker turned on or off. This requires providing the portal via **https**. Modes: *once* zooms to the user's location once, *always* zooms to the user position on each activation.|false|
@@ -249,7 +252,10 @@ Orientation uses the browser's geolocation to determine the user's location. A l
     "iconGeolocatePOI": "bi-record-circle",
     "iconGeolocationMarker": "bi-circle-fill",
     "zoomMode": "once",
-    "poiDistances": true
+    "poiDistances": true,
+    "showAccuracy": true,
+    "showDirection": true,
+    "iconDirectionArrow": "bi-capslock-fill"
 }
 ```
 
@@ -882,8 +888,8 @@ Defines the initial map view and a background shown when no layer or map is sele
             }
         ],
         "extent": [510000.0, 5850000.0, 625000.4, 6000000.0],
-        "StartResolution": 15.874991427504629,
-        "StartZoomLevel": 1,
+        "startResolution": 15.874991427504629,
+        "startZoomLevel": 1,
         "epsg": "EPSG:25832"
     }
 }
@@ -1814,7 +1820,7 @@ The following events exist. Which events can be configured can be found in the d
 
 - activateLayerInTopicTree: Activates the found layer in the topic tree and map.
 - addLayerToTopicTree: Adds the found layer to the topic tree and map.
-- highligtFeature: Highlights the search result on the map.
+- highlightFeature: Highlights the search result on the map.
 - openGetFeatureInfo: Opens the GetFeatureInfo for the search hit in the menu.
 - showInTree: Opens the topic selection and shows the selected layer.
 - showLayerInfo: Opens the layer information.

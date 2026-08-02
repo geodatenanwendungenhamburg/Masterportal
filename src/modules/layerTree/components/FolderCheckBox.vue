@@ -121,7 +121,7 @@ export default {
          */
         changeLayerVisibilities (element, targetVisibility) {
             if (element.type === "folder" && element.elements?.length > 0) {
-                element.elements.forEach(subElement => {
+                element.elements.slice().reverse().forEach(subElement => {
                     this.changeLayerVisibilities(subElement, targetVisibility);
                 });
             }

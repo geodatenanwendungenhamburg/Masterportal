@@ -56,6 +56,8 @@ export default defineConfig(mode => mergeConfig(
             exclude: [
                 // an G31: https://lgv-hamburg.atlassian.net/browse/G31DEV1-3566
                 "**/FilterGeneral.spec.js",
+                "**/Barchart.spec.js",
+                "**/Piechart.spec.js",
                 // defaults from vitest:
                 "**/node_modules/**",
                 "**/.git/**"

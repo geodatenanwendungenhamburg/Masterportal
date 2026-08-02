@@ -377,6 +377,17 @@ describe("src/core/js/layers/layer2dVector.js", () => {
     });
 
     describe("style funtions", () => {
+        it("initStyle shall not be called on creation if dontInitStyle=true", function () {
+            const initStyleSpy = sinon.spy(Layer2dVector.prototype, "initStyle");
+
+            store.getters = {
+                styleListLoaded: true
+            };
+            new Layer2dVector({...attributes, styleId: "styleId", dontInitStyle: true});
+
+            expect(initStyleSpy.notCalled).to.be.true;
+        });
+
         it("initStyle shall be called on creation and call createStyle if styleListLoaded=true", function () {
             const createStyleSpy = sinon.spy(Layer2dVector.prototype, "createStyle");
 

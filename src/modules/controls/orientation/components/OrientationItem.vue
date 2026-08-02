@@ -1,4 +1,5 @@
 <script>
+import {markRaw} from "vue";
 import {mapGetters, mapMutations, mapActions} from "vuex";
 import mutations from "../store/mutationsOrientation.js";
 import ControlIcon from "../../components/ControlIcon.vue";
@@ -8,9 +9,18 @@ import Geolocation from "ol/Geolocation.js";
 import Overlay from "ol/Overlay.js";
 import proj4 from "proj4";
 import * as Proj from "ol/proj.js";
-import {Circle, LineString} from "ol/geom.js";
-import layerCollection from "@core/layers/js/layerCollection.js";
-import isObject from "@shared/js/utils/isObject.js";
+import {
+    clearAccuracyGeometry as clearAccuracyGeometryUtil,
+    createAccuracyFeature,
+    initAccuracyLayer as initAccuracyLayerUtil,
+    removeAccuracyLayer as removeAccuracyLayerUtil,
+    updateAccuracyGeometry as updateAccuracyGeometryUtil
+} from "../utils/accuracyLayer.js";
+import {getVectorFeaturesInCircle as getVectorFeaturesInCircleUtil} from "../utils/poiFeatureSearch.js";
+import {
+    getMarkerDirectionStyle,
+    resolveHeading
+} from "../utils/directionMarker.js";
 
 /**
  * Orientation control that allows the user to locate themselves on the map.
@@ -32,13 +42,17 @@ export default {
     data () {
         return {
             firstGeolocation: true, // flag to check if it's the first time
-            marker: new Overlay({
+            marker: markRaw(new Overlay({
                 positioning: "center-center",
                 stopEvent: false
-            }),
+            })),
             tracking: false,
             isGeolocationDenied: false,
-            isGeoLocationPossible: false
+            isGeoLocationPossible: false,
+            heading: null,
+            previousPosition: null,
+            accuracyFeature: createAccuracyFeature(),
+            accuracyLayer: null
         };
     },
     computed: {
@@ -47,20 +61,26 @@ export default {
             "iconGeolocate",
             "iconGeolocatePOI",
             "iconGeolocationMarker",
+            "iconDirectionArrow",
             "iFrameGeolocationEnabled",
             "onlyFilteredFeatures",
             "poiDistances",
             "poiMode",
             "poiModeCurrentPositionEnabled",
+            "showDirection",
             "showPoi",
             "showPoiChoice",
             "showPoiIcon",
-            "zoomMode"
+            "zoomMode",
+            "showAccuracy"
         ]),
         ...mapGetters("Maps", ["projection"]),
         ...mapGetters(["visibleLayerConfigs"]),
         poiDistancesLocal () {
             return this.poiDistances === true ? [500, 1000, 2000] : this.poiDistances;
+        },
+        markerDirectionStyle () {
+            return getMarkerDirectionStyle(this.showDirection, this.heading);
         }
     },
     watch: {
@@ -91,10 +111,27 @@ export default {
         this.addElement();
         this.checkWFS();
     },
+    beforeUnmount () {
+        clearAccuracyGeometryUtil({
+            accuracyFeature: this.accuracyFeature,
+            geolocation: this.geolocation,
+            listener: this.onAccuracyGeometryChange
+        });
+        this.removeOverlay();
+    },
     methods: {
         ...mapMutations("Controls/Orientation", Object.keys(mutations)),
         ...mapActions("Maps", ["zoomToCoordinates"]),
         ...mapActions("Alerting", ["addSingleAlert"]),
+
+        onAccuracyGeometryChange () {
+            updateAccuracyGeometryUtil({
+                accuracyFeature: this.accuracyFeature,
+                geolocation: this.geolocation,
+                projectionCode: this.projection.getCode(),
+                showAccuracy: this.showAccuracy
+            });
+        },
 
         setIsGeoLocationPossible () {
             this.isGeoLocationPossible = window.location.protocol === "https:" || ["localhost", "127.0.0.1"].indexOf(window.location.hostname);
@@ -108,13 +145,7 @@ export default {
             this.marker.setElement(document.querySelector("#geolocation_marker"));
         },
 
-        /**
-         * Tracking the geo position
-         * @returns {void}
-         */
-        track () {
-            let geolocation = null;
-
+        canStartTracking () {
             const inIframe = window.self !== window.top,
                   iFrameGeolocationEnabled = this.iFrameGeolocationEnabled === true;
 
@@ -123,25 +154,94 @@ export default {
                     category: "error",
                     content: `<strong>${this.$t("common:modules.controls.orientation.iFrameGeolocationError")}`
                 });
+                return false;
             }
-            else if (this.isGeolocationDenied === false) {
-                mapCollection.getMap("2D").addOverlay(this.marker);
-                if (this.geolocation === null) {
-                    geolocation = new Geolocation({tracking: true, projection: Proj.get("EPSG:4326")});
-                    this.setGeolocation(geolocation);
-                }
-                else {
-                    geolocation = this.geolocation;
-                    this.positioning();
-                }
-
-                geolocation.on("change", this.positioning);
-                geolocation.on("error", this.onError);
-                this.tracking = true;
-            }
-            else {
+            if (this.isGeolocationDenied !== false) {
                 this.onError();
+                return false;
             }
+            return true;
+        },
+
+        ensureGeolocationInstance () {
+            if (this.geolocation === null) {
+                const geolocation = markRaw(new Geolocation({tracking: false, projection: Proj.get("EPSG:4326"), trackingOptions: {enableHighAccuracy: true}}));
+
+                this.setGeolocation(geolocation);
+                return geolocation;
+            }
+            return this.geolocation;
+        },
+
+        unbindGeolocationListeners (geolocation) {
+            geolocation.un("change", this.positioning);
+            geolocation.un("error", this.onError, this);
+            geolocation.un("change:accuracyGeometry", this.onAccuracyGeometryChange);
+        },
+
+        /**
+         * Shows marker overlay and accuracy layer on map.
+         * @returns {void}
+         */
+        showMarkerOverlay () {
+            const map = mapCollection.getMap("2D");
+
+            map.addOverlay(this.marker);
+            if (this.showAccuracy) {
+                const {accuracyLayer} = initAccuracyLayerUtil({
+                    accuracyFeature: this.accuracyFeature,
+                    accuracyLayer: this.accuracyLayer,
+                    map
+                });
+
+                this.accuracyLayer = accuracyLayer;
+                this.onAccuracyGeometryChange();
+            }
+        },
+
+        bindGeolocationListeners (geolocation) {
+            if (this.showAccuracy) {
+                geolocation.on("change:accuracyGeometry", this.onAccuracyGeometryChange);
+            }
+
+            geolocation.on("change", this.positioning);
+            geolocation.on("error", this.onError, this);
+        },
+
+        startTrackingSession (geolocation) {
+            geolocation.setTracking(true);
+
+            if (geolocation.getPosition()) {
+                this.positioning();
+            }
+            if (this.showAccuracy) {
+                this.onAccuracyGeometryChange();
+            }
+            this.tracking = true;
+        },
+
+        stopTrackingSession (geolocation) {
+            geolocation.setTracking(false); // for FireFox - cannot handle geolocation.un(...)
+            this.unbindGeolocationListeners(geolocation);
+            this.heading = null;
+            this.previousPosition = null;
+        },
+
+        /**
+         * Tracking the geo position
+         * @returns {void}
+         */
+        track () {
+            if (!this.canStartTracking()) {
+                return;
+            }
+
+            const geolocation = this.ensureGeolocationInstance();
+
+            this.showMarkerOverlay();
+            this.unbindGeolocationListeners(geolocation);
+            this.bindGeolocationListeners(geolocation);
+            this.startTrackingSession(geolocation);
         },
 
         /**
@@ -151,14 +251,23 @@ export default {
         untrack () {
             const geolocation = this.geolocation;
 
-            geolocation.setTracking(false); // for FireFox - cannot handle geolocation.un(...)
-            geolocation.un("error", this.onError, this);
+            if (!geolocation) {
+                this.tracking = false;
+                return;
+            }
+
+            this.stopTrackingSession(geolocation);
             if (this.tracking === false || this.firstGeolocation === false) {
                 this.removeOverlay();
             }
+            clearAccuracyGeometryUtil({
+                accuracyFeature: this.accuracyFeature,
+                geolocation,
+                listener: this.onAccuracyGeometryChange
+            });
+            this.unbindGeolocationListeners(geolocation);
 
             this.tracking = false;
-            this.setGeolocation(null);
         },
 
         /**
@@ -181,7 +290,14 @@ export default {
          * @returns {void}
          */
         removeOverlay () {
-            mapCollection.getMap("2D").removeOverlay(this.marker);
+            const map = mapCollection.getMap("2D");
+
+            map.removeOverlay(this.marker);
+            removeAccuracyLayerUtil({
+                accuracyLayer: this.accuracyLayer,
+                map
+            });
+            this.accuracyLayer = null;
         },
 
         /**
@@ -268,7 +384,13 @@ export default {
             const position = this.geolocation.getPosition(),
                   firstGeolocation = this.firstGeolocation,
                   zoomMode = this.zoomMode,
-                  centerPosition = proj4(proj4("EPSG:4326"), proj4(this.projection.getCode()), position);
+                  centerPosition = proj4(proj4("EPSG:4326"), proj4(this.projection.getCode()), position),
+                  resolvedHeading = resolveHeading(this.geolocation.getHeading());
+
+            if (Number.isFinite(resolvedHeading)) {
+                this.heading = resolvedHeading;
+            }
+            this.previousPosition = Array.isArray(position) ? [...position] : null;
 
             // setting the center position
             this.setPosition(centerPosition);
@@ -292,6 +414,8 @@ export default {
             else {
                 console.error("The configured zoomMode: " + zoomMode + " does not exist. Please use the params 'once' or 'always'!");
             }
+
+            this.onAccuracyGeometryChange();
 
             this.$store.dispatch("Maps/removePointMarker");
         },
@@ -331,9 +455,10 @@ export default {
 
             if (this.poiModeCurrentPositionEnabled) {
                 this.$store.dispatch("Maps/removePointMarker");
-                mapCollection.getMap("2D").addOverlay(this.marker);
+                this.showMarkerOverlay();
+                document.querySelector("#geolocate").className += " toggleButtonPressed";
                 if (this.geolocation === null) {
-                    geolocation = new Geolocation({tracking: true, projection: Proj.get("EPSG:4326")});
+                    geolocation = new Geolocation({tracking: true, enableHighAccuracy: true, projection: Proj.get("EPSG:4326")});
                     this.setGeolocation(geolocation);
                 }
                 else {
@@ -343,6 +468,10 @@ export default {
                 }
                 geolocation.on("change", this.showPoiWindow);
                 geolocation.on("error", this.onPOIError);
+            }
+            else {
+                this.untrack();
+                document.querySelector("#geolocate").classList.remove("toggleButtonPressed");
             }
         },
 
@@ -404,115 +533,12 @@ export default {
          * @return {ol/feature} Array of ol.features list
          */
         getVectorFeaturesInCircle (layerConfigs, distance, centerPosition) {
-            const circle = new Circle(centerPosition, distance),
-                  circleExtent = circle.getExtent(),
-                  visibleWFSLayers = [];
-
-            layerConfigs.forEach(layerConfig => {
-                if (layerConfig.typ === "WFS" && layerConfig.visibility) {
-                    const layer = layerCollection.getLayerById(layerConfig.id);
-
-                    if (layer) {
-                        visibleWFSLayers.push(layer);
-                    }
-                }
+            return getVectorFeaturesInCircleUtil({
+                layerConfigs,
+                distance,
+                centerPosition,
+                onlyFilteredFeatures: this.onlyFilteredFeatures
             });
-            let featuresAll = [],
-                features = [];
-
-            visibleWFSLayers.forEach(layer => {
-                let preparedFeatures,
-                    filteredFeatures = [];
-
-                if (layer.getLayerSource()) {
-                    features = layer.getLayerSource().getFeaturesInExtent(circleExtent);
-                    filteredFeatures = features.filter(feat => {
-                        return (isObject(feat.getStyle()) && feat.getStyle().getImage() !== null) || (typeof feat.getStyle() === "function" && feat.getStyle()(feat) !== null);
-                    });
-                    if (this.onlyFilteredFeatures === true) {
-                        features = filteredFeatures;
-                    }
-                    preparedFeatures = features.filter((feat) => {
-                        const dist = this.getDistance(feat, centerPosition);
-
-                        return dist <= distance;
-                    });
-
-                    preparedFeatures.forEach(function (feat) {
-                        Object.assign(feat, {
-                            styleId: layer.get("styleId"),
-                            layerName: layer.get("name"),
-                            nearbyTitleText: this.getNearbyTitleText(feat, layer.get("nearbyTitle")),
-                            dist2Pos: this.getDistance(feat, centerPosition)
-                        });
-                    }, this);
-                    featuresAll = this.union(preparedFeatures, featuresAll, function (obj1, obj2) {
-                        return obj1 === obj2;
-                    });
-                }
-            }, this);
-
-            return featuresAll;
-        },
-
-        /**
-         * Computes the union of the passed-in arrays: the list of unique items, in order, that are present in one or more of the arrays.
-         * @param  {Array} arr1 the first array
-         * @param  {Array} arr2 the second array
-         * @param  {Function} equalityFunc to compare objects
-         * @returns {Array} the union of the two arrays
-         */
-        union (arr1, arr2, equalityFunc) {
-            const union = arr1.concat(arr2);
-            let i = 0,
-                j = 0;
-
-            for (i = 0; i < union.length; i++) {
-                for (j = i + 1; j < union.length; j++) {
-                    if (equalityFunc(union[i], union[j])) {
-                        union.splice(j, 1);
-                        j--;
-                    }
-                }
-            }
-            return union;
-        },
-
-        /**
-         * Getting the distance from center position
-         * @param  {ol/feature} feat Feature
-         * @param {Number[]} centerPosition the center position
-         * @return {Number} dist the distance
-         */
-        getDistance (feat, centerPosition) {
-            const closestPoint = feat.getGeometry().getClosestPoint(centerPosition),
-                  line = new LineString([closestPoint, centerPosition]);
-
-            return Math.round(line.getLength());
-        },
-
-        /**
-         * Getting the attributes for the list of nearby features
-         * @param {ol/Feature} feat Feature
-         * @param {(String|String[])} nearbyTitle the attribute(s) of features to show in the nearby list
-         * @return {String[]} the text of nearbyTitle
-         */
-        getNearbyTitleText (feat, nearbyTitle) {
-            if (typeof nearbyTitle === "string" && feat.get(nearbyTitle) !== undefined) {
-                return [feat.get(nearbyTitle)];
-            }
-            else if (Array.isArray(nearbyTitle)) {
-                const nearbyTitleText = [];
-
-                nearbyTitle.forEach(attr => {
-                    if (feat.get(attr) !== undefined) {
-                        nearbyTitleText.push(feat.get(attr));
-                    }
-                });
-
-                return nearbyTitleText;
-            }
-            return [];
         }
     }
 
@@ -525,6 +551,15 @@ export default {
             id="geolocation_marker"
             class="geolocation_marker"
         >
+            <span
+                v-if="showDirection && Number.isFinite(heading)"
+                class="geolocation_marker_direction_anchor"
+                :style="markerDirectionStyle"
+            >
+                <i
+                    :class="iconDirectionArrow + ' geolocation_marker_direction'"
+                />
+            </span>
             <i :class="iconGeolocationMarker" />
         </span>
         <ControlIcon
@@ -563,9 +598,29 @@ export default {
         }
     }
     .geolocation_marker {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         color: $dark_blue;
         padding: 1px;
         border-radius: 50%;
         font-size: 1.4rem;
+    }
+    .geolocation_marker_direction {
+        display: inline-block;
+        color: $dark_blue;
+        font-size: 1rem;
+        line-height: 1;
+        padding-bottom: 0.7rem;
+        pointer-events: none;
+    }
+    .geolocation_marker_direction_anchor {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -102%) rotate(var(--marker-heading-angle, 0deg));
+        transform-origin: 50% 100%;
+        pointer-events: none;
     }
 </style>

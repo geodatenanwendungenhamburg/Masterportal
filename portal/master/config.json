@@ -398,7 +398,8 @@
             "type": "about",
             "cswUrl": "https://metaver.de/csw",
             "metaUrl": "https://metaver.de/trefferanzeige?docuuid=40D48B03-AD1D-407B-B04D-B5BC6855BE15",
-            "metaId": "40D48B03-AD1D-407B-B04D-B5BC6855BE15"
+            "metaId": "40D48B03-AD1D-407B-B04D-B5BC6855BE15",
+            "hideImprintInFooter":false
           },
           {
             "type": "legend"

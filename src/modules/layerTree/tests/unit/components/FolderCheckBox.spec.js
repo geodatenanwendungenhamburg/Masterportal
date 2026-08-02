@@ -193,9 +193,9 @@ describe("src/modules/layerTree/components/FolderCheckBox.vue", () => {
             wrapper.vm.changeCheckboxStatus("selected");
 
             expect(changeVisibilitySpy.callCount).to.equals(3);
-            expect(changeVisibilitySpy.firstCall.args[1]).to.be.deep.equals({layerId: folder.elements[0].id, value: false});
+            expect(changeVisibilitySpy.firstCall.args[1]).to.be.deep.equals({layerId: folder.elements[2].elements[0].id, value: false});
             expect(changeVisibilitySpy.secondCall.args[1]).to.be.deep.equals({layerId: folder.elements[1].id, value: false});
-            expect(changeVisibilitySpy.thirdCall.args[1]).to.be.deep.equals({layerId: folder.elements[2].elements[0].id, value: false});
+            expect(changeVisibilitySpy.thirdCall.args[1]).to.be.deep.equals({layerId: folder.elements[0].id, value: false});
         });
 
         it("should set all layer status in the given folder to visibility=true, if current status is unselected", () => {
@@ -209,9 +209,9 @@ describe("src/modules/layerTree/components/FolderCheckBox.vue", () => {
             wrapper.vm.changeCheckboxStatus("unselected");
 
             expect(changeVisibilitySpy.callCount).to.equals(3);
-            expect(changeVisibilitySpy.firstCall.args[1]).to.be.deep.equals({layerId: folder.elements[0].id, value: true});
+            expect(changeVisibilitySpy.firstCall.args[1]).to.be.deep.equals({layerId: folder.elements[2].elements[0].id, value: true});
             expect(changeVisibilitySpy.secondCall.args[1]).to.be.deep.equals({layerId: folder.elements[1].id, value: true});
-            expect(changeVisibilitySpy.thirdCall.args[1]).to.be.deep.equals({layerId: folder.elements[2].elements[0].id, value: true});
+            expect(changeVisibilitySpy.thirdCall.args[1]).to.be.deep.equals({layerId: folder.elements[0].id, value: true});
         });
 
         it("should set all layer status in the given folder to visibility=false, if current status is indeterminate", () => {
@@ -225,9 +225,9 @@ describe("src/modules/layerTree/components/FolderCheckBox.vue", () => {
             wrapper.vm.changeCheckboxStatus("indeterminate");
 
             expect(changeVisibilitySpy.callCount).to.equals(3);
-            expect(changeVisibilitySpy.firstCall.args[1]).to.be.deep.equals({layerId: folder.elements[0].id, value: false});
+            expect(changeVisibilitySpy.firstCall.args[1]).to.be.deep.equals({layerId: folder.elements[2].elements[0].id, value: false});
             expect(changeVisibilitySpy.secondCall.args[1]).to.be.deep.equals({layerId: folder.elements[1].id, value: false});
-            expect(changeVisibilitySpy.thirdCall.args[1]).to.be.deep.equals({layerId: folder.elements[2].elements[0].id, value: false});
+            expect(changeVisibilitySpy.thirdCall.args[1]).to.be.deep.equals({layerId: folder.elements[0].id, value: false});
         });
     });
 
@@ -243,9 +243,9 @@ describe("src/modules/layerTree/components/FolderCheckBox.vue", () => {
             wrapper.vm.changeLayerVisibilities(folder, false);
 
             expect(changeVisibilitySpy.callCount).to.equals(3);
-            expect(changeVisibilitySpy.firstCall.args[1]).to.be.deep.equals({layerId: folder.elements[0].id, value: false});
+            expect(changeVisibilitySpy.firstCall.args[1]).to.be.deep.equals({layerId: folder.elements[2].elements[0].id, value: false});
             expect(changeVisibilitySpy.secondCall.args[1]).to.be.deep.equals({layerId: folder.elements[1].id, value: false});
-            expect(changeVisibilitySpy.thirdCall.args[1]).to.be.deep.equals({layerId: folder.elements[2].elements[0].id, value: false});
+            expect(changeVisibilitySpy.thirdCall.args[1]).to.be.deep.equals({layerId: folder.elements[0].id, value: false});
         });
 
         it("should set all layer status in the given folder to visibility=true", () => {
@@ -259,9 +259,9 @@ describe("src/modules/layerTree/components/FolderCheckBox.vue", () => {
             wrapper.vm.changeLayerVisibilities(folder, true);
 
             expect(changeVisibilitySpy.callCount).to.equals(3);
-            expect(changeVisibilitySpy.firstCall.args[1]).to.be.deep.equals({layerId: folder.elements[0].id, value: true});
+            expect(changeVisibilitySpy.firstCall.args[1]).to.be.deep.equals({layerId: folder.elements[2].elements[0].id, value: true});
             expect(changeVisibilitySpy.secondCall.args[1]).to.be.deep.equals({layerId: folder.elements[1].id, value: true});
-            expect(changeVisibilitySpy.thirdCall.args[1]).to.be.deep.equals({layerId: folder.elements[2].elements[0].id, value: true});
+            expect(changeVisibilitySpy.thirdCall.args[1]).to.be.deep.equals({layerId: folder.elements[0].id, value: true});
         });
     });
 });

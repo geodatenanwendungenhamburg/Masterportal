@@ -33,6 +33,9 @@ export default function Layer2dVector (attributes) {
     if (attributes.renderer === "webgl") {
         webgl.setLayerProperties(this);
     }
+    if (attributes.dontInitStyle === true) {
+        return;
+    }
     this.initStyle(attributes);
 }
 

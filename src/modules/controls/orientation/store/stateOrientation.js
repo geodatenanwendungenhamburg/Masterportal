@@ -3,7 +3,7 @@
  * @typedef {Object} OrientationState
  * @property {String} iconGeolocate Icon of the orientation geolocate button.
  * @property {String} iconGeolocatePOI Icon of the orientation geolocate POI button.
- * @property {String} iconGeolocatePOI Icon of the orientation geolocate map marker.
+ * @property {String} iconGeolocationMarker Icon of the orientation geolocate map marker.
  * @property {String[]} poiDistances The distances in config.json.
  * @property {String[]} supportedDevices Devices on which the module is displayed.
  * @property {String[]} supportedMapModes Map mode in which this module can be used.
@@ -19,11 +19,14 @@
  * @property {Boolean} showPoi Wether POI should be shown.
  * @property {Boolean} showPoiChoice Wether poi choice is activated.
  * @property {Boolean} showPoiIcon Wether to show the poi icon.
+ * @property {Boolean} showAccuracy Wether to show the accuracy circle which is displayed around the marker.
+ * @property {Boolean} showDirection Wether to show the direction arrow with the marker.
  */
 const state = {
     iconGeolocate: "geo-alt",
     iconGeolocatePOI: "record-circle",
     iconGeolocationMarker: "bi-circle-fill",
+    iconDirectionArrow: "bi-triangle-fil",
     poiDistances: [],
     supportedDevices: ["Desktop", "Mobile"],
     supportedMapModes: ["2D", "3D"],
@@ -39,7 +42,9 @@ const state = {
     position: null,
     showPoi: false,
     showPoiChoice: false,
-    showPoiIcon: false
+    showPoiIcon: false,
+    showAccuracy: false,
+    showDirection: false
 };
 
 export default state;
