@@ -1,5 +1,6 @@
 <script>
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
+import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 import {createMarkerStyleFn} from "../js/editStyleInteractions.js";
 
@@ -30,7 +31,8 @@ export default {
     name: "DrawEditAttributes",
     components: {
         IconButton,
-        InputText
+        InputText,
+        FlatButton
     },
     props: {
         layer: {
@@ -410,12 +412,10 @@ export default {
                     />
                 </div>
             </div>
-            <button
-                class="btn btn-primary"
-                @click="addAttribute"
-            >
-                {{ $t('common:shared.modules.draw.attributeSelect.accept') }}
-            </button>
+            <FlatButton
+                :interaction="addAttribute"
+                text="common:shared.modules.draw.attributeSelect.accept"
+            />
         </div>
         <p
             v-else
