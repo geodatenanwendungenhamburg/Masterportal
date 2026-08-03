@@ -33,7 +33,6 @@ export default {
             }, "2D");
 
             if (existingLayer) {
-                existingLayer.layer.setZIndex(9999999);
                 layerCollection.addLayer(existingLayer);
 
                 dispatch("addLayerToLayerConfig", {
