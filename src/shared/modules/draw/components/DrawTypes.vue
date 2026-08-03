@@ -7,6 +7,7 @@ import {nextTick} from "vue";
 import {createTooltipOverlay} from "../js/createTooltipOverlay.js";
 import Style from "ol/style/Style.js";
 import Icon from "ol/style/Icon.js";
+import {unByKey} from "ol/Observable.js";
 
 /**
  * Shared component that provides buttons for two-level selection of geometries and symbols.
@@ -205,7 +206,10 @@ export default {
     data () {
         return {
             currentDrawInteraction: null,
-            tooltipElement: null
+            tooltipElement: null,
+            pointerMoveKey: null,
+            tooltipOverlay: null,
+            onGeometryChange: null
         };
     },
     computed: {
@@ -287,6 +291,18 @@ export default {
         if (this.tooltipElement) {
             this.tooltipElement.style.display = "none";
         }
+        if (this.pointerMoveKey) {
+            unByKey(this.pointerMoveKey);
+            this.pointerMoveKey = null;
+        }
+        if (this.tooltipOverlay) {
+            const map = mapCollection.getMap("2D");
+
+            if (map) {
+                map.removeOverlay(this.tooltipOverlay);
+            }
+            this.tooltipOverlay = null;
+        }
     },
     methods: {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
@@ -360,18 +376,32 @@ export default {
          * @returns {void}
          */
         regulateDrawInteraction (drawType) {
+            // Clean up previous listener and overlay
+            if (this.pointerMoveKey) {
+                unByKey(this.pointerMoveKey);
+                this.pointerMoveKey = null;
+            }
+            if (this.tooltipOverlay) {
+                const mapInstance = mapCollection.getMap("2D");
+
+                if (mapInstance) {
+                    mapInstance.removeOverlay(this.tooltipOverlay);
+                }
+                this.tooltipOverlay = null;
+            }
+
             this.currentDrawInteraction = drawInteraction.createDrawInteraction(drawType, this.source, this.iconList, Config.wfsImgPath);
-            let onGeometryChange;
             const {tooltipOverlay, tooltipElement} = createTooltipOverlay(),
                   map = mapCollection.getMap("2D"),
                   symbol = this.iconList.find(val => val.id === drawType);
 
             this.tooltipElement = tooltipElement;
+            this.tooltipOverlay = tooltipOverlay;
             tooltipElement.innerHTML = "";
             tooltipElement.style.display = "none";
 
             map.addOverlay(tooltipOverlay);
-            map.on("pointermove", (event) => {
+            this.pointerMoveKey = map.on("pointermove", (event) => {
                 if (event.dragging) {
                     return;
                 }
@@ -391,7 +421,7 @@ export default {
                         const geometry = evt.feature.getGeometry();
 
 
-                        onGeometryChange = () => {
+                        this.onGeometryChange = () => {
                             if (drawType === "circle") {
                                 let radius = geometry.getRadius();
 
@@ -429,7 +459,7 @@ export default {
                             }
                         };
 
-                        geometry.on("change", onGeometryChange);
+                        geometry.on("change", this.onGeometryChange);
 
                     }
                     else if (symbol && symbol.type === "image") {
@@ -458,8 +488,13 @@ export default {
 
                     this.$emit("drawend", evt);
 
-                    if (["circle", "box", "line", "polygon"].includes(drawType)) {
+                    if (["circle", "box", "line", "polygon", "square"].includes(drawType)) {
                         const geometry = evt.feature.getGeometry();
+
+                        if (this.onGeometryChange) {
+                            geometry.un("change", this.onGeometryChange);
+                            this.onGeometryChange = null;
+                        }
 
                         if (drawType === "circle") {
                             let radius = geometry.getRadius();
@@ -469,7 +504,6 @@ export default {
                             this.$emit("circle-radius", radius);
                             tooltipElement.innerHTML = "";
                             tooltipOverlay.setPosition(undefined);
-                            geometry.un("change", onGeometryChange);
                         }
                     }
                     if (this.drawLayout) {
