@@ -1902,7 +1902,7 @@ Modules can be divided into sections. In the menu, sections are divided with a h
 |coordToolkit|no|**[coordToolkit](#portalconfigmenusectionsmodulescoordtoolkit)**||Coordinate query: Tool to query coordinates and altitude by mouse click: When clicking in the map, the coordinates are frozen in the display and can also be copied directly to the clipboard. Coordinate search: The coordinate system and the coordinates can be entered via an input mask. The tool then zooms to the corresponding coordinate and places a marker on it. The coordinate systems are obtained from config.js.|false|
 |copyrightConstraints|no|**[copyrightConstraints](#portalconfigmenusectionsmodulescopyrightconstraints)**||This module loads copyright constraints via the CSW API and shows it per layer. If no information is present, the configured fallback contact information is shown.|false|
 |customMenuElement|no|**[customMenuElement](#portalconfigmenusectionsmodulescustommenuelement)**||This module can open a link, display HTML from config.json or an external file, or perform an action. This module can be configured several times in config.json.|false|
-|draw|no|**[draw](#portalconfigmenusectionsmodulesdraw)**||**!Attention: The new draw module is currently within refactoring process you can use the draw module from Masterportal Version 2 with type "draw_old")!** The draw tool allows painting points, lines, polygons, circles, double circles, and texts to the map. You may download these drawing as KML, GeoJSON, or GPX.|false|
+|draw|no|**[draw](#portalconfigmenusectionsmodulesdraw)**||The draw tool allows painting points, lines, polygons, circles, double circles, and texts to the map. You may download these drawing as KML, GeoJSON, CSV or GPX.|false|
 |featureLister|no|**[featureLister](#portalconfigmenusectionsmodulesfeaturelister)**||Lists all features of a vector layer and highlights a feature by mouse over.|false|
 |fileImport|no|**[fileImport](#portalconfigmenusectionsmodulesfileimport)**||Import KML, GeoJSON, and GPX files with this modules.|false|
 |filter|no|**[filter](#portalconfigmenusectionsmodulesfilter)**||Configuration for an advanced filter for vector layers.|false|
@@ -2452,9 +2452,7 @@ The `Maps/activateViewpoint` action configures and activates a specific viewpoin
 
 [inherits]: # (portalConfig.menu.sections.modules)
 
-!!! warning "Ongoing Refactoring"
-    The new draw module is currently within refactoring process you can use the draw module from Masterportal Version 2 with type "draw_old"!
-    Module used to draw features on the map. This includes points, which may also be represented by symbols, and (double) circles, polygons, polylines, and text.
+Module used to draw features on the map. This includes points, which may also be represented by symbols, and (double) circles, polygons, polylines, and text.
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
@@ -2478,7 +2476,7 @@ The `Maps/activateViewpoint` action configures and activates a specific viewpoin
 ```json
 
 {
-    "type": "draw_old",
+    "type": "draw",
     "name": "Draw / Write",
     "icon": "bi-pencil-fill",
     "iconList": [
