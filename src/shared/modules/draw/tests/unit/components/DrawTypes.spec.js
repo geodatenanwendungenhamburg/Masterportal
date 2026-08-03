@@ -83,6 +83,7 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
             id: "ol",
             mode: "2D",
             addOverlay: sinon.spy(),
+            removeOverlay: sinon.spy(),
             on: sinon.spy()
         }, "2D");
     });

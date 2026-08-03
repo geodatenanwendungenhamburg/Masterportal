@@ -932,7 +932,7 @@ export default {
         if (rootGetters.isModuleAvailable("draw")) {
             dispatch("Menu/changeCurrentComponent", {type: "draw", side: menuSide, props: {name: i18next.t("common:modules.draw.name")}}, {root: true});
         }
-        else if (!rootGetters.isModuleAvailable("draw_old")) {
+        else if (rootGetters.isModuleAvailable("draw_old")) {
             dispatch("Menu/changeCurrentComponent", {type: "draw_old", side: menuSide, props: {name: i18next.t("common:modules.draw_old.name")}}, {root: true});
         }
 
