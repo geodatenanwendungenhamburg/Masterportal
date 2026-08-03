@@ -1,8 +1,7 @@
 <script>
-import {convertColor} from "@shared/js/utils/convertColor.js";
 import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
-import {getFeatureEditType, extractEditableState, applyStyleChange} from "../js/editStyleInteractions.js";
+import {extractEditableState, applyStyleChange} from "../js/editStyleInteractions.js";
 
 /**
  * Subcomponent of DrawEdit that provides rich style editing controls
@@ -102,9 +101,6 @@ export default {
         }
     },
     methods: {
-        convertColor,
-        getFeatureEditType,
-
         /**
          * Applies a single style property change to the feature and updates local state.
          * @param {String} key The property key to change.
