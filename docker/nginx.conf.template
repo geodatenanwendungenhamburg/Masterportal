@@ -17,6 +17,29 @@ server {
         proxy_read_timeout    60s;
     }
 
+    # ── Portal config for browser clients: always backend-generated ──────────
+    # Public routes /<portal>/config.* and /portal/<portal>/config.* are
+    # resolved by backend endpoint /api/:portal/config.*.
+    location ~ ^/(?:portal/)?([A-Za-z0-9._-]+)/config\.(js|json)$ {
+        proxy_pass         http://${BACKEND_SERVICE_URL}/api/$1/config.$2;
+        proxy_http_version 1.1;
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Real-IP         $remote_addr;
+        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 10s;
+        proxy_read_timeout    60s;
+    }
+
+    # ── Internal static portal config source for backend fetches ─────────────
+    # Backend can fetch /__frontend_static/<portal>/config.* from this service
+    # to read FE files without re-entering the backend proxy route above.
+    location ~ ^/__frontend_static/([A-Za-z0-9._-]+)/config\.(js|json)$ {
+        try_files /$1/config.$2 /portal/$1/config.$2 /portalconfigs/$1/config.$2 =404;
+        expires 1h;
+        add_header Cache-Control "public, no-transform";
+    }
+
     # ── Ensure CSS/JS/image assets are served directly (no SPA rewrite) ─────
     # MUST come before location / to take priority
     location ~ \.(js|css|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot|ico|map)$ {
