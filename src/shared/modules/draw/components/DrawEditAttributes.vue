@@ -54,13 +54,13 @@ export default {
         };
     },
     created () {
-        this._selectionMarker = null;
+        this.selectionMarker = null;
     },
     mounted () {
         this.registerClickHandler();
     },
     beforeUnmount () {
-        this._clearSelectionMarker();
+        this.clearSelectionMarker();
         this.unregisterClickHandler();
     },
     methods: {
@@ -84,7 +84,7 @@ export default {
                 }, {hitTolerance: 10});
 
                 if (!found) {
-                    this._clearSelectionMarker();
+                    this.clearSelectionMarker();
                     this.selectedFeature = null;
                     this.attributes = [];
                     this.validKeys = {};
@@ -113,10 +113,10 @@ export default {
          * @param {ol/Feature} feature The feature to mark.
          * @returns {void}
          */
-        _applySelectionMarker (feature) {
+        applySelectionMarker (feature) {
             const originalStyle = feature.getStyle();
 
-            this._selectionMarker = {feature, originalStyle};
+            this.selectionMarker = {feature, originalStyle};
             feature.setStyle(createMarkerStyleFn(originalStyle));
         },
 
@@ -124,10 +124,10 @@ export default {
          * Restores the previously marked feature's original style.
          * @returns {void}
          */
-        _clearSelectionMarker () {
-            if (this._selectionMarker) {
-                this._selectionMarker.feature.setStyle(this._selectionMarker.originalStyle);
-                this._selectionMarker = null;
+        clearSelectionMarker () {
+            if (this.selectionMarker) {
+                this.selectionMarker.feature.setStyle(this.selectionMarker.originalStyle);
+                this.selectionMarker = null;
             }
         },
 
@@ -137,8 +137,8 @@ export default {
          * @returns {void}
          */
         onFeatureClick (feature) {
-            this._clearSelectionMarker();
-            this._applySelectionMarker(feature);
+            this.clearSelectionMarker();
+            this.applySelectionMarker(feature);
             this.selectedFeature = feature;
             this.newKey = "";
             this.newValue = "";
