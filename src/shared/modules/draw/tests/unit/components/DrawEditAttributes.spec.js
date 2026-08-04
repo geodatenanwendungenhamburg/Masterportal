@@ -1,4 +1,4 @@
-import {config, shallowMount} from "@vue/test-utils";
+import {shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import Feature from "ol/Feature.js";
 import VectorLayer from "ol/layer/Vector.js";
@@ -6,8 +6,6 @@ import VectorSource from "ol/source/Vector.js";
 import sinon from "sinon";
 
 import DrawEditAttributesComponent from "@shared/modules/draw/components/DrawEditAttributes.vue";
-
-config.global.mocks.$t = key => key;
 
 describe("src/shared/modules/draw/components/DrawEditAttributes.vue", () => {
     let layer,
@@ -95,9 +93,13 @@ describe("src/shared/modules/draw/components/DrawEditAttributes.vue", () => {
                 propsData: {layer}
             });
             wrapper.vm.selectedFeature = new Feature();
+            layer.getSource().addFeature(wrapper.vm.selectedFeature);
+            layer.getSource().addFeature(new Feature());
         });
 
-        it("should add a new attribute and set it on the feature", () => {
+        it("should add a new attribute and set the key on all layer features", () => {
+            const secondFeature = layer.getSource().getFeatures()[1];
+
             wrapper.vm.newKey = "city";
             wrapper.vm.newValue = "Hamburg";
 
@@ -107,6 +109,7 @@ describe("src/shared/modules/draw/components/DrawEditAttributes.vue", () => {
             expect(wrapper.vm.attributes[0].key).to.equal("city");
             expect(wrapper.vm.attributes[0].value).to.equal("Hamburg");
             expect(wrapper.vm.selectedFeature.get("city")).to.equal("Hamburg");
+            expect(secondFeature.get("city")).to.equal("");
         });
 
         it("should set newKeyError if key is empty", () => {
@@ -149,6 +152,18 @@ describe("src/shared/modules/draw/components/DrawEditAttributes.vue", () => {
             expect(wrapper.vm.newKey).to.equal("");
             expect(wrapper.vm.newValue).to.equal("");
         });
+
+        it("should assign known keys to features added later", () => {
+            const newFeature = new Feature();
+
+            wrapper.vm.newKey = "city";
+            wrapper.vm.newValue = "Hamburg";
+            wrapper.vm.addAttribute();
+
+            layer.getSource().addFeature(newFeature);
+
+            expect(newFeature.get("city")).to.equal("");
+        });
     });
 
     describe("removeAttribute", () => {
@@ -158,6 +173,12 @@ describe("src/shared/modules/draw/components/DrawEditAttributes.vue", () => {
             });
             wrapper.vm.selectedFeature = new Feature();
             wrapper.vm.selectedFeature.set("city", "Hamburg");
+            layer.getSource().addFeature(wrapper.vm.selectedFeature);
+
+            const secondFeature = new Feature();
+
+            secondFeature.set("city", "Berlin");
+            layer.getSource().addFeature(secondFeature);
             wrapper.vm.attributes = [{key: "city", originalKey: "city", value: "Hamburg"}];
         });
 
@@ -167,10 +188,13 @@ describe("src/shared/modules/draw/components/DrawEditAttributes.vue", () => {
             expect(wrapper.vm.attributes.length).to.equal(0);
         });
 
-        it("should unset the key on the feature", () => {
+        it("should unset the key on all features", () => {
+            const secondFeature = layer.getSource().getFeatures()[1];
+
             wrapper.vm.removeAttribute(0);
 
             expect(wrapper.vm.selectedFeature.get("city")).to.be.undefined;
+            expect(secondFeature.get("city")).to.be.undefined;
         });
 
         it("should do nothing if idx is out of bounds", () => {
@@ -187,15 +211,25 @@ describe("src/shared/modules/draw/components/DrawEditAttributes.vue", () => {
             });
             wrapper.vm.selectedFeature = new Feature();
             wrapper.vm.selectedFeature.set("oldKey", "value");
+            layer.getSource().addFeature(wrapper.vm.selectedFeature);
+
+            const secondFeature = new Feature();
+
+            secondFeature.set("oldKey", "");
+            layer.getSource().addFeature(secondFeature);
             wrapper.vm.attributes = [{key: "oldKey", originalKey: "oldKey", value: "value"}];
         });
 
-        it("should rename key on feature and update originalKey", () => {
+        it("should rename key on all features and update originalKey", () => {
+            const secondFeature = layer.getSource().getFeatures()[1];
+
             wrapper.vm.attributes[0].key = "newKey";
             wrapper.vm.saveKeyChange(0);
 
             expect(wrapper.vm.selectedFeature.get("oldKey")).to.be.undefined;
             expect(wrapper.vm.selectedFeature.get("newKey")).to.equal("value");
+            expect(secondFeature.get("oldKey")).to.be.undefined;
+            expect(secondFeature.get("newKey")).to.equal("");
             expect(wrapper.vm.attributes[0].originalKey).to.equal("newKey");
         });
 
@@ -217,6 +251,48 @@ describe("src/shared/modules/draw/components/DrawEditAttributes.vue", () => {
             wrapper.vm.saveValueChange(0);
 
             expect(wrapper.vm.selectedFeature.get("city")).to.equal("Hamburg");
+        });
+    });
+
+    describe("updateGfiAttributes", () => {
+        it("should include keys that exist on any feature", () => {
+            wrapper = shallowMount(DrawEditAttributesComponent, {
+                propsData: {layer}
+            });
+
+            const firstFeature = new Feature(),
+                secondFeature = new Feature();
+
+            firstFeature.set("city", "Hamburg");
+            firstFeature.set("status", "active");
+            secondFeature.set("city", "");
+            secondFeature.set("status", "active");
+
+            layer.getSource().addFeature(firstFeature);
+            layer.getSource().addFeature(secondFeature);
+
+            wrapper.vm.updateGfiAttributes();
+
+            expect(layer.get("gfiAttributes")).to.deep.equal({city: "city", status: "status"});
+        });
+
+        it("should include keys even if values are empty", () => {
+            wrapper = shallowMount(DrawEditAttributesComponent, {
+                propsData: {layer}
+            });
+
+            const firstFeature = new Feature(),
+                secondFeature = new Feature();
+
+            firstFeature.set("city", "");
+            secondFeature.set("city", "");
+
+            layer.getSource().addFeature(firstFeature);
+            layer.getSource().addFeature(secondFeature);
+
+            wrapper.vm.updateGfiAttributes();
+
+            expect(layer.get("gfiAttributes")).to.deep.equal({city: "city"});
         });
     });
 

@@ -50,7 +50,8 @@ export default {
             newKeyError: "",
             newValueError: "",
             validKeys: {},
-            clickHandler: null
+            clickHandler: null,
+            addFeatureHandler: null
         };
     },
     created () {
@@ -58,12 +59,44 @@ export default {
     },
     mounted () {
         this.registerClickHandler();
+        this.registerAddFeatureHandler();
     },
     beforeUnmount () {
         this.clearSelectionMarker();
         this.unregisterClickHandler();
+        this.unregisterAddFeatureHandler();
     },
     methods: {
+        /**
+         * Returns all features from the configured layer.
+         * @returns {ol/Feature[]} List of draw features.
+         */
+        getAllFeatures () {
+            return this.layer?.getSource()?.getFeatures() ?? [];
+        },
+
+        /**
+         * Returns known user-facing attribute keys from all features.
+         * @param {ol/Feature} [excludedFeature] Optional feature to skip.
+         * @returns {String[]} List of known attribute keys.
+         */
+        getKnownAttributeKeys (excludedFeature = undefined) {
+            const keys = new Set();
+
+            this.getAllFeatures().forEach(feature => {
+                if (feature === excludedFeature) {
+                    return;
+                }
+                Object.keys(feature.getProperties()).forEach(key => {
+                    if (!EXCLUDED_KEYS.has(key)) {
+                        keys.add(key);
+                    }
+                });
+            });
+
+            return Array.from(keys);
+        },
+
         /**
          * Registers a singleclick handler on the map to select a drawing.
          * @returns {void}
@@ -98,6 +131,37 @@ export default {
         },
 
         /**
+         * Registers a handler to sync known attribute keys to newly added features.
+         * @returns {void}
+         */
+        registerAddFeatureHandler () {
+            const source = this.layer?.getSource?.();
+
+            if (!source || this.addFeatureHandler) {
+                return;
+            }
+
+            this.addFeatureHandler = (event) => {
+                const feature = event?.feature,
+                      knownKeys = this.getKnownAttributeKeys(feature);
+
+                if (!feature || knownKeys.length === 0) {
+                    return;
+                }
+
+                knownKeys.forEach(key => {
+                    if (!Object.prototype.hasOwnProperty.call(feature.getProperties(), key)) {
+                        feature.set(key, "");
+                    }
+                });
+
+                this.updateGfiAttributes();
+            };
+
+            source.on("addfeature", this.addFeatureHandler);
+        },
+
+        /**
          * Removes the singleclick handler from the map.
          * @returns {void}
          */
@@ -105,6 +169,19 @@ export default {
             if (this.clickHandler) {
                 mapCollection.getMap("2D").un("singleclick", this.clickHandler);
                 this.clickHandler = null;
+            }
+        },
+
+        /**
+         * Removes the addfeature handler from the layer source.
+         * @returns {void}
+         */
+        unregisterAddFeatureHandler () {
+            const source = this.layer?.getSource?.();
+
+            if (source && this.addFeatureHandler) {
+                source.un("addfeature", this.addFeatureHandler);
+                this.addFeatureHandler = null;
             }
         },
 
@@ -176,7 +253,16 @@ export default {
             this.newKeyError = "";
             this.newValueError = "";
             this.attributes.push({key, originalKey: key, value: this.newValue});
-            this.selectedFeature?.set(key, this.newValue);
+
+            this.getAllFeatures().forEach(feature => {
+                if (feature === this.selectedFeature) {
+                    feature.set(key, this.newValue);
+                }
+                else if (!Object.prototype.hasOwnProperty.call(feature.getProperties(), key)) {
+                    feature.set(key, "");
+                }
+            });
+
             this.newKey = "";
             this.newValue = "";
             this.updateGfiAttributes();
@@ -194,12 +280,15 @@ export default {
             if (!attr) {
                 return;
             }
-            if (attr.originalKey) {
-                this.selectedFeature?.unset(attr.originalKey);
-            }
-            if (attr.key && attr.key !== attr.originalKey) {
-                this.selectedFeature?.unset(attr.key);
-            }
+            this.getAllFeatures().forEach(feature => {
+                if (attr.originalKey) {
+                    feature.unset(attr.originalKey);
+                }
+                if (attr.key && attr.key !== attr.originalKey) {
+                    feature.unset(attr.key);
+                }
+            });
+
             this.attributes.splice(idx, 1);
             this.updateGfiAttributes();
             this.checkAttributes();
@@ -227,8 +316,17 @@ export default {
                 return;
             }
 
-            this.selectedFeature?.unset(attr.originalKey);
-            this.selectedFeature?.set(trimmedKey, attr.value);
+            this.getAllFeatures().forEach(feature => {
+                if (Object.prototype.hasOwnProperty.call(feature.getProperties(), attr.originalKey)) {
+                    feature.set(trimmedKey, String(feature.get(attr.originalKey) ?? ""));
+                }
+                else if (!Object.prototype.hasOwnProperty.call(feature.getProperties(), trimmedKey)) {
+                    feature.set(trimmedKey, "");
+                }
+
+                feature.unset(attr.originalKey);
+            });
+
             attr.originalKey = trimmedKey;
 
             this.updateGfiAttributes();
@@ -248,6 +346,8 @@ export default {
             if (attr?.key) {
                 this.selectedFeature?.set(attr.key, attr.value);
             }
+
+            this.updateGfiAttributes();
         },
 
         /**
@@ -308,7 +408,7 @@ export default {
             if (!this.layer) {
                 return;
             }
-            const allFeatures = this.layer.getSource()?.getFeatures() ?? [],
+            const allFeatures = this.getAllFeatures(),
                   gfiAttrs = {};
 
             allFeatures.forEach(feature => {
@@ -319,9 +419,7 @@ export default {
                 });
             });
 
-            if (Object.keys(gfiAttrs).length > 0) {
-                this.layer.set("gfiAttributes", gfiAttrs);
-            }
+            this.layer.set("gfiAttributes", gfiAttrs);
         }
     }
 };
