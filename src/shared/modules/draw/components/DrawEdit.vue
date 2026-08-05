@@ -130,6 +130,13 @@ export default {
     },
     computed: {
         /**
+         * Returns the 2D map instance.
+         * @returns {module:ol/Map|undefined} The 2D map instance.
+         */
+        map2D () {
+            return mapCollection.getMap("2D");
+        },
+        /**
          * Returns the vector source from the layer.
          * @returns {ol/source/Vector|undefined} The vector source.
          */
@@ -165,11 +172,11 @@ export default {
                 this.removeInteraction(this.currentModifyInteraction);
                 this.currentModifyInteraction = null;
                 if (this.modifyTooltipOverlay) {
-                    mapCollection.getMap("2D").removeOverlay(this.modifyTooltipOverlay);
+                    this.map2D?.removeOverlay(this.modifyTooltipOverlay);
                     this.modifyTooltipOverlay = null;
                 }
                 if (this.featureClickHandler) {
-                    mapCollection.getMap("2D").un("singleclick", this.featureClickHandler);
+                    this.map2D?.un("singleclick", this.featureClickHandler);
                     this.featureClickHandler = null;
                     this.selectedEditFeature = null;
                 }
@@ -198,11 +205,11 @@ export default {
             this.currentModifyInteraction = null;
         }
         if (this.modifyTooltipOverlay) {
-            mapCollection.getMap("2D").removeOverlay(this.modifyTooltipOverlay);
+            this.map2D?.removeOverlay(this.modifyTooltipOverlay);
             this.modifyTooltipOverlay = null;
         }
         if (this.featureClickHandler) {
-            mapCollection.getMap("2D").un("singleclick", this.featureClickHandler);
+            this.map2D?.un("singleclick", this.featureClickHandler);
             this.featureClickHandler = null;
         }
         this.unregisterSourceListeners();
