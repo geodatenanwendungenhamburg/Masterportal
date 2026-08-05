@@ -12,6 +12,15 @@ describe("src/shared/modules/draw/js/drawInteractionEventHandlers.js", () => {
         sinon.restore();
     });
 
+    /**
+     * Identity translation helper for tooltip tests.
+     * @param {String} key The translation key.
+     * @returns {String} The unchanged key.
+     */
+    function translateKey (key) {
+        return key;
+    }
+
     describe("registerMeasurementChangeListener", () => {
         it("positive: registers change listener and forwards update context", () => {
             let changeCallback;
@@ -24,12 +33,11 @@ describe("src/shared/modules/draw/js/drawInteractionEventHandlers.js", () => {
                 tooltipElement = document.createElement("div"),
                 setLineLengthSpy = sinon.spy(),
                 emitCircleRadiusSpy = sinon.spy(),
-                translate = key => key,
                 onGeometryChange = registerMeasurementChangeListener(
                     "line",
                     geometry,
                     tooltipElement,
-                    translate,
+                    translateKey,
                     setLineLengthSpy,
                     emitCircleRadiusSpy
                 );
@@ -61,7 +69,7 @@ describe("src/shared/modules/draw/js/drawInteractionEventHandlers.js", () => {
                 "unknown",
                 geometry,
                 tooltipElement,
-                key => key,
+                translateKey,
                 setLineLengthSpy,
                 emitCircleRadiusSpy
             );

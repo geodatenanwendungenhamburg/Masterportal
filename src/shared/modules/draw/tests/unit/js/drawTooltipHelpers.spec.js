@@ -7,6 +7,15 @@ import {
 } from "@shared/modules/draw/js/drawTooltipHelpers.js";
 
 describe("src/shared/modules/draw/js/drawTooltipHelpers.js", () => {
+    /**
+     * Identity translation helper for tooltip tests.
+     * @param {String} key The translation key.
+     * @returns {String} The unchanged key.
+     */
+    function translateKey (key) {
+        return key;
+    }
+
     describe("updateMeasurementTooltip", () => {
         it("positive: updates circle tooltip and emits rounded radius", () => {
             const geometry = {
@@ -14,10 +23,9 @@ describe("src/shared/modules/draw/js/drawTooltipHelpers.js", () => {
                 },
                 tooltipElement = document.createElement("div"),
                 setLineLength = sinon.spy(),
-                emitCircleRadius = sinon.spy(),
-                translate = key => key;
+                emitCircleRadius = sinon.spy();
 
-            updateMeasurementTooltip("circle", geometry, tooltipElement, translate, setLineLength, emitCircleRadius);
+            updateMeasurementTooltip("circle", geometry, tooltipElement, translateKey, setLineLength, emitCircleRadius);
 
             expect(tooltipElement.innerHTML).to.equal("common:shared.modules.draw.drawSettingsCircle.radii.radius: 151m");
             expect(emitCircleRadius.calledOnceWithExactly(151)).to.be.true;
@@ -30,10 +38,9 @@ describe("src/shared/modules/draw/js/drawTooltipHelpers.js", () => {
                 },
                 tooltipElement = document.createElement("div"),
                 setLineLength = sinon.spy(),
-                emitCircleRadius = sinon.spy(),
-                translate = key => key;
+                emitCircleRadius = sinon.spy();
 
-            updateMeasurementTooltip("line", geometry, tooltipElement, translate, setLineLength, emitCircleRadius);
+            updateMeasurementTooltip("line", geometry, tooltipElement, translateKey, setLineLength, emitCircleRadius);
 
             expect(tooltipElement.innerHTML).to.equal("common:shared.modules.draw.drawLayout.length: 235m");
             expect(setLineLength.calledOnceWithExactly(235)).to.be.true;
@@ -47,7 +54,7 @@ describe("src/shared/modules/draw/js/drawTooltipHelpers.js", () => {
 
             tooltipElement.innerHTML = "unchanged";
 
-            updateMeasurementTooltip("unknown", {}, tooltipElement, key => key, setLineLength, emitCircleRadius);
+            updateMeasurementTooltip("unknown", {}, tooltipElement, translateKey, setLineLength, emitCircleRadius);
 
             expect(tooltipElement.innerHTML).to.equal("unchanged");
             expect(setLineLength.called).to.be.false;
@@ -61,7 +68,7 @@ describe("src/shared/modules/draw/js/drawTooltipHelpers.js", () => {
                 },
                 tooltipElement = document.createElement("div");
 
-            updateMeasurementTooltip("polygon", geometry, tooltipElement, key => key, sinon.spy(), sinon.spy());
+            updateMeasurementTooltip("polygon", geometry, tooltipElement, translateKey, sinon.spy(), sinon.spy());
 
             expect(tooltipElement.innerHTML).to.equal("common:shared.modules.draw.drawLayout.area: 200m²");
             expect(tooltipElement.innerHTML.includes("width")).to.be.false;

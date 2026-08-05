@@ -183,17 +183,17 @@ describe("src/shared/modules/draw/js/drawInteractionHelpers.js", () => {
 
     describe("discardNextDrawnFeature", () => {
         it("positive: removes the next added feature", () => {
-            let callback;
+            let addFeatureListener;
             const feature = {id: "f1"},
                 source = {
-                    once: sinon.stub().callsFake((eventName, cb) => {
-                        callback = cb;
+                    once: sinon.stub().callsFake((eventName, listener) => {
+                        addFeatureListener = listener;
                     }),
                     removeFeature: sinon.spy()
                 };
 
             discardNextDrawnFeature(source);
-            callback({feature});
+            addFeatureListener({feature});
 
             expect(source.once.calledOnceWithExactly("addfeature", sinon.match.func)).to.be.true;
             expect(source.removeFeature.calledOnceWithExactly(feature)).to.be.true;
