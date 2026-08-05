@@ -140,7 +140,7 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
 
             wrapper.vm.regulateDeleteAll();
 
-            expect(wrapper.vm.mode).to.equals("deleteAll");
+            expect(wrapper.vm.mode).to.equals("");
             expect(wrapper.vm.source.getFeatures()).to.deep.equals([]);
             expect(wrapper.vm.nonReactiveUndoFeatures.length).to.equal(1);
         });
@@ -245,7 +245,9 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
                 global: {plugins: [store]}
             });
 
+            wrapper.vm.redoing = true;
             wrapper.vm.undoRedoDeleteAll("redo", features, wrapper.vm.source);
+            wrapper.vm.redoing = false;
             await wrapper.vm.$nextTick();
 
             expect(wrapper.vm.source.getFeatures().length).to.equals(0);
