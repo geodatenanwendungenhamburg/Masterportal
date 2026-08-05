@@ -274,7 +274,7 @@ export default {
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">
-                        {{ $t("common:modules.controls.orientation.titleGeolocatePOI") }}
+                        {{ $t("common:modules.orientation.titleGeolocatePOI") }}
                     </h4>
                     <span
                         ref="close-icon"
@@ -343,7 +343,7 @@ export default {
                                             <img
                                                 v-else
                                                 :src="imgPathByFeature[feat.getId()]"
-                                                :alt="$t('common:modules.controls.orientation.imgAlt')"
+                                                :alt="$t('common:modules.orientation.imgAlt')"
                                             >
                                         </div>
 
@@ -358,7 +358,7 @@ export default {
                                                 >
                                                     <strong>{{ featNearbyTitleText }}</strong>
                                                 </p>
-                                                <p>{{ feat.dist2Pos + " " + $t("common:modules.controls.orientation.distanceUnit") }}</p>
+                                                <p>{{ feat.dist2Pos + " " + $t("common:modules.orientation.distanceUnit") }}</p>
                                             </div>
                                         </div>
                                     </button>

@@ -557,6 +557,15 @@
       "sections": [
         [
           {
+  "type": "orientation",
+    "name": "common:modules.orientation.name",
+  "icon": "bi-geo-alt",
+  "zoomMode": "once",
+  "poiDistances": [500, 1000, 2000],
+  "showAccuracy": true,
+  "showDirection": true
+},
+          {
             "type": "populationRequest"
           },
           {

@@ -918,6 +918,21 @@
       "modulesNotAvailable_one": "Unfortunately, the {{modules}} module is not available",
       "modulesNotAvailable_other": "Unfortunately, the {{modules}} modules are not available."
     },
+    "orientation": {
+      "distanceUnit": "meters",
+      "geolocationDeniedText": "Localisation is not available",
+      "iFrameGeolocationError": "Localisation within an iFrame is currently not possible, please open this <a href='#' target=`_blank`>portal</a> in a new Tab or Window",
+      "imgAlt": "picture for point of interest",
+      "poiChoiceCurrentPosition": "Current location",
+      "poiChoiceCustomPosition": "Search address or set point in map",
+      "poiChoiceClickPoint": "Set point in map",
+      "poiChoiceConfirmation": "OK",
+      "poiChoiceStop": "Quit",
+      "poiChoiceTitle": "Select starting point for radius search:",
+      "titleGeolocate": "Common position",
+      "titleGeolocatePOI": "Close to here (linear distance)",
+      "trackingDeniedText": "'Close to here' is not available."
+    },
     "portalFooter": {
       "designation": "Cartography and design:",
       "mapDiscrepancy": "Report map discrepancy",

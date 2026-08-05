@@ -1,0 +1,54 @@
+/**
+ * User type definition
+ * @typedef {Object} OrientationState
+ * @property {String} iconGeolocate Icon of the orientation geolocate button.
+ * @property {String} iconGeolocatePOI Icon of the orientation geolocate POI button.
+ * @property {String} iconGeolocationMarker Icon of the orientation geolocate map marker.
+ * @property {String[]} poiDistances The distances in config.json.
+ * @property {String[]} supportedDevices Devices on which the module is displayed.
+ * @property {String[]} supportedMapModes Map mode in which this module can be used.
+ * @property {String} zoomMode The zoomMode in config.json.
+ * @property {String} activeCategory The active tab in the overview table.
+ * @property {String} geolocation The current geolocation.
+ * @property {Boolean} iFrameGeolocationEnabled If true geolocation in an iFrame is possible, iff the outer page has an allow="geolocation" iFrame tag.
+ * @property {Boolean} onlyFilteredFeatures If true the filtered features will be used.
+ * @property {String} poiMode The mode for showing the nearby pois.
+ * @property {String} customPosition Contains the path for the translation file.
+ * @property {Boolean} poiModeCurrentPositionEnabled The status if poi mode is current position.
+ * @property {String} position The current position.
+ * @property {Boolean} showPoi Wether POI should be shown.
+ * @property {Boolean} showPoiChoice Wether poi choice is activated.
+ * @property {Boolean} showPoiIcon Wether to show the poi icon.
+ * @property {Boolean} showAccuracy Wether to show the accuracy circle which is displayed around the marker.
+ * @property {Boolean} showDirection Wether to show the direction arrow with the marker.
+ */
+const state = {
+    type: "orientation",
+    name: "common:modules.orientation.name",
+    description: "common:modules.orientation.description",
+    icon: "bi-geo-alt",
+    iconGeolocate: "geo-alt",
+    iconGeolocatePOI: "record-circle",
+    iconGeolocationMarker: "bi-circle-fill",
+    iconDirectionArrow: "bi-triangle-fill",
+    poiDistances: [],
+    supportedDevices: ["Desktop", "Mobile"],
+    supportedMapModes: ["2D", "3D"],
+    zoomMode: "once",
+    activeCategory: "",
+    geolocation: null,
+    iFrameGeolocationEnabled: "common:modules.orientation.iFrameGeolocationEnabled",
+    onlyFilteredFeatures: false,
+    poiMode: "currentPosition",
+    customPosition: "common:modules.orientation.poiChoiceCustomPosition",
+    poiModeCurrentPositionEnabled: true,
+    position: null,
+    showPoi: false,
+    showPoiChoice: false,
+    showPoiIcon: false,
+    showAccuracy: false,
+    showDirection: false
+};
+
+export default state;
+

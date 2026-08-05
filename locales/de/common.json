@@ -921,6 +921,23 @@
       "modulesNotAvailable_one": "Das Modul {{modules}} steht leider nicht zur Verfügung.",
       "modulesNotAvailable_other": "Die Module {{modules}} stehen leider nicht zur Verfügung."
     },
+    "orientation": {
+      "name": "Geolokalisierung",
+      "description": "Finden Sie Ihren Standort und suchen Sie Points of Interest",
+      "distanceUnit": "Meter",
+      "geolocationDeniedText": "Lokalisierung nicht verfügbar",
+      "iFrameGeolocationError": "Die Geolokalisierung innerhalb eines Iframes ist aktuell nicht verfügbar.<br/>Bitte öffnen Sie das <a href='#' target=`_blank`>Portal</a> in einem neuen Tab oder Fenster.",
+      "imgAlt": "Bild für Point of Interest",
+      "poiChoiceCurrentPosition": "Standort",
+      "poiChoiceCustomPosition": "Adresssuche oder Punkt in Karte setzen",
+      "poiChoiceClickPoint": "Punkt in Karte setzen",
+      "poiChoiceConfirmation": "OK",
+      "poiChoiceStop": "Beenden",
+      "poiChoiceTitle": "Ausgangspunkt für Umkreissuche wählen:",
+      "titleGeolocate": "Standpunkt",
+      "titleGeolocatePOI": "In der Nähe (Luftlinie)",
+      "trackingDeniedText": "'In der Nähe' nicht verfügbar."
+    },
     "portalFooter": {
       "designation": "Kartographie und Gestaltung:",
       "mapDiscrepancy": "Kartenunstimmigkeit melden",

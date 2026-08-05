@@ -29,6 +29,7 @@ import Modeler3D from "../modeler3D/store/indexModeler3D.js";
 import MouseHover from "../mouseHover/store/indexMouseHover.js";
 import News from "../news/store/indexNewsView.js";
 import OpenConfig from "../openConfig/store/indexOpenConfig.js";
+import Orientation from "../orientation/store/indexOrientation.js";
 import PortalFooter from "../portalFooter/store/indexPortalFooter.js";
 import Print from "../print/store/indexPrint.js";
 import ResizeHandle from "@shared/modules/resize/store/indexResizeHandle.js";
@@ -78,6 +79,7 @@ export default {
         MouseHover: {...MouseHover},
         News: {...News},
         OpenConfig: {...OpenConfig},
+        Orientation: {...Orientation},
         ResizeHandle: {...ResizeHandle},
         Routing: {...Routing},
         PortalFooter: {...PortalFooter},
