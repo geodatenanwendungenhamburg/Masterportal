@@ -4,10 +4,9 @@ import handleDrawEvent from "../js/handleDrawEvent.js";
 import {mapActions, mapGetters} from "vuex";
 import IconButton from "../../buttons/components/IconButton.vue";
 import {nextTick} from "vue";
-import {createTooltipOverlay} from "../js/createTooltipOverlay.js";
-import Style from "ol/style/Style.js";
-import Icon from "ol/style/Icon.js";
-import {unByKey} from "ol/Observable.js";
+import {createDrawInteractionContext, initializeTooltipElement, registerPointerMoveTooltip, isMeasurementDrawType, isStaticCircleDrawType, applyImageSymbolStyle, discardNextDrawnFeature} from "../js/drawInteractionHelpers.js";
+import {registerMeasurementChangeListener, unregisterMeasurementChangeListener, shouldDiscardEmptyTextFeature, handleCircleMeasurementDrawEnd} from "../js/drawInteractionEventHandlers.js";
+import {clearDrawInteractionListenerKeys, clearMeasurementListenerState, clearPointerListenerAndOverlay} from "../js/drawInteractionLifecycleHelpers.js";
 
 /**
  * Shared component that provides buttons for two-level selection of geometries and symbols.
@@ -209,43 +208,20 @@ export default {
             tooltipElement: null,
             pointerMoveKey: null,
             tooltipOverlay: null,
-            onGeometryChange: null
+            onGeometryChange: null,
+            activeMeasurementGeometry: null,
+            drawStartKey: null,
+            drawEndKey: null
         };
     },
     computed: {
         ...mapGetters("Maps", ["projection"])
     },
     watch: {
-        "circleOptions.interactive" () {
-            if (this.selectedDrawType === "circle" || this.selectedDrawType === "doubleCircle") {
-                if (this.currentDrawInteraction !== null) {
-                    this.removeInteraction(this.currentDrawInteraction);
-                    this.regulateDrawInteraction(this.selectedDrawType);
-                }
-            }
-        },
-        "circleOptions.innerRadius" () {
-            if (this.selectedDrawType === "circle" || this.selectedDrawType === "doubleCircle") {
-                if (this.currentDrawInteraction !== null) {
-                    this.removeInteraction(this.currentDrawInteraction);
-                    this.regulateDrawInteraction(this.selectedDrawType);
-                }
-            }
-        },
-        "circleOptions.outerRadius" () {
-            if (this.selectedDrawType === "circle" || this.selectedDrawType === "doubleCircle") {
-                if (this.currentDrawInteraction !== null) {
-                    this.removeInteraction(this.currentDrawInteraction);
-                    this.regulateDrawInteraction(this.selectedDrawType);
-                }
-            }
-        },
-        "circleOptions.unit" () {
-            if (this.selectedDrawType === "circle" || this.selectedDrawType === "doubleCircle") {
-                if (this.currentDrawInteraction !== null) {
-                    this.removeInteraction(this.currentDrawInteraction);
-                    this.regulateDrawInteraction(this.selectedDrawType);
-                }
+        circleOptions: {
+            deep: true,
+            handler () {
+                this.refreshCircleDrawInteraction();
             }
         },
         currentLayout (currentLayout) {
@@ -263,6 +239,7 @@ export default {
                 if (typeof this.setSelectedDrawTypeMain === "function") {
                     this.setSelectedDrawTypeMain("");
                     this.setSelectedDrawType("");
+                    this.cleanDrawInteractionListeners();
                     this.removeInteraction(this.currentDrawInteraction);
                     this.currentDrawInteraction = null;
                 }
@@ -270,6 +247,7 @@ export default {
         },
         source (newSource, oldSource) {
             if (newSource !== oldSource && this.selectedDrawType !== "") {
+                this.cleanDrawInteractionListeners();
                 this.removeInteraction(this.currentDrawInteraction);
                 this.regulateDrawInteraction(this.selectedDrawType);
             }
@@ -287,25 +265,39 @@ export default {
         });
     },
     unmounted () {
+        this.cleanDrawInteractionListeners();
         this.removeInteraction(this.currentDrawInteraction);
         if (this.tooltipElement) {
             this.tooltipElement.style.display = "none";
         }
-        if (this.pointerMoveKey) {
-            unByKey(this.pointerMoveKey);
-            this.pointerMoveKey = null;
-        }
-        if (this.tooltipOverlay) {
-            const map = mapCollection.getMap("2D");
-
-            if (map) {
-                map.removeOverlay(this.tooltipOverlay);
-            }
-            this.tooltipOverlay = null;
-        }
+        this.cleanListenerAndOverlay();
     },
     methods: {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
+
+        /**
+         * Removes registered draw interaction listeners and measurement geometry listener.
+         *
+         * This prevents stale callbacks when interactions are removed or replaced before
+         * their natural `drawend` lifecycle is reached.
+         * @returns {void}
+         */
+        cleanDrawInteractionListeners () {
+            Object.assign(this, clearDrawInteractionListenerKeys(this.drawStartKey, this.drawEndKey));
+            Object.assign(this, clearMeasurementListenerState(this.activeMeasurementGeometry, this.onGeometryChange, unregisterMeasurementChangeListener));
+        },
+
+        /**
+         * Recreates the current draw interaction when circle options change.
+         * @returns {void}
+         */
+        refreshCircleDrawInteraction () {
+            if (isStaticCircleDrawType(this.selectedDrawType) && this.currentDrawInteraction !== null) {
+                this.cleanDrawInteractionListeners();
+                this.removeInteraction(this.currentDrawInteraction);
+                this.regulateDrawInteraction(this.selectedDrawType);
+            }
+        },
 
         /**
          * Start drawing initial, if a selectedDrawType is specified.
@@ -329,8 +321,20 @@ export default {
         },
 
         /**
-         * Regulate the interaction.
-         * @param {String} drawType The current draw type.
+         * Switches the active draw mode and synchronizes interaction-related UI and state.
+         *
+         * Behavior:
+         * - Ensures the global interaction mode is set to "draw" when a setter is provided.
+         * - Updates the main draw type group selection (`selectedDrawTypeMain`) for top-level
+         *   categories and resets the concrete sub-type selection before recreation.
+         * - Removes the currently active draw interaction and hides the tooltip, if present.
+         * - Toggles off the current draw type when the same type is selected again and clears
+         *   the selected symbol.
+         * - Otherwise creates and activates a new draw interaction for the requested type.
+         * - In event-emitting mode (`shouldEmitEvents`), emits `stop-drawing` before switching
+         *   and `start-drawing` after the switch while keeping selected draw type in sync.
+         *
+         * @param {String} drawType The draw type to activate or toggle off.
          * @returns {void}
          */
         regulateInteraction (drawType) {
@@ -343,6 +347,7 @@ export default {
                 this.setSelectedDrawType("");
             }
 
+            this.cleanDrawInteractionListeners();
             this.removeInteraction(this.currentDrawInteraction);
             if (this.tooltipElement) {
                 this.tooltipElement.style.display = "none";
@@ -371,157 +376,185 @@ export default {
         },
 
         /**
-         * Regulate the draw interaction for valid draw types.
-         * @param {String} drawType The current draw type.
+         * Removes tooltip-related listeners and overlays from the map.
          * @returns {void}
          */
-        regulateDrawInteraction (drawType) {
-            // Clean up previous listener and overlay
-            if (this.pointerMoveKey) {
-                unByKey(this.pointerMoveKey);
-                this.pointerMoveKey = null;
-            }
-            if (this.tooltipOverlay) {
-                const mapInstance = mapCollection.getMap("2D");
+        cleanListenerAndOverlay () {
+            Object.assign(this, clearPointerListenerAndOverlay(this.pointerMoveKey, this.tooltipOverlay));
+        },
 
-                if (mapInstance) {
-                    mapInstance.removeOverlay(this.tooltipOverlay);
-                }
-                this.tooltipOverlay = null;
-            }
-
-            this.currentDrawInteraction = drawInteraction.createDrawInteraction(drawType, this.source, this.iconList, Config.wfsImgPath);
-            const {tooltipOverlay, tooltipElement} = createTooltipOverlay(),
-                  map = mapCollection.getMap("2D"),
-                  symbol = this.iconList.find(val => val.id === drawType);
-
+        /**
+         * Stores and resets the tooltip state for the active draw interaction.
+         * @param {HTMLElement} tooltipElement The tooltip element.
+         * @param {ol/Overlay} tooltipOverlay The tooltip overlay.
+         * @returns {void}
+         */
+        initializeTooltipOverlay (tooltipElement, tooltipOverlay) {
             this.tooltipElement = tooltipElement;
             this.tooltipOverlay = tooltipOverlay;
-            tooltipElement.innerHTML = "";
-            tooltipElement.style.display = "none";
+            initializeTooltipElement(tooltipElement);
+        },
 
-            map.addOverlay(tooltipOverlay);
-            this.pointerMoveKey = map.on("pointermove", (event) => {
-                if (event.dragging) {
+        /**
+         * Registers the drawstart handler for the current interaction.
+         * @param {String} drawType The current draw type.
+         * @param {HTMLElement} tooltipElement The tooltip element.
+         * @param {?Object} symbol The symbol matching the draw type.
+         * @returns {void}
+         */
+        registerDrawStartHandler (drawType, tooltipElement, symbol) {
+            this.drawStartKey = this.currentDrawInteraction.on("drawstart", (evt) => {
+                this.$emit("drawstart", evt);
+
+                if (isMeasurementDrawType(drawType)) {
+                    this.handleMeasurementDrawStart(drawType, evt, tooltipElement);
+                }
+                else if (symbol && symbol.type === "image") {
+                    applyImageSymbolStyle(evt.feature, symbol);
+                }
+            });
+        },
+
+        /**
+         * Prepares tooltip updates for measurement-based draw types.
+         * @param {String} drawType The current draw type.
+         * @param {Object} evt The drawstart event.
+         * @param {HTMLElement} tooltipElement The tooltip element.
+         * @returns {void}
+         */
+        handleMeasurementDrawStart (drawType, evt, tooltipElement) {
+            tooltipElement.style.display = "block";
+            const geometry = evt.feature.getGeometry();
+
+            this.onGeometryChange = registerMeasurementChangeListener(
+                drawType,
+                geometry,
+                tooltipElement,
+                key => this.$t(key),
+                this.setLineLength,
+                radius => this.$emit("circle-radius", radius)
+            );
+
+            this.activeMeasurementGeometry = geometry;
+        },
+
+        /**
+         * Registers the drawend handler for the current interaction.
+         * @param {String} drawType The current draw type.
+         * @param {HTMLElement} tooltipElement The tooltip element.
+         * @param {ol/Overlay} tooltipOverlay The tooltip overlay.
+         * @returns {void}
+         */
+        registerDrawEndHandler (drawType, tooltipElement, tooltipOverlay) {
+            this.drawEndKey = this.currentDrawInteraction.on("drawend", (evt) => {
+                tooltipElement.style.display = "none";
+
+                if (shouldDiscardEmptyTextFeature(drawType, this.currentLayout)) {
+                    discardNextDrawnFeature(this.source);
                     return;
                 }
 
-                const coordinate = event.coordinate;
+                this.$emit("drawend", evt);
 
-                tooltipOverlay.setPosition(coordinate);
+                if (isMeasurementDrawType(drawType)) {
+                    this.handleMeasurementDrawEnd(drawType, evt, tooltipElement, tooltipOverlay);
+                }
+                if (this.drawLayout) {
+                    this.handleDrawLayoutCompletion(drawType, evt);
+                }
             });
+        },
 
+        /**
+         * Cleans up measurement listeners and circle-specific tooltip state after draw end.
+         * @param {String} drawType The current draw type.
+         * @param {Object} evt The drawend event.
+         * @param {HTMLElement} tooltipElement The tooltip element.
+         * @param {ol/Overlay} tooltipOverlay The tooltip overlay.
+         * @returns {void}
+         */
+        handleMeasurementDrawEnd (drawType, evt, tooltipElement, tooltipOverlay) {
+            const geometry = evt.feature.getGeometry();
+
+            unregisterMeasurementChangeListener(geometry, this.onGeometryChange);
+            this.onGeometryChange = null;
+            this.activeMeasurementGeometry = null;
+
+            if (drawType === "circle") {
+                handleCircleMeasurementDrawEnd(
+                    geometry,
+                    tooltipElement,
+                    tooltipOverlay,
+                    radius => this.$emit("circle-radius", radius)
+                );
+            }
+        },
+
+        /**
+         * Finalizes layout-specific handling after a feature has been drawn.
+         * @param {String} drawType The current draw type.
+         * @param {Object} evt The drawend event.
+         * @returns {void}
+         */
+        handleDrawLayoutCompletion (drawType, evt) {
+            handleDrawEvent(evt);
+            if (drawType === "doubleCircle") {
+                this.incrementIdCounter(2);
+            }
+            else {
+                this.incrementIdCounter(1);
+            }
+        },
+
+        /**
+         * Adds the current draw interaction to the map and updates the selection state.
+         * @param {String} drawType The current draw type.
+         * @returns {void}
+         */
+        activateDrawInteraction (drawType) {
+            this.addInteraction(this.currentDrawInteraction);
+            this.setSelectedDrawType(drawType);
+        },
+
+        /**
+         * Creates and activates a new draw interaction for the requested draw type.
+         *
+         * Flow:
+         * - Clears previous tooltip listener/overlay state to avoid stale map bindings.
+         * - Builds a fresh interaction context (interaction, map, matching symbol, tooltip
+         *   element, tooltip overlay).
+         * - Stores the new interaction and tooltip references on the component instance.
+         * - Registers pointer-move tooltip updates on the map.
+         * - Synchronizes the selected symbol in store state (`null` when no symbol matches).
+         * - Wires `drawstart` and `drawend` handlers for measurement updates and feature
+         *   finalization.
+         * - Applies static circle setup for circle-based draw types.
+         * - Adds the interaction to the map and updates selected draw type state.
+         *
+         * If interaction creation returns `null`, no handlers are registered and no
+         * interaction is activated.
+         *
+         * @param {String} drawType The draw type to initialize.
+         * @returns {void}
+         */
+        regulateDrawInteraction (drawType) {
+            this.cleanListenerAndOverlay();
+
+            const {currentDrawInteraction, map, symbol, tooltipElement, tooltipOverlay} = createDrawInteractionContext(drawType, this.source, this.iconList);
+
+            this.currentDrawInteraction = currentDrawInteraction;
+            this.initializeTooltipOverlay(tooltipElement, tooltipOverlay);
+            this.pointerMoveKey = registerPointerMoveTooltip(map, tooltipOverlay);
             this.setSelectedSymbol(symbol || null);
-            if (this.currentDrawInteraction !== null) {
-                this.currentDrawInteraction.on("drawstart", (evt) => {
-                    this.$emit("drawstart", evt);
 
-                    if (["circle", "box", "line", "polygon", "square"].includes(drawType)) {
-                        tooltipElement.style.display = "block";
-                        const geometry = evt.feature.getGeometry();
-
-
-                        this.onGeometryChange = () => {
-                            if (drawType === "circle") {
-                                let radius = geometry.getRadius();
-
-                                radius = Math.round(radius);
-                                const formattedRadius = radius.toLocaleString("de-DE");
-
-                                tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawSettingsCircle.radii.radius")}: ${formattedRadius}m`;
-                                this.$emit("circle-radius", radius);
-                            }
-                            if (drawType === "box" || drawType === "polygon" || drawType === "square") {
-
-                                const coordinates = geometry.getCoordinates()[0],
-                                      width = Math.abs(coordinates[1][0] - coordinates[0][0]),
-                                      height = Math.abs(coordinates[2][1] - coordinates[1][1]),
-                                      area = Math.round(geometry.getArea()),
-                                      formattedWidth = Math.round(width).toLocaleString("de-DE"),
-                                      formattedHeight = Math.round(height).toLocaleString("de-DE"),
-                                      formattedArea = area.toLocaleString("de-DE");
-
-                                if (drawType === "box" || drawType === "square") {
-                                    tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawLayout.area")}: ${formattedArea}m²<br>${this.$t("common:shared.modules.draw.drawLayout.width")}: ${formattedWidth}m<br>${this.$t("common:shared.modules.draw.drawLayout.height")}: ${formattedHeight}m`;
-                                }
-                                else {
-                                    tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawLayout.area")}: ${formattedArea}m²`;
-                                }
-
-                            }
-                            if (drawType === "line") {
-                                const length = geometry.getLength();
-
-                                this.setLineLength(Math.round(length));
-
-                                tooltipElement.innerHTML = `${this.$t("common:shared.modules.draw.drawLayout.length")}: ${Math.round(length)}m`;
-
-                            }
-                        };
-
-                        geometry.on("change", this.onGeometryChange);
-
-                    }
-                    else if (symbol && symbol.type === "image") {
-                        const iconSrc = symbol.value.startsWith("/")
-                            ? symbol.value
-                            : `${Config.wfsImgPath}${symbol.value}`;
-
-                        evt.feature.setStyle(new Style({
-                            image: new Icon({
-                                src: iconSrc,
-                                scale: symbol.scale || 1,
-                                anchor: [0.5, 1]
-                            })
-                        }));
-                    }
-                });
-                this.currentDrawInteraction.on("drawend", (evt) => {
-                    tooltipElement.style.display = "none";
-
-                    if (drawType === "writeText" && !this.currentLayout.text?.trim()) {
-                        this.source.once("addfeature", (e) => {
-                            this.source.removeFeature(e.feature);
-                        });
-                        return;
-                    }
-
-                    this.$emit("drawend", evt);
-
-                    if (["circle", "box", "line", "polygon", "square"].includes(drawType)) {
-                        const geometry = evt.feature.getGeometry();
-
-                        if (this.onGeometryChange) {
-                            geometry.un("change", this.onGeometryChange);
-                            this.onGeometryChange = null;
-                        }
-
-                        if (drawType === "circle") {
-                            let radius = geometry.getRadius();
-
-                            radius = Math.round(radius);
-
-                            this.$emit("circle-radius", radius);
-                            tooltipElement.innerHTML = "";
-                            tooltipOverlay.setPosition(undefined);
-                        }
-                    }
-                    if (this.drawLayout) {
-                        handleDrawEvent(evt);
-                        if (drawType === "doubleCircle") {
-                            this.incrementIdCounter(2);
-                        }
-                        else {
-                            this.incrementIdCounter(1);
-                        }
-                    }
-                });
-                if (drawType === "circle" || drawType === "doubleCircle") {
+            if (currentDrawInteraction !== null) {
+                this.registerDrawStartHandler(drawType, tooltipElement, symbol);
+                this.registerDrawEndHandler(drawType, tooltipElement, tooltipOverlay);
+                if (isStaticCircleDrawType(drawType)) {
                     this.regulateStaticCircleInteraction(drawType);
                 }
 
-                this.addInteraction(this.currentDrawInteraction);
-                this.setSelectedDrawType(drawType);
+                this.activateDrawInteraction(drawType);
             }
         },
 
