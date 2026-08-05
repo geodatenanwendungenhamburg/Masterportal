@@ -73,7 +73,6 @@ export default {
             return this.circleOptions.innerRadius > this.circleOptions.outerRadius;
         }
     },
-    watch: {},
     methods: {
         /**
          * Updates a radius in circle options.

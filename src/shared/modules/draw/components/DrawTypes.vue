@@ -666,10 +666,10 @@ export default {
 <style lang="scss">
 
 div.draw-tooltip {
-    background-color: $white;;
+    background-color: $white;
     color: $black;
     padding: 2px 4px;
-    border: 1px solid $black;;
+    border: 1px solid $black;
     border-radius: 4px;
     font-size: 14px;
     white-space: nowrap;

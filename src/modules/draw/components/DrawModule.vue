@@ -326,10 +326,6 @@ export default {
 
 <style lang="scss" scoped>
 
-.drawtypes-container {
-    align-items: left;
-}
-
 #modules-draw-module {
     overflow-x: hidden;
     overflow-y: auto;

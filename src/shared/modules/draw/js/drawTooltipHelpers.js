@@ -12,10 +12,10 @@ export function updateMeasurementTooltip (drawType, geometry, tooltipElement, tr
     if (drawType === "circle") {
         updateCircleTooltip(geometry, tooltipElement, translate, emitCircleRadius);
     }
-    if (drawType === "box" || drawType === "polygon" || drawType === "square") {
+    else if (drawType === "box" || drawType === "polygon" || drawType === "square") {
         updateAreaTooltip(drawType, geometry, tooltipElement, translate);
     }
-    if (drawType === "line") {
+    else if (drawType === "line") {
         updateLineTooltip(geometry, tooltipElement, translate, setLineLength);
     }
 }
