@@ -54,6 +54,21 @@ export default {
             addFeatureHandler: null
         };
     },
+    watch: {
+        /**
+         * Rebinds source listeners when the layer changes.
+         * @param {ol/layer/Vector|null} newLayer The new layer.
+         * @param {ol/layer/Vector|null} oldLayer The previous layer.
+         * @returns {void}
+         */
+        layer (newLayer, oldLayer) {
+            if (newLayer === oldLayer) {
+                return;
+            }
+            this.unregisterAddFeatureHandler(oldLayer?.getSource?.());
+            this.registerAddFeatureHandler(newLayer?.getSource?.());
+        }
+    },
     created () {
         this.selectionMarker = null;
     },
@@ -134,8 +149,7 @@ export default {
          * Registers a handler to sync known attribute keys to newly added features.
          * @returns {void}
          */
-        registerAddFeatureHandler () {
-            const source = this.layer?.getSource?.();
+        registerAddFeatureHandler (source = this.layer?.getSource?.()) {
 
             if (!source || this.addFeatureHandler) {
                 return;
@@ -176,8 +190,7 @@ export default {
          * Removes the addfeature handler from the layer source.
          * @returns {void}
          */
-        unregisterAddFeatureHandler () {
-            const source = this.layer?.getSource?.();
+        unregisterAddFeatureHandler (source = this.layer?.getSource?.()) {
 
             if (source && this.addFeatureHandler) {
                 source.un("addfeature", this.addFeatureHandler);

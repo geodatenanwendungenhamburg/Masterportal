@@ -18,6 +18,17 @@ import ExportItem from "@shared/modules/exportItem/components/ExportItem.vue";
 import DrawEditAttributes from "./DrawEditAttributes.vue";
 import DrawEditStyle from "./DrawEditStyle.vue";
 
+const EXCLUDED_ATTRIBUTE_KEYS = new Set([
+    "geometry",
+    "masterportal_attributes",
+    "source",
+    "drawType",
+    "textContent",
+    "textFontSize",
+    "textFont",
+    "textFillColor"
+]);
+
 /**
  * Shared component that provides buttons to edit drawn features.
  * @module shared/modules/draw/DrawEdit
@@ -109,6 +120,9 @@ export default {
             selectedEditFeature: null,
             featureClickHandler: null,
             modifyTooltipOverlay: null,
+            sourceAddFeatureHandler: null,
+            sourceRemoveFeatureHandler: null,
+            sourceClearHandler: null,
             featureCounter: 1,
             undoCount: 0,
             redoCount: 0
@@ -166,11 +180,16 @@ export default {
          * @param {ol/layer/Vector} layer The vector layer for drawings.
          * @returns {void}
          */
-        layer (layer) {
-            if (layer !== null) {
-                this.registerSourceListeners();
+        source (newSource, oldSource) {
+            if (newSource === oldSource) {
+                return;
             }
+            this.unregisterSourceListeners(oldSource);
+            this.registerSourceListeners(newSource);
         }
+    },
+    mounted () {
+        this.registerSourceListeners(this.source);
     },
     unmounted () {
         this.currentSelectInteractions.forEach(interaction => this.removeInteraction(interaction));
@@ -178,6 +197,15 @@ export default {
             this.removeInteraction(this.currentModifyInteraction);
             this.currentModifyInteraction = null;
         }
+        if (this.modifyTooltipOverlay) {
+            mapCollection.getMap("2D").removeOverlay(this.modifyTooltipOverlay);
+            this.modifyTooltipOverlay = null;
+        }
+        if (this.featureClickHandler) {
+            mapCollection.getMap("2D").un("singleclick", this.featureClickHandler);
+            this.featureClickHandler = null;
+        }
+        this.unregisterSourceListeners();
     },
     methods: {
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
@@ -189,14 +217,18 @@ export default {
          * Registers event listeners on the vector source for tracking feature additions and removals.
          * @returns {void}
          */
-        registerSourceListeners () {
-            this.source.on("addfeature", event => {
+        registerSourceListeners (source = this.source) {
+            if (!source || this.sourceAddFeatureHandler || this.sourceRemoveFeatureHandler || this.sourceClearHandler) {
+                return;
+            }
+
+            this.sourceAddFeatureHandler = (event) => {
                 if (!this.redoing) {
                     this.handleFeatureAdded(event.feature);
                 }
-            });
+            };
 
-            this.source.on("removefeature", event => {
+            this.sourceRemoveFeatureHandler = (event) => {
                 if (!this.redoing) {
                     this.nonReactiveUndoFeatures.push({
                         feature: markRaw(event.feature),
@@ -204,11 +236,38 @@ export default {
                     });
                     this.syncUndoRedoCounts();
                 }
-            });
+            };
 
-            this.source.on("clear", () => {
+            this.sourceClearHandler = () => {
                 this.mode = "";
-            });
+            };
+
+            source.on("addfeature", this.sourceAddFeatureHandler);
+            source.on("removefeature", this.sourceRemoveFeatureHandler);
+            source.on("clear", this.sourceClearHandler);
+        },
+
+        /**
+         * Removes event listeners from the vector source.
+         * @param {ol/source/Vector} [source=this.source] Source to remove listeners from.
+         * @returns {void}
+         */
+        unregisterSourceListeners (source = this.source) {
+            if (!source) {
+                return;
+            }
+            if (this.sourceAddFeatureHandler) {
+                source.un("addfeature", this.sourceAddFeatureHandler);
+                this.sourceAddFeatureHandler = null;
+            }
+            if (this.sourceRemoveFeatureHandler) {
+                source.un("removefeature", this.sourceRemoveFeatureHandler);
+                this.sourceRemoveFeatureHandler = null;
+            }
+            if (this.sourceClearHandler) {
+                source.un("clear", this.sourceClearHandler);
+                this.sourceClearHandler = null;
+            }
         },
 
         /**
@@ -218,6 +277,8 @@ export default {
          * @returns {void}
          */
         handleFeatureAdded (feature) {
+            this.syncKnownAttributeKeysToFeature(feature);
+
             const attrs = feature.get("masterportal_attributes");
 
             if (!attrs?.fromDrawTool) {
@@ -275,6 +336,49 @@ export default {
             this.nonReactiveRedoFeatures = markRaw([]);
             this.featureCounter++;
             this.syncUndoRedoCounts();
+        },
+
+        /**
+         * Returns user-facing attribute keys currently known in the source.
+         * @param {ol/Feature} [excludedFeature] Optional feature to exclude from key discovery.
+         * @returns {String[]} Known attribute keys.
+         */
+        getKnownAttributeKeys (excludedFeature = undefined) {
+            const keys = new Set();
+
+            this.features.forEach(existingFeature => {
+                if (existingFeature === excludedFeature) {
+                    return;
+                }
+                Object.keys(existingFeature.getProperties()).forEach(key => {
+                    if (!EXCLUDED_ATTRIBUTE_KEYS.has(key)) {
+                        keys.add(key);
+                    }
+                });
+            });
+
+            return Array.from(keys);
+        },
+
+        /**
+         * Syncs all known attribute keys to a newly added feature.
+         * Missing keys are added with empty values.
+         * @param {ol/Feature} feature Newly added feature.
+         * @returns {void}
+         */
+        syncKnownAttributeKeysToFeature (feature) {
+            if (!feature) {
+                return;
+            }
+
+            const knownKeys = this.getKnownAttributeKeys(feature);
+            const properties = feature.getProperties();
+
+            knownKeys.forEach(key => {
+                if (!Object.prototype.hasOwnProperty.call(properties, key)) {
+                    feature.set(key, "");
+                }
+            });
         },
 
         /**
