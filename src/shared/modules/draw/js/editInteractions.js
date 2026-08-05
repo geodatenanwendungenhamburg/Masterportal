@@ -167,6 +167,21 @@ export function setupModifyInteraction ({currentModifyInteraction, source, layer
 
     map.on("singleclick", featureClickHandler);
 
+    /**
+     * Detaches listeners and overlays created for the modify interaction.
+     * @returns {void}
+     */
+    function cleanupModifyArtifacts () {
+        if (geometryChangeListener) {
+            modifyFeature?.getGeometry()?.un("change", geometryChangeListener);
+            geometryChangeListener = null;
+        }
+        tooltipElement.style.display = "none";
+        tooltipOverlay.setPosition(undefined);
+        map.un("singleclick", featureClickHandler);
+        map.removeOverlay(tooltipOverlay);
+    }
+
     const newModifyInteraction = modifyInteraction.createModifyInteraction(source, {
         onModifyEnd: (event) => {
             event.features.forEach(feature => {
@@ -202,7 +217,12 @@ export function setupModifyInteraction ({currentModifyInteraction, source, layer
     addInteraction(newModifyInteraction);
     newModifyInteraction.setActive(true);
 
-    return {modifyInteraction: newModifyInteraction, featureClickHandler, tooltipOverlay};
+    return {
+        modifyInteraction: newModifyInteraction,
+        featureClickHandler,
+        tooltipOverlay,
+        cleanupModifyArtifacts
+    };
 }
 
 /**

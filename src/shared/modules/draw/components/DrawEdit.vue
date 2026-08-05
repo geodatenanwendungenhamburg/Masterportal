@@ -120,6 +120,7 @@ export default {
             selectedEditFeature: null,
             featureClickHandler: null,
             modifyTooltipOverlay: null,
+            modifyInteractionCleanup: null,
             sourceAddFeatureHandler: null,
             sourceRemoveFeatureHandler: null,
             sourceClearHandler: null,
@@ -171,15 +172,8 @@ export default {
             if (selectedInteraction !== "modify") {
                 this.removeInteraction(this.currentModifyInteraction);
                 this.currentModifyInteraction = null;
-                if (this.modifyTooltipOverlay) {
-                    this.map2D?.removeOverlay(this.modifyTooltipOverlay);
-                    this.modifyTooltipOverlay = null;
-                }
-                if (this.featureClickHandler) {
-                    this.map2D?.un("singleclick", this.featureClickHandler);
-                    this.featureClickHandler = null;
-                    this.selectedEditFeature = null;
-                }
+                this.cleanupModifyInteractionArtifacts();
+                this.selectedEditFeature = null;
             }
         },
         /**
@@ -204,14 +198,7 @@ export default {
             this.removeInteraction(this.currentModifyInteraction);
             this.currentModifyInteraction = null;
         }
-        if (this.modifyTooltipOverlay) {
-            this.map2D?.removeOverlay(this.modifyTooltipOverlay);
-            this.modifyTooltipOverlay = null;
-        }
-        if (this.featureClickHandler) {
-            this.map2D?.un("singleclick", this.featureClickHandler);
-            this.featureClickHandler = null;
-        }
+        this.cleanupModifyInteractionArtifacts();
         this.unregisterSourceListeners();
     },
     methods: {
@@ -275,6 +262,28 @@ export default {
                 source.un("clear", this.sourceClearHandler);
                 this.sourceClearHandler = null;
             }
+        },
+
+        /**
+         * Cleans up map listeners and overlays created for modify interaction.
+         * @returns {void}
+         */
+        cleanupModifyInteractionArtifacts () {
+            if (typeof this.modifyInteractionCleanup === "function") {
+                this.modifyInteractionCleanup();
+                this.modifyInteractionCleanup = null;
+            }
+            else {
+                if (this.modifyTooltipOverlay) {
+                    this.map2D?.removeOverlay(this.modifyTooltipOverlay);
+                }
+                if (this.featureClickHandler) {
+                    this.map2D?.un("singleclick", this.featureClickHandler);
+                }
+            }
+
+            this.modifyTooltipOverlay = null;
+            this.featureClickHandler = null;
         },
 
         /**
@@ -453,6 +462,7 @@ export default {
                 this.setSelectedInteraction("modify");
             }
             this.selectedEditFeature = null;
+            this.cleanupModifyInteractionArtifacts();
 
             const result = setupModifyInteraction({
                 currentModifyInteraction: this.currentModifyInteraction,
@@ -474,6 +484,7 @@ export default {
             this.currentModifyInteraction = result.modifyInteraction;
             this.featureClickHandler = result.featureClickHandler;
             this.modifyTooltipOverlay = result.tooltipOverlay;
+            this.modifyInteractionCleanup = result.cleanupModifyArtifacts;
             this.showFrame = true;
         },
 
