@@ -6,6 +6,7 @@ import {ResultType} from "./enums.js";
 /**
  * User type definition
  * @typedef {Object} BufferAnalysisState
+ * * @property {Boolean} [hasMouseMapInteractions=true] If this attribute is true, then all other modules will be deactivated when this attribute is also true. Only one module with this attribute true may be open at the same time, since conflicts can arise in the card interactions.
  * @property {String} description The description that should be shown in the button in the menu.
  * @property {String} name displayed as title (config-param)
  * @property {String} icon icon next to title (config-param)
@@ -27,6 +28,7 @@ import {ResultType} from "./enums.js";
  * @property {String} timerId timerId for debounce buffer radius input
  */
 const state = {
+    hasMouseMapInteractions: true,
     description: "common:modules.bufferAnalysis.description",
     icon: "bi-arrows-angle-expand",
     name: "common:modules.bufferAnalysis.name",
