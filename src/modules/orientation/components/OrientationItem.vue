@@ -4,7 +4,7 @@ import {mapGetters, mapMutations, mapActions} from "vuex";
 import mutations from "../store/mutationsOrientation.js";
 import PoiChoice from "./poi/PoiChoice.vue";
 import PoiOrientation from "./poi/PoiOrientation.vue";
-import ControlIcon from "@/modules/core/components/ControlIcon.vue";
+import ControlIcon from "../../controls/components/ControlIcon.vue";
 import Geolocation from "ol/Geolocation.js";
 import Overlay from "ol/Overlay.js";
 import proj4 from "proj4";
@@ -63,16 +63,18 @@ export default {
             "iconGeolocationMarker",
             "iconDirectionArrow",
             "iFrameGeolocationEnabled",
+            "isModule",
             "onlyFilteredFeatures",
             "poiDistances",
             "poiMode",
             "poiModeCurrentPositionEnabled",
+            "showAccuracy",
             "showDirection",
             "showPoi",
             "showPoiChoice",
             "showPoiIcon",
-            "zoomMode",
-            "showAccuracy"
+            "zoomMode"
+
         ]),
         ...mapGetters("Maps", ["projection"]),
         ...mapGetters(["visibleLayerConfigs"]),
@@ -546,46 +548,57 @@ export default {
 </script>
 
 <template>
-    <div class="orientationButtons">
-        <span
-            id="geolocation_marker"
-            class="geolocation_marker"
+    <div class="orientation-container">
+        <div
+            v-if="!isModule"
+            class="orientationButtons"
         >
             <span
-                v-if="showDirection && Number.isFinite(heading)"
-                class="geolocation_marker_direction_anchor"
-                :style="markerDirectionStyle"
+                id="geolocation_marker"
+                class="geolocation_marker"
             >
-                <i
-                    :class="iconDirectionArrow + ' geolocation_marker_direction'"
-                />
+                <span
+                    v-if="showDirection && Number.isFinite(heading)"
+                    class="geolocation_marker_direction_anchor"
+                    :style="markerDirectionStyle"
+                >
+                    <i
+                        :class="iconDirectionArrow + ' geolocation_marker_direction'"
+                    />
+                </span>
+                <i :class="iconGeolocationMarker" />
             </span>
-            <i :class="iconGeolocationMarker" />
-        </span>
-        <ControlIcon
-            id="geolocate"
-            :title="$t('common:modules.orientation.titleGeolocate')"
-            :icon-name="iconGeolocate"
-            :on-click="getOrientation"
-        />
-        <ControlIcon
-            v-if="showPoiIcon"
-            id="geolocatePOI"
-            :icon-name="iconGeolocatePOI"
-            :title="$t('common:modules.orientation.titleGeolocatePOI')"
-            :on-click="getPOI"
-        />
-        <PoiChoice
-            v-if="showPoiChoice"
-            id="geolocatePoiChoice"
-            @track="trackPOI"
-        />
-        <PoiOrientation
-            v-if="showPoi"
-            :poi-distances="poiDistancesLocal"
-            :get-features-in-circle="getVectorFeaturesInCircle"
-            @hide="untrackPOI"
-        />
+            <ControlIcon
+                id="geolocate"
+                :title="$t('common:modules.orientation.titleGeolocate')"
+                :icon-name="iconGeolocate"
+                :on-click="getOrientation"
+            />
+            <ControlIcon
+                v-if="showPoiIcon"
+                id="geolocatePOI"
+                :icon-name="iconGeolocatePOI"
+                :title="$t('common:modules.orientation.titleGeolocatePOI')"
+                :on-click="getPOI"
+            />
+            <PoiChoice
+                v-if="showPoiChoice"
+                id="geolocatePoiChoice"
+                @track="trackPOI"
+            />
+            <PoiOrientation
+                v-if="showPoi"
+                :poi-distances="poiDistancesLocal"
+                :get-features-in-circle="getVectorFeaturesInCircle"
+                @hide="untrackPOI"
+            />
+        </div>
+        <div
+            v-if="isModule"
+            class="orientation-module"
+        >
+            <p>Module view</p>
+        </div>
     </div>
 </template>
 

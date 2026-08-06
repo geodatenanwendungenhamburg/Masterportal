@@ -33,6 +33,7 @@ const getters = {
             mouseHover: defineAsyncComponent(() => import("../mouseHover/components/MouseHover.vue")),
             news: defineAsyncComponent(() => import("../news/components/NewsView.vue")),
             openConfig: defineAsyncComponent(() => import("../openConfig/components/OpenConfig.vue")),
+            orientation: defineAsyncComponent(() => import("../orientation/components/OrientationItem.vue")),
             portalFooter: defineAsyncComponent(() => import("../portalFooter/components/PortalFooter.vue")),
             print: defineAsyncComponent(() => import("../print/components/PrintMap.vue")),
             routing: defineAsyncComponent(() => import("../routing/components/RoutingTemplate.vue")),

@@ -27,6 +27,7 @@ const state = {
     name: "common:modules.orientation.name",
     description: "common:modules.orientation.description",
     icon: "bi-geo-alt",
+    isModule: false,
     iconGeolocate: "geo-alt",
     iconGeolocatePOI: "record-circle",
     iconGeolocationMarker: "bi-circle-fill",
