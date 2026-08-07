@@ -41,6 +41,7 @@ export default {
             "currentLayoutOuterCircle",
             "drawEdits",
             "drawIcons",
+            "drawSymbolSettings",
             "drawTypesGeometrie",
             "drawTypesMain",
             "drawTypesSymbols",
@@ -84,6 +85,7 @@ export default {
         }
     },
     mounted () {
+        this.applyLegacyDrawSymbolSettings();
         this.initializeDrawLayer();
 
         const existingLayer = layerCollection.getLayerById("importDrawLayer");
@@ -109,6 +111,37 @@ export default {
             "setSelectedInteraction",
             "setSelectedSymbol"
         ]),
+        /**
+         * Applies legacy draw_old symbol settings from config to the new layout model.
+         * @returns {void}
+         */
+        applyLegacyDrawSymbolSettings () {
+            if (!this.drawSymbolSettings || typeof this.drawSymbolSettings !== "object") {
+                return;
+            }
+
+            const legacyColor = this.drawSymbolSettings.color,
+                  hasColor = Array.isArray(legacyColor) && legacyColor.length >= 3,
+                  hasAlphaInColor = Array.isArray(legacyColor) && legacyColor.length > 3 && typeof legacyColor[3] === "number";
+
+            if (!hasColor && !hasAlphaInColor) {
+                return;
+            }
+
+            const nextLayout = {};
+
+            if (hasColor) {
+                nextLayout.fillColor = legacyColor.slice(0, 3);
+            }
+
+            if (hasAlphaInColor) {
+                const normalizedOpacity = Math.max(0, Math.min(1, legacyColor[3]));
+
+                nextLayout.fillTransparency = Math.round((1 - normalizedOpacity) * 100);
+            }
+
+            this.setCurrentLayout(nextLayout);
+        },
         /**
          * Moves focus to the first focusable element in the second settings panel (DrawLayout / DrawSettingsCircle).
          * For circle types, focuses DrawSettingsCircle; otherwise focuses DrawLayout.

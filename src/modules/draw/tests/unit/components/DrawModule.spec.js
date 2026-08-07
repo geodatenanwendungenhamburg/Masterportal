@@ -85,6 +85,7 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                                         symbols: "bi-circle-square"
                                     };
                                 },
+                                drawSymbolSettings: () => null,
                                 drawTypesGeometrie: () => ["line", "box", "polygon", "circle", "doubleCircle"],
                                 drawTypesMain: () => ["pen", "geometries", "symbols"],
                                 drawTypesSymbols: () => ["point"],
