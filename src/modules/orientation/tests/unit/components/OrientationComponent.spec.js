@@ -2,7 +2,7 @@ import {createStore} from "vuex";
 import {shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
-import OrientationItemComponent from "@modules/controls/orientation/components/OrientationItem.vue";
+import OrientationComponent from "@modules/orientation/components/OrientationComponent.vue";
 import layerCollection from "@core/layers/js/layerCollection.js";
 import {
     getVectorFeaturesInCircle,
@@ -10,7 +10,7 @@ import {
 } from "@modules/controls/orientation/utils/poiFeatureSearch.js";
 
 
-describe("src/modules/controls/orientation/components/OrientationItem.vue", () => {
+describe("src/modules/controls/orientation/components/OrientationComponent.vue", () => {
     let store,
         onlyFilteredFeatures = false,
         showDirection = false,
@@ -98,11 +98,11 @@ describe("src/modules/controls/orientation/components/OrientationItem.vue", () =
     });
 
     /**
-     * Mounts OrientationItem component with test store and tracks wrapper for teardown.
+     * Mounts OrientationComponent component with test store and tracks wrapper for teardown.
      * @returns {Object} Mounted wrapper.
      */
-    function mountOrientationItem () {
-        const wrapper = shallowMount(OrientationItemComponent, {
+    function mountOrientationComponent () {
+        const wrapper = shallowMount(OrientationComponent, {
             global: {
                 plugins: [store]
             }
@@ -114,7 +114,7 @@ describe("src/modules/controls/orientation/components/OrientationItem.vue", () =
 
 
     it("renders the Orientation component", () => {
-        const wrapper = mountOrientationItem();
+        const wrapper = mountOrientationComponent();
 
         expect(wrapper.find(".orientationButtons").exists()).to.be.true;
         expect(wrapper.find("#geolocation_marker").exists()).to.be.true;
@@ -122,13 +122,13 @@ describe("src/modules/controls/orientation/components/OrientationItem.vue", () =
     });
 
     it("renders the Orientation button", () => {
-        const wrapper = mountOrientationItem();
+        const wrapper = mountOrientationComponent();
 
         expect(wrapper.find("#geolocate").exists()).to.be.true;
     });
 
     it("will not render the Poi Orientation button", () => {
-        const wrapper = mountOrientationItem();
+        const wrapper = mountOrientationComponent();
 
         expect(wrapper.find("#geolocatePOI").exists()).to.be.false;
     });
@@ -143,7 +143,7 @@ describe("src/modules/controls/orientation/components/OrientationItem.vue", () =
 
     it("creates marker direction style from heading", () => {
         showDirection = true;
-        const wrapper = mountOrientationItem();
+        const wrapper = mountOrientationComponent();
 
         wrapper.vm.heading = Math.PI / 2;
 
@@ -159,7 +159,7 @@ describe("src/modules/controls/orientation/components/OrientationItem.vue", () =
             setTracking: sinon.stub(),
             getPosition: sinon.stub().returns(null)
         };
-        const wrapper = mountOrientationItem();
+        const wrapper = mountOrientationComponent();
 
         wrapper.vm.showMarkerOverlay();
 
@@ -177,7 +177,7 @@ describe("src/modules/controls/orientation/components/OrientationItem.vue", () =
             setTracking: sinon.stub(),
             getPosition: sinon.stub().returns(null)
         };
-        const wrapper = mountOrientationItem();
+        const wrapper = mountOrientationComponent();
 
         wrapper.vm.showMarkerOverlay();
         wrapper.vm.removeOverlay();
@@ -187,7 +187,7 @@ describe("src/modules/controls/orientation/components/OrientationItem.vue", () =
         expect(wrapper.vm.accuracyLayer).to.equal(null);
     });
 
-    describe("OrientationItem.vue methods", () => {
+    describe("OrientationComponent.vue methods", () => {
         const centerPosition = [0, 0],
             distance = 100,
             features = [{

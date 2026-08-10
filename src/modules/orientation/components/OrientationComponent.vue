@@ -24,7 +24,7 @@ import {
 
 /**
  * Orientation control that allows the user to locate themselves on the map.
- * @module modules/OrientationItem
+ * @module modules/OrientationComponent
  * @vue-data {Boolean} firstGeolocation - Shows if it is the first time locating.
  * @vue-data {Object} marker - Overlay with marker.
  * @vue-data {Boolean} tracking - Shows if the tracking is on.
@@ -33,7 +33,7 @@ import {
  * @vue-computed {Array} poiDistancesLocal - An array of local distances.
  */
 export default {
-    name: "OrientationItem",
+    name: "OrientationComponent",
     components: {
         PoiChoice,
         PoiOrientation,
