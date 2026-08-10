@@ -922,8 +922,8 @@
       "modulesNotAvailable_other": "Die Module {{modules}} stehen leider nicht zur Verfügung."
     },
     "orientation": {
-      "name": "Geolokalisierung",
-      "description": "Finden Sie Ihren Standort und suchen Sie Points of Interest",
+      "name": "Interessante Orte in der Nähe",
+      "description": "Lass dir interessante Orte in der Nähe oder über einen selbstgewählten Standort in der Karte anzeigen.",
       "distanceUnit": "Meter",
       "geolocationDeniedText": "Lokalisierung nicht verfügbar",
       "iFrameGeolocationError": "Die Geolokalisierung innerhalb eines Iframes ist aktuell nicht verfügbar.<br/>Bitte öffnen Sie das <a href='#' target=`_blank`>Portal</a> in einem neuen Tab oder Fenster.",

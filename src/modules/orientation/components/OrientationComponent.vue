@@ -1,10 +1,8 @@
 <script>
 import {markRaw} from "vue";
 import {mapGetters, mapMutations, mapActions} from "vuex";
+import layerFactory from "@core/layers/js/layerFactory.js";
 import mutations from "../store/mutationsOrientation.js";
-import PoiChoice from "./poi/PoiChoice.vue";
-import PoiOrientation from "./poi/PoiOrientation.vue";
-import ControlIcon from "../../controls/components/ControlIcon.vue";
 import Geolocation from "ol/Geolocation.js";
 import Overlay from "ol/Overlay.js";
 import proj4 from "proj4";
@@ -21,6 +19,9 @@ import {
     getMarkerDirectionStyle,
     resolveHeading
 } from "../utils/directionMarker.js";
+import OrientationComponentLayerMessage from "./OrientationComponentLayerMessage.vue";
+import OrientationComponentChoice from "./OrientationComponentChoice.vue";
+/* import OrientationComponentResults from "./OrientationComponentResults.vue"; */
 
 /**
  * Orientation control that allows the user to locate themselves on the map.
@@ -35,9 +36,9 @@ import {
 export default {
     name: "OrientationComponent",
     components: {
-        PoiChoice,
-        PoiOrientation,
-        ControlIcon
+        OrientationComponentLayerMessage,
+        OrientationComponentChoice
+        /* OrientationComponentResults*/
     },
     data () {
         return {
@@ -63,7 +64,6 @@ export default {
             "iconGeolocationMarker",
             "iconDirectionArrow",
             "iFrameGeolocationEnabled",
-            "isModule",
             "onlyFilteredFeatures",
             "poiDistances",
             "poiMode",
@@ -83,6 +83,11 @@ export default {
         },
         markerDirectionStyle () {
             return getMarkerDirectionStyle(this.showDirection, this.heading);
+        },
+        hasValidVectorLayer () {
+            const vectorTypes = layerFactory.getVectorLayerTypes();
+
+            return this.visibleLayerConfigs?.some(layer => vectorTypes.includes(layer.typ?.toUpperCase()));
         }
     },
     watch: {
@@ -548,57 +553,13 @@ export default {
 </script>
 
 <template>
-    <div class="orientation-container">
-        <div
-            v-if="!isModule"
-            class="orientationButtons"
-        >
-            <span
-                id="geolocation_marker"
-                class="geolocation_marker"
-            >
-                <span
-                    v-if="showDirection && Number.isFinite(heading)"
-                    class="geolocation_marker_direction_anchor"
-                    :style="markerDirectionStyle"
-                >
-                    <i
-                        :class="iconDirectionArrow + ' geolocation_marker_direction'"
-                    />
-                </span>
-                <i :class="iconGeolocationMarker" />
-            </span>
-            <ControlIcon
-                id="geolocate"
-                :title="$t('common:modules.orientation.titleGeolocate')"
-                :icon-name="iconGeolocate"
-                :on-click="getOrientation"
-            />
-            <ControlIcon
-                v-if="showPoiIcon"
-                id="geolocatePOI"
-                :icon-name="iconGeolocatePOI"
-                :title="$t('common:modules.orientation.titleGeolocatePOI')"
-                :on-click="getPOI"
-            />
-            <PoiChoice
-                v-if="showPoiChoice"
-                id="geolocatePoiChoice"
-                @track="trackPOI"
-            />
-            <PoiOrientation
-                v-if="showPoi"
-                :poi-distances="poiDistancesLocal"
-                :get-features-in-circle="getVectorFeaturesInCircle"
-                @hide="untrackPOI"
-            />
-        </div>
-        <div
-            v-if="isModule"
-            class="orientation-module"
-        >
-            <p>Module view</p>
-        </div>
+    <div
+        class="orientation-module"
+    >
+        <OrientationComponentChoice
+            v-if="hasValidVectorLayer"
+        />
+        <OrientationComponentLayerMessage v-else />
     </div>
 </template>
 
