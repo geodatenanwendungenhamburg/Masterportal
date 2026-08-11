@@ -592,11 +592,13 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
     });
 
     describe("tooltip logic on drawstart and drawend", () => {
-        let fakeInteraction, callbacks;
+        let fakeInteraction, callbacks, finishDrawingSpy;
 
         beforeEach(() => {
             callbacks = {};
+            finishDrawingSpy = sinon.spy();
             fakeInteraction = {
+                finishDrawing: finishDrawingSpy,
                 on: sinon.stub().callsFake((event, cb) => {
                     callbacks[event] = cb;
                 })
@@ -614,7 +616,7 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
             });
             wrapper.vm.regulateDrawInteraction("line");
 
-            const mockGeom = {getLength: () => 100, on: sinon.stub()};
+            const mockGeom = {getLength: () => 100, on: sinon.stub(), un: sinon.stub()};
 
             callbacks.drawstart({feature: {getGeometry: () => mockGeom}});
 
@@ -631,6 +633,7 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
             const geometryCallbacks = {};
             const mockGeom = {
                 getRadius: () => 150.7,
+                un: sinon.stub(),
                 on: sinon.stub().callsFake((event, cb) => {
                     geometryCallbacks[event] = cb;
                 })
@@ -656,6 +659,7 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
             const geometryCallbacks = {};
             const mockGeom = {
                 getLength: () => 234.6,
+                un: sinon.stub(),
                 on: sinon.stub().callsFake((event, cb) => {
                     geometryCallbacks[event] = cb;
                 })
@@ -680,6 +684,22 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
             expect(wrapper.emitted("drawend")).to.be.ok;
         });
 
+        it("should finish square drawing immediately when squareMethod is defined", () => {
+            wrapper = shallowMount(DrawTypesComponent, {
+                propsData: {
+                    currentLayout: {...currentLayout, squareMethod: "defined"},
+                    setSelectedDrawType,
+                    source
+                },
+                global: {plugins: [store]}
+            });
+            wrapper.vm.regulateDrawInteraction("square");
+
+            callbacks.drawstart({feature: {getGeometry: () => ({on: sinon.stub(), un: sinon.stub()})}});
+
+            expect(finishDrawingSpy.calledOnce).to.be.true;
+        });
+
         it("should emit 'circle-radius' with rounded radius on drawend for 'circle'", () => {
             wrapper = shallowMount(DrawTypesComponent, {
                 propsData: {currentLayout, setSelectedDrawType, source},
@@ -687,7 +707,7 @@ describe("src/shared/modules/draw/components/DrawTypes.vue", () => {
             });
             wrapper.vm.regulateDrawInteraction("circle");
 
-            const mockStartGeom = {getRadius: () => 100, on: sinon.stub()};
+            const mockStartGeom = {getRadius: () => 100, on: sinon.stub(), un: sinon.stub()};
 
             callbacks.drawstart({feature: {getGeometry: () => mockStartGeom}});
 
