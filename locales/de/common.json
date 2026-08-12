@@ -936,7 +936,11 @@
       "poiChoiceTitle": "Ausgangspunkt für Umkreissuche wählen:",
       "titleGeolocate": "Standpunkt",
       "titleGeolocatePOI": "In der Nähe (Luftlinie)",
-      "trackingDeniedText": "'In der Nähe' nicht verfügbar."
+      "trackingDeniedText": "'In der Nähe' nicht verfügbar.",
+      "choiceText": "Möchten Sie den aktuellen Standort oder einen selbstgewählten Punkt in der Karte als Ausgangspunkt für die Umkreissuche verwenden?",
+      "currentPositionLabel": "Standort wählen",
+      "customPositionLabel": "Punkt auf der Karte wählen",
+      "nextButton": "Weiter"
     },
     "portalFooter": {
       "designation": "Kartographie und Gestaltung:",
