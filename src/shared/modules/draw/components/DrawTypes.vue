@@ -24,6 +24,7 @@ import {clearDrawInteractionListenerKeys, clearMeasurementListenerState, clearPo
  * @vue-prop {String[]} [drawTypesMain=["pen", "writeText", "geometries", "symbols"]] - The top-level draw type categories (used for label resolution).
  * @vue-prop {String[]} [drawTypesSymbols=[]] - The available symbol draw types (used for label resolution).
  * @vue-prop {Object[]} [iconList=[]] - The list of symbol icon definitions from the config.
+ * @vue-prop {Object} [tooltipStyle={}] - Optional inline style map for measurement tooltip.
  * @vue-prop {Boolean} [buttonsDisabled=false] - Whether all draw type buttons are disabled.
  * @vue-prop {function(string): void} setSelectedDrawType - Setter for selected draw type.
  * @vue-prop {function(string): void} [setSelectedDrawTypeMain=null] - Setter for selected draw type main.
@@ -170,6 +171,12 @@ export default {
             type: Array,
             default () {
                 return [];
+            }
+        },
+        tooltipStyle: {
+            type: Object,
+            default () {
+                return {};
             }
         },
         buttonsDisabled: {
@@ -412,6 +419,10 @@ export default {
                 else if (symbol && symbol.type === "image") {
                     applyImageSymbolStyle(evt.feature, symbol);
                 }
+
+                if (drawType === "square" && this.currentLayout.squareMethod === "defined") {
+                    this.currentDrawInteraction.finishDrawing();
+                }
             });
         },
 
@@ -540,7 +551,7 @@ export default {
         regulateDrawInteraction (drawType) {
             this.cleanListenerAndOverlay();
 
-            const {currentDrawInteraction, map, symbol, tooltipElement, tooltipOverlay} = createDrawInteractionContext(drawType, this.source, this.iconList);
+            const {currentDrawInteraction, map, symbol, tooltipElement, tooltipOverlay} = createDrawInteractionContext(drawType, this.source, this.iconList, this.tooltipStyle);
 
             this.currentDrawInteraction = currentDrawInteraction;
             this.initializeTooltipOverlay(tooltipElement, tooltipOverlay);

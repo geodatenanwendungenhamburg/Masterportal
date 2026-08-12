@@ -4,6 +4,7 @@ import {expect} from "chai";
 import sinon from "sinon";
 
 import DrawModuleComponent from "@modules/draw/components/DrawModule.vue";
+import {mapConfigStyleSettingsToLayout} from "@modules/draw/js/drawConfigSettings.js";
 
 
 describe("src/modules/draw/components/DrawModule.vue", () => {
@@ -60,7 +61,10 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                                         fillColor: [55, 126, 184],
                                         fillTransparency: 0,
                                         strokeColor: [0, 0, 0],
-                                        strokeWidth: 1
+                                        strokeWidth: 1,
+                                        squareMethod: "interactive",
+                                        squareArea: 0,
+                                        squareUnit: "m"
                                     };
                                 },
                                 currentLayoutOuterCircle: () => {
@@ -86,6 +90,13 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                                     };
                                 },
                                 drawSymbolSettings: () => null,
+                                drawLineSettings: () => null,
+                                drawCurveSettings: () => null,
+                                drawAreaSettings: () => null,
+                                drawCircleSettings: () => null,
+                                drawDoubleCircleSettings: () => null,
+                                drawSquareSettings: () => null,
+                                writeTextSettings: () => null,
                                 drawTypesGeometrie: () => ["line", "box", "polygon", "circle", "doubleCircle"],
                                 drawTypesMain: () => ["pen", "geometries", "symbols"],
                                 drawTypesSymbols: () => ["point"],
@@ -215,6 +226,30 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
 
             expect(wrapper.findAll("draw-types-stub").length).to.equals(2);
             expect(wrapper.findAll("layout-frame-stub").length).to.equals(2);
+        });
+    });
+
+    describe("config settings mapping", () => {
+        it("positive: maps drawLineSettings to current layout", () => {
+            const result = mapConfigStyleSettingsToLayout({
+                strokeWidth: 3,
+                colorContour: [10, 20, 30, 1],
+                opacityContour: 0.25,
+                squareMethod: "defined"
+            });
+
+            expect(result).to.deep.equal({
+                strokeWidth: 3,
+                strokeColor: [10, 20, 30],
+                fillTransparency: 75,
+                squareMethod: "defined"
+            });
+        });
+
+        it("negative: returns empty layout for invalid config settings", () => {
+            const result = mapConfigStyleSettingsToLayout(undefined);
+
+            expect(result).to.deep.equal({});
         });
     });
 });

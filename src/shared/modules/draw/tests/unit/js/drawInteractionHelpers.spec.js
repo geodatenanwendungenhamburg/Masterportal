@@ -63,6 +63,22 @@ describe("src/shared/modules/draw/js/drawInteractionHelpers.js", () => {
 
             expect(result.symbol).to.be.undefined;
         });
+
+        it("positive: applies custom tooltip styles from config", () => {
+            const tooltipStyle = {
+                backgroundColor: "rgba(255, 0, 0, 0.5)",
+                paddingTop: "6px",
+                fontSize: "20px"
+            };
+
+            sinon.stub(drawInteraction, "createDrawInteraction").returns({id: "interaction"});
+
+            const result = createDrawInteractionContext("line", {}, [], tooltipStyle);
+
+            expect(result.tooltipElement.style.backgroundColor).to.equal("rgba(255, 0, 0, 0.5)");
+            expect(result.tooltipElement.style.paddingTop).to.equal("6px");
+            expect(result.tooltipElement.style.fontSize).to.equal("20px");
+        });
     });
 
     describe("initializeTooltipElement", () => {

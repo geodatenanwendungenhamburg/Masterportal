@@ -121,6 +121,24 @@ describe("src/shared/modules/draw/js/drawLayoutUtils.js", () => {
             expect(result).to.equal("Times New Roman");
         });
 
+        it("should return squareMethod value as-is", () => {
+            const result = normalizeLayoutValue("squareMethod", "defined");
+
+            expect(result).to.equal("defined");
+        });
+
+        it("should return squareUnit value as-is", () => {
+            const result = normalizeLayoutValue("squareUnit", "km");
+
+            expect(result).to.equal("km");
+        });
+
+        it("should parse squareArea as float", () => {
+            const result = normalizeLayoutValue("squareArea", "6.5");
+
+            expect(result).to.equal(6.5);
+        });
+
         it("should parse fontSize as integer", () => {
             const result = normalizeLayoutValue("fontSize", "24");
 

@@ -14,7 +14,10 @@ describe("src/shared/modules/draw/components/DrawLayout.vue", () => {
             fillColor: [55, 126, 184],
             fillTransparency: 0,
             strokeColor: [0, 0, 0],
-            strokeWidth: 1
+            strokeWidth: 1,
+            squareMethod: "interactive",
+            squareArea: 0,
+            squareUnit: "m"
         };
         setCurrentLayoutSpy = sinon.spy();
     });
@@ -48,6 +51,33 @@ describe("src/shared/modules/draw/components/DrawLayout.vue", () => {
             expect(wrapper.find("#writeText").exists()).to.be.true;
             expect(wrapper.find("#font-size-select").exists()).to.be.true;
             expect(wrapper.find("#font-select").exists()).to.be.true;
+        });
+
+        it("renders square settings when selectedDrawType is 'square'", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {
+                    currentLayout: {...currentLayout, squareMethod: "defined"},
+                    selectedDrawType: "square",
+                    setCurrentLayout: setCurrentLayoutSpy
+                }
+            });
+
+            expect(wrapper.find("#draw-settings-square-interactive-square").exists()).to.be.true;
+            expect(wrapper.find("#draw-square-settings-unit-square").exists()).to.be.true;
+            expect(wrapper.find("#draw-square-settings-area-square").exists()).to.be.true;
+        });
+
+        it("hides square unit and area when squareMethod is interactive", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {
+                    currentLayout: {...currentLayout, squareMethod: "interactive"},
+                    selectedDrawType: "square",
+                    setCurrentLayout: setCurrentLayoutSpy
+                }
+            });
+
+            expect(wrapper.find("#draw-square-settings-unit-square").exists()).to.be.false;
+            expect(wrapper.find("#draw-square-settings-area-square").exists()).to.be.false;
         });
 
         it("renders the layout buttons for drawType - circle ", () => {
@@ -168,6 +198,78 @@ describe("src/shared/modules/draw/components/DrawLayout.vue", () => {
             wrapper.vm.updateCurrentLayout("fontSize", "24");
 
             expect(setCurrentLayoutSpy.firstCall.args[0]).to.deep.equals({fontSize: 24});
+        });
+
+        it("should set squareMethod as string without conversion", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {currentLayout, selectedDrawType: "square", setCurrentLayout: setCurrentLayoutSpy}
+            });
+
+            wrapper.vm.updateCurrentLayout("squareMethod", "defined");
+
+            expect(setCurrentLayoutSpy.firstCall.args[0]).to.deep.equals({squareMethod: "defined"});
+        });
+
+        it("should set squareUnit without converting squareArea", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {currentLayout, selectedDrawType: "square", setCurrentLayout: setCurrentLayoutSpy}
+            });
+
+            wrapper.vm.updateSquareUnit("km");
+
+            expect(setCurrentLayoutSpy.firstCall.args[0]).to.deep.equals({squareUnit: "km"});
+        });
+
+        it("should parse squareArea as float", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {currentLayout, selectedDrawType: "square", setCurrentLayout: setCurrentLayoutSpy}
+            });
+
+            wrapper.vm.updateSquareArea("12.5");
+
+            expect(setCurrentLayoutSpy.firstCall.args[0]).to.deep.equals({squareArea: 12.5});
+        });
+
+        it("should convert squareArea from km to square meters", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {
+                    currentLayout: {...currentLayout, squareUnit: "km"},
+                    selectedDrawType: "square",
+                    setCurrentLayout: setCurrentLayoutSpy
+                }
+            });
+
+            wrapper.vm.updateSquareArea("6.5");
+
+            expect(setCurrentLayoutSpy.firstCall.args[0]).to.deep.equals({squareArea: 6500000});
+        });
+
+        it("should reset squareArea to zero for invalid input", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {
+                    currentLayout,
+                    selectedDrawType: "square",
+                    setCurrentLayout: setCurrentLayoutSpy
+                }
+            });
+
+            wrapper.vm.updateSquareArea("");
+
+            expect(setCurrentLayoutSpy.firstCall.args[0]).to.deep.equals({squareArea: 0});
+        });
+
+        it("should keep stored squareArea when switching from km to m", () => {
+            wrapper = shallowMount(DrawLayoutComponent, {
+                propsData: {
+                    currentLayout: {...currentLayout, squareUnit: "km", squareArea: 6500000},
+                    selectedDrawType: "square",
+                    setCurrentLayout: setCurrentLayoutSpy
+                }
+            });
+
+            wrapper.vm.updateSquareUnit("m");
+
+            expect(setCurrentLayoutSpy.firstCall.args[0]).to.deep.equals({squareUnit: "m"});
         });
     });
 

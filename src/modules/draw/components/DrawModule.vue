@@ -9,6 +9,13 @@ import DrawLayout from "@shared/modules/draw/components/DrawLayout.vue";
 import DrawSettingsCircle from "@shared/modules/draw/components/DrawSettingsCircle.vue";
 import DrawTypes from "@shared/modules/draw/components/DrawTypes.vue";
 import LayoutFrame from "@shared/modules/layoutFrame/components/LayoutFrame.vue";
+import {
+    getConfigSettingsByDrawType,
+    getTooltipStyleFromConfigSettings,
+    mapConfigCircleOptions,
+    mapConfigOuterCircleSettings,
+    mapConfigStyleSettingsToLayout
+} from "@modules/draw/js/drawConfigSettings.js";
 
 /**
  * Modules to make drawings.
@@ -41,7 +48,14 @@ export default {
             "currentLayoutOuterCircle",
             "drawEdits",
             "drawIcons",
+            "drawLineSettings",
+            "drawCurveSettings",
+            "drawAreaSettings",
+            "drawCircleSettings",
+            "drawDoubleCircleSettings",
+            "drawSquareSettings",
             "drawSymbolSettings",
+            "writeTextSettings",
             "drawTypesGeometrie",
             "drawTypesMain",
             "drawTypesSymbols",
@@ -77,6 +91,8 @@ export default {
             }
         },
         selectedDrawType (newVal) {
+            this.applyConfigDrawSettings(newVal);
+
             if (["line", "box", "circle", "polygon", "doubleCircle", "square", "iconPoint"].includes(newVal)) {
                 nextTick(() => {
                     this.focusSecondPanel();
@@ -85,7 +101,7 @@ export default {
         }
     },
     mounted () {
-        this.applyLegacyDrawSymbolSettings();
+        this.applyConfigDrawSettings(this.selectedDrawType);
         this.initializeDrawLayer();
 
         const existingLayer = layerCollection.getLayerById("importDrawLayer");
@@ -112,36 +128,38 @@ export default {
             "setSelectedSymbol"
         ]),
         /**
-         * Applies legacy draw_old symbol settings from config to the new layout model.
+         * Applies settings from config to the new draw state for a given draw type.
+         * @param {String} selectedDrawType The currently selected draw type.
          * @returns {void}
          */
-        applyLegacyDrawSymbolSettings () {
-            if (!this.drawSymbolSettings || typeof this.drawSymbolSettings !== "object") {
-                return;
+        applyConfigDrawSettings (selectedDrawType) {
+            const configSettings = getConfigSettingsByDrawType(selectedDrawType, this),
+                  nextLayout = mapConfigStyleSettingsToLayout(configSettings);
+
+            if (Object.keys(nextLayout).length > 0) {
+                this.setCurrentLayout(nextLayout);
             }
 
-            const legacyColor = this.drawSymbolSettings.color,
-                  hasColor = Array.isArray(legacyColor) && legacyColor.length >= 3,
-                  hasAlphaInColor = Array.isArray(legacyColor) && legacyColor.length > 3 && typeof legacyColor[3] === "number";
+            const isCircle = selectedDrawType === "circle",
+                  isDoubleCircle = selectedDrawType === "doubleCircle";
 
-            if (!hasColor && !hasAlphaInColor) {
-                return;
+            if (isCircle || isDoubleCircle) {
+                if (isDoubleCircle && this.drawDoubleCircleSettings && typeof this.drawDoubleCircleSettings === "object") {
+                    const nextOuterCircleLayout = mapConfigOuterCircleSettings(this.drawDoubleCircleSettings);
+
+                    if (Object.keys(nextOuterCircleLayout).length > 0) {
+                        this.setCurrentLayoutOuterCircle(nextOuterCircleLayout);
+                    }
+                }
+
+                const nextCircleOptions = mapConfigCircleOptions(selectedDrawType, configSettings);
+
+                if (Object.keys(nextCircleOptions).length > 0) {
+                    this.setCircleOptions(nextCircleOptions);
+                }
             }
-
-            const nextLayout = {};
-
-            if (hasColor) {
-                nextLayout.fillColor = legacyColor.slice(0, 3);
-            }
-
-            if (hasAlphaInColor) {
-                const normalizedOpacity = Math.max(0, Math.min(1, legacyColor[3]));
-
-                nextLayout.fillTransparency = Math.round((1 - normalizedOpacity) * 100);
-            }
-
-            this.setCurrentLayout(nextLayout);
         },
+
         /**
          * Moves focus to the first focusable element in the second settings panel (DrawLayout / DrawSettingsCircle).
          * For circle types, focuses DrawSettingsCircle; otherwise focuses DrawLayout.
@@ -187,6 +205,17 @@ export default {
                   containerPosition = containerElement ? containerElement.getBoundingClientRect() : {left: 0};
 
             return buttonPosition.left + (buttonPosition.right - buttonPosition.left) / 2 - containerPosition.left + 6;
+        },
+
+        /**
+         * Returns tooltip styles from config draw settings for the selected draw type.
+         * @param {String} selectedDrawType The currently selected draw type.
+         * @returns {Object} Tooltip style map.
+         */
+        getTooltipStyleForDrawType (selectedDrawType) {
+            const configSettings = getConfigSettingsByDrawType(selectedDrawType, this);
+
+            return getTooltipStyleFromConfigSettings(configSettings);
         }
     }
 };
@@ -240,6 +269,7 @@ export default {
                     :source="source"
                     :should-emit-events="false"
                     :text-labels="true"
+                    :tooltip-style="getTooltipStyleForDrawType(selectedDrawType)"
                     :draw-layout="true"
                     button-variant="btn-secondary"
                 />
@@ -277,6 +307,7 @@ export default {
                         :source="source"
                         :should-emit-events="false"
                         :text-labels="true"
+                        :tooltip-style="getTooltipStyleForDrawType(selectedDrawType)"
                         :draw-layout="true"
                         button-variant="btn-secondary"
                     />
@@ -301,6 +332,7 @@ export default {
                         :source="source"
                         :should-emit-events="false"
                         :text-labels="true"
+                        :tooltip-style="getTooltipStyleForDrawType(selectedDrawType)"
                         :draw-layout="true"
                         button-variant="btn-secondary"
                     />

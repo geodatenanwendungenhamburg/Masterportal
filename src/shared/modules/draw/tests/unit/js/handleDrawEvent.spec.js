@@ -83,7 +83,10 @@ describe("src/shared/modules/draw/js/handleDrawEvent.js", () => {
                     lineLength: 42,
                     font: "Arial",
                     fontSize: 10,
-                    text: "test text"
+                    text: "test text",
+                    squareArea: 0,
+                    squareMethod: "interactive",
+                    squareUnit: "m"
                 },
                 circleOptions: {
                     innerRadius: 100,
@@ -165,7 +168,11 @@ describe("src/shared/modules/draw/js/handleDrawEvent.js", () => {
         it("should return empty object for 'square' type", () => {
             const result = getTypeSpecificProperties("square", stateDrawCopy);
 
-            expect(result).to.deep.equal({});
+            expect(result).to.deep.equal({
+                squareArea: 0,
+                squareMethod: "interactive",
+                squareUnit: "m"
+            });
         });
 
         it("should return empty object for unknown type without selectedSymbol", () => {

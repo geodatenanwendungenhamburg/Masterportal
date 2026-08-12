@@ -15,6 +15,9 @@
  * @property {String} [currentLayout.font="Arial"] The font for writeText.
  * @property {Number} [currentLayout.fontSize=20] The font size in pixel for writeText.
  * @property {Number} [currentLayout.lineLength=0] The length of a drawn geometry line.
+ * @property {String} [currentLayout.squareMethod="interactive"] The method for drawing squares.
+ * @property {Number} [currentLayout.squareArea=0] The square area for square drawing.
+ * @property {String} [currentLayout.squareUnit="m"] The unit for the square area.
  * @property {Object} [currentLayoutOuterCircle= fillColor: [55, 126, 184], fillTransparency: 0, strokeColor: [0, 0, 0], strokeWidth: 1}] The current layout for styling the outer circle. Only used for double circle.
  * @property {Number[]} [currentLayoutOuterCircle.fillColor=[55, 126, 184]] The fill color in rgb.
  * @property {Number} [currentLayoutOuterCircle.fillTransparency=0] The fill transparency in percent.
@@ -37,6 +40,13 @@
  * @property {String[]} [drawTypesSymbols=[]] The drawing types in symbols.
  * @property {Object|null} [drawSymbolSettings=null] Config parameter for point symbols.
  * @property {Number[]} [drawSymbolSettings.color=[55, 126, 184, 1]] Symbol color in RGBA.
+ * @property {Object|null} [drawLineSettings=null] Config parameter for line styling.
+ * @property {Object|null} [drawCurveSettings=null] Config parameter for freehand line styling.
+ * @property {Object|null} [drawAreaSettings=null] Config parameter for polygon and box styling.
+ * @property {Object|null} [drawCircleSettings=null] Config parameter for circle styling.
+ * @property {Object|null} [drawDoubleCircleSettings=null] Config parameter for double circle styling.
+ * @property {Object|null} [drawSquareSettings=null] Config parameter for square styling.
+ * @property {Object|null} [writeTextSettings=null] Config parameter for text styling.
  * @property {Boolean} [hasMouseMapInteractions=true] If this attribute is true, then all other modules will be deactivated when this attribute is also true. Only one module with this attribute true may be open at the same time, since conflicts can arise in the card interactions.
  * @property {String} [icon="bi-pencil"] Icon next to title (config-param).
  * @property {Number} idCounter Counter for features drawn.
@@ -66,7 +76,10 @@ const state = {
         text: "",
         font: "Arial",
         fontSize: 20,
-        lineLength: 0
+        lineLength: 0,
+        squareMethod: "interactive",
+        squareArea: 0,
+        squareUnit: "m"
     },
     currentLayoutOuterCircle: {
         fillColor: [55, 126, 184],
@@ -103,6 +116,13 @@ const state = {
     drawTypesMain: ["pen", "writeText", "geometries", "symbols"],
     drawTypesSymbols: [],
     drawSymbolSettings: null,
+    drawLineSettings: null,
+    drawCurveSettings: null,
+    drawAreaSettings: null,
+    drawCircleSettings: null,
+    drawDoubleCircleSettings: null,
+    drawSquareSettings: null,
+    writeTextSettings: null,
     hasMouseMapInteractions: true,
     icon: "bi-pencil",
     idCounter: 0,

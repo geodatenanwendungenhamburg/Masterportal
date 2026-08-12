@@ -8,16 +8,17 @@ import Icon from "ol/style/Icon.js";
  * @param {String} drawType The current draw type.
  * @param {ol/source/Vector} source The vector source for drawings.
  * @param {Object[]} iconList The configured draw symbols.
+ * @param {Object} [tooltipStyle={}] Optional tooltip style map.
  * @returns {Object} The interaction context.
  */
-export function createDrawInteractionContext (drawType, source, iconList) {
+export function createDrawInteractionContext (drawType, source, iconList, tooltipStyle = {}) {
     const currentDrawInteraction = drawInteraction.createDrawInteraction(drawType, source, iconList, Config.wfsImgPath);
 
     return {
         currentDrawInteraction,
         map: mapCollection.getMap("2D"),
         symbol: iconList.find(val => val.id === drawType),
-        ...createTooltipOverlay()
+        ...createTooltipOverlay(tooltipStyle)
     };
 }
 

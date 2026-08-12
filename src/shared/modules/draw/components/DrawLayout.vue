@@ -3,6 +3,7 @@ import {convertColor} from "@shared/js/utils/convertColor.js";
 import {mappingLayoutConfig, filterMappingLayoutByDrawType, normalizeLayoutValue, calculateTrianglePosition} from "@shared/modules/draw/js/drawLayoutUtils.js";
 import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
+import SwitchInput from "@shared/modules/checkboxes/components/SwitchInput.vue";
 import {nextTick} from "vue";
 
 /**
@@ -24,7 +25,8 @@ export default {
     name: "DrawLayout",
     components: {
         SliderItem,
-        InputText
+        InputText,
+        SwitchInput
     },
     props: {
         circleType: {
@@ -86,6 +88,20 @@ export default {
          */
         mappingLayoutBySelectedDrawType () {
             return filterMappingLayoutByDrawType(this.mappingLayout, this.selectedDrawType);
+        },
+
+        /**
+         * Returns the square area as displayed in the selected unit.
+         * @returns {Number} The display value.
+         */
+        squareAreaDisplayValue () {
+            const {squareArea, squareUnit} = this.currentLayout;
+
+            if (!Number.isFinite(squareArea)) {
+                return 0;
+            }
+
+            return squareUnit === "km" ? squareArea / 1000000 : squareArea;
         }
     },
     watch: {
@@ -107,6 +123,35 @@ export default {
     },
     methods: {
         convertColor,
+        /**
+         * Updates the square area in internal square meters.
+         * @param {String|Number} value The displayed value from the input.
+         * @returns {void}
+         */
+        updateSquareArea (value) {
+            const displayValue = normalizeLayoutValue("squareArea", value);
+
+            if (!Number.isFinite(displayValue)) {
+                this.updateCurrentLayout("squareArea", 0);
+                return;
+            }
+
+            if (this.currentLayout.squareUnit === "km") {
+                this.updateCurrentLayout("squareArea", displayValue * 1000000);
+                return;
+            }
+
+            this.updateCurrentLayout("squareArea", displayValue);
+        },
+
+        /**
+         * Updates the square unit.
+         * @param {String} nextUnit The next selected unit.
+         * @returns {void}
+         */
+        updateSquareUnit (nextUnit) {
+            this.updateCurrentLayout("squareUnit", nextUnit);
+        },
 
         /**
          * Sets the active layoutKey.
@@ -230,6 +275,55 @@ export default {
                 <label for="font-select">
                     {{ $t('common:shared.modules.draw.writeTextOptions.font') }}
                 </label>
+            </div>
+        </div>
+        <div
+            v-if="selectedDrawType === 'square'"
+            class="square-settings mt-4"
+        >
+            <div class="form-check form-switch mb-3">
+                <SwitchInput
+                    :id="'draw-settings-square-interactive-' + selectedDrawType"
+                    :aria="$t('common:shared.modules.draw.drawSettingsCircle.interactive')"
+                    :interaction="event => updateCurrentLayout('squareMethod', event.target.checked ? 'interactive' : 'defined')"
+                    :label="$t('common:shared.modules.draw.drawSettingsCircle.interactive')"
+                    :checked="currentLayout.squareMethod !== 'defined'"
+                />
+            </div>
+            <div
+                v-if="currentLayout.squareMethod !== 'interactive'"
+                class="form-floating mb-3"
+            >
+                <select
+                    :id="'draw-square-settings-unit-' + selectedDrawType"
+                    class="form-select"
+                    :value="currentLayout.squareUnit || 'm'"
+                    @change="event => updateSquareUnit(event.target.value)"
+                >
+                    <option
+                        v-for="unit in ['m', 'km']"
+                        :key="unit"
+                        :value="unit"
+                    >
+                        {{ unit }}
+                    </option>
+                </select>
+                <label :for="'draw-square-settings-unit-' + selectedDrawType">
+                    {{ $t('common:shared.modules.draw.drawSettingsCircle.unit') }}
+                </label>
+            </div>
+            <div
+                v-if="currentLayout.squareMethod !== 'interactive'"
+                class="form-floating mb-3"
+            >
+                <InputText
+                    :id="'draw-square-settings-area-' + selectedDrawType"
+                    :label="$t('common:shared.modules.draw.drawLayout.area')"
+                    :placeholder="$t('common:shared.modules.draw.drawLayout.area')"
+                    type="number"
+                    :model-value="squareAreaDisplayValue"
+                    @update:modelValue="val => updateSquareArea(val)"
+                />
             </div>
         </div>
         <div

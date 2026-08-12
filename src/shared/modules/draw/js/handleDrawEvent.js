@@ -17,6 +17,8 @@ const drawTypeConfig = {
     polygon: {id: "drawArea", geometry: "Polygon"},
     square: {id: "drawSquare", geometry: "Square"}
 };
+const earthRadiusInMeters = 6378137,
+    degreesPerRadian = 180 / Math.PI;
 
 /**
  * Computes color arrays for the drawn feature based on the current layout.
@@ -72,6 +74,12 @@ export function getTypeSpecificProperties (selectedDrawType, stateDrawCopy) {
                 textAlign: "left",
                 textBaseline: "bottom"
             };
+        case "square":
+            return {
+                squareArea: stateDrawCopy.currentLayout.squareArea,
+                squareMethod: stateDrawCopy.currentLayout.squareMethod,
+                squareUnit: stateDrawCopy.currentLayout.squareUnit
+            };
         default: {
             const selectedSymbol = stateDrawCopy.selectedSymbol;
 
@@ -95,6 +103,54 @@ export function getTypeSpecificProperties (selectedDrawType, stateDrawCopy) {
             return {};
         }
     }
+}
+
+/**
+ * Converts a length in meters to current map projection units.
+ * @param {Number} lengthInMeters The length in meters.
+ * @returns {Number} The length in map units.
+ */
+function transformLengthToMapUnits (lengthInMeters) {
+    const projection = mapCollection.getMap("2D")?.getView()?.getProjection(),
+        projectionUnit = projection?.getUnits();
+
+    if (projectionUnit === "degrees") {
+        return lengthInMeters * degreesPerRadian / earthRadiusInMeters;
+    }
+
+    return lengthInMeters;
+}
+
+/**
+ * Rebuilds a square geometry from its center and the configured area.
+ * @param {Object} geometry The square geometry.
+ * @param {Number} squareArea The square area.
+ * @returns {void}
+ */
+function applyDefinedSquareGeometry (geometry, squareArea) {
+    const coordinates = geometry.getCoordinates()[0];
+
+    if (!Array.isArray(coordinates) || coordinates.length < 4 || !(squareArea > 0)) {
+        return;
+    }
+
+    const minX = coordinates[0][0],
+        minY = coordinates[0][1],
+        maxX = coordinates[2][0],
+        maxY = coordinates[2][1],
+        centerX = (minX + maxX) / 2,
+        centerY = (minY + maxY) / 2,
+        sideLengthInMeters = Math.sqrt(squareArea),
+        halfSideInMapUnits = transformLengthToMapUnits(sideLengthInMeters / 2),
+        squareCoordinates = [[
+            [centerX - halfSideInMapUnits, centerY + halfSideInMapUnits],
+            [centerX + halfSideInMapUnits, centerY + halfSideInMapUnits],
+            [centerX + halfSideInMapUnits, centerY - halfSideInMapUnits],
+            [centerX - halfSideInMapUnits, centerY - halfSideInMapUnits],
+            [centerX - halfSideInMapUnits, centerY + halfSideInMapUnits]
+        ]];
+
+    geometry.setCoordinates(squareCoordinates);
 }
 
 /**
@@ -125,6 +181,10 @@ export default function handleDrawEvent (event) {
             styleId: selectedDrawType === "doubleCircle" ? idCounter + 2 : idCounter + 1,
             drawState
         };
+
+    if (selectedDrawType === "square" && currentLayout.squareMethod === "defined") {
+        applyDefinedSquareGeometry(geometry, currentLayout.squareArea);
+    }
 
     if (geometry.getType() === "Polygon" && selectedDrawType === "square") {
         attributes.isSquare = true;

@@ -54,7 +54,7 @@ export function normalizeLayoutValue (layoutKey, value) {
     if (layoutKey === "fillColor" || layoutKey === "strokeColor") {
         return convertColor(value, "rgb");
     }
-    if (layoutKey === "text" || layoutKey === "font") {
+    if (layoutKey === "text" || layoutKey === "font" || layoutKey === "squareMethod" || layoutKey === "squareUnit") {
         return value;
     }
     if (layoutKey === "fontSize") {
