@@ -28,7 +28,6 @@ export default {
     },
     methods: {
         handleNext () {
-            // Emit to parent or navigate
             this.$emit("next", this.selectedMode);
         }
     }

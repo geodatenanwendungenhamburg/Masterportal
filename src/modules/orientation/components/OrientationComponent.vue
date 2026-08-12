@@ -1,17 +1,12 @@
 <script>
-import {markRaw} from "vue";
 import {mapGetters, mapMutations, mapActions} from "vuex";
 import layerFactory from "@core/layers/js/layerFactory.js";
 import mutations from "../store/mutationsOrientation.js";
 import Geolocation from "ol/Geolocation.js";
-import Overlay from "ol/Overlay.js";
 import proj4 from "proj4";
 import * as Proj from "ol/proj.js";
 import {
     clearAccuracyGeometry as clearAccuracyGeometryUtil,
-    createAccuracyFeature,
-    initAccuracyLayer as initAccuracyLayerUtil,
-    removeAccuracyLayer as removeAccuracyLayerUtil,
     updateAccuracyGeometry as updateAccuracyGeometryUtil
 } from "../utils/accuracyLayer.js";
 import {getVectorFeaturesInCircle as getVectorFeaturesInCircleUtil} from "../utils/poiFeatureSearch.js";
@@ -21,6 +16,7 @@ import {
 } from "../utils/directionMarker.js";
 import OrientationComponentLayerMessage from "./OrientationComponentLayerMessage.vue";
 import OrientationComponentChoice from "./OrientationComponentChoice.vue";
+import OrientationComponentLocation from "./OrientationComponentLocation.vue";
 /* import OrientationComponentResults from "./OrientationComponentResults.vue"; */
 
 /**
@@ -37,23 +33,14 @@ export default {
     name: "OrientationComponent",
     components: {
         OrientationComponentLayerMessage,
-        OrientationComponentChoice
+        OrientationComponentChoice,
+        OrientationComponentLocation
         /* OrientationComponentResults*/
     },
     data () {
         return {
-            firstGeolocation: true, // flag to check if it's the first time
-            marker: markRaw(new Overlay({
-                positioning: "center-center",
-                stopEvent: false
-            })),
-            tracking: false,
-            isGeolocationDenied: false,
-            isGeoLocationPossible: false,
-            heading: null,
-            previousPosition: null,
-            accuracyFeature: createAccuracyFeature(),
-            accuracyLayer: null
+            currentPage: "choice",
+            selectedMode: null
         };
     },
     computed: {
@@ -90,34 +77,6 @@ export default {
             return this.visibleLayerConfigs?.some(layer => vectorTypes.includes(layer.typ?.toUpperCase()));
         }
     },
-    watch: {
-        tracking () {
-            this.trackingChanged();
-            this.checkWFS();
-        },
-        isGeolocationDenied () {
-            this.toggleBackground();
-            this.checkWFS();
-        },
-        position () {
-            if (!this.poiModeCurrentPositionEnabled && this.showPoiIcon) {
-                this.showPoiWindow();
-            }
-        },
-        visibleLayerConfigs: {
-            handler () {
-                this.checkWFS();
-            },
-            deep: true
-        }
-    },
-    created () {
-        this.setIsGeoLocationPossible();
-    },
-    mounted () {
-        this.addElement();
-        this.checkWFS();
-    },
     beforeUnmount () {
         clearAccuracyGeometryUtil({
             accuracyFeature: this.accuracyFeature,
@@ -142,193 +101,6 @@ export default {
 
         setIsGeoLocationPossible () {
             this.isGeoLocationPossible = window.location.protocol === "https:" || ["localhost", "127.0.0.1"].indexOf(window.location.hostname);
-        },
-
-        /**
-         * add overlay for marker
-         * @returns {void}
-         */
-        addElement: function () {
-            this.marker.setElement(document.querySelector("#geolocation_marker"));
-        },
-
-        canStartTracking () {
-            const inIframe = window.self !== window.top,
-                  iFrameGeolocationEnabled = this.iFrameGeolocationEnabled === true;
-
-            if (inIframe && !iFrameGeolocationEnabled) {
-                this.addSingleAlert({
-                    category: "error",
-                    content: `<strong>${this.$t("common:modules.orientation.iFrameGeolocationError")}`
-                });
-                return false;
-            }
-            if (this.isGeolocationDenied !== false) {
-                this.onError();
-                return false;
-            }
-            return true;
-        },
-
-        ensureGeolocationInstance () {
-            if (this.geolocation === null) {
-                const geolocation = markRaw(new Geolocation({tracking: false, projection: Proj.get("EPSG:4326"), trackingOptions: {enableHighAccuracy: true}}));
-
-                this.setGeolocation(geolocation);
-                return geolocation;
-            }
-            return this.geolocation;
-        },
-
-        unbindGeolocationListeners (geolocation) {
-            geolocation.un("change", this.positioning);
-            geolocation.un("error", this.onError, this);
-            geolocation.un("change:accuracyGeometry", this.onAccuracyGeometryChange);
-        },
-
-        /**
-         * Shows marker overlay and accuracy layer on map.
-         * @returns {void}
-         */
-        showMarkerOverlay () {
-            const map = mapCollection.getMap("2D");
-
-            map.addOverlay(this.marker);
-            if (this.showAccuracy) {
-                const {accuracyLayer} = initAccuracyLayerUtil({
-                    accuracyFeature: this.accuracyFeature,
-                    accuracyLayer: this.accuracyLayer,
-                    map
-                });
-
-                this.accuracyLayer = accuracyLayer;
-                this.onAccuracyGeometryChange();
-            }
-        },
-
-        bindGeolocationListeners (geolocation) {
-            if (this.showAccuracy) {
-                geolocation.on("change:accuracyGeometry", this.onAccuracyGeometryChange);
-            }
-
-            geolocation.on("change", this.positioning);
-            geolocation.on("error", this.onError, this);
-        },
-
-        startTrackingSession (geolocation) {
-            geolocation.setTracking(true);
-
-            if (geolocation.getPosition()) {
-                this.positioning();
-            }
-            if (this.showAccuracy) {
-                this.onAccuracyGeometryChange();
-            }
-            this.tracking = true;
-        },
-
-        stopTrackingSession (geolocation) {
-            geolocation.setTracking(false); // for FireFox - cannot handle geolocation.un(...)
-            this.unbindGeolocationListeners(geolocation);
-            this.heading = null;
-            this.previousPosition = null;
-        },
-
-        /**
-         * Tracking the geo position
-         * @returns {void}
-         */
-        track () {
-            if (!this.canStartTracking()) {
-                return;
-            }
-
-            const geolocation = this.ensureGeolocationInstance();
-
-            this.showMarkerOverlay();
-            this.unbindGeolocationListeners(geolocation);
-            this.bindGeolocationListeners(geolocation);
-            this.startTrackingSession(geolocation);
-        },
-
-        /**
-         * Untracking the geo position
-         * @returns {void}
-         */
-        untrack () {
-            const geolocation = this.geolocation;
-
-            if (!geolocation) {
-                this.tracking = false;
-                return;
-            }
-
-            this.stopTrackingSession(geolocation);
-            if (this.tracking === false || this.firstGeolocation === false) {
-                this.removeOverlay();
-            }
-            clearAccuracyGeometryUtil({
-                accuracyFeature: this.accuracyFeature,
-                geolocation,
-                listener: this.onAccuracyGeometryChange
-            });
-            this.unbindGeolocationListeners(geolocation);
-
-            this.tracking = false;
-        },
-
-        /**
-         * Show error information and untack if there are errors by trcking the position
-         * @returns {void}
-         */
-        onError () {
-            this.addSingleAlert({
-                category: "error",
-                content: `<strong>${this.$t("common:modules.orientation.geolocationDeniedText")}</strong>`
-            });
-            this.isGeolocationDenied = true;
-            if (this.geolocation !== null) {
-                this.untrack();
-            }
-        },
-
-        /**
-         * Removing the overlay of marker from map
-         * @returns {void}
-         */
-        removeOverlay () {
-            const map = mapCollection.getMap("2D");
-
-            map.removeOverlay(this.marker);
-            removeAccuracyLayerUtil({
-                accuracyLayer: this.accuracyLayer,
-                map
-            });
-            this.accuracyLayer = null;
-        },
-
-        /**
-         * To decide show or not to show Poi
-         * @returns {void}
-         */
-        checkWFS () {
-            const visibleWFSModels = [];
-
-            this.visibleLayerConfigs?.forEach(layer => {
-                if (layer.typ === "WFS") {
-                    visibleWFSModels.push(layer);
-                }
-            });
-
-            if (this.poiDistancesLocal.length > 0) {
-                if (!visibleWFSModels.length) {
-                    this.setShowPoiIcon(false);
-                    this.$store.dispatch("Maps/removePointMarker");
-                }
-                else {
-                    this.setShowPoiIcon(true);
-                }
-            }
         },
 
         /**
@@ -546,6 +318,25 @@ export default {
                 centerPosition,
                 onlyFilteredFeatures: this.onlyFilteredFeatures
             });
+        },
+
+        /**
+        * Handle mode selection from Choice component
+        * @param {String} mode - Selected mode: "currentPosition" or "customPosition"
+        * @returns {void}
+        */
+        onModeSelected (mode) {
+            this.selectedMode = mode;
+            this.currentPage = "location";
+        },
+
+        /**
+        * Go back to choice page
+        * @returns {void}
+        */
+        backToChoice () {
+            this.currentPage = "choice";
+            this.selectedMode = null;
         }
     }
 
@@ -556,10 +347,17 @@ export default {
     <div
         class="orientation-module"
     >
+        <OrientationComponentLayerMessage v-if="!hasValidVectorLayer" />
         <OrientationComponentChoice
-            v-if="hasValidVectorLayer"
+            v-if="currentPage === 'choice' && hasValidVectorLayer"
+            @next="onModeSelected"
         />
-        <OrientationComponentLayerMessage v-else />
+        <OrientationComponentLocation
+            v-else-if="currentPage === 'location' && hasValidVectorLayer"
+            :poi-mode="selectedMode"
+            @position-received="onPositionReceived"
+            @error="backToChoice"
+        />
     </div>
 </template>
 
