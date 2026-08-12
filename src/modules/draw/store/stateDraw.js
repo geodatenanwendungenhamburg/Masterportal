@@ -24,7 +24,8 @@
  * @property {Number[]} [currentLayoutOuterCircle.strokeColor=[0, 0, 0]] The stroke color in rgb.
  * @property {Number} currentLayoutOuterCircle.strokeWidth The stroke width in pixel.
  * @property {String} [description="common:modules.draw.description"] The description that should be shown in the button in the menu.
- * @property {String[]} [drawEdits=["deleteAll", "delete", "modify", "undo", "redo"]] The draw edits.
+ * @property {String[]} [drawEdits=["deleteAll", "delete", "modify", "editAttributes", "undo", "redo", "hide", "download"]] The draw edit toolbar controls.
+ * @property {Boolean} [enableAttributesSelector=false] Controls only the "editAttributes" toolbar entry. If false, only this single control is hidden.
  * @property {Object} [drawIcons={box: "bi-square", circle: "bi-circle", delete: "bi-eraser-fill", deleteAll: "bi-trash",doubleCircle: "bi-record-circle", geometries: "bi-hexagon-fill", line: "bi-slash-lg", modify: "bi-tools", pen: "bi-pencil-fill", point: "bi-circle-fill", polygon: "bi-octagon", redo: "bi-arrow-right", symbols: "bi-circle-square", undo: "bi-arrow-left", }] The icons for draw buttons.
  * @property {String} [drawIcons.box="bi-square"] The icon for box button.
  * @property {String} [drawIcons.circle="bi-circle"] The icon for circle button.
@@ -90,6 +91,7 @@ const state = {
     selectedSymbol: null,
     description: "common:modules.draw.description",
     drawEdits: ["deleteAll", "delete", "modify", "editAttributes", "undo", "redo", "hide", "download"],
+    enableAttributesSelector: false,
     drawIcons: {
         box: "bi-square",
         circle: "bi-circle",

@@ -33,6 +33,7 @@ const EXCLUDED_ATTRIBUTE_KEYS = new Set([
  * Shared component that provides buttons to edit drawn features.
  * @module shared/modules/draw/DrawEdit
  * @vue-prop {String[]} [drawEdits=["deleteAll", "delete", "edit", "undo", "redo", "editAttributes", "hide", "download"]] - The available edit actions.
+ * @vue-prop {Boolean} [showEditAttributesControl=true] - If false, removes only the "editAttributes" action from the toolbar.
  * @vue-prop {Object} drawIcons - The icons for edit buttons, keyed by action name.
  * @vue-prop {ol/layer/Vector} layer - The vector layer for drawings.
  * @vue-prop {String} [selectedInteraction="draw"] - The currently selected interaction mode.
@@ -59,6 +60,10 @@ export default {
             default () {
                 return ["deleteAll", "delete", "edit", "undo", "redo", "editAttributes", "hide", "download"];
             }
+        },
+        showEditAttributesControl: {
+            type: Boolean,
+            default: true
         },
         drawIcons: {
             type: Object,
@@ -150,6 +155,21 @@ export default {
          */
         features () {
             return this.source?.getFeatures() ?? [];
+        },
+        /**
+         * Returns draw edit actions that should be rendered in the toolbar.
+         * @returns {String[]} The visible draw edit actions.
+         */
+        visibleDrawEdits () {
+            if (!Array.isArray(this.drawEdits)) {
+                return [];
+            }
+
+            if (!this.showEditAttributesControl) {
+                return this.drawEdits.filter(drawEdit => drawEdit !== "editAttributes");
+            }
+
+            return this.drawEdits;
         }
     },
     watch: {
@@ -162,7 +182,7 @@ export default {
          * @returns {void}
          */
         selectedInteraction (selectedInteraction) {
-            if (!this.drawEdits.includes(selectedInteraction)) {
+            if (!this.visibleDrawEdits.includes(selectedInteraction)) {
                 this.showFrame = false;
             }
             if (selectedInteraction !== "delete" && selectedInteraction !== "modify") {
@@ -586,7 +606,7 @@ export default {
     >
         <div class="d-flex draw-edit-container">
             <IconButton
-                v-for="drawEdit in drawEdits"
+                v-for="drawEdit in visibleDrawEdits"
                 :id="'draw-edit-' + drawEdit"
                 :key="drawEdit"
                 :aria="$t('common:shared.modules.draw.drawEdit.' + drawEdit)"

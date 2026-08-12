@@ -47,6 +47,7 @@ export default {
             "currentLayout",
             "currentLayoutOuterCircle",
             "drawEdits",
+            "enableAttributesSelector",
             "drawIcons",
             "drawLineSettings",
             "drawCurveSettings",
@@ -71,7 +72,14 @@ export default {
             "currentComponentName",
             "mainExpanded",
             "secondaryExpanded"
-        ])
+        ]),
+        /**
+         * Indicates whether the "edit attributes" control is enabled.
+         * @returns {Boolean} True if the attribute edit control should be visible.
+         */
+        isEditAttributesControlEnabled () {
+            return this.enableAttributesSelector !== false;
+        }
     },
     watch: {
         selectedDrawTypeMain (newVal) {
@@ -235,6 +243,7 @@ export default {
                 :layer="layer"
                 :selected-interaction="selectedInteraction"
                 :set-selected-interaction="setSelectedInteraction"
+                :show-edit-attributes-control="isEditAttributesControlEnabled"
             />
         </div>
         <div

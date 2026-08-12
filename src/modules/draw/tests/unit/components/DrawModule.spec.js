@@ -10,6 +10,7 @@ import {mapConfigStyleSettingsToLayout} from "@modules/draw/js/drawConfigSetting
 describe("src/modules/draw/components/DrawModule.vue", () => {
     let selectedDrawType,
         selectedDrawTypeMain,
+        enableAttributesSelector,
         store,
         wrapper;
 
@@ -32,6 +33,7 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
     beforeEach(() => {
         selectedDrawType = "";
         selectedDrawTypeMain = "";
+        enableAttributesSelector = true;
 
         store = createStore({
             actions: {
@@ -75,7 +77,8 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                                         strokeWidth: 1
                                     };
                                 },
-                                drawEdits: () => ["deleteAll", "delete", "modify", "undo", "redo"],
+                                drawEdits: () => ["deleteAll", "delete", "modify", "editAttributes", "undo", "redo"],
+                                enableAttributesSelector: () => enableAttributesSelector,
                                 drawIcons: () => {
                                     return {
                                         box: "bi-square",
@@ -250,6 +253,31 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
             const result = mapConfigStyleSettingsToLayout(undefined);
 
             expect(result).to.deep.equal({});
+        });
+    });
+
+    describe("isEditAttributesControlEnabled", () => {
+        it("positive: passes false to DrawEdit when enableAttributesSelector is false", () => {
+            enableAttributesSelector = false;
+            wrapper = shallowMount(DrawModuleComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.vm.isEditAttributesControlEnabled).to.be.false;
+            expect(wrapper.findComponent({name: "DrawEdit"}).props("showEditAttributesControl")).to.be.false;
+        });
+
+        it("negative: passes true to DrawEdit when enableAttributesSelector is true", () => {
+            wrapper = shallowMount(DrawModuleComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.vm.isEditAttributesControlEnabled).to.be.true;
+            expect(wrapper.findComponent({name: "DrawEdit"}).props("showEditAttributesControl")).to.be.true;
         });
     });
 });
