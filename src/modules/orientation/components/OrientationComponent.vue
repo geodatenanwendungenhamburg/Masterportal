@@ -11,8 +11,7 @@ import {
 } from "../utils/accuracyLayer.js";
 import {getVectorFeaturesInCircle as getVectorFeaturesInCircleUtil} from "../utils/poiFeatureSearch.js";
 import {
-    getMarkerDirectionStyle,
-    resolveHeading
+    getMarkerDirectionStyle
 } from "../utils/directionMarker.js";
 import OrientationComponentLayerMessage from "./OrientationComponentLayerMessage.vue";
 import OrientationComponentChoice from "./OrientationComponentChoice.vue";
@@ -130,73 +129,6 @@ export default {
             else if (this.geolocation !== null) {
                 this.untrack();
             }
-        },
-
-        /**
-         * Setting the marker on the position
-         * @param {Object} position the position object from openlayer
-         * @returns {void}
-         */
-        positionMarker (position) {
-            try {
-                this.marker.setPosition(position);
-            }
-            catch (e) {
-                console.error("wasn't able to set marker");
-            }
-        },
-
-        /**
-         * Zoom to the center
-         * @param {Object} position the position object from openlayer
-         * @returns {void}
-         */
-        zoomAndCenter (position) {
-            this.zoomToCoordinates({center: position, zoom: 6});
-        },
-
-        /**
-         * Setting the current map on the position
-         * @returns {void}
-         */
-        positioning () {
-            const position = this.geolocation.getPosition(),
-                  firstGeolocation = this.firstGeolocation,
-                  zoomMode = this.zoomMode,
-                  centerPosition = proj4(proj4("EPSG:4326"), proj4(this.projection.getCode()), position),
-                  resolvedHeading = resolveHeading(this.geolocation.getHeading());
-
-            if (Number.isFinite(resolvedHeading)) {
-                this.heading = resolvedHeading;
-            }
-            this.previousPosition = Array.isArray(position) ? [...position] : null;
-
-            // setting the center position
-            this.setPosition(centerPosition);
-
-            // screen navigation
-            if (zoomMode === "once") {
-                if (firstGeolocation === true) {
-                    this.positionMarker(centerPosition);
-                    this.zoomAndCenter(centerPosition);
-                    this.firstGeolocation = false;
-                }
-                else {
-                    this.positionMarker(centerPosition);
-                }
-            }
-            else if (zoomMode === "always") {
-                this.positionMarker(centerPosition);
-                this.zoomAndCenter(centerPosition);
-                this.firstGeolocation = false;
-            }
-            else {
-                console.error("The configured zoomMode: " + zoomMode + " does not exist. Please use the params 'once' or 'always'!");
-            }
-
-            this.onAccuracyGeometryChange();
-
-            this.$store.dispatch("Maps/removePointMarker");
         },
 
         /**
