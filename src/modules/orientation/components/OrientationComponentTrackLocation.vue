@@ -9,7 +9,6 @@ import {
     clearAccuracyGeometry as clearAccuracyGeometryUtil,
     createAccuracyFeature,
     initAccuracyLayer as initAccuracyLayerUtil,
-    removeAccuracyLayer as removeAccuracyLayerUtil,
     updateAccuracyGeometry as updateAccuracyGeometryUtil
 } from "../utils/accuracyLayer.js";
 import {
@@ -26,7 +25,7 @@ import {
  * @vue-emit {error} Emits when geolocation error occurs
  */
 export default {
-    name: "OrientationComponentLocation",
+    name: "OrientationComponentTrackLocation",
     props: {
         poiMode: {
             type: String,
@@ -75,14 +74,6 @@ export default {
         if (this.poiMode === "currentPosition") {
             this.track();
         }
-    },
-    beforeUnmount () {
-        clearAccuracyGeometryUtil({
-            accuracyFeature: this.accuracyFeature,
-            geolocation: this.geolocation,
-            listener: this.onAccuracyGeometryChange
-        });
-        this.untrack();
     },
     methods: {
         ...mapMutations("Modules/Orientation", ["setGeolocation", "setPosition"]),
@@ -261,21 +252,6 @@ export default {
         },
 
         /**
-         * Remove overlay from map
-         * @returns {void}
-         */
-        removeOverlay () {
-            const map = mapCollection.getMap("2D");
-
-            map.removeOverlay(this.marker);
-            removeAccuracyLayerUtil({
-                accuracyLayer: this.accuracyLayer,
-                map
-            });
-            this.accuracyLayer = null;
-        },
-
-        /**
          * Handle geolocation error
          * @returns {void}
          */
@@ -367,7 +343,7 @@ export default {
 
             this.$store.dispatch("Maps/removePointMarker");
 
-            this.$emit("position-received", {position: centerPosition, heading: this.heading});
+            this.$emit("position-received", {position: centerPosition, heading: this.heading, mode: "currentPosition"});
         }
     }
 };

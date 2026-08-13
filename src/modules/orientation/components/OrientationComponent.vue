@@ -7,16 +7,19 @@ import proj4 from "proj4";
 import * as Proj from "ol/proj.js";
 import {
     clearAccuracyGeometry as clearAccuracyGeometryUtil,
-    updateAccuracyGeometry as updateAccuracyGeometryUtil
+    updateAccuracyGeometry as updateAccuracyGeometryUtil,
+    removeAccuracyLayer as removeAccuracyLayerUtil
 } from "../utils/accuracyLayer.js";
 import {getVectorFeaturesInCircle as getVectorFeaturesInCircleUtil} from "../utils/poiFeatureSearch.js";
 import {
     getMarkerDirectionStyle
 } from "../utils/directionMarker.js";
+import {extractEventCoordinates} from "@shared/js/utils/extractEventCoordinates.js";
 import OrientationComponentLayerMessage from "./OrientationComponentLayerMessage.vue";
 import OrientationComponentChoice from "./OrientationComponentChoice.vue";
-import OrientationComponentLocation from "./OrientationComponentLocation.vue";
-/* import OrientationComponentResults from "./OrientationComponentResults.vue"; */
+import OrientationComponentTrackLocation from "./OrientationComponentTrackLocation.vue";
+import OrientationComponentMapSelection from "./OrientationComponentMapSelection.vue";
+import OrientationComponentResults from "./OrientationComponentResults.vue";
 
 /**
  * Orientation control that allows the user to locate themselves on the map.
@@ -33,13 +36,15 @@ export default {
     components: {
         OrientationComponentLayerMessage,
         OrientationComponentChoice,
-        OrientationComponentLocation
-        /* OrientationComponentResults*/
+        OrientationComponentTrackLocation,
+        OrientationComponentMapSelection,
+        OrientationComponentResults
     },
     data () {
         return {
             currentPage: "choice",
-            selectedMode: null
+            selectedMode: null,
+            receivedPosition: null
         };
     },
     computed: {
@@ -86,7 +91,7 @@ export default {
     },
     methods: {
         ...mapMutations("Modules/Orientation", Object.keys(mutations)),
-        ...mapActions("Maps", ["zoomToCoordinates"]),
+        ...mapActions("Maps", ["zoomToCoordinates", "zoomToExtent"]),
         ...mapActions("Alerting", ["addSingleAlert"]),
 
         onAccuracyGeometryChange () {
@@ -269,8 +274,51 @@ export default {
         backToChoice () {
             this.currentPage = "choice";
             this.selectedMode = null;
+        },
+        /**
+    * Handle position received from TrackLocation or MapSelection
+    * @param {Object} data - Position data from location component
+    * @returns {void}
+    */
+        onPositionReceived (data) {
+            this.receivedPosition = data.position;
+            this.currentPage = "results";
+        },
+
+        /**
+         * Handle feature selection from Results component
+         * @param {ol/Feature} feature - Selected feature
+         * @returns {void}
+         */
+        onFeatureSelected (feature) {
+            const extent = feature.getGeometry().getExtent(),
+                  coordinate = extractEventCoordinates(extent),
+                  resolutions = mapCollection.getMapView("2D").getResolutions(),
+                  index = resolutions.indexOf(0.2645831904584105) === -1 ? resolutions.length : resolutions.indexOf(0.2645831904584105);
+
+            this.zoomToExtent({extent: coordinate, options: {maxZoom: index}});
+            this.$store.dispatch("Maps/removePointMarker");
+            this.setPoiMode("currentPosition");
+            this.setCurrentPositionEnabled(true);
+            this.backToChoice();
+        },
+        /**
+         * Remove overlay from map
+         * @returns {void}
+         */
+        removeOverlay () {
+            const map = mapCollection.getMap("2D");
+
+            map.removeOverlay(this.marker);
+            removeAccuracyLayerUtil({
+                accuracyLayer: this.accuracyLayer,
+                map
+            });
+            this.accuracyLayer = null;
         }
+
     }
+
 
 };
 </script>
@@ -284,11 +332,25 @@ export default {
             v-if="currentPage === 'choice' && hasValidVectorLayer"
             @next="onModeSelected"
         />
-        <OrientationComponentLocation
-            v-else-if="currentPage === 'location' && hasValidVectorLayer"
+        <OrientationComponentTrackLocation
+            v-else-if="currentPage === 'location' && hasValidVectorLayer && selectedMode === 'currentPosition'"
             :poi-mode="selectedMode"
             @position-received="onPositionReceived"
             @error="backToChoice"
+        />
+        <OrientationComponentMapSelection
+            v-else-if="currentPage === 'location' && hasValidVectorLayer && selectedMode === 'customPosition'"
+            :poi-mode="selectedMode"
+            @position-received="onPositionReceived"
+            @error="backToChoice"
+        />
+        <OrientationComponentResults
+            v-else-if="currentPage === 'results' && hasValidVectorLayer"
+            :position="receivedPosition"
+            :poi-distances="poiDistancesLocal"
+            :get-features-in-circle="getVectorFeaturesInCircle"
+            @feature-selected="onFeatureSelected"
+            @back-to-choice="backToChoice"
         />
     </div>
 </template>
