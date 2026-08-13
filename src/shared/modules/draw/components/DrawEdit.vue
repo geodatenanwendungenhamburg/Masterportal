@@ -35,6 +35,7 @@ const EXCLUDED_ATTRIBUTE_KEYS = new Set([
  * @vue-prop {String[]} [drawEdits=["deleteAll", "delete", "edit", "undo", "redo", "editAttributes", "hide", "download"]] - The available edit actions.
  * @vue-prop {Boolean} [showEditAttributesControl=true] - If false, removes only the "editAttributes" action from the toolbar.
  * @vue-prop {String|null} [preSelectedDownloadFormat=null] - Preselected export format for download.
+ * @vue-prop {Boolean} [semicolonCsvDelimiter=true] - If true, CSV export uses semicolon as delimiter.
  * @vue-prop {Object} drawIcons - The icons for edit buttons, keyed by action name.
  * @vue-prop {ol/layer/Vector} layer - The vector layer for drawings.
  * @vue-prop {String} [selectedInteraction="draw"] - The currently selected interaction mode.
@@ -70,6 +71,10 @@ export default {
             type: String,
             required: false,
             default: null
+        },
+        semicolonCsvDelimiter: {
+            type: Boolean,
+            default: true
         },
         drawIcons: {
             type: Object,
@@ -135,6 +140,7 @@ export default {
             sourceAddFeatureHandler: null,
             sourceRemoveFeatureHandler: null,
             sourceClearHandler: null,
+            sourceFeatureRevision: 0,
             featureCounter: 1,
             undoCount: 0,
             redoCount: 0
@@ -160,6 +166,11 @@ export default {
          * @returns {ol/Feature[]} The features array.
          */
         features () {
+            const sourceFeatureRevision = this.sourceFeatureRevision;
+
+            if (sourceFeatureRevision < 0) {
+                return [];
+            }
             return this.source?.getFeatures() ?? [];
         },
         /**
@@ -246,6 +257,7 @@ export default {
                 if (!this.redoing) {
                     this.handleFeatureAdded(event.feature);
                 }
+                this.sourceFeatureRevision++;
             };
 
             this.sourceRemoveFeatureHandler = (event) => {
@@ -256,10 +268,12 @@ export default {
                     });
                     this.syncUndoRedoCounts();
                 }
+                this.sourceFeatureRevision++;
             };
 
             this.sourceClearHandler = () => {
                 this.mode = "";
+                this.sourceFeatureRevision++;
             };
 
             source.on("addfeature", this.sourceAddFeatureHandler);
@@ -622,12 +636,12 @@ export default {
                     selectedInteraction === drawEdit ? 'active': '',
                     drawEdit === 'redo' && redoCount === 0 ? 'disabled' : '',
                     drawEdit === 'undo' && undoCount === 0 ? 'disabled' : '',
-                    drawEdit !== 'redo' && drawEdit !== 'undo' && source?.getFeatures()?.length === 0 ? 'disabled' : '',
+                    drawEdit !== 'redo' && drawEdit !== 'undo' && features.length === 0 ? 'disabled' : '',
                     drawEdit !== 'hide' && !drawLayerVisible ? 'disabled': ''
                 ]"
                 :interaction="(event) => regulateEditInteraction(drawEdit, event)"
                 :icon="localDrawIcons[drawEdit]"
-                :disabled="(drawEdit === 'redo' && redoCount === 0) || (drawEdit === 'undo' && undoCount === 0) || (drawEdit !== 'redo' && drawEdit !== 'undo' && source?.getFeatures()?.length === 0) || (drawEdit !== 'hide' && !drawLayerVisible)"
+                :disabled="(drawEdit === 'redo' && redoCount === 0) || (drawEdit === 'undo' && undoCount === 0) || (drawEdit !== 'redo' && drawEdit !== 'undo' && features.length === 0) || (drawEdit !== 'hide' && !drawLayerVisible)"
             />
         </div>
         <LayoutFrame
@@ -642,6 +656,7 @@ export default {
                 :formats="availableFormats"
                 :features="features"
                 :pre-selected-format="preSelectedDownloadFormat"
+                :semicolon-csv-delimiter="semicolonCsvDelimiter"
             />
             <div v-if="selectedInteraction === 'modify'">
                 <DrawEditStyle :selected-feature="selectedEditFeature" />

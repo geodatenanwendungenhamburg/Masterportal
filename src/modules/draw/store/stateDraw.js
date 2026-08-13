@@ -49,6 +49,7 @@
  * @property {Object|null} [drawSquareSettings=null] Config parameter for square styling.
  * @property {Object|null} [writeTextSettings=null] Config parameter for text styling.
  * @property {String|null} [preSelectedDownloadFormat=null] Preselected export format ("KML", "GEOJSON", "GPX" or "CSV").
+ * @property {Boolean} [semicolonCsvDelimiter=true] If true, CSV export uses semicolon as delimiter instead of comma.
  * @property {Boolean} [hasMouseMapInteractions=true] If this attribute is true, then all other modules will be deactivated when this attribute is also true. Only one module with this attribute true may be open at the same time, since conflicts can arise in the card interactions.
  * @property {String} [icon="bi-pencil"] Icon next to title (config-param).
  * @property {Number} idCounter Counter for features drawn.
@@ -127,6 +128,7 @@ const state = {
     drawSquareSettings: null,
     writeTextSettings: null,
     preSelectedDownloadFormat: null,
+    semicolonCsvDelimiter: true,
     hasMouseMapInteractions: true,
     icon: "bi-pencil",
     idCounter: 0,

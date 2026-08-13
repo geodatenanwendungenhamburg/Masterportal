@@ -12,6 +12,7 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
         selectedDrawTypeMain,
         enableAttributesSelector,
         preSelectedDownloadFormat,
+        semicolonCsvDelimiter,
         store,
         wrapper;
 
@@ -36,6 +37,7 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
         selectedDrawTypeMain = "";
         enableAttributesSelector = true;
         preSelectedDownloadFormat = "KML";
+        semicolonCsvDelimiter = false;
 
         store = createStore({
             actions: {
@@ -103,6 +105,7 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                                 drawSquareSettings: () => null,
                                 writeTextSettings: () => null,
                                 preSelectedDownloadFormat: () => preSelectedDownloadFormat,
+                                semicolonCsvDelimiter: () => semicolonCsvDelimiter,
                                 drawTypesGeometrie: () => ["line", "box", "polygon", "circle", "doubleCircle"],
                                 drawTypesMain: () => ["pen", "geometries", "symbols"],
                                 drawTypesSymbols: () => ["point"],
@@ -305,6 +308,28 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
             });
 
             expect(wrapper.findComponent({name: "DrawEdit"}).props("preSelectedDownloadFormat")).to.equal(null);
+        });
+
+        it("positive: forwards semicolonCsvDelimiter to DrawEdit", () => {
+            semicolonCsvDelimiter = true;
+            wrapper = shallowMount(DrawModuleComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.findComponent({name: "DrawEdit"}).props("semicolonCsvDelimiter")).to.equal(true);
+        });
+
+        it("negative: forwards false semicolonCsvDelimiter by default", () => {
+            semicolonCsvDelimiter = false;
+            wrapper = shallowMount(DrawModuleComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.findComponent({name: "DrawEdit"}).props("semicolonCsvDelimiter")).to.equal(false);
         });
     });
 });

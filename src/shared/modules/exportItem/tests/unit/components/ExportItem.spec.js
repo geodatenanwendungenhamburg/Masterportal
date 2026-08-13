@@ -5,6 +5,7 @@ import sinon from "sinon";
 import Feature from "ol/Feature.js";
 import Point from "ol/geom/Point.js";
 import Polygon from "ol/geom/Polygon.js";
+import exportItem from "@masterportal/masterportalapi/src/shared/exportItem.js";
 
 import ExportItemComponent from "../../../components/ExportItem.vue";
 
@@ -241,6 +242,56 @@ describe("src/shared/modules/exportItem/components/ExportItem.vue", () => {
             const btn = wrapper.find("#downloadBtn");
 
             expect(btn.classes()).to.include("disabled");
+        });
+    });
+
+    describe("method: handleCSVDownload", () => {
+        it("positive: uses semicolon delimiter when semicolonCsvDelimiter is true", async () => {
+            const firstFeature = new Feature({geometry: new Point([0, 0])}),
+                secondFeature = new Feature({geometry: new Point([1, 1])}),
+                setCsvAttributesStub = sinon.stub(exportItem, "setCsvAttributes").returns([firstFeature, secondFeature]),
+                triggerFileDownloadSpy = sinon.spy();
+
+            firstFeature.set("csv_attributes", {name: "first", value: "1"});
+            secondFeature.set("csv_attributes", {name: "second", value: "2"});
+
+            wrapper = mountComponent({
+                semicolonCsvDelimiter: true,
+                features: [firstFeature, secondFeature]
+            });
+            wrapper.vm.fileName = "draw-export";
+            wrapper.vm.triggerFileDownload = triggerFileDownloadSpy;
+
+            await wrapper.vm.handleCSVDownload();
+
+            const csvContent = triggerFileDownloadSpy.firstCall.args[0];
+
+            expect(setCsvAttributesStub.calledOnce).to.be.true;
+            expect(csvContent).to.contain(";");
+        });
+
+        it("negative: keeps comma delimiter when semicolonCsvDelimiter is false", async () => {
+            const firstFeature = new Feature({geometry: new Point([0, 0])}),
+                secondFeature = new Feature({geometry: new Point([1, 1])}),
+                setCsvAttributesStub = sinon.stub(exportItem, "setCsvAttributes").returns([firstFeature, secondFeature]),
+                triggerFileDownloadSpy = sinon.spy();
+
+            firstFeature.set("csv_attributes", {name: "first", value: "1"});
+            secondFeature.set("csv_attributes", {name: "second", value: "2"});
+
+            wrapper = mountComponent({
+                semicolonCsvDelimiter: false,
+                features: [firstFeature, secondFeature]
+            });
+            wrapper.vm.fileName = "draw-export";
+            wrapper.vm.triggerFileDownload = triggerFileDownloadSpy;
+
+            await wrapper.vm.handleCSVDownload();
+
+            const csvContent = triggerFileDownloadSpy.firstCall.args[0];
+
+            expect(setCsvAttributesStub.calledOnce).to.be.true;
+            expect(csvContent).to.contain(",");
         });
     });
 });

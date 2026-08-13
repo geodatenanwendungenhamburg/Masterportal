@@ -49,6 +49,7 @@ export default {
             "drawEdits",
             "enableAttributesSelector",
             "preSelectedDownloadFormat",
+            "semicolonCsvDelimiter",
             "drawIcons",
             "drawLineSettings",
             "drawCurveSettings",
@@ -246,6 +247,7 @@ export default {
                 :set-selected-interaction="setSelectedInteraction"
                 :show-edit-attributes-control="isEditAttributesControlEnabled"
                 :pre-selected-download-format="preSelectedDownloadFormat"
+                :semicolon-csv-delimiter="semicolonCsvDelimiter"
             />
         </div>
         <div

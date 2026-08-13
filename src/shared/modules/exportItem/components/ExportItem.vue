@@ -45,6 +45,11 @@ export default {
             required: false,
             default: null
         },
+        semicolonCsvDelimiter: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
         filenameLabel: {
             type: String,
             required: false,
@@ -208,7 +213,7 @@ export default {
             let dataString = await exportItem.setCsvAttributes(this.features, this.projectionCode);
 
             dataString = Array.isArray(dataString)
-                ? convertJsonToCsv(dataString.map(feature => feature.get("csv_attributes")), false, false)
+                ? convertJsonToCsv(dataString.map(feature => feature.get("csv_attributes")), false, this.semicolonCsvDelimiter)
                 : "";
 
             this.triggerFileDownload(dataString, `${this.fileName}.csv`);
