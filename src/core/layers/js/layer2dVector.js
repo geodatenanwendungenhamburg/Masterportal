@@ -244,9 +244,7 @@ Layer2dVector.prototype.createStyle = async function (attrs) {
     }
     else {
         this.setStyle(null);
-        if (!isDynamic) {
-            console.warn(i18next.t("common:core.layers.errorHandling.wrongStyleId", {styleId}));
-        }
+        console.warn(i18next.t("common:core.layers.errorHandling.wrongStyleId", {styleId}));
     }
 };
 
