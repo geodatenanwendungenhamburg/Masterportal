@@ -48,6 +48,7 @@ export default {
             "currentLayoutOuterCircle",
             "drawEdits",
             "enableAttributesSelector",
+            "preSelectedDownloadFormat",
             "drawIcons",
             "drawLineSettings",
             "drawCurveSettings",
@@ -244,6 +245,7 @@ export default {
                 :selected-interaction="selectedInteraction"
                 :set-selected-interaction="setSelectedInteraction"
                 :show-edit-attributes-control="isEditAttributesControlEnabled"
+                :pre-selected-download-format="preSelectedDownloadFormat"
             />
         </div>
         <div

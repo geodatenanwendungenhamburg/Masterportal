@@ -48,6 +48,7 @@
  * @property {Object|null} [drawDoubleCircleSettings=null] Config parameter for double circle styling.
  * @property {Object|null} [drawSquareSettings=null] Config parameter for square styling.
  * @property {Object|null} [writeTextSettings=null] Config parameter for text styling.
+ * @property {String|null} [preSelectedDownloadFormat=null] Preselected export format ("KML", "GEOJSON", "GPX" or "CSV").
  * @property {Boolean} [hasMouseMapInteractions=true] If this attribute is true, then all other modules will be deactivated when this attribute is also true. Only one module with this attribute true may be open at the same time, since conflicts can arise in the card interactions.
  * @property {String} [icon="bi-pencil"] Icon next to title (config-param).
  * @property {Number} idCounter Counter for features drawn.
@@ -125,6 +126,7 @@ const state = {
     drawDoubleCircleSettings: null,
     drawSquareSettings: null,
     writeTextSettings: null,
+    preSelectedDownloadFormat: null,
     hasMouseMapInteractions: true,
     icon: "bi-pencil",
     idCounter: 0,

@@ -43,12 +43,7 @@ export default {
         preSelectedFormat: {
             type: String,
             required: false,
-            default: null,
-            validator: (value) => {
-                const allowedFormats = ["KML", "GEOJSON", "GPX", "CSV"];
-
-                return allowedFormats.includes(value.toUpperCase());
-            }
+            default: null
         },
         filenameLabel: {
             type: String,
@@ -104,10 +99,39 @@ export default {
                 });
         }
     },
+    watch: {
+        preSelectedFormat () {
+            this.syncPreSelectedFormat();
+        },
+        formats () {
+            this.syncPreSelectedFormat();
+        }
+    },
+    mounted () {
+        this.syncPreSelectedFormat();
+    },
     unmounted () {
         this.fileName = "";
     },
     methods: {
+        /**
+         * Synchronizes exportFormat with the configured preselected format if valid.
+         * @returns {void}
+         */
+        syncPreSelectedFormat () {
+            const downloadFormat = this.preSelectedFormat;
+
+            if (!downloadFormat || !this.formats.includes(downloadFormat)) {
+                if (downloadFormat) {
+                    console.warn(`"${downloadFormat}" is not an available export format. Allowed formats are: ${this.formats.join(", ")}`);
+                }
+                this.exportFormat = null;
+                return;
+            }
+
+            this.exportFormat = downloadFormat;
+        },
+
         /**
          * Updates the selected export format when the user changes the dropdown.
          * @param {Event} event - The change event from the format select element.
@@ -183,7 +207,9 @@ export default {
         async handleCSVDownload () {
             let dataString = await exportItem.setCsvAttributes(this.features, this.projectionCode);
 
-            dataString = Array.isArray(dataString) ? convertJsonToCsv(dataString.map(feature => feature.get("csv_attributes")), false, true) : "";
+            dataString = Array.isArray(dataString)
+                ? convertJsonToCsv(dataString.map(feature => feature.get("csv_attributes")), false, false)
+                : "";
 
             this.triggerFileDownload(dataString, `${this.fileName}.csv`);
         },

@@ -159,6 +159,33 @@ describe("src/shared/modules/exportItem/components/ExportItem.vue", () => {
         });
     });
 
+    describe("method: syncPreSelectedFormat", () => {
+        it("positive: sets exportFormat when preSelectedFormat is available", () => {
+            wrapper = mountComponent({
+                formats: ["KML", "GEOJSON", "GPX", "CSV"],
+                preSelectedFormat: "CSV"
+            });
+
+            wrapper.vm.syncPreSelectedFormat();
+
+            expect(wrapper.vm.exportFormat).to.equal("CSV");
+        });
+
+        it("negative: warns and clears exportFormat when preSelectedFormat is unavailable", () => {
+            const warnStub = sinon.stub(console, "warn");
+
+            wrapper = mountComponent({
+                formats: ["KML", "GEOJSON", "GPX", "CSV"],
+                preSelectedFormat: "PDF"
+            });
+
+            wrapper.vm.syncPreSelectedFormat();
+
+            expect(wrapper.vm.exportFormat).to.equal(null);
+            expect(warnStub.called).to.be.true;
+        });
+    });
+
     describe("method: startDownload", () => {
         it("should not call any handler if exportFormat is null", async () => {
             wrapper = mountComponent();

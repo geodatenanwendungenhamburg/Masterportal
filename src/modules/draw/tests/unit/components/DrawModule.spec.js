@@ -11,6 +11,7 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
     let selectedDrawType,
         selectedDrawTypeMain,
         enableAttributesSelector,
+        preSelectedDownloadFormat,
         store,
         wrapper;
 
@@ -34,6 +35,7 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
         selectedDrawType = "";
         selectedDrawTypeMain = "";
         enableAttributesSelector = true;
+        preSelectedDownloadFormat = "KML";
 
         store = createStore({
             actions: {
@@ -100,6 +102,7 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                                 drawDoubleCircleSettings: () => null,
                                 drawSquareSettings: () => null,
                                 writeTextSettings: () => null,
+                                preSelectedDownloadFormat: () => preSelectedDownloadFormat,
                                 drawTypesGeometrie: () => ["line", "box", "polygon", "circle", "doubleCircle"],
                                 drawTypesMain: () => ["pen", "geometries", "symbols"],
                                 drawTypesSymbols: () => ["point"],
@@ -278,6 +281,30 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
 
             expect(wrapper.vm.isEditAttributesControlEnabled).to.be.true;
             expect(wrapper.findComponent({name: "DrawEdit"}).props("showEditAttributesControl")).to.be.true;
+        });
+    });
+
+    describe("download config forwarding", () => {
+        it("positive: forwards preselected format to DrawEdit", () => {
+            preSelectedDownloadFormat = "CSV";
+            wrapper = shallowMount(DrawModuleComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.findComponent({name: "DrawEdit"}).props("preSelectedDownloadFormat")).to.equal("CSV");
+        });
+
+        it("negative: forwards null when no download preselection is configured", () => {
+            preSelectedDownloadFormat = null;
+            wrapper = shallowMount(DrawModuleComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.findComponent({name: "DrawEdit"}).props("preSelectedDownloadFormat")).to.equal(null);
         });
     });
 });

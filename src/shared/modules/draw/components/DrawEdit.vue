@@ -34,6 +34,7 @@ const EXCLUDED_ATTRIBUTE_KEYS = new Set([
  * @module shared/modules/draw/DrawEdit
  * @vue-prop {String[]} [drawEdits=["deleteAll", "delete", "edit", "undo", "redo", "editAttributes", "hide", "download"]] - The available edit actions.
  * @vue-prop {Boolean} [showEditAttributesControl=true] - If false, removes only the "editAttributes" action from the toolbar.
+ * @vue-prop {String|null} [preSelectedDownloadFormat=null] - Preselected export format for download.
  * @vue-prop {Object} drawIcons - The icons for edit buttons, keyed by action name.
  * @vue-prop {ol/layer/Vector} layer - The vector layer for drawings.
  * @vue-prop {String} [selectedInteraction="draw"] - The currently selected interaction mode.
@@ -64,6 +65,11 @@ export default {
         showEditAttributesControl: {
             type: Boolean,
             default: true
+        },
+        preSelectedDownloadFormat: {
+            type: String,
+            required: false,
+            default: null
         },
         drawIcons: {
             type: Object,
@@ -635,6 +641,7 @@ export default {
                 v-if="selectedInteraction === 'download'"
                 :formats="availableFormats"
                 :features="features"
+                :pre-selected-format="preSelectedDownloadFormat"
             />
             <div v-if="selectedInteraction === 'modify'">
                 <DrawEditStyle :selected-feature="selectedEditFeature" />
