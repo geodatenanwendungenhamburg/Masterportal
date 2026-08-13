@@ -1,7 +1,10 @@
 import {expect} from "chai";
 import Style from "ol/style/Style.js";
+import Feature from "ol/Feature.js";
+import Point from "ol/geom/Point.js";
+import VectorSource from "ol/source/Vector.js";
 
-import buildStyleFromDrawState, {buildOuterCircleStyle} from "@shared/modules/draw/js/buildStyleFromDrawState.js";
+import buildStyleFromDrawState, {applyStyleFromDrawState, buildOuterCircleStyle} from "@shared/modules/draw/js/buildStyleFromDrawState.js";
 
 describe("src/shared/modules/draw/js/buildStyleFromDrawState.js", () => {
     describe("buildStyleFromDrawState", () => {
@@ -295,6 +298,29 @@ describe("src/shared/modules/draw/js/buildStyleFromDrawState.js", () => {
                 style = buildOuterCircleStyle(drawState);
 
             expect(style.getStroke().getColor()).to.deep.equal([0, 0, 0, 1]);
+        });
+
+        it("should apply outer circle style when applyStyleFromDrawState is used", () => {
+            const source = new VectorSource(),
+                innerFeature = new Feature({geometry: new Point([0, 0])}),
+                outerFeature = new Feature({geometry: new Point([1, 1])}),
+                drawState = {
+                    drawType: {id: "drawCircle", geometry: "Circle"},
+                    circleOuterRadius: 500,
+                    colorContour: [0, 0, 0, 1],
+                    outerColorContour: [200, 0, 0, 1],
+                    outerColorFill: [200, 0, 0, 0.1],
+                    strokeWidth: 2
+                };
+
+            innerFeature.set("_source", source);
+            outerFeature.set("masterportal_attributes", {drawState: {circleOuterRadius: 500}});
+            source.addFeatures([innerFeature, outerFeature]);
+
+            applyStyleFromDrawState(innerFeature, drawState);
+
+            expect(outerFeature.getStyle()).to.be.instanceOf(Style);
+            expect(outerFeature.getStyle().getStroke().getColor()).to.deep.equal([200, 0, 0, 1]);
         });
     });
 });

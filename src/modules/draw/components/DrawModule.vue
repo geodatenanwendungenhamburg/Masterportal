@@ -35,7 +35,8 @@ export default {
     data () {
         return {
             layer: null,
-            source: markRaw(new VectorSource())
+            source: markRaw(new VectorSource()),
+            initializedDrawConfigTypes: markRaw(new Set())
         };
     },
     computed: {
@@ -143,6 +144,10 @@ export default {
          * @returns {void}
          */
         applyConfigDrawSettings (selectedDrawType) {
+            if (!selectedDrawType || this.initializedDrawConfigTypes.has(selectedDrawType)) {
+                return;
+            }
+
             const configSettings = getConfigSettingsByDrawType(selectedDrawType, this),
                   nextLayout = mapConfigStyleSettingsToLayout(configSettings);
 
@@ -168,6 +173,8 @@ export default {
                     this.setCircleOptions(nextCircleOptions);
                 }
             }
+
+            this.initializedDrawConfigTypes.add(selectedDrawType);
         },
 
         /**

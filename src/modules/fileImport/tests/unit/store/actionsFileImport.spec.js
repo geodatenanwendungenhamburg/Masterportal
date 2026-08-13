@@ -497,7 +497,8 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
                     showInLayerTree: true,
                     typ: "VECTORBASE",
                     type: "layer",
-                    visibility: true
+                    visibility: true,
+                    isDynamic: true
                 },
                 parentKey: treeSubjectsKey
             })).to.be.true;
@@ -540,7 +541,8 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
                     showInLayerTree: true,
                     typ: "VECTORBASE",
                     type: "layer",
-                    visibility: true
+                    visibility: true,
+                    isDynamic: true
                 };
 
             await addLayerConfig({state, dispatch, commit, rootGetters: {}}, payload);
@@ -563,7 +565,8 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
                     showInLayerTree: true,
                     typ: "VECTORBASE",
                     type: "layer",
-                    visibility: true
+                    visibility: true,
+                    isDynamic: true
                 };
 
             await addLayerConfig({state, dispatch, commit, rootGetters: {}}, payload);

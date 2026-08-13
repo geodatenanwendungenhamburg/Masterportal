@@ -58,6 +58,28 @@ export default function buildStyleFromDrawState (drawState) {
 }
 
 /**
+ * Applies styles derived from drawState to a feature.
+ * Sets the feature's primary style and, for double-circle features,
+ * updates the paired outer circle style.
+ * @param {ol/Feature} feature The feature to style.
+ * @param {Object} drawState The drawState object.
+ * @returns {void}
+ */
+export function applyStyleFromDrawState (feature, drawState) {
+    if (!feature || !drawState) {
+        return;
+    }
+
+    const style = buildStyleFromDrawState(drawState);
+
+    if (style) {
+        feature.setStyle(style);
+    }
+
+    applyOuterCircleStyle(feature, drawState);
+}
+
+/**
  * Builds a style for the outer circle of a double circle feature.
  * @param {Object} drawState The drawState object.
  * @returns {ol/style/Style|null} The outer circle style, or null if not a double circle.
@@ -77,6 +99,39 @@ export function buildOuterCircleStyle (drawState) {
         }),
         zIndex: drawState.zIndex ?? 0
     });
+}
+
+/**
+ * Applies the outer circle style to the paired outer circle feature.
+ * Looks for the next feature in the source with a matching circleOuterRadius drawState.
+ * @param {ol/Feature} innerFeature The inner circle feature.
+ * @param {Object} drawState The inner circle drawState (used to find the outer).
+ * @returns {void}
+ */
+function applyOuterCircleStyle (innerFeature, drawState) {
+    const outerStyle = buildOuterCircleStyle(drawState);
+
+    if (!outerStyle) {
+        return;
+    }
+
+    const source = innerFeature.get("_source");
+
+    if (!source) {
+        return;
+    }
+
+    const features = source.getFeatures(),
+        innerIdx = features.indexOf(innerFeature);
+
+    if (innerIdx >= 0 && innerIdx + 1 < features.length) {
+        const outerCandidate = features[innerIdx + 1],
+            outerAttrs = outerCandidate.get("masterportal_attributes");
+
+        if (outerAttrs?.drawState?.circleOuterRadius) {
+            outerCandidate.setStyle(outerStyle);
+        }
+    }
 }
 
 /**

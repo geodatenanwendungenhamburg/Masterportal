@@ -32,7 +32,8 @@ export function processDoubleCircleFeatures (features) {
         const [idx1, idx2] = indices,
             attrs1 = features[idx1].get("masterportal_attributes"),
             attrs2 = features[idx2].get("masterportal_attributes"),
-            styledAttrs = attrs1.fromDrawTool ? attrs1 : attrs2;
+            styledAttrs = [attrs1, attrs2].find(attrs => attrs?.drawState?.outerColorContour)
+                || (attrs1.fromDrawTool ? attrs1 : attrs2);
 
         if (!styledAttrs.drawState?.outerColorContour) {
             continue;

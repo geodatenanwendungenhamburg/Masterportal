@@ -1,7 +1,7 @@
 import {Fill, Style, Text, Stroke} from "ol/style.js";
 import {Point} from "ol/geom.js";
 import {convertColor} from "@shared/js/utils/convertColor.js";
-import buildStyleFromDrawState, {buildOuterCircleStyle} from "./buildStyleFromDrawState.js";
+import {applyStyleFromDrawState} from "./buildStyleFromDrawState.js";
 
 /**
  * Returns a style function that wraps the feature's original style and appends an asterisk (*)
@@ -170,7 +170,7 @@ export function extractEditableState (feature) {
 
 /**
  * Applies style changes to a feature by updating its drawState and rebuilding
- * the OL style using buildStyleFromDrawState.
+ * the OL style from drawState.
  * @param {ol/Feature} feature The feature to update.
  * @param {Object} changes Key-value pairs of style properties to change.
  * @returns {void}
@@ -199,15 +199,7 @@ export function applyStyleChange (feature, changes) {
 
     feature.set("masterportal_attributes", updatedAttrs, true);
 
-    const newStyle = buildStyleFromDrawState(drawState);
-
-    if (newStyle) {
-        feature.setStyle(newStyle);
-    }
-
-    if (editType === "circle" && drawState.circleOuterRadius) {
-        applyOuterCircleStyle(feature, drawState);
-    }
+    applyStyleFromDrawState(feature, drawState);
 }
 
 /**
@@ -333,39 +325,6 @@ function updatePolygonDrawState (drawState, changes) {
     }
     if (changes.strokeColor !== undefined) {
         drawState.colorContour = [...convertColor(changes.strokeColor, "rgb"), 1];
-    }
-}
-
-/**
- * Applies the outer circle style to the paired outer circle feature.
- * Looks for the next feature in the source with a matching circleOuterRadius drawState.
- * @param {ol/Feature} innerFeature The inner circle feature.
- * @param {Object} drawState The inner circle drawState (used to find the outer).
- * @returns {void}
- */
-function applyOuterCircleStyle (innerFeature, drawState) {
-    const outerStyle = buildOuterCircleStyle(drawState);
-
-    if (!outerStyle) {
-        return;
-    }
-
-    const source = innerFeature.get("_source");
-
-    if (!source) {
-        return;
-    }
-
-    const features = source.getFeatures(),
-        innerIdx = features.indexOf(innerFeature);
-
-    if (innerIdx >= 0 && innerIdx + 1 < features.length) {
-        const outerCandidate = features[innerIdx + 1],
-            outerAttrs = outerCandidate.get("masterportal_attributes");
-
-        if (outerAttrs?.drawState?.circleOuterRadius) {
-            outerCandidate.setStyle(outerStyle);
-        }
     }
 }
 

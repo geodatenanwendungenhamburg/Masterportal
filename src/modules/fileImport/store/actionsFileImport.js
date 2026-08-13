@@ -8,6 +8,7 @@ import Icon from "ol/style/Icon.js";
 import CircleStyle from "ol/style/Circle.js";
 import Text from "ol/style/Text.js";
 import {createDrawStyle} from "../../draw/js/createDrawStyle.js";
+import buildStyleFromDrawState from "@shared/modules/draw/js/buildStyleFromDrawState.js";
 import isObject from "@shared/js/utils/isObject.js";
 import {createEmpty as createEmptyExtent, extend} from "ol/extent.js";
 import {uniqueId} from "@shared/js/utils/uniqueId.js";
@@ -555,6 +556,12 @@ export default {
                 customStyles = state.customAttributeStyles[fileName];
             let style;
 
+            if (drawState) {
+                style = buildStyleFromDrawState(drawState);
+
+                return style ? style.clone() : new Style();
+            }
+
             if (!drawState && !customStyles) {
                 const defaultColor = [226, 26, 28, 0.9],
                     defaultFillColor = [228, 26, 28, 0.5],
@@ -617,82 +624,7 @@ export default {
                 return style.clone();
             }
 
-            if (drawState?.drawType.geometry === "Point") {
-                if (drawState.text) {
-                    style = new Style({
-                        image: new CircleStyle({
-                        }),
-                        text: new Text({
-                            text: drawState.text,
-                            font: drawState.fontSize + "px " + (drawState.font || "Arial,sans-serif"),
-                            fill: new Fill({
-                                color: drawState.color
-                            }),
-                            textAlign: drawState.textAlign || "left",
-                            textBaseline: drawState.textBaseline || "bottom"
-                        })
-                    });
-                }
-                else if (drawState?.symbol?.value && drawState.symbol.value !== "simple_point") {
-                    style = new Style({
-                        image: new Icon({
-                            crossOrigin: "anonymous",
-                            src: drawState.symbol.value.indexOf("/") > 0 ? drawState.symbol.value : drawState.imgPath + drawState.symbol.value,
-                            scale: drawState.symbol.scale
-                        })
-                    });
-                }
-                else {
-                    style = createDrawStyle(drawState?.color, drawState?.color, drawState?.drawType.geometry, drawState?.pointSize, 1, drawState?.zIndex);
-                }
-            }
-            else if (drawState?.drawType.geometry === "LineString" || drawState?.drawType.geometry === "MultiLineString") {
-                style = new Style({
-                    stroke: new Stroke({
-                        color: drawState.colorContour,
-                        width: drawState.strokeWidth
-                    })
-                });
-            }
-            else if (drawState?.drawType.geometry === "Polygon" || drawState?.drawType.geometry === "MultiPolygon") {
-                style = new Style({
-                    stroke: new Stroke({
-                        color: drawState.colorContour,
-                        width: drawState.strokeWidth
-                    }),
-                    fill: new Fill({
-                        color: drawState.color
-                    })
-                });
-            }
-            else if (drawState?.drawType.geometry === "Circle") {
-                style = new Style({
-                    stroke: new Stroke({
-                        color: drawState.colorContour,
-                        width: drawState.strokeWidth
-                    }),
-                    fill: new Fill({
-                        color: drawState.color
-                    }),
-                    circleRadius: drawState.circleRadius,
-                    circleOuterRadius: drawState.circleOuterRadius,
-                    colorContour: drawState.colorContour,
-                    outerColorContour: drawState.outerColorContour,
-                    zIndex: drawState.zIndex ?? 0
-                });
-            }
-            else if (drawState?.drawType.geometry === "Square") {
-                style = new Style({
-                    stroke: new Stroke({
-                        color: drawState.colorContour,
-                        width: drawState.strokeWidth
-                    }),
-                    fill: new Fill({
-                        color: drawState.color
-                    })
-                });
-            }
-            else if (!drawState && customStyles) {
+            if (!drawState && customStyles) {
                 const geometryType = feature ? feature.getGeometry().getType() : "cesium",
                     featureAttribute = feature.get(customStyles[0].attribute),
                     featureColor = customStyles.find(attribute => {
@@ -897,7 +829,8 @@ export default {
                     showInLayerTree: true,
                     typ: "VECTORBASE",
                     type: "layer",
-                    visibility: true
+                    visibility: true,
+                    isDynamic: true
                 },
                 parentKey: treeSubjectsKey
             }, {root: true});

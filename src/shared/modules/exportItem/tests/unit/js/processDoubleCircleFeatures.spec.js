@@ -161,6 +161,40 @@ describe("src/shared/modules/exportItem/js/processDoubleCircleFeatures.js", () =
             expect(attrs1.drawState.colorContour).to.deep.equal([0, 255, 0]);
         });
 
+        it("should use drawState with outerColorContour even if first feature is not fromDrawTool", () => {
+            const features = [
+                createFeatureWithAttributes({
+                    isGeoCircle: true,
+                    geoCircleCenter: "10,20",
+                    geoCircleRadius: 80,
+                    fromDrawTool: false
+                }),
+                createFeatureWithAttributes({
+                    isGeoCircle: true,
+                    geoCircleCenter: "10,20",
+                    geoCircleRadius: 160,
+                    fromDrawTool: true,
+                    drawState: {
+                        colorContour: [0, 0, 0],
+                        color: [255, 0, 0],
+                        outerColorContour: [0, 255, 0],
+                        outerColorFill: [0, 0, 255],
+                        circleOuterRadius: 300,
+                        circleRadius: 100,
+                        zIndex: 4
+                    }
+                })
+            ];
+
+            const result = processDoubleCircleFeatures(features),
+                innerAttrs = result[0].get("masterportal_attributes"),
+                outerAttrs = result[1].get("masterportal_attributes");
+
+            expect(innerAttrs.drawState.zIndex).to.equal(5);
+            expect(outerAttrs.drawState.zIndex).to.equal(4);
+            expect(outerAttrs.drawState.colorContour).to.deep.equal([0, 255, 0]);
+        });
+
         it("should handle an empty features array", () => {
             const result = processDoubleCircleFeatures([]);
 
