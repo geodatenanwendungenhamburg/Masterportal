@@ -109,7 +109,7 @@ function updateModifyTooltip (feature, tooltipElement, tooltipOverlay) {
  * @param {ol/layer/Vector} layer The vector layer for drawings.
  * @returns {ol/interaction/Select[]} The select interactions.
  */
-export function createSelectInteractions (layer) {
+function createSelectInteractions (layer) {
     return [
         selectInteraction.createSelectInteraction(layer),
         selectInteraction.createSelectInteraction(layer, pointerMove)
@@ -126,7 +126,7 @@ export function createSelectInteractions (layer) {
  * @param {Function} context.removeInteraction Action to remove an interaction from the map.
  * @returns {ol/interaction/Select[]} The newly created select interactions.
  */
-export function setupDeleteInteraction ({currentSelectInteractions, layer, source, addInteraction, removeInteraction}) {
+function setupDeleteInteraction ({currentSelectInteractions, layer, source, addInteraction, removeInteraction}) {
     currentSelectInteractions.forEach(interaction => removeInteraction(interaction));
 
     const newSelectInteractions = createSelectInteractions(layer);
@@ -152,7 +152,7 @@ export function setupDeleteInteraction ({currentSelectInteractions, layer, sourc
  * @param {Function} context.onModifyEnd Callback after a modify operation ends.
  * @returns {Object} Object containing {modifyInteraction, featureClickHandler}.
  */
-export function setupModifyInteraction ({currentModifyInteraction, source, layer, undoFeatures, redoFeatures, addInteraction, removeInteraction, onTextFeatureSelected, onFeatureSelected, onModifyEnd}) {
+function setupModifyInteraction ({currentModifyInteraction, source, layer, undoFeatures, redoFeatures, addInteraction, removeInteraction, onTextFeatureSelected, onFeatureSelected, onModifyEnd}) {
     removeInteraction(currentModifyInteraction);
 
     const map = mapCollection.getMap("2D"),
@@ -231,7 +231,7 @@ export function setupModifyInteraction ({currentModifyInteraction, source, layer
  * @param {Object[]} undoFeatures The undo stack.
  * @returns {void}
  */
-export function deleteAllFeatures (source, undoFeatures) {
+function deleteAllFeatures (source, undoFeatures) {
     undoFeatures.push(source.getFeatures());
     source.clear();
 }
@@ -244,7 +244,7 @@ export function deleteAllFeatures (source, undoFeatures) {
  * @param {Function} deleteAllHandler Handler for deleteAll undo/redo operations.
  * @returns {void}
  */
-export function performUndo (undoFeatures, redoFeatures, source, deleteAllHandler) {
+function performUndo (undoFeatures, redoFeatures, source, deleteAllHandler) {
     undoRedoFeatures(undoFeatures, redoFeatures, "undo", source, deleteAllHandler);
 }
 
@@ -256,7 +256,7 @@ export function performUndo (undoFeatures, redoFeatures, source, deleteAllHandle
  * @param {Function} deleteAllHandler Handler for deleteAll undo/redo operations.
  * @returns {void}
  */
-export function performRedo (redoFeatures, undoFeatures, source, deleteAllHandler) {
+function performRedo (redoFeatures, undoFeatures, source, deleteAllHandler) {
     undoRedoFeatures(redoFeatures, undoFeatures, "redo", source, deleteAllHandler);
 }
 
@@ -270,7 +270,7 @@ export function performRedo (redoFeatures, undoFeatures, source, deleteAllHandle
  * @param {Object[]} redoFeatures The redo stack (for undo push).
  * @returns {void}
  */
-export function handleDeleteAll (mode, features, source, undoFeatures, redoFeatures) {
+function handleDeleteAll (mode, features, source, undoFeatures, redoFeatures) {
     const featureArray = features.pop();
 
     if (mode === "undo") {
@@ -294,7 +294,7 @@ export function handleDeleteAll (mode, features, source, undoFeatures, redoFeatu
  * @param {Number} params.fillTransparency The fill transparency as percentage (0-100).
  * @returns {void}
  */
-export function applyTextEditToFeature ({feature, text, fontSize, font, fillColor, fillTransparency}) {
+function applyTextEditToFeature ({feature, text, fontSize, font, fillColor, fillTransparency}) {
     if (!feature) {
         return;
     }
@@ -321,7 +321,7 @@ export function applyTextEditToFeature ({feature, text, fontSize, font, fillColo
  * @param {ol/layer/Vector} layer The draw layer.
  * @returns {Boolean} The new visibility state.
  */
-export function toggleLayerVisibility (layer) {
+function toggleLayerVisibility (layer) {
     if (!layer) {
         return true;
     }
@@ -332,4 +332,15 @@ export function toggleLayerVisibility (layer) {
     return !isVisible;
 }
 
-export {isDeleteAllMode};
+export {
+    createSelectInteractions,
+    setupDeleteInteraction,
+    setupModifyInteraction,
+    deleteAllFeatures,
+    performUndo,
+    performRedo,
+    handleDeleteAll,
+    applyTextEditToFeature,
+    toggleLayerVisibility,
+    isDeleteAllMode
+};
