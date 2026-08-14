@@ -40,13 +40,6 @@ export default {
         OrientationComponentMapSelection,
         OrientationComponentResults
     },
-    data () {
-        return {
-            currentPage: "choice",
-            selectedMode: null,
-            receivedPosition: null
-        };
-    },
     computed: {
         ...mapGetters("Modules/Orientation", [
             "geolocation",
@@ -64,8 +57,12 @@ export default {
             "showPoi",
             "showPoiChoice",
             "showPoiIcon",
-            "zoomMode"
-
+            "zoomMode",
+            "currentPage",
+            "selectedMode",
+            "receivedPosition",
+            "accuracyFeature",
+            "accuracyLayer"
         ]),
         ...mapGetters("Maps", ["projection"]),
         ...mapGetters(["visibleLayerConfigs"]),
@@ -82,15 +79,24 @@ export default {
         }
     },
     beforeUnmount () {
-        clearAccuracyGeometryUtil({
-            accuracyFeature: this.accuracyFeature,
-            geolocation: this.geolocation,
-            listener: this.onAccuracyGeometryChange
-        });
+        if (this.accuracyFeature) {
+            clearAccuracyGeometryUtil({
+                accuracyFeature: this.accuracyFeature,
+                geolocation: this.geolocation,
+                listener: this.onAccuracyGeometryChange
+            });
+        }
         this.removeOverlay();
     },
     methods: {
         ...mapMutations("Modules/Orientation", Object.keys(mutations)),
+        ...mapMutations("Modules/Orientation", [
+            "setCurrentPage",
+            "setSelectedMode",
+            "setReceivedPosition",
+            "setAccuracyFeature",
+            "setAccuracyLayer"
+        ]),
         ...mapActions("Maps", ["zoomToCoordinates", "zoomToExtent"]),
         ...mapActions("Alerting", ["addSingleAlert"]),
 
@@ -101,10 +107,6 @@ export default {
                 projectionCode: this.projection.getCode(),
                 showAccuracy: this.showAccuracy
             });
-        },
-
-        setIsGeoLocationPossible () {
-            this.isGeoLocationPossible = window.location.protocol === "https:" || ["localhost", "127.0.0.1"].indexOf(window.location.hostname);
         },
 
         /**
@@ -263,8 +265,8 @@ export default {
         * @returns {void}
         */
         onModeSelected (mode) {
-            this.selectedMode = mode;
-            this.currentPage = "location";
+            this.setSelectedMode(mode);
+            this.setCurrentPage("location");
         },
 
         /**
@@ -272,8 +274,8 @@ export default {
         * @returns {void}
         */
         backToChoice () {
-            this.currentPage = "choice";
-            this.selectedMode = null;
+            this.setCurrentPage("choice");
+            this.setSelectedMode(null);
         },
         /**
     * Handle position received from TrackLocation or MapSelection
@@ -281,8 +283,8 @@ export default {
     * @returns {void}
     */
         onPositionReceived (data) {
-            this.receivedPosition = data.position;
-            this.currentPage = "results";
+            this.setReceivedPosition(data.position);
+            this.setCurrentPage("results");
         },
 
         /**

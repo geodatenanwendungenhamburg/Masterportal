@@ -28,6 +28,7 @@ export default {
             required: true
         }
     },
+    emits: ["feature-selected", "back-to-choice", "zoom-to-start"],
     data () {
         return {
             poiFeatures: [],

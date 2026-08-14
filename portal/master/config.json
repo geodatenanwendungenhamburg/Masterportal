@@ -557,18 +557,18 @@
       "sections": [
         [
           {
-  "type": "orientation",
-    "name": "common:modules.orientation.name",
-  "icon": "bi-geo-alt",
-  "zoomMode": "once",
-  "poiDistances": [500, 1000, 2000],
-  "showDirection": true
-},
-          {
             "type": "populationRequest"
           },
           {
             "type": "compareFeatures"
+          },
+          {
+            "type": "orientation",
+            "name": "common:modules.orientation.name",
+            "icon": "bi-geo-alt",
+            "zoomMode": "once",
+            "poiDistances": [500, 1000, 2000],
+            "showDirection": true
           },
           {
             "type": "print",
