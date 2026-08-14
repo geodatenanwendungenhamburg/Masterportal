@@ -1,4 +1,5 @@
 import {unByKey} from "ol/Observable.js";
+import {unregisterMeasurementChangeListener} from "./drawInteractionEventHandlers.js";
 
 /**
  * Unregisters drawstart and drawend listener keys and resets them.
@@ -24,10 +25,9 @@ export function clearDrawInteractionListenerKeys (drawStartKey, drawEndKey) {
  * Unregisters a geometry change listener and resets measurement listener state.
  * @param {?Object} activeMeasurementGeometry The geometry currently tracked for measurement updates.
  * @param {?Function} onGeometryChange The geometry change callback.
- * @param {Function} unregisterMeasurementChangeListener Function to detach the geometry listener.
  * @returns {{activeMeasurementGeometry: null, onGeometryChange: null}} Cleared measurement listener state.
  */
-export function clearMeasurementListenerState (activeMeasurementGeometry, onGeometryChange, unregisterMeasurementChangeListener) {
+export function clearMeasurementListenerState (activeMeasurementGeometry, onGeometryChange) {
     unregisterMeasurementChangeListener(activeMeasurementGeometry, onGeometryChange);
 
     return {

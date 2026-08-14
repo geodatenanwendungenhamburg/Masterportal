@@ -291,7 +291,7 @@ export default {
          */
         cleanDrawInteractionListeners () {
             Object.assign(this, clearDrawInteractionListenerKeys(this.drawStartKey, this.drawEndKey));
-            Object.assign(this, clearMeasurementListenerState(this.activeMeasurementGeometry, this.onGeometryChange, unregisterMeasurementChangeListener));
+            Object.assign(this, clearMeasurementListenerState(this.activeMeasurementGeometry, this.onGeometryChange));
         },
 
         /**

@@ -35,17 +35,17 @@ describe("src/shared/modules/draw/js/drawInteractionLifecycleHelpers.js", () => 
     });
 
     describe("clearMeasurementListenerState", () => {
-        it("positive: delegates unregister call and clears state", () => {
-            const activeMeasurementGeometry = {id: "g1"},
-                onGeometryChange = sinon.stub(),
-                unregisterMeasurementChangeListenerSpy = sinon.spy(),
+        it("positive: unregisters geometry change listener and clears state", () => {
+            const onGeometryChange = sinon.stub(),
+                activeMeasurementGeometry = {
+                    un: sinon.spy()
+                },
                 result = clearMeasurementListenerState(
                     activeMeasurementGeometry,
-                    onGeometryChange,
-                    unregisterMeasurementChangeListenerSpy
+                    onGeometryChange
                 );
 
-            expect(unregisterMeasurementChangeListenerSpy.calledOnceWithExactly(activeMeasurementGeometry, onGeometryChange)).to.be.true;
+            expect(activeMeasurementGeometry.un.calledOnceWithExactly("change", onGeometryChange)).to.be.true;
             expect(result).to.deep.equal({
                 activeMeasurementGeometry: null,
                 onGeometryChange: null
@@ -53,14 +53,11 @@ describe("src/shared/modules/draw/js/drawInteractionLifecycleHelpers.js", () => 
         });
 
         it("negative: still clears state when both inputs are missing", () => {
-            const unregisterMeasurementChangeListenerSpy = sinon.spy(),
-                result = clearMeasurementListenerState(
-                    null,
-                    null,
-                    unregisterMeasurementChangeListenerSpy
-                );
+            const result = clearMeasurementListenerState(
+                null,
+                null
+            );
 
-            expect(unregisterMeasurementChangeListenerSpy.calledOnceWithExactly(null, null)).to.be.true;
             expect(result).to.deep.equal({
                 activeMeasurementGeometry: null,
                 onGeometryChange: null
