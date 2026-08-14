@@ -4,12 +4,14 @@ import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.j
 import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle.js";
 import svgFactory from "@shared/js/utils/svgFactory.js";
 import NavTab from "@shared/modules/tabs/components/NavTab.vue";
+import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 
 
 export default {
     name: "OrientationComponentResults",
     components: {
-        NavTab
+        NavTab,
+        FlatButton
     },
     props: {
         position: {
@@ -184,6 +186,16 @@ export default {
 </script>
 
 <template>
+    <div class="button-row">
+        <FlatButton
+            text="Zurück zur Auswahl"
+            @click="$emit('back-to-choice')"
+        />
+        <FlatButton
+            text="Zum Startpunkt springen"
+            @click="$emit('zoom-to-start')"
+        />
+    </div>
     <div class="orientation-component-results">
         <ul
             class="nav nav-tabs"
@@ -265,6 +277,11 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+.button-row {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+}
     .orientation-component-results {
 
         .modal-header {
@@ -302,9 +319,6 @@ export default {
             vertical-align: middle;
         }
         .tab-content {
-            max-height: 78vh;
-            overflow: auto;
-
             .poi-list {
                 display: flex;
                 flex-direction: column;

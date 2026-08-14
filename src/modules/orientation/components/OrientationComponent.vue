@@ -300,7 +300,6 @@ export default {
             this.$store.dispatch("Maps/removePointMarker");
             this.setPoiMode("currentPosition");
             this.setCurrentPositionEnabled(true);
-            this.backToChoice();
         },
         /**
          * Remove overlay from map
@@ -351,6 +350,7 @@ export default {
             :get-features-in-circle="getVectorFeaturesInCircle"
             @feature-selected="onFeatureSelected"
             @back-to-choice="backToChoice"
+            @zoom-to-start="onModeSelected('currentPosition')"
         />
     </div>
 </template>
