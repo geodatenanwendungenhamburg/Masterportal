@@ -24,7 +24,7 @@ export default {
                 };
             }
             return {
-                currentPosition: this.$t("common:modules.orientation.poiChoiceCurrentPosition"),
+                currentPosition: this.$t("common:modules.controls.orientation.poiChoiceCurrentPosition"),
                 customPosition: this.$t(this.customPosition)
             };
         }
@@ -156,7 +156,7 @@ export default {
                         <span class="control-icon bootstrap-icon standalone">
                             <i class="bi-record-circle" />
                         </span>
-                        {{ $t("common:modules.orientation.titleGeolocatePOI") }}
+                        {{ $t("common:modules.controls.orientation.titleGeolocatePOI") }}
                     </h4>
                     <span
                         ref="close-icon"
@@ -173,7 +173,7 @@ export default {
                 </div>
                 <div class="choice-content">
                     <div class="choice-title">
-                        {{ $t("common:modules.orientation.poiChoiceTitle") }}
+                        {{ $t("common:modules.controls.orientation.poiChoiceTitle") }}
                     </div>
                     <label
                         v-for="(val, key) in choices"
@@ -195,13 +195,13 @@ export default {
                         tabindex="0"
                         @click="triggerTrack"
                     >
-                        {{ $t("common:modules.orientation.poiChoiceConfirmation") }}
+                        {{ $t("common:modules.controls.orientation.poiChoiceConfirmation") }}
                     </button>
                     <button
                         class="stop btn btn-outline-default"
                         @click="stopPoi"
                     >
-                        {{ $t("common:modules.orientation.poiChoiceStop") }}
+                        {{ $t("common:modules.controls.orientation.poiChoiceStop") }}
                     </button>
                 </div>
             </div>
