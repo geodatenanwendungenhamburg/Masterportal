@@ -98,7 +98,7 @@ export default {
 
         /**
          * Check if tracking can start
-         * @returns {Boolean}
+         * @returns {Boolean} Whether tracking can start
          */
         canStartTracking () {
             const inIframe = window.self !== window.top,
@@ -120,7 +120,7 @@ export default {
 
         /**
          * Ensure geolocation instance exists
-         * @returns {Geolocation}
+         * @returns {Geolocation} The geolocation instance
          */
         ensureGeolocationInstance () {
             if (this.geolocation === null) {
