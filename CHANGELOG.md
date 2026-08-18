@@ -4,6 +4,11 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## 2026-08-19 v3.25.1
+
+### Changed
+- Build: Changed chunking of modules and packages during build time to prevent an unhealthy amount of <script>-tags in the resulting index.html and decrease load time of built portals.
+
 ## 2026-08-05 v3.25.0
 
 ### Added

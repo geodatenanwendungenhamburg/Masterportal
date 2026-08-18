@@ -317,7 +317,23 @@ export default defineConfig(({mode}) => {
 
                         return `${buildBase}/js/[name].js`;
                     },
-                    chunkFileNames: `${buildBase}/js/[name].js`
+                    chunkFileNames: `${buildBase}/js/[name].js`,
+                    // "$initial" only matches statically reachable modules, so addons and other dynamic imports stay lazy.
+                    codeSplitting: {
+                        groups: [
+                            {
+                                name: "vendor",
+                                test: /[\\/]node_modules[\\/]/,
+                                tags: ["$initial"],
+                                priority: 10
+                            },
+                            {
+                                name: "masterportal",
+                                tags: ["$initial"],
+                                priority: 0
+                            }
+                        ]
+                    }
                 },
                 external (id) {
                     const pid = slash(id);
