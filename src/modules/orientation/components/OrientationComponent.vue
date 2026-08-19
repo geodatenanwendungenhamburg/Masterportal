@@ -315,7 +315,7 @@ export default {
                 accuracyLayer: this.accuracyLayer,
                 map
             });
-            this.accuracyLayer = null;
+            this.setAccuracyLayer(null);
         }
 
     }
