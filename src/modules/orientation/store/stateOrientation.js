@@ -21,7 +21,9 @@
  * @property {Boolean} showPoiIcon Wether to show the poi icon.
  * @property {Boolean} showAccuracy Wether to show the accuracy circle which is displayed around the marker.
  * @property {Boolean} showDirection Wether to show the direction arrow with the marker.
- */
+ * @property {Boolean} hasMouseMapInteractions If true, this module claims exclusive map click/pointer interactions while active (prevents GFI and other modules with this flag from reacting to map clicks).
+ * @property {String} menuSide The side ("mainMenu" or "secondaryMenu") in which this module is configured, used to correctly release/claim mouse map interactions on the right menu side.
+*/
 const state = {
     type: "orientation",
     name: "common:modules.orientation.name",
@@ -46,7 +48,9 @@ const state = {
     poiModeCurrentPositionEnabled: true,
     position: null,
     showAccuracy: false,
-    showDirection: false
+    showDirection: false,
+    hasMouseMapInteractions: true,
+    menuSide: "secondaryMenu"
 };
 
 export default state;
