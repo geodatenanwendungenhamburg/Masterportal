@@ -86,7 +86,6 @@ export default {
                 listener: this.onAccuracyGeometryChange
             });
         }
-        this.removeOverlay();
     },
     methods: {
         ...mapMutations("Modules/Orientation", Object.keys(mutations)),

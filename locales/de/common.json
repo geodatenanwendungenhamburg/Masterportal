@@ -940,7 +940,8 @@
       "choiceText": "Möchten Sie den aktuellen Standort oder einen selbstgewählten Punkt in der Karte als Ausgangspunkt für die Umkreissuche verwenden?",
       "currentPositionLabel": "Standort wählen",
       "customPositionLabel": "Punkt auf der Karte wählen",
-      "nextButton": "Weiter"
+      "nextButton": "Weiter",
+      "choosePointOnMapText": "Klicke auf die Karte, um den gewünschten Punkt für die Umkreissuche zu setzen."
     },
     "portalFooter": {
       "designation": "Kartographie und Gestaltung:",

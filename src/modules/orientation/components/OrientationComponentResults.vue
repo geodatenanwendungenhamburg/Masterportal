@@ -18,6 +18,10 @@ export default {
             type: Array,
             required: true
         },
+        selectedMode: {
+            type: String,
+            required: true
+        },
         poiDistances: {
             type: [Boolean, Array],
             required: false,
@@ -28,7 +32,7 @@ export default {
             required: true
         }
     },
-    emits: ["feature-selected", "back-to-choice", "zoom-to-start"],
+    emits: ["feature-selected", "back-to-choice", "zoom-to-location", "select-map-point"],
     data () {
         return {
             poiFeatures: [],
@@ -193,8 +197,14 @@ export default {
             @click="$emit('back-to-choice')"
         />
         <FlatButton
+            v-if="selectedMode === 'currentPosition'"
             text="Zum Startpunkt springen"
-            @click="$emit('zoom-to-start')"
+            @click="$emit('zoom-to-location')"
+        />
+        <FlatButton
+            v-if="selectedMode === 'customPosition'"
+            text="Neuen Punkt wählen"
+            @click="$emit('select-map-point')"
         />
     </div>
     <div class="orientation-component-results">
