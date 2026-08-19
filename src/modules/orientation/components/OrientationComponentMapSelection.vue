@@ -2,6 +2,7 @@
 import {markRaw} from "vue";
 import {mapActions} from "vuex";
 import Overlay from "ol/Overlay.js";
+import {Interaction} from "ol/interaction.js";
 
 /**
  * Map selection component for orientation module.
@@ -14,21 +15,21 @@ export default {
     emits: ["position-received"],
     data () {
         return {
-            mapClickListenerKey: "orientationMapSelection",
             pointerMoveListenerKey: "orientationMapSelectionPointerMove",
             flagMarker: markRaw(new Overlay({
                 positioning: "center-center",
                 stopEvent: false
-            }))
+            })),
+            clickInteraction: null
         };
     },
     mounted () {
         this.addFlagElement();
-        this.registerMapClickListener();
+        this.createClickInteraction();
         this.registerPointerMoveListener();
     },
     beforeUnmount () {
-        this.unregisterMapClickListener();
+        this.removeClickInteraction();
         this.unregisterPointerMoveListener();
     },
     methods: {
@@ -59,25 +60,33 @@ export default {
          * Register map click listener to capture user selection
          * @returns {void}
          */
-        registerMapClickListener () {
-            this.registerListener({
-                type: "click",
-                listener: this.onMapClick,
-                keyForBoundFunctions: this.mapClickListenerKey
+        createClickInteraction () {
+            const map = mapCollection.getMap("2D");
+
+            this.clickInteraction = new Interaction({
+                handleEvent: (evt) => {
+                    if (evt.type === "click") {
+                        this.onMapClick(evt);
+                    }
+                    return true;
+                }
             });
+            map.addInteraction(this.clickInteraction);
         },
 
         /**
-         * Unregister map click listener
+         * Remove click interaction from map
          * @returns {void}
          */
-        unregisterMapClickListener () {
-            this.unregisterListener({
-                type: "click",
-                listener: this.onMapClick,
-                keyForBoundFunctions: this.mapClickListenerKey
-            });
+        removeClickInteraction () {
+            const map = mapCollection.getMap("2D");
+
+            if (this.clickInteraction) {
+                map.removeInteraction(this.clickInteraction);
+                this.clickInteraction = null;
+            }
         },
+
 
         /**
          * Register pointer move listener to track cursor
@@ -123,7 +132,7 @@ export default {
                 mode: "customPosition"
             });
 
-            this.unregisterMapClickListener();
+            this.removeClickInteraction();
             this.unregisterPointerMoveListener();
         }
     }
