@@ -349,9 +349,10 @@ export default {
             :position="receivedPosition"
             :poi-distances="poiDistancesLocal"
             :get-features-in-circle="getVectorFeaturesInCircle"
+            :selected-mode="selectedMode"
             @feature-selected="onFeatureSelected"
             @back-to-choice="backToChoice"
-            @zoom-to-start="onModeSelected('currentPosition')"
+            @zoom-to-location="onModeSelected('currentPosition')"
         />
     </div>
 </template>
