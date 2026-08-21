@@ -272,6 +272,16 @@ pipelines:
                         - git clone --single-branch --branch lts https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
                         - cd masterportal
                         - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git HEAD:refs/heads/$BITBUCKET_TAG -f
+        deploy branch to openCode:
+            - variables:
+                    - name: BRANCH_NAME
+            -   step:
+                    name: 'deploy branch to openCode'
+                    script:
+                        - echo 'deploy branch to openCode:'$BRANCH_NAME
+                        - git clone --single-branch --branch $BRANCH_NAME https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
+                        - cd masterportal
+                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportal.git HEAD:refs/heads/$BRANCH_NAME -f
         deploy lts tag and lts branch to openCode:
             -   step:
                     name: deploy lts tag to openCode
