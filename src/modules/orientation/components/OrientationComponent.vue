@@ -62,7 +62,8 @@ export default {
             "selectedMode",
             "receivedPosition",
             "accuracyFeature",
-            "accuracyLayer"
+            "accuracyLayer",
+            "flagOverlay"
         ]),
         ...mapGetters("Maps", ["projection"]),
         ...mapGetters(["visibleLayerConfigs"]),
@@ -86,6 +87,7 @@ export default {
                 listener: this.onAccuracyGeometryChange
             });
         }
+        this.removeFlagElement();
     },
     methods: {
         ...mapMutations("Modules/Orientation", Object.keys(mutations)),
@@ -94,7 +96,8 @@ export default {
             "setSelectedMode",
             "setReceivedPosition",
             "setAccuracyFeature",
-            "setAccuracyLayer"
+            "setAccuracyLayer",
+            "setFlagOverlay"
         ]),
         ...mapActions("Maps", ["zoomToCoordinates", "zoomToExtent"]),
         ...mapActions("Alerting", ["addSingleAlert"]),
@@ -264,6 +267,7 @@ export default {
         * @returns {void}
         */
         onModeSelected (mode) {
+            this.removeFlagElement();
             this.setSelectedMode(mode);
             this.setCurrentPage("location");
         },
@@ -273,6 +277,7 @@ export default {
         * @returns {void}
         */
         backToChoice () {
+            this.removeFlagElement();
             this.setCurrentPage("choice");
             this.setSelectedMode(null);
         },
@@ -315,6 +320,19 @@ export default {
                 map
             });
             this.setAccuracyLayer(null);
+        },
+
+        /**
+         * Remove flag overlay from map
+         * @returns {void}
+         */
+        removeFlagElement () {
+            if (this.flagOverlay) {
+                const map = mapCollection.getMap("2D");
+
+                map.removeOverlay(this.flagOverlay);
+                this.setFlagOverlay(null);
+            }
         }
 
     }
@@ -353,6 +371,7 @@ export default {
             @feature-selected="onFeatureSelected"
             @back-to-choice="backToChoice"
             @zoom-to-location="onModeSelected('currentPosition')"
+            @select-map-point="onModeSelected('customPosition')"
         />
     </div>
 </template>

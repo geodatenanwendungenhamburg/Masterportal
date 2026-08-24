@@ -1,6 +1,6 @@
 <script>
 import {markRaw} from "vue";
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 import Overlay from "ol/Overlay.js";
 
 /**
@@ -39,6 +39,8 @@ export default {
     methods: {
         ...mapActions("Maps", ["registerListener", "unregisterListener"]),
         ...mapActions("Menu", ["changeCurrentMouseMapInteractionsComponent", "resetCurrentMouseMapInteractionsComponent"]),
+        ...mapMutations("Modules/Orientation", ["setFlagOverlay"]),
+
         /**
          * Add flag element to overlay
          * @returns {void}
@@ -48,6 +50,7 @@ export default {
             const map = mapCollection.getMap("2D");
 
             map.addOverlay(this.flagMarker);
+            this.setFlagOverlay(this.flagMarker);
         },
 
         /**

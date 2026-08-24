@@ -18,6 +18,16 @@ const mutations = {
      */
     setCurrentPositionEnabled (state, enabled) {
         state.poiModeCurrentPositionEnabled = enabled;
+    },
+
+    /**
+    * Sets the flag overlay reference
+    * @param {Object} state the state
+    * @param {Object|null} overlay the overlay object or null to clear
+    * @returns {void}
+    */
+    setFlagOverlay (state, overlay) {
+        state.flagOverlay = overlay;
     }
 };
 
