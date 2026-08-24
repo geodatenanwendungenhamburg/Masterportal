@@ -15,13 +15,13 @@ export function createFlagOverlay (position) {
     const element = document.createElement("span");
 
     element.className = "orientation-flag-marker";
-    element.innerHTML = "<i class=\"bi-flag\"></i>";
+    element.innerHTML = "<i class=\"bi bi-geo-fill\"></i>";
     Object.assign(element.style, {
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        color: "#151C27",
-        fontSize: "1.5rem",
+        color: "#337ab7",
+        fontSize: "2rem",
         pointerEvents: "none"
     });
 

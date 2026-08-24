@@ -78,11 +78,22 @@ export default {
             const vectorTypes = layerFactory.getVectorLayerTypes();
 
             return this.visibleLayerConfigs?.some(layer => vectorTypes.includes(layer.typ?.toUpperCase()));
+        },
+        showFlag () {
+            return Boolean(this.receivedPosition) && this.currentPage === "results" && this.selectedMode === "customPosition" && this.hasValidVectorLayer;
         }
     },
-    mounted () {
-        if (!this.flagOverlay && this.receivedPosition && this.currentPage === "results" && this.selectedMode === "customPosition") {
-            this.setFlagOverlay(createFlagOverlay(this.receivedPosition));
+    watch: {
+        showFlag: {
+            immediate: true,
+            handler (showFlag) {
+                if (showFlag && !this.flagOverlay) {
+                    this.setFlagOverlay(createFlagOverlay(this.receivedPosition));
+                }
+                else if (!showFlag && this.flagOverlay) {
+                    this.removeFlagElement();
+                }
+            }
         }
     },
     beforeUnmount () {
