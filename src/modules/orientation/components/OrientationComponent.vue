@@ -14,6 +14,7 @@ import {getVectorFeaturesInCircle as getVectorFeaturesInCircleUtil} from "../uti
 import {
     getMarkerDirectionStyle
 } from "../utils/directionMarker.js";
+import {createFlagOverlay, removeFlagOverlay} from "../utils/flagOverlay.js";
 import {extractEventCoordinates} from "@shared/js/utils/extractEventCoordinates.js";
 import OrientationComponentLayerMessage from "./OrientationComponentLayerMessage.vue";
 import OrientationComponentChoice from "./OrientationComponentChoice.vue";
@@ -77,6 +78,11 @@ export default {
             const vectorTypes = layerFactory.getVectorLayerTypes();
 
             return this.visibleLayerConfigs?.some(layer => vectorTypes.includes(layer.typ?.toUpperCase()));
+        }
+    },
+    mounted () {
+        if (!this.flagOverlay && this.receivedPosition && this.currentPage === "results" && this.selectedMode === "customPosition") {
+            this.setFlagOverlay(createFlagOverlay(this.receivedPosition));
         }
     },
     beforeUnmount () {
@@ -328,9 +334,7 @@ export default {
          */
         removeFlagElement () {
             if (this.flagOverlay) {
-                const map = mapCollection.getMap("2D");
-
-                map.removeOverlay(this.flagOverlay);
+                removeFlagOverlay(this.flagOverlay);
                 this.setFlagOverlay(null);
             }
         }

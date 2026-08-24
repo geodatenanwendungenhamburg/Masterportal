@@ -1,7 +1,6 @@
 <script>
-import {markRaw} from "vue";
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import Overlay from "ol/Overlay.js";
+import {createFlagOverlay} from "../utils/flagOverlay.js";
 
 /**
  * Map selection component for orientation module.
@@ -15,15 +14,11 @@ export default {
     data () {
         return {
             mapClickListenerKey: "orientationMapSelection",
-            pointerMoveListenerKey: "orientationMapSelectionPointerMove",
-            flagMarker: markRaw(new Overlay({
-                positioning: "center-center",
-                stopEvent: false
-            }))
+            pointerMoveListenerKey: "orientationMapSelectionPointerMove"
         };
     },
     computed: {
-        ...mapGetters("Modules/Orientation", ["menuSide"])
+        ...mapGetters("Modules/Orientation", ["menuSide", "flagOverlay"])
     },
     mounted () {
         this.changeCurrentMouseMapInteractionsComponent({type: "orientation", side: this.menuSide});
@@ -42,15 +37,17 @@ export default {
         ...mapMutations("Modules/Orientation", ["setFlagOverlay"]),
 
         /**
-         * Add flag element to overlay
+         * Create the flag overlay at the current map center, unless one already
+         * exists (e.g. a previously placed flag that should stay in place).
          * @returns {void}
          */
         addFlagElement () {
-            this.flagMarker.setElement(document.querySelector("#orientation-flag-marker"));
-            const map = mapCollection.getMap("2D");
+            if (this.flagOverlay) {
+                return;
+            }
+            const center = mapCollection.getMapView("2D").getCenter();
 
-            map.addOverlay(this.flagMarker);
-            this.setFlagOverlay(this.flagMarker);
+            this.setFlagOverlay(createFlagOverlay(center));
         },
 
         /**
@@ -107,7 +104,7 @@ export default {
          * @returns {void}
          */
         onPointerMove (evt) {
-            this.flagMarker.setPosition(evt.coordinate);
+            this.flagOverlay.setPosition(evt.coordinate);
         },
 
         /**
@@ -116,6 +113,7 @@ export default {
          * @returns {void}
          */
         onMapClick (evt) {
+            this.flagOverlay.setPosition(evt.coordinate);
             this.$emit("position-received", {
                 position: evt.coordinate,
                 mode: "customPosition"
@@ -133,12 +131,6 @@ export default {
         <p class="selection-instruction">
             {{ $t("common:modules.orientation.choosePointOnMapText") }}
         </p>
-        <span
-            id="orientation-flag-marker"
-            class="orientation-flag-marker"
-        >
-            <i class="bi-flag" />
-        </span>
     </div>
 </template>
 
@@ -157,15 +149,5 @@ export default {
         color: $dark_grey;
         margin: 0;
     }
-}
-
-.orientation-flag-marker {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: $dark_blue;
-    font-size: 1.5rem;
-    pointer-events: none;
 }
 </style>
