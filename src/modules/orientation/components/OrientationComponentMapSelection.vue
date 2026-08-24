@@ -1,6 +1,6 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import {createFlagOverlay} from "../utils/flagOverlay.js";
+import {createCustomPositionMarker} from "../utils/customPositionMarker.js";
 
 /**
  * Map selection component for orientation module.
@@ -18,11 +18,11 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/Orientation", ["menuSide", "flagOverlay"])
+        ...mapGetters("Modules/Orientation", ["menuSide", "customPositionMarker"])
     },
     mounted () {
         this.changeCurrentMouseMapInteractionsComponent({type: "orientation", side: this.menuSide});
-        this.addFlagElement();
+        this.addCustomPositionMarker();
         this.registerMapClickListener();
         this.registerPointerMoveListener();
     },
@@ -34,20 +34,20 @@ export default {
     methods: {
         ...mapActions("Maps", ["registerListener", "unregisterListener"]),
         ...mapActions("Menu", ["changeCurrentMouseMapInteractionsComponent", "resetCurrentMouseMapInteractionsComponent"]),
-        ...mapMutations("Modules/Orientation", ["setFlagOverlay"]),
+        ...mapMutations("Modules/Orientation", ["setCustomPositionMarker"]),
 
         /**
-         * Create the flag overlay at the current map center, unless one already
-         * exists (e.g. a previously placed flag that should stay in place).
+         * Create the custom position marker at the current map center, unless one already
+         * exists (e.g. a previously placed marker that should stay in place).
          * @returns {void}
          */
-        addFlagElement () {
-            if (this.flagOverlay) {
+        addCustomPositionMarker () {
+            if (this.customPositionMarker) {
                 return;
             }
             const center = mapCollection.getMapView("2D").getCenter();
 
-            this.setFlagOverlay(createFlagOverlay(center));
+            this.setCustomPositionMarker(createCustomPositionMarker(center));
         },
 
         /**
@@ -99,12 +99,12 @@ export default {
         },
 
         /**
-         * Handle pointer move event and update flag position
+         * Handle pointer move event and update custom position marker position
          * @param {Object} evt Pointer move event with coordinate property
          * @returns {void}
          */
         onPointerMove (evt) {
-            this.flagOverlay.setPosition(evt.coordinate);
+            this.customPositionMarker.setPosition(evt.coordinate);
         },
 
         /**
@@ -113,7 +113,7 @@ export default {
          * @returns {void}
          */
         onMapClick (evt) {
-            this.flagOverlay.setPosition(evt.coordinate);
+            this.customPositionMarker.setPosition(evt.coordinate);
             this.$emit("position-received", {
                 position: evt.coordinate,
                 mode: "customPosition"

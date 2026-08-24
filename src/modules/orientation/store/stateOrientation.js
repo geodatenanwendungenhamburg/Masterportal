@@ -23,7 +23,7 @@
  * @property {Boolean} showDirection Wether to show the direction arrow with the marker.
  * @property {Boolean} hasMouseMapInteractions If true, this module claims exclusive map click/pointer interactions while active (prevents GFI and other modules with this flag from reacting to map clicks).
  * @property {String} menuSide The side ("mainMenu" or "secondaryMenu") in which this module is configured, used to correctly release/claim mouse map interactions on the right menu side.
- * @property {Object|null} flagOverlay The overlay object for the flag marker used in customPosition mode
+ * @property {Object|null} customPositionMarker The overlay object for the custom position marker used in customPosition mode
 */
 const state = {
     type: "orientation",
@@ -51,7 +51,7 @@ const state = {
     showAccuracy: false,
     showDirection: false,
     hasMouseMapInteractions: true,
-    flagOverlay: null,
+    customPositionMarker: null,
     menuSide: "secondaryMenu"
 };
 

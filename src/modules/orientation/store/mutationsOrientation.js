@@ -11,13 +11,13 @@ const mutations = {
     ...generateSimpleMutations(OrientationState),
 
     /**
-    * Sets the flag overlay reference
+    * Sets the custom position marker overlay reference
     * @param {Object} state the state
     * @param {Object|null} overlay the overlay object or null to clear
     * @returns {void}
     */
-    setFlagOverlay (state, overlay) {
-        state.flagOverlay = overlay;
+    setCustomPositionMarker (state, overlay) {
+        state.customPositionMarker = overlay;
     }
 };
 

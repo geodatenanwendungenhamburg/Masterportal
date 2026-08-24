@@ -10,7 +10,7 @@ import {getVectorFeaturesInCircle as getVectorFeaturesInCircleUtil} from "../uti
 import {
     getMarkerDirectionStyle
 } from "../utils/directionMarker.js";
-import {createFlagOverlay, removeFlagOverlay} from "../utils/flagOverlay.js";
+import {createCustomPositionMarker, removeCustomPositionMarker} from "../utils/customPositionMarker.js";
 import {extractEventCoordinates} from "@shared/js/utils/extractEventCoordinates.js";
 import OrientationComponentLayerMessage from "./OrientationComponentLayerMessage.vue";
 import OrientationComponentChoice from "./OrientationComponentChoice.vue";
@@ -56,7 +56,7 @@ export default {
             "receivedPosition",
             "accuracyFeature",
             "accuracyLayer",
-            "flagOverlay"
+            "customPositionMarker"
         ]),
         ...mapGetters("Maps", ["projection"]),
         ...mapGetters(["visibleLayerConfigs"]),
@@ -79,11 +79,11 @@ export default {
         showFlag: {
             immediate: true,
             handler (showFlag) {
-                if (showFlag && !this.flagOverlay) {
-                    this.setFlagOverlay(createFlagOverlay(this.receivedPosition));
+                if (showFlag && !this.customPositionMarker) {
+                    this.setCustomPositionMarker(createCustomPositionMarker(this.receivedPosition));
                 }
-                else if (!showFlag && this.flagOverlay) {
-                    this.removeFlagElement();
+                else if (!showFlag && this.customPositionMarker) {
+                    this.removeCustomPositionMarker();
                 }
             }
         }
@@ -96,7 +96,7 @@ export default {
                 listener: this.onAccuracyGeometryChange
             });
         }
-        this.removeFlagElement();
+        this.removeCustomPositionMarker();
     },
     methods: {
         ...mapMutations("Modules/Orientation", Object.keys(mutations)),
@@ -134,7 +134,7 @@ export default {
         * @returns {void}
         */
         onModeSelected (mode) {
-            this.removeFlagElement();
+            this.removeCustomPositionMarker();
             this.setSelectedMode(mode);
             this.setCurrentPage("location");
         },
@@ -144,13 +144,13 @@ export default {
         * @returns {void}
         */
         backToChoice () {
-            this.removeFlagElement();
+            this.removeCustomPositionMarker();
             this.setCurrentPage("choice");
             this.setSelectedMode(null);
         },
         /**
     * Handle position received from TrackLocation or MapSelection
-    * @param {Object} data - Position data from location component
+    * @param {Object} data - Position data from location or selection component
     * @returns {void}
     */
         onPositionReceived (data) {
@@ -175,13 +175,13 @@ export default {
         },
 
         /**
-         * Remove flag overlay from map
+         * Remove custom position marker from map
          * @returns {void}
          */
-        removeFlagElement () {
-            if (this.flagOverlay) {
-                removeFlagOverlay(this.flagOverlay);
-                this.setFlagOverlay(null);
+        removeCustomPositionMarker () {
+            if (this.customPositionMarker) {
+                removeCustomPositionMarker(this.customPositionMarker);
+                this.setCustomPositionMarker(null);
             }
         }
 
