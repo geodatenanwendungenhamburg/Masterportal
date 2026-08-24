@@ -2,13 +2,9 @@
 import {mapGetters, mapMutations, mapActions} from "vuex";
 import layerFactory from "@core/layers/js/layerFactory.js";
 import mutations from "../store/mutationsOrientation.js";
-import Geolocation from "ol/Geolocation.js";
-import proj4 from "proj4";
-import * as Proj from "ol/proj.js";
 import {
     clearAccuracyGeometry as clearAccuracyGeometryUtil,
-    updateAccuracyGeometry as updateAccuracyGeometryUtil,
-    removeAccuracyLayer as removeAccuracyLayerUtil
+    updateAccuracyGeometry as updateAccuracyGeometryUtil
 } from "../utils/accuracyLayer.js";
 import {getVectorFeaturesInCircle as getVectorFeaturesInCircleUtil} from "../utils/poiFeatureSearch.js";
 import {
@@ -44,20 +40,16 @@ export default {
     computed: {
         ...mapGetters("Modules/Orientation", [
             "geolocation",
-            "iconGeolocate",
             "iconGeolocatePOI",
             "iconGeolocationMarker",
             "iconDirectionArrow",
             "iFrameGeolocationEnabled",
             "onlyFilteredFeatures",
             "poiDistances",
-            "poiMode",
             "poiModeCurrentPositionEnabled",
             "showAccuracy",
             "showDirection",
             "showPoi",
-            "showPoiChoice",
-            "showPoiIcon",
             "zoomMode",
             "currentPage",
             "selectedMode",
@@ -108,14 +100,6 @@ export default {
     },
     methods: {
         ...mapMutations("Modules/Orientation", Object.keys(mutations)),
-        ...mapMutations("Modules/Orientation", [
-            "setCurrentPage",
-            "setSelectedMode",
-            "setReceivedPosition",
-            "setAccuracyFeature",
-            "setAccuracyLayer",
-            "setFlagOverlay"
-        ]),
         ...mapActions("Maps", ["zoomToCoordinates", "zoomToExtent"]),
         ...mapActions("Alerting", ["addSingleAlert"]),
 
@@ -126,140 +110,6 @@ export default {
                 projectionCode: this.projection.getCode(),
                 showAccuracy: this.showAccuracy
             });
-        },
-
-        /**
-         * Change the style of button
-         * @returns {void}
-         */
-        trackingChanged () {
-            if (this.tracking) {
-                document.querySelector("#geolocate").className += " toggleButtonPressed";
-            }
-            else {
-                if (this.geolocation !== null) {
-                    this.untrack();
-                }
-                document.querySelector("#geolocate").classList.remove("toggleButtonPressed");
-            }
-        },
-
-        /**
-         * Getting the current postion or untrack the position
-         * @returns {void}
-         */
-        getOrientation () {
-            if (!this.tracking) {
-                this.track();
-            }
-            else if (this.geolocation !== null) {
-                this.untrack();
-            }
-        },
-
-        /**
-         * with deactivated localization the button is disabled and poi button is hidden
-         * @returns {void}
-         */
-        toggleBackground () {
-            const geolocateIcon = document.getElementById("geolocate");
-
-            if (this.isGeolocationDenied) {
-                geolocateIcon.style.backgroundColor = "grey";
-            }
-            else {
-                geolocateIcon.style.backgroundColor = "#E10019";
-            }
-        },
-
-        /**
-         * Show Poi window
-         * @returns {void}
-         */
-        getPOI () {
-            document.querySelector("#geolocatePOI").className += " toggleButtonPressed";
-            this.setShowPoiChoice(true);
-        },
-
-        /**
-         * Tracking the poi
-         * @returns {void}
-         */
-        trackPOI () {
-            let geolocation = null;
-
-            this.removeOverlay();
-
-            if (this.poiModeCurrentPositionEnabled) {
-                this.$store.dispatch("Maps/removePointMarker");
-                this.showMarkerOverlay();
-                document.querySelector("#geolocate").className += " toggleButtonPressed";
-                if (this.geolocation === null) {
-                    geolocation = new Geolocation({tracking: true, enableHighAccuracy: true, projection: Proj.get("EPSG:4326")});
-                    this.setGeolocation(geolocation);
-                }
-                else {
-                    geolocation = this.geolocation;
-                    this.setPosition(null);
-                    this.showPoiWindow();
-                }
-                geolocation.on("change", this.showPoiWindow);
-                geolocation.on("error", this.onPOIError);
-            }
-            else {
-                this.untrack();
-                document.querySelector("#geolocate").classList.remove("toggleButtonPressed");
-            }
-        },
-
-        /**
-         * Untracking the poi
-         * @returns {void}
-         */
-        untrackPOI () {
-            const geolocation = this.geolocation;
-
-            if (this.poiModeCurrentPositionEnabled) {
-                geolocation.un("change", this.showPoiWindow);
-                geolocation.un("error", this.onPOIError);
-            }
-            else {
-                this.removeOverlay();
-            }
-            this.setShowPoi(false);
-        },
-
-        /**
-         * Showing poi window
-         * @returns {void}
-         */
-        showPoiWindow () {
-            if (!this.position) {
-                const geolocation = this.geolocation,
-                      position = geolocation.getPosition(),
-                      centerPosition = proj4(proj4("EPSG:4326"), proj4(this.projection.getCode()), position);
-
-                // setting the center position
-                this.setPosition(centerPosition);
-                this.positioning();
-            }
-            this.setShowPoi(true);
-        },
-
-        /**
-         * Showing error message by opening poi window
-         * @param {Object} evt error event
-         * @returns {void}
-         */
-        onPOIError () {
-            this.addSingleAlert({
-                category: "error",
-                content: `<strong>${this.$t("common:modules.orientation.trackingDeniedText")}</strong>`
-            });
-
-            if (this.geolocation !== null) {
-                this.untrack();
-            }
         },
 
         /**
@@ -321,22 +171,7 @@ export default {
 
             this.zoomToExtent({extent: coordinate, options: {maxZoom: index}});
             this.$store.dispatch("Maps/removePointMarker");
-            this.setPoiMode("currentPosition");
             this.setCurrentPositionEnabled(true);
-        },
-        /**
-         * Remove overlay from map
-         * @returns {void}
-         */
-        removeOverlay () {
-            const map = mapCollection.getMap("2D");
-
-            map.removeOverlay(this.marker);
-            removeAccuracyLayerUtil({
-                accuracyLayer: this.accuracyLayer,
-                map
-            });
-            this.setAccuracyLayer(null);
         },
 
         /**

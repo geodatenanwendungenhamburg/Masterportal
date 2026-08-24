@@ -11,16 +11,6 @@ const mutations = {
     ...generateSimpleMutations(OrientationState),
 
     /**
-     * Set the status if poi mode is current position
-     * @param {Object} state - the orientation state
-     * @param {String} enabled - the status if current position enabled
-     * @returns {void}
-     */
-    setCurrentPositionEnabled (state, enabled) {
-        state.poiModeCurrentPositionEnabled = enabled;
-    },
-
-    /**
     * Sets the flag overlay reference
     * @param {Object} state the state
     * @param {Object|null} overlay the overlay object or null to clear
