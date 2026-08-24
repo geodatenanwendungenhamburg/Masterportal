@@ -16,6 +16,7 @@
 - Readme: Information and link to issues in opencode added.
 - Security: Updated SECURITY.md to direct vulnerability reports to a private email address instead of the public issue tracker, and added a corresponding note in the README.
 - Alerting: Added first-open alerts for modules via `config.js` (`alerting.moduleOpenAlerts`).
+- Draw: Added new draw module to replace draw_old (type="draw").
 
 ### Changed
 - GFI: In the gfiTheme `sensor`, replaced navigation pills with the shared NavTab component.
@@ -51,7 +52,6 @@
 
 ### Added
 - Issue\#1604 Modules/Controls/Orientation: new parameter `showDirection` and `showAccuracy` configuration enable to display user orientation when they are moving and accuracy of location.
-- Draw: Added new draw module to replace draw_old (type="draw").
 - package.json: Added `npm run buildJsDoc` to script `prePushHook`.
 - JSDoc: Added a theme for jsdoc to make it more usable. Features include: better design, a searchbar, dark mode, a logo, links to bitbucket.
 - The following packages have been added:
