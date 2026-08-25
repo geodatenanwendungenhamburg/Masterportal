@@ -61,6 +61,7 @@ export default {
             "zoomMode"
         ]),
         ...mapGetters("Maps", ["projection"]),
+        ...mapGetters("Menu", ["menuSide"]),
         markerDirectionStyle () {
             return getMarkerDirectionStyle(this.showDirection, this.heading);
         }
@@ -69,6 +70,7 @@ export default {
         this.setIsGeoLocationPossible();
     },
     mounted () {
+        this.resetCurrentMouseMapInteractionsComponent(this.menuSide);
         this.setIsGeoLocationPossible();
         this.addElement();
         if (this.poiMode === "currentPosition") {
@@ -79,6 +81,7 @@ export default {
         ...mapMutations("Modules/Orientation", ["setGeolocation", "setPosition"]),
         ...mapActions("Maps", ["zoomToCoordinates"]),
         ...mapActions("Alerting", ["addSingleAlert"]),
+        ...mapActions("Menu", ["resetCurrentMouseMapInteractionsComponent"]),
 
         /**
          * Add overlay element for marker
