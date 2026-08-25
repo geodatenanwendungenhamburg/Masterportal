@@ -193,17 +193,17 @@ export default {
 <template>
     <div class="button-row">
         <FlatButton
-            text="Zurück zur Auswahl"
+            :text="$t('common:modules.orientation.backToChoiceButton')"
             @click="$emit('back-to-choice')"
         />
         <FlatButton
             v-if="selectedMode === 'currentPosition'"
-            text="Zum Startpunkt springen"
+            :text="$t('common:modules.orientation.jumpToLocationButton')"
             @click="$emit('zoom-to-location')"
         />
         <FlatButton
             v-if="selectedMode === 'customPosition'"
-            text="Neuen Punkt wählen"
+            :text="$t('common:modules.orientation.chooseNewLocationButton')"
             @click="$emit('select-map-point')"
         />
     </div>

@@ -941,7 +941,10 @@
       "currentPositionLabel": "Standort wählen",
       "customPositionLabel": "Punkt auf der Karte wählen",
       "nextButton": "Weiter",
-      "choosePointOnMapText": "Klicke auf die Karte, um den gewünschten Punkt für die Umkreissuche zu setzen."
+      "choosePointOnMapText": "Klicke auf die Karte, um den gewünschten Punkt für die Umkreissuche zu setzen.",
+      "backToChoiceButton": "Zurück zur Auswahl",
+      "jumpToLocationButton": "Zum Startpunkt springen",
+      "chooseNewLocationButton": "Neuen Punkt wählen"
     },
     "portalFooter": {
       "designation": "Kartographie und Gestaltung:",

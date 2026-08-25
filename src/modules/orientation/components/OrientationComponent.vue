@@ -148,11 +148,12 @@ export default {
             this.setCurrentPage("choice");
             this.setSelectedMode(null);
         },
+
         /**
-    * Handle position received from TrackLocation or MapSelection
-    * @param {Object} data - Position data from location or selection component
-    * @returns {void}
-    */
+        * Handle position received from TrackLocation or MapSelection
+        * @param {Object} data - Position data from location or selection component
+        * @returns {void}
+        */
         onPositionReceived (data) {
             this.setReceivedPosition(data.position);
             this.setCurrentPage("results");

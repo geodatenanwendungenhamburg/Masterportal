@@ -351,7 +351,6 @@ export default {
 
 <template>
     <div class="orientation-location">
-        <!-- Marker element for overlay -->
         <span
             id="geolocation_marker"
             class="geolocation_marker"
