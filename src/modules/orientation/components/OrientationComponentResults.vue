@@ -67,24 +67,22 @@ export default {
          * @returns {void}
          */
         getFeatures (layerConfigs) {
-            const poiDistances = this.poiDistances,
-                  poiFeatures = [],
+            const poiFeatures = [],
                   centerPosition = this.position;
-            let featInCircle = [];
 
-            poiDistances.forEach(distance => {
-                featInCircle = this.getFeaturesInCircle(layerConfigs, distance, centerPosition);
+            this.poiDistances.forEach(distance => {
+                const featInCircle = this.getFeaturesInCircle(layerConfigs, distance, centerPosition);
+
                 featInCircle.sort((featureA, featureB) => featureA.dist2Pos - featureB.dist2Pos);
+
+                featInCircle.forEach(feat => {
+                    this.fillImagePath(feat);
+                    feat.nearbyTitleText = this.getFeatureTitle(feat);
+                });
+
                 poiFeatures.push({
                     category: distance,
                     features: featInCircle
-                });
-            });
-
-            poiFeatures.forEach(category => {
-                category.features.forEach(feat => {
-                    this.fillImagePath(feat);
-                    feat.nearbyTitleText = this.getFeatureTitle(feat);
                 });
             });
 

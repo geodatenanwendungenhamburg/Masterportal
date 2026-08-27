@@ -7,9 +7,6 @@ import {
     updateAccuracyGeometry as updateAccuracyGeometryUtil
 } from "../utils/accuracyLayer.js";
 import {getVectorFeaturesInCircle as getVectorFeaturesInCircleUtil} from "../utils/poiFeatureSearch.js";
-import {
-    getMarkerDirectionStyle
-} from "../utils/directionMarker.js";
 import {createCustomPositionMarker, removeCustomPositionMarker} from "../utils/customPositionMarker.js";
 import {extractEventCoordinates} from "@shared/js/utils/extractEventCoordinates.js";
 import OrientationComponentLayerMessage from "./OrientationComponentLayerMessage.vue";
@@ -19,14 +16,13 @@ import OrientationComponentMapSelection from "./OrientationComponentMapSelection
 import OrientationComponentResults from "./OrientationComponentResults.vue";
 
 /**
- * Orientation control that allows the user to locate themselves on the map.
+* Router component for orientation module.
+ * Manages user location workflow: choose mode → location selection → view nearby features.
+ * Persists custom position marker overlay through component mount/unmount via Vuex store.
  * @module modules/OrientationComponent
- * @vue-data {Boolean} firstGeolocation - Shows if it is the first time locating.
- * @vue-data {Object} marker - Overlay with marker.
- * @vue-data {Boolean} tracking - Shows if the tracking is on.
- * @vue-data {Boolean} isGeolocationDenied - Shows if geolocation is denied.
- * @vue-data {Boolean} isGeolocationPossible - Shows if geolocation is possible.
- * @vue-computed {Array} poiDistancesLocal - An array of local distances.
+ * @vue-computed {Array} poiDistancesLocal - Distances for feature search (from config or defaults [500, 1000, 2000]).
+ * @vue-computed {Boolean} hasValidVectorLayer - Whether visible layers include vector types for feature search.
+ * @vue-computed {Boolean} showCustomPositionMarker - Signal to show/hide custom position marker overlay.
  */
 export default {
     name: "OrientationComponent",
@@ -40,22 +36,14 @@ export default {
     computed: {
         ...mapGetters("Modules/Orientation", [
             "geolocation",
-            "iconGeolocatePOI",
-            "iconGeolocationMarker",
-            "iconDirectionArrow",
-            "iFrameGeolocationEnabled",
             "onlyFilteredFeatures",
             "poiDistances",
-            "poiModeCurrentPositionEnabled",
+            "currentPositionModeEnabled",
             "showAccuracy",
-            "showDirection",
-            "showPoi",
-            "zoomMode",
             "currentPage",
             "selectedMode",
             "receivedPosition",
             "accuracyFeature",
-            "accuracyLayer",
             "customPositionMarker"
         ]),
         ...mapGetters("Maps", ["projection"]),
@@ -63,26 +51,23 @@ export default {
         poiDistancesLocal () {
             return this.poiDistances === true ? [500, 1000, 2000] : this.poiDistances;
         },
-        markerDirectionStyle () {
-            return getMarkerDirectionStyle(this.showDirection, this.heading);
-        },
         hasValidVectorLayer () {
             const vectorTypes = layerFactory.getVectorLayerTypes();
 
             return this.visibleLayerConfigs?.some(layer => vectorTypes.includes(layer.typ?.toUpperCase()));
         },
-        showFlag () {
+        showCustomPositionMarker () {
             return Boolean(this.receivedPosition) && this.currentPage === "results" && this.selectedMode === "customPosition" && this.hasValidVectorLayer;
         }
     },
     watch: {
-        showFlag: {
+        showCustomPositionMarker: {
             immediate: true,
-            handler (showFlag) {
-                if (showFlag && !this.customPositionMarker) {
+            handler (showCustomPositionMarker) {
+                if (showCustomPositionMarker && !this.customPositionMarker) {
                     this.setCustomPositionMarker(createCustomPositionMarker(this.receivedPosition));
                 }
-                else if (!showFlag && this.customPositionMarker) {
+                else if (!showCustomPositionMarker && this.customPositionMarker) {
                     this.removeCustomPositionMarker();
                 }
             }
@@ -172,7 +157,7 @@ export default {
 
             this.zoomToExtent({extent: coordinate, options: {maxZoom: index}});
             this.$store.dispatch("Maps/removePointMarker");
-            this.setCurrentPositionEnabled(true);
+            this.setCurrentPositionModeEnabled(true);
         },
 
         /**

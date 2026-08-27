@@ -58,10 +58,10 @@ export default {
             "iFrameGeolocationEnabled",
             "showAccuracy",
             "showDirection",
-            "zoomMode"
+            "zoomMode",
+            "menuSide"
         ]),
         ...mapGetters("Maps", ["projection"]),
-        ...mapGetters("Menu", ["menuSide"]),
         markerDirectionStyle () {
             return getMarkerDirectionStyle(this.showDirection, this.heading);
         }

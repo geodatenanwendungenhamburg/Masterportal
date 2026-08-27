@@ -1,24 +1,15 @@
 /**
  * User type definition
  * @typedef {Object} OrientationState
- * @property {String} iconGeolocate Icon of the orientation geolocate button.
- * @property {String} iconGeolocatePOI Icon of the orientation geolocate POI button.
  * @property {String} iconGeolocationMarker Icon of the orientation geolocate map marker.
  * @property {String[]} poiDistances The distances in config.json.
  * @property {String[]} supportedDevices Devices on which the module is displayed.
  * @property {String[]} supportedMapModes Map mode in which this module can be used.
  * @property {String} zoomMode The zoomMode in config.json.
- * @property {String} activeCategory The active tab in the overview table.
  * @property {String} geolocation The current geolocation.
  * @property {Boolean} iFrameGeolocationEnabled If true geolocation in an iFrame is possible, iff the outer page has an allow="geolocation" iFrame tag.
  * @property {Boolean} onlyFilteredFeatures If true the filtered features will be used.
- * @property {String} poiMode The mode for showing the nearby pois.
- * @property {String} customPosition Contains the path for the translation file.
- * @property {Boolean} poiModeCurrentPositionEnabled The status if poi mode is current position.
- * @property {String} position The current position.
- * @property {Boolean} showPoi Wether POI should be shown.
- * @property {Boolean} showPoiChoice Wether poi choice is activated.
- * @property {Boolean} showPoiIcon Wether to show the poi icon.
+ * @property {Boolean} currentPositionModeEnabled The status if poi mode is current position.
  * @property {Boolean} showAccuracy Wether to show the accuracy circle which is displayed around the marker.
  * @property {Boolean} showDirection Wether to show the direction arrow with the marker.
  * @property {Boolean} hasMouseMapInteractions If true, this module claims exclusive map click/pointer interactions while active (prevents GFI and other modules with this flag from reacting to map clicks).
@@ -39,15 +30,12 @@ const state = {
     iconDirectionArrow: "bi-triangle-fill",
     iFrameGeolocationEnabled: "common:modules.orientation.iFrameGeolocationEnabled",
     onlyFilteredFeatures: false,
-    poiMode: "currentPosition",
     currentPage: "choice",
     selectedMode: null,
     receivedPosition: null,
     accuracyFeature: null,
     accuracyLayer: null,
-    customPosition: "common:modules.orientation.poiChoiceCustomPosition",
-    poiModeCurrentPositionEnabled: true,
-    position: null,
+    currentPositionModeEnabled: true,
     showAccuracy: false,
     showDirection: false,
     hasMouseMapInteractions: true,

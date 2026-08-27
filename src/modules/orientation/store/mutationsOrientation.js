@@ -8,17 +8,7 @@ const mutations = {
      * {setKey:   (state, payload) => tate[key] = payload}
      * will be returned.
      */
-    ...generateSimpleMutations(OrientationState),
-
-    /**
-    * Sets the custom position marker overlay reference
-    * @param {Object} state the state
-    * @param {Object|null} overlay the overlay object or null to clear
-    * @returns {void}
-    */
-    setCustomPositionMarker (state, overlay) {
-        state.customPositionMarker = overlay;
-    }
+    ...generateSimpleMutations(OrientationState)
 };
 
 export default mutations;
