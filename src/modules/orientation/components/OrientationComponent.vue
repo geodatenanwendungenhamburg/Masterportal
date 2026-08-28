@@ -1,7 +1,8 @@
 <script>
-import {mapGetters, mapMutations, mapActions} from "vuex";
+import {mapGetters, mapActions} from "vuex";
+import {mapState} from "pinia";
+import {useOrientationStore} from "../store/orientationStore.js";
 import layerFactory from "@core/layers/js/layerFactory.js";
-import mutations from "../store/mutationsOrientation.js";
 import {
     clearAccuracyGeometry as clearAccuracyGeometryUtil,
     updateAccuracyGeometry as updateAccuracyGeometryUtil
@@ -16,9 +17,9 @@ import OrientationComponentMapSelection from "./OrientationComponentMapSelection
 import OrientationComponentResults from "./OrientationComponentResults.vue";
 
 /**
-* Router component for orientation module.
+ * Router component for orientation module.
  * Manages user location workflow: choose mode → location selection → view nearby features.
- * Persists custom position marker overlay through component mount/unmount via Vuex store.
+ * Persists custom position marker overlay through component mount/unmount via Pinia store.
  * @module modules/OrientationComponent
  * @vue-computed {Array} poiDistancesLocal - Distances for feature search (from config or defaults [500, 1000, 2000]).
  * @vue-computed {Boolean} hasValidVectorLayer - Whether visible layers include vector types for feature search.
@@ -33,10 +34,14 @@ export default {
         OrientationComponentMapSelection,
         OrientationComponentResults
     },
+    setup () {
+        const store = useOrientationStore();
+
+        return {store};
+    },
     computed: {
-        ...mapGetters("Modules/Orientation", [
+        ...mapState(useOrientationStore, [
             "geolocation",
-            "onlyFilteredFeatures",
             "poiDistances",
             "currentPositionModeEnabled",
             "showAccuracy",
@@ -44,7 +49,8 @@ export default {
             "selectedMode",
             "receivedPosition",
             "accuracyFeature",
-            "customPositionMarker"
+            "customPositionMarker",
+            "onlyFilteredFeatures"
         ]),
         ...mapGetters("Maps", ["projection"]),
         ...mapGetters(["visibleLayerConfigs"]),
@@ -65,10 +71,10 @@ export default {
             immediate: true,
             handler (showCustomPositionMarker) {
                 if (showCustomPositionMarker && !this.customPositionMarker) {
-                    this.setCustomPositionMarker(createCustomPositionMarker(this.receivedPosition));
+                    this.store.customPositionMarker = createCustomPositionMarker(this.receivedPosition);
                 }
                 else if (!showCustomPositionMarker && this.customPositionMarker) {
-                    this.removeCustomPositionMarker();
+                    this.store.customPositionMarker = removeCustomPositionMarker(this.customPositionMarker);
                 }
             }
         }
@@ -81,10 +87,9 @@ export default {
                 listener: this.onAccuracyGeometryChange
             });
         }
-        this.removeCustomPositionMarker();
+        this.store.customPositionMarker = removeCustomPositionMarker(this.customPositionMarker);
     },
     methods: {
-        ...mapMutations("Modules/Orientation", Object.keys(mutations)),
         ...mapActions("Maps", ["zoomToCoordinates", "zoomToExtent"]),
         ...mapActions("Alerting", ["addSingleAlert"]),
 
@@ -119,9 +124,9 @@ export default {
         * @returns {void}
         */
         onModeSelected (mode) {
-            this.removeCustomPositionMarker();
-            this.setSelectedMode(mode);
-            this.setCurrentPage("location");
+            this.store.customPositionMarker = removeCustomPositionMarker(this.customPositionMarker);
+            this.store.selectedMode = mode;
+            this.store.currentPage = "location";
         },
 
         /**
@@ -129,9 +134,9 @@ export default {
         * @returns {void}
         */
         backToChoice () {
-            this.removeCustomPositionMarker();
-            this.setCurrentPage("choice");
-            this.setSelectedMode(null);
+            this.store.customPositionMarker = removeCustomPositionMarker(this.customPositionMarker);
+            this.store.currentPage = "choice";
+            this.store.selectedMode = null;
         },
 
         /**
@@ -140,8 +145,8 @@ export default {
         * @returns {void}
         */
         onPositionReceived (data) {
-            this.setReceivedPosition(data.position);
-            this.setCurrentPage("results");
+            this.store.receivedPosition = data.position;
+            this.store.currentPage = "results";
         },
 
         /**
@@ -157,7 +162,7 @@ export default {
 
             this.zoomToExtent({extent: coordinate, options: {maxZoom: index}});
             this.$store.dispatch("Maps/removePointMarker");
-            this.setCurrentPositionModeEnabled(true);
+            this.store.currentPositionModeEnabled = true;
         },
 
         /**
@@ -166,8 +171,7 @@ export default {
          */
         removeCustomPositionMarker () {
             if (this.customPositionMarker) {
-                removeCustomPositionMarker(this.customPositionMarker);
-                this.setCustomPositionMarker(null);
+                this.store.customPositionMarker = removeCustomPositionMarker(this.customPositionMarker);
             }
         }
 

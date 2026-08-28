@@ -1,6 +1,8 @@
 <script>
 import {markRaw} from "vue";
-import {mapGetters, mapMutations, mapActions} from "vuex";
+import {mapGetters, mapActions} from "vuex";
+import {mapState} from "pinia";
+import {useOrientationStore} from "../store/orientationStore.js";
 import Geolocation from "ol/Geolocation.js";
 import Overlay from "ol/Overlay.js";
 import * as Proj from "ol/proj.js";
@@ -34,6 +36,11 @@ export default {
         }
     },
     emits: ["position-received", "error"],
+    setup () {
+        const store = useOrientationStore();
+
+        return {store};
+    },
     data () {
         return {
             firstGeolocation: true,
@@ -51,7 +58,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/Orientation", [
+        ...mapState(useOrientationStore, [
             "geolocation",
             "iconGeolocationMarker",
             "iconDirectionArrow",
@@ -78,7 +85,6 @@ export default {
         }
     },
     methods: {
-        ...mapMutations("Modules/Orientation", ["setGeolocation", "setPosition"]),
         ...mapActions("Maps", ["zoomToCoordinates"]),
         ...mapActions("Alerting", ["addSingleAlert"]),
         ...mapActions("Menu", ["resetCurrentMouseMapInteractionsComponent"]),
@@ -133,7 +139,7 @@ export default {
                     trackingOptions: {enableHighAccuracy: true}
                 }));
 
-                this.setGeolocation(geolocation);
+                this.store.geolocation = geolocation;
                 return geolocation;
             }
             return this.geolocation;
@@ -319,10 +325,8 @@ export default {
             }
             this.previousPosition = Array.isArray(position) ? [...position] : null;
 
-            // setting the center position
-            this.setPosition(centerPosition);
+            this.store.receivedPosition = centerPosition;
 
-            // screen navigation
             if (zoomMode === "once") {
                 if (firstGeolocation === true) {
                     this.positionMarker(centerPosition);

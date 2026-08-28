@@ -1,6 +1,7 @@
 import {useAboutStore} from "../about/store/aboutStore.js";
 import {useCopyrightConstraintsStore} from "../copyrightConstraints/store/copyrightConstraintsStore.js";
 import {useLayerInformationStore} from "../layerInformation/store/layerInformationStore.js";
+import {useOrientationStore} from "../orientation/store/orientationStore.js";
 
 /**
  * Registry of modules that have been migrated from Vuex to Pinia.
@@ -17,7 +18,8 @@ import {useLayerInformationStore} from "../layerInformation/store/layerInformati
 const piniaModuleStores = {
     about: useAboutStore,
     copyrightConstraints: useCopyrightConstraintsStore,
-    layerInformation: useLayerInformationStore
+    layerInformation: useLayerInformationStore,
+    orientation: useOrientationStore
 };
 
 /**

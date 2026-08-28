@@ -1,6 +1,8 @@
 <script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import {mapActions} from "vuex";
+import {mapState} from "pinia";
 import {createCustomPositionMarker} from "../utils/customPositionMarker.js";
+import {useOrientationStore} from "../store/orientationStore.js";
 
 /**
  * Map selection component for orientation module.
@@ -11,6 +13,11 @@ import {createCustomPositionMarker} from "../utils/customPositionMarker.js";
 export default {
     name: "OrientationComponentMapSelection",
     emits: ["position-received"],
+    setup () {
+        const store = useOrientationStore();
+
+        return {store};
+    },
     data () {
         return {
             mapClickListenerKey: "orientationMapSelection",
@@ -18,7 +25,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/Orientation", ["menuSide", "customPositionMarker"])
+        ...mapState(useOrientationStore, ["menuSide", "customPositionMarker"])
     },
     mounted () {
         this.changeCurrentMouseMapInteractionsComponent({type: "orientation", side: this.menuSide});
@@ -34,7 +41,6 @@ export default {
     methods: {
         ...mapActions("Maps", ["registerListener", "unregisterListener"]),
         ...mapActions("Menu", ["changeCurrentMouseMapInteractionsComponent", "resetCurrentMouseMapInteractionsComponent"]),
-        ...mapMutations("Modules/Orientation", ["setCustomPositionMarker"]),
 
         /**
          * Create the custom position marker at the current map center, unless one already
@@ -47,7 +53,7 @@ export default {
             }
             const center = mapCollection.getMapView("2D").getCenter();
 
-            this.setCustomPositionMarker(createCustomPositionMarker(center));
+            this.store.customPositionMarker = createCustomPositionMarker(center);
         },
 
         /**

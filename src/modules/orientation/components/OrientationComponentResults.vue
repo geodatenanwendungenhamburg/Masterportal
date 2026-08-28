@@ -54,6 +54,14 @@ export default {
                 this.getFeatures(newLayerConfigs);
             },
             deep: true
+        },
+        poiFeatures: {
+            handler (newPoiFeatures) {
+                if (newPoiFeatures.length > 0) {
+                    this.initActiveCategory();
+                }
+            },
+            deep: true
         }
     },
     mounted () {
@@ -61,6 +69,7 @@ export default {
         this.initActiveCategory();
     },
     methods: {
+
         /**
          * Getting the features within the distances
          * @param {Array} layerConfigs visible layer configs
@@ -94,18 +103,13 @@ export default {
          * @returns {void}
          */
         initActiveCategory () {
-            let poi,
-                first;
-
-
-            if (typeof this.activeCategory !== "number") {
-                poi = this.poiFeatures;
-                first = poi.find(function (dist) {
-                    return dist.features.length > 0;
-                });
-
-                this.activeCategory = first ? first.category : poi[0].category;
+            if (this.poiFeatures.length === 0 || typeof this.activeCategory === "number") {
+                return;
             }
+
+            const first = this.poiFeatures.find(dist => dist.features.length > 0);
+
+            this.activeCategory = first ? first.category : this.poiFeatures[0].category;
         },
 
         /**
