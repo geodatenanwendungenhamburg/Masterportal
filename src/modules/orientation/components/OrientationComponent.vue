@@ -1,6 +1,6 @@
 <script>
 import {mapGetters, mapActions} from "vuex";
-import {mapState} from "pinia";
+import {mapState, mapWritableState} from "pinia";
 import {useOrientationStore} from "../store/orientationStore.js";
 import layerFactory from "@core/layers/js/layerFactory.js";
 import {
@@ -34,23 +34,20 @@ export default {
         OrientationComponentMapSelection,
         OrientationComponentResults
     },
-    setup () {
-        const store = useOrientationStore();
-
-        return {store};
-    },
     computed: {
         ...mapState(useOrientationStore, [
             "geolocation",
             "poiDistances",
-            "currentPositionModeEnabled",
             "showAccuracy",
-            "currentPage",
-            "selectedMode",
-            "receivedPosition",
             "accuracyFeature",
-            "customPositionMarker",
             "onlyFilteredFeatures"
+        ]),
+        ...mapWritableState(useOrientationStore, [
+            "customPositionMarker",
+            "selectedMode",
+            "currentPage",
+            "receivedPosition",
+            "currentPositionModeEnabled"
         ]),
         ...mapGetters("Maps", ["projection"]),
         ...mapGetters(["visibleLayerConfigs"]),
@@ -71,10 +68,10 @@ export default {
             immediate: true,
             handler (showCustomPositionMarker) {
                 if (showCustomPositionMarker && !this.customPositionMarker) {
-                    this.store.customPositionMarker = createCustomPositionMarker(this.receivedPosition);
+                    this.customPositionMarker = createCustomPositionMarker(this.receivedPosition);
                 }
                 else if (!showCustomPositionMarker && this.customPositionMarker) {
-                    this.store.customPositionMarker = removeCustomPositionMarker(this.customPositionMarker);
+                    this.customPositionMarker = removeCustomPositionMarker(this.customPositionMarker);
                 }
             }
         }
@@ -87,7 +84,7 @@ export default {
                 listener: this.onAccuracyGeometryChange
             });
         }
-        this.store.customPositionMarker = removeCustomPositionMarker(this.customPositionMarker);
+        this.customPositionMarker = removeCustomPositionMarker(this.customPositionMarker);
     },
     methods: {
         ...mapActions("Maps", ["zoomToCoordinates", "zoomToExtent"]),
@@ -124,9 +121,9 @@ export default {
         * @returns {void}
         */
         onModeSelected (mode) {
-            this.store.customPositionMarker = removeCustomPositionMarker(this.customPositionMarker);
-            this.store.selectedMode = mode;
-            this.store.currentPage = "location";
+            this.customPositionMarker = removeCustomPositionMarker(this.customPositionMarker);
+            this.selectedMode = mode;
+            this.currentPage = "location";
         },
 
         /**
@@ -134,9 +131,9 @@ export default {
         * @returns {void}
         */
         backToChoice () {
-            this.store.customPositionMarker = removeCustomPositionMarker(this.customPositionMarker);
-            this.store.currentPage = "choice";
-            this.store.selectedMode = null;
+            this.customPositionMarker = removeCustomPositionMarker(this.customPositionMarker);
+            this.currentPage = "choice";
+            this.selectedMode = null;
         },
 
         /**
@@ -145,8 +142,8 @@ export default {
         * @returns {void}
         */
         onPositionReceived (data) {
-            this.store.receivedPosition = data.position;
-            this.store.currentPage = "results";
+            this.receivedPosition = data.position;
+            this.currentPage = "results";
         },
 
         /**
@@ -162,7 +159,7 @@ export default {
 
             this.zoomToExtent({extent: coordinate, options: {maxZoom: index}});
             this.$store.dispatch("Maps/removePointMarker");
-            this.store.currentPositionModeEnabled = true;
+            this.currentPositionModeEnabled = true;
         },
 
         /**
@@ -171,7 +168,7 @@ export default {
          */
         removeCustomPositionMarker () {
             if (this.customPositionMarker) {
-                this.store.customPositionMarker = removeCustomPositionMarker(this.customPositionMarker);
+                this.customPositionMarker = removeCustomPositionMarker(this.customPositionMarker);
             }
         }
 
