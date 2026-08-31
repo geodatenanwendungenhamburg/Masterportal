@@ -75,7 +75,12 @@ export default {
      * @returns {void}
      */
     changeCurrentMouseMapInteractionsComponent ({commit, rootGetters, state}, {type, side}) {
-        if (type !== state.currentMouseMapInteractionsComponent && rootGetters[`Modules/${changeCase.upperFirst(type)}/hasMouseMapInteractions`]) {
+        const lowerType = changeCase.lowerFirst(type),
+            hasMouseMapInteractions = isPiniaModule(lowerType)
+                ? getPiniaModuleStore(lowerType)().hasMouseMapInteractions
+                : rootGetters[`Modules/${changeCase.upperFirst(type)}/hasMouseMapInteractions`];
+
+        if (type !== state.currentMouseMapInteractionsComponent && hasMouseMapInteractions) {
             const otherSide = side === "mainMenu" ? "secondaryMenu" : "mainMenu";
 
             if (state[otherSide].navigation.currentComponent.type === state.currentMouseMapInteractionsComponent) {
