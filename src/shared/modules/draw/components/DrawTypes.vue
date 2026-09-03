@@ -370,15 +370,7 @@ export default {
 
             if (this.shouldEmitEvents) {
                 this.$emit("stop-drawing");
-
-                if (this.selectedDrawType !== drawType) {
-                    this.setSelectedDrawType(drawType);
-                }
-
                 this.$emit("start-drawing");
-            }
-            else if (this.selectedDrawType !== drawType) {
-                this.setSelectedDrawType(drawType);
             }
         },
 
