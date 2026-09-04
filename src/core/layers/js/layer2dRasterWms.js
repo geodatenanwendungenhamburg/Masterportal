@@ -119,9 +119,10 @@ Layer2dRasterWms.prototype.getOptions = function (attributes) {
 /**
 * If the parameter "legendURL" is empty, it is set to GetLegendGraphic.
 * If it is set to 'ignore' no legend is set.
-* @return {void}
+* For protected layers and login setups, legend images are requested via fetch to allow auth headers/cookies.
+* @return {Promise<Array|Boolean>}
 */
-Layer2dRasterWms.prototype.createLegend = function () {
+Layer2dRasterWms.prototype.createLegend = async function () {
     const version = this.get("version");
     let legend = this.inspectLegendUrl();
 
@@ -150,6 +151,34 @@ Layer2dRasterWms.prototype.createLegend = function () {
         else if (legend === false) {
             legend = false;
         }
+    }
+
+    const loggedInUser = store.getters.isModuleAvailable("login") === true && store.getters["Modules/Login/loggedIn"] === true;
+    const legendMatchesLoginInterceptor = Array.isArray(legend)
+        && Boolean(Config?.login?.interceptorUrlRegex)
+        && legend.some(legendUrl => {
+            try {
+                return new URL(legendUrl).toString().match(Config.login.interceptorUrlRegex) !== null;
+            }
+            catch {
+                return false;
+            }
+        });
+
+    if (loggedInUser && legendMatchesLoginInterceptor && Array.isArray(legend)) {
+        legend = await Promise.all(legend.map(async legendUrl => {
+            try {
+                const response = await fetch(legendUrl, {credentials: "include"});
+
+                if (!response.ok) {
+                    return legendUrl;
+                }
+                return URL.createObjectURL(await response.blob());
+            }
+            catch {
+                return legendUrl;
+            }
+        }));
     }
 
     return legend;

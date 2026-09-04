@@ -48,6 +48,7 @@ describe("src/core/js/layers/layer2dRasterWms.js", () => {
 
     afterEach(() => {
         delete Config.overwriteWmsLoadfunction;
+        delete Config.login;
         store.getters = origGetters;
     });
 
@@ -220,37 +221,45 @@ describe("src/core/js/layers/layer2dRasterWms.js", () => {
     });
 
     describe("createLegend", () => {
+        let fetchStub,
+            createObjectURLStub;
+
         beforeEach(() => {
             attributes = {
                 id: "id",
                 version: "1.3.0"
             };
+            fetchStub = sinon.stub(globalThis, "fetch");
+            createObjectURLStub = sinon.stub(globalThis.URL, "createObjectURL");
         });
 
-        it("createLegend with legendURL", () => {
+        afterEach(() => {
+            fetchStub.restore();
+            createObjectURLStub.restore();
+        });
+
+        it("createLegend with legendURL", async () => {
             attributes.legendURL = "https://legendURL";
             const layerWrapper = new Layer2dRasterWms(attributes);
 
-            expect(layerWrapper.createLegend()).to.be.deep.equals([attributes.legendURL]);
+            expect(await layerWrapper.createLegend()).to.be.deep.equals([attributes.legendURL]);
         });
 
-        it("createLegend with ignored legendURL", () => {
+        it("createLegend with ignored legendURL", async () => {
             attributes.legendURL = "ignore";
             const layerWrapper = new Layer2dRasterWms(attributes);
 
-            layerWrapper.createLegend();
-            expect(layerWrapper.createLegend()).to.be.false;
+            expect(await layerWrapper.createLegend()).to.be.false;
         });
 
-        it("createLegend with legend as Array", () => {
+        it("createLegend with legend as Array", async () => {
             attributes.legend = ["legend"];
             const layerWrapper = new Layer2dRasterWms(attributes);
 
-            layerWrapper.createLegend();
-            expect(layerWrapper.createLegend()).to.be.deep.equals(attributes.legend);
+            expect(await layerWrapper.createLegend()).to.be.deep.equals(attributes.legend);
         });
 
-        it("createLegend with legend true and 2 layer names", () => {
+        it("createLegend with legend true and 2 layer names", async () => {
             attributes.legend = true;
             attributes.url = "https://url";
             attributes.layers = "layer1,layer2";
@@ -258,8 +267,130 @@ describe("src/core/js/layers/layer2dRasterWms.js", () => {
                 expectedLegend = ["https://url/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&LAYER=layer1",
                     "https://url/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&LAYER=layer2"];
 
-            layerWrapper.createLegend();
-            expect(layerWrapper.createLegend()).to.be.deep.equals(expectedLegend);
+            expect(await layerWrapper.createLegend()).to.be.deep.equals(expectedLegend);
+        });
+
+        it("createLegend fetches blob legend for logged-in user when legend URL matches the login interceptor", async () => {
+            attributes.legend = true;
+            attributes.url = "https://url";
+            attributes.layers = "layer1,layer2";
+            attributes.isSecured = true;
+            Config.login = {
+                interceptorUrlRegex: /url/
+            };
+            store.getters = {
+                isModuleAvailable: moduleName => moduleName === "login",
+                "Modules/Login/loggedIn": true
+            };
+
+            const fakeBlob = new Blob(["legend"], {type: "image/png"});
+
+            fetchStub.resolves({
+                ok: true,
+                blob: sinon.stub().resolves(fakeBlob)
+            });
+            createObjectURLStub.onFirstCall().returns("blob:legend-1");
+            createObjectURLStub.onSecondCall().returns("blob:legend-2");
+
+            const layerWrapper = new Layer2dRasterWms(attributes),
+                legend = await layerWrapper.createLegend();
+
+            expect(fetchStub.calledTwice).to.be.true;
+            expect(fetchStub.firstCall.args[1]).to.deep.equals({credentials: "include"});
+            expect(createObjectURLStub.calledTwice).to.be.true;
+            expect(legend).to.deep.equals(["blob:legend-1", "blob:legend-2"]);
+        });
+
+        it("createLegend fetches blob for logged-in user and matching legendURL string", async () => {
+            attributes.legendURL = "https://legendURL";
+            attributes.isSecured = true;
+            Config.login = {
+                interceptorUrlRegex: /legendurl/i
+            };
+            store.getters = {
+                isModuleAvailable: moduleName => moduleName === "login",
+                "Modules/Login/loggedIn": true
+            };
+
+            const fakeBlob = new Blob(["legend"], {type: "image/png"});
+
+            fetchStub.resolves({
+                ok: true,
+                blob: sinon.stub().resolves(fakeBlob)
+            });
+            createObjectURLStub.returns("blob:legend-1");
+
+            const layerWrapper = new Layer2dRasterWms(attributes),
+                legend = await layerWrapper.createLegend();
+
+            expect(fetchStub.calledOnce).to.be.true;
+            expect(fetchStub.firstCall.args[0]).to.equals("https://legendURL");
+            expect(fetchStub.firstCall.args[1]).to.deep.equals({credentials: "include"});
+            expect(createObjectURLStub.calledOnce).to.be.true;
+            expect(legend).to.deep.equals(["blob:legend-1"]);
+        });
+
+        it("createLegend fetches blob for logged-in user and matching legend array", async () => {
+            attributes.legend = ["https://legend-1", "https://legend-2"];
+            attributes.isSecured = true;
+            Config.login = {
+                interceptorUrlRegex: /legend-/i
+            };
+            store.getters = {
+                isModuleAvailable: moduleName => moduleName === "login",
+                "Modules/Login/loggedIn": true
+            };
+
+            const fakeBlob = new Blob(["legend"], {type: "image/png"});
+
+            fetchStub.resolves({
+                ok: true,
+                blob: sinon.stub().resolves(fakeBlob)
+            });
+            createObjectURLStub.onFirstCall().returns("blob:legend-1");
+            createObjectURLStub.onSecondCall().returns("blob:legend-2");
+
+            const layerWrapper = new Layer2dRasterWms(attributes),
+                legend = await layerWrapper.createLegend();
+
+            expect(fetchStub.calledTwice).to.be.true;
+            expect(fetchStub.firstCall.args[1]).to.deep.equals({credentials: "include"});
+            expect(createObjectURLStub.calledTwice).to.be.true;
+            expect(legend).to.deep.equals(["blob:legend-1", "blob:legend-2"]);
+        });
+
+        it("createLegend does not fetch with credentials when URL matches the login interceptor but user is not logged in", async () => {
+            attributes.legendURL = "https://legendURL";
+            Config.login = {
+                interceptorUrlRegex: /legendurl/i
+            };
+            store.getters = {
+                isModuleAvailable: moduleName => moduleName === "login",
+                "Modules/Login/loggedIn": false
+            };
+
+            const layerWrapper = new Layer2dRasterWms(attributes),
+                legend = await layerWrapper.createLegend();
+
+            expect(fetchStub.called).to.be.false;
+            expect(legend).to.deep.equals(["https://legendURL"]);
+        });
+
+        it("createLegend does not fetch with credentials when login module is available but layer is not secured and URL is not matched", async () => {
+            attributes.legendURL = "https://legendURL";
+            Config.login = {
+                interceptorUrlRegex: /otherdomain/
+            };
+            store.getters = {
+                isModuleAvailable: moduleName => moduleName === "login",
+                "Modules/Login/loggedIn": true
+            };
+
+            const layerWrapper = new Layer2dRasterWms(attributes),
+                legend = await layerWrapper.createLegend();
+
+            expect(fetchStub.called).to.be.false;
+            expect(legend).to.deep.equals(["https://legendURL"]);
         });
     });
 });
