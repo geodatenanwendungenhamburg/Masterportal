@@ -52,6 +52,20 @@ export default {
             targetPath = state.configJs.portalConf;
         }
 
+        // Forward role from page URL to backend config endpoint unless role is already set.
+        const urlParams = new URLSearchParams(window.location.search);
+        let roleFromUrl = null;
+
+        urlParams.forEach((value, key) => {
+            if (key.toLowerCase() === "role") {
+                roleFromUrl = value;
+            }
+        });
+
+        if (roleFromUrl && !/[?&]role=/i.test(targetPath)) {
+            targetPath += targetPath.includes("?") ? `&role=${encodeURIComponent(roleFromUrl)}` : `?role=${encodeURIComponent(roleFromUrl)}`;
+        }
+
         axios.get(targetPath)
             .then(response => {
                 updateProxyUrl(response.data);
@@ -123,11 +137,25 @@ export default {
      * @returns {void}
      */
     loadServicesJson ({state, commit, dispatch}) {
-        rawLayerList.initializeLayerList(state.configJs?.layerConf, (_, error) => {
+        let targetPath = state.configJs?.layerConf;
+        const urlParams = new URLSearchParams(window.location.search);
+        let roleFromUrl = null;
+
+        urlParams.forEach((value, key) => {
+            if (key.toLowerCase() === "role") {
+                roleFromUrl = value;
+            }
+        });
+
+        if (targetPath && roleFromUrl && !/[?&]role=/i.test(targetPath)) {
+            targetPath += targetPath.includes("?") ? `&role=${encodeURIComponent(roleFromUrl)}` : `?role=${encodeURIComponent(roleFromUrl)}`;
+        }
+
+        rawLayerList.initializeLayerList(targetPath, (_, error) => {
             if (error) {
                 dispatch("Alerting/addSingleAlert", {
                     category: "error",
-                    content: i18next.t("common:app-store.loadServicesJsonFailed", {layerConf: state.configJs?.layerConf})
+                    content: i18next.t("common:app-store.loadServicesJsonFailed", {layerConf: targetPath})
                 }, {root: true});
             }
             else {

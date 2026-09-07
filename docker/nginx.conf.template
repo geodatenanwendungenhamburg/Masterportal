@@ -21,7 +21,7 @@ server {
     # Public routes /<portal>/config.* and /portal/<portal>/config.* are
     # resolved by backend endpoint /api/:portal/config.*.
     location ~ ^/(?:portal/)?([A-Za-z0-9._-]+)/config\.(js|json)$ {
-        proxy_pass         http://${BACKEND_SERVICE_URL}/api/$1/config.$2;
+        proxy_pass         http://${BACKEND_SERVICE_URL}/api/$${1}/config.$${2}$${is_args}$${args};
         proxy_http_version 1.1;
         proxy_set_header   Host              $host;
         proxy_set_header   X-Real-IP         $remote_addr;
