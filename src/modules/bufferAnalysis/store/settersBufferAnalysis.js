@@ -106,9 +106,11 @@ function applySelectedTargetLayer ({commit, getters, dispatch}, selectedTargetLa
  * @return {void}
  */
 function applyBufferRadius ({commit, dispatch}, selectedBufferRadius) {
-    commit("setBufferRadius", selectedBufferRadius);
+    const radius = Number(selectedBufferRadius);
 
-    if (selectedBufferRadius) {
+    commit("setBufferRadius", Number.isFinite(radius) ? radius : 0);
+
+    if (radius > 0) {
         dispatch("removeGeneratedLayers");
         dispatch("showBuffer");
     }

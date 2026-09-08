@@ -162,6 +162,15 @@ describe("src/modules/bufferAnalysis/store/actionsBufferAnalysis.js", () => {
             expect(dispatch.args[0][0]).to.equal("removeGeneratedLayers");
             expect(dispatch.args[1][0]).to.equal("showBuffer");
         });
+
+        it("commits numeric zero and does not create buffers for string zero", () => {
+            actions.applyBufferRadius({commit, dispatch}, "0");
+
+            expect(commit.calledOnce).to.be.true;
+            expect(commit.args[0][0]).to.equal("setBufferRadius");
+            expect(commit.args[0][1]).to.equal(0);
+            expect(dispatch.called).to.be.false;
+        });
     });
     describe.skip("checkIntersection", () => {
         it("calls dispatch with correct parameters", async () => {
