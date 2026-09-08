@@ -17,6 +17,7 @@
 ### Removed
 
 ### Fixed
+- Issue \#1629: Fetch legendUrl with authorization header where needed.
 - Issue \#1655: Menu modules now keep their own configuration when multiple modules of the same type are defined in config.json. LayerSlider and Filter no longer reuse the last configured instance.
 - Accessibility: Fixed accessibility issues across layer tree and controls (label associations, icon-button naming, ARIA semantics, and preview alt text).
 
