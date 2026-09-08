@@ -28,7 +28,7 @@ import {ResultType} from "./enums.js";
  * @property {String} timerId timerId for debounce buffer radius input
  */
 const state = {
-    hasMouseMapInteractions: true,
+    hasMouseMapInteractions: false,
     description: "common:modules.bufferAnalysis.description",
     icon: "bi-arrows-angle-expand",
     name: "common:modules.bufferAnalysis.name",
