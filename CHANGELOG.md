@@ -17,6 +17,7 @@
 ### Removed
 
 ### Fixed
+- Issue \#1636: BufferAnalysis: Fix error and remove result layer with reset.
 - Issue \#1655: Menu modules now keep their own configuration when multiple modules of the same type are defined in config.json. LayerSlider and Filter no longer reuse the last configured instance.
 - Accessibility: Fixed accessibility issues across layer tree and controls (label associations, icon-button naming, ARIA semantics, and preview alt text).
 
@@ -60,7 +61,6 @@
 - Issue \#1624: Fixed misleading parameter in config.js.md
 - Issue \#1625: Fixed using configured styleId when mousehover on vectorlayers.
 - Issue \#1631: Property preparation in wfst tool can now handle objects in gfiAttributes and saves geometry without having to configure it in gfiAttributes.
-- Issue \#1636: BufferAnalysis: Fix error and remove result layer with reset.
 - Issue \#1643: Alerting: Fixed a stale `onceInSession` alert (e.g. a layer attribution hint) reappearing together with a new alert once the modal had already been closed.
 - Issue \#1649: Print no longer crashes when style conditions are missing properties and logs a warning and falls back to default styling.
 - FileImport: importDrawLayer reappears in the layer tree when importing a file, even after being removed.
