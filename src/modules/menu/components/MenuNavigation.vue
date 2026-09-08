@@ -1,5 +1,7 @@
 <script>
-import {mapActions, mapGetters} from "vuex";
+import {mapGetters} from "vuex";
+import {mapActions as mapPiniaActions, mapState} from "pinia";
+import {useMenuStore} from "../menu-store/menuStore.js";
 
 /**
  * Menu Navigation
@@ -19,7 +21,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters("Menu", ["previousNavigationEntryText", "currentComponent", "showHeaderIcon", "secondaryMenuEnabled"]),
+        ...mapState(useMenuStore, ["previousNavigationEntryText", "currentComponent", "showHeaderIcon", "secondaryMenuEnabled"]),
         ...mapGetters(["isMobile"]),
 
         currentMenuComponent () {
@@ -76,7 +78,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions("Menu", ["navigateBack", "resetMenu"])
+        ...mapPiniaActions(useMenuStore, ["navigateBack", "resetMenu"])
     }
 };
 </script>

@@ -5,6 +5,7 @@ import sinon from "sinon";
 import LayerSelectionComponent from "@modules/layerSelection/components/LayerSelection.vue";
 import LayerSelection from "@modules/layerSelection/store/indexLayerSelection.js";
 import {treeSubjectsKey} from "@shared/js/utils/constants.js";
+import {createPinia, setActivePinia} from "pinia";
 
 
 describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
@@ -25,6 +26,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
         showAllResults,
         showInTree,
         store,
+        pinia,
         subjectDataLayers,
         wrapper,
         treeType,
@@ -36,6 +38,8 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
         changeVisibilitySpy;
 
     beforeEach(() => {
+        pinia = createPinia();
+        setActivePinia(pinia);
         origActions = LayerSelection.actions;
         origState = LayerSelection.state;
         lastFolderNames = [];
@@ -497,7 +501,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
 
             wrapper = mount(LayerSelectionComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }});
 
             expect(wrapper.find("#layer-selection").exists()).to.be.true;
@@ -512,7 +516,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
 
             wrapper = mount(LayerSelectionComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }});
 
             expect(wrapper.find("#layer-selection").exists()).to.be.true;
@@ -527,7 +531,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
 
             wrapper = mount(LayerSelectionComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }});
 
             expect(wrapper.find("#layer-selection").exists()).to.be.true;
@@ -542,7 +546,7 @@ describe("src/modules/layerSelection/components/LayerSelection.vue", () => {
 
             wrapper = mount(LayerSelectionComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }});
 
             expect(wrapper.find("#layer-selection").exists()).to.be.true;

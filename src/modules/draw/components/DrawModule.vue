@@ -7,6 +7,8 @@ import DrawEdit from "@shared/modules/draw/components/DrawEdit.vue";
 import DrawLayout from "@shared/modules/draw/components/DrawLayout.vue";
 import DrawSettingsCircle from "@shared/modules/draw/components/DrawSettingsCircle.vue";
 import DrawTypes from "@shared/modules/draw/components/DrawTypes.vue";
+import {mapState} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 /**
  * Modules to make drawings.
@@ -45,7 +47,7 @@ export default {
             "strokeRange",
             "units"
         ]),
-        ...mapGetters("Menu", [
+        ...mapState(useMenuStore, [
             "currentComponentName",
             "mainExpanded",
             "secondaryExpanded"

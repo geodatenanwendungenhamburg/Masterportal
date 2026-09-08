@@ -3,10 +3,11 @@ import {expect} from "chai";
 import TableComponent from "@shared/modules/table/components/TableComponent.vue";
 import sinon from "sinon";
 import {createStore} from "vuex";
+import {createPinia, setActivePinia} from "pinia";
 
 
 describe("src/shared/modules/table/components/TableComponent.vue", () => {
-    let store, wrapper;
+    let store, pinia, wrapper;
 
 
     /**
@@ -15,7 +16,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
     function createWrapper (props) {
         return shallowMount(TableComponent, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
             props: {
                 data: {
@@ -35,6 +36,8 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
     });
 
     beforeEach(() => {
+        pinia = createPinia();
+        setActivePinia(pinia);
         store = createStore({
             namespaced: true,
             modules: {
@@ -48,17 +51,6 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                                 currentLocale: sinon.stub()
                             }
                         }
-                    }
-                },
-                Menu: {
-                    namespaced: true,
-                    getters: {
-                        mainExpanded: () => false,
-                        currentSecondaryMenuWidth: () => sinon.stub().returns(0.25)
-                    },
-                    actions: {
-                        toggleMenu: sinon.stub(),
-                        setCurrentMenuWidth: sinon.stub()
                     }
                 }
             }
@@ -344,7 +336,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
         it("should call 'resetAll' when the resetAll button is clicked", async () => {
             wrapper = mount(TableComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
                 props: {
                     data: {
@@ -616,7 +608,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                         sortAlphanumerical: true
                     },
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     }
                 });
                 const items = [{
@@ -833,7 +825,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                 // eslint-disable-next-line no-shadow
                 const wrapper = shallowMount(TableComponent, {
                         global: {
-                            plugins: [store]
+                            plugins: [store, pinia]
                         },
                         props: {
                             data: {
@@ -867,7 +859,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                 // eslint-disable-next-line no-shadow
                 const wrapper = shallowMount(TableComponent, {
                         global: {
-                            plugins: [store]
+                            plugins: [store, pinia]
                         },
                         props: {
                             data: {
@@ -887,7 +879,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                 // eslint-disable-next-line no-shadow
                 const wrapper = shallowMount(TableComponent, {
                         global: {
-                            plugins: [store]
+                            plugins: [store, pinia]
                         },
                         props: {
                             data: {
@@ -909,7 +901,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                 // eslint-disable-next-line no-shadow
                 const wrapper = shallowMount(TableComponent, {
                         global: {
-                            plugins: [store]
+                            plugins: [store, pinia]
                         },
                         props: {
                             data: {
@@ -933,7 +925,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                 // eslint-disable-next-line no-shadow
                 const wrapper = shallowMount(TableComponent, {
                         global: {
-                            plugins: [store]
+                            plugins: [store, pinia]
                         },
                         props: {
                             data: {}
@@ -966,7 +958,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                 // eslint-disable-next-line no-shadow
                 const wrapper = shallowMount(TableComponent, {
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     },
                     props: {
                         data: {
@@ -992,7 +984,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                 // eslint-disable-next-line no-shadow
                 const wrapper = shallowMount(TableComponent, {
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     },
                     props: {
                         data: {}
@@ -1007,7 +999,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                 // eslint-disable-next-line no-shadow
                 const wrapper = shallowMount(TableComponent, {
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     },
                     props: {
                         data: {}
@@ -1183,7 +1175,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                     // eslint-disable-next-line no-shadow
                     wrapper = shallowMount(TableComponent, {
                         global: {
-                            plugins: [store]
+                            plugins: [store, pinia]
                         },
                         props: {
                             data: {
@@ -1422,7 +1414,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                         }
                     },
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     }
                 });
 
@@ -1478,7 +1470,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
 
                 wrapper = shallowMount(TableComponent, {
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     },
                     props: {
                         data: {
@@ -1535,7 +1527,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
                     wrapper.unmount();
                     wrapper = shallowMount(TableComponent, {
                         global: {
-                            plugins: [store]
+                            plugins: [store, pinia]
                         },
                         props: {
                             data: {
@@ -1644,7 +1636,7 @@ describe("src/shared/modules/table/components/TableComponent.vue", () => {
             it("should return the title", async () => {
                 wrapper = mount(TableComponent, {
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     },
                     props: {
                         data: {

@@ -2,6 +2,8 @@ import {expect} from "chai";
 import sinon from "sinon";
 import collectDataByFolderModule from "@modules/layerSelection/js/collectDataByFolder.js";
 import baselayerHandler from "@modules/layerSelection/js/handleSingleBaselayer.js";
+import {createPinia, setActivePinia} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 import actions from "@modules/layerSelection/store/actionsLayerSelection.js";
 
@@ -14,9 +16,14 @@ describe("src/modules/layerSelection/store/actionsLayerSelection", () => {
         rootGetters,
         layerConfig,
         folder,
-        baselayerHandlerSpy;
+        baselayerHandlerSpy,
+        menuStore,
+        changeCurrentComponentSpy;
 
     beforeEach(() => {
+        setActivePinia(createPinia());
+        menuStore = useMenuStore();
+        changeCurrentComponentSpy = sinon.stub(menuStore, "changeCurrentComponent");
         commit = sinon.spy();
         dispatch = sinon.spy();
         layerConfig = {
@@ -45,6 +52,9 @@ describe("src/modules/layerSelection/store/actionsLayerSelection", () => {
         baselayerHandlerSpy = sinon.spy(baselayerHandler, "checkAndAdd");
     });
 
+    afterEach(() => {
+        sinon.restore();
+    });
 
     describe("changeVisibility", () => {
         it("changeVisibility to true for one layers", () => {
@@ -404,10 +414,10 @@ describe("src/modules/layerSelection/store/actionsLayerSelection", () => {
             };
             actions.restoreLayerSelection({getters, dispatch, rootGetters, commit}, attributes);
 
-            expect(dispatch.calledTwice).to.be.true;
+            expect(dispatch.calledOnce).to.be.true;
             expect(dispatch.firstCall.args[0]).to.equal("Modules/LayerSelection/navigateForward");
             expect(dispatch.firstCall.args[1].lastFolderName).to.be.equals("root");
-            expect(dispatch.secondCall.args[0]).to.equal("Menu/changeCurrentComponent");
+            expect(changeCurrentComponentSpy.calledOnce).to.be.true;
         });
         it("restore with path starting with root", () => {
             const lastFolderNames = ["root", "myfolder"];

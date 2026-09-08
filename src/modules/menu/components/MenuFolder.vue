@@ -1,6 +1,7 @@
 <script>
-import {mapGetters} from "vuex";
+import {mapState} from "pinia";
 import MenuContainerBodyRootItems from "./MenuContainerBodyRootItems.vue";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 /**
  * Menu Folder
@@ -23,7 +24,7 @@ export default {
 
     },
     computed: {
-        ...mapGetters("Menu", ["currentComponentName", "currentFolderPath"]),
+        ...mapState(useMenuStore, ["currentComponentName", "currentFolderPath"]),
 
         currentPath () {
             return this.currentFolderPath(this.side);

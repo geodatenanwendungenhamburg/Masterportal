@@ -1,19 +1,23 @@
 import sinon from "sinon";
 import {expect} from "chai";
 import gettersMenu from "@modules/menu/menu-store/gettersMenu.js";
-import stateMenu from "@modules/menu/menu-store/stateMenu.js";
 import idxProvider from "@shared/js/utils/idx.js";
+import {createPinia, setActivePinia} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
+
 
 describe("src/modules/menu/menu-store/gettersMenu.js", () => {
     const mainMenuSymbol = Symbol("mainMenu"),
         secondaryMenuSymbol = Symbol("secondaryMenu");
     let consoleErrorSpy,
         getters,
-        rootGetters,
-        rootState,
+        stateMenu,
         state;
 
     beforeEach(() => {
+        setActivePinia(createPinia());
+        stateMenu = useMenuStore().$state;
+
         consoleErrorSpy = sinon.spy();
         sinon.stub(console, "error").callsFake(consoleErrorSpy);
         state = {
@@ -23,16 +27,6 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
         getters = {
             mainMenu: null,
             secondaryMenu: null
-        };
-        rootGetters = {
-            loadedConfigs: {
-                configJson: false
-            },
-            portalConfig: {
-                mainMenu: mainMenuSymbol,
-                secondaryMenu: secondaryMenuSymbol
-            },
-            "Menu/Navigation/lastEntry": sinon.stub()
         };
     });
 
@@ -147,30 +141,24 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
     });
 
     describe("deactivateModule", () => {
-        beforeEach(() => {
-            state = {
-                activeModuleMouseMapInteractions: "getFeatureInfo"
-            };
-        });
-
         it("should return true, if module hasMouseMapInteractions === true and is not equal currentMouseMapInteractionsComponent", () => {
             const type = "measure";
 
-            rootGetters = {
-                "Modules/Measure/hasMouseMapInteractions": true
+            state = {
+                activeModuleMouseMapInteractions: "getFeatureInfo"
             };
 
-            expect(gettersMenu.deactivateModule(state, undefined, undefined, rootGetters)(type)).to.be.true;
+            expect(gettersMenu.deactivateModule(state)(type)).to.be.true;
         });
 
-        it("should return false, if module hasMouseMapInteractions === false and is not equal currentMouseMapInteractionsComponent", () => {
+        it("should return false, if module is equal currentMouseMapInteractionsComponent", () => {
             const type = "measure";
 
-            rootGetters = {
-                "Modules/Measure/hasMouseMapInteractions": false
+            state = {
+                activeModuleMouseMapInteractions: "Measure"
             };
 
-            expect(gettersMenu.deactivateModule(state, undefined, undefined, rootGetters)(type)).to.be.false;
+            expect(gettersMenu.deactivateModule(state)(type)).to.be.false;
         });
     });
 
@@ -213,7 +201,9 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
             expect(gettersMenu.mainExpanded(stateMenu)).to.equal(false);
         });
         it("should return the value of Expanded if mainMenu is not null (loaded) and is a boolean value on mainMenu", () => {
-            state.mainMenu = {expanded: true};
+            state.mainMenu = {
+                expanded: true
+            };
 
             expect(gettersMenu.mainExpanded(state)).to.equal(true);
         });
@@ -331,8 +321,6 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
             expect(gettersMenu.secondaryTitle(state)).to.equal(null);
         });
         it("should return null if title is not defined on secondaryMenu", () => {
-            getters.secondaryMenu = {};
-
             expect(gettersMenu.secondaryTitle(stateMenu)).to.equal(null);
         });
         it("should return the title if it is defined on secondaryMenu", () => {
@@ -375,36 +363,42 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
         it("should return a found object from the getters through the given path if it exists for mainMenu", () => {
             foundSection = goodPath;
             path.push("mainMenu", "sections", 0);
-            getters.mainMenu = {
-                sections: [
-                    goodPath
-                ]
+            state = {
+                mainMenu: {
+                    sections: [
+                        goodPath
+                    ]
+                }
             };
 
-            expect(gettersMenu.section(undefined, getters)(path)).to.equal(goodPath);
+            expect(gettersMenu.section(state)(path)).to.equal(goodPath);
             expect(consoleErrorSpy.notCalled).to.be.true;
         });
         it("should return a found object from the getters through the given path if it exists for secondaryMenu", () => {
             foundSection = goodPath;
             path.push("secondaryMenu", "sections", 0);
-            getters.secondaryMenu = {
-                sections: [
-                    goodPath
-                ]
+            state = {
+                secondaryMenu: {
+                    sections: [
+                        goodPath
+                    ]
+                }
             };
 
-            expect(gettersMenu.section(undefined, getters)(path)).to.equal(goodPath);
+            expect(gettersMenu.section(state)(path)).to.equal(goodPath);
             expect(consoleErrorSpy.notCalled).to.be.true;
         });
         it("should return null and log an error if the first index of the path ('mainMenu' or 'secondaryMenu') is not null but the idx function return badPathSymbol", () => {
             path.push("mainMenu", "sections", 0);
-            getters.mainMenu = {
-                sections: [
-                    goodPath
-                ]
+            state = {
+                mainMenu: {
+                    sections: [
+                        goodPath
+                    ]
+                }
             };
 
-            expect(gettersMenu.section(undefined, getters)(path)).to.equal(null);
+            expect(gettersMenu.section(state)(path)).to.equal(null);
             expect(consoleErrorSpy.calledOnce).to.be.true;
             expect(consoleErrorSpy.firstCall.args.length).to.equal(1);
             expect(consoleErrorSpy.firstCall.args[0]).to.equal(`Menu.getters.section: ${idxProvider.badPathSymbol.description} ${path}.`);
@@ -412,7 +406,8 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
         it("should return null and log an error if the first index of the path ('mainMenu' or 'secondaryMenu') is null", () => {
             path.push("mainMenu", "sections", 0);
 
-            expect(gettersMenu.section(undefined, getters)(path)).to.equal(null);
+            state = {};
+            expect(gettersMenu.section(state)(path)).to.equal(null);
             expect(consoleErrorSpy.calledOnce).to.be.true;
             expect(consoleErrorSpy.firstCall.args.length).to.equal(1);
             expect(consoleErrorSpy.firstCall.args[0]).to.equal(`Menu: The given menu ${path[0]} is not configured in the config.json.`);
@@ -515,10 +510,17 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
         };
 
         it("should return the mainTitle properties as well as the side as idAppendix if the side is 'mainMenu' and 'mainTitle' is defined", () => {
-            getters.mainTitle = exampleTitle;
+            state = {
+                mainMenu: {
+                    title: exampleTitle
+                },
+                secondaryMenu: {
+                    title: null
+                }
+            };
 
             const side = "mainMenu",
-                nameObject = gettersMenu.titleBySide(undefined, getters)(side);
+                nameObject = gettersMenu.titleBySide(state)(side);
 
             expect(nameObject).to.not.equal(null);
             expect(nameObject.text).to.equal(exampleTitle.text);
@@ -527,11 +529,19 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
             expect(nameObject.toolTip).to.equal(exampleTitle.toolTip);
             expect(nameObject.idAppendix).to.equal(side);
         });
+
         it("should return the mainTitle properties as well as the side as idAppendix if the side is 'secondaryMenu' and 'secondaryTitle' is defined", () => {
-            getters.secondaryTitle = exampleTitle;
+            state = {
+                mainMenu: {
+                    title: null
+                },
+                secondaryMenu: {
+                    title: exampleTitle
+                }
+            };
 
             const side = "secondaryMenu",
-                nameObject = gettersMenu.titleBySide(undefined, getters)(side);
+                nameObject = gettersMenu.titleBySide(state)(side);
 
             expect(nameObject).to.not.equal(null);
             expect(nameObject.text).to.equal(exampleTitle.text);
@@ -541,10 +551,29 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
             expect(nameObject.idAppendix).to.equal(side);
         });
         it("should return null if a given side does not have a name defined", () => {
-            expect(gettersMenu.titleBySide(undefined, getters)("mainMenu")).to.equal(null);
+            state = {
+                mainMenu: {
+                    title: null
+                },
+                secondaryMenu: {
+                    title: null
+                }
+            };
+
+            expect(gettersMenu.titleBySide(state)("mainMenu")).to.equal(null);
         });
+
         it("should return null if a given side does not equal 'mainMenu' or 'secondaryMenu'", () => {
-            expect(gettersMenu.titleBySide(undefined, getters)("newMenu")).to.equal(null);
+            state = {
+                mainMenu: {
+                    title: null
+                },
+                secondaryMenu: {
+                    title: null
+                }
+            };
+
+            expect(gettersMenu.titleBySide(state)("newMenu")).to.equal(null);
         });
     });
 
@@ -560,14 +589,21 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
             };
 
             getters = {
-                getComponentAttributes: (component) => {
-                    return component === "root" ? undefined : {a: "1", b: "2"};
+                getComponentAttributes: component => {
+                    return component === "root"
+                        ? undefined
+                        : {a: "1", b: "2"};
                 }
             };
         });
 
         it("should return the menu params with attributes", () => {
-            const params = gettersMenu.urlParams(state, getters);
+            const context = {
+                    mainMenu: state.mainMenu,
+                    secondaryMenu: state.secondaryMenu,
+                    getComponentAttributes: getters.getComponentAttributes
+                },
+                params = gettersMenu.urlParams.call(context);
 
             expect(params).to.deep.equals({
                 main: {
@@ -585,24 +621,10 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
     });
 
     describe("getComponentAttributes", () => {
-        beforeEach(() => {
-            rootState = {};
-            rootGetters = {
-                "Modules/CompA/urlParams": {
-                    a: 1,
-                    b: 2
-                }
-            };
-        });
+        it("should return undefined for root", () => {
+            const moduleAttributes = gettersMenu.getComponentAttributes()("root");
 
-        it("should return the menu attributes to a component", () => {
-            const currentComponent = "compA",
-                moduleAttributes = gettersMenu.getComponentAttributes(undefined, undefined, rootState, rootGetters)(currentComponent);
-
-            expect(moduleAttributes).to.deep.equals({
-                a: 1,
-                b: 2
-            });
+            expect(moduleAttributes).to.be.undefined;
         });
     });
 
@@ -660,23 +682,12 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
     });
 
     describe("secondaryMenuEnabled", () => {
-        let mockGetters;
-
-        beforeEach(() => {
-            mockGetters = {
-                sectionHasItems: gettersMenu.sectionHasItems(state)
-            };
-        });
-
         it("should return false if secondaryMenu.sections is undefined", () => {
             state = {
                 secondaryMenu: {}
             };
-            mockGetters = {
-                sectionHasItems: gettersMenu.sectionHasItems(state)
-            };
 
-            const result = gettersMenu.secondaryMenuEnabled(state, mockGetters);
+            const result = gettersMenu.secondaryMenuEnabled(state);
 
             expect(result).to.be.false;
         });
@@ -687,11 +698,8 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
                     sections: null
                 }
             };
-            mockGetters = {
-                sectionHasItems: gettersMenu.sectionHasItems(state)
-            };
 
-            const result = gettersMenu.secondaryMenuEnabled(state, mockGetters);
+            const result = gettersMenu.secondaryMenuEnabled(state);
 
             expect(result).to.be.false;
         });
@@ -702,11 +710,8 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
                     sections: []
                 }
             };
-            mockGetters = {
-                sectionHasItems: gettersMenu.sectionHasItems(state)
-            };
 
-            const result = gettersMenu.secondaryMenuEnabled(state, mockGetters);
+            const result = gettersMenu.secondaryMenuEnabled(state);
 
             expect(result).to.be.false;
         });
@@ -720,11 +725,8 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
                     ]
                 }
             };
-            mockGetters = {
-                sectionHasItems: gettersMenu.sectionHasItems(state)
-            };
 
-            const result = gettersMenu.secondaryMenuEnabled(state, mockGetters);
+            const result = gettersMenu.secondaryMenuEnabled(state);
 
             expect(result).to.be.false;
         });
@@ -739,11 +741,8 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
                     ]
                 }
             };
-            mockGetters = {
-                sectionHasItems: gettersMenu.sectionHasItems(state)
-            };
 
-            const result = gettersMenu.secondaryMenuEnabled(state, mockGetters);
+            const result = gettersMenu.secondaryMenuEnabled(state);
 
             expect(result).to.be.true;
         });
@@ -757,11 +756,8 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
                     ]
                 }
             };
-            mockGetters = {
-                sectionHasItems: gettersMenu.sectionHasItems(state)
-            };
 
-            const result = gettersMenu.secondaryMenuEnabled(state, mockGetters);
+            const result = gettersMenu.secondaryMenuEnabled(state);
 
             expect(result).to.be.false;
         });
@@ -779,11 +775,8 @@ describe("src/modules/menu/menu-store/gettersMenu.js", () => {
                     ]
                 }
             };
-            mockGetters = {
-                sectionHasItems: gettersMenu.sectionHasItems(state)
-            };
 
-            const result = gettersMenu.secondaryMenuEnabled(state, getters);
+            const result = gettersMenu.secondaryMenuEnabled(state);
 
             expect(result).to.be.true;
         });

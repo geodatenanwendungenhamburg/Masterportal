@@ -13,6 +13,7 @@ import remove3DFeatureHighlight from "@shared/js/utils/remove3DFeatureHighlight.
 import {convertColor} from "@shared/js/utils/convertColor.js";
 import {fetchCswRecordXml, buildAlertPayload, alertCswFetchError, addLayersFromOnlineResources} from "./addLayerFromCswRecordHelper.js";
 import {useLayerInformationStore} from "@modules/layerInformation/store/layerInformationStore.js";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 /**
  * Contains actions that communicate with other components after an interaction, such as onClick or onHover, with a search result.
@@ -255,7 +256,13 @@ export default {
         const layerConfig = await dispatch("retrieveLayerConfig", {layerId, source});
 
         commit("setShowSearchResultsInTree", true);
-        dispatch("Menu/changeCurrentComponent", {type: "layerSelection", side: "mainMenu", props: {name: "common:modules.layerSelection.name"}}, {root: true});
+        useMenuStore().changeCurrentComponent({
+            type: "layerSelection",
+            side: "mainMenu",
+            props: {name: "common:modules.layerSelection.name"}
+        });
+
+
         if (layerId.includes("folder-")) {
             const folderChildId = layerConfig.elements[0]?.id;
 
@@ -339,15 +346,24 @@ export default {
      * @param {String} payload.name The name of the search result.
      * @returns {void}
      */
-    startRouting: ({dispatch, rootGetters}, {coordinates, name}) => {
+    startRouting: ({dispatch}, {coordinates, name}) => {
         const menuSide = "secondaryMenu",
-            menuExpanded = "Menu/expanded";
+            menuStore = useMenuStore();
 
-        dispatch("Menu/changeCurrentComponent", {type: "routing", side: menuSide, props: {name: i18next.t("common:modules.routing.name")}}, {root: true});
-        if (!rootGetters[menuExpanded](menuSide)) {
-            dispatch("Menu/toggleMenu", menuSide, {root: true});
+        menuStore.changeCurrentComponent({
+            type: "routing",
+            side: menuSide,
+            props: {name: i18next.t("common:modules.routing.name")}
+        });
+
+        if (!menuStore.expanded(menuSide)) {
+            menuStore.toggleMenu(menuSide);
         }
-        dispatch("Modules/Routing/setFirstWayPoint", {displayName: name, coordinates}, {root: true});
+
+        dispatch("Modules/Routing/setFirstWayPoint", {
+            displayName: name,
+            coordinates
+        }, {root: true});
     },
 
     /**
@@ -524,9 +540,10 @@ export default {
             return;
         }
 
-        const featureId = pickedFeature.getProperty("id"),
+        const menuStore = useMenuStore(),
+            featureId = pickedFeature.getProperty("id"),
             gfiMenuSide = rootGetters["Modules/GetFeatureInfo/menuSide"],
-            currentComponentType = rootGetters["Menu/currentComponent"](gfiMenuSide)?.type;
+            currentComponentType = menuStore.currentComponent(gfiMenuSide)?.type;
 
         if (!featureId) {
             console.warn("Picked feature has no ID:", pickedFeature);
@@ -537,9 +554,9 @@ export default {
         commit("Modules/GetFeatureInfo/setGfiFeatures", null, {root: true});
 
         if (currentComponentType === "getFeatureInfo") {
-            commit("Menu/switchToPreviousComponent", gfiMenuSide, {root: true});
-            if (gfiMenuSide === "secondaryMenu" && rootGetters["Menu/secondaryMenu"].currentComponent === "root") {
-                dispatch("Menu/closeMenu", "secondaryMenu", {root: true});
+            menuStore.switchToPreviousComponent(gfiMenuSide);
+            if (gfiMenuSide === "secondaryMenu" && menuStore.secondaryMenu.currentComponent === "root") {
+                menuStore.closeMenu("secondaryMenu");
             }
         }
 

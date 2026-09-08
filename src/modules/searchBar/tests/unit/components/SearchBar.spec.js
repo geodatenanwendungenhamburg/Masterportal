@@ -2,6 +2,8 @@ import {createStore} from "vuex";
 import {shallowMount, mount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
+import {createPinia, setActivePinia} from "pinia";
 
 import SearchBarComponent from "@modules/searchBar/components/SearchBar.vue";
 
@@ -14,8 +16,10 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
     ];
     let searchResults,
         store,
+        pinia,
         wrapper,
-        menuActionsSpy,
+        menuStore,
+        navigateBackSpy,
         searchBarActionsSpy,
         searchBarMutationsSpy,
         searchInputValue,
@@ -27,6 +31,10 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
 
 
     beforeEach(() => {
+        pinia = createPinia();
+        setActivePinia(pinia);
+        menuStore = useMenuStore();
+        navigateBackSpy = sinon.stub(menuStore, "navigateBack");
         searchResults = [
             {
                 "category": "Straße",
@@ -56,9 +64,6 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
                 }
             }
         ];
-        menuActionsSpy = {
-            navigateBack: sinon.stub()
-        };
 
         searchBarActionsSpy = {
             instantiateSearchInterfaces: sinon.stub(),
@@ -116,14 +121,6 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
                         }
                     }
                 },
-                Menu: {
-                    namespaced: true,
-                    getters: {
-                        titleBySide: () => () => true,
-                        currentComponent: () => () => "root"
-                    },
-                    actions: menuActionsSpy
-                },
                 Maps: {
                     namespaced: true,
                     actions: {
@@ -145,7 +142,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
         it("should render the SearchBar with button and input and mounted values", async () => {
             wrapper = mount(SearchBarComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
             wrapper.vm.setCurrentSide("root");
@@ -154,7 +151,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
             expect(wrapper.find("#search-button").exists()).to.be.true;
             expect(wrapper.find("input").exists()).to.be.true;
             expect(wrapper.vm.currentSide).to.eql("mainMenu");
-            expect(wrapper.vm.currentComponentSide).to.be.undefined;
+            expect(wrapper.vm.currentComponentSide).to.eql("root");
             expect(wrapper.vm.searchInputValue).to.deep.eql("abc-straße");
         });
     });
@@ -163,9 +160,13 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
         it("should start search to abc-straße, if button is clicked", async () => {
             wrapper = shallowMount(SearchBarComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
+                },
+                props: {
+                    clickAction: sinon.stub()
                 }
             });
+            wrapper.vm.currentComponentSide = "root";
 
             const startSearchSpy = sinon.spy(wrapper.vm, "startSearch");
 
@@ -178,7 +179,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
         it("should start search to abc-straße, if button is clicked", async () => {
             wrapper = shallowMount(SearchBarComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -220,7 +221,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
             ];
             wrapper = await shallowMount(SearchBarComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
             expect(wrapper.vm.searchResultsWithUniqueCategories).to.deep.equal([
@@ -258,7 +259,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
         it("check if search should be activated", () => {
             wrapper = shallowMount(SearchBarComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -272,7 +273,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
         it("tests the computed property SearchBarSuggestionList", async () => {
             wrapper = await shallowMount(SearchBarComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -294,7 +295,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
         it("startSearch is executed for modules", async () => {
             wrapper = await mount(SearchBarComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
             const startSearchSpy = sinon.spy(wrapper.vm, "startSearch");
@@ -306,7 +307,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
             searchInputValue = "";
             wrapper = await mount(SearchBarComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
             const startSearchSpy = sinon.spy(wrapper.vm, "startSearch");
@@ -315,7 +316,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
 
             expect(startSearchSpy.called).to.be.true;
             expect(searchBarActionsSpy.startLayerSelectionSearch.called).to.be.true;
-            expect(menuActionsSpy.navigateBack.called).to.be.true;
+            expect(navigateBackSpy.called).to.be.true;
         });
     });
 
@@ -351,7 +352,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
             ];
             wrapper = shallowMount(SearchBarComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -366,7 +367,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
                     "category": " Thema",
                     "id": "StaatlicheSchulenHamburg",
                     "index": 1,
-                    "name": "Staatliche Schulen Hamburg",
+                    "name": "Staatliche SchulenHamburg",
                     "searchInterfaceId": "elasticSearch_0",
                     "displayedInfo": "",
                     "icon": "bi-signpost",
@@ -392,7 +393,7 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
 
             wrapper = shallowMount(SearchBarComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -401,14 +402,16 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
             wrapper.vm.zoomToAndMarkSearchResult("Staatliche Schulen Hamburg");
             expect(activateActionsSpy.called).not.to.be.true;
         });
-
     });
 
     describe("startSearch", () => {
         it("The method 'startSearch' should trigger only from watch, if input is changed", async () => {
             wrapper = shallowMount(SearchBarComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
+                },
+                props: {
+                    clickAction: sinon.stub()
                 }
             });
 
@@ -425,29 +428,37 @@ describe("src/modules/searchBar/components/SearchBar.vue", () => {
         it("currentComponentSide layerSelection, addLayerButtonSearchActive is true", async () => {
             wrapper = shallowMount(SearchBarComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
-            wrapper.vm.$options.watch.currentComponentSide.handler.call(wrapper.vm, "layerSelection");
+            wrapper.vm.$options.watch.currentComponentSide.handler.call(
+                wrapper.vm,
+                "layerSelection"
+            );
             expect(setGlobalPlaceholderSpy.calledOnce).to.be.true;
             expect(setGlobalPlaceholderSpy.firstCall.args[1]).to.equal("common:modules.searchBar.search");
             expect(setShowAllResultsSpy.notCalled).to.be.true;
             expect(setShowSearchResultsInTreeSpy.notCalled).to.be.true;
             expect(setCurrentActionEventSpy.notCalled).to.be.true;
             expect(setSearchResultsActiveSpy.notCalled).to.be.true;
-
         });
         it("currentComponentSide root, addLayerButtonSearchActive is true", async () => {
             wrapper = shallowMount(SearchBarComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
+                },
+                props: {
+                    clickAction: sinon.stub()
                 }
             });
 
-            wrapper.vm.$options.watch.currentComponentSide.handler.call(wrapper.vm, "root");
+            wrapper.vm.$options.watch.currentComponentSide.handler.call(
+                wrapper.vm,
+                "root"
+            );
             expect(setSearchResultsActiveSpy.calledOnce).to.be.true;
-            expect(menuActionsSpy.navigateBack.called).to.be.true;
+            expect(navigateBackSpy.called).to.be.true;
             expect(setGlobalPlaceholderSpy.calledOnce).to.be.true;
             expect(setGlobalPlaceholderSpy.firstCall.args[1]).to.equal("ABC");
             expect(setShowAllResultsSpy.calledOnce).to.be.true;

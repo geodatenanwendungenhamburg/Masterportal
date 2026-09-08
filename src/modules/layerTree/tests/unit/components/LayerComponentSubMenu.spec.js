@@ -3,6 +3,7 @@ import {mount, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
 import {createPinia, setActivePinia} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 import LayerComponentSubMenu from "@modules/layerTree/components/LayerComponentSubMenu.vue";
 
@@ -51,7 +52,7 @@ describe("src/modules/layerTree/components/LayerComponentSubMenu.vue", () => {
 
         removeLayerSpy = sinon.spy();
         updateTransparencySpy = sinon.spy();
-        changeCurrentComponentStub = sinon.stub();
+        changeCurrentComponentStub = sinon.stub(useMenuStore(), "changeCurrentComponent");
         showLayerStub = sinon.stub();
         layerConfigStub = sinon.stub().callsFake(() => {
             return {
@@ -108,13 +109,6 @@ describe("src/modules/layerTree/components/LayerComponentSubMenu.vue", () => {
                                 showLayer: showLayerStub
                             }
                         }
-                    }
-                },
-                Menu: {
-                    namespaced: true,
-                    actions: {
-                        changeCurrentComponent: changeCurrentComponentStub,
-                        setMenuBackAndActivateItem: sinon.stub()
                     }
                 }
             },
@@ -212,16 +206,14 @@ describe("src/modules/layerTree/components/LayerComponentSubMenu.vue", () => {
         });
 
         await wrapper.find(".path").trigger("click");
-        sinon.assert.calledWith(changeCurrentComponentStub,
-            sinon.match.any,
-            {
-                type: "layerSelection",
-                side: "mainMenu",
-                props: {
-                    "layerId": "1",
-                    "name": layer.name
-                }
+        sinon.assert.calledWith(changeCurrentComponentStub, {
+            type: "layerSelection",
+            side: "mainMenu",
+            props: {
+                "layerId": "1",
+                "name": layer.name
             }
+        }
         );
         sinon.assert.calledWith(showLayerStub,
             sinon.match.any,

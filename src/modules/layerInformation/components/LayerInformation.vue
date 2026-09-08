@@ -8,6 +8,7 @@ import AccordionItem from "@shared/modules/accordion/components/AccordionItem.vu
 import NavTab from "@shared/modules/tabs/components/NavTab.vue";
 import {buildMetaURLs} from "@shared/js/utils/metaUrlHelper.js";
 import LayerInfoContactButton from "@modules/layerTree/components/LayerInfoContactButton.vue";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 /**
  * The Layer Information that gives the user information, links and the legend for a layer
@@ -60,7 +61,7 @@ export default {
         ...mapGetters("Modules/Legend", [
             "layerInfoLegend"
         ]),
-        ...mapGetters("Menu", [
+        ...mapState(useMenuStore, [
             "mainMenu",
             "secondaryMenu"
         ]),
@@ -176,7 +177,7 @@ export default {
         ...mapPiniaActions(useLayerInformationStore, ["setConfigParams", "additionalSingleLayerInfo", "getAbstractInfo"]),
         ...mapActions("Modules/Legend", ["createLegendForLayerInfo"]),
         ...mapMutations("Modules/Legend", ["setLayerInfoLegend"]),
-        ...mapActions("Menu", ["changeCurrentComponent"]),
+        ...mapPiniaActions(useMenuStore, ["changeCurrentComponent"]),
         setMetaDataCatalogueId (value) {
             useLayerInformationStore().metaDataCatalogueId = value;
         },

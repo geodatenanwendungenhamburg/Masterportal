@@ -2,6 +2,8 @@
 import MenuContainerBodyRoot from "./MenuContainerBodyRoot.vue";
 import MenuNavigation from "./MenuNavigation.vue";
 import {mapActions, mapGetters} from "vuex";
+import {mapState} from "pinia";
+import {useMenuStore} from "../menu-store/menuStore.js";
 import GetFeatureInfo from "../../getFeatureInfo/components/GetFeatureInfo.vue";
 import MenuComponentKeepAlivePlaceholder from "./MenuComponentKeepAlivePlaceholder.vue";
 import {getPiniaModuleStore, isPiniaModule} from "../../modules-store/piniaModules.js";
@@ -31,7 +33,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters("Menu", [
+        ...mapState(useMenuStore, [
             "defaultComponent",
             "mainMenu",
             "secondaryMenu",

@@ -1,16 +1,17 @@
-import {createStore} from "vuex";
+import {createPinia, setActivePinia} from "pinia";
 import {mount} from "@vue/test-utils";
 import axios from "axios";
 import CustomMenuElement from "@modules/menu/components/CustomMenuElement.vue";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 import {expect} from "chai";
 import sinon from "sinon";
 import visibilityChecker from "@shared/js/utils/visibilityChecker.js";
 
 
 describe("src/modules/menu/components/CustomMenuElement.vue", () => {
-    let store,
+    let pinia,
+        menuStore,
         wrapper,
-        currentComponent,
         side,
         htmlContent,
         errorSpy,
@@ -29,19 +30,13 @@ describe("src/modules/menu/components/CustomMenuElement.vue", () => {
             mapMode: undefined,
             deviceMode: undefined
         };
-        currentComponent = {
+        pinia = createPinia();
+        setActivePinia(pinia);
+        menuStore = useMenuStore();
+        menuStore.mainMenu.navigation.currentComponent = {
+            type: "customMenuElement",
             props: currentComponentProps
         };
-        store = createStore({
-            modules: {
-                Menu: {
-                    namespaced: true,
-                    getters: {
-                        currentComponent: () => () => currentComponent
-                    }
-                }
-            }
-        });
         htmlContent = "<div><span>Hallo Welt</span></div>";
         errorSpy = sinon.spy();
         sinon.stub(console, "error").callsFake(errorSpy);
@@ -51,16 +46,16 @@ describe("src/modules/menu/components/CustomMenuElement.vue", () => {
         if (typeof wrapper !== "undefined") {
             wrapper.unmount();
         }
+        sinon.restore();
     });
 
     it("renders only a div if no htmlContent or pathToContent is given", () => {
-        wrapper = mount(CustomMenuElement,
-            {
-                global: {
-                    plugins: [store]
-                },
-                propsData: {side}
-            });
+        wrapper = mount(CustomMenuElement, {
+            global: {
+                plugins: [pinia]
+            },
+            props: {side}
+        });
 
         expect(wrapper.find(".custom-menu-element").exists()).to.be.true;
         expect(wrapper.findAll("div").length).to.be.equals(1);
@@ -68,13 +63,12 @@ describe("src/modules/menu/components/CustomMenuElement.vue", () => {
 
     it("renders htmlContent", () => {
         currentComponentProps.htmlContent = "<div><span/></div>";
-        wrapper = mount(CustomMenuElement,
-            {
-                global: {
-                    plugins: [store]
-                },
-                propsData: {side}
-            });
+        wrapper = mount(CustomMenuElement, {
+            global: {
+                plugins: [pinia]
+            },
+            props: {side}
+        });
 
         expect(wrapper.find(".custom-menu-element").exists()).to.be.true;
         expect(wrapper.findAll("div").length).to.be.equals(3);
@@ -84,13 +78,12 @@ describe("src/modules/menu/components/CustomMenuElement.vue", () => {
     it("renders pathToContent", async () => {
         sinon.stub(axios, "get").resolves({status: 200, data: htmlContent});
         currentComponentProps.pathToContent = "aPath/path";
-        wrapper = mount(CustomMenuElement,
-            {
-                global: {
-                    plugins: [store]
-                },
-                propsData: {side}
-            });
+        wrapper = mount(CustomMenuElement, {
+            global: {
+                plugins: [pinia]
+            },
+            props: {side}
+        });
         await wrapper.vm.$nextTick();
 
         expect(wrapper.find(".custom-menu-element").exists()).to.be.true;
@@ -105,9 +98,9 @@ describe("src/modules/menu/components/CustomMenuElement.vue", () => {
         wrapper = mount(CustomMenuElement,
             {
                 global: {
-                    plugins: [store]
+                    plugins: [pinia]
                 },
-                propsData: {side}
+                props: {side}
             });
         await wrapper.vm.$nextTick();
 
@@ -116,14 +109,17 @@ describe("src/modules/menu/components/CustomMenuElement.vue", () => {
     });
     it("renders only a div if no htmlContent or pathToContent is given into secondary menu", () => {
         side = "secondaryMenu";
+        menuStore.secondaryMenu.navigation.currentComponent = {
+            type: "customMenuElement",
+            props: currentComponentProps
+        };
 
-        wrapper = mount(CustomMenuElement,
-            {
-                global: {
-                    plugins: [store]
-                },
-                propsData: {side}
-            });
+        wrapper = mount(CustomMenuElement, {
+            global: {
+                plugins: [pinia]
+            },
+            props: {side}
+        });
 
         expect(wrapper.find(".custom-menu-element").exists()).to.be.true;
         expect(wrapper.vm.side).to.be.equals(side);
@@ -134,9 +130,9 @@ describe("src/modules/menu/components/CustomMenuElement.vue", () => {
 
         wrapper = mount(CustomMenuElement, {
             global: {
-                plugins: [store]
+                plugins: [pinia]
             },
-            propsData: {side}
+            props: {side}
         });
 
         expect(wrapper.find(".custom-menu-element").exists()).to.be.false;

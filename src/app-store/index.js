@@ -8,7 +8,6 @@ import actions from "./actions.js";
 import Alerting from "@modules/alerting/store/indexAlerting.js";
 import Controls from "@modules/controls/controls-store/indexControls.js";
 import Maps from "@core/maps/store/indexMaps.js";
-import Menu from "@modules/menu/menu-store/indexMenu.js";
 import Modules from "@modules/modules-store/indexModules.js";
 
 const store = createStore({
@@ -20,7 +19,6 @@ const store = createStore({
         Alerting,
         Controls,
         Maps,
-        Menu,
         Modules
     }
 });

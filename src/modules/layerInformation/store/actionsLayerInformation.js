@@ -5,6 +5,7 @@ import xml2json from "@shared/js/utils/xml2json.js";
 import changeCase from "@shared/js/utils/changeCase.js";
 import axios from "axios";
 import {buildMetaURLs} from "@shared/js/utils/metaUrlHelper.js";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 /**
  * The actions for the layerInformation.
@@ -39,11 +40,13 @@ export default {
             store.dispatch("Modules/Legend/createLegendForLayerInfo", layerConf.id);
         }
 
-        if (store.getters.isMobile && !store.getters["Menu/expanded"]("mainMenu")) {
-            store.dispatch("Menu/toggleMenu", "mainMenu");
+        const menuStore = useMenuStore();
+
+        if (store.getters.isMobile && !menuStore.expanded("mainMenu")) {
+            menuStore.toggleMenu("mainMenu");
         }
 
-        store.dispatch("Menu/changeCurrentComponent", {
+        menuStore.changeCurrentComponent({
             type: "layerInformation",
             side: "mainMenu",
             props: {name}
@@ -288,7 +291,7 @@ export default {
             layerId = attributes.layerInfo.id,
             layerConfig = store.getters.layerConfigById(layerId);
 
-        store.dispatch("Menu/updateComponentState", {
+        useMenuStore().updateComponentState({
             type: componentName,
             attributes
         });

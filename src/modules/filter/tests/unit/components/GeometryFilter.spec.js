@@ -8,16 +8,19 @@ import {Vector as VectorLayer} from "ol/layer.js";
 import Feature from "ol/Feature.js";
 import {Polygon, LineString, MultiPolygon} from "ol/geom.js";
 import {nextTick} from "vue";
-
+import {createPinia, setActivePinia} from "pinia";
 
 describe("src/modules/filter/components/GeometryFilter.vue", () => {
     let wrapper = null,
         sandbox,
         store,
+        pinia,
         stubChangeCurrentMouseMapInteractionsComponent,
         map;
 
     beforeEach(() => {
+        pinia = createPinia();
+        setActivePinia(pinia);
         sandbox = sinon.createSandbox();
         stubChangeCurrentMouseMapInteractionsComponent = sandbox.stub();
         map = {
@@ -71,7 +74,7 @@ describe("src/modules/filter/components/GeometryFilter.vue", () => {
         });
         wrapper = shallowMount(GeometryFilter, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }});
     });
 

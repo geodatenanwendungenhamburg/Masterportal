@@ -1,72 +1,37 @@
-import {createStore} from "vuex";
+import {createPinia, setActivePinia} from "pinia";
 import sinon from "sinon";
 import {shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import MenuToggleButton from "@modules/menu/components/MenuToggleButton.vue";
-
-
-/**
- * Factory to create a Vuex store for Menu module tests
- *
- * @typedef {Object} MenuStoreOptions
- * @property {boolean} [mainExpanded=false]
- * @property {boolean} [secondaryExpanded=false]
- * @property {boolean} [secondaryMenuEnabled=true]
- * @property {Function} [toggleMenuSpy]
- *
- * @param {MenuStoreOptions} [options]
- * @returns {Object} Vuex store instance configured for Menu module tests
- */
-function createMenuStore ({
-    mainExpanded = false,
-    secondaryExpanded = false,
-    secondaryMenuEnabled = true,
-    toggleMenuSpy = sinon.spy()
-} = {}) {
-    return createStore({
-        modules: {
-            Menu: {
-                namespaced: true,
-                getters: {
-                    mainExpanded: () => mainExpanded,
-                    secondaryExpanded: () => secondaryExpanded,
-                    mainToggleButtonIcon: () => "bi-list",
-                    secondaryToggleButtonIcon: () => "bi-tools",
-                    secondaryMenuEnabled: () => secondaryMenuEnabled
-                },
-                actions: {
-                    toggleMenu: toggleMenuSpy
-                }
-            }
-        }
-    });
-}
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 describe("src/modules/menu/MenuToggleButton.vue", () => {
-    let store,
+    let pinia,
+        menuStore,
         side,
-        wrapper,
-        toggleMenuSpy;
+        wrapper;
 
     beforeEach(() => {
         side = "mainMenu";
-        toggleMenuSpy = sinon.spy();
+        pinia = createPinia();
+        setActivePinia(pinia);
 
-        store = createMenuStore({toggleMenuSpy});
+        menuStore = useMenuStore();
     });
 
     afterEach(() => {
         if (typeof wrapper !== "undefined") {
             wrapper.unmount();
         }
+        sinon.restore();
     });
 
     it("should render the button including 'mainToggleButtonIcon' as the icon class for side 'main'", () => {
         wrapper = shallowMount(MenuToggleButton, {
             global: {
-                plugins: [store]
+                plugins: [pinia]
             },
-            propsData: {side}
+            props: {side}
         });
         const button = wrapper.find(`#${side}-toggle-button`),
             icon = button.find("i");
@@ -80,11 +45,12 @@ describe("src/modules/menu/MenuToggleButton.vue", () => {
     });
     it("should render the button including 'secondaryToggleButtonIcon' as the icon class for side 'secondaryMenu'", () => {
         side = "secondaryMenu";
+        menuStore.secondaryMenu.sections = [[{type: "test"}]];
         wrapper = shallowMount(MenuToggleButton, {
             global: {
-                plugins: [store]
+                plugins: [pinia]
             },
-            propsData: {side}
+            props: {side}
         });
         const button = wrapper.find(`#${side}-toggle-button`),
             icon = button.find("i");
@@ -92,65 +58,63 @@ describe("src/modules/menu/MenuToggleButton.vue", () => {
         expect(button.exists()).to.be.true;
         expect(button.classes()).to.eql(["btn", "btn-light", "bootstrap-icon", "shadow", "menu-toggle-button", "toggle-button-secondaryMenu"]);
         expect(button.attributes("type")).to.equal("button");
-        expect(button.attributes("aria-label")).to.equal("common:modules.menu.ariaLabelOpen");
+        expect(button.attributes("aria-label")).to.equal(
+            "common:modules.menu.ariaLabelOpen"
+        );
         expect(icon.exists()).to.be.true;
         expect(icon.classes()).to.eql(["bi-tools"]);
     });
 
     it("mainMenu: calls toggleMenu if clicked on button", async () => {
+        const toggleMenuSpy = sinon.spy(menuStore, "toggleMenu");
+
         wrapper = shallowMount(MenuToggleButton, {
             global: {
-                plugins: [store]
-            },
-            propsData: {side}
+                plugins: [pinia]
+            }, props: {side}
         });
         const button = wrapper.find(`#${side}-toggle-button`);
 
         await button.trigger("click");
         expect(toggleMenuSpy.calledOnce).to.be.true;
-        expect(toggleMenuSpy.firstCall.args[1]).to.be.equals("mainMenu");
-
+        expect(toggleMenuSpy.firstCall.args[0]).to.equal("mainMenu");
     });
 
     it("secondaryMenu: calls toggleMenu if clicked on button", async () => {
+        const toggleMenuSpy = sinon.spy(menuStore, "toggleMenu");
+
         side = "secondaryMenu";
+        menuStore.secondaryMenu.sections = [[{type: "test"}]];
         wrapper = shallowMount(MenuToggleButton, {
             global: {
-                plugins: [store]
-            },
-            propsData: {side}
+                plugins: [pinia]
+            }, props: {side}
         });
         const button = wrapper.find(`#${side}-toggle-button`);
 
+        expect(button.exists()).to.be.true;
         await button.trigger("click");
         expect(toggleMenuSpy.calledOnce).to.be.true;
-        expect(toggleMenuSpy.firstCall.args[1]).to.be.equals("secondaryMenu");
-
+        expect(toggleMenuSpy.firstCall.args[0]).to.equal("secondaryMenu");
     });
     describe("showButton", () => {
         it("should NOT render secondary button if disabled", () => {
-            store = createMenuStore({
-                secondaryMenuEnabled: false,
-                toggleMenuSpy
-            });
+            menuStore.secondaryMenu.sections = [[]];
 
             wrapper = shallowMount(MenuToggleButton, {
-                global: {plugins: [store]},
-                propsData: {side: "secondaryMenu"}
+                global: {plugins: [pinia]},
+                props: {side: "secondaryMenu"}
             });
 
             expect(wrapper.find("#secondaryMenu-toggle-button").exists()).to.be.false;
         });
 
         it("should render secondary button if enabled", () => {
-            store = createMenuStore({
-                secondaryMenuEnabled: true,
-                toggleMenuSpy
-            });
+            menuStore.secondaryMenu.sections = [[{type: "test"}]];
 
             wrapper = shallowMount(MenuToggleButton, {
-                global: {plugins: [store]},
-                propsData: {side: "secondaryMenu"}
+                global: {plugins: [pinia]},
+                props: {side: "secondaryMenu"}
             });
 
             expect(wrapper.find("#secondaryMenu-toggle-button").exists()).to.be.true;

@@ -1,7 +1,8 @@
 <script>
-import {mapGetters} from "vuex";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 import store from "../../../app-store/index.js";
+import {mapState} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 /**
      * Represents a custom icon button for a layer in the layertree.
@@ -18,7 +19,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters("Menu", ["expanded"]),
+        ...mapState(useMenuStore, ["expanded"]),
         /**
          * Gets the custom icon configuration from the layer config
          * @returns {Object} The custom icon configuration

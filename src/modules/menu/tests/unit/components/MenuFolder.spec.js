@@ -1,12 +1,14 @@
-import {createStore} from "vuex";
+import {createPinia, setActivePinia} from "pinia";
 import {shallowMount} from "@vue/test-utils";
 import MenuFolder from "@modules/menu/components/MenuFolder.vue";
 import MenuContainerBodyRootItems from "@modules/menu/components/MenuContainerBodyRootItems.vue";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 import {expect} from "chai";
 
 
 describe("src/modules/menu/MenuFolder.vue", () => {
-    let store,
+    let pinia,
+        menuStore,
         wrapper,
         currentFolderPath,
         side;
@@ -14,19 +16,24 @@ describe("src/modules/menu/MenuFolder.vue", () => {
     beforeEach(() => {
         side = "mainMenu";
         currentFolderPath = [side, "sections", 0, 13];
-        store = createStore({
-            modules: {
-                Menu: {
-                    namespaced: true,
-                    getters: {
-                        currentComponentName: () => () => "currentComponentName",
-                        currentFolderPath: () => () => currentFolderPath
-                    }
-                }
+        pinia = createPinia();
+        setActivePinia(pinia);
+        menuStore = useMenuStore();
+        menuStore.mainMenu.navigation.currentComponent = {
+            type: "folder",
+            props: {
+                name: "currentComponentName",
+                path: currentFolderPath
             }
-        });
+        };
+        menuStore.secondaryMenu.navigation.currentComponent = {
+            type: "folder",
+            props: {
+                name: "currentComponentName",
+                path: currentFolderPath
+            }
+        };
     });
-
 
     afterEach(() => {
         if (typeof wrapper !== "undefined") {
@@ -36,8 +43,8 @@ describe("src/modules/menu/MenuFolder.vue", () => {
 
     it("renders MenuContainerBodyRootItems in mainMenu", () => {
         wrapper = shallowMount(MenuFolder, {global: {
-            plugins: [store]
-        }, propsData: {side}
+            plugins: [pinia]
+        }, props: {side}
         });
 
         expect(wrapper.findComponent(MenuContainerBodyRootItems).exists()).to.be.true;
@@ -47,10 +54,15 @@ describe("src/modules/menu/MenuFolder.vue", () => {
 
     it("renders MenuContainerBodyRootItems in secondaryMenu", () => {
         side = "secondaryMenu";
+        currentFolderPath = [side, "sections", 0, 13];
 
-        wrapper = shallowMount(MenuFolder, {global: {
-            plugins: [store]
-        }, propsData: {side}
+        menuStore.secondaryMenu.navigation.currentComponent.props.path =
+            currentFolderPath;
+
+        wrapper = shallowMount(MenuFolder, {
+            global: {
+                plugins: [pinia]
+            }, props: {side}
         });
 
         expect(wrapper.findComponent(MenuContainerBodyRootItems).exists()).to.be.true;

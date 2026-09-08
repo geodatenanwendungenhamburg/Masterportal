@@ -2,6 +2,8 @@ import {createStore} from "vuex";
 import {shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
+import {createPinia, setActivePinia} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 import SearchBarResultListComponent from "@modules/searchBar/components/SearchBarResultList.vue";
 
@@ -9,6 +11,8 @@ import SearchBarResultListComponent from "@modules/searchBar/components/SearchBa
 describe("src/modules/searchBar/components/SearchBarResultList.vue", () => {
     let currentAvailableCategories,
         store,
+        pinia,
+        menuStore,
         wrapper,
         addLayerButtonSearchActive;
 
@@ -85,7 +89,12 @@ describe("src/modules/searchBar/components/SearchBarResultList.vue", () => {
     beforeEach(() => {
         addLayerButtonSearchActive = false;
         currentAvailableCategories = "Adresse";
+        pinia = createPinia();
+        setActivePinia(pinia);
+        menuStore = useMenuStore();
 
+        menuStore.mainMenu.navigation.currentComponent = currentComponent;
+        menuStore.mainMenu.currentComponent = currentComponent.type;
         store = createStore({
             modules: {
                 Modules: {
@@ -112,12 +121,6 @@ describe("src/modules/searchBar/components/SearchBarResultList.vue", () => {
                             }
                         }
                     }
-                },
-                Menu: {
-                    namespaced: true,
-                    getters: {
-                        currentComponent: () => () => currentComponent
-                    }
                 }
             }
         });
@@ -131,7 +134,7 @@ describe("src/modules/searchBar/components/SearchBarResultList.vue", () => {
                     limitedSortedSearchResults
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
             expect(wrapper.find(".results-container").exists()).to.be.true;
@@ -146,7 +149,7 @@ describe("src/modules/searchBar/components/SearchBarResultList.vue", () => {
                     limitedSortedSearchResults
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -162,7 +165,7 @@ describe("src/modules/searchBar/components/SearchBarResultList.vue", () => {
                     limitedSortedSearchResults
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -176,7 +179,7 @@ describe("src/modules/searchBar/components/SearchBarResultList.vue", () => {
                     limitedSortedSearchResults
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -192,7 +195,7 @@ describe("src/modules/searchBar/components/SearchBarResultList.vue", () => {
                     limitedSortedSearchResults
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -218,7 +221,7 @@ describe("src/modules/searchBar/components/SearchBarResultList.vue", () => {
                     limitedSortedSearchResults
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -247,7 +250,7 @@ describe("src/modules/searchBar/components/SearchBarResultList.vue", () => {
                     limitedSortedSearchResults
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 

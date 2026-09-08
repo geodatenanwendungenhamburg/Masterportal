@@ -5,6 +5,8 @@ import layerTypes from "@core/layers/js/layerTypes.js";
 import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
 import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 import LayerInfoContactButton from "./LayerInfoContactButton.vue";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
+import {mapActions as mapPiniaActions} from "pinia";
 
 /**
  * Layer Component Sub Menu
@@ -76,7 +78,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions("Menu", ["changeCurrentComponent"]),
+        ...mapPiniaActions(useMenuStore, ["changeCurrentComponent"]),
         ...mapActions("Modules/LayerTree", ["removeLayer", "updateTransparency"]),
         ...mapActions("Modules/LayerSelection", ["showLayer"]),
         /**

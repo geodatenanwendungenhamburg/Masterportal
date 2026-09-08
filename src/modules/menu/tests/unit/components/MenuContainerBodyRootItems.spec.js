@@ -1,12 +1,15 @@
 import {createStore} from "vuex";
+import {createPinia, setActivePinia} from "pinia";
 import {shallowMount} from "@vue/test-utils";
 import MenuContainerBodyRootItems from "@modules/menu/components/MenuContainerBodyRootItems.vue";
-import {expect} from "chai";
 import MenuContainerBodyRootItemElement from "@modules/menu/components/MenuContainerBodyRootItemElement.vue";
-
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
+import {expect} from "chai";
 
 describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
     let store,
+        pinia,
+        menuStore,
         sections,
         pathMainMenu,
         pathSecondaryMenu,
@@ -22,14 +25,6 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
         pathSecondaryMenu = ["secondaryMenu", "sections", 0];
         store = createStore({
             modules: {
-                Menu: {
-                    namespaced: true,
-                    getters: {
-                        section: () => () => sections,
-                        customMenuElementIcon: () => "bi-customMenuElementIcon",
-                        sectionsBySide: () => () => []
-                    }
-                },
                 Modules: {
                     namespaced: true,
                     state: () => ({
@@ -42,6 +37,12 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
                 }
             }
         });
+        pinia = createPinia();
+        setActivePinia(pinia);
+        menuStore = useMenuStore();
+        menuStore.customMenuElementIcon = "bi-customMenuElementIcon";
+        menuStore.mainMenu.sections = [sections];
+        menuStore.secondaryMenu.sections = [sections];
     });
 
     afterEach(() => {
@@ -53,9 +54,9 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
     it("renders the component as main menu", () => {
         wrapper = shallowMount(MenuContainerBodyRootItems, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {idAppendix: "mainMenu", path: pathMainMenu}
+            props: {idAppendix: "mainMenu", path: pathMainMenu}
         });
 
         expect(wrapper.find("#mp-menu-body-items-mainMenu").exists()).to.be.true;
@@ -64,9 +65,9 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
     it("contains a list element and a MenuContainerBodyRootItemElements in the main menu for each configured section item", () => {
         wrapper = shallowMount(MenuContainerBodyRootItems, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {idAppendix: "mainMenu", path: pathMainMenu}
+            props: {idAppendix: "mainMenu", path: pathMainMenu}
         });
 
 
@@ -90,20 +91,20 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
     it("renders the component as secondary menu", () => {
         wrapper = shallowMount(MenuContainerBodyRootItems, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {idAppendix: "secondaryMenu", path: pathSecondaryMenu}
+            props: {idAppendix: "secondaryMenu", path: pathSecondaryMenu}
         });
 
         expect(wrapper.find("#mp-menu-body-items-secondaryMenu").exists()).to.be.true;
     });
 
-    it("contains a list element and a MenuContainerBodyRootItemElements in the main menu for each configured section item", () => {
+    it("contains a list element and a MenuContainerBodyRootItemElements in the secondary menu for each configured section item", () => {
         wrapper = shallowMount(MenuContainerBodyRootItems, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {idAppendix: "secondaryMenu", path: pathSecondaryMenu}
+            props: {idAppendix: "secondaryMenu", path: pathSecondaryMenu}
         });
 
         expect(wrapper.findAllComponents(MenuContainerBodyRootItemElement).length).to.be.equal(sections.length);
@@ -129,11 +130,12 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
             name: "Url öffnen",
             openURL: "https://geoinfo.hamburg.de/"
         }];
+        menuStore.secondaryMenu.sections = [sections];
         wrapper = shallowMount(MenuContainerBodyRootItems, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {idAppendix: "secondaryMenu", path: pathSecondaryMenu}
+            props: {idAppendix: "secondaryMenu", path: pathSecondaryMenu}
         });
 
         expect(wrapper.findAllComponents(MenuContainerBodyRootItemElement).length).to.be.equal(sections.length);
@@ -150,11 +152,10 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
             openURL: "https://geoinfo.hamburg.de/",
             icon: "bi-custom-icon"
         }];
+        menuStore.secondaryMenu.sections = [sections];
         wrapper = shallowMount(MenuContainerBodyRootItems, {
-            global: {
-                plugins: [store]
-            },
-            propsData: {idAppendix: "secondaryMenu", path: pathSecondaryMenu}
+            global: {plugins: [store, pinia]},
+            props: {idAppendix: "secondaryMenu", path: pathSecondaryMenu}
         });
 
         expect(sections[0].icon).not.to.be.equals("bi-customMenuElementIcon");
@@ -168,9 +169,9 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
     it("chooseProperties falls back to the module state's name when the item does not configure its own", () => {
         wrapper = shallowMount(MenuContainerBodyRootItems, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {idAppendix: "mainMenu", path: pathMainMenu}
+            props: {idAppendix: "mainMenu", path: pathMainMenu}
         });
 
         const properties = wrapper.vm.chooseProperties({type: "testModule"});

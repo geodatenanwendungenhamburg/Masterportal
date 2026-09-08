@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import store from "@appstore/index.js";
 import objectHash from "object-hash";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 dayjs.extend(duration);
 
@@ -195,7 +196,7 @@ export default {
      * @param {string} [payload.category="info"] alert category.
      * @returns {void}
      */
-    addSingleAlertOnModuleOpen ({dispatch, rootState}, {alertId, moduleType, modul, content, title = "", category = "info", mustBeConfirmed = false, once = true, onceInSession = true, displayFrom, displayUntil} = {}) {
+    addSingleAlertOnModuleOpen ({dispatch}, {alertId, moduleType, modul, content, title = "", category = "info", mustBeConfirmed = false, once = true, onceInSession = true, displayFrom, displayUntil} = {}) {
         const configuredModuleType = typeof modul === "string" && modul.length > 0 ? modul : moduleType;
 
         if (typeof configuredModuleType !== "string" || configuredModuleType.length < 1 || typeof content !== "string" || content.length < 1) {
@@ -223,7 +224,10 @@ export default {
             }
         });
 
-        if (rootState?.Menu?.mainMenu?.currentComponent === configuredModuleType || rootState?.Menu?.secondaryMenu?.currentComponent === configuredModuleType) {
+        const menuStore = useMenuStore();
+
+        if (menuStore.mainMenu.currentComponent === configuredModuleType ||
+            menuStore.secondaryMenu.currentComponent === configuredModuleType) {
             dispatch("activateDisplayOnEventAlerts", {
                 type: "Menu/changeCurrentComponent",
                 payload: {

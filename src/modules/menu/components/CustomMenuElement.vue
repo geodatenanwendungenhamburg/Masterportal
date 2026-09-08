@@ -1,7 +1,8 @@
 <script>
-import {mapGetters} from "vuex";
+import {mapState} from "pinia";
 import axios from "axios";
 import visibilityChecker from "@shared/js/utils/visibilityChecker.js";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 /**
  * This module can display HTML from config.json or an external file.
@@ -37,7 +38,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Menu", ["currentComponent"]),
+        ...mapState(useMenuStore, ["currentComponent"]),
         htmlContent () {
             return this.currentComponent(this.side).props.htmlContent;
         },

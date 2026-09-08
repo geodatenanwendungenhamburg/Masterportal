@@ -5,6 +5,9 @@ import GetFeatureInfoDetached from "./GetFeatureInfoDetached.vue";
 import {mapAttributes} from "@masterportal/masterportalapi/src/lib/attributeMapper.js";
 import omit from "@shared/js/utils/omit.js";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
+import {mapActions as mapPiniaActions, mapState} from "pinia";
+
 
 /**
  * Get Feature Info
@@ -58,7 +61,7 @@ export default {
             clickCoordinate: "clickCoordinate",
             mapSize: "size"
         }),
-        ...mapGetters("Menu", [
+        ...mapState(useMenuStore, [
             "currentComponent",
             "currentMouseMapInteractionsComponent",
             "expanded"
@@ -274,7 +277,7 @@ export default {
             "collectGfiFeatures",
             "removeHighlightColor"
         ]),
-        ...mapActions("Menu", [
+        ...mapPiniaActions(useMenuStore, [
             "changeCurrentComponent",
             "resetMenu",
             "toggleMenu"

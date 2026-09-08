@@ -1,6 +1,8 @@
 <script>
 import {mapGetters, mapMutations} from "vuex";
 import SearchBarSuggestionListItem from "./SearchBarSuggestionListItem.vue";
+import {mapState} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 /**
  * Searchbar result list to show the categorized overview or single search results.
@@ -35,7 +37,7 @@ export default {
             "currentSide",
             "showAllResultsSearchInterfaceInstances"
         ]),
-        ...mapGetters("Menu", [
+        ...mapState(useMenuStore, [
             "menuBySide"
         ]),
         ...mapGetters([

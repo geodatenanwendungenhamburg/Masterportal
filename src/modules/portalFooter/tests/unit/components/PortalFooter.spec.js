@@ -1,6 +1,7 @@
 import {createStore} from "vuex";
 import {createPinia, setActivePinia} from "pinia";
 import {useAboutStore} from "@modules/about/store/aboutStore.js";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 import {shallowMount} from "@vue/test-utils";
 import PortalFooterComponent from "@modules/portalFooter/components/PortalFooter.vue";
 import {expect} from "chai";
@@ -29,6 +30,31 @@ describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
         setActivePinia(pinia);
 
         useAboutStore().hideImprintInFooter = hideImprint;
+
+        const menuStore = useMenuStore();
+
+        menuStore.mainMenu.expanded = true;
+        menuStore.secondaryMenu.expanded = true;
+        menuStore.mainMenu.sections = [
+            [
+                {
+                    type: "contact"
+                },
+                {
+                    type: "about"
+                }
+            ]
+        ];
+        menuStore.secondaryMenu.sections = [
+            [
+                {
+                    type: "section1"
+                },
+                {
+                    type: "section2"
+                }
+            ]
+        ];
         store = createStore({
             modules: {
                 Modules: {
@@ -43,41 +69,6 @@ describe("src/modules/portalFooter/components/PortalFooter.vue", () => {
                                 type: () => sinon.stub(),
                                 configPaths: () => sinon.stub()
                             }
-                        }
-                    }
-                },
-                Menu: {
-                    namespaced: true,
-                    getters: {
-                        mainExpanded: () => true,
-                        secondaryExpanded: () => true,
-                        mainMenu: () => {
-                            return {
-                                sections: [
-                                    [
-                                        {
-                                            type: "contact"
-                                        },
-                                        {
-                                            type: "about"
-                                        }
-                                    ]
-                                ]
-                            };
-                        },
-                        secondaryMenu: () => {
-                            return {
-                                sections: [
-                                    [
-                                        {
-                                            type: "section1"
-                                        },
-                                        {
-                                            type: "section2"
-                                        }
-                                    ]
-                                ]
-                            };
                         }
                     }
                 }

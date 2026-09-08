@@ -33,6 +33,8 @@ import {pointerMove} from "ol/events/condition.js";
 import Overlay from "ol/Overlay.js";
 import debounce from "@shared/js/utils/debounce.js";
 import {GeoJSON} from "ol/format.js";
+import {mapActions as mapPiniaActions} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 export default {
     name: "StatisticDashboard",
@@ -458,7 +460,7 @@ export default {
             "setIsFeatureLoaded"
         ]),
         ...mapActions("Maps", ["addNewLayerIfNotExists"]),
-        ...mapActions("Menu", ["changeCurrentComponent"]),
+        ...mapPiniaActions(useMenuStore, ["changeCurrentComponent"]),
         thousandsSeparator,
 
         /**

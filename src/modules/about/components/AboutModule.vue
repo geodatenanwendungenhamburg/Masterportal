@@ -1,8 +1,9 @@
 <script>
 import {mapActions as mapPiniaActions, mapState} from "pinia";
-import {mapActions, mapGetters} from "vuex";
+import {mapGetters} from "vuex";
 import {useAboutStore} from "../store/aboutStore.js";
 import LightButton from "@shared/modules/buttons/components/LightButton.vue";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 /**
  * The About Module gives information about the metadata, contact and current version of the portal
@@ -33,7 +34,7 @@ export default {
             "accessibilityText",
             "accessibilityUrl"
         ]),
-        ...mapGetters("Menu", [
+        ...mapState(useMenuStore, [
             "mainMenu",
             "secondaryMenu"
         ]),
@@ -68,7 +69,7 @@ export default {
 
     methods: {
         ...mapPiniaActions(useAboutStore, ["initializeAboutInfo", "currentMasterportalVersionNumber"]),
-        ...mapActions("Menu", ["changeCurrentComponent"]),
+        ...mapPiniaActions(useMenuStore, ["changeCurrentComponent"]),
         /**
          * Opens the privacy statement URL in a new tab.
          * @returns {void}

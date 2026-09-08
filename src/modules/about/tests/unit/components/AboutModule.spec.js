@@ -4,12 +4,14 @@ import {mount, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import AboutComponent from "@modules/about/components/AboutModule.vue";
 import {useAboutStore} from "@modules/about/store/aboutStore.js";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 import sinon from "sinon";
 
 describe("src/modules/about/components/AboutModule.vue", () => {
     let store,
         pinia,
         aboutStore,
+        menuStore,
         contact;
 
     beforeEach(() => {
@@ -19,6 +21,9 @@ describe("src/modules/about/components/AboutModule.vue", () => {
         setActivePinia(pinia);
 
         aboutStore = useAboutStore();
+        menuStore = useMenuStore();
+        menuStore.mainMenu.sections = [[{type: "contact"}, {type: "about"}]];
+        menuStore.secondaryMenu.sections = [[{type: "section1"}, {type: "section2"}]];
 
         aboutStore.$patch({
             abstractText: "Test",

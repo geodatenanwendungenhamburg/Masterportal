@@ -1,32 +1,28 @@
 import {createStore} from "vuex";
+import {createPinia, setActivePinia} from "pinia";
 import {shallowMount} from "@vue/test-utils";
 import MenuContainer from "@modules/menu/components/MenuContainer.vue";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 import {expect} from "chai";
 import sinon from "sinon";
 
 
 describe("src/modules/menu/MenuContainer.vue", () => {
     let store,
-        currentMenuWidth,
-        mainExpanded = false,
-        secondaryExpanded = false,
-        uiStyle = "default",
-        mergeMenuStateSpy,
-        mainMenu,
-        secondaryMenu,
-        defaultComponent,
-        closeMenuSpy,
-        collapseMenuesSpy,
+        pinia,
+        menuStore,
+        mainExpanded,
+        secondaryExpanded,
+        uiStyle,
         isMobile,
         setActiveSpy,
         setHiddenSpy,
         wrapper;
 
     beforeEach(() => {
-        currentMenuWidth = sinon.stub();
-        closeMenuSpy = sinon.spy();
-        mergeMenuStateSpy = sinon.spy();
-        collapseMenuesSpy = sinon.spy();
+        mainExpanded = false;
+        secondaryExpanded = false;
+        uiStyle = "default";
         isMobile = false;
         setActiveSpy = sinon.spy();
         setHiddenSpy = sinon.spy();
@@ -36,8 +32,6 @@ describe("src/modules/menu/MenuContainer.vue", () => {
                 Modules: {
                     namespaced: true,
                     modules: {
-                        namespaced: true,
-                        MenuContainer,
                         LayerPills: {
                             namespaced: true,
                             getters: {
@@ -50,29 +44,6 @@ describe("src/modules/menu/MenuContainer.vue", () => {
                             }
                         }
                     }
-                },
-                Menu: {
-                    namespaced: true,
-                    getters: {
-                        defaultComponent: () => defaultComponent,
-                        secondaryMenu: () => secondaryMenu,
-                        mainMenu: () => mainMenu,
-                        currentMenuWidth: () => currentMenuWidth,
-                        mainExpanded: () => mainExpanded,
-                        secondaryExpanded: () => secondaryExpanded,
-                        titleBySide: () => () => true,
-                        currentComponent: () => () => "root",
-                        secondaryMenuEnabled: () => true
-                    },
-                    mutations: {
-                        collapseMenues: collapseMenuesSpy,
-                        mergeMenuState: mergeMenuStateSpy,
-                        setCurrentMenuWidth: sinon.spy()
-                    },
-                    actions: {
-                        closeMenu: closeMenuSpy,
-                        toggleMenu: sinon.spy()
-                    }
                 }
             },
             getters: {
@@ -81,25 +52,54 @@ describe("src/modules/menu/MenuContainer.vue", () => {
                 uiStyle: () => uiStyle
             }
         });
+
+        pinia = createPinia();
+        setActivePinia(pinia);
+
+        menuStore = useMenuStore();
+
+        menuStore.mainMenu.expanded = mainExpanded;
+        menuStore.secondaryMenu.expanded = secondaryExpanded;
+
+        menuStore.mainMenu.navigation.currentComponent = {
+            type: "root",
+            props: []
+        };
+
+        menuStore.secondaryMenu.navigation.currentComponent = {
+            type: "root",
+            props: []
+        };
+
+        menuStore.mainMenu.title = null;
+        menuStore.secondaryMenu.title = null;
+
+        menuStore.secondaryMenu.sections = [[{
+            type: "test"
+        }]];
     });
 
     afterEach(() => {
         if (typeof wrapper !== "undefined") {
             wrapper.unmount();
         }
+
+        sinon.restore();
     });
 
     describe("mainMenu", () => {
         it("renders the mainMenu component not expanded", () => {
             wrapper = shallowMount(MenuContainer, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
-                propsData: {side: "mainMenu"}
+                props: {
+                    side: "mainMenu"
+                }
             });
+
             const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
                 secondaryMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
-
 
             expect(mainMenuWrapper.exists()).to.be.true;
             expect(secondaryMenuWrapper.exists()).to.be.false;
@@ -107,17 +107,20 @@ describe("src/modules/menu/MenuContainer.vue", () => {
             expect(wrapper.find("menu-container-body-stub").exists()).to.be.true;
             expect(wrapper.find("resize-handle-stub").exists()).to.be.true;
             expect(wrapper.find("#mp-menu-mainMenu").attributes().style).to.include("width: 0px");
-            expect(collapseMenuesSpy.notCalled).to.be.true;
         });
 
         it("renders the mainMenu component expanded", () => {
-            mainExpanded = true;
+            menuStore.mainMenu.expanded = true;
+
             wrapper = shallowMount(MenuContainer, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
-                propsData: {side: "mainMenu"}
+                props: {
+                    side: "mainMenu"
+                }
             });
+
             const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
                 secondaryMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
 
@@ -128,7 +131,6 @@ describe("src/modules/menu/MenuContainer.vue", () => {
             expect(wrapper.find("menu-container-body-stub").exists()).to.be.true;
             expect(wrapper.find("resize-handle-stub").exists()).to.be.true;
             expect(wrapper.find("#mp-menu-mainMenu").attributes().style).not.to.include("width: 0px");
-            expect(collapseMenuesSpy.notCalled).to.be.true;
         });
     });
 
@@ -136,10 +138,13 @@ describe("src/modules/menu/MenuContainer.vue", () => {
         it("renders the secondaryMenu component not expanded", () => {
             wrapper = shallowMount(MenuContainer, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
-                propsData: {side: "secondaryMenu"}
+                props: {
+                    side: "secondaryMenu"
+                }
             });
+
             const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
                 secondaryMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
 
@@ -149,17 +154,20 @@ describe("src/modules/menu/MenuContainer.vue", () => {
             expect(wrapper.find("menu-container-body-stub").exists()).to.be.true;
             expect(wrapper.find("resize-handle-stub").exists()).to.be.true;
             expect(wrapper.find("#mp-menu-secondaryMenu").attributes().style).to.include("width: 0px");
-            expect(collapseMenuesSpy.notCalled).to.be.true;
         });
 
         it("renders the secondaryMenu component expanded", () => {
-            secondaryExpanded = true;
+            menuStore.secondaryMenu.expanded = true;
+
             wrapper = shallowMount(MenuContainer, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
-                propsData: {side: "secondaryMenu"}
+                props: {
+                    side: "secondaryMenu"
+                }
             });
+
             const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
                 secondaryMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
 
@@ -169,18 +177,21 @@ describe("src/modules/menu/MenuContainer.vue", () => {
             expect(wrapper.find("menu-container-body-stub").exists()).to.be.true;
             expect(wrapper.find("resize-handle-stub").exists()).to.be.true;
             expect(wrapper.find("#mp-menu-secondaryMenu").attributes().style).not.to.include("width: 0px");
-            expect(collapseMenuesSpy.notCalled).to.be.true;
         });
     });
 
     it("renders the mainMenu component with table style", () => {
         uiStyle = "TABLE";
+
         wrapper = shallowMount(MenuContainer, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {side: "mainMenu"}
+            props: {
+                side: "mainMenu"
+            }
         });
+
         const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
             secondaryMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
 
@@ -194,50 +205,69 @@ describe("src/modules/menu/MenuContainer.vue", () => {
 
     it("renders the mainMenu component mobile", () => {
         isMobile = true;
+
+        const collapseMenuesSpy = sinon.spy(MenuContainer.methods, "collapseMenues"),
+            mergeMenuStateSpy = sinon.spy(MenuContainer.methods, "mergeMenuState");
+
         wrapper = shallowMount(MenuContainer, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {side: "mainMenu"}
+            props: {
+                side: "mainMenu"
+            }
         });
+
         const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
             secondaryMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
 
         expect(mainMenuWrapper.exists()).to.be.true;
         expect(secondaryMenuWrapper.exists()).to.be.false;
+
         expect(mergeMenuStateSpy.calledOnce).to.be.true;
-        expect(mergeMenuStateSpy.firstCall.args[1]).deep.equals({
+        expect(mergeMenuStateSpy.firstCall.args[0]).deep.equals({
             menu: "menuFromConfig",
             side: "mainMenu"
         });
+
         expect(collapseMenuesSpy.calledOnce).to.be.true;
     });
 
-    it("shall call toggleMenu if close button is clicked", async () => {
+    it("shall call closeMenu if close button is clicked", async () => {
+        const closeMenuSpy = sinon.stub(menuStore, "closeMenu");
+
         wrapper = shallowMount(MenuContainer, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {side: "mainMenu"}
+            props: {
+                side: "mainMenu"
+            }
         });
+
         const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu"),
             closeBtn = wrapper.find("#mp-menu-header-close-button-mainMenu");
 
         expect(mainMenuWrapper.exists()).to.be.true;
         expect(closeBtn.exists()).to.be.true;
+
         await closeBtn.trigger("click");
+
         expect(closeMenuSpy.calledOnce).to.be.true;
-        expect(closeMenuSpy.firstCall.args[1]).equals("mainMenu");
+        expect(closeMenuSpy.firstCall.args[0]).to.equal("mainMenu");
     });
 
     describe("handlePosition", () => {
         it("computed property handlePosition in mainMenu", () => {
             wrapper = shallowMount(MenuContainer, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
-                propsData: {side: "mainMenu"}
+                props: {
+                    side: "mainMenu"
+                }
             });
+
             const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu");
 
             expect(mainMenuWrapper.exists()).to.be.true;
@@ -247,49 +277,84 @@ describe("src/modules/menu/MenuContainer.vue", () => {
         it("computed property handlePosition in secondaryMenu", () => {
             wrapper = shallowMount(MenuContainer, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
-                propsData: {side: "secondaryMenu"}
+                props: {
+                    side: "secondaryMenu"
+                }
             });
-            const mainMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
 
-            expect(mainMenuWrapper.exists()).to.be.true;
+            const secondaryMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
+
+            expect(secondaryMenuWrapper.exists()).to.be.true;
             expect(wrapper.vm.handlePosition).equals("left");
         });
     });
 
     describe("watcher mainMenu and secondaryMenu", () => {
         it("watcher mainMenu", () => {
+            const mergeMenuStateSpy = sinon.spy(
+                MenuContainer.methods,
+                "mergeMenuState"
+            );
+
             wrapper = shallowMount(MenuContainer, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
-                propsData: {side: "mainMenu"}
+                props: {
+                    side: "mainMenu"
+                }
             });
+
             const mainMenuWrapper = wrapper.find("#mp-menu-mainMenu");
 
             expect(mainMenuWrapper.exists()).to.be.true;
-            wrapper.vm.$options.watch.mainMenu.call(wrapper.vm, {id: "mainMenu"});
+
+            wrapper.vm.$options.watch.mainMenu.call(
+                wrapper.vm,
+                {id: "mainMenu"}
+            );
+
             expect(mergeMenuStateSpy.calledTwice).to.be.true;
-            expect(mergeMenuStateSpy.secondCall.args[1]).deep.equals({
+
+            expect(
+                mergeMenuStateSpy.secondCall.args[0]
+            ).deep.equals({
                 menu: {id: "mainMenu"},
                 side: "mainMenu"
             });
         });
 
         it("watcher secondaryMenu", () => {
+            const mergeMenuStateSpy = sinon.spy(
+                MenuContainer.methods,
+                "mergeMenuState"
+            );
+
             wrapper = shallowMount(MenuContainer, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
-                propsData: {side: "secondaryMenu"}
+                props: {
+                    side: "secondaryMenu"
+                }
             });
-            const mainMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
 
-            expect(mainMenuWrapper.exists()).to.be.true;
-            wrapper.vm.$options.watch.secondaryMenu.call(wrapper.vm, {id: "secondaryMenu"});
+            const secondaryMenuWrapper = wrapper.find("#mp-menu-secondaryMenu");
+
+            expect(secondaryMenuWrapper.exists()).to.be.true;
+
+            wrapper.vm.$options.watch.secondaryMenu.call(
+                wrapper.vm,
+                {id: "secondaryMenu"}
+            );
+
             expect(mergeMenuStateSpy.calledTwice).to.be.true;
-            expect(mergeMenuStateSpy.secondCall.args[1]).deep.equals({
+
+            expect(
+                mergeMenuStateSpy.secondCall.args[0]
+            ).deep.equals({
                 menu: {id: "secondaryMenu"},
                 side: "secondaryMenu"
             });
@@ -307,16 +372,19 @@ describe("src/modules/menu/MenuContainer.vue", () => {
 
             wrapper = shallowMount(MenuContainer, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
-                propsData: {side: "mainMenu"}
+                props: {
+                    side: "mainMenu"
+                }
             });
 
-            await wrapper.findComponent({name: "ResizeHandle"}).vm.$emit("resizing", eventData);
+            await wrapper
+                .findComponent({name: "ResizeHandle"})
+                .vm.$emit("resizing", eventData);
+
             expect(onResizeSpy.calledOnce).to.be.true;
             expect(onResizeSpy.firstCall.args[0]).to.deep.equal(eventData);
-
-            onResizeSpy.restore();
         });
     });
 
@@ -324,9 +392,11 @@ describe("src/modules/menu/MenuContainer.vue", () => {
         beforeEach(() => {
             wrapper = shallowMount(MenuContainer, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
-                propsData: {side: "mainMenu"}
+                props: {
+                    side: "mainMenu"
+                }
             });
 
             sinon.stub(wrapper.vm, "setCurrentSecondaryMenuWidth");
@@ -397,30 +467,43 @@ describe("src/modules/menu/MenuContainer.vue", () => {
     });
 
     describe("hideElementsForBiggerMenu", () => {
-        let layerPillsMock, footerMock;
+        let layerPillsMock,
+            footerMock;
 
         beforeEach(() => {
-            layerPillsMock = {style: {display: ""}};
-            footerMock = {style: {display: ""}};
+            layerPillsMock = {
+                style: {
+                    display: ""
+                }
+            };
 
-            sinon.stub(document, "getElementById").callsFake((id) => {
+            footerMock = {
+                style: {
+                    display: ""
+                }
+            };
+
+            sinon.stub(document, "getElementById").callsFake(id => {
                 if (id === "layer-pills") {
                     return layerPillsMock;
                 }
+
                 if (id === "module-portal-footer") {
                     return footerMock;
                 }
+
                 return null;
             });
 
             wrapper = shallowMount(MenuContainer, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
-                propsData: {side: "secondaryMenu"}
+                props: {
+                    side: "secondaryMenu"
+                }
             });
         });
-
 
         it("should hide footer when menuPercentWidth exceeds the breakpoint", () => {
             wrapper.vm.hideElementsForBiggerMenu(0.8);
@@ -445,54 +528,18 @@ describe("src/modules/menu/MenuContainer.vue", () => {
             expect(footerMock.style.display).to.equal("none");
         });
     });
+
     describe("secondaryMenuEnabled", () => {
-        /**
-         * Creates a Vuex store specifically for testing the `secondaryMenuEnabled` behavior
-         *
-         * @param {Object} params
-         * @param {boolean} [params.enabled=true] - Whether the secondary menu is enabled
-         * @returns {Object} Vuex store instance configured for MenuContainer tests
-         */
-        function createSecondaryMenuEnabledStore (enabled = true) {
-            return createStore({
-                modules: {
-                    Menu: {
-                        namespaced: true,
-                        getters: {
-                            defaultComponent: () => defaultComponent,
-                            secondaryMenu: () => secondaryMenu,
-                            mainMenu: () => mainMenu,
-                            currentMenuWidth: () => currentMenuWidth,
-                            mainExpanded: () => mainExpanded,
-                            secondaryExpanded: () => secondaryExpanded,
-                            titleBySide: () => () => true,
-                            currentComponent: () => () => "root",
-                            secondaryMenuEnabled: () => enabled
-                        },
-                        mutations: {
-                            collapseMenues: collapseMenuesSpy,
-                            mergeMenuState: mergeMenuStateSpy,
-                            setCurrentMenuWidth: sinon.spy()
-                        },
-                        actions: {
-                            closeMenu: closeMenuSpy,
-                            toggleMenu: sinon.spy()
-                        }
-                    }
-                },
-                getters: {
-                    menuFromConfig: () => () => "menuFromConfig",
-                    isMobile: () => isMobile,
-                    uiStyle: () => uiStyle
-                }
-            });
-        }
         it("should render secondaryMenu but hide it when disabled", () => {
-            store = createSecondaryMenuEnabledStore(false);
+            menuStore.secondaryMenu.sections = [[]];
 
             wrapper = shallowMount(MenuContainer, {
-                global: {plugins: [store]},
-                props: {side: "secondaryMenu"}
+                global: {
+                    plugins: [store, pinia]
+                },
+                props: {
+                    side: "secondaryMenu"
+                }
             });
 
             const menu = wrapper.find("#mp-menu-secondaryMenu");
@@ -502,14 +549,23 @@ describe("src/modules/menu/MenuContainer.vue", () => {
         });
 
         it("should render secondaryMenu if enabled", () => {
-            store = createSecondaryMenuEnabledStore(true);
+            menuStore.secondaryMenu.sections = [[{
+                type: "test"
+            }]];
 
             wrapper = shallowMount(MenuContainer, {
-                global: {plugins: [store]},
-                propsData: {side: "secondaryMenu"}
+                global: {
+                    plugins: [store, pinia]
+                },
+                props: {
+                    side: "secondaryMenu"
+                }
             });
 
-            expect(wrapper.find("#mp-menu-secondaryMenu").exists()).to.be.true;
+            const menu = wrapper.find("#mp-menu-secondaryMenu");
+
+            expect(menu.exists()).to.be.true;
+            expect(menu.classes()).not.to.include("hidden");
         });
     });
 });

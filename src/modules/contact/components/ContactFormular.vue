@@ -5,6 +5,8 @@ import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 import FileUpload from "@shared/modules/inputs/components/FileUpload.vue";
 import AccordionItem from "@shared/modules/accordion/components/AccordionItem.vue";
+import {mapState} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 /**
  * The Contact Form
@@ -53,7 +55,7 @@ export default {
             "configuredFileExtensions",
             "infoMessage"
         ]),
-        ...mapGetters("Menu", [
+        ...mapState(useMenuStore, [
             "mainMenu",
             "secondaryMenu"
         ]),

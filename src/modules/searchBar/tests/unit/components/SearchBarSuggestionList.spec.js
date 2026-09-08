@@ -2,21 +2,20 @@ import {createStore} from "vuex";
 import {shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
+import {createPinia, setActivePinia} from "pinia";
 
 import SearchBarSuggestionListComponent from "@modules/searchBar/components/SearchBarSuggestionList.vue";
 
 
 describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
     let store,
+        pinia,
         wrapper,
         showInTree,
         showAllResultsSearchInterfaceInstances,
-        setNavigationCurrentComponentBySideSpy,
         setPlaceholderSpy,
         setCurrentAvailableCategoriesSpy,
-        setShowAllResultsSearchInterfaceInstancesSpy,
-        setCurrentComponentBySideSpy,
-        setNavigationHistoryBySideSpy;
+        setShowAllResultsSearchInterfaceInstancesSpy;
 
     const searchResults = [
             {
@@ -77,12 +76,9 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
     beforeEach(() => {
         showInTree = false;
         showAllResultsSearchInterfaceInstances = [];
-        setNavigationCurrentComponentBySideSpy = sinon.spy();
         setPlaceholderSpy = sinon.spy();
         setCurrentAvailableCategoriesSpy = sinon.spy();
         setShowAllResultsSearchInterfaceInstancesSpy = sinon.spy();
-        setCurrentComponentBySideSpy = sinon.spy();
-        setNavigationHistoryBySideSpy = sinon.spy();
         store = createStore({
             modules: {
                 Maps: {
@@ -121,24 +117,14 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
                             }
                         }
                     }
-                },
-                Menu: {
-                    namespaced: true,
-                    getters: {
-                        currentComponent: () => () => "root",
-                        menuBySide: () => () => true
-                    },
-                    mutations: {
-                        setNavigationCurrentComponentBySide: setNavigationCurrentComponentBySideSpy,
-                        setCurrentComponentBySide: setCurrentComponentBySideSpy,
-                        setNavigationHistoryBySide: setNavigationHistoryBySideSpy
-                    }
                 }
             },
             getters: {
                 layerConfigById: () => sinon.stub()
             }
         });
+        pinia = createPinia();
+        setActivePinia(pinia);
     });
 
 
@@ -149,7 +135,7 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
                     limitedSortedSearchResults
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
             expect(wrapper.find("#search-bar-suggestion-list").exists()).to.be.true;
@@ -162,7 +148,7 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
                     limitedSortedSearchResults
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
             expect(wrapper.find("#search-bar-suggestion-list").exists()).to.be.false;
@@ -174,7 +160,7 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
                     limitedSortedSearchResults
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
             await wrapper.vm.$nextTick();
@@ -197,22 +183,16 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
                     limitedSortedSearchResults
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
             await wrapper.vm.prepareShowAllResults("Straße");
             wrapper.vm.$nextTick();
 
-            expect(setNavigationCurrentComponentBySideSpy.calledOnce).to.be.true;
-            expect(setNavigationCurrentComponentBySideSpy.firstCall.args[1]).to.be.deep.equals({
-                side: "mainMenu",
-                newComponent: {props: {name: "modules.searchBar.searchResults - Straße"}, type: "searchBar"}
-            });
+
             expect(setPlaceholderSpy.calledOnce).to.be.true;
             expect(setPlaceholderSpy.firstCall.args[1]).to.be.equals("modules.searchBar.placeholder.searchFor Straße");
-            expect(setCurrentComponentBySideSpy.calledOnce).to.be.true;
-            expect(setNavigationHistoryBySideSpy.calledOnce).to.be.true;
             expect(setShowAllResultsSearchInterfaceInstancesSpy.notCalled).to.be.true;
             expect(setCurrentAvailableCategoriesSpy.calledOnce).to.be.true;
             expect(setCurrentAvailableCategoriesSpy.firstCall.args[1]).to.equal("Straße");
@@ -241,22 +221,15 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
                     limitedSortedSearchResults
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
             await wrapper.vm.prepareShowAllResults("Straße");
             wrapper.vm.$nextTick();
 
-            expect(setNavigationCurrentComponentBySideSpy.calledOnce).to.be.true;
-            expect(setNavigationCurrentComponentBySideSpy.firstCall.args[1]).to.be.deep.equals({
-                side: "mainMenu",
-                newComponent: {props: {name: "modules.searchBar.searchResults - Straße"}, type: "searchBar"}
-            });
             expect(setPlaceholderSpy.calledOnce).to.be.true;
             expect(setPlaceholderSpy.firstCall.args[1]).to.be.equals("modules.searchBar.placeholder.searchFor Straße");
-            expect(setCurrentComponentBySideSpy.calledOnce).to.be.true;
-            expect(setNavigationHistoryBySideSpy.calledOnce).to.be.true;
             expect(setShowAllResultsSearchInterfaceInstancesSpy.calledOnce).to.be.true;
             expect(setShowAllResultsSearchInterfaceInstancesSpy.firstCall.args[1]).to.be.deep.equals(expected);
             expect(setCurrentAvailableCategoriesSpy.calledOnce).to.be.true;
@@ -274,7 +247,7 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
                     limitedSortedSearchResults
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
             const result = wrapper.vm.getFirstByCategory("Straße");
@@ -307,7 +280,7 @@ describe("src/modules/searchBar/components/SearchBarSuggestionList.vue", () => {
                     limitedSortedSearchResults: customLimitedSortedSearchResults
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 

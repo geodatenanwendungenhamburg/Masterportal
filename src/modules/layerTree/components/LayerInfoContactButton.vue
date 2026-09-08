@@ -1,8 +1,9 @@
 <script>
-import {mapActions, mapGetters} from "vuex";
+import {mapGetters} from "vuex";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
-import {mapState} from "pinia";
 import {useLayerInformationStore} from "@modules/layerInformation/store/layerInformationStore.js";
+import {mapActions as mapPiniaActions, mapState} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 /**
  * Button to open contact module with specific email parameters relating to layer information
@@ -80,7 +81,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions("Menu", ["changeCurrentComponent"]),
+        ...mapPiniaActions(useMenuStore, ["changeCurrentComponent"]),
         /**
          * Opens the contact module in the same menu where contact button is in.
          * @returns {void}

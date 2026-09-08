@@ -2,11 +2,15 @@ import actions from "@modules/alerting/store/actionsAlerting.js";
 import store from "@appstore/index.js";
 import sinon from "sinon";
 import {expect} from "chai";
+import {createPinia, setActivePinia} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 describe("src/modules/alerting/store/actionsAlerting.js", () => {
     let commit,
         dispatch,
-        storeCommitStub;
+        storeCommitStub,
+        pinia,
+        menuStore;
 
     /**
  * Mock class for localStorage (used in tests)
@@ -61,6 +65,9 @@ describe("src/modules/alerting/store/actionsAlerting.js", () => {
         dispatch = sinon.spy();
         globalThis.localStorage.clear();
         storeCommitStub = sinon.stub(store, "commit");
+        pinia = createPinia();
+        setActivePinia(pinia);
+        menuStore = useMenuStore();
     });
 
     afterEach(() => {
@@ -417,18 +424,9 @@ describe("src/modules/alerting/store/actionsAlerting.js", () => {
     });
 
     it("addSingleAlertOnModuleOpen registers module-open alert and activates it when module is open", () => {
-        const rootState = {
-            Menu: {
-                mainMenu: {
-                    currentComponent: "compareFeatures"
-                },
-                secondaryMenu: {
-                    currentComponent: "root"
-                }
-            }
-        };
+        menuStore.mainMenu.currentComponent = "compareFeatures";
 
-        actions.addSingleAlertOnModuleOpen({dispatch, rootState}, {
+        actions.addSingleAlertOnModuleOpen({dispatch}, {
             alertId: "compare-features-release",
             modul: "compareFeatures",
             title: "Compare",

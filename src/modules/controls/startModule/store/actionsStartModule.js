@@ -1,4 +1,5 @@
 import changeCase from "@shared/js/utils/changeCase.js";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 const actions = {
     /**
@@ -54,28 +55,31 @@ const actions = {
     /**
      * Activates or deactivates the associated module of the clicked control.
      * @param {Object} param store context
-     * @param {Object} param.commit the commit
-     * @param {Object} param.dispatch the commit
      * @param {Object} payload The payload.
      * @param {Object} payload.moduleState The vuex states the clicked module-control.
      * @param {String} payload.menuSide The menu side.
      * @returns {void}
      */
-    onClick ({commit, dispatch, rootGetters}, {moduleState, menuSide}) {
-        const menuCurrentComponent = "Menu/currentComponent";
+    onClick (_, {moduleState, menuSide}) {
+        const menuStore = useMenuStore();
 
-        if (rootGetters[menuCurrentComponent](menuSide).type !== moduleState.type) {
-            const menuExpanded = "Menu/expanded";
+        if (menuStore.currentComponent(menuSide).type !== moduleState.type) {
+            menuStore.changeCurrentComponent({
+                type: moduleState.type,
+                side: menuSide,
+                props: {name: moduleState.name}
+            });
 
-            dispatch("Menu/changeCurrentComponent", {type: moduleState.type, side: menuSide, props: {name: moduleState.name}}, {root: true});
-
-            if (!rootGetters[menuExpanded](menuSide)) {
-                dispatch("Menu/toggleMenu", menuSide, {root: true});
+            if (!menuStore.expanded(menuSide)) {
+                menuStore.toggleMenu(menuSide);
             }
         }
         else {
-            commit("Menu/switchToRoot", menuSide, {root: true});
-            dispatch("Menu/resetCurrentMouseMapInteractionsComponent", menuSide, {root: true});
+            menuStore[menuSide].navigation.currentComponent = {props: [], type: "root"};
+            menuStore[menuSide].navigation.history = [];
+            menuStore[menuSide].currentComponent = "root";
+
+            menuStore.resetCurrentMouseMapInteractionsComponent(menuSide);
         }
     }
 };

@@ -1,5 +1,7 @@
 <script>
 import {mapActions, mapMutations, mapGetters} from "vuex";
+import {mapActions as mapPiniaActions} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 import LayerTreeNode from "./LayerTreeNode.vue";
 import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants.js";
 import sortBy from "@shared/js/utils/sortBy.js";
@@ -41,7 +43,7 @@ export default {
     },
     methods: {
         ...mapActions("Modules/LayerSelection", ["navigateForward"]),
-        ...mapActions("Menu", ["changeCurrentComponent"]),
+        ...mapPiniaActions(useMenuStore, ["changeCurrentComponent"]),
         ...mapMutations("Modules/LayerSelection", {setLayerSelectionVisible: "setVisible"}),
         /**
          * Sorts the configs by type: first folder, then layer.

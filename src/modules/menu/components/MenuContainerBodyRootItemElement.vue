@@ -1,7 +1,9 @@
 <script>
-import {mapActions, mapGetters} from "vuex";
+import {mapGetters} from "vuex";
+import {mapActions as mapPiniaActions, mapState} from "pinia";
 import visibilityChecker from "@shared/js/utils/visibilityChecker.js";
 import LightButton from "@shared/modules/buttons/components/LightButton.vue";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 /**
  * Menu Container Body Root Item Element
@@ -52,7 +54,7 @@ export default {
     computed: {
         ...mapGetters(["deviceMode", "portalConfig"]),
         ...mapGetters("Maps", ["mode"]),
-        ...mapGetters("Menu", [
+        ...mapState(useMenuStore, [
             "mainMenu",
             "secondaryMenu",
             "showDescription",
@@ -183,7 +185,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions("Menu", ["clickedMenuElement", "resetMenu", "changeCurrentComponent", "toggleMenu"]),
+        ...mapPiniaActions(useMenuStore, ["clickedMenuElement", "resetMenu", "changeCurrentComponent", "toggleMenu"]),
 
         /**
          * Generic helper to check visibility of layers.

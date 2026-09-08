@@ -7,11 +7,14 @@ import requestProvider from "@modules/wfsSearch/js/requests.js";
 import WfsSearchLiteral from "@modules/wfsSearch/components/WfsSearchLiteral.vue";
 import WfsSearch from "@modules/wfsSearch/components/WfsSearch.vue";
 import WfsSearchModule from "@modules/wfsSearch/store/indexWfsSearch.js";
+import {createPinia, setActivePinia} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 
 describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
     let instances,
         store,
+        pinia,
         layer,
         placingPointMarkerSpy,
         placingPolygonMarkerSpy,
@@ -24,6 +27,12 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
         wrapper;
 
     beforeEach(() => {
+        pinia = createPinia();
+        setActivePinia(pinia);
+
+        const menuStore = useMenuStore();
+
+        menuStore.currentSecondaryMenuWidth = 0.25;
         const map = {
             id: "ol",
             mode: "2D",
@@ -94,12 +103,6 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
                     actions: {
                         addSingleAlert: sinon.stub()
                     }
-                },
-                Menu: {
-                    namespaced: true,
-                    getters: {
-                        currentSecondaryMenuWidth: () => sinon.stub().returns(0.25)
-                    }
                 }
             },
             getters: {
@@ -118,7 +121,7 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
         store.commit("Modules/WfsSearch/setInstances", instances);
         wrapper = mount(WfsSearch, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
 
@@ -139,7 +142,7 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
         store.commit("Modules/WfsSearch/setInstances", instances);
         wrapper = mount(WfsSearch, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
 
@@ -153,7 +156,7 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
         store.commit("Modules/WfsSearch/setInstances", instances);
         wrapper = mount(WfsSearch, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
 
@@ -165,7 +168,7 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
         store.commit("Modules/WfsSearch/setInstances", instances);
         wrapper = mount(WfsSearch, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
 
@@ -177,7 +180,7 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
         store.commit("Modules/WfsSearch/setInstances", instances);
         wrapper = mount(WfsSearch, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
         const resetButton = wrapper.find("#module-wfsSearch-button-resetUI");
@@ -190,7 +193,7 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
 
         wrapper = shallowMount(WfsSearch, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
         const resetButton = wrapper.find("#module-wfsSearch-button-resetUI");
@@ -206,7 +209,7 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
         store.commit("Modules/WfsSearch/setInstances", instances);
         wrapper = mount(WfsSearch, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
             props: {
                 showResetButton: false
@@ -220,7 +223,7 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
         store.commit("Modules/WfsSearch/setInstances", instances);
         wrapper = mount(WfsSearch, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
         const searchInput = wrapper.find("#module-wfsSearch-button-search");
@@ -251,7 +254,7 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
                     zoomLevelProp: 1
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
             setZoomStub = sinon.stub(wrapper.vm, "setZoom");
@@ -270,7 +273,7 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
         store.commit("Modules/WfsSearch/setInstances", instances);
         wrapper = mount(WfsSearch, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
         let resTable = null;
@@ -306,7 +309,7 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
                     zoomLevelProp: undefined
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
             setZoomStub = sinon.stub(wrapper.vm, "setZoom");
@@ -359,7 +362,7 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
         it("should start action placingPointMarker, if the feature has a point geometry", async () => {
             wrapper = mount(WfsSearch, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -375,7 +378,7 @@ describe("src/modules/wfsSearch/components/WfsSearch.vue", () => {
         it("should start action placingPolygonMarker, if the feature has a polygon geometry", async () => {
             wrapper = mount(WfsSearch, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 

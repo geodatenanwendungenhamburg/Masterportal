@@ -1,11 +1,12 @@
 import {createStore} from "vuex";
+import {createPinia, setActivePinia} from "pinia";
 import {shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
 import visibilityChecker from "@shared/js/utils/visibilityChecker.js";
 import MenuContainerBodyRootItemElement from "@modules/menu/components/MenuContainerBodyRootItemElement.vue";
 import LightButton from "@shared/modules/buttons/components/LightButton.vue";
-
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
     const
@@ -16,46 +17,24 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
             }
         };
     let store,
+        pinia,
+        menuStore,
         clickedMenuElementSpy,
         resetMenuSpy,
-        menu,
         mapMode,
         isModuleVisible,
         wrapper;
 
     beforeEach(() => {
-        menu = {
-            currentComponent: "componentType",
-            navigation: {
-                currentComponent: {
-                    props: {
-                        name: "testName"
-                    }
-                }
-            }
-        };
         isModuleVisible = true;
         mapMode = "2D";
-        clickedMenuElementSpy = sinon.spy();
-        resetMenuSpy = sinon.spy();
+
         sinon.stub(visibilityChecker, "isModuleVisible").callsFake(() => {
             return isModuleVisible;
         });
         store = createStore({
             namespaced: true,
             modules: {
-                Menu: {
-                    namespaced: true,
-                    getters: {
-                        mainMenu: () => menu,
-                        secondaryMenu: () => menu,
-                        showDescription: () => () => false
-                    },
-                    actions: {
-                        clickedMenuElement: clickedMenuElementSpy,
-                        resetMenu: resetMenuSpy
-                    }
-                },
                 Maps: {
                     namespaced: true,
                     getters: {
@@ -72,20 +51,54 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
                 portalConfig: () => mockConfigJson.portalConfig
             }
         });
+        pinia = createPinia();
+        setActivePinia(pinia);
+        menuStore = useMenuStore();
+
+        menuStore.mainMenu.currentComponent = "componentType";
+        menuStore.mainMenu.navigation.currentComponent = {
+            type: "componentType",
+            props: {
+                name: "testName"
+            }
+        };
+
+        menuStore.secondaryMenu.currentComponent = "componentType";
+        menuStore.secondaryMenu.navigation.currentComponent = {
+            type: "componentType",
+            props: {
+                name: "testName"
+            }
+        };
+        clickedMenuElementSpy = sinon.stub(
+            menuStore,
+            "clickedMenuElement"
+        );
+
+        resetMenuSpy = sinon.stub(
+            menuStore,
+            "resetMenu"
+        );
     });
 
     afterEach(() => {
         if (typeof wrapper !== "undefined") {
             wrapper.unmount();
         }
+        sinon.restore();
     });
 
     it("renders the component and it contains the LightButton", () => {
         wrapper = shallowMount(MenuContainerBodyRootItemElement, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {icon: "bi-file-plus", name: "awesomeName", properties: {}}
+            props: {
+                icon: "bi-file-plus",
+                name: "awesomeName",
+                path: ["mainMenu"],
+                properties: {}
+            }
         });
 
         expect(wrapper.findComponent(LightButton).exists()).to.be.true;
@@ -98,9 +111,9 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
 
         wrapper = shallowMount(MenuContainerBodyRootItemElement, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {
+            props: {
                 icon: "bi-file-plus",
                 name: name,
                 path: path,
@@ -111,7 +124,7 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
 
         expect(wrapper.findComponent(LightButton).exists()).to.be.true;
         expect(clickedMenuElementSpy.calledOnce).to.be.true;
-        expect(clickedMenuElementSpy.firstCall.args[1]).to.be.deep.equals({
+        expect(clickedMenuElementSpy.firstCall.args[0]).to.be.deep.equals({
             name: name,
             path: path,
             side: path[0],
@@ -127,9 +140,9 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
 
         wrapper = shallowMount(MenuContainerBodyRootItemElement, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {
+            props: {
                 icon: "bi-file-plus",
                 name: name,
                 path: path,
@@ -153,9 +166,9 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
 
             wrapper = shallowMount(MenuContainerBodyRootItemElement, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
-                propsData: {
+                props: {
                     icon: "bi-file-plus",
                     name: name,
                     path: path,
@@ -180,9 +193,9 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
 
             wrapper = shallowMount(MenuContainerBodyRootItemElement, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
-                propsData: {
+                props: {
                     icon: "bi-file-plus",
                     name: name,
                     path: path,
@@ -201,9 +214,9 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
         it("checkIsVisible hides element when required layers are not visible", () => {
             wrapper = shallowMount(MenuContainerBodyRootItemElement, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
-                propsData: {
+                props: {
                     icon: "bi-file-plus",
                     name: "awesomeName",
                     path: ["mainMenu", "componentType"],
@@ -220,9 +233,9 @@ describe("src/modules/menu/MenuContainerBodyRootItemElement.vue", () => {
         it("checkIsVisible shows element if child elements have visible layers", () => {
             wrapper = shallowMount(MenuContainerBodyRootItemElement, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 },
-                propsData: {
+                props: {
                     icon: "bi-file-plus",
                     name: "awesomeName",
                     path: ["mainMenu", "componentType"],

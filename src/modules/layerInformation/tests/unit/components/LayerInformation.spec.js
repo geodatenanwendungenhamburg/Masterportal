@@ -5,10 +5,12 @@ import LayerInformationComponent from "@modules/layerInformation/components/Laye
 import sinon from "sinon";
 import {createPinia, setActivePinia} from "pinia";
 import {useLayerInformationStore} from "@modules/layerInformation/store/layerInformationStore.js";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
     let store,
         pinia,
+        menuStore,
         layerInformationStore,
         mainMenu,
         layerConfig;
@@ -18,6 +20,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
         setActivePinia(pinia);
 
         layerInformationStore = useLayerInformationStore();
+        menuStore = useMenuStore();
 
         layerInformationStore.layerInfo = {
             typ: "WMS",
@@ -38,6 +41,7 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
                 }
             }
         };
+        menuStore.mainMenu = mainMenu;
         store = createStore({
             namespaced: true,
             modules: {
@@ -67,26 +71,6 @@ describe("src/modules/layerInformation/components/LayerInformation.vue", () => {
                                 mainMenuWidth: () => 0,
                                 secondaryMenuWidth: () => 0
                             }
-                        }
-                    }
-                },
-                Menu: {
-                    namespaced: true,
-                    getters: {
-                        mainMenu: () => mainMenu,
-                        secondaryMenu: () => {
-                            return {
-                                sections: [
-                                    [
-                                        {
-                                            type: "section1"
-                                        },
-                                        {
-                                            type: "section2"
-                                        }
-                                    ]
-                                ]
-                            };
                         }
                     }
                 }

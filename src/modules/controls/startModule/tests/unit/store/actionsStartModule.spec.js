@@ -1,6 +1,8 @@
 import {expect} from "chai";
 import sinon from "sinon";
 import actions from "@modules/controls/startModule/store/actionsStartModule.js";
+import {createPinia, setActivePinia} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 const {
     setConfiguredModuleStates,
@@ -13,12 +15,9 @@ describe("src/modules/controls/startModule/store/actionsStartModule.js", () => {
     let commit,
         dispatch,
         map,
-        rootGetters,
-        rootState,
-        type;
+        rootState;
 
     beforeEach(() => {
-        type = "root";
         mapCollection.clear();
 
         commit = sinon.spy();
@@ -34,15 +33,6 @@ describe("src/modules/controls/startModule/store/actionsStartModule.js", () => {
             }
         };
 
-        rootGetters = {
-            "Menu/currentComponent": () => {
-                return {
-                    type: type
-                };
-            },
-            "Menu/expanded": () => false
-        };
-
         map = {
             id: "ol",
             mode: "2D",
@@ -50,6 +40,8 @@ describe("src/modules/controls/startModule/store/actionsStartModule.js", () => {
         };
 
         mapCollection.addMap(map, "2D");
+
+        setActivePinia(createPinia());
     });
 
 
@@ -149,21 +141,24 @@ describe("src/modules/controls/startModule/store/actionsStartModule.js", () => {
                     type: "selectFeatures",
                     name: "common:xyz"
                 },
-                menuSide = "secondaryMenu";
+                menuSide = "secondaryMenu",
+                menuStore = useMenuStore(),
+                changeCurrentComponentSpy = sinon.spy(menuStore, "changeCurrentComponent"),
+                toggleMenuSpy = sinon.spy(menuStore, "toggleMenu");
 
-            onClick({commit, dispatch, rootGetters}, {moduleState, menuSide});
+            onClick({}, {moduleState, menuSide});
 
-            expect(dispatch.calledTwice).to.be.true;
-            expect(dispatch.firstCall.args[0]).to.equals("Menu/changeCurrentComponent");
-            expect(dispatch.firstCall.args[1]).to.deep.equals({
+            expect(changeCurrentComponentSpy.calledOnce).to.be.true;
+            expect(changeCurrentComponentSpy.firstCall.args[0]).to.deep.equals({
                 type: "selectFeatures",
                 side: menuSide,
                 props: {
                     name: "common:xyz"
                 }
             });
-            expect(dispatch.secondCall.args[0]).to.equals("Menu/toggleMenu");
-            expect(dispatch.secondCall.args[1]).to.equals(menuSide);
+
+            expect(toggleMenuSpy.calledOnce).to.be.true;
+            expect(toggleMenuSpy.firstCall.args[0]).to.equals(menuSide);
         });
 
         it("should reset meu and don't activate menu navigation, if module is not active", () => {
@@ -171,16 +166,30 @@ describe("src/modules/controls/startModule/store/actionsStartModule.js", () => {
                     type: "selectFeatures",
                     name: "common:xyz"
                 },
-                menuSide = "secondaryMenu";
+                menuSide = "secondaryMenu",
+                menuStore = useMenuStore(),
+                resetCurrentMouseMapInteractionsComponentSpy = sinon.spy(
+                    menuStore,
+                    "resetCurrentMouseMapInteractionsComponent"
+                );
 
-            type = "selectFeatures";
+            menuStore.secondaryMenu.navigation.currentComponent = {
+                type: "selectFeatures",
+                props: []
+            };
+            menuStore.secondaryMenu.currentComponent = "selectFeatures";
 
-            onClick({commit, dispatch, rootGetters}, {moduleState, menuSide});
+            onClick({}, {moduleState, menuSide});
 
-            expect(commit.calledOnce).to.be.true;
-            expect(dispatch.calledOnce).to.be.true;
-            expect(commit.firstCall.args[0]).to.equals("Menu/switchToRoot");
-            expect(commit.firstCall.args[1]).to.equals(menuSide);
+            expect(menuStore.secondaryMenu.navigation.currentComponent).to.deep.equals({
+                props: [],
+                type: "root"
+            });
+            expect(menuStore.secondaryMenu.navigation.history).to.deep.equals([]);
+            expect(menuStore.secondaryMenu.currentComponent).to.equals("root");
+
+            expect(resetCurrentMouseMapInteractionsComponentSpy.calledOnce).to.be.true;
+            expect(resetCurrentMouseMapInteractionsComponentSpy.firstCall.args[0]).to.equals(menuSide);
         });
     });
 });

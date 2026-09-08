@@ -12,6 +12,8 @@ import MenuContainer from "./modules/menu/components/MenuContainer.vue";
 import MenuToggleButton from "./modules/menu/components/MenuToggleButton.vue";
 import addonsPlugin from "./plugins/addons.js";
 import i18next from "i18next";
+import {mapState} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 export default {
     name: "App",
@@ -37,7 +39,7 @@ export default {
             "uiStyle",
             "visibleLayerConfigs"
         ]),
-        ...mapGetters("Menu", [
+        ...mapState(useMenuStore, [
             "mainExpanded",
             "mainMenu",
             "secondaryExpanded",

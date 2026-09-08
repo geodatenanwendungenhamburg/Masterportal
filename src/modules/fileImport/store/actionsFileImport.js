@@ -16,6 +16,7 @@ import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 import {supportedFiletypes} from "../utils/supportedFiletypes.js";
 import {getIconUrl} from "@shared/js/utils/convertFeaturesToKml.js";
 import * as constants from "@modules/draw_old/store/constantsDraw.js";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 const defaultFont = "16px Arial",
     supportedFormats = {
@@ -906,14 +907,20 @@ export default {
      * Opens the draw tool in the secondary Menu
      * @returns {void}
      */
-    openDrawTool ({state, dispatch, rootGetters}) {
-        const menuSide = ["mainMenu", "secondaryMenu"].includes(state.openDrawMenuSide) ? state.openDrawMenuSide : "secondaryMenu",
-            menuExpanded = "Menu/expanded";
+    openDrawTool ({state}) {
+        const menuSide = ["mainMenu", "secondaryMenu"].includes(state.openDrawMenuSide)
+                ? state.openDrawMenuSide
+                : "secondaryMenu",
+            menuStore = useMenuStore();
 
-        dispatch("Menu/changeCurrentComponent", {type: "draw_old", side: menuSide, props: {name: i18next.t("common:modules.draw_old.name")}}, {root: true});
+        menuStore.changeCurrentComponent({
+            type: "draw_old",
+            side: menuSide,
+            props: {name: i18next.t("common:modules.draw_old.name")}
+        });
 
-        if (!rootGetters[menuExpanded](menuSide)) {
-            dispatch("Menu/toggleMenu", menuSide, {root: true});
+        if (!menuStore.expanded(menuSide)) {
+            menuStore.toggleMenu(menuSide);
         }
     }
 };

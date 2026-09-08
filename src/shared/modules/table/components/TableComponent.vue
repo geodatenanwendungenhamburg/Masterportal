@@ -1,5 +1,5 @@
 <script>
-import {mapGetters, mapActions} from "vuex";
+import {mapGetters} from "vuex";
 import draggable from "vuedraggable";
 import localeCompare from "@shared/js/utils/localeCompare.js";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
@@ -13,6 +13,8 @@ import {isWebLink} from "@shared/js/utils/urlHelper.js";
 import {isEmailAddress} from "@shared/js/utils/isEmailAddress.js";
 import ExportButtonGeoJSON from "@shared/modules/buttons/components/ExportButtonGeoJSON.vue";
 import GeoJSON from "ol/format/GeoJSON.js";
+import {mapActions as mapPiniaActions, mapState} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 /**
  * TableComponent: A variable component to show data in a table.
@@ -233,7 +235,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Menu", ["currentSecondaryMenuWidth", "mainExpanded", "currentMenuWidth"]),
+        ...mapState(useMenuStore, ["currentSecondaryMenuWidth", "mainExpanded", "currentMenuWidth"]),
         ...mapGetters("Modules/Language", ["currentLocale"]),
 
         /**
@@ -430,7 +432,7 @@ export default {
         },
         thousandsSeparator,
 
-        ...mapActions("Menu", ["toggleMenu", "setCurrentMenuWidth"]),
+        ...mapPiniaActions(useMenuStore, ["toggleMenu", "setCurrentMenuWidth"]),
         /**
          * Returns the decimal or group separator of current locale
          * @param {String} separatorType - The type of the separator 'decimal' or 'group'

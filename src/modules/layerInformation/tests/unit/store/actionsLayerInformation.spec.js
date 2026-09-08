@@ -6,6 +6,7 @@ import axios from "axios";
 import store from "@appstore/index.js";
 import {createPinia, setActivePinia} from "pinia";
 import {useLayerInformationStore} from "@modules/layerInformation/store/layerInformationStore.js";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => {
     let layerInformationStore,
@@ -83,20 +84,19 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
         it("should initialize the LayerInformation", () => {
             const setLayerInfo = sinon.stub(layerInformationStore, "setLayerInfo"),
                 setMetadataURL = sinon.stub(layerInformationStore, "setMetadataURL"),
-                additionalSingleLayerInfo = sinon.stub(layerInformationStore, "additionalSingleLayerInfo");
+                additionalSingleLayerInfo = sinon.stub(layerInformationStore, "additionalSingleLayerInfo"),
+                changeCurrentComponent = sinon.stub(useMenuStore(), "changeCurrentComponent");
 
             actions.startLayerInformation.call(layerInformationStore, layerConf);
 
             expect(layerInformationStore.legendAvailable).to.be.true;
             expect(setLayerInfo.calledWith(layerConf)).to.be.true;
 
-            expect(dispatch.calledOnce).to.be.true;
-            expect(dispatch.firstCall.args[0]).to.equal("Menu/changeCurrentComponent");
-            expect(dispatch.firstCall.args[1]).to.be.deep.equals({
+            expect(changeCurrentComponent.calledOnceWith({
                 type: "layerInformation",
                 side: "mainMenu",
                 props: {name: layerConf.datasets[0].md_name}
-            });
+            })).to.be.true;
 
             expect(setMetadataURL.calledWith(layerConf.datasets[0].md_id)).to.be.true;
             expect(additionalSingleLayerInfo.calledOnce).to.be.true;
@@ -105,7 +105,8 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
         it("should initialize the LayerInformation with name of layer", () => {
             const setLayerInfo = sinon.stub(layerInformationStore, "setLayerInfo"),
                 setMetadataURL = sinon.stub(layerInformationStore, "setMetadataURL"),
-                additionalSingleLayerInfo = sinon.stub(layerInformationStore, "additionalSingleLayerInfo");
+                additionalSingleLayerInfo = sinon.stub(layerInformationStore, "additionalSingleLayerInfo"),
+                changeCurrentComponent = sinon.stub(useMenuStore(), "changeCurrentComponent");
 
             delete layerConf.datasets[0].md_name;
 
@@ -114,13 +115,11 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
             expect(layerInformationStore.legendAvailable).to.be.true;
             expect(setLayerInfo.calledWith(layerConf)).to.be.true;
 
-            expect(dispatch.calledOnce).to.be.true;
-            expect(dispatch.firstCall.args[0]).to.equal("Menu/changeCurrentComponent");
-            expect(dispatch.firstCall.args[1]).to.be.deep.equals({
+            expect(changeCurrentComponent.calledOnceWith({
                 type: "layerInformation",
                 side: "mainMenu",
                 props: {name: "name of the layer"}
-            });
+            })).to.be.true;
             expect(setMetadataURL.calledWith(layerConf.datasets[0].md_id)).to.be.true;
             expect(additionalSingleLayerInfo.calledOnce).to.be.true;
         });
@@ -128,7 +127,8 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
         it("should initialize the LayerInformation and create legend", () => {
             const setLayerInfo = sinon.stub(layerInformationStore, "setLayerInfo"),
                 setMetadataURL = sinon.stub(layerInformationStore, "setMetadataURL"),
-                additionalSingleLayerInfo = sinon.stub(layerInformationStore, "additionalSingleLayerInfo");
+                additionalSingleLayerInfo = sinon.stub(layerInformationStore, "additionalSingleLayerInfo"),
+                changeCurrentComponent = sinon.stub(useMenuStore(), "changeCurrentComponent");
 
             layerConf.legendURL = "https://legend.de";
             layerConf.id = "another";
@@ -140,16 +140,15 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
             expect(commit.firstCall.args[0]).to.equal("Modules/Legend/setLayerInfoLegend");
             expect(commit.firstCall.args[1]).to.be.deep.equals({});
 
-            expect(dispatch.callCount).to.be.equals(2);
+            expect(dispatch.calledOnce).to.be.true;
             expect(dispatch.firstCall.args[0]).to.equal("Modules/Legend/createLegendForLayerInfo");
             expect(dispatch.firstCall.args[1]).to.equal(layerConf.id);
 
-            expect(dispatch.secondCall.args[0]).to.equal("Menu/changeCurrentComponent");
-            expect(dispatch.secondCall.args[1]).to.be.deep.equals({
+            expect(changeCurrentComponent.calledOnceWith({
                 type: "layerInformation",
                 side: "mainMenu",
                 props: {name: layerConf.datasets[0].md_name}
-            });
+            })).to.be.true;
             expect(setLayerInfo.calledWith(layerConf)).to.be.true;
             expect(setMetadataURL.calledWith(layerConf.datasets[0].md_id)).to.be.true;
             expect(additionalSingleLayerInfo.calledOnce).to.be.true;
@@ -158,7 +157,9 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
         it("should toggle the LayerInformation in menu if mobile", () => {
             const setLayerInfo = sinon.stub(layerInformationStore, "setLayerInfo"),
                 setMetadataURL = sinon.stub(layerInformationStore, "setMetadataURL"),
-                additionalSingleLayerInfo = sinon.stub(layerInformationStore, "additionalSingleLayerInfo");
+                additionalSingleLayerInfo = sinon.stub(layerInformationStore, "additionalSingleLayerInfo"),
+                toggleMenu = sinon.stub(useMenuStore(), "toggleMenu"),
+                changeCurrentComponent = sinon.stub(useMenuStore(), "changeCurrentComponent");
 
             isMobile = true;
             menuExpanded = false;
@@ -169,16 +170,13 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
             expect(layerInformationStore.legendAvailable).to.be.true;
             expect(setLayerInfo.calledWith(layerConf)).to.be.true;
 
-            expect(dispatch.callCount).to.be.equals(2);
-            expect(dispatch.firstCall.args[0]).to.equal("Menu/toggleMenu");
-            expect(dispatch.firstCall.args[1]).to.equal("mainMenu");
+            expect(toggleMenu.calledOnceWith("mainMenu")).to.be.true;
 
-            expect(dispatch.secondCall.args[0]).to.equal("Menu/changeCurrentComponent");
-            expect(dispatch.secondCall.args[1]).to.be.deep.equals({
+            expect(changeCurrentComponent.calledOnceWith({
                 type: "layerInformation",
                 side: "mainMenu",
                 props: {name: layerConf.datasets[0].md_name}
-            });
+            })).to.be.true;
             expect(setMetadataURL.calledWith(layerConf.datasets[0].md_id)).to.be.true;
             expect(additionalSingleLayerInfo.calledOnce).to.be.true;
         });
@@ -300,35 +298,33 @@ describe("src/modules/layerInformation/store/actionsLayerInformation.js", () => 
         });
 
         it("styleListLoaded = true, start layer info", () => {
-            const startLayerInformation = sinon.stub(layerInformationStore, "startLayerInformation");
+            const startLayerInformation = sinon.stub(layerInformationStore, "startLayerInformation"),
+                updateComponentState = sinon.stub(useMenuStore(), "updateComponentState");
 
             actions.restoreFromUrlParams.call(layerInformationStore, attributes);
 
-            expect(dispatch.calledOnce).to.be.true;
-            expect(dispatch.firstCall.args[0]).to.equal("Menu/updateComponentState");
-            expect(dispatch.firstCall.args[1]).to.be.deep.equals({
+            expect(updateComponentState.calledOnceWith({
                 type: "LayerInformation",
                 attributes
-            });
+            })).to.be.true;
 
             expect(startLayerInformation.calledWith(layerConfig)).to.be.true;
         });
         it("styleListLoaded = false, wait and start layer info", () => {
             const waitAndRestoreLayerInformation = sinon.stub(
-                layerInformationStore,
-                "waitAndRestoreLayerInformation"
-            );
+                    layerInformationStore,
+                    "waitAndRestoreLayerInformation"
+                ),
+                updateComponentState = sinon.stub(useMenuStore(), "updateComponentState");
 
             rootGetters.styleListLoaded = false;
 
             actions.restoreFromUrlParams.call(layerInformationStore, attributes);
 
-            expect(dispatch.calledOnce).to.be.true;
-            expect(dispatch.firstCall.args[0]).to.equal("Menu/updateComponentState");
-            expect(dispatch.firstCall.args[1]).to.be.deep.equals({
+            expect(updateComponentState.calledOnceWith({
                 type: "LayerInformation",
                 attributes
-            });
+            })).to.be.true;
             expect(waitAndRestoreLayerInformation.calledWith(layerConfig)).to.be.true;
         });
     });

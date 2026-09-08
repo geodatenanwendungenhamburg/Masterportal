@@ -15,6 +15,8 @@ import rawLayerList from "@masterportal/masterportalapi/src/rawLayerList.js";
 import BuildSpec from "../js/buildSpec.js";
 import layerCollection from "@core/layers/js/layerCollection.js";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
+import {mapState} from "pinia";
 
 /**
  * Tool to print a part of the map
@@ -72,7 +74,7 @@ export default {
         ]),
         ...mapGetters("Maps", ["mode", "scale"]),
         ...mapGetters("Modules/GetFeatureInfo", ["currentFeature"]),
-        ...mapGetters("Menu", [
+        ...mapState(useMenuStore, [
             "mainMenu",
             "secondaryMenu"
         ]),

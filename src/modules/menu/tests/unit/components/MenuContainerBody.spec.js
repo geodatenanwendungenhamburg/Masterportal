@@ -1,51 +1,24 @@
 import {createStore} from "vuex";
+import {createPinia, setActivePinia} from "pinia";
 import {shallowMount} from "@vue/test-utils";
-import MenuContainerBody from "@modules/menu/components/MenuContainerBody.vue";
 import {expect} from "chai";
+import MenuContainerBody from "@modules/menu/components/MenuContainerBody.vue";
 import MenuNavigation from "@modules/menu/components/MenuNavigation.vue";
 import MenuContainerBodyRoot from "@modules/menu/components/MenuContainerBodyRoot.vue";
-import sinon from "sinon";
-
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 describe("src/modules/menu/MenuContainerBody.vue", () => {
     let store,
-        menu,
-        menuType,
+        pinia,
+        menuStore,
         wrapper;
 
     beforeEach(() => {
-        menuType = "type";
-        menu = {
-            navigation: {
-                currentComponent: {
-                    type: menuType
-                }
-            }
-
-        };
         store = createStore({
             modules: {
-                Menu: {
-                    namespaced: true,
-                    getters: {
-                        defaultComponent: sinon.stub(),
-                        mainMenu: () => menu,
-                        secondaryMenu: () => menu,
-                        mainExpanded: () => sinon.stub,
-                        secondaryExpanded: () => sinon.stub
-
-                    },
-                    mutations: {
-                        addTestMenuSection: (state, section) => {
-                            state.menuSections.push(section);
-                        },
-                        addModuleToMenuSection: sinon.stub()
-                    }
-                },
                 Modules: {
                     namespaced: true,
                     modules: {
-                        namespaced: true,
                         GetFeatureInfo: {
                             namespaced: true,
                             getters: {
@@ -56,13 +29,27 @@ describe("src/modules/menu/MenuContainerBody.vue", () => {
                     getters: {
                         componentMap: () => {
                             return {
-                                type: menuType
+                                type: "type",
+                                component: "component"
                             };
                         }
                     }
                 }
+            },
+            actions: {
+                initializeModule: () => undefined
             }
         });
+
+        pinia = createPinia();
+        setActivePinia(pinia);
+        menuStore = useMenuStore();
+        menuStore.mainMenu.navigation.currentComponent = {
+            type: "type"
+        };
+        menuStore.secondaryMenu.navigation.currentComponent = {
+            type: "type"
+        };
     });
 
     afterEach(() => {
@@ -74,9 +61,9 @@ describe("src/modules/menu/MenuContainerBody.vue", () => {
     it("renders the component in mainMenu and it contains the MenuNavigation and not GetFeatureInfo", () => {
         wrapper = shallowMount(MenuContainerBody, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {side: "mainMenu"}
+            props: {side: "mainMenu"}
         });
         const bodyWrapper = wrapper.find("#mp-body-mainMenu");
 
@@ -89,9 +76,9 @@ describe("src/modules/menu/MenuContainerBody.vue", () => {
     it("renders the component in secondaryMenu and it contains the MenuNavigation and not displayed GetFeatureInfo", () => {
         wrapper = shallowMount(MenuContainerBody, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {side: "secondaryMenu"}
+            props: {side: "secondaryMenu"}
         });
         const bodyWrapper = wrapper.find("#mp-body-secondaryMenu");
 
@@ -101,16 +88,18 @@ describe("src/modules/menu/MenuContainerBody.vue", () => {
         expect(bodyWrapper.find("get-feature-info-stub").exists()).to.be.true;
         expect(bodyWrapper.find("get-feature-info-stub").attributes("style")).to.be.equals("display: none;");
         expect(bodyWrapper.find("menu-container-body-root-stub").attributes("style")).to.be.equals("display: none;");
-
     });
 
     it("renders the component in mainMenu, currentComponent is root", () => {
-        menuType = "root";
+        menuStore.mainMenu.navigation.currentComponent = {
+            type: "root"
+        };
+
         wrapper = shallowMount(MenuContainerBody, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {side: "mainMenu"}
+            props: {side: "mainMenu"}
         });
         const bodyWrapper = wrapper.find("#mp-body-mainMenu");
 
@@ -122,13 +111,15 @@ describe("src/modules/menu/MenuContainerBody.vue", () => {
     });
 
     it("renders the component in mainMenu, currentComponent is not root or getFeatureInfo", () => {
-        menuType = "component";
+        menuStore.mainMenu.navigation.currentComponent = {
+            type: "component"
+        };
         wrapper = shallowMount(MenuContainerBody, {
             global: {
-                plugins: [store],
+                plugins: [store, pinia],
                 stubs: {"keep-alive": false}
             },
-            propsData: {side: "mainMenu"}
+            props: {side: "mainMenu"}
         });
         const bodyWrapper = wrapper.find("#mp-body-mainMenu");
 
@@ -138,12 +129,14 @@ describe("src/modules/menu/MenuContainerBody.vue", () => {
     });
 
     it("renders the component in secondaryMenu, currentComponent is getFeatureInfo", () => {
-        menuType = "getFeatureInfo";
+        menuStore.secondaryMenu.navigation.currentComponent = {
+            type: "getFeatureInfo"
+        };
         wrapper = shallowMount(MenuContainerBody, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {side: "secondaryMenu"}
+            props: {side: "secondaryMenu"}
         });
         const bodyWrapper = wrapper.find("#mp-body-secondaryMenu");
 
@@ -157,12 +150,16 @@ describe("src/modules/menu/MenuContainerBody.vue", () => {
     });
 
     it("computed property currentComponent", () => {
-        menuType = "getFeatureInfo";
+        menuStore.mainMenu.navigation.currentComponent = {
+            type: "getFeatureInfo"
+        };
         wrapper = shallowMount(MenuContainerBody, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             },
-            propsData: {side: "mainMenu"}
+            props: {
+                side: "mainMenu"
+            }
         });
         const bodyWrapper = wrapper.find("#mp-body-mainMenu");
 

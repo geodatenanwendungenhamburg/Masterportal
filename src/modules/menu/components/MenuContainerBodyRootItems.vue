@@ -1,8 +1,9 @@
 <script>
-import {mapGetters} from "vuex";
+import {mapState} from "pinia";
 import MenuContainerBodyRootItemElement from "./MenuContainerBodyRootItemElement.vue";
 import changeCase from "@shared/js/utils/changeCase.js";
 import {getPiniaModuleStore, isPiniaModule} from "../../modules-store/piniaModules.js";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 /**
  * Menu Container Body Root Items
@@ -35,7 +36,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters("Menu", ["customMenuElementIcon", "section", "sectionsBySide"]),
+        ...mapState(useMenuStore, ["customMenuElementIcon", "section", "sectionsBySide"]),
         sections () {
             return this.sectionsBySide(this.side);
         }

@@ -6,10 +6,12 @@ import WmsTimeComponent from "@modules/wmsTime/components/WmsTime.vue";
 import LayerSwiper from "@shared/modules/layerSwiper/components/LayerSwiper.vue";
 import TimeSlider from "@modules/wmsTime/components/TimeSlider.vue";
 import sinon from "sinon";
-
+import {createPinia, setActivePinia} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 describe("src/modules/wmsTime/components/WmsTime.vue", () => {
     let store,
+        pinia,
         timeSliderActive,
         winWidth,
         wrapper;
@@ -75,17 +77,14 @@ describe("src/modules/wmsTime/components/WmsTime.vue", () => {
                             }
                         }
                     }
-                },
-                Menu: {
-                    namespaced: true,
-                    getters: {
-                        currentMouseMapInteractionsComponent: sinon.stub()
-                    }
                 }
             }
         });
         timeSliderActive = false;
         winWidth = 801;
+        pinia = createPinia();
+        setActivePinia(pinia);
+        useMenuStore();
     });
 
     afterEach(() => {
@@ -100,7 +99,7 @@ describe("src/modules/wmsTime/components/WmsTime.vue", () => {
         timeSliderActive = true;
         wrapper = shallowMount(WmsTimeComponent, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }});
 
         expect(wrapper.findAllComponents(TimeSlider).length).to.equal(1);
@@ -112,7 +111,7 @@ describe("src/modules/wmsTime/components/WmsTime.vue", () => {
 
         wrapper = shallowMount(WmsTimeComponent, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
         const timeSliderComponents = wrapper.findAllComponents(TimeSlider);
@@ -127,7 +126,7 @@ describe("src/modules/wmsTime/components/WmsTime.vue", () => {
         winWidth = 799;
         wrapper = shallowMount(WmsTimeComponent, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }});
 
         expect(wrapper.findAllComponents(TimeSlider).length).to.equal(1);

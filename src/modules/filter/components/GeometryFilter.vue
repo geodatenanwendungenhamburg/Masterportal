@@ -19,6 +19,8 @@ import IconButton from "../../../../src/shared/modules/buttons/components/IconBu
 import isObject from "@shared/js/utils/isObject.js";
 import {translateKeyWithPlausibilityCheck} from "@shared/js/utils/translateKeyWithPlausibilityCheck.js";
 import sortBy from "@shared/js/utils/sortBy.js";
+import {mapState} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 /**
  * Geometry Filter
@@ -126,7 +128,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Menu", [
+        ...mapState(useMenuStore, [
             "currentComponent",
             "currentMouseMapInteractionsComponent"
         ]),

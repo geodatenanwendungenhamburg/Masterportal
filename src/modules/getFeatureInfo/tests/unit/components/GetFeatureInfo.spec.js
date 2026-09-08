@@ -2,6 +2,8 @@ import {createStore} from "vuex";
 import {shallowMount, mount, config} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
+import {createPinia, setActivePinia} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 import GfiComponent from "@modules/getFeatureInfo/components/GetFeatureInfo.vue";
 
@@ -15,7 +17,9 @@ let mockMutations,
     currentComponentType,
     mapMode,
     wrapper,
-    store;
+    store,
+    pinia,
+    menuStore;
 
 config.global.mocks.$gfiThemeAddons = [];
 
@@ -62,7 +66,7 @@ function createWrapper (props) {
             };
         },
         global: {
-            plugins: [store]
+            plugins: [store, pinia]
         }
     });
 }
@@ -76,6 +80,12 @@ function createWrapper (props) {
  * @returns {Object} the store
  */
 function getGfiStore (mobile, uiStyle, gfiFeatures, mapSize) {
+    menuStore.mainMenu.navigation.currentComponent = {
+        type: currentComponentType,
+        props: []
+    };
+    menuStore.mainMenu.currentComponent = currentComponentType;
+    menuStore.mainMenu.expanded = menuExpanded;
     mockGetters.gfiFeaturesReverse = () => gfiFeatures;
     collectGfiFeaturesSpy = sinon.spy();
 
@@ -110,20 +120,6 @@ function getGfiStore (mobile, uiStyle, gfiFeatures, mapSize) {
                     setCenter: sinon.stub(),
                     unregisterListener: sinon.stub()
                 }
-            },
-            Menu: {
-                namespaced: true,
-                getters: {
-                    currentComponent: () => sinon.stub().returns({type: currentComponentType}),
-                    currentMouseMapInteractionsComponent: () => "getFeatureInfo",
-                    expanded: () => sinon.stub().returns(menuExpanded)
-                },
-                actions: {
-                    setMenuBackAndActivateItem: sinon.stub(),
-                    resetMenu: sinon.stub(),
-                    toggleMenu: toggleMenuSpy,
-                    changeCurrentComponent: sinon.stub()
-                }
             }
         },
         getters: {
@@ -141,6 +137,9 @@ function getGfiStore (mobile, uiStyle, gfiFeatures, mapSize) {
 
 
 beforeEach(() => {
+    pinia = createPinia();
+    setActivePinia(pinia);
+    menuStore = useMenuStore();
     currentComponentType = "print";
     setClickCoordinatesSpy = sinon.spy();
     mapMode = "2D";
@@ -158,7 +157,7 @@ beforeEach(() => {
         gfiFeaturesReverse: sinon.stub(),
         highlightVectorRules: () => false,
         showPolygonMarkerForWMS: () => false,
-        menuSide: () => false,
+        menuSide: () => "mainMenu",
         showMarker: sinon.stub(),
         showPageNumber: () => true,
         visible: () => true,
@@ -167,7 +166,7 @@ beforeEach(() => {
         stickyHeader: () => false
     };
     menuExpanded = true;
-    toggleMenuSpy = sinon.spy();
+    toggleMenuSpy = sinon.spy(menuStore, "toggleMenu");
 });
 afterEach(() => {
     if (wrapper) {
@@ -250,7 +249,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
             // eslint-disable-next-line no-shadow
             wrapper = shallowMount(GfiComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -335,7 +334,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                     };
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -370,7 +369,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                     };
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -418,7 +417,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                     };
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -453,7 +452,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                     };
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -498,7 +497,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                     }
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -545,7 +544,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                     }
                 },
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }
             });
 
@@ -575,7 +574,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                 // eslint-disable-next-line no-shadow
                 wrapper = shallowMount(GfiComponent, {
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     }
                 });
 
@@ -612,7 +611,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                 // eslint-disable-next-line no-shadow
                 wrapper = shallowMount(GfiComponent, {
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     }
                 });
 
@@ -650,7 +649,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                 // eslint-disable-next-line no-shadow
                 wrapper = shallowMount(GfiComponent, {
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     }
                 });
 
@@ -677,7 +676,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                 // eslint-disable-next-line no-shadow
                 wrapper = shallowMount(GfiComponent, {
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     }
                 });
 
@@ -704,7 +703,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                 // eslint-disable-next-line no-shadow
                 wrapper = shallowMount(GfiComponent, {
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     }
                 });
 
@@ -736,7 +735,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                 // eslint-disable-next-line no-shadow
                 const wrapper = shallowMount(GfiComponent, {
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     }
                 });
 
@@ -751,7 +750,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                 // eslint-disable-next-line no-shadow
                 const wrapper = shallowMount(GfiComponent, {
                     global: {
-                        plugins: [store]
+                        plugins: [store, pinia]
                     }
                 });
 
@@ -783,7 +782,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
 
         wrapper = mount(GfiComponent, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
 
@@ -813,7 +812,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
 
         wrapper = mount(GfiComponent, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
 
@@ -842,7 +841,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
 
         wrapper = mount(GfiComponent, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
 
@@ -875,7 +874,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                 };
             },
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
 
@@ -908,7 +907,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                 };
             },
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
 
@@ -940,7 +939,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
                 };
             },
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
 
@@ -965,7 +964,7 @@ describe("src/modules/getFeatureInfo/components/GetFeatureInfo.vue", () => {
 
         wrapper = shallowMount(GfiComponent, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }
         });
 

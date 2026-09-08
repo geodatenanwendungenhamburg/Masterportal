@@ -1,6 +1,6 @@
 <script>
-import {mapActions, mapGetters} from "vuex";
-
+import {mapActions, mapState} from "pinia";
+import {useMenuStore} from "../menu-store/menuStore.js";
 /**
  * Menu Toggle Button
  * @module modules/MenuToggleButton
@@ -18,7 +18,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters("Menu", ["mainExpanded", "secondaryExpanded", "mainToggleButtonIcon", "secondaryToggleButtonIcon", "secondaryMenuEnabled"]),
+        ...mapState(useMenuStore, ["mainExpanded", "secondaryExpanded", "mainToggleButtonIcon", "secondaryToggleButtonIcon", "secondaryMenuEnabled"]),
         /**
          * @returns {String} iconClass to be used depending on the side this button is used for.
          */
@@ -46,7 +46,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions("Menu", ["toggleMenu"])
+        ...mapActions(useMenuStore, ["toggleMenu"])
     }
 };
 </script>

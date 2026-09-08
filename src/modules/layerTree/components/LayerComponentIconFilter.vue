@@ -1,5 +1,7 @@
 <script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import {mapMutations, mapGetters} from "vuex";
+import {mapActions as mapPiniaActions, mapState} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 
 /**
@@ -19,10 +21,10 @@ export default {
     },
     computed: {
         ...mapGetters("Modules/Filter", ["icon", "name", "menuSide"]),
-        ...mapGetters("Menu", ["expanded"])
+        ...mapState(useMenuStore, ["expanded"])
     },
     methods: {
-        ...mapActions("Menu", ["changeCurrentComponent", "toggleMenu"]),
+        ...mapPiniaActions(useMenuStore, ["changeCurrentComponent", "toggleMenu"]),
         ...mapMutations("Modules/Filter", ["setSelectedAccordions"]),
 
         /**

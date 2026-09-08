@@ -1,9 +1,10 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
-import {mapState} from "pinia";
 import {useAboutStore} from "@modules/about/store/aboutStore.js";
 import ScaleLine from "./ScaleLine.vue";
 import {addSourceToPayload} from "@shared/js/utils/addSourceToPayload.js";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
+import {mapActions as mapPiniaActions, mapState} from "pinia";
 
 /**
  * Footer that is displayed below the map. Links can be displayed here.
@@ -24,7 +25,7 @@ export default {
             "type",
             "urls"
         ]),
-        ...mapGetters("Menu", [
+        ...mapState(useMenuStore, [
             "mainExpanded",
             "secondaryExpanded",
             "mainMenu",
@@ -67,8 +68,8 @@ export default {
     },
     methods: {
         ...mapActions(["initializeModule"]),
-        ...mapActions("Menu", ["changeCurrentComponent"]),
-        ...mapActions("Menu", ["toggleMenu"]),
+        ...mapPiniaActions(useMenuStore, ["changeCurrentComponent"]),
+        ...mapPiniaActions(useMenuStore, ["toggleMenu"]),
         /**
          * Opens the about module if it is configured and scrolls to the imprint section.
          * @returns {void}

@@ -1,5 +1,7 @@
 <script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
+import {mapActions, mapState} from "pinia";
+import {useMenuStore} from "../menu-store/menuStore.js";
 import MenuContainerBody from "./MenuContainerBody.vue";
 import ResizeHandle from "@shared/modules/resize/components/ResizeHandle.vue";
 import MenuContainerBodyRootLogo from "./MenuContainerBodyRootLogo.vue";
@@ -35,14 +37,13 @@ export default {
             "uiStyle"
         ]),
         ...mapGetters("Modules", ["componentMap"]),
-        ...mapGetters("Menu", [
+        ...mapState(useMenuStore, [
             "mainMenu",
             "secondaryMenu",
             "currentMenuWidth",
             "mainExpanded",
             "secondaryExpanded",
             "titleBySide",
-            "currentComponent",
             "defaultComponent",
             "secondaryMenuEnabled"
         ]),
@@ -108,17 +109,33 @@ export default {
         }
     },
     methods: {
-        ...mapMutations("Menu", [
-            "collapseMenues",
-            "mergeMenuState",
-            "setCurrentMenuWidth",
-            "setCurrentMainMenuOffsetWidth",
-            "setCurrentSecondaryMenuWidth",
-            "setCurrentSecondaryMenuOffsetWidth",
-            "setCurrentMainMenuWidth"
-        ]),
+        collapseMenues () {
+            const menuStore = useMenuStore();
+
+            menuStore.mainMenu.expanded = false;
+            menuStore.secondaryMenu.expanded = false;
+        },
+        mergeMenuState ({menu, side}) {
+            Object.assign(useMenuStore()[side], menu);
+        },
+        setCurrentMenuWidth ({side, width}) {
+            useMenuStore()[side].width = width;
+        },
+        setCurrentMainMenuOffsetWidth (value) {
+            useMenuStore().currentMainMenuOffsetWidth = value;
+        },
+        setCurrentSecondaryMenuWidth (value) {
+            useMenuStore().currentSecondaryMenuWidth = value;
+        },
+        setCurrentSecondaryMenuOffsetWidth (value) {
+            useMenuStore().currentSecondaryMenuOffsetWidth = value;
+        },
+        setCurrentMainMenuWidth (value) {
+            useMenuStore().currentMainMenuWidth = value;
+        },
         ...mapMutations("Modules/LayerPills", {setLayerPillsHidden: "setHidden"}),
-        ...mapActions("Menu", ["clickedMenuElement", "toggleMenu", "closeMenu"]),
+        ...mapActions(useMenuStore, ["clickedMenuElement", "toggleMenu", "closeMenu"]),
+
         /**
          * Opens the searchbar module.
          * @returns {void}

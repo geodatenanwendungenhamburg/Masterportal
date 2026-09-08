@@ -2,6 +2,8 @@
 import {mapActions, mapGetters} from "vuex";
 import LayerSwiper from "@shared/modules/layerSwiper/components/LayerSwiper.vue";
 import TimeSlider from "./TimeSlider.vue";
+import {mapState} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 export default {
     name: "WmsTime",
@@ -10,7 +12,7 @@ export default {
         TimeSlider
     },
     computed: {
-        ...mapGetters("Menu", ["currentMouseMapInteractionsComponent"]),
+        ...mapState(useMenuStore, ["currentMouseMapInteractionsComponent"]),
         ...mapGetters("Modules/WmsTime", ["currentTimeSliderObject", "layerAppendix", "minWidth", "timeSlider"]),
         ...mapGetters("Modules/LayerSwiper", {
             layerSwiperActive: "active"

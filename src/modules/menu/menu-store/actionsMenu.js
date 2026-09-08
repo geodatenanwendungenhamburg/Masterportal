@@ -1,27 +1,88 @@
 import {nextTick} from "vue";
 import changeCase from "@shared/js/utils/changeCase.js";
 import {getPiniaModuleStore, isPiniaModule} from "../../modules-store/piniaModules.js";
+import store from "@appstore/index.js";
+
+/**
+ * Switches the current component to root.
+ * @param {Object} state The menu state.
+ * @param {String} side secondary or main Menu.
+ * @returns {void}
+ */
+function switchToRoot (state, side) {
+    state[side].navigation.currentComponent = {props: [], type: "root"};
+    state[side].navigation.history = [];
+    state[side].currentComponent = "root";
+}
+
+/**
+ * Switches to the previous component.
+ * @param {Object} state The menu state.
+ * @param {String} side secondary or main Menu.
+ * @returns {void}
+ */
+function switchToPreviousComponent (state, side) {
+    if (state[side].navigation.history.slice(-1)[0]?.type) {
+        state[side].navigation.currentComponent = {
+            type: state[side].navigation.history.slice(-1)[0].type,
+            props: state[side].navigation.history.slice(-1)[0].props
+        };
+        state[side].currentComponent = state[side].navigation.history.slice(-1)[0].type;
+    }
+
+    state[side].navigation.history.pop();
+}
+
+/**
+ * Sets the current component.
+ * @param {Object} state The menu state.
+ * @param {Object} param The parameters.
+ * @param {String} param.type The component type.
+ * @param {String} param.side secondary or main Menu.
+ * @param {Object} param.props The component props.
+ * @returns {void}
+ */
+function setCurrentComponent (state, {type, side, props}) {
+    const history = state[side].navigation.history;
+
+    history.push(state[side].navigation.currentComponent);
+
+    if (history.length > 0) {
+        let lastComponent = history[history.length - 1];
+
+        if (lastComponent.type === "getFeatureInfo" && lastComponent.props?.name === "none") {
+            history.pop();
+
+            if (history.length > 1) {
+                lastComponent = history[history.length - 1];
+
+                if (lastComponent.type === type) {
+                    history.pop();
+                }
+            }
+        }
+    }
+
+    state[side].navigation.currentComponent = {type, props};
+    state[side].currentComponent = type;
+}
 
 export default {
     /**
      * Activates the current component in the menu by side.
-     * @param {Object} param store context
-     * @param {Object} param.commit the commit
-     * @param {Object} param.dispatch the dispatch
-     * @param {Object} param.rootGetters the rootGetters
      * @param {Object} currentComponent The current component.
      * @param {String} type The type of the current component.
      * @param {String} side The menu side.
      * @returns {void}
      */
-    activateCurrentComponent ({commit, dispatch, rootGetters}, {currentComponent, type, side}) {
+    activateCurrentComponent ({currentComponent, type, side}) {
         const lowerType = changeCase.lowerFirst(type),
             name = isPiniaModule(lowerType)
                 ? getPiniaModuleStore(lowerType)().name
-                : rootGetters[`Modules/${type}/name`];
+                : store.getters[`Modules/${type}/name`];
 
-        commit("setExpandedBySide", {expanded: true, side: side});
-        dispatch("changeCurrentComponent", {
+        this[side].expanded = true;
+        this.changeCurrentComponent({
             type: currentComponent.type,
             side: side,
             props: {
@@ -32,57 +93,57 @@ export default {
 
     /**
      * Change the currently shown component.
-     * @param {Object} param store context
-     * @param {Object} param.commit the commit
-     * @param {Object} param.dispatch the dispatch
-     * @param {Object} param.state the state
      * @param {String} type The current component type.
      * @param {String} side secondary or main Menu
      * @param {String} props The props of the current component.
      * @returns {void}
      */
-    changeCurrentComponent ({commit, dispatch, state}, {type, side, props}) {
-        const currentType = state[side].navigation.currentComponent.type,
-            currentProps = state[side].navigation.currentComponent.props;
+    changeCurrentComponent ({type, side, props}) {
+        const currentType = this[side].navigation.currentComponent.type,
+            currentProps = this[side].navigation.currentComponent.props;
 
         if (props?.closeOppositeMenu) {
             const oppositeSide = side === "mainMenu" ? "secondaryMenu" : "mainMenu";
 
-            if (state[oppositeSide].expanded) {
-                commit("setExpandedBySide", {expanded: false, side: oppositeSide});
+            if (this[oppositeSide].expanded) {
+                this[oppositeSide].expanded = false;
             }
         }
 
         if (currentType !== type || currentType === "folder" && type === "folder" || currentType === "layerSelection" && type === "layerSelection") {
-            commit("setCurrentComponent", {type, side, props});
-            dispatch("changeCurrentMouseMapInteractionsComponent", {type, side});
+            setCurrentComponent(this, {type, side, props});
+            this.changeCurrentMouseMapInteractionsComponent({type, side});
         }
         else if (props?.name !== currentProps?.name) {
-            commit("setCurrentComponentProps", {side, props});
+            this[side].navigation.currentComponent.props = props;
         }
+    },
+    /**
+     * Switches to the previous component.
+     * @param {String} side secondary or main Menu
+     * @returns {void}
+     */
+    switchToPreviousComponent (side) {
+        switchToPreviousComponent(this, side);
     },
 
     /**
      * Change the current component with mouse map interactions.
      * Note: Only one such component can be active at the same time.
      * If another one is switched on, the other one is closed and reset to "root";
-     * @param {Object} param store context
-     * @param {Object} param.commit the commit
-     * @param {Object} param.rootGetters the rootGetters
-     * @param {Object} param.state the state
      * @param {String} type The component type.
      * @param {String} side secondary or main Menu
      * @returns {void}
      */
-    changeCurrentMouseMapInteractionsComponent ({commit, rootGetters, state}, {type, side}) {
-        if (type !== state.currentMouseMapInteractionsComponent && rootGetters[`Modules/${changeCase.upperFirst(type)}/hasMouseMapInteractions`]) {
+    changeCurrentMouseMapInteractionsComponent ({type, side}) {
+        if (type !== this.currentMouseMapInteractionsComponent && store.getters[`Modules/${changeCase.upperFirst(type)}/hasMouseMapInteractions`]) {
             const otherSide = side === "mainMenu" ? "secondaryMenu" : "mainMenu";
 
-            if (state[otherSide].navigation.currentComponent.type === state.currentMouseMapInteractionsComponent) {
-                commit("switchToRoot", otherSide);
+            if (this[otherSide].navigation.currentComponent.type === this.currentMouseMapInteractionsComponent) {
+                switchToRoot(this, otherSide);
             }
 
-            commit("setCurrentMouseMapInteractionsComponent", type);
+            this.currentMouseMapInteractionsComponent = type;
         }
     },
 
@@ -90,20 +151,18 @@ export default {
      * Resets the component using mouse map interaction to the default one.
      * Note: Only one such component can be active at the same time.
      * If another one is switched on, the other one is closed and reset to "root";
-     * @param {Object} param store context
-     * @param {Object} param.commit the commit
-     * @param {Object} param.state the state
      * @param {*} side secondary or main menu
+     * @returns {void}
      */
-    resetCurrentMouseMapInteractionsComponent ({commit, state}, side) {
-        if (state.defaultComponent !== state.currentMouseMapInteractionsComponent) {
+    resetCurrentMouseMapInteractionsComponent (side) {
+        if (this.defaultComponent !== this.currentMouseMapInteractionsComponent) {
             const otherSide = side === "mainMenu" ? "secondaryMenu" : "mainMenu";
 
-            if (state[otherSide].navigation.currentComponent.type === state.currentMouseMapInteractionsComponent) {
-                commit("switchToRoot", otherSide);
+            if (this[otherSide].navigation.currentComponent.type === this.currentMouseMapInteractionsComponent) {
+                switchToRoot(this, otherSide);
             }
 
-            commit("setCurrentMouseMapInteractionsComponent", state.defaultComponent);
+            this.currentMouseMapInteractionsComponent = this.defaultComponent;
         }
     },
 
@@ -111,9 +170,6 @@ export default {
      * Action triggered when a menu element has been clicked.
      * Add an entry to the navigation and, when the element
      * was a Folder, focus the first child-element.
-     * @param {Object} param store context
-     * @param {Object} param.dispatch the dispatch
-     * @param {Object} param.rootGetters the rootGetters
      * @param {String} name Name of the element.
      * @param {Array} path Path leading up to the clicked menu element.
      * @param {String} side The menu side of the element.
@@ -121,204 +177,172 @@ export default {
      * @param {Object} properties properties of the element.
      * @returns {void}
      */
-    clickedMenuElement ({dispatch, rootGetters}, {name, path, side, type, properties}) {
+    clickedMenuElement ({name, path, side, type, properties}) {
         if (type) {
             if (type === "customMenuElement") {
                 if (properties.openURL !== undefined) {
                     window.open(properties.openURL);
                 }
                 if (properties.execute !== undefined) {
-                    dispatch(properties.execute.action, properties.execute.payload, {root: true});
+                    store.dispatch(properties.execute.action, properties.execute.payload);
                 }
                 if (properties.htmlContent === undefined && properties.pathToContent === undefined) {
-                    if (rootGetters.isMobile) {
-                        dispatch("Menu/toggleMenu", side, {root: true});
+                    if (store.getters.isMobile) {
+                        this.toggleMenu(side);
                     }
                     return;
                 }
             }
             if (type === "folder") {
                 nextTick(() => {
-                    dispatch("changeCurrentComponent", {type: type, side: side, props: {path: path, name: name}});
+                    this.changeCurrentComponent({type: type, side: side, props: {path: path, name: name}});
                 });
             }
             else {
                 const props = properties ? Object.assign(properties, {name: name}) : {name: name};
 
-                dispatch("changeCurrentComponent", {type: type, side: side, props: props});
+                this.changeCurrentComponent({type: type, side: side, props: props});
             }
         }
     },
 
     /**
      * Closes and resets Menucontainers.
-     * @param {Object} param store context
-     * @param {Object} param.commit the commit
-     * @param {Object} param.dispatch the dispatch
-     * @param {Object} param.getters the getters
-     * @param {Object} param.state the state
      * @param {String} side secondary or main Menu
      * @returns {void}
      */
-    closeMenu ({commit, dispatch, getters, state}, side) {
-        if (getters.currentComponent(side).type === state.currentMouseMapInteractionsComponent && getters.currentComponent(side).type !== state.defaultComponent) {
-            dispatch("changeCurrentMouseMapInteractionsComponent", {type: state.defaultComponent, side});
+    closeMenu (side) {
+        if (this.currentComponent(side).type === this.currentMouseMapInteractionsComponent && this.currentComponent(side).type !== this.defaultComponent) {
+            this.changeCurrentMouseMapInteractionsComponent({type: this.defaultComponent, side});
         }
 
-        commit("switchToRoot", side);
-        dispatch("toggleMenu", side);
+        switchToRoot(this, side);
+        this.toggleMenu(side);
     },
 
     /**
      * Navigates back and removes last entry from the navigation and handles search navigation case.
-     * @param {Object} param store context
-     * @param {Object} param.commit the commit
-     * @param {Object} param.dispatch the dispatch
-     * @param {Object} param.getters the getters
-     * @param {Object} param.state the state
-     * @param {Object} param.rootGetters the rootGetters
      * @param {Object} payload the payload
      * @param {String} payload.side Side on which the navigation action occurred.
      * @param {Boolean} [payload.doNotTrack] Additional flag for user tracking observing this action.
      * @returns {void}
      */
-    navigateBack ({commit, dispatch, getters, state, rootGetters}, {side}) {
-        const actionEvent = rootGetters["Modules/SearchBar/currentActionEvent"];
+    navigateBack ({side}) {
+        const actionEvent = store.getters["Modules/SearchBar/currentActionEvent"];
 
         nextTick(() => {
-            if (getters.currentComponent(side).type === state.currentMouseMapInteractionsComponent && getters.currentComponent(side).type !== state.defaultComponent) {
-                dispatch("changeCurrentMouseMapInteractionsComponent", {type: state.defaultComponent, side});
+            if (this.currentComponent(side).type === this.currentMouseMapInteractionsComponent && this.currentComponent(side).type !== this.defaultComponent) {
+                this.changeCurrentMouseMapInteractionsComponent({type: this.defaultComponent, side});
             }
-            if (getters.currentComponent(side).type !== "layerInformation" && rootGetters["Modules/SearchBar/showAllResults"] === false || rootGetters["Modules/SearchBar/currentSide"] !== side) {
-                commit("switchToPreviousComponent", side);
+            if (this.currentComponent(side).type !== "layerInformation" && store.getters["Modules/SearchBar/showAllResults"] === false || store.getters["Modules/SearchBar/currentSide"] !== side) {
+                switchToPreviousComponent(this, side);
             }
-            if (getters.currentComponent(side).type === "searchBar") {
-                if (rootGetters["Modules/SearchBar/showAllResults"] === true && rootGetters["Modules/SearchBar/currentSide"] === side && actionEvent === "") {
-                    dispatch("resetSearchbarNavigation", {side: side});
+            if (this.currentComponent(side).type === "searchBar") {
+                if (store.getters["Modules/SearchBar/showAllResults"] === true && store.getters["Modules/SearchBar/currentSide"] === side && actionEvent === "") {
+                    this.resetSearchbarNavigation({side: side});
                 }
-                commit("Modules/SearchBar/setPlaceholder", rootGetters["Modules/SearchBar/globalPlaceholder"], {root: true});
+                store.commit("Modules/SearchBar/setPlaceholder", store.getters["Modules/SearchBar/globalPlaceholder"]);
             }
-            if (getters.currentComponent(side).type === "layerSelection") {
-                dispatch("navigateSearchbarInLayerSelection", {side: side});
+            if (this.currentComponent(side).type === "layerSelection") {
+                this.navigateSearchbarInLayerSelection({side: side});
             }
-            if (actionEvent !== "" && rootGetters["Modules/SearchBar/currentSide"] === side) {
-                dispatch("navigateSearchbarActionEventNotInLayerSelection", {side: side});
+            if (actionEvent !== "" && store.getters["Modules/SearchBar/currentSide"] === side) {
+                this.navigateSearchbarActionEventNotInLayerSelection({side: side});
             }
-            if (getters.currentComponent(side).type === "layerInformation") {
-                commit("switchToPreviousComponent", side);
+            if (this.currentComponent(side).type === "layerInformation") {
+                switchToPreviousComponent(this, side);
             }
         });
     },
-
     /**
      * Sets navigation history to root and adapts searchBar state.
-     * @param {Object} param store context
-     * @param {Object} param.commit the commit
      * @param {String} side Side on which the navigation action occurred.
      * @returns {void}
      */
-    resetSearchbarNavigation ({commit}, {side}) {
-        commit("Modules/SearchBar/setShowAllResults", false, {root: true});
-        commit("Menu/setCurrentComponentPropsName", {side: side, name: "common:modules.searchBar.searchResultList"}, {root: true});
-        commit("Menu/setNavigationHistoryBySide", {side: side, newHistory: [{type: "root", props: []}]}, {root: true});
+    resetSearchbarNavigation ({side}) {
+        store.commit("Modules/SearchBar/setShowAllResults", false);
+        this[side].navigation.currentComponent.props.name = "common:modules.searchBar.searchResultList";
+        this[side].navigation.history = [{type: "root", props: []}];
     },
 
     /**
-     * Sets state of searchBar if current action event is filled and searcgbar does not contain layerSelection.
-     * Resets current action event.
-     * @param {Object} param store context
-     * @param {Object} param.commit the commit
-     * @param {Object} param.rootGetters the rootGetters
-     * @param {String} side Side on which the navigation action occurred.
-     * @returns {void}
-     */
-    navigateSearchbarActionEventNotInLayerSelection ({commit, dispatch, rootGetters}, {side}) {
-        const actionEvent = rootGetters["Modules/SearchBar/currentActionEvent"];
+         * Sets state of searchBar if current action event is filled and searcgbar does not contain layerSelection.
+         * Resets current action event.
+         * @param {String} side Side on which the navigation action occurred.
+         * @returns {void}
+         */
+    navigateSearchbarActionEventNotInLayerSelection ({side}) {
+        const actionEvent = store.getters["Modules/SearchBar/currentActionEvent"];
 
-        commit("Modules/SearchBar/setShowSearchResultsInTree", false, {root: true});
+        store.commit("Modules/SearchBar/setShowSearchResultsInTree", false);
         if (actionEvent !== "showInTree" && actionEvent !== "showLayerInfo") {
-            dispatch("resetSearchbarNavigation", {side: side});
+            this.resetSearchbarNavigation({side: side});
         }
         else {
-            commit("Modules/SearchBar/setShowAllResults", true, {root: true});
+            store.commit("Modules/SearchBar/setShowAllResults", true);
         }
-        commit("Modules/SearchBar/setCurrentActionEvent", "", {root: true});
+        store.commit("Modules/SearchBar/setCurrentActionEvent", "");
     },
 
     /**
-     * Sets state of searchBar and navigates back in layerSelection depending on current navigation.
-     * Switches to previous component.
-     * @param {Object} param store context
-     * @param {Object} param.commit the commit
-     * @param {Object} param.dispatch the dispatch
-     * @param {Object} param.getters the getters
-     * @param {String} side Side on which the navigation action occurred.
-     * @returns {void}
-     */
-    navigateSearchbarInLayerSelection ({commit, dispatch, getters}, {side}) {
-        commit("Modules/SearchBar/setShowAllResults", false, {root: true});
-        if (getters.navigationHistory(side)[1]?.type === "layerSelection" && getters.navigationHistory(side)[2]?.type === "layerSelection") {
-            commit("Modules/SearchBar/setShowSearchResultsInTree", true, {root: true});
+         * Sets state of searchBar and navigates back in layerSelection depending on current navigation.
+         * Switches to previous component.
+         * @param {String} side Side on which the navigation action occurred.
+         * @returns {void}
+         */
+    navigateSearchbarInLayerSelection ({side}) {
+        store.commit("Modules/SearchBar/setShowAllResults", false);
+        if (this.navigationHistory(side)[1]?.type === "layerSelection" && this.navigationHistory(side)[2]?.type === "layerSelection") {
+            store.commit("Modules/SearchBar/setShowSearchResultsInTree", true);
         }
         else {
-            commit("Modules/SearchBar/setSearchResultsActive", false, {root: true});
-            commit("Modules/SearchBar/setShowSearchResultsInTree", false, {root: true});
-            dispatch("Modules/LayerSelection/navigateBack", {doNotTrack: true}, {root: true});
+            store.commit("Modules/SearchBar/setSearchResultsActive", false);
+            store.commit("Modules/SearchBar/setShowSearchResultsInTree", false);
+            store.dispatch("Modules/LayerSelection/navigateBack", {doNotTrack: true});
         }
-        commit("switchToPreviousComponent", side);
+        switchToPreviousComponent(this, side);
     },
 
     /**
-     * Resets MenuContainers.
-     * @param {Object} param store context
-     * @param {Function} param.commit the commit
-     * @param {Function} param.dispatch the dispatch
-     * @param {Object} param.getters the getters
-     * @param {Object} param.rootGetters the rootGetters
-     * @param {Object} param.state the state
-     * @param {String} side secondary or main Menu
-     * @returns {void}
-     */
-    resetMenu ({commit, dispatch, getters, state, rootGetters}, side) {
-        if (getters.currentComponent(side).type === state.currentMouseMapInteractionsComponent && getters.currentComponent(side).type !== state.defaultComponent) {
-            dispatch("changeCurrentMouseMapInteractionsComponent", {type: state.defaultComponent, side});
+         * Resets MenuContainers.
+         * @param {String} side secondary or main Menu
+         * @returns {void}
+         */
+    resetMenu (side) {
+        if (this.currentComponent(side).type === this.currentMouseMapInteractionsComponent && this.currentComponent(side).type !== this.defaultComponent) {
+            this.changeCurrentMouseMapInteractionsComponent({type: this.defaultComponent, side});
         }
 
-        if (getters.currentComponent(side).type === "layerInformation") {
-            dispatch("Modules/LayerSelection/reset", null, {root: true});
+        if (this.currentComponent(side).type === "layerInformation") {
+            store.dispatch("Modules/LayerSelection/reset", null);
         }
 
-        if (getters.currentComponent(side).type === "getFeatureInfo" && rootGetters["Modules/GetFeatureInfo/menuExpandedBeforeGfi"] === false) {
-            commit("setExpandedBySide", {expanded: false, side: side});
+        if (this.currentComponent(side).type === "getFeatureInfo" && store.getters["Modules/GetFeatureInfo/menuExpandedBeforeGfi"] === false) {
+            this[side].expanded = false;
         }
 
-        commit("switchToRoot", side);
+        switchToRoot(this, side);
     },
-
     /**
      * Toggles Menucontainers.
-     * @param {Object} param store context
-     * @param {Object} param.commit the commit
-     * @param {Object} param.rootGetters the rootGetters
-     * @param {Object} param.state the state
      * @param {String} side secondary or main Menu
      * @returns {void}
      */
-    toggleMenu ({commit, rootGetters, state}, side) {
+    toggleMenu (side) {
         if (side === "mainMenu") {
-            if (rootGetters.isMobile && state.secondaryMenu.expanded) {
-                commit("setExpandedBySide", {expanded: false, side: "secondaryMenu"});
+            if (store.getters.isMobile && this.secondaryMenu.expanded) {
+                this.secondaryMenu.expanded = false;
             }
-            commit("setExpandedBySide", {expanded: !state.mainMenu.expanded, side});
+            this.mainMenu.expanded = !this.mainMenu.expanded;
         }
         else if (side === "secondaryMenu") {
-            if (rootGetters.isMobile && state.mainMenu.expanded) {
-                commit("setExpandedBySide", {expanded: false, side: "mainMenu"});
+            if (store.getters.isMobile && this.mainMenu.expanded) {
+                this.mainMenu.expanded = false;
             }
             const footer = document.getElementById("module-portal-footer"),
                 layerPills = document.getElementById("layer-pills");
 
-            if (state.secondaryMenu.expanded) {
+            if (this.secondaryMenu.expanded) {
                 if (layerPills) {
                     layerPills.style.display = "";
                 }
@@ -326,45 +350,44 @@ export default {
                     footer.style.display = "";
                 }
             }
-            commit("setExpandedBySide", {expanded: !state.secondaryMenu.expanded, side});
+            this.secondaryMenu.expanded = !this.secondaryMenu.expanded;
         }
     },
 
     /**
-    * Update the state attributes of the currentComponent.
-     * @param {Object} param store context
-     * @param {Object} param.dispatch the dispatch
+     * Update the state attributes of the currentComponent.
      * @param {Object} params The params.
      * @param {String} type The type of the current component.
      * @param {Object} attributes The attributes.
      * @returns {void}
      */
-    updateComponentState ({dispatch}, {type, attributes}) {
-        if (this._actions[`Modules/${type}/urlParams`]) {
-            if (typeof attributes === "object") {
-                dispatch(`Modules/${type}/urlParams`, attributes, {root: true});
-            }
-            else {
-                dispatch(`Modules/${type}/urlParams`, JSON.parse(attributes), {root: true});
-            }
+    updateComponentState ({type, attributes}) {
+        const lowerType = changeCase.lowerFirst(type),
+            parsedAttributes = typeof attributes === "object"
+                ? attributes
+                : JSON.parse(attributes);
+
+        if (isPiniaModule(lowerType)) {
+            Object.assign(getPiniaModuleStore(lowerType)(), parsedAttributes);
+        }
+        else if (store._actions[`Modules/${type}/urlParams`]) {
+            store.dispatch(`Modules/${type}/urlParams`, parsedAttributes);
         }
         else {
-            Object.assign(this.state.Modules[type], attributes);
+            Object.assign(store.state.Modules[type], parsedAttributes);
         }
     },
     /**
      * Sets current MenuWidth
-     * @param {Object} param store context
-     * @param {Object} param.commit the commit
      * @param {String} type secondary or main Menu
      * @param {String} attributes attributes object with width value
      * @returns {void}
      */
-    setCurrentMenuWidth ({commit}, {type, attributes}) {
+    setCurrentMenuWidth ({type, attributes}) {
         if (attributes.width <= 95 && attributes.width >= 5) {
             const wString = attributes.width + "%";
 
-            commit("setCurrentMenuWidth", {side: type, width: wString});
+            this[type].width = wString;
         }
         else {
             console.error(i18next.t("common:modules.menu.widthUrlParamError"));

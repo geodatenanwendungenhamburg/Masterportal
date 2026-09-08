@@ -3,6 +3,7 @@ import baselayerHandler from "../js/handleSingleBaselayer.js";
 import sortBy from "@shared/js/utils/sortBy.js";
 import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants.js";
 import store from "@appstore/index.js";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 const actions = {
 
@@ -219,7 +220,11 @@ const actions = {
         }
 
         commit("setVisible", true);
-        dispatch("Menu/changeCurrentComponent", {type: getters.type, side: getters.menuSide, props: {name: getters.name}}, {root: true});
+        useMenuStore().changeCurrentComponent({
+            type: getters.type,
+            side: getters.menuSide,
+            props: {name: getters.name}
+        });
     }
 
 };

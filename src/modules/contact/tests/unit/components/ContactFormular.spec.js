@@ -2,6 +2,8 @@ import {createStore} from "vuex";
 import {mount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
+import {createPinia, setActivePinia} from "pinia";
+import {useMenuStore} from "@modules/menu/menu-store/menuStore.js";
 
 import ContactComponent from "@modules/contact/components/ContactFormular.vue";
 import ContactModule from "@modules/contact/store/indexContact.js";
@@ -25,6 +27,8 @@ function fillFields ({nameInput, mailInput, phoneInput, messageInput}) {
 
 describe("src/modules/contact/components/ContactFormular.vue", () => {
     let store,
+        pinia,
+        menuStore,
         wrapper,
         mainMenu = {
             currentComponent: "contact",
@@ -38,6 +42,10 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
         originalOnSendSuccessAction = ContactModule.actions.onSendSuccess;
 
     beforeEach(() => {
+        pinia = createPinia();
+        setActivePinia(pinia);
+        menuStore = useMenuStore();
+        menuStore.mainMenu = mainMenu;
         ContactModule.actions.send = sinon.spy();
         ContactModule.actions.onSendSuccess = sinon.spy();
 
@@ -58,17 +66,6 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
                     actions: {
                         addSingleAlert: sinon.spy()
                     }
-                },
-                Menu: {
-                    namespaced: true,
-                    getters: {
-                        mainMenu: () => mainMenu,
-                        secondaryMenu: () => {
-                            return {
-                                currentComponent: "draw"
-                            };
-                        }
-                    }
                 }
             },
             getters: {
@@ -88,7 +85,7 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
     it("has a disabled save button if the form is not completed", () => {
         wrapper = mount(ContactComponent, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }});
 
         const sendButton = wrapper.find("#module-contact-send-message");
@@ -100,7 +97,7 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
     it("has an enabled & working save button if the form is completed", async () => {
         wrapper = mount(ContactComponent, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }});
 
         const sendButton = wrapper.find("#module-contact-send-message"),
@@ -122,7 +119,7 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
     it("keeps the send button disabled if any field is missing", async () => {
         wrapper = mount(ContactComponent, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }});
 
         const sendButton = wrapper.find("#module-contact-send-message"),
@@ -150,7 +147,7 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
 
         wrapper = mount(ContactComponent, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }});
 
         const sendButton = wrapper.find("#module-contact-send-message"),
@@ -183,7 +180,7 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
         wrapper = mount(ContactComponent, {
             attachTo: elem,
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }});
 
         await wrapper.vm.$nextTick();
@@ -193,7 +190,7 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
     it("has an info message standard text", async () => {
         wrapper = mount(ContactComponent, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }});
 
         expect(wrapper.find("#contact-info-message").exists()).to.be.true;
@@ -223,10 +220,10 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
                 }
             }
         };
-
+        menuStore.mainMenu = mainMenu;
         wrapper = mount(ContactComponent, {
             global: {
-                plugins: [store]
+                plugins: [store, pinia]
             }});
 
         expect(wrapper.find("#contact-info-message").exists()).to.be.true;
@@ -239,7 +236,7 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
 
             wrapper = mount(ContactComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }});
 
             expect(wrapper.findComponent({name: "AccordionItem"}).exists()).to.be.false;
@@ -251,7 +248,7 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
 
             wrapper = mount(ContactComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }});
 
             const accordion = wrapper.findComponent({name: "AccordionItem"});
@@ -267,7 +264,7 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
 
             wrapper = mount(ContactComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }});
 
             const accordion = wrapper.findComponent({name: "AccordionItem"}),
@@ -322,7 +319,7 @@ describe("src/modules/contact/components/ContactFormular.vue", () => {
             };
             wrapper = mount(ContactComponent, {
                 global: {
-                    plugins: [store]
+                    plugins: [store, pinia]
                 }});
             checkNoDuplicatesSpy = sinon.spy(wrapper.vm, "checkNoDuplicates");
             addSingleAlertSpy = sinon.spy(wrapper.vm, "addSingleAlert");

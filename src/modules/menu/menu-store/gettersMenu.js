@@ -1,14 +1,11 @@
-import menuState from "./stateMenu.js";
 import idxProvider from "@shared/js/utils/idx.js";
-import {generateSimpleGetters} from "@shared/js/utils/generators.js";
 import changeCase from "@shared/js/utils/changeCase.js";
+import store from "@appstore/index.js";
 
-const menuGetters = {
-    ...generateSimpleGetters(menuState),
-
+export default {
     /**
      * Returns the current component for a menu side.
-     * @param {MenuNavigationState} state Local vuex state.
+     * @param {MenuNavigationState} state Local state.
      * @param {string} side Menu Side.
      * @returns {Object} The current component.
      */
@@ -16,8 +13,8 @@ const menuGetters = {
         return state[side].navigation.currentComponent;
     },
 
-    /**
-     * @param {MenuNavigationState} state Local vuex state.
+    /** cؤم
+     * @param {MenuNavigationState} state Local state.
      * @param {string} side Menu Side.
      * @returns {Object} Returns the Name of the currently visible Component.
      */
@@ -30,7 +27,9 @@ const menuGetters = {
                 name = i18next.t("common:modules.menu.name");
                 break;
             default:
-                name = currentComponent.props !== undefined && currentComponent.props.name ? i18next.t(currentComponent.props.name) : currentComponent.type;
+                name = currentComponent.props !== undefined && currentComponent.props.name
+                    ? i18next.t(currentComponent.props.name)
+                    : currentComponent.type;
                 break;
         }
 
@@ -38,7 +37,7 @@ const menuGetters = {
     },
 
     /**
-     * @param {MenuNavigationState} state Local vuex state.
+     * @param {MenuNavigationState} state Local state.
      * @param {string} side Menu Side
      * @returns {Object} Returns the currently visible Component.
      */
@@ -46,26 +45,16 @@ const menuGetters = {
         return state[side].navigation.currentComponent.props.path;
     },
 
-
     /**
-     * @param {MenuNavigationState} state Local vuex state.
+     * @param {MenuNavigationState} state Local state.
      * @param {string} side Menu Side
      * @returns {Object} Returns the current Menu-width
      */
     currentMenuWidth: state => side => {
         return state[side].width;
     },
-
-    /**
-     * Returns true, if a module with attribute hasMouseMapInteractions will be deactivated.
-     * @param {MenuState} state Local vuex state.
-     * @param {Object} getters Local vuex getters (discarded).
-     * @param {Object} rootState vuex rootState (discarded).
-     * @param {Object} rootGetters vuex rootGetters.
-     * @returns {boolean} Function returning component identified via deactivateModule.
-     */
-    deactivateModule: (state, getters, rootState, rootGetters) => type => {
-        if (rootGetters[`Modules/${changeCase.upperFirst(type)}/hasMouseMapInteractions`]
+    deactivateModule: state => type => {
+        if (store.getters[`Modules/${changeCase.upperFirst(type)}/hasMouseMapInteractions`]
             && changeCase.upperFirst(type) !== state.activeModuleMouseMapInteractions
         ) {
             return true;
@@ -75,7 +64,7 @@ const menuGetters = {
     },
 
     /**
-     * @param {Object} state Local vuex state.
+     * @param {Object} state Local state.
      * @returns {boolean} Whether the menu by side is opened.
      */
     expanded: state => side => {
@@ -83,7 +72,7 @@ const menuGetters = {
     },
 
     /**
-     * @param {Object} state Local vuex state.
+     * @param {Object} state Local state.
      * @returns {boolean} Whether the mainMenu is opened.
      */
     mainExpanded: state => {
@@ -91,7 +80,7 @@ const menuGetters = {
     },
 
     /**
-     * @param {Object} state Local vuex state.
+     * @param {Object} state Local state.
      * @returns {(Object|null)} Title of the mainMenu or null.
      */
     mainTitle: state => {
@@ -99,7 +88,7 @@ const menuGetters = {
     },
 
     /**
-     * @param {Object} state Local vuex state.
+     * @param {Object} state Local state.
      * @returns {string} Icon used for button toggling the mainMenu.
      */
     mainToggleButtonIcon: state => {
@@ -108,12 +97,14 @@ const menuGetters = {
 
     /**
      * Returns the Text to be chosen for backward menu navigation.
-     * @param {MenuState} state Local vuex state.
+     * @param {MenuState} state Local state.
      * @param {string} side side of the menu.
      * @returns {boolean} Function returning false or the Text.
      */
-    previousNavigationEntryText: (state) => side => {
-        const previousEntry = state[side].navigation.history.length !== 0 ? state[side].navigation.history.slice(-1)[0] : "";
+    previousNavigationEntryText: state => side => {
+        const previousEntry = state[side].navigation.history.length !== 0
+            ? state[side].navigation.history.slice(-1)[0]
+            : "";
         let previousEntryText = false;
 
         if (previousEntry !== "") {
@@ -123,26 +114,29 @@ const menuGetters = {
                     break;
                 }
                 default: {
-                    previousEntryText = previousEntry.props !== undefined && previousEntry.props.name ? i18next.t(previousEntry.props.name) : previousEntry.type;
+                    previousEntryText = previousEntry.props !== undefined && previousEntry.props.name
+                        ? i18next.t(previousEntry.props.name)
+                        : previousEntry.type;
                     break;
                 }
             }
         }
+
         return previousEntryText;
     },
 
     /**
-    Returns the navigation history according a side.
-     * @param {MenuState} state Local vuex state.
+     * Returns the navigation history according a side.
+     * @param {MenuState} state Local state.
      * @param {string} side side of the menu.
      * @returns {boolean} Function returning false or the Text.
      */
-    navigationHistory: (state) => side => {
+    navigationHistory: state => side => {
         return state[side].navigation.history;
     },
 
     /**
-     * @param {Object} state Local vuex state.
+     * @param {MenuState} state Local state.
      * @returns {boolean} Whether the secondaryMenu should be initially open.
      */
     secondaryExpanded: state => {
@@ -150,7 +144,7 @@ const menuGetters = {
     },
 
     /**
-     * @param {Object} state Local vuex state.
+     * @param {MenuState} state Local state.
      * @returns {(Object|null)} Title of the secondaryMenu or null.
      */
     secondaryTitle: state => {
@@ -158,7 +152,7 @@ const menuGetters = {
     },
 
     /**
-     * @param {Object} state Local vuex state.
+     * @param {MenuState} state Local state.
      * @returns {string} Icon used for button toggling the secondaryMenu.
      */
     secondaryToggleButtonIcon: state => {
@@ -166,13 +160,12 @@ const menuGetters = {
     },
 
     /**
-     * @param {MenuState} state Local vuex state (discarded).
-     * @param {Object} getters Local vuex getters.
+     * @param {MenuState} state Local state.
      * @returns {(Object|null)} Function returning a section of the menu.
      */
-    section: (state, getters) => path => {
-        if (path && getters[path[0]]) {
-            const section = idxProvider.idx(getters, path);
+    section: state => path => {
+        if (path && state[path[0]]) {
+            const section = idxProvider.idx(state, path);
 
             if (section === idxProvider.badPathSymbol) {
                 console.error(`Menu.getters.section: ${idxProvider.badPathSymbol.description} ${path}.`);
@@ -187,7 +180,7 @@ const menuGetters = {
     },
 
     /**
-     * @param {MenuState} state Local vuex state.
+     * @param {MenuState} state Local state.
      * @param {string} side Side of the menu.
      * @param {number} sectionIndex Index inside sections.
      * @returns {boolean} Whether the section has at least one item.
@@ -198,14 +191,16 @@ const menuGetters = {
         if (Array.isArray(section)) {
             return section.length > 0;
         }
+
         if (section && Array.isArray(section.elements)) {
             return section.elements.length > 0;
         }
+
         return false;
     },
 
     /**
-     * @param {Object} state Local vuex state.
+     * @param {Object} state Local state.
      * @param {string} side side of the menu.
      * @returns {boolean} Whether show description for modules in the menu by side.
      */
@@ -214,105 +209,86 @@ const menuGetters = {
     },
 
     /**
-     * @param {MenuState} state Local vuex state (discarded).
-     * @param {Object} getters Local vuex getters.
+     * @param {MenuState} state Local state.
      * @param {string} side side of the menu.
-     * @returns {({title: string, idAppendix: string}|null)} Function returning an object including the title and an appendix for the titles id to make it unique; may return null if no title is configured.
+     * @returns {({title: string, idAppendix: string}|null)} The title for the requested menu side or null.
      */
-    titleBySide: (state, getters) => side => {
-        if (side === "mainMenu" && getters.mainTitle) {
-            return {...getters.mainTitle, idAppendix: side};
+    titleBySide: state => side => {
+        if (side === "mainMenu" && state.mainMenu.title) {
+            return {...state.mainMenu.title, idAppendix: side};
         }
-        if (side === "secondaryMenu" && getters.secondaryTitle) {
-            return {...getters.secondaryTitle, idAppendix: side};
+
+        if (side === "secondaryMenu" && state.secondaryMenu.title) {
+            return {...state.secondaryMenu.title, idAppendix: side};
         }
+
         return null;
     },
 
     /**
-     * @param {MenuNavigationState} state Local vuex state.
+     * @param {MenuNavigationState} state Local state.
      * @param {string} side Menu Side.
      * @returns {boolean} Whether show Icon for the current component in the menu header by side
      */
     showHeaderIcon: state => side => {
         return state[side]?.showHeaderIcon;
     },
-
-    /**
-     * Returns the url params.
-     * @param {Object} state menu store state.
-     * @param {Object} getters menu store getters.
-     * @returns {string} The url params.
-     */
-    urlParams: (state, getters) => {
+    urlParams () {
         const params = {
                 main: {
-                    currentComponent: state.mainMenu.currentComponent
+                    currentComponent: this.mainMenu.currentComponent
                 },
                 secondary: {
-                    currentComponent: state.secondaryMenu.currentComponent
+                    currentComponent: this.secondaryMenu.currentComponent
                 }
             },
-            mainAttributes = getters.getComponentAttributes(state.mainMenu.currentComponent),
-            secondaryAttributes = getters.getComponentAttributes(state.secondaryMenu.currentComponent);
+            mainAttributes = this.getComponentAttributes(this.mainMenu.currentComponent),
+            secondaryAttributes = this.getComponentAttributes(this.secondaryMenu.currentComponent);
 
         if (mainAttributes) {
             params.main.attributes = mainAttributes;
         }
+
         if (secondaryAttributes) {
             params.secondary.attributes = secondaryAttributes;
         }
 
         return params;
     },
-
-    /**
-     * Returns the attributes of a module.
-     * If a getters `urlParams` exists in the module the attributes are obtained from it,
-     * if none exists all attributes of the state are used.
-     * @param {Object} state state of the app-store.
-     * @param {Object} getters menu store getters.
-     * @param {Object} rootState root state.
-     * @param {Object} rootGetters root getters.
-     * @returns {Object} The component attributes.
-     */
-    getComponentAttributes: (state, getters, rootState, rootGetters) => currentComponent => {
+    getComponentAttributes: () => currentComponent => {
         let moduleAttributes;
 
         if (currentComponent !== "root") {
             const moduleName = changeCase.upperFirst(currentComponent);
 
-            moduleAttributes = rootGetters[`Modules/${moduleName}/urlParams`];
+            moduleAttributes = store.getters[`Modules/${moduleName}/urlParams`];
 
             if (typeof moduleAttributes === "undefined") {
-                moduleAttributes = rootState.Modules[moduleName];
+                moduleAttributes = store.state.Modules[moduleName];
             }
         }
 
         return moduleAttributes;
     },
+
     /**
-     * @param {MenuState} state Local vuex state (discarded).
+     * @param {MenuState} state Local state.
      * @param {string} side side of the menu.
      * @returns {return} The requested menu side
      */
-    menuBySide: (state) => side => {
+    menuBySide: state => side => {
         return state[side];
     },
 
     /**
-     * @param {MenuState} state Local vuex state.
+     * @param {MenuState} state Local state.
      * @returns {boolean} Whether the secondary menu is enabled.
      */
-    secondaryMenuEnabled: (state, getters) => {
+    secondaryMenuEnabled: state => {
         const sections = state.secondaryMenu?.sections;
 
         return Array.isArray(sections) &&
-            sections.some((section, index) => {
-                if (getters?.sectionHasItems) {
-                    return getters.sectionHasItems("secondaryMenu", index);
-                }
-
+            sections.some(section => {
                 return (Array.isArray(section) && section.length > 0) ||
                     (section && Array.isArray(section.elements) && section.elements.length > 0);
             });
@@ -320,25 +296,28 @@ const menuGetters = {
 
     /**
      * Returns the padding for zooming to extent, depending on the menu state.
-     * The padding is calculated based on the current width of the main and secondary menu, if they are expanded, and an extra padding to ensure that the zoomed extent is not too close to the edge of the map.
-     * @param {MenuState} state Local vuex state.
+     * @param {MenuState} state Local state.
      * @returns {Array} The padding for zooming to extent.
      */
-    zoomToExtentPadding: (state) => {
+    zoomToExtentPadding: state => {
         const mainOffset = state.mainMenu.expanded ? state.currentMainMenuOffsetWidth : 0,
             secondaryOffset = state.secondaryMenu.expanded ? state.currentSecondaryMenuOffsetWidth : 0,
             extraPadding = 20;
 
-        return [extraPadding, secondaryOffset + extraPadding, extraPadding, mainOffset + extraPadding];
+        return [
+            extraPadding,
+            secondaryOffset + extraPadding,
+            extraPadding,
+            mainOffset + extraPadding
+        ];
     },
+
     /**
      * Returns the sections by side.
-     * @param {MenuState} state Local vuex state.
+     * @param {MenuState} state Local state.
      * @returns {Array} the sections by side
      */
-    sectionsBySide: (state) => side => {
+    sectionsBySide: state => side => {
         return state[side].sections;
     }
 };
-
-export default menuGetters;

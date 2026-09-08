@@ -1,7 +1,8 @@
 <script>
 import LayerTree from "../../layerTree/components/LayerTree.vue";
 import MenuContainerBodyRootItems from "./MenuContainerBodyRootItems.vue";
-import {mapGetters} from "vuex";
+import {mapState} from "pinia";
+import {useMenuStore} from "../menu-store/menuStore.js";
 
 /**
  * Renders the root/home view of the menu, displaying the layer tree (for mainMenu) and menu sections.
@@ -25,7 +26,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters("Menu", [
+        ...mapState(useMenuStore, [
             "mainMenu",
             "secondaryMenu",
             "sectionHasItems",
