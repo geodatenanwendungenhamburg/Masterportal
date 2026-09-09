@@ -13,6 +13,7 @@ import htmlExtFallback from "./tasks/html-ext-fallback-plugin.js";
 import {directoryListing} from "./tasks/directory-listing-plugin.js";
 import addonModules from "./tasks/addon-modules-plugin.js";
 import emptyAddonModulesPlugin from "./tasks/empty-addon-modules-plugin.js";
+import inlineRolldownRuntime from "./tasks/inline-rolldown-runtime-plugin.js";
 // import { analyzer } from "vite-bundle-analyzer";// Do not delete, comment in for analyzing bundle content and before install: npm install vite-bundle-analyzer --save-dev
 import vmShimPlugin from "./tasks/vm-shim-plugin.js";
 
@@ -152,6 +153,7 @@ export default defineConfig(({mode}) => {
                     }
                 }
             },
+            inlineRolldownRuntime(),
             !examplesOnly && {
                 ...cp({
                     hook: "writeBundle",
@@ -284,7 +286,7 @@ export default defineConfig(({mode}) => {
         build: {
             assetsDir: "js",
             sourcemap: false,
-            cssCodeSplit: true,
+            cssCodeSplit: false,
             cssMinify: "esbuild",
             chunkSizeWarningLimit: 5000,
             rollupOptions: {
@@ -295,7 +297,7 @@ export default defineConfig(({mode}) => {
                             extType = name.split(".").at(1),
                             isCss = (/css/i).test(extType);
 
-                        if (isProd && examplesOnly && isCss && name.includes("portal-basic")) {
+                        if (isProd && isCss) {
                             return `${buildBase}/css/masterportal.[ext]`;
                         }
 
@@ -311,6 +313,7 @@ export default defineConfig(({mode}) => {
                             return `${buildBase}/addons/${entry.name.substring(6)}.js`;
                         }
 
+                        // Single-entry builds (examplesOnly) bundle everything into the entry itself instead of a shared codeSplitting chunk.
                         if (isProd && examplesOnly && entry.name === "portal-basic") {
                             return `${buildBase}/js/masterportal.js`;
                         }
@@ -318,15 +321,9 @@ export default defineConfig(({mode}) => {
                         return `${buildBase}/js/[name].js`;
                     },
                     chunkFileNames: `${buildBase}/js/[name].js`,
-                    // "$initial" only matches statically reachable modules, so addons and other dynamic imports stay lazy.
+                    // Keep async Vue modules in deployable chunks while consolidating the initial graph.
                     codeSplitting: {
                         groups: [
-                            {
-                                name: "vendor",
-                                test: /[\\/]node_modules[\\/]/,
-                                tags: ["$initial"],
-                                priority: 10
-                            },
                             {
                                 name: "masterportal",
                                 tags: ["$initial"],
