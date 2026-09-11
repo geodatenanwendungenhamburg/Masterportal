@@ -210,11 +210,20 @@ export default {
          * @returns {void}
          */
         async handleCSVDownload () {
-            let dataString = await exportItem.setCsvAttributes(this.features, this.projectionCode);
+            const featuresWithAttributes = await exportItem.setCsvAttributes(this.features, this.projectionCode);
 
-            dataString = Array.isArray(dataString)
-                ? convertJsonToCsv(dataString.map(feature => feature.get("csv_attributes")), false, this.semicolonCsvDelimiter)
-                : "";
+            let dataString = "";
+
+            if (Array.isArray(featuresWithAttributes)) {
+                const csvObjects = featuresWithAttributes.map(feature => feature.get("csv_attributes"));
+
+                dataString = convertJsonToCsv(
+                    csvObjects,
+                    (err) => console.error(err),
+                    Boolean(this.semicolonCsvDelimiter),
+                    false
+                );
+            }
 
             this.triggerFileDownload(dataString, `${this.fileName}.csv`);
         },

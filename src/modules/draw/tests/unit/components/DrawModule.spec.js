@@ -12,7 +12,7 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
         selectedDrawTypeMain,
         enableAttributesSelector,
         preSelectedDownloadFormat,
-        semicolonCsvDelimiter,
+        semicolonCSVDelimiter,
         store,
         wrapper;
 
@@ -37,7 +37,7 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
         selectedDrawTypeMain = "";
         enableAttributesSelector = true;
         preSelectedDownloadFormat = "KML";
-        semicolonCsvDelimiter = false;
+        semicolonCSVDelimiter = false;
 
         store = createStore({
             actions: {
@@ -105,7 +105,7 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                                 drawSquareSettings: () => null,
                                 writeTextSettings: () => null,
                                 preSelectedDownloadFormat: () => preSelectedDownloadFormat,
-                                semicolonCsvDelimiter: () => semicolonCsvDelimiter,
+                                semicolonCSVDelimiter: () => semicolonCSVDelimiter,
                                 drawTypesGeometrie: () => ["line", "box", "polygon", "circle", "doubleCircle"],
                                 drawTypesMain: () => ["pen", "geometries", "symbols"],
                                 drawTypesSymbols: () => ["point"],
@@ -310,8 +310,8 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
             expect(wrapper.findComponent({name: "DrawEdit"}).props("preSelectedDownloadFormat")).to.equal(null);
         });
 
-        it("positive: forwards semicolonCsvDelimiter to DrawEdit", () => {
-            semicolonCsvDelimiter = true;
+        it("positive: forwards semicolonCSVDelimiter to DrawEdit", () => {
+            semicolonCSVDelimiter = true;
             wrapper = shallowMount(DrawModuleComponent, {
                 global: {
                     plugins: [store]
@@ -321,8 +321,8 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
             expect(wrapper.findComponent({name: "DrawEdit"}).props("semicolonCsvDelimiter")).to.equal(true);
         });
 
-        it("negative: forwards false semicolonCsvDelimiter by default", () => {
-            semicolonCsvDelimiter = false;
+        it("negative: forwards false semicolonCSVDelimiter by default", () => {
+            semicolonCSVDelimiter = false;
             wrapper = shallowMount(DrawModuleComponent, {
                 global: {
                     plugins: [store]
