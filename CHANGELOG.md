@@ -4,6 +4,13 @@
 
 [Semantic versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## 2026-09-11 v3.26.1
+
+### Changed
+- Build: Added plugin to remove rolldown-runtime.js from index.html
+
+---
+
 ## 2026-09-02 v3.26.0
 
 ### Added
