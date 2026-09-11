@@ -9,6 +9,7 @@ import DrawLayout from "@shared/modules/draw/components/DrawLayout.vue";
 import DrawSettingsCircle from "@shared/modules/draw/components/DrawSettingsCircle.vue";
 import DrawTypes from "@shared/modules/draw/components/DrawTypes.vue";
 import LayoutFrame from "@shared/modules/layoutFrame/components/LayoutFrame.vue";
+import stateDraw from "@modules/draw/store/stateDraw.js";
 import {
     getConfigSettingsByDrawType,
     getTooltipStyleFromConfigSettings,
@@ -36,7 +37,9 @@ export default {
         return {
             layer: null,
             source: markRaw(new VectorSource()),
-            initializedDrawConfigTypes: markRaw(new Set())
+            layoutSnapshots: markRaw(new Map()),
+            circleOptionsSnapshots: markRaw(new Map()),
+            outerCircleInitialized: false
         };
     },
     computed: {
@@ -101,8 +104,9 @@ export default {
                 });
             }
         },
-        selectedDrawType (newVal) {
-            this.applyConfigDrawSettings(newVal);
+        selectedDrawType (newVal, oldVal) {
+            this.saveDrawTypeSnapshot(oldVal);
+            this.applyDrawTypeState(newVal);
 
             if (["line", "box", "circle", "polygon", "doubleCircle", "square", "iconPoint"].includes(newVal)) {
                 nextTick(() => {
@@ -112,7 +116,7 @@ export default {
         }
     },
     mounted () {
-        this.applyConfigDrawSettings(this.selectedDrawType);
+        this.applyDrawTypeState(this.selectedDrawType);
         this.initializeDrawLayer();
 
         const existingLayer = layerCollection.getLayerById("importDrawLayer");
@@ -139,42 +143,60 @@ export default {
             "setSelectedSymbol"
         ]),
         /**
-         * Applies settings from config to the new draw state for a given draw type.
+         * Stores a snapshot of the current layout (and circle options, for circle/doubleCircle) for the
+         * given draw type, so it can be restored unaffected by style changes made while another draw type
+         * is selected.
+         * @param {String} drawType The draw type whose current style should be captured.
+         * @returns {void}
+         */
+        saveDrawTypeSnapshot (drawType) {
+            if (!drawType) {
+                return;
+            }
+
+            this.layoutSnapshots.set(drawType, {...this.currentLayout});
+
+            if (drawType === "circle" || drawType === "doubleCircle") {
+                this.circleOptionsSnapshots.set(drawType, {...this.circleOptions});
+            }
+        },
+
+        /**
+         * Applies the style state for the given draw type. Restores a previously saved snapshot when the
+         * draw type was already visited, otherwise builds the initial state from config settings merged
+         * with this module's defaults. This prevents style changes (color, stroke width, transparency, ...)
+         * from leaking between different draw types.
          * @param {String} selectedDrawType The currently selected draw type.
          * @returns {void}
          */
-        applyConfigDrawSettings (selectedDrawType) {
-            if (!selectedDrawType || this.initializedDrawConfigTypes.has(selectedDrawType)) {
+        applyDrawTypeState (selectedDrawType) {
+            if (!selectedDrawType) {
                 return;
             }
 
             const configSettings = getConfigSettingsByDrawType(selectedDrawType, this),
-                  nextLayout = mapConfigStyleSettingsToLayout(configSettings);
+                  nextLayout = this.layoutSnapshots.get(selectedDrawType) ?? {...stateDraw.currentLayout, ...mapConfigStyleSettingsToLayout(configSettings)};
 
-            if (Object.keys(nextLayout).length > 0) {
-                this.setCurrentLayout(nextLayout);
-            }
+            this.setCurrentLayout(nextLayout);
+            this.layoutSnapshots.set(selectedDrawType, nextLayout);
 
             const isCircle = selectedDrawType === "circle",
                   isDoubleCircle = selectedDrawType === "doubleCircle";
 
             if (isCircle || isDoubleCircle) {
-                if (isDoubleCircle && this.drawDoubleCircleSettings && typeof this.drawDoubleCircleSettings === "object") {
-                    const nextOuterCircleLayout = mapConfigOuterCircleSettings(this.drawDoubleCircleSettings);
+                if (isDoubleCircle && !this.outerCircleInitialized) {
+                    const doubleCircleConfigSettings = this.drawDoubleCircleSettings && typeof this.drawDoubleCircleSettings === "object" ? this.drawDoubleCircleSettings : null,
+                          nextOuterCircleLayout = {...stateDraw.currentLayoutOuterCircle, ...mapConfigOuterCircleSettings(doubleCircleConfigSettings)};
 
-                    if (Object.keys(nextOuterCircleLayout).length > 0) {
-                        this.setCurrentLayoutOuterCircle(nextOuterCircleLayout);
-                    }
+                    this.setCurrentLayoutOuterCircle(nextOuterCircleLayout);
+                    this.outerCircleInitialized = true;
                 }
 
-                const nextCircleOptions = mapConfigCircleOptions(selectedDrawType, configSettings);
+                const nextCircleOptions = this.circleOptionsSnapshots.get(selectedDrawType) ?? {...stateDraw.circleOptions, ...mapConfigCircleOptions(selectedDrawType, configSettings)};
 
-                if (Object.keys(nextCircleOptions).length > 0) {
-                    this.setCircleOptions(nextCircleOptions);
-                }
+                this.setCircleOptions(nextCircleOptions);
+                this.circleOptionsSnapshots.set(selectedDrawType, nextCircleOptions);
             }
-
-            this.initializedDrawConfigTypes.add(selectedDrawType);
         },
 
         /**
