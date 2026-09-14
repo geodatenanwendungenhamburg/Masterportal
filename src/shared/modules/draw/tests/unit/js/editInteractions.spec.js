@@ -1,7 +1,12 @@
 import {expect} from "chai";
 import sinon from "sinon";
 import Feature from "ol/Feature.js";
+import GeometryCollection from "ol/geom/GeometryCollection.js";
+import LineString from "ol/geom/LineString.js";
+import MultiLineString from "ol/geom/MultiLineString.js";
+import MultiPolygon from "ol/geom/MultiPolygon.js";
 import Point from "ol/geom/Point.js";
+import Polygon from "ol/geom/Polygon.js";
 import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 
@@ -9,10 +14,12 @@ import {
     createSelectInteractions,
     setupDeleteInteraction,
     deleteAllFeatures,
+    getLastCoordinate,
     performUndo,
     performRedo,
     handleDeleteAll,
     applyTextEditToFeature,
+    setTooltipPosition,
     toggleLayerVisibility,
     isDeleteAllMode
 } from "@shared/modules/draw/js/editInteractions.js";
@@ -305,6 +312,86 @@ describe("src/shared/modules/draw/js/editInteractions.js", () => {
 
         it("should return false for null", () => {
             expect(isDeleteAllMode(null)).to.be.false;
+        });
+    });
+
+    describe("getLastCoordinate", () => {
+        it("should return the last coordinate of a LineString", () => {
+            const geometry = new LineString([[0, 0], [10, 20], [30, 40]]);
+
+            expect(getLastCoordinate(geometry)).to.deep.equal([30, 40]);
+        });
+
+        it("should return the last coordinate of the outer ring of a Polygon", () => {
+            const geometry = new Polygon([[[0, 0], [10, 0], [10, 10], [0, 0]]]);
+
+            expect(getLastCoordinate(geometry)).to.deep.equal([0, 0]);
+        });
+
+        it("should return a flat coordinate for a MultiPolygon instead of a nested array", () => {
+            const geometry = new MultiPolygon([
+                [[[0, 0], [10, 0], [10, 10], [0, 0]]],
+                [[[20, 20], [30, 20], [30, 30], [20, 20]]]
+            ]);
+
+            expect(getLastCoordinate(geometry)).to.deep.equal([20, 20]);
+        });
+
+        it("should return a flat coordinate for a MultiLineString instead of a nested array", () => {
+            const geometry = new MultiLineString([
+                [[0, 0], [10, 10]],
+                [[20, 20], [30, 30]]
+            ]);
+
+            expect(getLastCoordinate(geometry)).to.deep.equal([30, 30]);
+        });
+
+        it("should drop the third value of geometries with an XYZ layout", () => {
+            const geometry = new MultiPolygon([
+                [[[0, 0, 5], [10, 0, 5], [10, 10, 5], [0, 0, 5]]]
+            ], "XYZ");
+
+            expect(getLastCoordinate(geometry)).to.deep.equal([0, 0]);
+        });
+
+        it("should return null for an empty geometry", () => {
+            expect(getLastCoordinate(new MultiPolygon([]))).to.be.null;
+        });
+
+        it("should return null for a geometry without flat coordinates", () => {
+            const geometry = new GeometryCollection([new Point([10, 20])]);
+
+            expect(getLastCoordinate(geometry)).to.be.null;
+        });
+
+        it("should return null if a coordinate value is not finite", () => {
+            const geometry = new LineString([[0, 0], [NaN, 40]]);
+
+            expect(getLastCoordinate(geometry)).to.be.null;
+        });
+    });
+
+    describe("setTooltipPosition", () => {
+        let tooltipElement,
+            tooltipOverlay;
+
+        beforeEach(() => {
+            tooltipElement = {style: {display: "block"}};
+            tooltipOverlay = {setPosition: sinon.spy()};
+        });
+
+        it("should set the given coordinate as position and keep the tooltip visible", () => {
+            setTooltipPosition([10, 20], tooltipElement, tooltipOverlay);
+
+            expect(tooltipOverlay.setPosition.calledOnceWithExactly([10, 20])).to.be.true;
+            expect(tooltipElement.style.display).to.equal("block");
+        });
+
+        it("should reset the position and hide the tooltip if no coordinate is given", () => {
+            setTooltipPosition(null, tooltipElement, tooltipOverlay);
+
+            expect(tooltipOverlay.setPosition.calledOnceWithExactly(undefined)).to.be.true;
+            expect(tooltipElement.style.display).to.equal("none");
         });
     });
 });

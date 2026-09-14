@@ -370,10 +370,12 @@ export {
     setupDeleteInteraction,
     setupModifyInteraction,
     deleteAllFeatures,
+    getLastCoordinate,
     performUndo,
     performRedo,
     handleDeleteAll,
     applyTextEditToFeature,
+    setTooltipPosition,
     toggleLayerVisibility,
     isDeleteAllMode
 };
