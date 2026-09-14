@@ -61,6 +61,43 @@ function createFeatureClickHandler (map, layer, onFeatureSelected, onTextFeature
 }
 
 /**
+ * Determines the last coordinate of a geometry, regardless of its nesting depth.
+ * Works for simple as well as multi geometries, whose coordinates are nested arrays.
+ * @param {ol/geom/SimpleGeometry} geometry The geometry to read the coordinate from.
+ * @returns {Number[]|null} The last coordinate as [x, y] or null if it cannot be determined.
+ */
+function getLastCoordinate (geometry) {
+    const flatCoordinates = geometry.getFlatCoordinates?.(),
+        stride = geometry.getStride?.() ?? 2;
+
+    if (!Array.isArray(flatCoordinates) || flatCoordinates.length < stride) {
+        return null;
+    }
+
+    const startIndex = flatCoordinates.length - stride,
+        coordinate = [flatCoordinates[startIndex], flatCoordinates[startIndex + 1]];
+
+    return coordinate.every(value => Number.isFinite(value)) ? coordinate : null;
+}
+
+/**
+ * Sets the tooltip position if the given coordinate is usable, otherwise hides the tooltip.
+ * @param {Number[]|null} coordinate The coordinate to place the tooltip at.
+ * @param {HTMLDivElement} tooltipElement The tooltip HTML element.
+ * @param {ol/Overlay} tooltipOverlay The tooltip overlay.
+ * @returns {void}
+ */
+function setTooltipPosition (coordinate, tooltipElement, tooltipOverlay) {
+    if (coordinate) {
+        tooltipOverlay.setPosition(coordinate);
+    }
+    else {
+        tooltipOverlay.setPosition(undefined);
+        tooltipElement.style.display = "none";
+    }
+}
+
+/**
  * Updates the tooltip content and position based on the geometry of the feature being modified.
  * @param {ol/Feature} feature The feature being modified.
  * @param {HTMLDivElement} tooltipElement The tooltip HTML element.
@@ -77,25 +114,21 @@ function updateModifyTooltip (feature, tooltipElement, tooltipOverlay) {
             center = geometry.getCenter();
 
         tooltipElement.innerHTML = `${i18next.t("common:modules.draw.drawSettings.radius")}: ${formattedRadius}m`;
-        tooltipOverlay.setPosition(center);
+        setTooltipPosition(center, tooltipElement, tooltipOverlay);
     }
     else if (type === "Polygon" || type === "MultiPolygon") {
-        const coords = geometry.getCoordinates()[0],
-            area = Math.round(geometry.getArea()),
-            formattedArea = area.toLocaleString("de-DE"),
-            lastCoord = coords[coords.length - 1];
+        const area = Math.round(geometry.getArea()),
+            formattedArea = area.toLocaleString("de-DE");
 
         tooltipElement.innerHTML = `${i18next.t("common:modules.draw.drawSettings.area")}: ${formattedArea}m²`;
-        tooltipOverlay.setPosition(lastCoord);
+        setTooltipPosition(getLastCoordinate(geometry), tooltipElement, tooltipOverlay);
     }
     else if (type === "LineString" || type === "MultiLineString") {
         const length = Math.round(geometry.getLength()),
-            formattedLength = length.toLocaleString("de-DE"),
-            coords = geometry.getCoordinates(),
-            lastCoord = coords[coords.length - 1];
+            formattedLength = length.toLocaleString("de-DE");
 
         tooltipElement.innerHTML = `${i18next.t("common:modules.draw.drawSettings.length")}: ${formattedLength}m`;
-        tooltipOverlay.setPosition(lastCoord);
+        setTooltipPosition(getLastCoordinate(geometry), tooltipElement, tooltipOverlay);
     }
     else {
         tooltipElement.style.display = "none";

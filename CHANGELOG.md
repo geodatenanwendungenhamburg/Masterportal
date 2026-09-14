@@ -35,6 +35,7 @@
 - Matomo: Removed implementation from MasterPortal (has been rewritten as an addon).
 
 ### Fixed
+- Draw: Fixed an error when editing imported multi geometries (e.g. from KML files), which prevented the measurement tooltip from being positioned.
 - Issue \#1624: Fixed misleading parameter in config.js.md
 - Issue \#1625: Fixed using configured styleId when mousehover on vectorlayers.
 - Issue \#1631: Property preparation in wfst tool can now handle objects in gfiAttributes and saves geometry without having to configure it in gfiAttributes.
