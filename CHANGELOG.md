@@ -62,6 +62,7 @@
 - Issue \#1625: Fixed using configured styleId when mousehover on vectorlayers.
 - Issue \#1631: Property preparation in wfst tool can now handle objects in gfiAttributes and saves geometry without having to configure it in gfiAttributes.
 - Issue \#1643: Alerting: Fixed a stale `onceInSession` alert (e.g. a layer attribution hint) reappearing together with a new alert once the modal had already been closed.
+- Issue \#1648: layer2dVectorSensorThings: Fixed updateFeatureLocation. Incoming location changes via mqtt are updated correctly.
 - Issue \#1649: Print no longer crashes when style conditions are missing properties and logs a warning and falls back to default styling.
 - FileImport: importDrawLayer reappears in the layer tree when importing a file, even after being removed.
 - SearchBar: Fixed misaligned action icons in "Show all" results for street searches.

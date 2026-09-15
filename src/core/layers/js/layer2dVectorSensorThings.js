@@ -1551,11 +1551,14 @@ Layer2dVectorSensorThings.prototype.updateObservationForDatastreams = function (
 * @returns {void}
 */
 Layer2dVectorSensorThings.prototype.updateFeatureLocation = function (feature, observation, onsuccess) {
-    if (typeof feature?.getGeometry !== "function" || !Array.isArray(observation?.location?.geometry?.coordinates) || !observation.location.geometry.coordinates.length) {
+    if (typeof feature?.getGeometry !== "function" || !Array.isArray(observation?.location?.coordinates) || !observation.location.coordinates.length) {
         return;
     }
-    const mapProjection = this.get("crs"),
-        coordinates = this.get("epsg") !== mapProjection ? crs.transform(this.get("epsg"), mapProjection, observation.location.geometry.coordinates) : observation.location.geometry.coordinates;
+
+    const mapProjection = mapCollection.getMapView("2D").getProjection().getCode();
+    const epsg = this.get("epsg");
+
+    const coordinates = epsg !== mapProjection ? crs.transform(epsg, mapProjection, observation.location.coordinates) : observation.location.coordinates;
 
     if (typeof onsuccess === "function") {
         this.locationUpdating[feature.get("dataStreamId")] = true;
