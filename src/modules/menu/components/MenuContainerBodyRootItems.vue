@@ -11,6 +11,7 @@ import {getPiniaModuleStore, isPiniaModule} from "../../modules-store/piniaModul
  * @vue-prop {Array} path - The path to find the MenuContainerBodyElement inside the store structure.
  * @vue-prop {String} side - The side in which the menu component is being rendered.
  * @vue-computed {Array} sections - Returns the sections of this side.
+ * @vue-computed {Array} itemProps - Returns the merged (config + state) properties of all items in this section.
  */
 export default {
     name: "MenuContainerBodyRootItems",
@@ -38,23 +39,30 @@ export default {
         ...mapGetters("Menu", ["customMenuElementIcon", "section", "sectionsBySide"]),
         sections () {
             return this.sectionsBySide(this.side);
+        },
+
+        /**
+         * Builds the properties of every item to render, merged from config.json and the module's state.
+         * Recomputes automatically whenever the sections or the referenced module state (e.g. Login) changes.
+         * @returns {Array} The properties of all items in this section.
+         */
+        itemProps () {
+            const itemProps = [],
+                  items = this.section(this.path);
+
+            if (items) {
+                const list = Array.isArray(items) ? items : items.elements;
+
+                list.forEach(item => {
+                    const props = this.chooseProperties(item);
+
+                    if (props) {
+                        itemProps.push(props);
+                    }
+                });
+            }
+            return itemProps;
         }
-    },
-    watch: {
-        sections: {
-            /**
-             * Is triggered if sections change. E.g. if module 'openConfig' is used with another config.json.
-             * Loads new sections.
-             * @returns {void}
-             */
-            handler () {
-                this.prepareItemProps();
-            },
-            deep: true
-        }
-    },
-    created () {
-        this.prepareItemProps();
     },
     methods: {
         /**
@@ -94,32 +102,6 @@ export default {
                 }
             }
             return properties;
-        },
-
-        prepareItemProps () {
-            this.itemProps = [];
-            const items = this.section(this.path);
-
-            if (items) {
-                if (Array.isArray(items)) {
-                    this.section(this.path).forEach(item => {
-                        const props = this.chooseProperties(item);
-
-                        if (props) {
-                            this.itemProps.push(props);
-                        }
-                    });
-                }
-                else {
-                    items.elements.forEach(element => {
-                        const props = this.chooseProperties(element);
-
-                        if (props) {
-                            this.itemProps.push(props);
-                        }
-                    });
-                }
-            }
         }
     }
 };

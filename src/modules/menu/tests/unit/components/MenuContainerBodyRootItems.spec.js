@@ -163,6 +163,23 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
         expect(properties.someFlag).to.equal(true);
     });
 
+    it("updates the rendered icon when the module's own state changes at runtime (e.g. Login toggling between login/logout)", async () => {
+        sections = [{type: "testModule", name: "testModuleName"}];
+        wrapper = shallowMount(MenuContainerBodyRootItems, {
+            global: {
+                plugins: [store]
+            },
+            propsData: {idAppendix: "mainMenu", path: pathMainMenu}
+        });
+
+        expect(wrapper.findAll("#mp-menu-body-items-element-0-mainMenu")[0].attributes("icon")).to.be.equal("bi-state");
+
+        store.state.Modules.TestModule.icon = "bi-updated";
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.findAll("#mp-menu-body-items-element-0-mainMenu")[0].attributes("icon")).to.be.equal("bi-updated");
+    });
+
     it("section contains 'customMenuElement' with icon", () => {
         sections = [{
             type: "customMenuElement",
