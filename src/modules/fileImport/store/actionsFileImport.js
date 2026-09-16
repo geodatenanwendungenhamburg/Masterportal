@@ -17,6 +17,7 @@ import {treeSubjectsKey} from "@shared/js/utils/constants.js";
 import {supportedFiletypes} from "../utils/supportedFiletypes.js";
 
 const defaultFont = "16px Arial",
+    gpxDrawStateNamespace = "https://masterportal.org/gpx",
     supportedFormats = {
         kml: new KML({
             extractStyles: true,
@@ -41,9 +42,33 @@ const defaultFont = "16px Arial",
                 zIndex: 0
             })]
         }),
-        gpx: new GPX(),
+        gpx: new GPX({readExtensions: readGpxExtensions}),
         geojson: new GeoJSON()
     };
+
+/**
+ * Reads the draw state from a Masterportal GPX extension.
+ * @param {ol/Feature} feature The feature being read.
+ * @param {Element|null} extensionsNode The GPX extensions node.
+ * @returns {void}
+ */
+function readGpxExtensions (feature, extensionsNode) {
+    if (!extensionsNode) {
+        return;
+    }
+
+    const drawStateNode = extensionsNode.getElementsByTagNameNS(gpxDrawStateNamespace, "drawState")[0];
+
+    if (!drawStateNode) {
+        return;
+    }
+
+    const drawState = parseDrawState(drawStateNode.textContent);
+
+    if (drawState) {
+        feature.set("drawState", drawState);
+    }
+}
 
 /**
  * Strips the file extension and replaces non-alphanumeric characters (except hyphens) with hyphens.

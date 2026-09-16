@@ -143,6 +143,27 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
             })).to.be.true;
         });
 
+        it("restores draw state from a gpx extension", () => {
+            const drawState = {
+                    drawType: {id: "drawLine", geometry: "LineString"},
+                    strokeWidth: 4,
+                    colorContour: [12, 34, 56, 1]
+                },
+                payload = {
+                    layer,
+                    raw: `<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:masterportal="https://masterportal.org/gpx"><rte><extensions><masterportal:drawState>${JSON.stringify(drawState)}</masterportal:drawState></extensions><rtept lat="53.56" lon="9.97"/><rtept lat="53.57" lon="9.98"/></rte></gpx>`,
+                    filename: "serializedDrawState.gpx"
+                },
+                state = {
+                    selectedFiletype: "auto",
+                    showConfirmation: true
+                };
+
+            importFile({state, dispatch, rootGetters, commit}, payload);
+
+            expect(layer.getSource().getFeatures()[0].get("masterportal_attributes").drawState).to.deep.equal(drawState);
+        });
+
         it("preset \"auto\", correct geojson file, correct filename", async () => {
             const payload = {
                 raw: rawSources[3],
