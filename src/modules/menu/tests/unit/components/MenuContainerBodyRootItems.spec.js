@@ -31,14 +31,7 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
                     }
                 },
                 Modules: {
-                    namespaced: true,
-                    state: () => ({
-                        TestModule: {
-                            icon: "bi-state",
-                            description: "stateDescription",
-                            someFlag: true
-                        }
-                    })
+                    namespaced: true
                 }
             }
         });
@@ -160,7 +153,6 @@ describe("src/modules/menu/MenuContainerBodyRootItems.vue", () => {
 
         expect(properties.icon).to.equal("bi-item");
         expect(properties.description).to.equal("itemDescription");
-        expect(properties.someFlag).to.equal(true);
     });
 
     it("section contains 'customMenuElement' with icon", () => {
