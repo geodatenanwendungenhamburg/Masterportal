@@ -6,7 +6,7 @@ import SwitchInput from "../../checkboxes/components/SwitchInput.vue";
  * @module shared/modules/draw/DrawSettingsCircle
  * @vue-prop {Object} [circleOptions={innerRadius: 0, interactive: true, outerRadius: 100, unit: "m"}] - The circle Options.
  * @vue-prop {String} [selectedDrawType=""] - The selected draw type.
- * @vue-prop {Function} setCircleOptions - Setter for circle options.
+ * @vue-prop {function(Object): void} setCircleOptions - Setter for circle options.
  * @vue-prop {String[]} [units=["m", "km"]] - The units.
  * @vue-computed {String} currentUnit - The current unit.
  * @vue-computed {String[]} radii - The radii.
@@ -64,6 +64,13 @@ export default {
             }
 
             return ["radius"];
+        },
+        /**
+         * Checks if the inner radius is greater than the outer radius.
+         * @returns {Boolean} True if the condition is violated, false otherwise.
+         */
+        isRadiusInvalid () {
+            return this.circleOptions.innerRadius > this.circleOptions.outerRadius;
         }
     },
     methods: {
@@ -77,6 +84,21 @@ export default {
             const optionsKey = radius === "outerRadius" ? "outerRadius" : "innerRadius";
 
             this.setCircleOptions({[optionsKey]: parseInt(value, 10)});
+        },
+
+        /**
+         * Sets focus to the first interactive element in the circle settings.
+         * For circle, focuses the interactive switch; for doubleCircle, focuses the unit select.
+         * @public
+         * @returns {void}
+         */
+        focus () {
+            if (this.selectedDrawType === "circle" && this.$refs.interactiveSwitch) {
+                this.$refs.interactiveSwitch.focus();
+            }
+            else if (this.$refs.unitSelect) {
+                this.$refs.unitSelect.focus();
+            }
         }
     }
 };
@@ -84,28 +106,30 @@ export default {
 
 <template>
     <div>
-        <div class="mb-3">
-            <span>{{ $t("common:shared.modules.draw.drawSettingsCircle.settings." + selectedDrawType) }}</span>
-        </div>
         <div
             v-if="selectedDrawType === 'circle'"
             class="form-check form-switch mb-3"
         >
             <SwitchInput
                 :id="'draw-settings-circle-interactive-' + selectedDrawType"
+                ref="interactiveSwitch"
                 :aria="$t('common:shared.modules.draw.drawSettingsCircle.interactive')"
                 :interaction="(event) => setCircleOptions({interactive: event.target.checked})"
                 :label="$t('common:shared.modules.draw.drawSettingsCircle.interactive')"
                 :checked="circleOptions.interactive"
             />
         </div>
-        <div v-if="!circleOptions.interactive || selectedDrawType === 'doubleCircle'">
+        <div
+            v-if="!circleOptions.interactive || selectedDrawType === 'doubleCircle'"
+            class="circle-settings"
+        >
             <div class="form-floating mb-3">
                 <select
                     :id="'draw-circle-settings-' + selectedDrawType"
-                    :ref="'draw-circle-settings-' + selectedDrawType"
+                    ref="unitSelect"
                     v-model="currentUnit"
                     class="form-select"
+                    :disabled="selectedDrawType === 'circle' && circleOptions.interactive"
                 >
                     <option
                         v-for="unit in units"
@@ -133,12 +157,19 @@ export default {
                         class="form-control"
                         min="0"
                         step="1"
+                        :disabled="selectedDrawType === 'circle' && circleOptions.interactive"
                         @input="updateRadiusInCircleOptions($event.target.value, radius)"
                     >
                     <label :for="'draw-circle-settings-' + radius">
                         {{ $t("common:shared.modules.draw.drawSettingsCircle.radii." + radius) }}
                     </label>
                 </div>
+            </div>
+            <div
+                v-if="isRadiusInvalid && selectedDrawType === 'doubleCircle'"
+                class="text-danger mt-2"
+            >
+                {{ $t("common:shared.modules.draw.drawSettingsCircle.radiusValidation") }}
             </div>
         </div>
     </div>
@@ -149,6 +180,10 @@ export default {
 
 .input-radius {
     width: 100%;
+}
+
+.circle-settings {
+    margin-top: 2rem;
 }
 
 </style>

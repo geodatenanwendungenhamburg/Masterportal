@@ -66,6 +66,14 @@ export default {
         handleClick (event) {
             this.$emit("click", event);
             this.interaction(event);
+        },
+        /**
+         * Sets focus to the button element.
+         * @public
+         * @returns {void}
+         */
+        focus () {
+            this.$refs.button?.focus();
         }
     }
 };
@@ -77,7 +85,8 @@ export default {
     >
         <button
             :id="id"
-            tabindex="0"
+            ref="button"
+            :tabindex="disabled ? -1 : 0"
             class="btn d-flex align-items-center justify-items-center mb-auto"
             type="button"
             :title="aria"

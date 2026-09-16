@@ -1,3 +1,4 @@
+import {createStore} from "vuex";
 import {shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
@@ -8,6 +9,7 @@ import DrawSettingsCircleComponent from "@shared/modules/draw/components/DrawSet
 describe("src/shared/modules/draw/components/DrawSettingsCircle.vue", () => {
     let circleOptions,
         setCircleOptionsSpy,
+        store,
         wrapper;
 
     beforeEach(() => {
@@ -18,6 +20,21 @@ describe("src/shared/modules/draw/components/DrawSettingsCircle.vue", () => {
             unit: "m"
         };
         setCircleOptionsSpy = sinon.spy();
+        store = createStore({
+            modules: {
+                Modules: {
+                    namespaced: true,
+                    modules: {
+                        Draw: {
+                            namespaced: true,
+                            state: {
+                                currentLayout: {strokeWidth: 1}
+                            }
+                        }
+                    }
+                }
+            }
+        });
     });
 
 
@@ -31,10 +48,7 @@ describe("src/shared/modules/draw/components/DrawSettingsCircle.vue", () => {
                 }
             });
 
-            expect(wrapper.find("div > span").exists()).to.be.true;
-            expect(wrapper.find("div > span").text()).to.equals("common:shared.modules.draw.drawSettingsCircle.settings.circle");
-
-            expect(wrapper.find("div:nth-of-type(2) > switch-input-stub").exists()).to.be.true;
+            expect(wrapper.find("switch-input-stub#draw-settings-circle-interactive-circle").exists()).to.be.true;
         });
 
         it("renders the elements for drawtype === 'circle' and interactive === false", () => {
@@ -48,25 +62,17 @@ describe("src/shared/modules/draw/components/DrawSettingsCircle.vue", () => {
                 }
             });
 
-            expect(wrapper.find("div > span").exists()).to.be.true;
-            expect(wrapper.find("div > span").text()).to.equals("common:shared.modules.draw.drawSettingsCircle.settings.circle");
+            expect(wrapper.find("switch-input-stub#draw-settings-circle-interactive-circle").exists()).to.be.true;
 
-            expect(wrapper.find("div:nth-of-type(2) > switch-input-stub").exists()).to.be.true;
+            expect(wrapper.find("select#draw-circle-settings-circle").exists()).to.be.true;
+            expect(wrapper.find("select#draw-circle-settings-circle > option[value='m']").exists()).to.be.true;
+            expect(wrapper.find("select#draw-circle-settings-circle > option[value='km']").exists()).to.be.true;
+            expect(wrapper.find("label[for='draw-circle-settings-circle']").exists()).to.be.true;
+            expect(wrapper.find("label[for='draw-circle-settings-circle']").text()).to.equals("common:shared.modules.draw.drawSettingsCircle.unit");
 
-            expect(wrapper.find("div:nth-of-type(3) > div.form-floating").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(3) > div.form-floating > select.form-select").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(3) > div.form-floating > select.form-select > option:nth-of-type(1)").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(3) > div.form-floating > select.form-select > option:nth-of-type(1)").text()).to.equals("m");
-            expect(wrapper.find("div:nth-of-type(3) > div.form-floating > select.form-select > option:nth-of-type(2)").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(3) > div.form-floating > select.form-select > option:nth-of-type(2)").text()).to.equals("km");
-            expect(wrapper.find("div:nth-of-type(3) > div.form-floating > label").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(3) > div.form-floating > label").text()).to.equals("common:shared.modules.draw.drawSettingsCircle.unit");
-
-            expect(wrapper.find("div:nth-of-type(3) > div:nth-of-type(2)").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(3) > div:nth-of-type(2) > div.form-floating").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(3) > div:nth-of-type(2) > div.form-floating > input").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(3) > div:nth-of-type(2) > div.form-floating > label").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(3) > div:nth-of-type(2) > div.form-floating > label").text()).to.equals("common:shared.modules.draw.drawSettingsCircle.radii.radius");
+            expect(wrapper.find("input#draw-circle-settings-radius").exists()).to.be.true;
+            expect(wrapper.find("label[for='draw-circle-settings-radius']").exists()).to.be.true;
+            expect(wrapper.find("label[for='draw-circle-settings-radius']").text()).to.equals("common:shared.modules.draw.drawSettingsCircle.radii.radius");
         });
 
         it("renders the elements for drawtype === 'doubleCircle'", () => {
@@ -78,28 +84,19 @@ describe("src/shared/modules/draw/components/DrawSettingsCircle.vue", () => {
                 }
             });
 
-            expect(wrapper.find("div > span").exists()).to.be.true;
-            expect(wrapper.find("div > span").text()).to.equals("common:shared.modules.draw.drawSettingsCircle.settings.doubleCircle");
+            expect(wrapper.find("select#draw-circle-settings-doubleCircle").exists()).to.be.true;
+            expect(wrapper.find("select#draw-circle-settings-doubleCircle > option[value='m']").exists()).to.be.true;
+            expect(wrapper.find("select#draw-circle-settings-doubleCircle > option[value='km']").exists()).to.be.true;
+            expect(wrapper.find("label[for='draw-circle-settings-doubleCircle']").exists()).to.be.true;
+            expect(wrapper.find("label[for='draw-circle-settings-doubleCircle']").text()).to.equals("common:shared.modules.draw.drawSettingsCircle.unit");
 
-            expect(wrapper.find("div:nth-of-type(2) > div.form-floating").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(2) > div.form-floating > select.form-select").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(2) > div.form-floating > select.form-select > option:nth-of-type(1)").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(2) > div.form-floating > select.form-select > option:nth-of-type(1)").text()).to.equals("m");
-            expect(wrapper.find("div:nth-of-type(2) > div.form-floating > select.form-select > option:nth-of-type(2)").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(2) > div.form-floating > select.form-select > option:nth-of-type(2)").text()).to.equals("km");
-            expect(wrapper.find("div:nth-of-type(2) > div.form-floating > label").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(2) > div.form-floating > label").text()).to.equals("common:shared.modules.draw.drawSettingsCircle.unit");
+            expect(wrapper.find("input#draw-circle-settings-innerRadius").exists()).to.be.true;
+            expect(wrapper.find("label[for='draw-circle-settings-innerRadius']").exists()).to.be.true;
+            expect(wrapper.find("label[for='draw-circle-settings-innerRadius']").text()).to.equals("common:shared.modules.draw.drawSettingsCircle.radii.innerRadius");
 
-            expect(wrapper.find("div:nth-of-type(2) > div:nth-of-type(2)").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(2) > div:nth-of-type(2) > div.form-floating").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(2) > div:nth-of-type(2) > div.form-floating > input").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(2) > div:nth-of-type(2) > div.form-floating > label").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(2) > div:nth-of-type(2) > div.form-floating > label").text()).to.equals("common:shared.modules.draw.drawSettingsCircle.radii.innerRadius");
-
-            expect(wrapper.find("div:nth-of-type(2) > div:nth-of-type(3) > div.form-floating").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(2) > div:nth-of-type(3) > div.form-floating > input").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(2) > div:nth-of-type(3) > div.form-floating > label").exists()).to.be.true;
-            expect(wrapper.find("div:nth-of-type(2) > div:nth-of-type(3) > div.form-floating > label").text()).to.equals("common:shared.modules.draw.drawSettingsCircle.radii.outerRadius");
+            expect(wrapper.find("input#draw-circle-settings-outerRadius").exists()).to.be.true;
+            expect(wrapper.find("label[for='draw-circle-settings-outerRadius']").exists()).to.be.true;
+            expect(wrapper.find("label[for='draw-circle-settings-outerRadius']").text()).to.equals("common:shared.modules.draw.drawSettingsCircle.radii.outerRadius");
         });
     });
 
@@ -141,7 +138,7 @@ describe("src/shared/modules/draw/components/DrawSettingsCircle.vue", () => {
 
             updateRadiusInCircleOptionsSpy = sinon.spy(wrapper.vm, "updateRadiusInCircleOptions");
 
-            input = wrapper.find("div:nth-of-type(3) > div:nth-of-type(2) > div.form-floating > input");
+            input = wrapper.find("input#draw-circle-settings-radius");
             input.element.value = value;
 
             await wrapper.vm.$nextTick();
@@ -194,7 +191,7 @@ describe("src/shared/modules/draw/components/DrawSettingsCircle.vue", () => {
 
             updateRadiusInCircleOptionsSpy = sinon.spy(wrapper.vm, "updateRadiusInCircleOptions");
 
-            input = wrapper.find("div:nth-of-type(2) > div:nth-of-type(3) > div.form-floating > input");
+            input = wrapper.find("input#draw-circle-settings-outerRadius");
             input.element.value = value;
 
             await input.trigger("input");
@@ -207,6 +204,32 @@ describe("src/shared/modules/draw/components/DrawSettingsCircle.vue", () => {
             expect(setCircleOptionsSpy.firstCall.args[0]).to.deep.equals({
                 outerRadius: 500
             });
+        });
+    });
+
+    describe("isRadiusInvalid computed", () => {
+        it("should return true if innerRadius > outerRadius", () => {
+            circleOptions.innerRadius = 200;
+            circleOptions.outerRadius = 100;
+
+            wrapper = shallowMount(DrawSettingsCircleComponent, {
+                propsData: {circleOptions, selectedDrawType: "doubleCircle", setCircleOptions: setCircleOptionsSpy},
+                global: {plugins: [store]}
+            });
+
+            expect(wrapper.vm.isRadiusInvalid).to.be.true;
+        });
+
+        it("should return false if innerRadius <= outerRadius", () => {
+            circleOptions.innerRadius = 50;
+            circleOptions.outerRadius = 100;
+
+            wrapper = shallowMount(DrawSettingsCircleComponent, {
+                propsData: {circleOptions, selectedDrawType: "doubleCircle", setCircleOptions: setCircleOptionsSpy},
+                global: {plugins: [store]}
+            });
+
+            expect(wrapper.vm.isRadiusInvalid).to.be.false;
         });
     });
 });

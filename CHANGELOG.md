@@ -10,6 +10,7 @@
 ### Added
 - LinechartItem: Added possibility to configure custom plugins to extend Chart.js default behaviour.
 - WFS-T: Added configurable per-field input validation on single insert and update, configurable in the layer's `gfiAttributes`.
+- Draw: Added new draw module to replace draw_old (type="draw").
 
 ### Changed
 
@@ -20,6 +21,7 @@
 ### Fixed
 - Issue \#1655: Menu modules now keep their own configuration when multiple modules of the same type are defined in config.json. LayerSlider and Filter no longer reuse the last configured instance.
 - Accessibility: Fixed accessibility issues across layer tree and controls (label associations, icon-button naming, ARIA semantics, and preview alt text).
+- Draw: Fixed an error when editing imported multi geometries (e.g. from KML files), which prevented the measurement tooltip from being positioned.
 
 ---
 

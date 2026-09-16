@@ -198,6 +198,9 @@
             "type": "legend"
           },
           {
+            "type": "draw"
+          },
+          {
             "type": "scaleSwitcher"
           },
           {

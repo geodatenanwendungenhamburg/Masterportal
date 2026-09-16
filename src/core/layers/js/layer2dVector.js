@@ -207,7 +207,13 @@ Layer2dVector.prototype.initStyle = async function (attrs) {
  */
 Layer2dVector.prototype.createStyle = async function (attrs) {
     const styleId = attrs.styleId,
-        styleObject = styleList.returnStyleObject(styleId) ?? await styleList.initStyleAndAddToList(Config, styleId);
+        isDynamic = attrs.isDynamic === true;
+
+    if (isDynamic && (typeof styleId === "undefined" || styleId === null || styleId === "")) {
+        return;
+    }
+
+    const styleObject = styleList.returnStyleObject(styleId) ?? await styleList.initStyleAndAddToList(Config, styleId);
 
     if (styleObject !== undefined) {
         /**

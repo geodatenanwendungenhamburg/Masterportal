@@ -4,11 +4,15 @@ import {expect} from "chai";
 import sinon from "sinon";
 
 import DrawModuleComponent from "@modules/draw/components/DrawModule.vue";
+import {mapConfigStyleSettingsToLayout} from "@modules/draw/js/drawConfigSettings.js";
 
 
 describe("src/modules/draw/components/DrawModule.vue", () => {
     let selectedDrawType,
         selectedDrawTypeMain,
+        enableAttributesSelector,
+        preSelectedDownloadFormat,
+        semicolonCSVDelimiter,
         store,
         wrapper;
 
@@ -31,8 +35,14 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
     beforeEach(() => {
         selectedDrawType = "";
         selectedDrawTypeMain = "";
+        enableAttributesSelector = true;
+        preSelectedDownloadFormat = "KML";
+        semicolonCSVDelimiter = false;
 
         store = createStore({
+            actions: {
+                addLayerToLayerConfig: sinon.stub()
+            },
             modules: {
                 Modules: {
                     namespaced: true,
@@ -40,8 +50,11 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                         namespaced: true,
                         Draw: {
                             namespaced: true,
-                            actions: {},
+                            actions: {
+                                initializeDrawLayer: sinon.stub().resolves(null)
+                            },
                             getters: {
+                                buttonsDisabled: () => false,
                                 circleOptions: () => {
                                     return {
                                         innerRadius: 100,
@@ -54,7 +67,10 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                                         fillColor: [55, 126, 184],
                                         fillTransparency: 0,
                                         strokeColor: [0, 0, 0],
-                                        strokeWidth: 1
+                                        strokeWidth: 1,
+                                        squareMethod: "interactive",
+                                        squareArea: 0,
+                                        squareUnit: "m"
                                     };
                                 },
                                 currentLayoutOuterCircle: () => {
@@ -65,7 +81,8 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                                         strokeWidth: 1
                                     };
                                 },
-                                drawEdits: () => ["deleteAll", "delete", "modify", "undo", "redo"],
+                                drawEdits: () => ["deleteAll", "delete", "modify", "editAttributes", "undo", "redo"],
+                                enableAttributesSelector: () => enableAttributesSelector,
                                 drawIcons: () => {
                                     return {
                                         box: "bi-square",
@@ -79,19 +96,51 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                                         symbols: "bi-circle-square"
                                     };
                                 },
+                                drawSymbolSettings: () => null,
+                                drawLineSettings: () => null,
+                                drawCurveSettings: () => null,
+                                drawAreaSettings: () => null,
+                                drawCircleSettings: () => null,
+                                drawDoubleCircleSettings: () => null,
+                                drawSquareSettings: () => null,
+                                writeTextSettings: () => null,
+                                preSelectedDownloadFormat: () => preSelectedDownloadFormat,
+                                semicolonCSVDelimiter: () => semicolonCSVDelimiter,
                                 drawTypesGeometrie: () => ["line", "box", "polygon", "circle", "doubleCircle"],
                                 drawTypesMain: () => ["pen", "geometries", "symbols"],
                                 drawTypesSymbols: () => ["point"],
+                                iconList: () => [],
                                 selectedDrawType: () => selectedDrawType,
                                 selectedDrawTypeMain: () => selectedDrawTypeMain,
                                 selectedInteraction: () => "draw",
                                 strokeRange: () => [1, 16],
                                 units: sinon.stub().returns(["m", "km"])
+                            },
+                            mutations: {
+                                addDrawTypeSymbol: sinon.stub(),
+                                incrementIdCounter: sinon.stub(),
+                                setCircleOptions: sinon.stub(),
+                                setCurrentLayout: sinon.stub(),
+                                setCurrentLayoutOuterCircle: sinon.stub(),
+                                setLineLength: sinon.stub(),
+                                setSelectedDrawType: sinon.stub(),
+                                setSelectedDrawTypeMain: sinon.stub(),
+                                setSelectedInteraction: sinon.stub(),
+                                setSelectedSymbol: sinon.stub()
                             }
                         }
                     }
                 }
             }
+        });
+
+        sinon.stub(document, "getElementById").callsFake(() => {
+            return {
+                getBoundingClientRect: () => ({
+                    left: 100,
+                    right: 200
+                })
+            };
         });
     });
 
@@ -143,6 +192,8 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
                 }
             });
 
+            expect(wrapper.find("layout-frame-stub").exists()).to.be.true;
+
             expect(wrapper.findAll("draw-types-stub").length).to.equals(2);
         });
 
@@ -169,8 +220,7 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
             });
 
             expect(wrapper.findAll("draw-types-stub").length).to.equals(2);
-            expect(wrapper.findAll("draw-layout-stub").length).to.equals(1);
-            expect(wrapper.find("#draw-layouts > draw-layout-stub").exists()).to.be.true;
+            expect(wrapper.findAll("layout-frame-stub").length).to.equals(2);
         });
 
         it("renders the shared module drawTypes and draw layouts for selectedDrawTypeMain - symbols and selectedDrawType - doubleCircle", () => {
@@ -184,7 +234,102 @@ describe("src/modules/draw/components/DrawModule.vue", () => {
             });
 
             expect(wrapper.findAll("draw-types-stub").length).to.equals(2);
-            expect(wrapper.findAll("draw-layout-stub").length).to.equals(2);
+            expect(wrapper.findAll("layout-frame-stub").length).to.equals(2);
+        });
+    });
+
+    describe("config settings mapping", () => {
+        it("positive: maps drawLineSettings to current layout", () => {
+            const result = mapConfigStyleSettingsToLayout({
+                strokeWidth: 3,
+                colorContour: [10, 20, 30, 1],
+                opacityContour: 0.25,
+                squareMethod: "defined"
+            });
+
+            expect(result).to.deep.equal({
+                strokeWidth: 3,
+                strokeColor: [10, 20, 30],
+                fillTransparency: 75,
+                squareMethod: "defined"
+            });
+        });
+
+        it("negative: returns empty layout for invalid config settings", () => {
+            const result = mapConfigStyleSettingsToLayout(undefined);
+
+            expect(result).to.deep.equal({});
+        });
+    });
+
+    describe("isEditAttributesControlEnabled", () => {
+        it("positive: passes false to DrawEdit when enableAttributesSelector is false", () => {
+            enableAttributesSelector = false;
+            wrapper = shallowMount(DrawModuleComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.vm.isEditAttributesControlEnabled).to.be.false;
+            expect(wrapper.findComponent({name: "DrawEdit"}).props("showEditAttributesControl")).to.be.false;
+        });
+
+        it("negative: passes true to DrawEdit when enableAttributesSelector is true", () => {
+            wrapper = shallowMount(DrawModuleComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.vm.isEditAttributesControlEnabled).to.be.true;
+            expect(wrapper.findComponent({name: "DrawEdit"}).props("showEditAttributesControl")).to.be.true;
+        });
+    });
+
+    describe("download config forwarding", () => {
+        it("positive: forwards preselected format to DrawEdit", () => {
+            preSelectedDownloadFormat = "CSV";
+            wrapper = shallowMount(DrawModuleComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.findComponent({name: "DrawEdit"}).props("preSelectedDownloadFormat")).to.equal("CSV");
+        });
+
+        it("negative: forwards null when no download preselection is configured", () => {
+            preSelectedDownloadFormat = null;
+            wrapper = shallowMount(DrawModuleComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.findComponent({name: "DrawEdit"}).props("preSelectedDownloadFormat")).to.equal(null);
+        });
+
+        it("positive: forwards semicolonCSVDelimiter to DrawEdit", () => {
+            semicolonCSVDelimiter = true;
+            wrapper = shallowMount(DrawModuleComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.findComponent({name: "DrawEdit"}).props("semicolonCsvDelimiter")).to.equal(true);
+        });
+
+        it("negative: forwards false semicolonCSVDelimiter by default", () => {
+            semicolonCSVDelimiter = false;
+            wrapper = shallowMount(DrawModuleComponent, {
+                global: {
+                    plugins: [store]
+                }
+            });
+
+            expect(wrapper.findComponent({name: "DrawEdit"}).props("semicolonCsvDelimiter")).to.equal(false);
         });
     });
 });

@@ -295,7 +295,12 @@
     },
     "draw": {
       "description": "Create important markers or mark areas",
-      "name": "Drawing / Writing"
+      "name": "Drawing / Writing",
+      "drawSettings": {
+        "radius": "Radius",
+        "area": "Area",
+        "length": "Length"
+      }
     },
     "draw_old": {
       "attributeSelect": {
@@ -1603,12 +1608,39 @@
         }
       },
       "draw": {
+        "attributeSelect": {
+          "attributeDuplicatedKeyError": "Attribute key already exists.",
+          "attributeKeyError": "Please provide a key for the attribute.",
+          "attributeValueError": "Please provide a value for the attribute.",
+          "add": "Add attribute",
+          "accept": "Accept",
+          "remove": "Delete attribute",
+          "clickHint": "Click on a  drawing to edit its attributes.",
+          "noFeatureSelected": "No drawing selected. Please click on a drawing.",
+          "input": {
+            "key": "Attribute key",
+            "value": "Attribute value",
+            "newKey": "New key",
+            "newValue": "New value"
+          }
+        },
         "drawEdit": {
           "delete": "Delete geometry / text",
           "deleteAll": "Delete all",
           "modify": "Edit geometry",
+          "editAttributes": "Create and edit attributes",
+          "hide": "Hide drawing",
+          "download": "Download",
           "redo": "Redo",
-          "undo": "Undo"
+          "undo": "Undo",
+          "chooseFeature": "Choose a geometry or text to edit.",
+          "textAccept": "Accept",
+          "textLabel": "Text",
+          "textPlaceholder": "Enter text"
+        },
+        "drawEditStyle": {
+          "iconScale": "Icon scale",
+          "pointSize": "Point size"
         },
         "drawLayout": {
           "fillColor": "Fill color",
@@ -1617,7 +1649,11 @@
           "outerCircle": "Outer circle:",
           "strokeColor": "Outline color",
           "strokeWidth": "Stroke width",
-          "extrudedHeight": "Extruded Height"
+          "extrudedHeight": "Extruded Height",
+          "height": "Height",
+          "width": "Width",
+          "area": "Area",
+          "length": "Length"
         },
         "drawSettingsCircle": {
           "interactive": "Interactive",
@@ -1626,6 +1662,7 @@
             "outerRadius": "Outer radius",
             "radius": "Radius"
           },
+          "radiusValidation" : "The outer radius should be greater than the inner radius.",
           "settings": {
             "circle": "Settings Circle:",
             "doubleCircle": "Settings double circle:"
@@ -1636,13 +1673,29 @@
           "box": "Box",
           "circle": "Circle",
           "doubleCircle": "Double circle",
-          "geometries": "Geometrien",
+          "geometries": "Geometries",
           "line": "Line",
-          "pen": "Stift",
+          "pen": "Pen",
           "point": "Point",
           "polygon": "Area",
           "rectangle": "Rectangle",
-          "symbols": "Symbol"
+          "symbols": "Symbol",
+          "writeText": "Text",
+          "square": "Square"
+        },
+        "writeTextOptions": {
+          "fontSize": "Font Size",
+          "font": "Font"
+         },
+        "download": {
+          "geometryTypeNotSupported": "Polygon, box, square and circle cannot be downloaded in GPX format. Please choose a different format.",
+          "symbolsNotFullySupportedGPX": "Note: Symbols will be exported in GPX format without their appearance (icon, color).",
+          "enterFilename": "Please enter a filename",
+          "filename": "Filename",
+          "format": "Format",
+          "headline": "Download",
+          "pleaseChoose": "Please select",
+          "saveDrawing": "Save drawing"
         }
       },
       "graphicalSelect": {

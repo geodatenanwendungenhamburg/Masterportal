@@ -1,6 +1,10 @@
 <script>
 import {convertColor} from "@shared/js/utils/convertColor.js";
+import {mappingLayoutConfig, filterMappingLayoutByDrawType, normalizeLayoutValue, calculateTrianglePosition} from "@shared/modules/draw/js/drawLayoutUtils.js";
 import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
+import InputText from "@shared/modules/inputs/components/InputText.vue";
+import SwitchInput from "@shared/modules/checkboxes/components/SwitchInput.vue";
+import {nextTick} from "vue";
 
 /**
  * Shared component that provides buttons for setting the layout of drawings.
@@ -11,13 +15,18 @@ import SliderItem from "@shared/modules/slider/components/SliderItem.vue";
  * @vue-prop {Function} setCurrentLayout - Setter for current layout.
  * @vue-prop {Number[]} [strokeRange=[1, 32]] - The stroke range in the unit pixel.
  * @vue-prop {Boolean} [hasExtrudedHeight=false] - Whether the layout includes extruded height.
+ * @vue-prop {String} [buttonVariant="btn-primary"] - The CSS class for the button variant.
  * @vue-data {String} activeLayoutKey - The currently activated layout.
  * @vue-data {Object} mappingLayout - The mapping object for layout.
+ * @vue-data {Number|null} trianglePosition - The horizontal position of the triangle indicator.
+ * @vue-data {String[]} drawTypesMain - The main draw type categories that trigger triangle position updates.
  */
 export default {
     name: "DrawLayout",
     components: {
-        SliderItem
+        SliderItem,
+        InputText,
+        SwitchInput
     },
     props: {
         circleType: {
@@ -47,27 +56,16 @@ export default {
         hasExtrudedHeight: {
             type: Boolean,
             default: false
+        },
+        buttonVariant: {
+            type: String,
+            default () {
+                return "btn-primary";
+            }
         }
     },
     data () {
-        const mappingLayout = {
-            fillColor: {
-                drawTypes: ["box", "circle", "doubleCircle", "point", "polygon", "rectangle"],
-                icon: "bi-paint-bucket"
-            },
-            strokeColor: {
-                drawTypes: ["box", "circle", "doubleCircle", "line", "pen", "point", "polygon", "rectangle"],
-                icon: "bi-pencil-fill"
-            },
-            strokeWidth: {
-                drawTypes: ["box", "circle", "doubleCircle", "line", "pen", "point", "polygon", "rectangle"],
-                icon: "bi-border-width"
-            },
-            fillTransparency: {
-                drawTypes: ["box", "circle", "doubleCircle", "point", "polygon", "rectangle"],
-                icon: "bi-droplet-half"
-            }
-        };
+        const mappingLayout = {...mappingLayoutConfig};
 
         if (this.hasExtrudedHeight) {
             mappingLayout.extrudedHeight = {
@@ -78,33 +76,82 @@ export default {
 
         return {
             activeLayoutKey: "",
-            mappingLayout
+            mappingLayout,
+            trianglePosition: null,
+            drawTypesMain: ["pen", "writeText", "geometries", "symbols"]
         };
     },
     computed: {
         /**
-         * Return the mapping layout filtered by selected draw type.
-         * @returns {Object} The mapping layout for selected draw type.
+         * Returns the mapping layout filtered by selected draw type.
+         * @returns {Object} The mapping layout entries applicable to the selected draw type.
          */
         mappingLayoutBySelectedDrawType () {
-            const filteredMappingLayout = {};
+            return filterMappingLayoutByDrawType(this.mappingLayout, this.selectedDrawType);
+        },
 
-            Object.keys(this.mappingLayout).forEach(layout => {
-                if (this.mappingLayout[layout]?.drawTypes?.includes(this.selectedDrawType)) {
-                    filteredMappingLayout[layout] = this.mappingLayout[layout];
-                }
-            });
+        /**
+         * Returns the square area as displayed in the selected unit.
+         * @returns {Number} The display value.
+         */
+        squareAreaDisplayValue () {
+            const {squareArea, squareUnit} = this.currentLayout;
 
-            return filteredMappingLayout;
+            if (!Number.isFinite(squareArea)) {
+                return 0;
+            }
+
+            return squareUnit === "km" ? squareArea / 1000000 : squareArea;
         }
     },
     watch: {
         selectedDrawType () {
             this.activeLayoutKey = "";
+            if (this.drawTypesMain.includes(this.selectedDrawType)) {
+                this.updateTrianglePosition(this.selectedDrawType);
+            }
+        },
+        activeLayoutKey (newVal) {
+            if (["strokeWidth", "fillTransparency", "extrudedHeight"].includes(newVal)) {
+                nextTick(() => {
+                    if (typeof this.$refs.activeSlider?.focus === "function") {
+                        this.$refs.activeSlider.focus();
+                    }
+                });
+            }
         }
     },
     methods: {
         convertColor,
+        /**
+         * Updates the square area in internal square meters.
+         * @param {String|Number} value The displayed value from the input.
+         * @returns {void}
+         */
+        updateSquareArea (value) {
+            const displayValue = normalizeLayoutValue("squareArea", value);
+
+            if (!Number.isFinite(displayValue)) {
+                this.updateCurrentLayout("squareArea", 0);
+                return;
+            }
+
+            if (this.currentLayout.squareUnit === "km") {
+                this.updateCurrentLayout("squareArea", displayValue * 1000000);
+                return;
+            }
+
+            this.updateCurrentLayout("squareArea", displayValue);
+        },
+
+        /**
+         * Updates the square unit.
+         * @param {String} nextUnit The next selected unit.
+         * @returns {void}
+         */
+        updateSquareUnit (nextUnit) {
+            this.updateCurrentLayout("squareUnit", nextUnit);
+        },
 
         /**
          * Sets the active layoutKey.
@@ -116,23 +163,53 @@ export default {
         },
 
         /**
-         * Update the current layout.
+         * Updates the triangle position to point to the active draw type button.
+         * @param {String} type The draw type whose button to point to.
+         * @returns {void}
+         */
+        updateTrianglePosition (type) {
+            const position = calculateTrianglePosition(`draw-${type}`, "main-drawtypes-container");
+
+            if (position !== null) {
+                this.trianglePosition = position;
+            }
+        },
+
+        /**
+         * Normalizes and applies the given layout value, then emits the update event.
          * @param {String} layoutKey The key of layout element.
-         * @param {String} value The value to be set.
+         * @param {String|Number} value The raw value to be normalized and set.
          * @returns {void}
          */
         updateCurrentLayout (layoutKey, value) {
-            const currentLayout = {...this.currentLayout};
+            const normalizedValue = normalizeLayoutValue(layoutKey, value);
 
-            if (layoutKey === "fillColor" || layoutKey === "strokeColor") {
-                currentLayout[layoutKey] = convertColor(value, "rgb");
-            }
-            else {
-                currentLayout[layoutKey] = parseFloat(value);
-            }
+            this.setCurrentLayout({[layoutKey]: normalizedValue});
+            this.$emit("update-current-layout", {[layoutKey]: normalizedValue});
+        },
 
-            this.setCurrentLayout(currentLayout);
-            this.$emit("update-current-layout", currentLayout);
+        /**
+         * Sets focus to the first interactive element in the layout.
+         * For writeText, focuses the text input; otherwise focuses the first layout button.
+         * @public
+         * @returns {void}
+         */
+        focus () {
+            if (this.selectedDrawType === "writeText" && this.$refs.textInput) {
+                this.$refs.textInput.focus();
+            }
+            else if (this.$refs.layoutButtonsContainer) {
+                const firstButton = this.$refs.layoutButtonsContainer.firstElementChild?.firstElementChild;
+
+                if (firstButton && firstButton.tabIndex === -1) {
+                    const colorInput = firstButton.querySelector("input[type='color']");
+
+                    (colorInput || firstButton).focus();
+                }
+                else if (firstButton) {
+                    firstButton.focus();
+                }
+            }
         }
     }
 };
@@ -140,79 +217,179 @@ export default {
 
 <template>
     <div class="d-flex flex-column">
-        <label
+        <h5
             v-if="selectedDrawType === 'doubleCircle'"
             :for="'draw-layout-buttons-' + circleType"
             class="mb-2"
         >
             {{ $t("common:shared.modules.draw.drawLayout." + circleType) }}
-        </label>
+        </h5>
+        <div
+            v-if="selectedDrawType === 'writeText'"
+            class="write-text-container mt-4"
+        >
+            <div class="form-floating mb-3">
+                <InputText
+                    :id="selectedDrawType"
+                    ref="textInput"
+                    :label="$t('common:shared.modules.draw.drawTypes.writeText')"
+                    :placeholder="$t('common:shared.modules.draw.drawTypes.writeText')"
+                    :model-value="currentLayout.text"
+                    @update:modelValue="val => updateCurrentLayout('text', val)"
+                />
+            </div>
+            <div class="form-floating mb-3">
+                <select
+                    id="font-size-select"
+                    class="form-select"
+                    :value="currentLayout.fontSize"
+                    @change="event => updateCurrentLayout('fontSize', event.target.value)"
+                >
+                    <option
+                        v-for="size in [10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48]"
+                        :key="size"
+                        :value="size"
+                    >
+                        {{ size }}px
+                    </option>
+                </select>
+                <label for="font-size-select">
+                    {{ $t('common:shared.modules.draw.writeTextOptions.fontSize') }}
+                </label>
+            </div>
+            <div class="form-floating mb-3">
+                <select
+                    id="font-select"
+                    class="form-select"
+                    :value="currentLayout.font"
+                    @change="event => updateCurrentLayout('font', event.target.value)"
+                >
+                    <option
+                        v-for="font in ['Arial', 'Times New Roman', 'Calibri']"
+                        :key="font"
+                        :value="font"
+                    >
+                        {{ font }}
+                    </option>
+                </select>
+                <label for="font-select">
+                    {{ $t('common:shared.modules.draw.writeTextOptions.font') }}
+                </label>
+            </div>
+        </div>
+        <div
+            v-if="selectedDrawType === 'square'"
+            class="square-settings mt-4"
+        >
+            <div class="form-check form-switch mb-3">
+                <SwitchInput
+                    :id="'draw-settings-square-interactive-' + selectedDrawType"
+                    :aria="$t('common:shared.modules.draw.drawSettingsCircle.interactive')"
+                    :interaction="event => updateCurrentLayout('squareMethod', event.target.checked ? 'interactive' : 'defined')"
+                    :label="$t('common:shared.modules.draw.drawSettingsCircle.interactive')"
+                    :checked="currentLayout.squareMethod !== 'defined'"
+                />
+            </div>
+            <div
+                v-if="currentLayout.squareMethod !== 'interactive'"
+                class="form-floating mb-3"
+            >
+                <select
+                    :id="'draw-square-settings-unit-' + selectedDrawType"
+                    class="form-select"
+                    :value="currentLayout.squareUnit || 'm'"
+                    @change="event => updateSquareUnit(event.target.value)"
+                >
+                    <option
+                        v-for="unit in ['m', 'km']"
+                        :key="unit"
+                        :value="unit"
+                    >
+                        {{ unit }}
+                    </option>
+                </select>
+                <label :for="'draw-square-settings-unit-' + selectedDrawType">
+                    {{ $t('common:shared.modules.draw.drawSettingsCircle.unit') }}
+                </label>
+            </div>
+            <div
+                v-if="currentLayout.squareMethod !== 'interactive'"
+                class="form-floating mb-3"
+            >
+                <InputText
+                    :id="'draw-square-settings-area-' + selectedDrawType"
+                    :label="$t('common:shared.modules.draw.drawLayout.area')"
+                    :placeholder="$t('common:shared.modules.draw.drawLayout.area')"
+                    type="number"
+                    :model-value="squareAreaDisplayValue"
+                    @update:modelValue="val => updateSquareArea(val)"
+                />
+            </div>
+        </div>
         <div
             :id="'draw-layout-buttons-' + circleType"
+            ref="layoutButtonsContainer"
             class="draw-layout-buttons d-flex flex-row align-items-center"
         >
-            <button
+            <div
                 v-for="layoutKey in Object.keys(mappingLayoutBySelectedDrawType)"
-                :id="'draw-layout-' + circleType + '-' + layoutKey"
                 :key="layoutKey"
-                tabindex="0"
-                :class="[
-                    'btn',
-                    'btn-primary',
-                    'me-3',
-                    activeLayoutKey === layoutKey ? 'active' : ''
-                ]"
-                type="button"
-                :aria-label="$t('common:shared.modules.draw.drawLayout.' + layoutKey)"
-                :title="$t('common:shared.modules.draw.drawLayout.' + layoutKey)"
-                @click="setActiveLayoutKey(layoutKey)"
+                class="button-container text-center"
             >
-                <label
-                    v-if="layoutKey === 'fillColor' || layoutKey === 'strokeColor'"
-                    :for="'color-picker-' + circleType + '-' + layoutKey"
+                <button
+                    :id="'draw-layout-' + circleType + '-' + layoutKey"
+                    :key="layoutKey"
+                    :tabindex="(layoutKey === 'fillColor' || layoutKey === 'strokeColor') ? -1 : 0"
+                    :class="[
+                        'btn',
+                        buttonVariant,
+                        activeLayoutKey === layoutKey ? 'active' : ''
+                    ]"
+                    @click="(layoutKey !== 'fillColor' && layoutKey !== 'strokeColor') ? setActiveLayoutKey(layoutKey) : null"
                 >
                     <i
                         :class="mappingLayout[layoutKey].icon"
                         role="img"
                     />
+                    <span
+                        v-if="layoutKey === 'fillColor' || layoutKey === 'strokeColor'"
+                        class="color-preview"
+                        :style="{ backgroundColor: convertColor(currentLayout[layoutKey], 'hex') }"
+                    />
+                    <span
+                        v-else-if="layoutKey === 'fillTransparency'"
+                        class="btn-value"
+                    >
+                        {{ currentLayout[layoutKey] + '%' }}
+                    </span>
+
+                    <span
+                        v-else-if="layoutKey === 'strokeWidth'"
+                        class="btn-value"
+                    >
+                        {{ currentLayout[layoutKey] + 'px' }}
+                    </span>
+
+                    <span
+                        v-else-if="layoutKey === 'extrudedHeight' && hasExtrudedHeight"
+                        class="btn-value"
+                    >
+                        {{ currentLayout[layoutKey] + 'm' }}
+                    </span>
                     <input
-                        :id="'color-picker-' + circleType + '-' + layoutKey"
+                        v-if="layoutKey === 'fillColor' || layoutKey === 'strokeColor'"
                         type="color"
+                        class="color-input-overlay"
                         :value="convertColor(currentLayout[layoutKey], 'hex')"
                         @input="event => updateCurrentLayout(layoutKey, event.target.value)"
                     >
-                </label>
-                <label
-                    v-else-if="layoutKey === 'fillTransparency'"
-                    :for="'text-fill-transparency-' + circleType + '-' + layoutKey"
+                </button>
+                <span
+                    class="text-center btn-label"
                 >
-                    <i
-                        :class="mappingLayout[layoutKey].icon"
-                        role="img"
-                    />
-                    <span>{{ currentLayout[layoutKey]+"%" }}</span>
-                </label>
-                <label
-                    v-else-if="layoutKey === 'strokeWidth'"
-                    :for="'text-stroke-width-' + circleType + '-' + layoutKey"
-                >
-                    <i
-                        :class="mappingLayout[layoutKey].icon"
-                        role="img"
-                    />
-                    <span>{{ currentLayout[layoutKey]+"px" }}</span>
-                </label>
-                <label
-                    v-else-if="layoutKey === 'extrudedHeight' && hasExtrudedHeight"
-                    :for="'text-extruded-height-' + circleType + '-' + layoutKey"
-                >
-                    <i
-                        :class="mappingLayout[layoutKey].icon"
-                        role="img"
-                    />
-                    <span>{{ currentLayout[layoutKey]+"m" }}</span>
-                </label>
-            </button>
+                    {{ $t(`common:shared.modules.draw.drawLayout.${layoutKey}`) }}
+                </span>
+            </div>
         </div>
         <div
             v-if="activeLayoutKey === 'strokeWidth'"
@@ -220,6 +397,7 @@ export default {
         >
             <SliderItem
                 :id="'slider-stroke-width-' + circleType"
+                ref="activeSlider"
                 :aria="`${currentLayout.strokeWidth}px`"
                 :label="`${currentLayout.strokeWidth}px`"
                 :min="strokeRange[0].toString()"
@@ -235,6 +413,7 @@ export default {
         >
             <SliderItem
                 :id="'slider-fill-transparency-' + circleType"
+                ref="activeSlider"
                 :aria="`${currentLayout.fillTransparency}%`"
                 :label="`${currentLayout.fillTransparency}%`"
                 :min="'0'"
@@ -250,6 +429,7 @@ export default {
         >
             <SliderItem
                 :id="'slider-extruded-height-' + circleType"
+                ref="activeSlider"
                 :aria="`${currentLayout.extrudedHeight}m`"
                 :label="`${currentLayout.extrudedHeight}m`"
                 :min="'0'"
@@ -263,60 +443,54 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+.btn-label {
+    display: block;
+    font-size: 0.8rem;
+}
 
+.btn-value {
+    font-size: 0.75rem;
+    width: 100%;
+    display: block;
+}
+
+.color-preview {
+    display: block;
+    width: 1.8rem;
+    height: 0.6rem;
+    border-radius: 4px;
+}
+
+.color-input-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.btn:has(.color-input-overlay:focus-visible) {
+    color: var(--bs-btn-hover-color);
+    background-color: var(--bs-btn-hover-bg);
+    border-color: var(--bs-btn-hover-border-color);
+    outline: 0;
+    box-shadow: var(--bs-btn-focus-box-shadow);
+}
 
 .btn {
-    width: 3.5rem;
-    height: 3.5rem;
-    position: sticky;
+    width: 3.65rem;
+    height: 3.65rem;
+    position: relative;
     text-align: center;
     top: auto;
     font-size: 1.143rem;
     border-radius: 50%;
     border: solid $white 1px;
-
-    &:hover {
-        > label {
-            > input {
-                color: $white;
-            }
-        }
-    }
-    /* position label in center of button */
-    > label {
-        position: absolute;
-        cursor: pointer;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        line-height: 0.5rem;
-
-        > input:hover{
-            color: $white;
-        }
-
-        input[type="color"] {
-            height: 0.5rem;
-            width: 1.8rem;
-            margin-top: .3rem;
-        }
-
-        span {
-            font-size: $font_size_sm;
-            padding-top: .3rem;
-            width: 3rem;
-            text-align: center;
-            padding-top: .3rem;
-        }
-    }
-}
-
-.btn.active {
-    > label {
-        > input {
-            color: $white;
-        }
-    }
 }
 
 input {
@@ -324,4 +498,19 @@ input {
     border: none;
 }
 
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    width: 5rem;
+    height: 7rem;
+}
+
+.btn-primary.active {
+    background-color: $dark_blue;
+    border-color: $dark_blue;
+    color: $white;
+}
 </style>

@@ -143,6 +143,27 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
             })).to.be.true;
         });
 
+        it("restores draw state from a gpx extension", () => {
+            const drawState = {
+                    drawType: {id: "drawLine", geometry: "LineString"},
+                    strokeWidth: 4,
+                    colorContour: [12, 34, 56, 1]
+                },
+                payload = {
+                    layer,
+                    raw: `<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:masterportal="https://masterportal.org/gpx"><rte><extensions><masterportal:drawState>${JSON.stringify(drawState)}</masterportal:drawState></extensions><rtept lat="53.56" lon="9.97"/><rtept lat="53.57" lon="9.98"/></rte></gpx>`,
+                    filename: "serializedDrawState.gpx"
+                },
+                state = {
+                    selectedFiletype: "auto",
+                    showConfirmation: true
+                };
+
+            importFile({state, dispatch, rootGetters, commit}, payload);
+
+            expect(layer.getSource().getFeatures()[0].get("masterportal_attributes").drawState).to.deep.equal(drawState);
+        });
+
         it("preset \"auto\", correct geojson file, correct filename", async () => {
             const payload = {
                 raw: rawSources[3],
@@ -289,6 +310,45 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
                 color: [228, 26, 28, 1]
 
             });
+        });
+
+        it("restores serialized draw state from a kml file", () => {
+            const drawState = {
+                    drawType: {id: "drawPolygon", geometry: "Polygon"},
+                    strokeWidth: 4,
+                    color: [12, 34, 56, 0.7],
+                    colorContour: [78, 90, 123, 1],
+                    zIndex: 3
+                },
+                payload = {
+                    layer,
+                    raw: `<kml xmlns="http://www.opengis.net/kml/2.2"><Placemark><ExtendedData><Data name="drawState"><value>${JSON.stringify(drawState)}</value></Data><Data name="fromDrawTool"><value>true</value></Data></ExtendedData><Polygon><outerBoundaryIs><LinearRing><coordinates>10,53 10.01,53 10.01,53.01 10,53</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark></kml>`,
+                    filename: "serializedDrawState.kml"
+                },
+                state = {
+                    selectedFiletype: "auto",
+                    showConfirmation: true
+                };
+
+            importFile({state, dispatch, rootGetters, commit}, payload);
+
+            expect(layer.getSource().getFeatures()[0].get("masterportal_attributes").drawState).to.deep.equal(drawState);
+        });
+
+        it("does not restore an empty kml draw state", () => {
+            const payload = {
+                    layer,
+                    raw: "<kml xmlns=\"http://www.opengis.net/kml/2.2\"><Placemark><ExtendedData><Data name=\"drawState\"/></ExtendedData><LineString><coordinates>10,53 10.01,53</coordinates></LineString></Placemark></kml>",
+                    filename: "emptyDrawState.kml"
+                },
+                state = {
+                    selectedFiletype: "auto",
+                    showConfirmation: true
+                };
+
+            importFile({state, dispatch, rootGetters, commit}, payload);
+
+            expect(layer.getSource().getFeatures()[0].get("masterportal_attributes")).to.not.have.property("drawState");
         });
 
         it("adds a text style from the geojson file", () => {
@@ -497,7 +557,8 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
                     showInLayerTree: true,
                     typ: "VECTORBASE",
                     type: "layer",
-                    visibility: true
+                    visibility: true,
+                    isDynamic: true
                 },
                 parentKey: treeSubjectsKey
             })).to.be.true;
@@ -540,7 +601,8 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
                     showInLayerTree: true,
                     typ: "VECTORBASE",
                     type: "layer",
-                    visibility: true
+                    visibility: true,
+                    isDynamic: true
                 };
 
             await addLayerConfig({state, dispatch, commit, rootGetters: {}}, payload);
@@ -563,7 +625,8 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
                     showInLayerTree: true,
                     typ: "VECTORBASE",
                     type: "layer",
-                    visibility: true
+                    visibility: true,
+                    isDynamic: true
                 };
 
             await addLayerConfig({state, dispatch, commit, rootGetters: {}}, payload);
@@ -620,21 +683,24 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
             const url = "https://geoportal-hamburg.de/src/assets/img/tools/draw/circle_red.svg",
                 rawSource = `<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/kml/2.2 https://developers.google.com/kml/schema/kml22gx.xsd"> <Placemark> <Style> <IconStyle> <scale>0.5</scale> <Icon> <href>${url}</href> </Icon> </IconStyle> </Style> <ExtendedData> <Data name="attributes"/> <Data name="drawState"/> <Data name="fromDrawTool"> <value>true</value> </Data> <Data name="invisibleStyle"/> <Data name="isOuterCircle"> <value>false</value> </Data> <Data name="isVisible"> <value>true</value> </Data> <Data name="masterportal_attributes"/> <Data name="styleId"> <value>1</value> </Data> </ExtendedData> <Point> <coordinates>10.00528192286842,53.56293203636361</coordinates> </Point> </Placemark> </kml>`,
                 result = checkAndReplaceSymbolUrls(rawSource),
-                expectedUrl = `${window.location.origin}${MASTERPORTAL_ASSETS_PATH}/tools/draw/circle_red.svg`;
+                expectedUrl = `${window.location.origin}${MASTERPORTAL_ASSETS_PATH}/tools/draw/circle_white.svg`;
 
             expect(result.includes(expectedUrl)).to.be.true;
+            expect(result.includes("<color>ff1c1ae4</color>")).to.be.true;
             expect(warn.calledOnce).to.be.true;
         });
 
         it("check and replace build assets path", () => {
             assetsPath = "/mastercode/1.2.3/img";
+            global.MASTERPORTAL_ASSETS_PATH = assetsPath;
 
             const url = "https://localhost:9001/src/assets/img/tools/draw/circle_red.svg",
                 rawSource = `<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/kml/2.2 https://developers.google.com/kml/schema/kml22gx.xsd"> <Placemark> <Style> <IconStyle> <scale>0.5</scale> <Icon> <href>${url}</href> </Icon> </IconStyle> </Style> <ExtendedData> <Data name="attributes"/> <Data name="drawState"/> <Data name="fromDrawTool"> <value>true</value> </Data> <Data name="invisibleStyle"/> <Data name="isOuterCircle"> <value>false</value> </Data> <Data name="isVisible"> <value>true</value> </Data> <Data name="masterportal_attributes"/> <Data name="styleId"> <value>1</value> </Data> </ExtendedData> <Point> <coordinates>10.00528192286842,53.56293203636361</coordinates> </Point> </Placemark> </kml>`,
                 result = checkAndReplaceSymbolUrls(rawSource),
-                expectedUrl = `${window.location.origin}${MASTERPORTAL_ASSETS_PATH}/tools/draw/circle_red.svg`;
+                expectedUrl = `${window.location.origin}${MASTERPORTAL_ASSETS_PATH}/tools/draw/circle_white.svg`;
 
             expect(result.includes(expectedUrl)).to.be.true;
+            expect(result.includes("<color>ff1c1ae4</color>")).to.be.true;
             expect(warn.calledOnce).to.be.true;
         });
     });

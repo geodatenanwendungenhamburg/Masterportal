@@ -295,7 +295,12 @@
     },
     "draw": {
       "description": "Erstellen Sie wichtige Markierungen oder kennzeichnen Sie Flächen",
-      "name": "Zeichnen / Schreiben"
+      "name": "Zeichnen / Schreiben",
+      "drawSettings": {
+        "radius": "Radius",
+        "area": "Fläche",
+        "length": "Länge"
+      }
     },
     "draw_old": {
       "attributeSelect": {
@@ -1605,12 +1610,39 @@
         }
       },
       "draw": {
+        "attributeSelect": {
+          "attributeDuplicatedKeyError": "Der Attribut-Schlüssel existiert bereits.",
+          "attributeKeyError": "Bitte einen Schlüssel für das Attribut angeben.",
+          "attributeValueError": "Bitte einen Wert für das Attribut angeben.",
+          "add": "Attribut hinzufügen",
+          "accept": "Übernehmen",
+          "remove": "Attribut löschen",
+          "clickHint": "Klicken Sie auf eine Zeichnung, um dessen Attribute zu bearbeiten.",
+          "noFeatureSelected": "Keine Zeichnung ausgewählt. Bitte wählen Sie eine Zeichnung aus.",
+          "input": {
+            "key": "Attributschlüssel",
+            "value": "Attributwert",
+            "newKey": "Neuer Schlüssel",
+            "newValue": "Neuer Wert"
+          }
+        },
         "drawEdit": {
           "delete": "Geometrie / Text löschen",
           "deleteAll": "Alles löschen",
           "modify": "Geometrie / Text bearbeiten",
+          "editAttributes": "Attribute erstellen und bearbeiten",
+          "hide": "Zeichnung ausblenden",
+          "download": "Herunterladen",
           "redo": "Wiederholen",
-          "undo": "Rückgängig machen"
+          "undo": "Rückgängig machen",
+          "chooseFeature": "Wählen Sie eine Geometrie oder einen Text zum Bearbeiten aus.",
+          "textAccept": "Übernehmen",
+          "textLabel": "Text",
+          "textPlaceholder": "Text eingeben"
+        },
+        "drawEditStyle": {
+          "iconScale": "Symbolgröße",
+          "pointSize": "Punktgröße"
         },
         "drawLayout": {
           "fillColor": "Füllfarbe",
@@ -1619,7 +1651,11 @@
           "outerCircle": "Äußerer Kreis:",
           "strokeColor": "Umrissfarbe",
           "strokeWidth": "Strichstärke",
-          "extrudedHeight": "Extrudierte Höhe"
+          "extrudedHeight": "Extrudierte Höhe",
+          "height": "Höhe",
+          "width": "Breite",
+          "area": "Fläche",
+          "length": "Länge"
         },
         "drawSettingsCircle": {
           "interactive": "Interaktiv",
@@ -1628,6 +1664,7 @@
             "outerRadius": "Äußerer Radius",
             "radius": "Radius"
           },
+          "radiusValidation" : "Der äußere Radius sollte größer sein als der innere Radius.",
           "settings": {
             "circle": "Einstellungen Kreis:",
             "doubleCircle": "Einstellungen Doppelkreis:"
@@ -1644,7 +1681,23 @@
           "point": "Punkt",
           "polygon": "Fläche",
           "rectangle": "Rechteck",
-          "symbols": "Symbole"
+          "symbols": "Symbole",
+          "writeText": "Text",
+          "square": "Quadrat"
+        },
+        "writeTextOptions": {
+          "font": "Schriftart",
+          "fontSize": "Schriftgröße"
+        },
+        "download": {
+          "geometryTypeNotSupported": "Polygon, Box, Quadrat und Kreis können im GPX-Format nicht heruntergeladen werden. Bitte wählen Sie ein anderes Format.",
+          "symbolsNotFullySupportedGPX": "Hinweis: Symbole werden im GPX-Format ohne ihre Darstellung (Icon, Farbe) exportiert.",
+          "enterFilename": "Bitte Dateiname angeben",
+          "filename": "Dateiname",
+          "format": "Format",
+          "headline": "Herunterladen",
+          "pleaseChoose": "Bitte Auswählen",
+          "saveDrawing": "Zeichnung speichern"
         }
       },
       "graphicalSelect": {

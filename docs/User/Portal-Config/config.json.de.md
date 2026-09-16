@@ -1897,7 +1897,7 @@ Module lassen sich in Abschnitte (Sections) unterteilen. Im Menü werden Abschni
 |coordToolkit|nein|**[coordToolkit](#portalconfigmenusectionsmodulescoordtoolkit)**||Koordinatenabfrage: Werkzeug um Koordinaten und Höhe per Maus-Klick abzufragen: Bei Klick in die Karte werden die Koordinaten in der Anzeige eingefroren und können auch direkt in die Zwischenablage kopiert werden. Koordinatensuche: Über eine Eingabemaske können das Koordinatensystem und die Koordinaten eingegeben werden. Das Werkzeug zoomt dann auf die entsprechende Koordinate und setzt einen Marker darauf. Die Koordinatensysteme werden aus der config.js bezogen.|false|
 |copyrightConstraints|nein|**[copyrightConstraints](#portalconfigmenusectionsmodulescopyrightconstraints)**||Dieses Modul lädt die Nutzungshinweise über eine CSW Schnittstelle und listed diese je Layer. Sind keine Nutzungshinweise für den Layer vorhanden, wird alternativ ein Kontakt angezeigt, bei dem man die Nutzungsbedingungen erfragen kann.|false|
 |customMenuElement|nein|**[customMenuElement](#portalconfigmenusectionsmodulescustommenuelement)**||Dieses Modul kann einen Link öffnen, HTML aus config.json oder einer externen Datei anzeigen oder eine Aktion ausführen. Diese Modul kann mehrfach in der config.json konfiguriert werden.|false|
-|draw|nein|**[draw](#portalconfigmenusectionsmodulesdraw)**||**!Attention: Das draw Modul befindet sich gerade im Refactoring. Um das gewohnte Zeichentool aus Masterportalversion 2 zu nutzen kann der type "draw_old" verwendet werden**)! Mithilfe des Zeichnen-Werkzeuges können Punkte, Linien, Polygone, Kreise, Doppelkreise und Texte gezeichnet werden. Farben und Transparenzen sind voreingestellt. Die Zeichnungen können in den Formaten: KML, GeoJSON oder GPX heruntergeladen werden.(Das sich im Moment im Rectoring befindente neue draw Modul können sie mit dem type "draw" testen)|false|
+|draw|nein|**[draw](#portalconfigmenusectionsmodulesdraw)**||Mithilfe des Zeichnen-Werkzeuges können Punkte, Linien, Polygone, Kreise, Doppelkreise und Texte gezeichnet werden. Farben und Transparenzen sind voreingestellt. Die Zeichnungen können in den Formaten KML, GeoJSON oder GPX heruntergeladen werden.|false|
 |featureLister|nein|**[featureLister](#portalconfigmenusectionsmodulesfeaturelister)**||Listet alle Features eines Vektorlayers auf.|false|
 |fileImport|nein|**[fileImport](#portalconfigmenusectionsmodulesfileimport)**||Import von Dateien des Typs *.kml, *.geojson und *. gpx. Über dieses Modul können solche Dateien importiert werden.|false|
 |filter|nein|**[filter](#portalconfigmenusectionsmodulesfilter)**||Konfiguration eines fortgeschrittenen Filters für Vektordaten.|false|
@@ -2449,21 +2449,18 @@ Die Aktion Maps/activateViewpoint konfiguriert und aktiviert einen bestimmten Ka
 
 [inherits]: # (portalConfig.menu.sections.modules)
 
-!!! warning "Ongoing Refactoring"
-    Das draw Modul befindet sich gerade im Refactoring. Um das gewohnte Zeichentool aus Masterportalversion 2 zu nutzen kann der type "draw_old" verwendet werden!
-    Mithilfe des Zeichnen-Werkzeuges können Punkte, Linien, Polygone, Kreise, Doppelkreise und Texte gezeichnet werden. Farben und Transparenzen sind voreingestellt. Die Zeichnungen können in den Formaten: KML, GeoJSON oder GPX heruntergeladen werden. (Das sich im Moment im rectoring befindente neue draw Modul können sie mit dem type "draw" testen)
+Mithilfe des Zeichnen-Werkzeuges können Punkte, Linien, Polygone, Kreise, Doppelkreise und Texte gezeichnet werden. Farben und Transparenzen sind voreingestellt. Die Zeichnungen können in den Formaten KML, GeoJSON, CSV oder GPX heruntergeladen werden.
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
 |name|ja|String||Name des Werkzeugs im Menü.|false|
 |iconList|nein|**[icon](#portalconfigmenusectionsmodulesdrawicon)**[]|[{"id": "iconPoint", "type": "simple_point", "value": "simple_point"}, {"id": "yellow pin", "type": "image", "scale": 2, "value": "geo-fill-ylw.svg"}]|Liste an Symbolen, aus welcher ein Nutzer die Auswahl für das Zeichnen eines farbigen Punktes oder eines Symbols hat. Es können wie im Beispiel eigene Bild-Dateien verwendet werden.|false|
-|drawSymbolSettings|nein|**[drawSymbolSet](#portalconfigmenusectionsmodulesdrawdrawsymbolset)**|{"color": [55, 126, 184, 1], "opacity": 1}|Voreinstellung für das Zeichnen von Symbolen.|false|
-|addIconsOfActiveLayers|nein|Boolean|false|Setzen Sie dieses Flag auf `true` um die Icons und Symbole aller im Themenbaum aktivierten WFS-Layer als zusätzliche Symbole neben den unter `drawSymbolSettings` konfigurierten Icons auswählen zu können.|false|
+|drawSymbolSettings|nein|**[drawSymbolSet](#portalconfigmenusectionsmodulesdrawdrawsymbolset)**|{"color": [55, 126, 184, 1]}|Voreinstellung für das Zeichnen von Symbolen.|false|
 |drawLineSettings|nein|**[drawLineSet](#portalconfigmenusectionsmodulesdrawdrawlineset)**|{"strokeWidth": 1, "opacityContour": 1, "colorContour": [0, 0, 0, 1]}|Voreinstellung für das Zeichnen von Linien.|false|
 |drawCurveSettings|nein|**[drawCurveSet](#portalconfigmenusectionsmodulesdrawdrawcurveset)**|{"strokeWidth": 1, "opacityContour": 1, "colorContour": [0, 0, 0, 1]}|Voreinstellung für das Zeichnen von Freihand-Linien.|false|
 |drawAreaSettings|nein|**[drawAreaSet](#portalconfigmenusectionsmodulesdrawdrawareaset)**|{"strokeWidth": 1, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "opacityContour": 1}|Voreinstellung für das Zeichnen von Flächen.|false|
 |drawCircleSettings|nein|**[drawCircleSet](#portalconfigmenusectionsmodulesdrawdrawcircleset)**|{"circleMethod": "interactive", "unit": "m", "circleRadius": null, "strokeWidth": 1, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "opacityContour": 1, "tooltipStyle": {"fontSize": "16px", "paddingTop": "3px", "paddingLeft": "3px", "paddingRight": "3px", "backgroundColor": "rgba(255, 255, 255, .9)"}}|Voreinstellung für das Zeichnen von Kreisen.|false|
-|drawDoubleCircleSettings|nein|**[drawDoubleCircleSet](#portalconfigmenusectionsmodulesdrawdrawdoublecircleset)**|{"circleMethod": "defined", "unit": "m", "circleRadius": 0, "circleOuterRadius": 0, "strokeWidth": 1, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "outerColorContour": [0, 0, 0, 1], "opacityContour": 1}|Voreinstellung für das Zeichnen von Doppel-Kreisen.|false|
+|drawDoubleCircleSettings|nein|**[drawDoubleCircleSet](#portalconfigmenusectionsmodulesdrawdrawdoublecircleset)**|{"unit": "m", "circleRadius": 0, "circleOuterRadius": 0, "strokeWidth": 1, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "outerColorContour": [0, 0, 0, 1], "opacityContour": 1}|Voreinstellung für das Zeichnen von Doppel-Kreisen.|false|
 |drawSquareSettings|nein|**[drawSquareSet](#portalconfigmenusectionsmodulesdrawdrawsquareset)**|{"squareMethod": "interactive", "strokeWidth": 1, "squareSide": 0, "unit": "m", "squareArea": 0, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "opacityContour": 1, "tooltipStyle": {"fontSize": "14px","paddingTop":"3px","paddingLeft":"3px","paddingRight":"3px","backgroundColor":"rgba(255, 255, 255, .9)"}}|Voreinstellung für das Zeichnen von Quadraten.|false|
 |writeTextSettings|nein|**[writeTextSet](#portalconfigmenusectionsmodulesdrawwritetextset)**|{"text": "", "fontSize": 10, "font": "Arial", "color": [55, 126, 184, 1], "opacity": 1}|Voreinstellung für das Schreiben von Texten.|false|
 |download|nein|**[download](#portalconfigmenusectionsmodulesdrawdownload)**|{"preSelectedFormat": "KML"}|Einstellungen für das Herunterladen der Zeichnung.|false|
@@ -2474,7 +2471,7 @@ Die Aktion Maps/activateViewpoint konfiguriert und aktiviert einen bestimmten Ka
 
 ```json
 {
-    "type": "draw_old",
+    "type": "draw",
     "name": "Zeichnen / Schreiben",
     "icon": "bi-pencil-flll",
     "iconList": [
@@ -2561,16 +2558,14 @@ Objekt zum Ändern des konfigurierten Default-Wertes des Punkt-Symbols im Zeiche
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
-|color|ja|Number[]|[55, 126, 184, 1]|Die voreingestellte Farbe des Symbols als RGB color array mit Alpha-Kanal, wenn es sich um einen Punkt handelt.|false|
-|opacity|ja|Number|1|Die voreingestellte Transparenz des Symbols in einer Range [0..1], wenn es sich um einen Punkt handelt.|false|
+|color|ja|Number[]|[55, 126, 184, 1]|Die voreingestellte Farbe des Symbols als RGB color array mit Alpha-Kanal, wenn es sich um einen Punkt handelt (es gibt keine separate `opacity`-Einstellung für Symbole).|false|
 
 
 **Beispiel**
 
 ```json
 {
-    "color": [55, 126, 184, 1],
-    "opacity": 1
+    "color": [55, 126, 184, 1]
 }
 ```
 
@@ -2685,10 +2680,9 @@ Objekt zum Ändern des konfigurierten Default-Wertes für einen Doppelkreis im Z
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
-|circleMethod|ja|String|"defined"|Die voreingestellte Methode wie der Doppelkreis gezogen werden soll. "interactive": Freihand, "defined": mit Angabe fixer Werte|false|
-|unit|ja|String|"m"|Die voreingestellte Maßeinheit mit der der Durchmesser des Doppelkreises unter der circleMethod "defined" berechnet werden soll.|false|
-|circleRadius|ja|Number|0|Der voreingestellte Durchmesser des inneren Ringes des Doppelkreises bezogen auf die Unit unter der circleMethod "defined".|false|
-|circleOuterRadius|ja|Number|0|Der voreingestellte Durchmesser des äußeren Ringes des Doppelkreises bezogen auf die Unit unter der circleMethod "defined".|false|
+|unit|ja|String|"m"|Die voreingestellte Maßeinheit mit der der Durchmesser des Doppelkreises berechnet werden soll.|false|
+|circleRadius|ja|Number|0|Der voreingestellte Durchmesser des inneren Ringes des Doppelkreises.|false|
+|circleOuterRadius|ja|Number|0|Der voreingestellte Durchmesser des äußeren Ringes des Doppelkreises.|false|
 |strokeWidth|ja|Number|1|Die voreingestellte Strichstärke (Dicke) des Randes des Doppelkreises in Pixel.|false|
 |color|ja|Number[]|[55, 126, 184, 1]|Die voreingestellte Farbe des Doppelkreises als RGB color array mit Alpha-Kanal.|false|
 |opacity|ja|Number|1|Die voreingestellte Transparenz des Doppelkreises in einer Range [0..1].|false|
@@ -2700,7 +2694,6 @@ Objekt zum Ändern des konfigurierten Default-Wertes für einen Doppelkreis im Z
 
 ```json
 {
-    "circleMethod": "defined",
     "unit": "m",
     "circleRadius": 0,
     "circleOuterRadius": 0,

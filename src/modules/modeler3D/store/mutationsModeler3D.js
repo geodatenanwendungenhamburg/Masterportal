@@ -13,6 +13,18 @@ export default {
      */
     ...generateSimpleMutations(modeler3DState),
     /**
+     * Sets the current layout options by merging with existing values.
+     * @param {Object} state store state.
+     * @param {Object} options The options for the current layout.
+     * @returns {void}
+     */
+    setCurrentLayout (state, options) {
+        state.currentLayout = {
+            ...state.currentLayout,
+            ...options
+        };
+    },
+    /**
      * Updates the name of a model in the state.
      * @param {Object} state - The state object of the Vuex module.
      * @param {String} name - The new name for the model.

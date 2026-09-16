@@ -1902,7 +1902,7 @@ Modules can be divided into sections. In the menu, sections are divided with a h
 |coordToolkit|no|**[coordToolkit](#portalconfigmenusectionsmodulescoordtoolkit)**||Coordinate query: Tool to query coordinates and altitude by mouse click: When clicking in the map, the coordinates are frozen in the display and can also be copied directly to the clipboard. Coordinate search: The coordinate system and the coordinates can be entered via an input mask. The tool then zooms to the corresponding coordinate and places a marker on it. The coordinate systems are obtained from config.js.|false|
 |copyrightConstraints|no|**[copyrightConstraints](#portalconfigmenusectionsmodulescopyrightconstraints)**||This module loads copyright constraints via the CSW API and shows it per layer. If no information is present, the configured fallback contact information is shown.|false|
 |customMenuElement|no|**[customMenuElement](#portalconfigmenusectionsmodulescustommenuelement)**||This module can open a link, display HTML from config.json or an external file, or perform an action. This module can be configured several times in config.json.|false|
-|draw|no|**[draw](#portalconfigmenusectionsmodulesdraw)**||**!Attention: The new draw module is currently within refactoring process you can use the draw module from Masterportal Version 2 with type "draw_old")!** The draw tool allows painting points, lines, polygons, circles, double circles, and texts to the map. You may download these drawing as KML, GeoJSON, or GPX.|false|
+|draw|no|**[draw](#portalconfigmenusectionsmodulesdraw)**||The draw tool allows painting points, lines, polygons, circles, double circles, and texts to the map. You may download these drawing as KML, GeoJSON, CSV or GPX.|false|
 |featureLister|no|**[featureLister](#portalconfigmenusectionsmodulesfeaturelister)**||Lists all features of a vector layer and highlights a feature by mouse over.|false|
 |fileImport|no|**[fileImport](#portalconfigmenusectionsmodulesfileimport)**||Import KML, GeoJSON, and GPX files with this modules.|false|
 |filter|no|**[filter](#portalconfigmenusectionsmodulesfilter)**||Configuration for an advanced filter for vector layers.|false|
@@ -2452,21 +2452,18 @@ The `Maps/activateViewpoint` action configures and activates a specific viewpoin
 
 [inherits]: # (portalConfig.menu.sections.modules)
 
-!!! warning "Ongoing Refactoring"
-    The new draw module is currently within refactoring process you can use the draw module from Masterportal Version 2 with type "draw_old"!
-    Module used to draw features on the map. This includes points, which may also be represented by symbols, and (double) circles, polygons, polylines, and text.
+Module used to draw features on the map. This includes points, which may also be represented by symbols, and (double) circles, polygons, polylines, and text.
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
 |name|yes|String||Tool name in the menu.|false|
 |iconList|no|**[icon](#portalconfigmenusectionsmodulesdrawicon)**[]|[{"id": "iconPoint", "type": "simple_point", "value": "simple_point"}, {"id": "yellow pin", "type": "image", "scale": 2, "value": "geo-fill-ylw.svg"}]|List of symbols the user may choose from to draw colored symbols or dots. Images may be used, too, as shown in the example.|false|
-|drawSymbolSettings|no|**[drawSymbolSet](#portalconfigmenusectionsmodulesdrawdrawsymbolset)**|{"color": [55, 126, 184, 1], "opacity": 1}|Pre-configuration for symbol drawing.|false|
-|addIconsOfActiveLayers|no|Boolean|false|Set this flag to `true` to be able to select the icons and symbols of all WFS layers activated in the topic tree as additional symbols besides the icons configured under `drawSymbolSettings`.|false|
+|drawSymbolSettings|no|**[drawSymbolSet](#portalconfigmenusectionsmodulesdrawdrawsymbolset)**|{"color": [55, 126, 184, 1]}|Pre-configuration for symbol drawing.|false|
 |drawLineSettings|no|**[drawLineSet](#portalconfigmenusectionsmodulesdrawdrawlineset)**|{"strokeWidth": 1, "opacityContour": 1, "colorContour": [0, 0, 0, 1]}|Pre-configuration for line drawing.|false|
 |drawCurveSettings|no|**[drawCurveSet](#portalconfigmenusectionsmodulesdrawdrawcurveset)**|{"strokeWidth": 1, "opacityContour": 1, "colorContour": [0, 0, 0, 1]}|Pre-configuration for freehand drawing.|false|
 |drawAreaSettings|no|**[drawAreaSet](#portalconfigmenusectionsmodulesdrawdrawareaset)**|{"strokeWidth": 1, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "opacityContour": 1}|Pre-configuration for area drawing.|false|
 |drawCircleSettings|no|**[drawCircleSet](#portalconfigmenusectionsmodulesdrawdrawcircleset)**|{"circleMethod": "interactive", "unit": "m", "circleRadius": null, "strokeWidth": 1, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "opacityContour": 1, "tooltipStyle": {"fontSize": "16px", "paddingTop": "3px", "paddingLeft": "3px", "paddingRight": "3px", "backgroundColor": "rgba(255, 255, 255, .9)"}}|Pre-configuration for circle drawing.|false|
-|drawDoubleCircleSettings|no|**[drawDoubleCircleSet](#portalconfigmenusectionsmodulesdrawdrawdoublecircleset)**|{"circleMethod": "defined", "unit": "m", "circleRadius": 0, "circleOuterRadius": 0, "strokeWidth": 1, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "outerColorContour": [0, 0, 0, 1], "opacityContour": 1}|Pre-configuration for double circle drawing.|false|
+|drawDoubleCircleSettings|no|**[drawDoubleCircleSet](#portalconfigmenusectionsmodulesdrawdrawdoublecircleset)**|{"unit": "m", "circleRadius": 0, "circleOuterRadius": 0, "strokeWidth": 1, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "outerColorContour": [0, 0, 0, 1], "opacityContour": 1}|Pre-configuration for double circle drawing.|false|
 |drawSquareSettings|no|**[drawSquareSet](#portalconfigmenusectionsmodulesdrawdrawsquareset)**|{"squareMethod": "interactive", "strokeWidth": 1, "squareSide": 0, "unit": "m", "squareArea": 0, "color": [55, 126, 184, 1], "opacity": 1, "colorContour": [0, 0, 0, 1], "opacityContour": 1, "tooltipStyle": {"fontSize": "14px","paddingTop":"3px","paddingLeft":"3px","paddingRight":"3px","backgroundColor":"rgba(255, 255, 255, .9)"}}|Pre-configuration for square drawing.|false|
 |writeTextSettings|no|**[writeTextSet](#portalconfigmenusectionsmodulesdrawwritetextset)**|{"text": "", "fontSize": 10, "font": "Arial", "color": [55, 126, 184, 1], "opacity": 1}|Pre-configuration for text writing.|false|
 |download|no|**[download](#portalconfigmenusectionsmodulesdrawdownload)**|{"preSelectedFormat": "KML"}|Pre-configuration for download.|false|
@@ -2478,7 +2475,7 @@ The `Maps/activateViewpoint` action configures and activates a specific viewpoin
 ```json
 
 {
-    "type": "draw_old",
+    "type": "draw",
     "name": "Draw / Write",
     "icon": "bi-pencil-fill",
     "iconList": [
@@ -2570,16 +2567,14 @@ Object to change the drawing tool's configured point symbol default value.
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
-|color|yes|Number[]|[55, 126, 184, 1]|The pre-configured color of the symbol as RGB color. The alpha channel value is used for point coloring.|false|
-|opacity|yes|Number|1|The pre-configured transparency of symbols, given in range [0..1] for point data.|false|
+|color|yes|Number[]|[55, 126, 184, 1]|The pre-configured color of the symbol as RGB color. The alpha channel value is used for point coloring (there is no separate `opacity` setting for symbols).|false|
 
 
 **Example**
 
 ```json
 {
-    "color": [55, 126, 184, 1],
-    "opacity": 1
+    "color": [55, 126, 184, 1]
 }
 ```
 
@@ -2694,10 +2689,9 @@ Object to change the drawing tool's configured circle default value.
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
-|circleMethod|yes|String|"defined"|Pre-configured method of circle drawing. `"interactive"`: freehand, `"defined"`: by entering fixed values|false|
-|unit|yes|String|"m"|Pre-configured unit regarding the circle's radius `circleRadius` and `circleOuterRadius` when `"defined"` is chosen as `circleMethod`.|false|
-|circleRadius|yes|Number|0|Pre-configured inner circle radius when `"defined"` is chosen as `circleMethod`.|false|
-|circleOuterRadius|yes|Number|0|Pre-configured outer circle radius when `"defined"` is chosen as `circleMethod`.|false|
+|unit|yes|String|"m"|Pre-configured unit regarding the circle's radius `circleRadius` and `circleOuterRadius`.|false|
+|circleRadius|yes|Number|0|Pre-configured inner circle radius.|false|
+|circleOuterRadius|yes|Number|0|Pre-configured outer circle radius.|false|
 |strokeWidth|yes|Number|1|Pre-configured stroke width of circle border in pixels.|false|
 |color|yes|Number[]|[55, 126, 184, 1]|Pre-configured circle color in RGBA.|false|
 |opacity|yes|Number|1|Pre-configured double circle transparency in range [0..1].|false|
@@ -2709,7 +2703,6 @@ Object to change the drawing tool's configured circle default value.
 
 ```json
 {
-    "circleMethod": "defined",
     "unit": "m",
     "circleRadius": 0,
     "circleOuterRadius": 0,
