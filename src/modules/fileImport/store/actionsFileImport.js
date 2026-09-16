@@ -231,6 +231,29 @@ function getParsedCustomAttributes (feature) {
     return attributes;
 }
 
+/**
+ * Parses a draw state serialized into a KML ExtendedData value.
+ * @param {*} value The KML value to parse.
+ * @returns {Object|null} The parsed draw state, or null when unavailable.
+ */
+function parseDrawState (value) {
+    if (isObject(value)) {
+        return value;
+    }
+    if (typeof value !== "string" || value.trim() === "") {
+        return null;
+    }
+
+    try {
+        const parsedValue = JSON.parse(value);
+
+        return isObject(parsedValue) ? parsedValue : null;
+    }
+    catch {
+        return null;
+    }
+}
+
 export default {
     checkAndReplaceSymbolUrls,
 
@@ -357,7 +380,14 @@ export default {
             Object.keys(feature.getProperties()).forEach((key) => {
                 if (["isOuterCircle", "drawState", "fromDrawTool", "invisibleStyle", "styleId", "source", "attributes", "isVisible", "isGeoCircle", "geoCircleCenter", "geoCircleRadius", "isSquare", "squareCoords"].indexOf(key) >= 0) {
 
-                    if (key !== "attributes" && key !== "drawState" && key !== "invisibleStyle" && key !== "masterportal_attributes") {
+                    if (format instanceof KML && key === "drawState") {
+                        const drawState = parseDrawState(feature.get(key));
+
+                        if (drawState) {
+                            masterportal_attributes[key] = drawState;
+                        }
+                    }
+                    else if (key !== "attributes" && key !== "invisibleStyle" && key !== "masterportal_attributes") {
                         // transform "true" or "false" from KML to Boolean
                         let valueToSetForMasterportal = feature.get(key);
 

@@ -291,6 +291,45 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
             });
         });
 
+        it("restores serialized draw state from a kml file", () => {
+            const drawState = {
+                    drawType: {id: "drawPolygon", geometry: "Polygon"},
+                    strokeWidth: 4,
+                    color: [12, 34, 56, 0.7],
+                    colorContour: [78, 90, 123, 1],
+                    zIndex: 3
+                },
+                payload = {
+                    layer,
+                    raw: `<kml xmlns="http://www.opengis.net/kml/2.2"><Placemark><ExtendedData><Data name="drawState"><value>${JSON.stringify(drawState)}</value></Data><Data name="fromDrawTool"><value>true</value></Data></ExtendedData><Polygon><outerBoundaryIs><LinearRing><coordinates>10,53 10.01,53 10.01,53.01 10,53</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark></kml>`,
+                    filename: "serializedDrawState.kml"
+                },
+                state = {
+                    selectedFiletype: "auto",
+                    showConfirmation: true
+                };
+
+            importFile({state, dispatch, rootGetters, commit}, payload);
+
+            expect(layer.getSource().getFeatures()[0].get("masterportal_attributes").drawState).to.deep.equal(drawState);
+        });
+
+        it("does not restore an empty kml draw state", () => {
+            const payload = {
+                    layer,
+                    raw: "<kml xmlns=\"http://www.opengis.net/kml/2.2\"><Placemark><ExtendedData><Data name=\"drawState\"/></ExtendedData><LineString><coordinates>10,53 10.01,53</coordinates></LineString></Placemark></kml>",
+                    filename: "emptyDrawState.kml"
+                },
+                state = {
+                    selectedFiletype: "auto",
+                    showConfirmation: true
+                };
+
+            importFile({state, dispatch, rootGetters, commit}, payload);
+
+            expect(layer.getSource().getFeatures()[0].get("masterportal_attributes")).to.not.have.property("drawState");
+        });
+
         it("adds a text style from the geojson file", () => {
             const payload = {layer: layer, raw: "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[9.999147727017332,53.56029963338006]},\"properties\":{\"isOuterCircle\":false,\"isVisible\":true,\"drawState\":{\"opacity\":1,\"font\":\"Arial\",\"fontSize\":16,\"text\":\"Mein Schatzzzz\",\"drawType\":{\"id\":\"writeText\",\"geometry\":\"Point\"},\"symbol\":{\"id\":\"iconPoint\",\"type\":\"simple_point\",\"value\":\"simple_point\"},\"zIndex\":0,\"imgPath\":\"https://geodienste.hamburg.de/lgv-config/img/\",\"pointSize\":16,\"color\":[77,175,74,1]},\"fromDrawTool\":true,\"invisibleStyle\":{\"geometry_\":null,\"fill_\":null,\"image_\":null,\"renderer_\":null,\"hitDetectionRenderer_\":null,\"stroke_\":null,\"text_\":{\"font_\":\"16px Arial\",\"scaleArray_\":[1,1],\"text_\":\"Mein Schatzzzz\",\"textAlign_\":\"left\",\"textBaseline_\":\"bottom\",\"fill_\":{\"color_\":[77,175,74,1]},\"maxAngle_\":0.7853981633974483,\"placement_\":\"point\",\"overflow_\":false,\"stroke_\":null,\"offsetX_\":0,\"offsetY_\":0,\"backgroundFill_\":null,\"backgroundStroke_\":null,\"padding_\":null},\"zIndex_\":9999},\"styleId\":\"1\"}}]}", filename: "beispielText.geojson"},
                 state = {
