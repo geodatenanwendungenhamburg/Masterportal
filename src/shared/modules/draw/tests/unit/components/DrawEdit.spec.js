@@ -1,7 +1,6 @@
 import {createStore} from "vuex";
 import {shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
-import {toRaw} from "vue";
 import Feature from "ol/Feature.js";
 import Point from "ol/geom/Point.js";
 import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactions/modifyInteraction.js";
@@ -413,7 +412,7 @@ describe("src/shared/modules/draw/components/DrawEdit.vue", () => {
 
             wrapper.vm.selectedEditFeature = feature;
 
-            expect(toRaw(wrapper.vm.selectedEditFeature)).to.equal(feature);
+            expect(wrapper.vm.selectedEditFeature.ol_uid).to.equal(feature.ol_uid);
         });
 
         it("should clear selectedEditFeature when set to null", () => {

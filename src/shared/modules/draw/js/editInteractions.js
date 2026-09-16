@@ -209,10 +209,15 @@ function setupModifyInteraction ({currentModifyInteraction, source, layer, undoF
             modifyFeature?.getGeometry()?.un("change", geometryChangeListener);
             geometryChangeListener = null;
         }
+
+        map.un("singleclick", featureClickHandler);
+
+        tooltipElement.innerHTML = "";
         tooltipElement.style.display = "none";
         tooltipOverlay.setPosition(undefined);
-        map.un("singleclick", featureClickHandler);
+
         map.removeOverlay(tooltipOverlay);
+        modifyFeature = null;
     }
 
     const newModifyInteraction = modifyInteraction.createModifyInteraction(source, {

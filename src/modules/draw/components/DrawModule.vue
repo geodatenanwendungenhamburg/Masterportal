@@ -126,6 +126,11 @@ export default {
             this.source = markRaw(this.layer.getSource());
         }
     },
+    beforeUnmount () {
+        this.setSelectedInteraction("draw");
+        this.setSelectedDrawType("");
+        this.setSelectedDrawTypeMain("");
+    },
     methods: {
         ...mapActions("Modules/Draw", [
             "initializeDrawLayer"

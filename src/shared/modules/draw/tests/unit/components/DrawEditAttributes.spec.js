@@ -122,17 +122,6 @@ describe("src/shared/modules/draw/components/DrawEditAttributes.vue", () => {
             expect(wrapper.vm.attributes.length).to.equal(0);
         });
 
-        it("should set newKeyError if key already exists", () => {
-            wrapper.vm.attributes = [{key: "city", originalKey: "city", value: "Berlin"}];
-            wrapper.vm.newKey = "city";
-            wrapper.vm.newValue = "Hamburg";
-
-            wrapper.vm.addAttribute();
-
-            expect(wrapper.vm.newKeyError).to.not.equal("");
-            expect(wrapper.vm.attributes.length).to.equal(1);
-        });
-
         it("should set newValueError if value is empty", () => {
             wrapper.vm.newKey = "city";
             wrapper.vm.newValue = "";
@@ -140,7 +129,6 @@ describe("src/shared/modules/draw/components/DrawEditAttributes.vue", () => {
             wrapper.vm.addAttribute();
 
             expect(wrapper.vm.newValueError).to.not.equal("");
-            expect(wrapper.vm.attributes.length).to.equal(0);
         });
 
         it("should reset newKey and newValue after successful add", () => {

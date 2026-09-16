@@ -3,6 +3,8 @@ import IconButton from "@shared/modules/buttons/components/IconButton.vue";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 import {createMarkerStyleFn} from "../js/editStyleInteractions.js";
+import {markRaw} from "vue";
+import {getUid} from "ol/util.js";
 
 const EXCLUDED_KEYS = new Set([
     "geometry",
@@ -229,7 +231,7 @@ export default {
         onFeatureClick (feature) {
             this.clearSelectionMarker();
             this.applySelectionMarker(feature);
-            this.selectedFeature = feature;
+            this.selectedFeature = markRaw(feature);
             this.newKey = "";
             this.newValue = "";
             this.newKeyError = "";
@@ -244,32 +246,46 @@ export default {
         },
 
         /**
-         * Adds a new attribute to the selected feature.
+         * Adds a new attribute to the selected feature or updates its value if the key exists.
          * @returns {void}
          */
         addAttribute () {
             const key = this.newKey.trim();
+            const value = this.newValue ? this.newValue.trim() : "";
+
+            if (!key && !value) {
+                this.newKeyError = "";
+                this.newValueError = "";
+                return;
+            }
 
             if (!key) {
                 this.newKeyError = this.$t("common:shared.modules.draw.attributeSelect.attributeKeyError");
                 return;
             }
-            if (this.attributes.some(a => a.key === key)) {
-                this.newKeyError = this.$t("common:shared.modules.draw.attributeSelect.attributeDuplicatedKeyError");
-                return;
-            }
-            if (!this.newValue.trim()) {
+
+            if (!value) {
                 this.newValueError = this.$t("common:shared.modules.draw.attributeSelect.attributeValueError");
                 return;
             }
 
             this.newKeyError = "";
             this.newValueError = "";
-            this.attributes.push({key, originalKey: key, value: this.newValue});
+
+
+            const keyExistsGlobally = this.attributes.some(a => a.key === key);
+
+            if (!keyExistsGlobally) {
+
+                this.attributes.push({key, originalKey: key, value: value});
+            }
+
+            const selectedUid = getUid(this.selectedFeature);
 
             this.getAllFeatures().forEach(feature => {
-                if (feature === this.selectedFeature) {
-                    feature.set(key, this.newValue);
+                if (getUid(feature) === selectedUid) {
+                    // Dem ausgewählten Objekt den konkreten Wert zuweisen
+                    feature.set(key, value);
                 }
                 else if (!Object.prototype.hasOwnProperty.call(feature.getProperties(), key)) {
                     feature.set(key, "");
@@ -281,6 +297,7 @@ export default {
             this.updateGfiAttributes();
             this.checkAttributes();
         },
+
 
         /**
          * Removes an attribute from the feature and the local list.
