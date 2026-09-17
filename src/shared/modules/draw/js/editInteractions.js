@@ -5,7 +5,7 @@ import {convertColor} from "@shared/js/utils/convertColor.js";
 import selectInteraction from "@masterportal/masterportalapi/src/maps/interactions/selectInteraction.js";
 import modifyInteraction from "@masterportal/masterportalapi/src/maps/interactions/modifyInteraction.js";
 import undoRedoFeatures, {isDeleteAllMode} from "./undoRedoFeatures.js";
-import {getFeatureEditType} from "./editStyleInteractions.js";
+import {getFeatureEditType, initializeFeatureDrawState} from "./editStyleInteractions.js";
 import {createTooltipOverlay} from "./createTooltipOverlay.js";
 
 /**
@@ -25,6 +25,7 @@ function createFeatureClickHandler (map, layer, onFeatureSelected, onTextFeature
                 return false;
             }
 
+            initializeFeatureDrawState(feature, layer);
             const editType = getFeatureEditType(feature);
 
             if (editType && onFeatureSelected) {

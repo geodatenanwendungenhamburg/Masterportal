@@ -3,6 +3,151 @@ import {Point} from "ol/geom.js";
 import {convertColor} from "@shared/js/utils/convertColor.js";
 import {applyStyleFromDrawState} from "./buildStyleFromDrawState.js";
 
+const DEFAULT_FILL_COLOR = [55, 126, 184, 0.99],
+    DEFAULT_STROKE_COLOR = [0, 0, 0, 1];
+
+/**
+ * Resolves the effective OpenLayers style for a feature.
+ * @param {ol/Feature} feature The feature to resolve.
+ * @param {ol/layer/Vector} [layer] The feature layer.
+ * @returns {ol/style/Style|null} The first resolved style, or null.
+ */
+function resolveFeatureStyle (feature, layer) {
+    const styleFunction = feature.getStyleFunction?.() || layer?.getStyleFunction?.(),
+        resolvedStyle = styleFunction?.(feature, 1);
+
+    if (Array.isArray(resolvedStyle)) {
+        return resolvedStyle.find(style => style instanceof Style) || null;
+    }
+    return resolvedStyle instanceof Style ? resolvedStyle : null;
+}
+
+/**
+ * Returns a color as an RGBA array.
+ * @param {*} color The OpenLayers color value.
+ * @param {Number[]} fallback The fallback RGBA color.
+ * @returns {Number[]} The normalized RGBA color.
+ */
+function normalizeStyleColor (color, fallback) {
+    return color === undefined || color === null ? [...fallback] : convertColor(color, "rgba");
+}
+
+/**
+ * Creates a draw type descriptor from an OpenLayers geometry type.
+ * @param {String} geometryType The OpenLayers geometry type.
+ * @returns {Object|null} The inferred draw type.
+ */
+function inferDrawType (geometryType) {
+    if (geometryType === "Point" || geometryType === "MultiPoint") {
+        return {id: "drawSymbol", geometry: "Point"};
+    }
+    if (geometryType === "LineString" || geometryType === "MultiLineString") {
+        return {id: "drawLine", geometry: geometryType};
+    }
+    if (geometryType === "Polygon" || geometryType === "MultiPolygon") {
+        return {id: "drawArea", geometry: geometryType};
+    }
+    if (geometryType === "Circle") {
+        return {id: "drawCircle", geometry: "Circle"};
+    }
+    return null;
+}
+
+/**
+ * Adds point-specific state inferred from the OpenLayers style.
+ * @param {Object} drawState The draw state to extend.
+ * @param {ol/style/Style|null} style The resolved feature style.
+ * @returns {Object} The completed draw state.
+ */
+function addPointStyleState (drawState, style) {
+    const textStyle = style?.getText?.(),
+        imageStyle = style?.getImage?.(),
+        text = textStyle?.getText?.();
+
+    if (typeof text === "string" && text.length > 0) {
+        const font = textStyle.getFont?.() || "16px Arial",
+            fontMatch = font.match(/^(\d+(?:\.\d+)?)px\s+(.+)$/);
+
+        return {
+            ...drawState,
+            drawType: {id: "writeText", geometry: "Point"},
+            text,
+            fontSize: fontMatch ? Number(fontMatch[1]) : 16,
+            font: fontMatch ? fontMatch[2] : "Arial",
+            color: normalizeStyleColor(textStyle.getFill?.()?.getColor?.(), DEFAULT_STROKE_COLOR)
+        };
+    }
+    if (typeof imageStyle?.getSrc === "function") {
+        const scale = imageStyle.getScale?.() ?? 1;
+
+        return {
+            ...drawState,
+            symbol: {
+                id: "iconPoint",
+                type: "icon",
+                value: imageStyle.getSrc(),
+                scale: Array.isArray(scale) ? scale[0] : scale
+            }
+        };
+    }
+
+    const stroke = imageStyle?.getStroke?.();
+
+    return {
+        ...drawState,
+        color: normalizeStyleColor(imageStyle?.getFill?.()?.getColor?.(), DEFAULT_FILL_COLOR),
+        colorContour: normalizeStyleColor(stroke?.getColor?.(), DEFAULT_STROKE_COLOR),
+        pointSize: (imageStyle?.getRadius?.() ?? 8) * 2,
+        strokeWidth: stroke?.getWidth?.() ?? drawState.strokeWidth,
+        symbol: {id: "iconPoint", type: "simple_point", value: "simple_point", scale: 1}
+    };
+}
+
+/**
+ * Initializes missing draw state for an imported feature from its geometry and style.
+ * @param {ol/Feature} feature The imported feature.
+ * @param {ol/layer/Vector} [layer] The feature layer used for fallback styling.
+ * @returns {Object|null} Existing or initialized draw state, or null for unsupported geometry.
+ */
+export function initializeFeatureDrawState (feature, layer) {
+    const existingDrawState = feature?.get("masterportal_attributes")?.drawState;
+
+    if (existingDrawState?.drawType) {
+        return existingDrawState;
+    }
+    if (!existingDrawState && feature?.get("drawType") === "writeText") {
+        return null;
+    }
+
+    const geometryType = feature?.getGeometry?.()?.getType?.(),
+        drawType = inferDrawType(geometryType);
+
+    if (!drawType) {
+        return null;
+    }
+
+    const style = resolveFeatureStyle(feature, layer),
+        stroke = style?.getStroke?.(),
+        baseState = {
+            drawType,
+            color: normalizeStyleColor(style?.getFill?.()?.getColor?.(), DEFAULT_FILL_COLOR),
+            colorContour: normalizeStyleColor(stroke?.getColor?.(), DEFAULT_STROKE_COLOR),
+            strokeWidth: stroke?.getWidth?.() ?? 1,
+            zIndex: style?.getZIndex?.() ?? 0
+        },
+        inferredState = drawType.geometry === "Point" ? addPointStyleState(baseState, style) : baseState,
+        isLegacyText = drawType.geometry === "Point" && (existingDrawState?.text !== undefined || existingDrawState?.fontSize !== undefined),
+        drawState = {
+            ...inferredState,
+            ...existingDrawState,
+            drawType: isLegacyText ? {id: "writeText", geometry: "Point"} : inferredState.drawType
+        },
+        attributes = feature.get("masterportal_attributes") || {};
+
+    feature.set("masterportal_attributes", {...attributes, drawState}, true);
+    return drawState;
+}
+
 /**
  * Returns a style function that wraps the feature's original style and appends an asterisk (*)
  * as a marker, when a drawing has attributes.

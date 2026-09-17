@@ -1,15 +1,88 @@
 import {expect} from "chai";
 import Feature from "ol/Feature.js";
+import LineString from "ol/geom/LineString.js";
 import Point from "ol/geom/Point.js";
+import Polygon from "ol/geom/Polygon.js";
+import Fill from "ol/style/Fill.js";
 import Style from "ol/style/Style.js";
+import Stroke from "ol/style/Stroke.js";
 
 import {
     getFeatureEditType,
     extractEditableState,
-    applyStyleChange
+    applyStyleChange,
+    initializeFeatureDrawState
 } from "@shared/modules/draw/js/editStyleInteractions.js";
 
 describe("src/shared/modules/draw/js/editStyleInteractions.js", () => {
+    describe("initializeFeatureDrawState", () => {
+        it("should return null for a missing feature", () => {
+            expect(initializeFeatureDrawState(null)).to.be.null;
+        });
+
+        it("should preserve an existing complete drawState", () => {
+            const drawState = {drawType: {id: "drawLine", geometry: "LineString"}},
+                feature = new Feature({geometry: new LineString([[0, 0], [1, 1]])});
+
+            feature.set("masterportal_attributes", {drawState});
+
+            expect(initializeFeatureDrawState(feature)).to.equal(drawState);
+        });
+
+        it("should preserve the flat legacy text edit path", () => {
+            const feature = new Feature({geometry: new Point([0, 0])});
+
+            feature.set("drawType", "writeText");
+
+            expect(initializeFeatureDrawState(feature)).to.be.null;
+            expect(feature.get("masterportal_attributes")).to.be.undefined;
+        });
+
+        it("should initialize a polygon from its OpenLayers style", () => {
+            const feature = new Feature({
+                geometry: new Polygon([[[0, 0], [1, 0], [1, 1], [0, 0]]])
+            });
+
+            feature.setStyle(new Style({
+                fill: new Fill({color: [10, 20, 30, 0.4]}),
+                stroke: new Stroke({color: [40, 50, 60, 0.8], width: 3}),
+                zIndex: 2
+            }));
+
+            const drawState = initializeFeatureDrawState(feature);
+
+            expect(drawState.drawType).to.deep.equal({id: "drawArea", geometry: "Polygon"});
+            expect(drawState.color).to.deep.equal([10, 20, 30, 0.4]);
+            expect(drawState.colorContour).to.deep.equal([40, 50, 60, 0.8]);
+            expect(drawState.strokeWidth).to.equal(3);
+            expect(drawState.zIndex).to.equal(2);
+        });
+
+        it("should initialize an unstyled line with editable defaults", () => {
+            const feature = new Feature({geometry: new LineString([[0, 0], [1, 1]])}),
+                drawState = initializeFeatureDrawState(feature);
+
+            expect(drawState.drawType).to.deep.equal({id: "drawLine", geometry: "LineString"});
+            expect(drawState.colorContour).to.deep.equal([0, 0, 0, 1]);
+            expect(drawState.strokeWidth).to.equal(1);
+        });
+
+        it("should complete a partial legacy text drawState", () => {
+            const feature = new Feature({geometry: new Point([0, 0])});
+
+            feature.set("masterportal_attributes", {
+                drawState: {text: "Legacy", fontSize: 24, color: [1, 2, 3, 1]}
+            });
+
+            const drawState = initializeFeatureDrawState(feature);
+
+            expect(drawState.drawType).to.deep.equal({id: "writeText", geometry: "Point"});
+            expect(drawState.text).to.equal("Legacy");
+            expect(drawState.fontSize).to.equal(24);
+            expect(drawState.color).to.deep.equal([1, 2, 3, 1]);
+        });
+    });
+
     describe("getFeatureEditType", () => {
         it("should return null for null feature", () => {
             expect(getFeatureEditType(null)).to.be.null;
