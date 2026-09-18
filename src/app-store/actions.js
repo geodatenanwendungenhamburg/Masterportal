@@ -7,6 +7,7 @@ import getActionsLayerConfig from "./actionsLayerConfig.js";
 import {fetchFirstModuleConfig} from "@shared/js/utils/fetchFirstModuleConfig.js";
 import {portalConfigKey, treeTopicConfigKey} from "@shared/js/utils/constants.js";
 import {updateProxyUrl} from "./js/getProxyUrl.js";
+import deduplicateSubjectLayerIds from "./js/deduplicateSubjectLayerIds.js";
 import {upperFirst} from "@shared/js/utils/changeCase.js";
 import globalUrlParams from "@core/urlParams/js/globalUrlParams.js";
 
@@ -60,7 +61,17 @@ export default {
                     dispatch("moveStartModuleControls", "mainMenu");
                     dispatch("moveStartModuleControls", "secondaryMenu");
                 }
-                commit("setLayerConfig", response.data ? response.data[treeTopicConfigKey] : null);
+                const layerConfig = response.data ? response.data[treeTopicConfigKey] : null,
+                    hasSubjectLayer = layerConfig && Object.prototype.hasOwnProperty.call(layerConfig, "subjectlayer"),
+                    subjectLayer = hasSubjectLayer ? layerConfig.subjectlayer : undefined,
+                    deduplicatedSubjectLayer = deduplicateSubjectLayerIds(subjectLayer),
+                    normalizedLayerConfig = layerConfig ? {...layerConfig} : null;
+
+                if (hasSubjectLayer) {
+                    normalizedLayerConfig.subjectlayer = deduplicatedSubjectLayer.subjectLayer;
+                }
+
+                commit("setLayerConfig", normalizedLayerConfig);
                 dispatch("processLayerNamesHtmlTags");
                 commit("setLoadedConfigs", "configJson");
             })

@@ -21,6 +21,7 @@
 ### Fixed
 - Issue \#1655: Menu modules now keep their own configuration when multiple modules of the same type are defined in config.json. LayerSlider and Filter no longer reuse the last configured instance.
 - Issue \#1658: Share View now filters all available legacy URL parameters.
+- Issue \#1661: Deduplicate subject layers with identical IDs.
 - Accessibility: Fixed accessibility issues across layer tree and controls (label associations, icon-button naming, ARIA semantics, and preview alt text).
 
 ---

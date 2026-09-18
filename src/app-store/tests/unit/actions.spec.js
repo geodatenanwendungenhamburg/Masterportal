@@ -65,6 +65,51 @@ describe("src/app-store/actions.js", () => {
             expect(axiosMock.calledWith("config.json")).to.be.true;
             expect(dispatch.calledWith("processLayerNamesHtmlTags")).to.be.true;
         });
+        it("loadConfigJson removes duplicate subject layer ids and warns once per id", async () => {
+            const getters = {
+                    isMobile: false
+                },
+                responseData = {
+                    layerConfig: {
+                        subjectlayer: {
+                            elements: [
+                                {name: "Folder A", type: "folder", elements: [{id: "150"}]},
+                                {name: "Folder B", type: "folder", elements: [{id: "150"}, {id: "151"}]}
+                            ]
+                        }
+                    }
+                };
+
+            axiosMock.resolves({data: responseData});
+
+
+            await actions.loadConfigJson({commit, state, dispatch, getters});
+
+            const layerConfig = commit.getCalls().find(call => call.args[0] === "setLayerConfig").args[1],
+                layers = layerConfig.subjectlayer.elements.flatMap(folder => folder.elements);
+
+            expect(layers.map(layer => layer.id)).to.deep.equal(["150", "151"]);
+
+        });
+        it("loadConfigJson preserves a config without subjectlayer", async () => {
+            const getters = {
+                    isMobile: false
+                },
+                responseData = {
+                    layerConfig: {
+                        LayerSubjects: {elements: []}
+                    }
+                };
+
+            axiosMock.resolves({data: responseData});
+
+            await actions.loadConfigJson({commit, state, dispatch, getters});
+
+            const layerConfig = commit.getCalls().find(call => call.args[0] === "setLayerConfig").args[1];
+
+            expect(layerConfig).to.deep.equal(responseData.layerConfig);
+            expect(Object.prototype.hasOwnProperty.call(layerConfig, "subjectlayer")).to.be.false;
+        });
         it("loadConfigJson - portalConf with query params './config.json?abc=xyz' should preserve URL parameters", async () => {
             const getters = {
                 isMobile: false
