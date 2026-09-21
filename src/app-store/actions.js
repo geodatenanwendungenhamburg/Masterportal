@@ -62,7 +62,7 @@ export default {
             }
         });
 
-        if (roleFromUrl && !/[?&]role=/i.test(targetPath)) {
+        if (roleFromUrl && !(/[?&]role=/i).test(targetPath)) {
             targetPath += targetPath.includes("?") ? `&role=${encodeURIComponent(roleFromUrl)}` : `?role=${encodeURIComponent(roleFromUrl)}`;
         }
 
@@ -147,7 +147,7 @@ export default {
             }
         });
 
-        if (targetPath && roleFromUrl && !/[?&]role=/i.test(targetPath)) {
+        if (targetPath && roleFromUrl && !(/[?&]role=/i).test(targetPath)) {
             targetPath += targetPath.includes("?") ? `&role=${encodeURIComponent(roleFromUrl)}` : `?role=${encodeURIComponent(roleFromUrl)}`;
         }
 
