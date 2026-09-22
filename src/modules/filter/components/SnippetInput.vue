@@ -210,8 +210,8 @@ export default {
             :label="titleText"
             :aria-label="ariaLabelInput"
             :placeholder="placeholder"
-            :input="inputChanged"
             :disabled="disabled"
+            :on-change="inputChanged"
         />
         <div
             v-if="info"
