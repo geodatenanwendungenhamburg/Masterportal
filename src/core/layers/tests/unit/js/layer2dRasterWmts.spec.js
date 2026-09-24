@@ -91,7 +91,8 @@ describe("src/core/js/layers/layer2dRasterWmts.js", () => {
 
         beforeEach(() => {
             localAttributes = {
-                transparent: 90,
+                transparent: false,
+                transparency: 90,
                 zIndex: 1,
                 coordinateSystem: "EPSG:3857",
                 tileSize: "256",
@@ -110,11 +111,22 @@ describe("src/core/js/layers/layer2dRasterWmts.js", () => {
             };
         });
 
-        it("should return the layer params", () => {
+        it("should return the layer params using the transparency attribute", () => {
             const wmsLayer = new Layer2dRasterWmts(localAttributes);
 
             expect(wmsLayer.getLayerParams(localAttributes)).to.deep.equals({
                 opacity: 0.1,
+                zIndex: 1
+            });
+        });
+
+        it("should not use the OGC 'transparent' flag as opacity source", () => {
+            localAttributes.transparent = true;
+            localAttributes.transparency = 0;
+            const wmsLayer = new Layer2dRasterWmts(localAttributes);
+
+            expect(wmsLayer.getLayerParams(localAttributes)).to.deep.equals({
+                opacity: 1,
                 zIndex: 1
             });
         });

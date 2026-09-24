@@ -51,7 +51,7 @@ Layer2dRasterWmts.prototype.getRawLayerAttributes = function (attributes) {
  */
 Layer2dRasterWmts.prototype.getLayerParams = function (attributes) {
     return {
-        opacity: (100 - attributes.transparent) / 100,
+        opacity: (100 - attributes.transparency) / 100,
         zIndex: attributes.zIndex
     };
 };

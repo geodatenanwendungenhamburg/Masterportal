@@ -3,8 +3,17 @@ import actions from "@modules/print/store/actionsPrint.js";
 import getCswRecordById from "@shared/js/api/getCswRecordById.js";
 import VectorLayer from "ol/layer/Vector.js";
 import sinon from "sinon";
+import {vi} from "vitest";
+import BuildSpec from "@modules/print/js/buildSpec.js";
+import buildCesiumImageLayer from "@modules/print/js/buildCesiumImageLayer.js";
+import layerProvider from "@modules/print/js/getVisibleLayer.js";
+import {computeRectangle} from "olcs";
 
-const {activatePrintStarted, getMetaDataForPrint, createPrintJob, migratePayload, waitForPrintJob, waitForPrintJobSuccess, downloadFile} = actions;
+vi.mock("olcs", () => ({
+    computeRectangle: vi.fn()
+}));
+
+const {activatePrintStarted, getMetaDataForPrint, createPrintJob, migratePayload, waitForPrintJob, waitForPrintJobSuccess, downloadFile, startPrint, startPrint3d} = actions;
 
 beforeEach(() => {
     const cswReturn = {
@@ -35,6 +44,104 @@ describe("src/modules/print/store/actionsPrint", function () {
             expect(commit.calledWith("setPrintStarted", true)).to.be.true;
         });
     });
+
+    describe("startPrint", function () {
+        it("should render the 2D map before building the print layers", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                renderSync = sinon.stub(),
+                buildLayers = sinon.stub(BuildSpec, "buildLayers").resolves(),
+                getVisibleLayer = sinon.stub(layerProvider, "getVisibleLayer"),
+                originalMapCollection = globalThis.mapCollection,
+                state = {
+                    currentLayoutName: "A4",
+                    filename: "report",
+                    currentFormat: "pdf",
+                    title: "title",
+                    transferParameter: {},
+                    dpiForPdf: 200,
+                    currentScale: 1000,
+                    visibleLayerList: [],
+                    isMetadataAvailable: false,
+                    isScaleAvailable: false,
+                    isGfiAvailable: false,
+                    isLegendAvailable: false,
+                    printAppId: "master",
+                    printMapMarker: false
+                },
+                getters = {visibleLayerList: [], activeAdditionalLayers: []},
+                print = {index: 0, getResponse: sinon.stub(), layoutAttributes: {}};
+
+            globalThis.mapCollection = {
+                getMap: () => ({renderSync}),
+                getMapView: () => ({
+                    getProjection: () => ({getCode: () => "EPSG:25832"}),
+                    getCenter: () => [1, 2],
+                    getRotation: () => 0
+                })
+            };
+
+            try {
+                await startPrint({state, getters, dispatch, commit}, print);
+
+                expect(renderSync.calledBefore(buildLayers)).to.be.true;
+                expect(getVisibleLayer.calledWith(false)).to.be.true;
+                expect(dispatch.calledWith("createPrintJob", sinon.match({index: 0, printAppId: "master"}))).to.be.true;
+            }
+            finally {
+                Object.defineProperty(globalThis, "mapCollection", {value: originalMapCollection, configurable: true, writable: true});
+                buildLayers.restore();
+                getVisibleLayer.restore();
+            }
+        });
+    });
+
+    describe("startPrint3d", function () {
+        it("should use print DPI dimensions for the Cesium screenshot", async () => {
+            const commit = sinon.spy(),
+                dispatch = sinon.spy(),
+                buildLayers = sinon.stub(BuildSpec, "buildLayers").resolves(),
+                createImageLayer = sinon.stub(buildCesiumImageLayer, "createMapfishPrintImageLayerFromCesium").resolves({extent: [0, 0, 1, 1]}),
+                originalMapCollection = globalThis.mapCollection,
+                ol3d = {
+                    getOlMap: () => ({getView: () => ({getProjection: () => ({getCode: () => "EPSG:25832"})})}),
+                    getCesiumScene: () => ({canvas: {}})
+                },
+                state = {
+                    currentLayoutName: "A4",
+                    filename: "report",
+                    currentFormat: "pdf",
+                    title: "title",
+                    dpiForPdf: 144,
+                    layoutMapInfo: [200, 100],
+                    visibleLayerList: [],
+                    isMetadataAvailable: false,
+                    isScaleAvailable: false,
+                    isGfiAvailable: false,
+                    isLegendAvailable: false,
+                    printAppId: "master"
+                },
+                print = {index: 0, getResponse: sinon.stub(), layoutAttributes: {}};
+
+            computeRectangle.mockReturnValue({offsetX: 1, offsetY: 2, width: 3, height: 4});
+            globalThis.mapCollection = {getMap: () => ol3d};
+
+            try {
+                await startPrint3d({state, dispatch, commit}, print);
+
+                expect(createImageLayer.calledWith(ol3d, sinon.match({targetWidth: 400, targetHeight: 200}))).to.be.true;
+                expect(dispatch.calledWith("compute3dPrintMask")).to.be.true;
+                expect(dispatch.calledWith("createPrintJob", sinon.match({index: 0, printAppId: "master"}))).to.be.true;
+            }
+            finally {
+                Object.defineProperty(globalThis, "mapCollection", {value: originalMapCollection, configurable: true, writable: true});
+                computeRectangle.mockReset();
+                buildLayers.restore();
+                createImageLayer.restore();
+            }
+        });
+    });
+
 
     describe("getMetaDataForPrint", function () {
         it("should get metadata", async () => {

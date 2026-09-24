@@ -5,7 +5,9 @@
 /**
  *
  * @param {Cesium.Scene} scene Cesium scene
- * @param {Object?} options Options
+ * @param {Object?} options Options; when given, the region [offsetX, offsetY, width, height]
+ * is cropped and scaled down to [targetWidth, targetHeight] (defaulting to [width, height]
+ * when not given) and encoded as JPEG to keep the print payload small.
  * @returns {Promise<string>} the promise
  */
 function takeOl3DScreenshot (scene, options) {
@@ -17,15 +19,17 @@ function takeOl3DScreenshot (scene, options) {
                 let url;
 
                 if (options) {
-                    const smallerCanvas = document.createElement("canvas");
+                    const smallerCanvas = document.createElement("canvas"),
+                        targetWidth = options.targetWidth || options.width,
+                        targetHeight = options.targetHeight || options.height;
 
-                    smallerCanvas.width = options.width;
-                    smallerCanvas.height = options.height;
+                    smallerCanvas.width = targetWidth;
+                    smallerCanvas.height = targetHeight;
                     smallerCanvas.getContext("2d").drawImage(
                         scene.canvas,
                         options.offsetX, options.offsetY, options.width, options.height,
-                        0, 0, options.width, options.height);
-                    url = smallerCanvas.toDataURL();
+                        0, 0, targetWidth, targetHeight);
+                    url = smallerCanvas.toDataURL("image/jpeg", 0.85);
                 }
                 else {
                     url = scene.canvas.toDataURL();
@@ -60,18 +64,19 @@ function createFakeExtent (view, pixels) {
 /**
  * Creates the print image layer for mapfish from the given 3dmap
  * @param {olcs.OLCesium} ol3d The 3d map
- * @param {Object} options Options
+ * @param {Object} options Options; see takeOl3DScreenshot for the downscale/crop fields.
  * @returns {Promise<Object>} the promise
  */
 async function createMapfishPrintImageLayerFromCesium (ol3d, options) {
-    const ol2d = ol3d.getOlMap();
+    const ol2d = ol3d.getOlMap(),
+        pixels = [options.targetWidth || options.width, options.targetHeight || options.height];
 
     return {
         type: "image",
         name: "Cesium",
         opacity: 1,
-        imageFormat: "image/png",
-        extent: createFakeExtent(ol2d.getView(), [options.width, options.height]),
+        imageFormat: "image/jpeg",
+        extent: createFakeExtent(ol2d.getView(), pixels),
         baseURL: await takeOl3DScreenshot(ol3d.getCesiumScene(), options)
     };
 }

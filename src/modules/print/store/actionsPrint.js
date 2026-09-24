@@ -3,11 +3,12 @@ import {DEVICE_PIXEL_RATIO} from "ol/has.js";
 
 import actionsPrintInitialization from "./actionsPrintInitialization.js";
 import BuildSpec from "../js/buildSpec.js";
+import buildCesiumImageLayer from "../js/buildCesiumImageLayer.js";
 import getCswRecordById from "@shared/js/api/getCswRecordById.js";
 import layerProvider from "../js/getVisibleLayer.js";
 import omit from "@shared/js/utils/omit.js";
 import changeCase from "@shared/js/utils/changeCase.js";
-import {takeScreenshot, computeRectangle} from "olcs";
+import {computeRectangle} from "olcs";
 
 const actions = {
     ...actionsPrintInitialization,
@@ -66,6 +67,7 @@ const actions = {
             ol2d = ol3d.getOlMap(),
             view = ol2d.getView(),
             viewProjection = view.getProjection().getCode(),
+            factor = state.dpiForPdf / 72,
             options = (function () {
                 const evt = {ol3d: ol3d};
 
@@ -74,30 +76,13 @@ const actions = {
                     evt.ol3d.getCesiumScene().canvas,
                     state.layoutMapInfo[0],
                     state.layoutMapInfo[1]);
-                return evt.printRectangle;
+                return {
+                    ...evt.printRectangle,
+                    targetWidth: state.layoutMapInfo[0] * factor,
+                    targetHeight: state.layoutMapInfo[1] * factor
+                };
             })(),
-            screenshot = await takeScreenshot(ol3d.getCesiumScene(), options),
-            fakeExtent = (function () {
-                const res = view.getResolution(),
-                    center = view.getCenter(),
-                    width = options.width,
-                    height = options.height;
-
-                return [
-                    center[0] - width / 2 * res, // xmin
-                    center[1] - height / 2 * res, // ymin
-                    center[0] + width / 2 * res, // xmax
-                    center[1] + height / 2 * res // ymax
-                ];
-            })(),
-            cesiumLayer = {
-                type: "image",
-                name: "Cesium",
-                opacity: 1,
-                imageFormat: "image/png",
-                extent: fakeExtent,
-                baseURL: screenshot
-            },
+            cesiumLayer = await buildCesiumImageLayer.createMapfishPrintImageLayerFromCesium(ol3d, options),
             attr = {
                 layout: state.currentLayoutName,
                 outputFilename: state.filename,
@@ -108,7 +93,7 @@ const actions = {
                     map: {
                         dpi: state.dpiForPdf,
                         projection: viewProjection,
-                        bbox: fakeExtent,
+                        bbox: cesiumLayer.extent,
                         useNearestScale: false,
                         useAdjustBounds: false
                     }
@@ -155,6 +140,7 @@ const actions = {
 
     /**
      * starts the printing process
+     * Synchronously renders the 2D map before building the print specification so the postrender listener refreshes BuildSpec.lastPrintedExtent.
      * @param {Object} param.state the state
      * @param {Object} param.dispatch the dispatch
      * @param {Object} param.commit the commit
@@ -165,6 +151,7 @@ const actions = {
      */
     startPrint: async function ({state, getters, dispatch, commit}, print) {
         commit("setProgressWidth", "width: 25%");
+        mapCollection.getMap("2D").renderSync();
         layerProvider.getVisibleLayer(state.printMapMarker);
 
         const visibleLayerList = Array.isArray(getters.activeAdditionalLayers) ? [...getters.visibleLayerList, ...getters.activeAdditionalLayers] : [...getters.visibleLayerList],

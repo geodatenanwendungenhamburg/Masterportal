@@ -54,12 +54,44 @@ describe("buildCesiumImageLayer", () => {
                 requestRender: () => {
                     scene.events[0]();
                 },
-                canvas: document.createElement("canvas").getContext("2d")
+                canvas: document.createElement("canvas")
             };
 
             await buildCesiumImageLayer.takeOl3DScreenshot(scene, {width: 0, height: 0}).then(result => {
                 expect(result).to.be.equal("data:,");
             });
+        });
+        it("should scale the cropped canvas down to targetWidth/targetHeight when given", async () => {
+            let createdCanvas;
+            const scene = {
+                    events: [],
+                    postRender: {
+                        addEventListener: (evt) => {
+                            scene.events.push(evt);
+                            return () => sinon.stub();
+                        }
+                    },
+                    requestRender: () => {
+                        scene.events[0]();
+                    },
+                    canvas: document.createElement("canvas")
+                },
+                originalCreateElement = document.createElement.bind(document);
+
+            sinon.stub(document, "createElement").callsFake(tag => {
+                const element = originalCreateElement(tag);
+
+                if (tag === "canvas") {
+                    createdCanvas = element;
+                }
+                return element;
+            });
+
+            await buildCesiumImageLayer.takeOl3DScreenshot(scene, {offsetX: 0, offsetY: 0, width: 20, height: 10, targetWidth: 5, targetHeight: 2});
+            document.createElement.restore();
+
+            expect(createdCanvas.width).to.be.equal(5);
+            expect(createdCanvas.height).to.be.equal(2);
         });
     });
     describe("createFakeExtent", () => {
@@ -104,7 +136,7 @@ describe("buildCesiumImageLayer", () => {
                             requestRender: () => {
                                 scene.events[0]();
                             },
-                            canvas: document.createElement("canvas").getContext("2d")
+                            canvas: document.createElement("canvas")
                         };
 
                         return scene;
@@ -114,7 +146,7 @@ describe("buildCesiumImageLayer", () => {
                     type: "image",
                     name: "Cesium",
                     opacity: 1,
-                    imageFormat: "image/png",
+                    imageFormat: "image/jpeg",
                     extent: [1, 1, 1, 1],
                     baseURL: "data:,"
                 };

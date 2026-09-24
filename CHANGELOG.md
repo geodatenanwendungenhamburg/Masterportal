@@ -27,6 +27,7 @@
 ### Removed
 
 ### Fixed
+- Issue \#1646: Improved WMTS printing with raster reprojection for differing projections, correct opacity handling, more reliable raster fallbacks and rendering, and reduced 3D print payload sizes.
 - Issue \#1655: Menu modules now keep their own configuration when multiple modules of the same type are defined in config.json. LayerSlider and Filter no longer reuse the last configured instance.
 - Issue \#1656: Fixed GetFeatureInfo popups for multiple visible WMS layers.
 - Issue \#1658: Share View now filters all available legacy URL parameters.

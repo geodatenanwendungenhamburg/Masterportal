@@ -19,8 +19,14 @@ import Circle from "ol/geom/Circle.js";
 import CircleStyle from "ol/style/Circle.js";
 import IconStyle from "ol/style/Icon.js";
 import {createStore} from "vuex";
+import {vi} from "vitest";
 
 import store from "@appstore/index.js";
+import {buildWmtsImage} from "@modules/print/utils/buildWmtsImage.js";
+
+vi.mock("@modules/print/utils/buildWmtsImage.js", () => ({
+    buildWmtsImage: vi.fn()
+}));
 
 describe("src/modules/print/js/buildSpec", function () {
     let buildSpec,
@@ -81,6 +87,7 @@ describe("src/modules/print/js/buildSpec", function () {
 
     beforeEach(() => {
         buildSpec.getStyleModel = sinon.spy();
+        buildWmtsImage.mockClear();
         if (typeof window.getComputedStyle === "function") {
             sinon.stub(window, "getComputedStyle").callsFake(() => {
                 return {
@@ -732,16 +739,26 @@ describe("src/modules/print/js/buildSpec", function () {
                 }),
                 opacity: 1
             });
+        let originalMapsProjection;
 
         wmtsLayer.getSource().matrixSizes = matrixSizes;
         wmtsLayer.getSource().scales = scales;
 
-        it("should buildWmts", function () {
+        beforeAll(() => {
+            originalMapsProjection = store.state.Maps.projection;
+            store.commit("Maps/setProjection", {getCode: () => "EPSG:25832"});
+        });
+
+        afterAll(() => {
+            store.commit("Maps/setProjection", originalMapsProjection);
+        });
+
+        it("should buildWmts", async function () {
             const matrices = [];
 
             for (let i = 0; i < matrixIds.length; i++) {
                 matrices.push({
-                    identifier: matrixIds[i],
+                    identifier: String(matrixIds[i]),
                     matrixSize: matrixSizes[i],
                     topLeftCorner: origin,
                     scaleDenominator: scales[i],
@@ -749,7 +766,7 @@ describe("src/modules/print/js/buildSpec", function () {
                 });
             }
 
-            expect(buildSpec.buildWmts(wmtsLayer, wmtsLayer.getSource())).to.deep.own.include({
+            expect(await buildSpec.buildWmts(wmtsLayer, wmtsLayer.getSource())).to.deep.own.include({
                 baseURL: "url",
                 opacity: 1,
                 type: "WMTS",
@@ -760,6 +777,124 @@ describe("src/modules/print/js/buildSpec", function () {
                 matrices,
                 requestEncoding: "REST"
             });
+        });
+
+        it("should return an image spec when the source projection does not match the map projection but the raster fallback succeeds", async () => {
+            const mismatchedLayer = new Tile({
+                source: new WMTS({
+                    projection: "EPSG:3857",
+                    tileGrid: new WMTSTileGrid({
+                        origin,
+                        resolutions: [2, 1, 0],
+                        matrixIds,
+                        tileSize
+                    }),
+                    urls: ["url"],
+                    matrixSet: "tileMatrixSet",
+                    layer: "my_layer",
+                    style: "lit",
+                    requestEncoding: "REST"
+                }),
+                opacity: 1
+            });
+
+            mismatchedLayer.getSource().matrixSizes = matrixSizes;
+            mismatchedLayer.getSource().scales = scales;
+            buildWmtsImage.mockResolvedValueOnce({baseURL: "data:image/png;base64,xxx", extent: [0, 0, 1, 1]});
+
+            expect(await buildSpec.buildWmts(mismatchedLayer, mismatchedLayer.getSource())).to.deep.equal({
+                type: "image",
+                name: undefined,
+                opacity: 1,
+                imageFormat: "image/png",
+                baseURL: "data:image/png;base64,xxx",
+                extent: [0, 0, 1, 1]
+            });
+        });
+
+        it("should return undefined and warn when the source projection does not match the map projection and the raster fallback fails", async () => {
+            const warn = sinon.stub(console, "warn"),
+                mismatchedLayer = new Tile({
+                    source: new WMTS({
+                        projection: "EPSG:3857",
+                        tileGrid: new WMTSTileGrid({
+                            origin,
+                            resolutions: [2, 1, 0],
+                            matrixIds,
+                            tileSize
+                        }),
+                        urls: ["url"],
+                        matrixSet: "tileMatrixSet",
+                        layer: "my_layer",
+                        style: "lit",
+                        requestEncoding: "REST"
+                    }),
+                    opacity: 1
+                });
+
+            mismatchedLayer.getSource().matrixSizes = matrixSizes;
+            mismatchedLayer.getSource().scales = scales;
+            buildWmtsImage.mockResolvedValueOnce(null);
+
+            expect(await buildSpec.buildWmts(mismatchedLayer, mismatchedLayer.getSource())).to.be.undefined;
+            expect(warn.calledOnce).to.be.true;
+            warn.restore();
+        });
+
+        it("should return undefined and not warn about the projection mismatch when printing in 3D", async () => {
+            const warn = sinon.stub(console, "warn"),
+                mismatchedLayer = new Tile({
+                    source: new WMTS({
+                        projection: "EPSG:3857",
+                        tileGrid: new WMTSTileGrid({
+                            origin,
+                            resolutions: [2, 1, 0],
+                            matrixIds,
+                            tileSize
+                        }),
+                        urls: ["url"],
+                        matrixSet: "tileMatrixSet",
+                        layer: "my_layer",
+                        style: "lit",
+                        requestEncoding: "REST"
+                    }),
+                    opacity: 1
+                });
+
+            mismatchedLayer.getSource().matrixSizes = matrixSizes;
+            mismatchedLayer.getSource().scales = scales;
+            store.commit("Modules/Print/setIs3d", true);
+
+            expect(await buildSpec.buildWmts(mismatchedLayer, mismatchedLayer.getSource())).to.be.undefined;
+            expect(warn.called).to.be.false;
+            expect(buildWmtsImage.mock.calls).to.have.length(0);
+
+            store.commit("Modules/Print/setIs3d", false);
+            warn.restore();
+        });
+
+        it("should return undefined and warn when matrixSizes/scales are missing", async () => {
+            const warn = sinon.stub(console, "warn"),
+                incompleteLayer = new Tile({
+                    source: new WMTS({
+                        tileGrid: new WMTSTileGrid({
+                            origin,
+                            resolutions: [2, 1, 0],
+                            matrixIds,
+                            tileSize
+                        }),
+                        urls: ["url"],
+                        matrixSet: "tileMatrixSet",
+                        layer: "my_layer",
+                        style: "lit",
+                        requestEncoding: "REST"
+                    }),
+                    opacity: 1
+                });
+
+            expect(await buildSpec.buildWmts(incompleteLayer, incompleteLayer.getSource())).to.be.undefined;
+            expect(warn.calledOnce).to.be.true;
+            warn.restore();
         });
     });
 
