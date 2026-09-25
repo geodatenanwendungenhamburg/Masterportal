@@ -6,7 +6,8 @@
 .DS_Store
 .env
 .idea
-.vscode
+.vscode/*
+!.vscode/copilot-excludes.jsonc
 .history
 /jsdoc
 /docHtml

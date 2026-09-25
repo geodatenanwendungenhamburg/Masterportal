@@ -1,0 +1,54 @@
+{
+    // ============================================================================
+    // GITHUB COPILOT & EXPLORER EXCLUSION PATTERNS
+    // ============================================================================
+    // Copy these patterns into your settings.json under "files.exclude" and
+    // "search.exclude" sections. Synced with .copilotignore for consistency.
+    //
+    // Customize by uncommenting Tier 3 patterns if needed for your workflow.
+    // ============================================================================
+    "files.exclude": {
+        // Tier 1: CRITICAL (NEVER show these)
+        // Performance critical - removes 90% of unnecessary files
+        "node_modules": true,
+        "addons/node_modules": true,
+        ".git": true,
+        "dist": true,
+        "jsdoc": true,
+        // Tier 2: RECOMMENDED (reduce sidebar noise & search clutter)
+        "build": true,
+        "coverage": true,
+        "devtools/certificate": true,
+        ".history": true,
+        ".idea": true,
+        // Tier 3: OPTIONAL (uncomment based on your workflow)
+        // Developers focused on docs should uncomment this
+        // "docs": true,
+        // Developers not working on portals should uncomment this
+        // "portalconfigs": true,
+        // "portal/master": true,
+        // CI/CD config (usually not needed during development)
+        // ".gitlab": true,
+        // ".husky": true
+    },
+    "search.exclude": {
+        // Tier 1: CRITICAL (NEVER search these)
+        "node_modules": true,
+        "addons/node_modules": true,
+        ".git": true,
+        "dist": true,
+        "jsdoc": true,
+        "**/*.min.js": true,
+        // Tier 2: RECOMMENDED
+        "build": true,
+        "coverage": true,
+        "devtools/certificate": true,
+        ".history": true,
+        ".idea": true,
+        // Tier 3: OPTIONAL
+        // "docs": true,
+        // "portalconfigs": true,
+        // ".gitlab": true,
+        // ".husky": true
+    }
+}
