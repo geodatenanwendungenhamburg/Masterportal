@@ -1,0 +1,60 @@
+# GitHub Copilot Ignore File
+# Patterns listed here are excluded from Copilot's context analysis
+
+## Excluded content in Github for Organizations
+
+# Dependencies
+node_modules/
+addons/node_modules/
+
+# Portal instance & config (not core code)
+portalconfigs/
+
+# Build outputs & generated files
+dist/
+build/
+jsdoc/
+/docHtml/
+site/
+html/
+
+# Git directory
+.git/
+
+## Excluded only in Project itself
+
+# Sensitive environment & configuration files
+.env
+.history/
+devtools/proxyconf.json
+devtools/securedServices.js
+devtools/certificate/
+
+# IDE & editor caches (duplicates of source)
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sass-cache
+
+# Test coverage reports
+coverage/
+
+# OS & build artifacts
+/nbproject/
+bowerupdate.log
+temp/
+debug.log
+npm-debug.log
+lintfixed.html
+
+# Generated/minified files
+**/*.min.js
+examples*/
+examples.zip
+
+# CI/CD configuration
+# .gitlab/
+# .husky/
