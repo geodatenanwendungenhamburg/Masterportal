@@ -611,6 +611,7 @@ export default {
                     ...geomType === "Circle" && {circleRadius: 300, colorContour: finalStroke}
                 });
             }
+            return new Style();
         });
 
 
