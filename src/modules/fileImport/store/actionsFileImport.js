@@ -212,6 +212,30 @@ function getParsedCustomAttributes (feature) {
     return attributes;
 }
 
+/**
+ * Converts a hex color string to RGB array.
+ * @param {string} hex - Hex color string, e.g., "#FFFFFF" or "#fff"
+ * @returns {Array} RGB array [r, g, b], e.g., [255, 255, 255]
+ */
+function hexToRgb (hex) {
+    if (typeof hex !== "string") {
+        return [0, 0, 0];
+    }
+    let cleanHex = hex.replace(/^#/, "");
+
+    if (cleanHex.length === 3) {
+        cleanHex = cleanHex.split("").map(char => char + char).join("");
+    }
+
+    const result = (/^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i).exec(cleanHex);
+
+    return result ? [
+        parseInt(result[1], 16),
+        parseInt(result[2], 16),
+        parseInt(result[3], 16)
+    ] : [0, 0, 0];
+}
+
 export default {
     checkAndReplaceSymbolUrls,
 
@@ -490,7 +514,8 @@ export default {
 
         let
             alertingMessage,
-            features;
+            features,
+            mappedCrsProjection = fileDataProjection;
 
         if (format === false) {
             const fileNameSplit = fileName.split("."),
@@ -505,9 +530,23 @@ export default {
             return;
         }
 
+        if ((fileDataProjection === "urn:ogc:def:crs:EPSG:6.6:4326") ||
+           (fileDataProjection === "urn:ogc:def:crs:OGC:1.3:CRS84") ||
+           (fileDataProjection === "urn:ogc:def:crs:OGC:1.3:CRS:84") ||
+           (fileDataProjection === "urn:ogc:def:crs:OGC:2:84") ||
+           (fileDataProjection === "urn:x-ogc:def:crs:EPSG:4326")) {
+            mappedCrsProjection = "EPSG:4326";
+        }
+        else if ((fileDataProjection === "EPSG:102100") ||
+            (fileDataProjection === "EPSG:102113") ||
+            (fileDataProjection === "EPSG:900913") ||
+            (fileDataProjection === "urn:ogc:def:crs:EPSG:6.18:3:3857")) {
+            mappedCrsProjection = "EPSG:3857";
+        }
+
         try {
             features = format.readFeatures(datasrc.raw, {
-                dataProjection: fileDataProjection,
+                dataProjection: mappedCrsProjection,
                 featureProjection: rootGetters["Maps/projectionCode"]
             });
         }
@@ -533,213 +572,47 @@ export default {
         }
 
         vectorLayer.setStyle((feature) => {
-            const drawState = feature.getProperties()?.masterportal_attributes?.drawState,
+            if (!feature) {
+                return new Style();
+            }
+
+            const geomType = feature.getGeometry().getType(),
+                drawState = feature.getProperties()?.masterportal_attributes?.drawState,
                 customStyles = state.customAttributeStyles[fileName];
-            let style;
+
+            if (!drawState && !customStyles && !feature.get("fill") && !feature.get("stroke")) {
+                const defColor = [226, 26, 28, 0.9];
+
+                if (geomType.includes("Point")) {
+                    return createDrawStyle(defColor, defColor, geomType, 16, 1, 1);
+                }
+
+                return new Style({
+                    stroke: new Stroke({color: defColor, width: 1}),
+                    fill: new Fill({color: [228, 26, 28, 0.5]}),
+                    ...geomType === "Circle" && {circleRadius: 300, colorContour: defColor}
+                });
+            }
 
             if (!drawState && !customStyles) {
-                const defaultColor = [226, 26, 28, 0.9],
-                    defaultFillColor = [228, 26, 28, 0.5],
-                    defaultPointSize = 16,
-                    defaultStrokeWidth = 1,
-                    defaultCircleRadius = 300,
-                    geometryType = feature ? feature.getGeometry().getType() : "cesium";
+                const rgbFill = hexToRgb(feature.get("fill")) || [228, 26, 28];
+                const rgbStroke = hexToRgb(feature.get("stroke")) || [226, 26, 28];
 
-                if (geometryType === "Point" || geometryType === "MultiPoint") {
-                    style = createDrawStyle(defaultColor, defaultColor, geometryType, defaultPointSize, 1, 1);
-                }
-                else if (geometryType === "LineString" || geometryType === "MultiLineString") {
-                    style = new Style({
-                        stroke: new Stroke({
-                            color: defaultColor,
-                            width: defaultStrokeWidth
-                        })
-                    });
-                }
-                else if (geometryType === "Polygon" || geometryType === "MultiPolygon") {
-                    style = new Style({
-                        stroke: new Stroke({
-                            color: defaultColor,
-                            width: defaultStrokeWidth
-                        }),
-                        fill: new Fill({
-                            color: defaultFillColor
-                        })
-                    });
-                }
-                else if (geometryType === "Circle") {
-                    style = new Style({
-                        stroke: new Stroke({
-                            color: defaultColor,
-                            width: defaultStrokeWidth
-                        }),
-                        fill: new Fill({
-                            color: defaultFillColor
-                        }),
-                        circleRadius: defaultCircleRadius,
-                        colorContour: defaultColor
-                    });
-                }
-                else if (geometryType === "Square") {
-                    style = new Style({
-                        stroke: new Stroke({
-                            color: defaultColor,
-                            width: defaultStrokeWidth
-                        }),
-                        fill: new Fill({
-                            color: defaultFillColor
-                        })
-                    });
-                }
-                else {
-                    console.warn("Geometry type not implemented: " + geometryType);
-                    style = new Style();
+                const finalFill = [...rgbFill, feature.get("fill-opacity") ?? 0.5];
+                const finalStroke = [...rgbStroke, feature.get("stroke-opacity") ?? 0.8];
+
+                if (geomType.includes("Point")) {
+                    return createDrawStyle(finalFill, finalFill, geomType, 16, 1, 1);
                 }
 
-                return style.clone();
-            }
-
-            if (drawState?.drawType.geometry === "Point") {
-                if (drawState.text) {
-                    style = new Style({
-                        image: new CircleStyle({
-                        }),
-                        text: new Text({
-                            text: drawState.text,
-                            font: drawState.fontSize + "px " + (drawState.font || "Arial,sans-serif"),
-                            fill: new Fill({
-                                color: drawState.color
-                            }),
-                            textAlign: drawState.textAlign || "left",
-                            textBaseline: drawState.textBaseline || "bottom"
-                        })
-                    });
-                }
-                else if (drawState?.symbol.value !== "simple_point") {
-                    style = new Style({
-                        image: new Icon({
-                            crossOrigin: "anonymous",
-                            src: drawState.symbol.value.indexOf("/") > 0 ? drawState.symbol.value : drawState.imgPath + drawState.symbol.value,
-                            scale: drawState.symbol.scale
-                        })
-                    });
-                }
-                else {
-                    style = createDrawStyle(drawState?.color, drawState?.color, drawState?.drawType.geometry, drawState?.pointSize, 1, drawState?.zIndex);
-                }
-            }
-            else if (drawState?.drawType.geometry === "LineString" || drawState?.drawType.geometry === "MultiLineString") {
-                style = new Style({
-                    stroke: new Stroke({
-                        color: drawState.colorContour,
-                        width: drawState.strokeWidth
-                    })
+                return new Style({
+                    stroke: new Stroke({color: finalStroke, width: feature.get("stroke-width") || 1}),
+                    fill: new Fill({color: finalFill}),
+                    ...geomType === "Circle" && {circleRadius: 300, colorContour: finalStroke}
                 });
             }
-            else if (drawState?.drawType.geometry === "Polygon" || drawState?.drawType.geometry === "MultiPolygon") {
-                style = new Style({
-                    stroke: new Stroke({
-                        color: drawState.colorContour,
-                        width: drawState.strokeWidth
-                    }),
-                    fill: new Fill({
-                        color: drawState.color
-                    })
-                });
-            }
-            else if (drawState?.drawType.geometry === "Circle") {
-                style = new Style({
-                    stroke: new Stroke({
-                        color: drawState.colorContour,
-                        width: drawState.strokeWidth
-                    }),
-                    fill: new Fill({
-                        color: drawState.color
-                    }),
-                    circleRadius: drawState.circleRadius,
-                    circleOuterRadius: drawState.circleOuterRadius,
-                    colorContour: drawState.colorContour,
-                    outerColorContour: drawState.outerColorContour
-                });
-            }
-            else if (drawState?.drawType.geometry === "Square") {
-                style = new Style({
-                    stroke: new Stroke({
-                        color: drawState.colorContour,
-                        width: drawState.strokeWidth
-                    }),
-                    fill: new Fill({
-                        color: drawState.color
-                    })
-                });
-            }
-            else if (!drawState && customStyles) {
-                const geometryType = feature ? feature.getGeometry().getType() : "cesium",
-                    featureAttribute = feature.get(customStyles[0].attribute),
-                    featureColor = customStyles.find(attribute => {
-                        return attribute.attributeValue === featureAttribute || attribute.attributeValue === "none";
-                    }).attributeColor,
-                    defaultPointSize = 16,
-                    defaultStrokeWidth = 2,
-                    defaultCircleRadius = 300,
-                    defaultStrokeColor = [169, 159, 163, 0.9];
-
-                if (geometryType === "Point" || geometryType === "MultiPoint") {
-                    style = createDrawStyle(featureColor, featureColor, geometryType, defaultPointSize, 1, 1);
-                }
-                else if (geometryType === "LineString" || geometryType === "MultiLineString") {
-                    style = new Style({
-                        stroke: new Stroke({
-                            color: featureColor,
-                            width: defaultStrokeWidth
-                        })
-                    });
-                }
-                else if (geometryType === "Polygon" || geometryType === "MultiPolygon") {
-                    style = new Style({
-                        stroke: new Stroke({
-                            color: defaultStrokeColor,
-                            width: defaultStrokeWidth
-                        }),
-                        fill: new Fill({
-                            color: featureColor
-                        })
-                    });
-                }
-                else if (geometryType === "Circle") {
-                    style = new Style({
-                        stroke: new Stroke({
-                            color: defaultStrokeColor,
-                            width: defaultStrokeWidth
-                        }),
-                        fill: new Fill({
-                            color: featureColor
-                        }),
-                        circleRadius: defaultCircleRadius,
-                        colorContour: featureColor
-                    });
-                }
-                else if (geometryType === "Square") {
-                    style = new Style({
-                        stroke: new Stroke({
-                            color: defaultStrokeColor,
-                            width: defaultStrokeWidth
-                        }),
-                        fill: new Fill({
-                            color: featureColor
-                        })
-                    });
-                }
-
-                feature.set("styleId", featureAttribute);
-            }
-            else {
-                console.warn("Geometry type not implemented: " + drawState.drawType.geometry);
-                style = new Style();
-            }
-
-            return style.clone();
         });
+
 
         features.forEach(feature => {
             if (feature.get("fromDrawTool") && !feature.get("masterportal_attributes")) {
@@ -795,7 +668,8 @@ export default {
                 feature.setGeometry(new Circle(circleCenter, circleRadius));
 
                 // Transformation here is necessary because all other geometries have already been transformed within "format.readFeatures(..."
-                feature.getGeometry().transform(fileDataProjection, rootGetters["Maps/projectionCode"]);
+                // Note: mappedCrsProjection was already mapped in the readFeatures call, so we pass it here
+                feature.getGeometry().transform(mappedCrsProjection, rootGetters["Maps/projectionCode"]);
             }
             if (feature.get("masterportal_attributes").isSquare) {
                 const coords = feature.get("masterportal_attributes").squareCoords;
