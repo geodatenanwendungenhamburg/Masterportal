@@ -572,53 +572,152 @@ export default {
         }
 
         vectorLayer.setStyle((feature) => {
-            if (!feature) {
+            if (!feature || !feature.getGeometry()) {
                 return new Style();
             }
 
             const geomType = feature.getGeometry().getType(),
                 drawState = feature.getProperties()?.masterportal_attributes?.drawState,
                 customStyles = state.customAttributeStyles[fileName];
+            let style;
 
-            if (!drawState && !customStyles && !feature.get("fill") && !feature.get("stroke")) {
-                const defColor = [226, 26, 28, 0.9];
-
-                if (geomType.includes("Point")) {
-                    return createDrawStyle(defColor, defColor, geomType, 16, 1, 1);
+            if (drawState) {
+                if (drawState.drawType?.geometry === "Point") {
+                    if (drawState.text) {
+                        style = new Style({
+                            image: new CircleStyle({}),
+                            text: new Text({
+                                text: drawState.text,
+                                font: drawState.fontSize + "px " + (drawState.font || "Arial,sans-serif"),
+                                fill: new Fill({color: drawState.color}),
+                                textAlign: drawState.textAlign || "left",
+                                textBaseline: drawState.textBaseline || "bottom"
+                            })
+                        });
+                    }
+                    else if (drawState.symbol?.value !== "simple_point") {
+                        style = new Style({
+                            image: new Icon({
+                                crossOrigin: "anonymous",
+                                src: drawState.symbol.value.indexOf("/") > 0 ? drawState.symbol.value : drawState.imgPath + drawState.symbol.value,
+                                scale: drawState.symbol.scale
+                            })
+                        });
+                    }
+                    else {
+                        style = createDrawStyle(drawState.color, drawState.color, drawState.drawType.geometry, drawState.pointSize, 1, drawState.zIndex);
+                    }
                 }
-
-                return new Style({
-                    stroke: new Stroke({color: defColor, width: 1}),
-                    fill: new Fill({color: [228, 26, 28, 0.5]}),
-                    ...geomType === "Circle" && {circleRadius: 300, colorContour: defColor}
-                });
+                else if (drawState.drawType?.geometry === "LineString" || drawState.drawType?.geometry === "MultiLineString") {
+                    style = new Style({
+                        stroke: new Stroke({
+                            color: drawState.colorContour,
+                            width: drawState.strokeWidth
+                        })
+                    });
+                }
+                else if (drawState.drawType?.geometry === "Polygon" || drawState.drawType?.geometry === "MultiPolygon") {
+                    style = new Style({
+                        stroke: new Stroke({color: drawState.colorContour, width: drawState.strokeWidth}),
+                        fill: new Fill({color: drawState.color})
+                    });
+                }
+                else if (drawState.drawType?.geometry === "Circle") {
+                    style = new Style({
+                        stroke: new Stroke({color: drawState.colorContour, width: drawState.strokeWidth}),
+                        fill: new Fill({color: drawState.color}),
+                        circleRadius: drawState.circleRadius,
+                        circleOuterRadius: drawState.circleOuterRadius,
+                        colorContour: drawState.colorContour,
+                        outerColorContour: drawState.outerColorContour
+                    });
+                }
+                else if (drawState.drawType?.geometry === "Square") {
+                    style = new Style({
+                        stroke: new Stroke({color: drawState.colorContour, width: drawState.strokeWidth}),
+                        fill: new Fill({color: drawState.color})
+                    });
+                }
+                return style || new Style();
             }
 
-            if (!drawState && !customStyles) {
-                const rgbFill = hexToRgb(feature.get("fill")) || [228, 26, 28];
-                const rgbStroke = hexToRgb(feature.get("stroke")) || [226, 26, 28];
+            if (customStyles) {
+                const featureAttribute = feature.get(customStyles[0].attribute),
+                    featureColor = customStyles.find(attribute => {
+                        return attribute.attributeValue === featureAttribute || attribute.attributeValue === "none";
+                    })?.attributeColor,
+                    defStrokeColor = [169, 159, 163, 0.9];
 
-                const finalFill = [...rgbFill, feature.get("fill-opacity") ?? 0.5];
-                const finalStroke = [...rgbStroke, feature.get("stroke-opacity") ?? 0.8];
+                feature.set("styleId", featureAttribute);
 
-                if (geomType.includes("Point")) {
-                    return createDrawStyle(finalFill, finalFill, geomType, 16, 1, 1);
+                if (!featureColor) {
+                    return new Style();
                 }
 
-                return new Style({
-                    stroke: new Stroke({color: finalStroke, width: feature.get("stroke-width") || 1}),
-                    fill: new Fill({color: finalFill}),
-                    ...geomType === "Circle" && {circleRadius: 300, colorContour: finalStroke}
+                if (geomType === "Point" || geomType === "MultiPoint") {
+                    return createDrawStyle(featureColor, featureColor, geomType, 16, 1, 1);
+                }
+
+                style = new Style({
+                    stroke: new Stroke({color: defStrokeColor, width: 2}),
+                    fill: new Fill({color: featureColor})
                 });
+
+                if (geomType === "Circle") {
+                    style.setProperty("circleRadius", 300);
+                    style.setProperty("colorContour", featureColor);
+                }
+
+                return style;
             }
-            return new Style();
+
+            const fillColor = feature.get("fill");
+
+            if (fillColor) {
+                const rgbFill = hexToRgb(fillColor);
+                const fillOpacity = feature.get("fill-opacity") ?? 0.5;
+                const colorWithOpacity = [...rgbFill, fillOpacity];
+                const strokeColor = [100, 100, 100, 0.8];
+
+                if (geomType === "Point" || geomType === "MultiPoint") {
+                    return createDrawStyle(colorWithOpacity, colorWithOpacity, geomType, 16, 1, 1);
+                }
+
+                style = new Style({
+                    stroke: new Stroke({color: strokeColor, width: 1}),
+                    fill: new Fill({color: colorWithOpacity})
+                });
+
+                if (geomType === "Circle") {
+                    style.setProperty("circleRadius", 300);
+                    style.setProperty("colorContour", strokeColor);
+                }
+
+                return style;
+            }
+
+            const defColor = [226, 26, 28, 0.9];
+
+            if (geomType === "Point" || geomType === "MultiPoint") {
+                return createDrawStyle(defColor, defColor, geomType, 16, 1, 1);
+            }
+
+            style = new Style({
+                stroke: new Stroke({color: defColor, width: 1}),
+                fill: new Fill({color: [228, 26, 28, 0.5]})
+            });
+
+            if (geomType === "Circle") {
+                style.setProperty("circleRadius", 300);
+                style.setProperty("colorContour", defColor);
+            }
+
+            return style;
         });
 
 
         features.forEach(feature => {
             if (feature.get("fromDrawTool") && !feature.get("masterportal_attributes")) {
-                // move old styling properties which were set in the export from the draw tool to a neu structure
-                // within masterportal_attributes in accordance to the new structure set by the draw tool
                 const attributes = {},
                     masterportal_attributes = {};
 
@@ -668,8 +767,6 @@ export default {
 
                 feature.setGeometry(new Circle(circleCenter, circleRadius));
 
-                // Transformation here is necessary because all other geometries have already been transformed within "format.readFeatures(..."
-                // Note: mappedCrsProjection was already mapped in the readFeatures call, so we pass it here
                 feature.getGeometry().transform(mappedCrsProjection, rootGetters["Maps/projectionCode"]);
             }
             if (feature.get("masterportal_attributes").isSquare) {
