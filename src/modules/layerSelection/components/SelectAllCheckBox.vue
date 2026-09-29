@@ -1,7 +1,8 @@
 <script>
 import escapeId from "@shared/js/utils/escapeId.js";
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import isLoginRequired from "@shared/js/utils/isLoginRequired.js";
 import layerCollection from "@core/layers/js/layerCollection.js";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 
 /**
  * A Checkbox to select all layers at one time.
@@ -24,21 +25,36 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/LayerSelection", ["encompassingBoundingBox"])
+        ...mapGetters(["configJs"]),
+        ...mapGetters("Modules/LayerSelection", ["encompassingBoundingBox"]),
+        ...mapGetters("Modules/Login", ["loggedIn"])
     },
     methods: {
+        ...mapActions("Alerting", ["addSingleAlert"]),
         ...mapActions("Modules/LayerSelection", ["changeVisibility"]),
         ...mapActions("Maps", ["zoomToExtent"]),
         ...mapMutations("Modules/LayerSelection", ["setEncompassingBoundingBox"]),
 
         /**
          * Listener for click on select all checkbox.
+         * Secured layers are not added, if the user has to log in. The user is asked to log in once for all of them.
          * @returns {void}
          */
         clicked () {
             this.checked = !this.checked;
 
-            this.confs.slice().reverse().forEach(conf => {
+            const securedConfs = this.checked ? this.confs.filter(conf => isLoginRequired(conf, this.configJs, this.loggedIn)) : [];
+
+            if (securedConfs.length > 0) {
+                this.addSingleAlert({
+                    category: "info",
+                    content: this.$t("common:modules.layerSelection.loginRequired", {
+                        layerNames: securedConfs.map(conf => this.$t(conf.shortname || conf.name)).join(", ")
+                    })
+                });
+            }
+
+            this.confs.filter(conf => !securedConfs.includes(conf)).reverse().forEach(conf => {
                 this.changeVisibility({layerId: conf.id, value: this.checked});
                 if (conf.fitCapabilitiesExtent === true) {
                     this.zoomToCapabilitiesExtent(conf);

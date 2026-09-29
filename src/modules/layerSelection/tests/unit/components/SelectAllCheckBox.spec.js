@@ -13,7 +13,10 @@ describe("src/modules/layerTree/components/SelectAllCheckBox.vue", () => {
         wrapper,
         layer,
         propsData,
-        changeVisibilitySpy;
+        changeVisibilitySpy,
+        addSingleAlertSpy,
+        configJs,
+        loggedIn;
 
     beforeAll(function () {
         i18next.init({
@@ -35,15 +38,33 @@ describe("src/modules/layerTree/components/SelectAllCheckBox.vue", () => {
         };
 
         changeVisibilitySpy = sinon.spy();
+        addSingleAlertSpy = sinon.spy();
+        configJs = {};
+        loggedIn = false;
         sinon.stub(layerTypes, "getLayerTypes3d").returns(["TERRAIN3D"]);
         store = createStore({
             namespaced: true,
+            getters: {
+                configJs: () => configJs
+            },
             modules: {
+                Alerting: {
+                    namespaced: true,
+                    actions: {
+                        addSingleAlert: addSingleAlertSpy
+                    }
+                },
                 Modules: {
                     namespaced: true,
                     modules: {
                         namespaced: true,
                         SelectAllCheckBox,
+                        Login: {
+                            namespaced: true,
+                            getters: {
+                                loggedIn: () => loggedIn
+                            }
+                        },
                         LayerSelection: {
                             namespaced: true,
                             getters: {
@@ -68,6 +89,49 @@ describe("src/modules/layerTree/components/SelectAllCheckBox.vue", () => {
         });
     });
 
+
+    describe("secured layers", () => {
+        let securedLayer;
+
+        beforeEach(() => {
+            securedLayer = {id: "2", name: "secured", typ: "WFS", visibility: false, isSecured: true};
+            propsData.confs = [layer, securedLayer];
+            configJs = {login: {oidcClientId: "portal"}};
+        });
+
+        it("should add only the layers which are not secured and ask to log in once, if the user is not logged in", async () => {
+            wrapper = shallowMount(SelectAllCheckBox, {global: {plugins: [store]}, propsData});
+
+            await wrapper.find("#select-all-layers-" + layer.id + "-" + securedLayer.id).trigger("click");
+
+            expect(changeVisibilitySpy.calledOnce).to.be.true;
+            expect(changeVisibilitySpy.firstCall.args[1]).to.deep.equal({layerId: "1", value: true});
+            expect(addSingleAlertSpy.calledOnce).to.be.true;
+            expect(addSingleAlertSpy.firstCall.args[1].category).to.equal("info");
+        });
+
+        it("should add all layers, if the user is logged in", async () => {
+            loggedIn = true;
+            wrapper = shallowMount(SelectAllCheckBox, {global: {plugins: [store]}, propsData});
+
+            await wrapper.find("#select-all-layers-" + layer.id + "-" + securedLayer.id).trigger("click");
+
+            expect(changeVisibilitySpy.calledTwice).to.be.true;
+            expect(addSingleAlertSpy.notCalled).to.be.true;
+        });
+
+        it("should remove all layers without asking to log in", async () => {
+            layer.visibility = true;
+            securedLayer.visibility = true;
+            wrapper = shallowMount(SelectAllCheckBox, {global: {plugins: [store]}, propsData});
+
+            await wrapper.find("#select-all-layers-" + layer.id + "-" + securedLayer.id).trigger("click");
+
+            expect(changeVisibilitySpy.calledTwice).to.be.true;
+            expect(changeVisibilitySpy.getCalls().every(call => call.args[1].value === false)).to.be.true;
+            expect(addSingleAlertSpy.notCalled).to.be.true;
+        });
+    });
 
     it("renders a select all checkbox", () => {
         wrapper = shallowMount(SelectAllCheckBox, {

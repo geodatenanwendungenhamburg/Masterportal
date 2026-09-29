@@ -674,6 +674,7 @@
       "externalSubjectLayer": "Externe Fachdaten",
       "selectAll": "Alle hinzufügen",
       "deselectAll": "Alle entfernen",
+      "loginRequired": "Folgende Themen sind geschützt und wurden nicht hinzugefügt: {{layerNames}}. Bitte melden Sie sich an, um sie anzuzeigen.",
       "selectedSubjectsCount_other": "Bitte wählen sie ein Thema aus",
       "addSelectedSubjectsToMap_one": "Ausgewähltes Thema der Karte hinzufügen",
       "addSelectedSubjectsToMap_other": "{{count}} ausgewählte Themen der Karte hinzufügen"
@@ -706,6 +707,7 @@
       "invisibleLayerNoScale": "Dieses Thema kann in diesem Maßstab nicht angezeigt werden",
       "invisibleLayerMinScale": "Der Layer ist ab dem Maßstab {{minScale}} sichtbar.",
       "invisibleLayerMaxScale": "Der Layer ist bis zum dem Maßstab {{maxScale}} sichtbar.",
+      "loginRequired": "Das Thema „{{layerName}}“ ist geschützt. Bitte melden Sie sich an, um es anzuzeigen.",
       "noCategory": "Ohne Kategorie",
       "rootLayerPath": "Im Ordner anzeigen"
     },

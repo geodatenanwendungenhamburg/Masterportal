@@ -673,6 +673,7 @@
       "externalSubjectLayer": "External subject data",
       "selectAll": "Add all",
       "deselectAll": "Remove all",
+      "loginRequired": "The following topics are secured and were not added: {{layerNames}}. Please log in to show them.",
       "selectedSubjectsCount_other": "Please select a topic",
       "addSelectedSubjectsToMap_one": "Add selected topic to the map",
       "addSelectedSubjectsToMap_other": "Add {{count}} selected topics to the map"
@@ -705,6 +706,7 @@
       "invisibleLayerNoScale": "This topic cannot be displayed at this scale",
       "invisibleLayerMinScale": "The layer is visible from scale {{minScale}}.",
       "invisibleLayerMaxScale": "The layer is visible up to the scale {{maxScale}}.",
+      "loginRequired": "The topic \"{{layerName}}\" is secured. Please log in to show it.",
       "noCategory": "No category",
       "rootLayerPath": "Show in folder"
     },

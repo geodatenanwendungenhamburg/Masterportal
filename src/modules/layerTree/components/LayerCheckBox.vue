@@ -4,6 +4,7 @@ import LayerPreview from "@shared/modules/layerPreview/components/LayerPreview.v
 import baselayerHandler from "../../layerSelection/js/handleSingleBaselayer.js";
 import {addSourceToPayload} from "@shared/js/utils/addSourceToPayload.js";
 import escapeId from "@shared/js/utils/escapeId.js";
+import isLoginRequired from "@shared/js/utils/isLoginRequired.js";
 
 /**
  * Displays a checkbox to select a layer in layertree.
@@ -12,6 +13,8 @@ import escapeId from "@shared/js/utils/escapeId.js";
  * @vue-prop {Boolean} isLayerTree - Shows if parent is layer tree (true) or layer selection (false).
  * @vue-prop {Boolean} [disabled=false] - Set to true, layer shall be disabled.
  * @vue-computed {Boolean} isLayerVisible - Returns the value of layerConf's attribute visibility.
+ * @vue-computed {Boolean} isLoginRequired - Returns true, if the layer is secured, the portal uses the login and the user is not logged in.
+ * @vue-computed {String} securedIcon - Returns the icon of a secured layer, a closed lock if the user is not logged in and an open lock if the user is logged in.
  */
 export default {
     name: "LayerCheckBox",
@@ -36,8 +39,27 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["singleBaselayer", "visibleBaselayerConfigs"]),
+        ...mapGetters(["configJs", "singleBaselayer", "visibleBaselayerConfigs"]),
         ...mapGetters("Modules/LayerSelection", ["layersToAdd", "highlightLayerId"]),
+        ...mapGetters("Modules/Login", ["loggedIn"]),
+
+        /**
+         * Returns true, if the layer is secured, the portal uses the login and the user is not logged in.
+         * Portals without a configured login are not affected, as their secured layers may be authorized otherwise.
+         * @returns {Boolean} true, if the user has to log in to show the layer.
+         */
+        isLoginRequired () {
+            return isLoginRequired(this.conf, this.configJs, this.loggedIn);
+        },
+
+        /**
+         * Returns the icon of a secured layer.
+         * A closed lock is shown if the user is not logged in and an open lock if the user is logged in.
+         * @returns {String} the class of the icon.
+         */
+        securedIcon () {
+            return this.loggedIn ? "bi-unlock-fill" : "bi-lock-fill";
+        },
 
         /**
          * Returns the value of layerConf's attribute visibility
@@ -72,6 +94,7 @@ export default {
     },
     methods: {
         ...mapActions(["replaceByIdInLayerConfig"]),
+        ...mapActions("Alerting", ["addSingleAlert"]),
         ...mapActions("Modules/LayerSelection", ["changeVisibility"]),
         ...mapMutations("Modules/LayerSelection", ["addSelectedLayer", "removeSelectedLayer"]),
         escapeId,
@@ -101,6 +124,15 @@ export default {
          */
         clicked () {
             const value = !this.isLayerVisible;
+
+            // a secured layer can only be requested by a logged in user, so it is not shown and the user is asked to log in
+            if (value && this.isLoginRequired) {
+                this.addSingleAlert({
+                    category: "info",
+                    content: this.$t("common:modules.layerTree.loginRequired", {layerName: this.$t(this.layerName)})
+                });
+                return;
+            }
 
             if (this.isLayerTree) {
                 this.visibilityInLayerTreeChanged(value);
@@ -158,7 +190,7 @@ export default {
         />
         <i
             v-if="conf.isSecured"
-            class="bi-lock-fill pe-1"
+            :class="[securedIcon, 'pe-1']"
         />
         <span
             :class="['layer-tree-layer-label', 'mt-0 d-flex flex-column align-self-start', isBold ? 'font-bold' : '']"
