@@ -76,6 +76,12 @@ Layer2dRasterWms.prototype.getRawLayerAttributes = function (attributes) {
     if (attributes.styles !== undefined) {
         rawLayerAttributes.STYLES = attributes.styles;
     }
+    if (attributes.sld !== undefined) {
+        rawLayerAttributes.SLD = attributes.sld;
+    }
+    if (attributes.gfi_template !== undefined) {
+        rawLayerAttributes.GFI_TEMPLATE = attributes.gfi_template;
+    }
 
     return rawLayerAttributes;
 };
