@@ -6,20 +6,21 @@
 # Dependencies
 node_modules/
 addons/node_modules/
+addons/**/node_modules/
 
 # Portal instance & config (not core code)
 portalconfigs/
 
 # Build outputs & generated files
 dist/
-build/
 jsdoc/
-/docHtml/
 site/
-html/
 
 # Git directory
 .git/
+
+# Ignore Python virtual environment
+.venv/*
 
 ## Excluded only in Project itself
 
@@ -27,8 +28,12 @@ html/
 .env
 .history/
 devtools/proxyconf.json
+devtools/proxyconf_example.json
 devtools/securedServices.js
 devtools/certificate/
+devtools/security/
+devtools/tests/
+devtools/tasks/
 
 # IDE & editor caches (duplicates of source)
 .idea/
@@ -38,23 +43,14 @@ devtools/certificate/
 .DS_Store
 Thumbs.db
 *.sass-cache
+.vscode/
 
 # Test coverage reports
 coverage/
 
-# OS & build artifacts
-/nbproject/
-bowerupdate.log
-temp/
-debug.log
-npm-debug.log
-lintfixed.html
-
 # Generated/minified files
 **/*.min.js
-examples*/
-examples.zip
 
 # CI/CD configuration
-# .gitlab/
-# .husky/
+ .gitlab/
+ .husky/

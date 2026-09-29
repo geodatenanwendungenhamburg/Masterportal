@@ -8,45 +8,25 @@
 .idea
 .vscode/*
 !.vscode/copilot-excludes.jsonc
-.history
 /jsdoc
-/docHtml
-/nbproject/
-styleguide
 .history
 
 addons/*
 !addons/readme.txt
 
-bowerupdate.log
-build
 coverage
-ci_scripts
-css/bootstrap.css
-css/modules.css
-
 dist
 
 devtools/certificate/*.key
 devtools/certificate/*.pem
 devtools/certificate/*.csr
 
-examples*
-
-examples.zip
-portal/master
-
-jshintrc
-lgv-config
-masterportalapi
 node_modules
 portalconfigs
-temp
 
 debug.log
 devtools/proxyconf.json
 devtools/securedServices.js
-lintfixed.html
 npm-debug.log
 
 # ignore all dev portals except the four standard portals
@@ -62,5 +42,3 @@ site/*
 
 # Ignore Python virtual environment
 .venv/*
-
-html
