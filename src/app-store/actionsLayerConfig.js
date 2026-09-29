@@ -37,7 +37,7 @@ export default function getActionsLayerConfig () {
                 if (!zIndexManager.hasNumericZIndex(layerConfig)) {
                     layerConfig.zIndex = maxZIndex + nestedExternalConfigsCount + 1;
                 }
-                if (state.layerConfig[parentKey]) {
+                if (Array.isArray(state.layerConfig[parentKey]?.elements)) {
                     state.layerConfig[parentKey].elements.push(layerConfig);
                 }
                 else {
@@ -76,6 +76,11 @@ export default function getActionsLayerConfig () {
                     existingLayer = getters.layerConfigById(id),
                     lastVisibility = existingLayer?.visibility;
                 let assigned = [];
+
+                if (!id) {
+                    console.warn("replaceByIdInLayerConfig was cancelled because 'id' is undefined.");
+                    return;
+                }
 
                 if (existingLayer?.zIndex === undefined && config.layer.zIndex === undefined && replacement.visibility) {
                     replacement.zIndex = getters.determineZIndex(id);

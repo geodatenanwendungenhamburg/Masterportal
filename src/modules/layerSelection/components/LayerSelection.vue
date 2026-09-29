@@ -135,7 +135,7 @@ export default {
     },
 
     mounted () {
-        if (this.layerConfig?.[treeSubjectsKey]?.elements) {
+        if (Array.isArray(this.layerConfig?.[treeSubjectsKey]?.elements)) {
             const rootFolders = this.layerConfig[treeSubjectsKey].elements.filter(conf => conf.type === "folder");
 
             this.rootFolderCount = rootFolders.length;
