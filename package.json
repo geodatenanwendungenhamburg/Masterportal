@@ -13,7 +13,7 @@
   "description": "The MasterPortal as OpenSource Geoportal",
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/geowerkstatt-hamburg/masterportal.git"
+    "url": "https://gitlab.opencode.de/lgvhh/urban-data-solutions/masterportal.git"
   },
   "main": "src/masterportal.js",
   "scripts": {

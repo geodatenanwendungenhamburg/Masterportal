@@ -1,6 +1,6 @@
 # Masterportal
 
-The Masterportal is a tool-kit to create geo web applications based on [OpenLayers](https://openlayers.org), [Vue.js](https://vuejs.org/) and [Cesium](https://cesium.com/platform/cesiumjs/) for 3D functionality. The Masterportal is Open Source Software published under the [MIT License](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/License.txt).
+The Masterportal is a tool-kit to create geo web applications based on [OpenLayers](https://openlayers.org), [Vue.js](https://vuejs.org/) and [Cesium](https://cesium.com/platform/cesiumjs/) for 3D functionality. The Masterportal is Open Source Software published under the [MIT License](https://gitlab.opencode.de/lgvhh/urban-data-solutions/masterportal/-/tree/dev/License.txt).
 
 The Masterportal is a project by [Geowerkstatt Hamburg](https://www.hamburg.de/geowerkstatt/).
 
@@ -43,7 +43,7 @@ New LTS minor versions (based on the current version 3 development branch) are r
 
 ## User section
 
-* [Download](https://bitbucket.org/geowerkstatt-hamburg/masterportal/downloads/)
+* [Download](??)
 * [Quick start for users](./docs/Setup/setup.md)
 * [User documentation](./docs/User/About.md)
 * [User documentation online](https://www.masterportal.org/dokumentation)
@@ -74,7 +74,6 @@ The Bitbucket issue tracker is being removed on August 20, 2026. All issues have
     * Hints if your contribution contains adopted external code
     * Unit tests for new functions or updated tests for bugfixes
 
-* [From July 1, 2026 Bitbucket deprecated the option of forked repositories outside the parent workspace](https://community.atlassian.com/forums/Bitbucket-articles/Deprecation-of-Forked-Repositories-Outside-the-Parent-Workspace/ba-p/3155743)
     * External contributors can contact the product care team via [geodatenanwendungen@gv.hamburg.de](mailto:geodatenanwendungen@gv.hamburg.de) for further pull request steps.
     * Members or service providers of the Implementierungspartnerschaft Masterportal can relate to the workflow described here: [Workflow for contributors of the Implementierungspartnerschaft](https://lgv-hamburg.atlassian.net/jira/software/c/projects/IPM/boards/254?selectedIssue=IPM-145)
 

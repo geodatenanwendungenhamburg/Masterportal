@@ -14,7 +14,7 @@ const THEME = {
     LIGHT_ICON: "bulb_color.png"
 };
 
-const BITBUCKET_BASE = "https://bitbucket.org/geowerkstatt-hamburg/masterportal/";
+const BITBUCKET_BASE = "https://gitlab.opencode.de/lgvhh/urban-data-solutions/masterportal/";
 const BITBUCKET_SRC_PATH = "src/dev/src/";
 
 function initTheme () {

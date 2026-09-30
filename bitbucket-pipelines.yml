@@ -371,3 +371,11 @@ pipelines:
                         - git clone --single-branch --branch dev https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
                         - cd masterportal
                         - git push https://$ENCODED_USER:$ENCODED_PASSWORD@gitlab.opencode.de/lgvhh/urban-data-solutions/masterportal.git -f
+        deploy dev Branch to new openCode: 
+                    -   step:
+                            name: 'deploy dev Branch to new openCode'
+                            script:
+                                - echo 'deploy dev Branch to new openCode'
+                                - git clone --single-branch --branch dev https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportal.git
+                                - cd masterportal
+                                - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/lgvhh/urban-data-solutions/pr-migration-test.git HEAD:refs/heads/dev -f

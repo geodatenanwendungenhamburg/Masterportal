@@ -1,7 +1,7 @@
 site_name: Masterportal Docs
 site_author: Masterportal Open Source Community
-repo_name: BitBucket
-repo_url: https://bitbucket.org/geowerkstatt-hamburg/masterportal/
+repo_name: OpenCode
+repo_url: https://gitlab.opencode.de/lgvhh/urban-data-solutions/masterportal
 docs_dir: docs
 
 theme:
@@ -93,7 +93,7 @@ extra:
         -   icon: fontawesome/solid/circle-info
             link: https://www.masterportal.org/
         -   icon: fontawesome/brands/bitbucket
-            link: https://bitbucket.org/geowerkstatt-hamburg/masterportal/
+            link: https://gitlab.opencode.de/lgvhh/urban-data-solutions/masterportal
 
 extra_css:
     - '_docsCustomization/css/contentAreaFullWidth.css'
