@@ -1,3 +1,4 @@
+import {convertColor} from "@shared/js/utils/convertColor.js";
 import {GeoJSON, GPX, KML} from "ol/format.js";
 import Circle from "ol/geom/Circle.js";
 import Polygon from "ol/geom/Polygon.js";
@@ -210,30 +211,6 @@ function getParsedCustomAttributes (feature) {
         }
     });
     return attributes;
-}
-
-/**
- * Converts a hex color string to RGB array.
- * @param {string} hex - Hex color string, e.g., "#FFFFFF" or "#fff"
- * @returns {Array} RGB array [r, g, b], e.g., [255, 255, 255]
- */
-function hexToRgb (hex) {
-    if (typeof hex !== "string") {
-        return [0, 0, 0];
-    }
-    let cleanHex = hex.replace(/^#/, "");
-
-    if (cleanHex.length === 3) {
-        cleanHex = cleanHex.split("").map(char => char + char).join("");
-    }
-
-    const result = (/^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i).exec(cleanHex);
-
-    return result ? [
-        parseInt(result[1], 16),
-        parseInt(result[2], 16),
-        parseInt(result[3], 16)
-    ] : [0, 0, 0];
 }
 
 export default {
@@ -640,7 +617,7 @@ export default {
             if (!drawState && !customStyles && feature.get("fill")) {
                 const fillColor = feature.get("fill");
                 const fillOpacity = feature.get("fill-opacity") ?? 0.5;
-                const rgbFill = hexToRgb(fillColor);
+                const rgbFill = convertColor(fillColor, "rgb");
                 const colorWithOpacity = [...rgbFill, fillOpacity];
                 const strokeColor = [100, 100, 100, 0.8];
 
