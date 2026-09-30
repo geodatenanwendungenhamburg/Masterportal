@@ -28,6 +28,7 @@
 - Accessibility: Fixed accessibility issues across layer tree and controls (label associations, icon-button naming, ARIA semantics, and preview alt text).
 - AlertingItem: Fixed CSS Regression.
 - Security: XML injection in `highlightFeaturesByAttribute` is prevented by escaping.
+- FileImport: Fixed CRS mapping for GeoJSON and added support for fill and fill-opacity properties to style imported features correctly.
 
 ---
 
