@@ -477,6 +477,29 @@ describe("src/modules/fileImport/store/actionsFileImport.js", () => {
             expect(textStyle.getText()).to.equal("Custom Font");
             expect(textStyle.getFont()).to.equal("20px Courier New");
         });
+
+        it("should apply fill color and opacity from GeoJSON properties", () => {
+            const payload = {
+                    layer: layer,
+                    raw: "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[10.0,53.5],[10.1,53.5],[10.1,53.6],[10.0,53.6],[10.0,53.5]]]},\"properties\":{\"fill\":\"#228B22\",\"fill-opacity\":0.7}}]}",
+                    filename: "colored.geojson"
+                },
+                state = {
+                    selectedFiletype: "auto",
+                    gfiAttributes: {},
+                    customAttributeStyles: {},
+                    geojsonFeatureId: 0
+                };
+
+            importGeoJSON({state, dispatch, rootGetters, commit}, payload);
+
+            expect(layer.getSource().getFeatures().length).to.equal(1);
+            const feature = layer.getSource().getFeatures()[0],
+                style = feature.getStyle();
+
+            expect(style.getFill().getColor()).to.deep.equal([34, 139, 34, 0.7]);
+            expect(style.getStroke().getColor()).to.deep.equal([100, 100, 100, 0.8]);
+        });
     });
 
     describe("addLayerConfig", () => {
