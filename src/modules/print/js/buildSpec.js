@@ -340,8 +340,12 @@ const BuildSpecModel = {
             mapProjection = store.getters["Maps/projection"];
 
         if (sourceProjection && mapProjection && sourceProjection.getCode() !== mapProjection.getCode()) {
+            if (is3d) {
+                return undefined;
+            }
+
             const extent = this.lastPrintedExtent || store.getters["Maps/extent"],
-                image = !is3d ? await buildWmtsImage(layer, source, extent, mapProjection) : null;
+                image = await buildWmtsImage(layer, source, extent, mapProjection);
 
             if (image) {
                 return {
@@ -353,9 +357,8 @@ const BuildSpecModel = {
                     extent: image.extent
                 };
             }
-            if (!is3d) {
-                console.warn(`Printing the WMTS layer “${layer.get("name")}” is not supported because its projection (${sourceProjection.getCode()}) does not match the map projection (${mapProjection.getCode()}), and rendering as a raster image failed. The layer will be ignored.`);
-            }
+
+            console.warn(`Printing the WMTS layer “${layer.get("name")}” is not supported because its projection (${sourceProjection.getCode()}) does not match the map projection (${mapProjection.getCode()}), and rendering as a raster image failed. The layer will be ignored.`);
             return undefined;
         }
 
