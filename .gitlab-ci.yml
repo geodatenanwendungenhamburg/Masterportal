@@ -1,0 +1,249 @@
+spec:
+  inputs:
+    pipeline_action:
+      description: "Select the custom pipeline to execute"
+      type: string
+      options:
+        - npm_audit
+        - osv_scan
+        - deploy_mkdocs
+        - validate_mkdocs
+        - build_examples
+      default: npm_audit
+    
+    deploy_tag:
+      description: "Tag to deploy (e.g., v3.1.0) - required for deploy_mkdocs and build_examples"
+      type: string
+      default: ""
+
+---
+image: node:24.15.0
+
+stages:
+  - build
+  - release
+  - docs
+  - security
+
+variables:
+  NODE_OPTIONS: "--openssl-legacy-provider"
+  PIPELINE_ACTION: "$[[ inputs.pipeline_action ]]"
+
+# ===== Automatic Pipelines =====
+
+# 1. Tagged releases (v3.*.*)
+
+build_examples_zip:
+  stage: build
+  cache:
+    paths:
+      - node_modules/
+  artifacts:
+    paths:
+      - examples.zip
+  script:
+    - export NODE_OPTIONS=--openssl-legacy-provider
+    - npm install
+    - npm run buildExamples
+    - apt-get update && apt-get install -y zip
+    - cd dist
+    - zip -r ../examples.zip .
+  rules:
+    - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG !~ /^(lts|latest)$/'
+
+create_release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/cli:latest
+  needs:
+    - job: build_examples_zip
+      artifacts: true
+
+  script:
+    - echo "Creating release $CI_COMMIT_TAG"
+
+    # Extract the changelog section belonging to the current tag.
+    - |
+      awk -v tag="$CI_COMMIT_TAG" '
+        BEGIN {
+          found = 0
+        }
+
+        # Start of the requested release
+        $0 ~ "^## .*" tag "([[:space:]]|$)" {
+          found = 1
+        }
+
+        # Start of the next release -> stop
+        found && /^## / && $0 !~ "^## .*" tag "([[:space:]]|$)" {
+          exit
+        }
+
+        found {
+          print
+        }
+      ' CHANGELOG.md > release-description.md
+
+    - |
+      if [ ! -s release-description.md ]; then
+        echo "ERROR: Could not find changelog entry for $CI_COMMIT_TAG"
+        exit 1
+      fi
+
+    - |
+      sed -i ':a;N;$!ba;s/[[:space:]]*---[[:space:]]*$//' release-description.md
+
+    - echo "Release description:"
+    - cat release-description.md
+  release:
+    tag_name: $CI_COMMIT_TAG
+    name: "Release $CI_COMMIT_TAG"
+    description: "./release-description.md"
+    assets:
+      links:
+        - name: examples.zip
+          url: "$CI_PROJECT_URL/-/jobs/artifacts/$CI_COMMIT_TAG/raw/examples.zip?job=build_examples_zip"
+          link_type: other
+  rules:
+    - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG !~ /^(lts|latest)$/'
+
+create_deploy_mkdocs:
+  stage: docs
+  image: python:3.8
+
+  rules:
+    - if: '$CI_COMMIT_TAG'
+
+  script:
+    - apt-get update
+    - apt-get install -y curl lftp zip
+
+    - git config --global user.email "$GIT_USER_EMAIL"
+    - git config --global user.name "$GIT_USER_NAME"
+    
+    - pip install -r devtools/docsValidation/python-dependencies.txt
+
+    # Create documentation snippet
+    - mkdir -p docs/_snippets
+    - RELEASE_VERSION="${CI_COMMIT_TAG#v}" && if grep -q "^## .* v${RELEASE_VERSION}.*LTS.*$" CHANGELOG.md 2>/dev/null; then printf '# Welcome to the Masterportal Documentation (%s (lts))\n' "$RELEASE_VERSION" > docs/_snippets/index_title.md; else printf '# Welcome to the Masterportal Documentation (%s)\n' "$CI_COMMIT_TAG" > docs/_snippets/index_title.md; fi
+
+    # Build MkDocs
+    - mike deploy "$CI_COMMIT_TAG"
+
+    # Rename generated site to the version directory
+    - mv "$CI_PROJECT_DIR/site" "$CI_PROJECT_DIR/$CI_COMMIT_TAG"
+    
+    - 'echo "FTP server: $MKDOCS_FTP_SERVER"'
+    - 'echo "FTP user: $MKDOCS_FTP_NAME"'
+    - 'if [ -z "$MKDOCS_FTP_SERVER" ] || [ -z "$MKDOCS_FTP_NAME" ] || [ -z "$MKDOCS_FTP_PW" ]; then echo "ERROR: MKDOCS_FTP_SERVER, MKDOCS_FTP_NAME or MKDOCS_FTP_PW is not set in this pipeline context." && exit 1; fi'
+    - FTP_SERVER_CLEAN=$(printf '%s' "$MKDOCS_FTP_SERVER" | sed -E 's#^[a-zA-Z][a-zA-Z0-9+.-]*://##; s#/+$##')
+    # Upload version directly to FTP (plain FTP, same behavior as the working Bitbucket ftp-deploy pipe)
+    - lftp -u "$MKDOCS_FTP_NAME,$MKDOCS_FTP_PW" -e "set ftp:ssl-allow no; set ssl:verify-certificate no; mirror -R --verbose \"$CI_PROJECT_DIR/$CI_COMMIT_TAG/\" \"/$CI_COMMIT_TAG/\"; bye" "$FTP_SERVER_CLEAN"
+
+    # Determine LTS release
+    - RELEASE_VERSION="${CI_COMMIT_TAG#v}"
+    - CHANGELOG_RELEASE_HEADER="$(grep -m1 "^## .* v${RELEASE_VERSION}" CHANGELOG.md || true)"
+    - if [ -z "$CHANGELOG_RELEASE_HEADER" ]; then echo "Could not find release headline for $CI_COMMIT_TAG in CHANGELOG.md." && exit 1; fi
+
+    - IS_RELEASE_LTS="false"
+    - if echo "$CHANGELOG_RELEASE_HEADER" | grep -q 'LTS'; then IS_RELEASE_LTS="true"; fi
+
+    - RELEASE_PATCH="${RELEASE_VERSION##*.}"
+
+    - IS_LTS_HOTFIX="false"
+    - if [ "$IS_RELEASE_LTS" = "true" ] && [ "$RELEASE_PATCH" != "0" ]; then IS_LTS_HOTFIX="true"; fi
+
+    # LTS hotfix -> version is uploaded, Latest is NOT changed
+    - if [ "$IS_LTS_HOTFIX" = "true" ]; then echo "LTS hotfix detected for $CI_COMMIT_TAG - skip Latest docs upload." && exit 0; fi
+
+    # Normal release -> same files are uploaded to Latest
+    - mv "$CI_PROJECT_DIR/$CI_COMMIT_TAG" "$CI_PROJECT_DIR/Latest"
+    - lftp -u "$MKDOCS_FTP_NAME,$MKDOCS_FTP_PW" -e "set ftp:ssl-allow no; set ssl:verify-certificate no; mirror -R --verbose \"$CI_PROJECT_DIR/Latest/\" \"/Latest/\"; bye" "$FTP_SERVER_CLEAN"
+        
+# ===== Custom Pipelines (triggered manually) =====
+
+npm_audit_security:
+  stage: security
+  cache:
+    paths:
+      - node_modules/
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $PIPELINE_ACTION == "npm_audit"'
+  script:
+    - npm install
+    - npm audit --json
+
+osv_scan_security:
+  stage: security
+  cache:
+    paths:
+      - node_modules/
+  artifacts:
+    paths:
+      - osv-result.json
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $PIPELINE_ACTION == "osv_scan"'
+  script:
+    - npm install
+    - curl -sSL -o /usr/local/bin/osv-scanner https://github.com/google/osv-scanner/releases/latest/download/osv-scanner_linux_amd64
+    - chmod +x /usr/local/bin/osv-scanner
+    - /usr/local/bin/osv-scanner scan -r . --format json > osv-result.json || true
+    - node -e "const r=require('./osv-result.json'); console.log('OSV scan finished'); console.log('Results:', r.results?.length || 0);"
+
+deploy_mkdocs:
+  stage: docs
+  image: python:3.8
+  cache:
+    paths:
+      - .cache/pip/
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $PIPELINE_ACTION == "deploy_mkdocs"'
+  script:
+    - DEPLOY_TAG=$[[ inputs.deploy_tag ]]
+    - '[ -n "$DEPLOY_TAG" ] || { echo "ERROR: deploy_tag input is required"; exit 1; }'
+    - git config --global user.email "$GIT_USER_EMAIL"
+    - git config --global user.name "$GIT_USER_NAME"
+    - apt-get update && apt-get install -y zip curl lftp
+    - pip install -r devtools/docsValidation/python-dependencies.txt
+    - git fetch --all --tags
+    - git checkout tags/$DEPLOY_TAG
+    - mkdir -p docs/_snippets
+    - printf "# Welcome to the Masterportal Documentation (%s)\n" "$DEPLOY_TAG" > docs/_snippets/index_title.md
+    - mike deploy "$DEPLOY_TAG"
+    - mv "$CI_PROJECT_DIR/site" "$CI_PROJECT_DIR/$DEPLOY_TAG"
+    - '[ -n "$MKDOCS_FTP_SERVER" ] && [ -n "$MKDOCS_FTP_NAME" ] && [ -n "$MKDOCS_FTP_PW" ] || { echo "ERROR: FTP config missing"; exit 1; }'
+    - FTP_SERVER_CLEAN=$(printf %s "$MKDOCS_FTP_SERVER" | sed -E "s#^[a-zA-Z][a-zA-Z0-9+.-]*://##; s#/+\$##")
+    - lftp -u "$MKDOCS_FTP_NAME,$MKDOCS_FTP_PW" -e "set ftp:ssl-allow no; set ssl:verify-certificate no; mirror -R --verbose $CI_PROJECT_DIR/$DEPLOY_TAG/ /$DEPLOY_TAG/; bye" "$FTP_SERVER_CLEAN"
+
+validate_mkdocs_manual:
+  stage: docs
+  image: python:3.8
+  cache:
+    paths:
+      - .cache/pip/
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $PIPELINE_ACTION == "validate_mkdocs"'
+  script:
+    - python -m venv .venv
+    - source .venv/bin/activate
+    - pip install -r devtools/docsValidation/python-dependencies.txt
+    - devtools/docsValidation/docsValidation.sh
+
+build_examples_manual:
+  stage: build
+  cache:
+    paths:
+      - node_modules/
+  artifacts:
+    paths:
+      - dist/**
+    expire_in: 7 days
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $PIPELINE_ACTION == "build_examples"'
+  script:
+    - DEPLOY_TAG=$[[ inputs.deploy_tag ]]
+    - '[ -n "$DEPLOY_TAG" ] || { echo "ERROR: deploy_tag input is required"; exit 1; }'
+    - git fetch --all --tags
+    - git checkout tags/$DEPLOY_TAG
+    - npm install
+    - npm run buildExamples
+    - apt-get update && apt-get install -y curl
