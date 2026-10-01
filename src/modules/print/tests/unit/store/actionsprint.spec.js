@@ -9,9 +9,14 @@ import buildCesiumImageLayer from "@modules/print/js/buildCesiumImageLayer.js";
 import layerProvider from "@modules/print/js/getVisibleLayer.js";
 import {computeRectangle} from "olcs";
 
-vi.mock("olcs", () => ({
-    computeRectangle: vi.fn()
-}));
+vi.mock("olcs", async (importOriginal) => {
+    const actual = await importOriginal();
+
+    return {
+        ...actual,
+        computeRectangle: vi.fn()
+    };
+});
 
 const {activatePrintStarted, getMetaDataForPrint, createPrintJob, migratePayload, waitForPrintJob, waitForPrintJobSuccess, downloadFile, startPrint, startPrint3d} = actions;
 
