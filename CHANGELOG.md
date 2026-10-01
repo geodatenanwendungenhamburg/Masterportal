@@ -23,6 +23,7 @@
         - @masterportal/masterportalapi: 2.63.0 to 2.64.0 (This also raised ol to version 10.10.0)
 
 ### Deprecated
+- WMTS: The `services.json` parameter `transparent` is deprecated and has no effect. Use `transparency` instead.
 
 ### Removed
 

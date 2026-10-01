@@ -248,7 +248,8 @@ WMTS layers can be added by:
 | style | no | String | "normal" | Name of the style. Must match the noted in the WMTS capabilities. | `"normal"` |
 | tileMatrixSet | yes | String |  | Matrix set required to call the WMTS service. Do not use when using `optionsFromCapabilities`, a fitting TileMatrixSet is injected then. Using both may lead to erroneous behaviour. | `"google3857"` |
 | tilesize | yes | String |  | Tile height and width in pixels. | `"512"` |
-| transparent | yes | Boolean |  | Whether the tile background should be transparent. Corresponds to the *GetMap* parameter *TRANSPARENT*. | `true` |
+| transparency | no | Number | `0` | Initial layer transparency, 0 to 100 (inclusive). | `0` |
+| transparent | no | Boolean |  | _Deprecated in the next major release. *Has no effect. Use transparency instead._ | `true` |
 | typ | yes | String |  | Service type; in this case, "WMTS". (**[WMTS docs](#wmts-layer)**, **[WFS docs](#wfs-layer)**, **[SensorThings-API docs](#sensorlayer)**) | `"WMS"` |
 | urls | yes | String[]/String |  | WMTS service URL. If only a single URL is given, it's internally transformed to an array. | `["https://maps1.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png", "https://maps2.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png", "https://maps3.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png", "https://maps4.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png", "https://maps.wien.gv.at/basemap/geolandbasemap/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"]` |
 | version | yes | String |  | Service version used for *GetMap* requests. | `"1.0.0"` |
@@ -273,6 +274,7 @@ WMTS layers can be added by:
    "format": "image/png",
    "style": "normal",
    "transparent": false,
+   "transparency": 0,
    "tileSize": "256",
    "minScale": "0",
    "maxScale": "2500000",
