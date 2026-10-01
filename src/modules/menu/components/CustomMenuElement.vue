@@ -40,9 +40,7 @@ export default {
     computed: {
         ...mapGetters("Menu", ["currentComponent"]),
         htmlContent () {
-            const component = this.currentComponent(this.side);
-            const raw = component?.props?.htmlContent;
-            console.log("htmlContent - side:", this.side, "component:", component, "raw:", raw);
+            const raw = this.currentComponent(this.side)?.props?.htmlContent;
 
             return raw ? DOMPurify.sanitize(raw) : "";
         },
