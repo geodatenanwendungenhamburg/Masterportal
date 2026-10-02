@@ -20,6 +20,11 @@ export default {
             default: null
         }
     },
+    data () {
+        return {
+            imageSources: {}
+        };
+    },
     computed: {
         ...mapGetters("Modules/Legend", ["sldVersion"]),
 
@@ -60,12 +65,121 @@ export default {
             }
 
             return [];
+        },
+
+        /**
+         * Returns true, if legend images have to be loaded by fetch, so that the login interceptor can add the auth token.
+         * @returns {Boolean} true, if the login module is available
+         */
+        loadImagesByFetch () {
+            return this.$store.getters.isModuleAvailable?.("login") === true;
         }
+    },
+    watch: {
+        filteredLegend: {
+            handler (legendParts) {
+                this.loadImageSources(legendParts);
+            },
+            immediate: true
+        }
+    },
+    beforeUnmount () {
+        Object.values(this.imageSources).forEach(src => {
+            if (src?.startsWith("blob:")) {
+                URL.revokeObjectURL(src);
+            }
+        });
     },
     methods: {
         scaleImg (evt, legendPart) {
             if (legendPart.imageScale !== null && legendPart.imageScale !== undefined) {
                 evt.target.width = legendPart.imageScale * evt.target.naturalWidth;
+            }
+        },
+
+        /**
+         * Returns the url of a legend string, extended by the sld version for GetLegendGraphic requests.
+         * @param {String} legendPart The legend url.
+         * @returns {String} The legend url.
+         */
+        getLegendUrl (legendPart) {
+            return legendPart + (legendPart.toUpperCase().includes("GETLEGENDGRAPHIC") && this.sldVersion ? "&sld_version=" + this.sldVersion : "");
+        },
+
+        /**
+         * Returns true, if the given src has to be loaded by fetch.
+         * @param {String} src The image source.
+         * @returns {Boolean} true, if the src is an url to fetch.
+         */
+        isFetchableUrl (src) {
+            return typeof src === "string" && !src.startsWith("data:") && !src.startsWith("blob:") && !src.trim().startsWith("<");
+        },
+
+        /**
+         * Returns the src for an legend image. If images are loaded by fetch, the object url is returned after loading.
+         * @param {String} src The image source.
+         * @returns {String|undefined} The image source to use.
+         */
+        getImageSrc (src) {
+            if (!this.loadImagesByFetch || !this.isFetchableUrl(src)) {
+                return src;
+            }
+            return this.imageSources[src];
+        },
+
+        /**
+         * Collects the image urls of the given legend parts.
+         * @param {Array} legendParts The legend parts.
+         * @returns {String[]} The image urls.
+         */
+        collectImageUrls (legendParts) {
+            const urls = [];
+
+            legendParts.forEach(legendPart => {
+                if (typeof legendPart === "string" && !legendPart.endsWith(".pdf")) {
+                    urls.push(this.getLegendUrl(legendPart));
+                }
+                else if (Array.isArray(legendPart?.graphic)) {
+                    urls.push(...legendPart.graphic);
+                }
+                else if (typeof legendPart?.graphic === "string" && !legendPart.graphic.endsWith(".pdf")) {
+                    urls.push(legendPart.graphic);
+                }
+            });
+
+            return urls.filter(url => this.isFetchableUrl(url));
+        },
+
+        /**
+         * Loads the legend images by fetch, so that the login interceptor adds the auth token.
+         * @param {Array} legendParts The legend parts.
+         * @returns {Promise<void>} resolves, if all images are loaded
+         */
+        async loadImageSources (legendParts) {
+            if (!this.loadImagesByFetch) {
+                return;
+            }
+
+            await Promise.all(this.collectImageUrls(legendParts)
+                .filter(url => !Object.hasOwn(this.imageSources, url))
+                .map(url => this.fetchImage(url)));
+        },
+
+        /**
+         * Fetches an image and stores its object url. If fetching fails, the original url is used.
+         * @param {String} url The image url.
+         * @returns {Promise<void>} resolves, if the image is loaded
+         */
+        async fetchImage (url) {
+            this.imageSources[url] = undefined;
+
+            try {
+                const response = await fetch(url);
+
+                this.imageSources[url] = response.ok ? URL.createObjectURL(await response.blob()) : url;
+            }
+            catch {
+                this.imageSources[url] = url;
             }
         }
     }
@@ -92,7 +206,7 @@ export default {
                     <img
                         v-if="!legendPart.endsWith('.pdf') && !legendPart.endsWith('</svg>')"
                         :alt="legendPart.name ? legendPart.name : legendObj.name"
-                        :src="legendPart + (legendPart.toUpperCase().includes('GETLEGENDGRAPHIC') && sldVersion ? '&sld_version=' + sldVersion : '')"
+                        :src="getImageSrc(getLegendUrl(legendPart))"
                     >
                     <!--Legend as SVG-->
                     <div
@@ -122,7 +236,7 @@ export default {
                         <!--Legend as Image or SVG -->
                         <img
                             :alt="legendPart.name ? legendPart.name : legendObj.name"
-                            :src="legendPart.graphic[1]"
+                            :src="getImageSrc(legendPart.graphic[1])"
                             :style="{
                                 width: legendPart.iconSize[0] + 'px',
                                 height: legendPart.iconSize[1] + 'px',
@@ -133,7 +247,7 @@ export default {
                         >
                         <img
                             :alt="legendPart.name ? legendPart.name : legendObj.name"
-                            :src="Array.isArray(legendPart.graphic) ? legendPart.graphic[0] : legendPart.graphic"
+                            :src="getImageSrc(Array.isArray(legendPart.graphic) ? legendPart.graphic[0] : legendPart.graphic)"
                             class="second-image"
                             @load="(evt) => scaleImg(evt, legendPart)"
                         >
@@ -148,7 +262,7 @@ export default {
                         <img
                             v-if="!legendPart.graphic.endsWith('.pdf')"
                             :alt="legendPart.name ? legendPart.name : legendObj.name"
-                            :src="legendPart.graphic"
+                            :src="getImageSrc(legendPart.graphic)"
                             class="left"
                             @load="(evt) => scaleImg(evt, legendPart)"
                         >

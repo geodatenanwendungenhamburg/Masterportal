@@ -36,6 +36,7 @@
 - AlertingItem: Fixed CSS Regression.
 - Security: XML injection in `highlightFeaturesByAttribute` is prevented by escaping.
 - Print: Fixed printing of vector layers with icon styling may fail if the icon image has not yet been loaded at the time of serialization.
+- Legend: Legend images of secured services are now loaded with the auth token of the login module, so that no 401 error occurs.
 
 ---
 

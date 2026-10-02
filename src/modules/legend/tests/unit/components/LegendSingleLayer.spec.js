@@ -1,9 +1,9 @@
-import {createStore} from "vuex";
-import {shallowMount} from "@vue/test-utils";
 import LegendSingleLayerComponent from "@modules/legend/components/LegendSingleLayer.vue";
 import Legend from "@modules/legend/store/indexLegend.js";
+import {flushPromises, shallowMount} from "@vue/test-utils";
 import {expect} from "chai";
 import sinon from "sinon";
+import {createStore} from "vuex";
 
 
 describe("src/modules/legend/components/LegendSingleLayer.vue", () => {
@@ -514,6 +514,113 @@ describe("src/modules/legend/components/LegendSingleLayer.vue", () => {
             wrapper.vm.scaleImg(evt, legendPart);
 
             expect(evt.target.width).to.equal(50);
+        });
+    });
+
+    describe("load images by fetch", () => {
+        const legendUrl = "https://legend.de/wms?SERVICE=WMS&REQUEST=GetLegendGraphic&LAYER=layer";
+        let fetchStub;
+
+        beforeEach(() => {
+            store = createStore({
+                getters: {
+                    isModuleAvailable: () => moduleType => moduleType === "login"
+                },
+                modules: {
+                    Modules: {
+                        namespaced: true,
+                        modules: {
+                            namespaced: true,
+                            Legend: Legend
+                        }
+                    }
+                }
+            });
+            fetchStub = sinon.stub(global, "fetch").resolves({
+                ok: true,
+                blob: () => Promise.resolve(new Blob(["image"]))
+            });
+            sinon.stub(URL, "createObjectURL").returns("blob:legend");
+            sinon.stub(URL, "revokeObjectURL");
+        });
+
+        afterEach(() => {
+            sinon.restore();
+        });
+
+        it("loads the legend image by fetch and uses the object url, if login module is available", async () => {
+            wrapper = shallowMount(LegendSingleLayerComponent, {
+                global: {plugins: [store]},
+                propsData: {
+                    legendObj: {
+                        name: "myLayer",
+                        legend: [legendUrl],
+                        position: 1
+                    }
+                }
+            });
+
+            await flushPromises();
+
+            expect(fetchStub.calledOnceWith(legendUrl + "&sld_version=1.1.0")).to.be.true;
+            expect(wrapper.find("img").attributes("src")).to.equal("blob:legend");
+        });
+
+        it("uses the original url, if fetching fails", async () => {
+            fetchStub.rejects(new Error("CORS"));
+
+            wrapper = shallowMount(LegendSingleLayerComponent, {
+                global: {plugins: [store]},
+                propsData: {
+                    legendObj: {
+                        name: "myLayer",
+                        legend: [{name: "foobar", graphic: legendUrl}],
+                        position: 1
+                    }
+                }
+            });
+
+            await flushPromises();
+
+            expect(wrapper.find("img").attributes("src")).to.equal(legendUrl);
+        });
+
+        it("does not fetch data urls", async () => {
+            const dataUrl = "data:image/svg+xml;charset=utf-8,<svg></svg>";
+
+            wrapper = shallowMount(LegendSingleLayerComponent, {
+                global: {plugins: [store]},
+                propsData: {
+                    legendObj: {
+                        name: "myLayer",
+                        legend: [{name: "foobar", graphic: dataUrl}],
+                        position: 1
+                    }
+                }
+            });
+
+            await flushPromises();
+
+            expect(fetchStub.notCalled).to.be.true;
+            expect(wrapper.find("img").attributes("src")).to.equal(dataUrl);
+        });
+
+        it("revokes the object urls on unmount", async () => {
+            wrapper = shallowMount(LegendSingleLayerComponent, {
+                global: {plugins: [store]},
+                propsData: {
+                    legendObj: {
+                        name: "myLayer",
+                        legend: [legendUrl],
+                        position: 1
+                    }
+                }
+            });
+
+            await flushPromises();
+            wrapper.unmount();
+
+            expect(URL.revokeObjectURL.calledOnceWith("blob:legend")).to.be.true;
         });
     });
 });
